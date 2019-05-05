@@ -1,0 +1,276 @@
+CREATE DATABASE CocoDb
+
+GO
+USE CocoDb
+
+--MENU--
+GO
+CREATE SCHEMA CMDB
+
+GO
+CREATE TABLE CMDB.Menu
+(
+	Id SMALLINT NOT NULL IDENTITY(1,1),
+	Name NVARCHAR(255) NOT NULL,
+	Url NVARCHAR(2000) NOT NULL,
+	[Description] NVARCHAR(1000),
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL,
+	ParentMenuId SMALLINT NULL
+)
+
+GO
+ALTER TABLE CMDB.Menu
+ADD CONSTRAINT PK_Menu
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE CMDB.Menu
+ADD CONSTRAINT FK_Menu_ParentMenu
+FOREIGN KEY (ParentMenuId) REFERENCES CMDB.Menu(Id);
+
+GO
+CREATE SCHEMA Farm;
+
+--GROUP--
+GO
+CREATE TABLE Farm.[Group](
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	Title NVARCHAR(255) NULL,
+	[Description] NVARCHAR(500) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.[Group]
+ADD CONSTRAINT PK_Group
+PRIMARY KEY (Id);
+
+--GROUP ROLE--
+GO
+CREATE TABLE Farm.[GroupRole]
+(
+	Id TINYINT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL
+)
+
+GO
+ALTER TABLE Farm.[GroupRole]
+ADD CONSTRAINT PK_GroupRole
+PRIMARY KEY (Id);
+--FARMER GROUP--
+GO
+CREATE TABLE Farm.UserGroup(
+	UserId BIGINT NOT NULL,
+	GroupId BIGINT NOT NULL,
+	JoinedDate DATETIME2 NULL,
+	IsJoined BIT NOT NULL,
+	ApprovedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.UserGroup
+ADD CONSTRAINT PK_UserGroup
+PRIMARY KEY (UserId, GroupId);
+
+GO
+ALTER TABLE Farm.UserGroup
+ADD CONSTRAINT FK_UserGroup_Group
+FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);
+--FARM--
+GO
+CREATE TABLE Farm.Farm
+(
+	Id BIGINT NOT NULL,
+	Title NVARCHAR(255) NULL,
+	[Description] NVARCHAR(500) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.Farm
+ADD CONSTRAINT PK_Farm
+PRIMARY KEY (Id);
+
+-- FARM ROLE --
+GO
+CREATE TABLE Farm.[FarmRole]
+(
+	Id TINYINT NOT NULL IDENTITY(1,1),
+	Name NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL
+)
+
+GO
+ALTER TABLE Farm.[FarmRole]
+ADD CONSTRAINT PK_FarmRole
+PRIMARY KEY (Id);
+--User FARM--
+GO
+CREATE TABLE Farm.UserFarm(
+	UserId BIGINT NOT NULL,
+	FarmId BIGINT NOT NULL,
+	JoinedDate DATETIME2 NULL,
+	IsJoined BIT NOT NULL,
+	ApprovedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.UserFarm
+ADD CONSTRAINT PK_UserFarm
+PRIMARY KEY (UserId, FarmId);
+
+GO
+ALTER TABLE Farm.UserFarm
+ADD CONSTRAINT FK_UserFarm_Farm
+FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+
+--GROUP FARM--
+GO
+CREATE TABLE Farm.FarmGroup(
+	GroupId BIGINT NOT NULL,
+	FarmId BIGINT NOT NULL,
+	LinkedDate DATETIME2 NOT NULL,
+	IsLinked BIT NOT NULL,
+	LinkedById BIGINT NOT NULL,
+	ApprovedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.FarmGroup
+ADD CONSTRAINT PK_FarmGroup
+PRIMARY KEY (GroupId, FarmId);
+
+GO
+ALTER TABLE Farm.FarmGroup
+ADD CONSTRAINT FK_FarmGroup_GroupId
+FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);
+
+GO
+ALTER TABLE Farm.FarmGroup
+ADD CONSTRAINT FK_FarmGroup_Farm
+FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+-- CATEGORY --
+GO
+CREATE TABLE Farm.CategoryOfProduct
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	Name NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL,
+	ParentCategoryId INT NULL
+)
+
+GO
+ALTER TABLE Farm.CategoryOfProduct
+ADD CONSTRAINT PK_CategoryOfProduct
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE Farm.CategoryOfProduct
+ADD CONSTRAINT FK_CategoryOfProduct_ParentCategory
+FOREIGN KEY (ParentCategoryId) REFERENCES Farm.CategoryOfProduct(Id);
+
+--PRODUCT--
+GO
+CREATE TABLE Farm.Product(
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	Name NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NOT NULL,
+	Content NVARCHAR(MAX) NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.[Product]
+ADD CONSTRAINT PK_Product
+PRIMARY KEY (Id);
+-- PRODUCT CATEGORY --
+GO
+CREATE TABLE Farm.ProductCategory
+(
+	ProductId BIGINT NOT NULL,
+	CategoryId INT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.ProductCategory
+ADD CONSTRAINT FK_ProductCategory_CategoryOfProduct
+FOREIGN KEY (CategoryId) REFERENCES Farm.CategoryOfProduct(Id);
+
+GO
+ALTER TABLE Farm.ProductCategory
+ADD CONSTRAINT FK_ProductCategory_Product
+FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+
+GO
+ALTER TABLE Farm.ProductCategory
+ADD CONSTRAINT PK_ProductCategory
+PRIMARY KEY (ProductId, CategoryId);
+
+--FARM PRODUCT--
+GO
+CREATE TABLE Farm.FarmProduct(
+	FarmId BIGINT NOT NULL,
+	ProductId BIGINT NOT NULL,
+	LinkedDate DATETIME2 NOT NULL,
+	IsLinked BIT NOT NULL,
+	LinkedById BIGINT NOT NULL,
+	ApprovedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.FarmProduct
+ADD CONSTRAINT PK_FarmProduct
+PRIMARY KEY (FarmId, ProductId);
+
+GO
+ALTER TABLE Farm.FarmProduct
+ADD CONSTRAINT FK_FarmProduct_Product
+FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+
+GO
+ALTER TABLE Farm.FarmProduct
+ADD CONSTRAINT FK_FarmProduct_Farm
+FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+
+--PRODUCT GROUP--
+GO
+CREATE TABLE Farm.GroupProduct(
+	GroupId BIGINT NOT NULL,
+	ProductId BIGINT NOT NULL,
+	LinkedDate DATETIME2 NOT NULL,
+	IsLinked BIT NOT NULL,
+	LinkedById BIGINT NOT NULL,
+	ApprovedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE Farm.GroupProduct
+ADD CONSTRAINT PK_GroupProduct
+PRIMARY KEY (GroupId, ProductId);
+
+GO
+ALTER TABLE Farm.GroupProduct
+ADD CONSTRAINT FK_GroupProduct_Product
+FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+
+GO
+ALTER TABLE Farm.GroupProduct
+ADD CONSTRAINT FK_GroupProduct_Group
+FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);

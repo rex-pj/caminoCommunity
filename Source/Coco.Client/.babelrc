@@ -1,0 +1,15 @@
+{
+  "plugins": ["@loadable/babel-plugin"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browser": ["> 1%", "last 2 versions"]
+        },
+        "useBuiltIns": "entry"
+      }
+    ],
+    "react"
+  ]
+}

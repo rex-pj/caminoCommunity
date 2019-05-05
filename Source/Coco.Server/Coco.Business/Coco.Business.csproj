@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
+    <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
+    <ProjectReference Include="..\Coco.UserDAL\Coco.UserDAL.csproj" />
+  </ItemGroup>
+
+</Project>

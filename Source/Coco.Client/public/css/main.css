@@ -1,0 +1,27 @@
+* {
+  color: #333333;
+}
+
+html,
+body {
+  background-color: #f9f9f9;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+a {
+  color: #0d5183;
+}
+
+.clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+
+.text-justify {
+  text-align: justify;
+}
