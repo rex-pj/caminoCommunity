@@ -22,14 +22,13 @@ namespace Api.Auth
     {
         private IBootstrapper _bootstrapper;
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -45,26 +44,6 @@ namespace Api.Auth
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });
-            });
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
-
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // User settings.
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
             });
 
             InvokeInitialStartup(services, Configuration);
@@ -87,9 +66,10 @@ namespace Api.Auth
             // Config UseCors
             app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
-            app.UseMvc();
             app.UseGraphiQl("/api/graphql");
+            app.UseMvc();
         }
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
@@ -97,6 +77,26 @@ namespace Api.Auth
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddCustomStores()
                 .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
 
             _bootstrapper.RegiserTypes(services);
 
@@ -112,12 +112,6 @@ namespace Api.Auth
 
             services.AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddRazorPagesOptions(options =>
-            {
-                options.AllowAreas = true;
-            });
         }
     }
 }

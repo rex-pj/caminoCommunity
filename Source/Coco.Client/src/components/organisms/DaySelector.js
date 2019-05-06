@@ -57,7 +57,7 @@ export default class extends Component {
 
   createArray(from, to) {
     const arr = [];
-    for (let index = from; index <= to; index++) {
+    for (let index = to; index >= from; index--) {
       arr.push(index);
     }
     return arr;

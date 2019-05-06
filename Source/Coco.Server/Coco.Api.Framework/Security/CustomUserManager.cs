@@ -208,6 +208,28 @@ namespace Coco.Api.Framework.Security
         }
 
         /// <summary>
+        /// Get the security stamp for the specified <paramref name="user" />.
+        /// </summary>
+        /// <param name="user">The user whose security stamp should be set.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the security stamp for the specified <paramref name="user"/>.</returns>
+        public override async Task<string> GetSecurityStampAsync(ApplicationUser user)
+        {
+            ThrowIfDisposed();
+            var securityStore = GetSecurityStore();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            var stamp = await securityStore.GetSecurityStampAsync(user, CancellationToken);
+            if (stamp == null)
+            {
+                Logger.LogWarning(15, "GetSecurityStampAsync for user {userId} failed because stamp was null.", await GetUserIdAsync(user));
+                throw new InvalidOperationException("NullSecurityStamp");
+            }
+            return stamp;
+        }
+
+        /// <summary>
         /// Returns the Name claim value if present otherwise returns null.
         /// </summary>
         /// <param name="principal">The <see cref="ClaimsPrincipal"/> instance.</param>

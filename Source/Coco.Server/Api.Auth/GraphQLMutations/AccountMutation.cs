@@ -34,7 +34,9 @@ namespace Api.Auth.GraphQLMutations
                         PasswordSalt = SaltGenerator.GetSalt()
                     };
 
-                    return await userManager.CreateAsync(parameters, model.Password);
+                    var result = await userManager.CreateAsync(parameters, model.Password);
+
+                    return result;
                 });
         }
     }
