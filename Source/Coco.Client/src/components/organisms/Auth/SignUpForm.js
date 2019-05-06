@@ -29,10 +29,6 @@ const Textbox = styled(TextboxSecondary)`
 
   &.invalid {
     border: 1px solid ${p => p.theme.color.dangerLight};
-
-    ::placeholder {
-      color: ${p => p.theme.color.dangerLight};
-    }
   }
 `;
 
