@@ -12,12 +12,11 @@ class SignUpPage extends Component {
   };
 
   signUp = async data => {
-    const body = data;
     await client
       .mutate({
         mutation: ADD_USER,
         variables: {
-          user: body
+          user: data
         }
       })
       .then(result => {

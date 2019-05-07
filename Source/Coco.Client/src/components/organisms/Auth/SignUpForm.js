@@ -99,40 +99,40 @@ export default class SignUpForm extends Component {
 
     this.formData = {
       lastname: {
-        value: "",
+        value: "TestLastname",
         validation: {
           isRequired: true
         },
-        isValid: false
+        isValid: true
       },
       firstname: {
-        value: "",
+        value: "TestFirstname",
         validation: {
           isRequired: true
         },
-        isValid: false
+        isValid: true
       },
       email: {
-        value: "",
+        value: "trungle.it@gmail.com",
         validation: {
           isEmail: true
         },
-        isValid: false
+        isValid: true
       },
       password: {
-        value: "",
+        value: "TestPassword",
         validation: {
           isRequired: true
         },
-        isValid: false
+        isValid: true
       },
       confirmPassword: {
-        value: "",
+        value: "TestPassword",
         validation: {
           isRequired: true,
           sameRefProperty: "password"
         },
-        isValid: false
+        isValid: true
       },
       genderId: {
         value: 1,
@@ -142,11 +142,11 @@ export default class SignUpForm extends Component {
         isValid: true
       },
       birthDate: {
-        value: null,
+        value: new Date(),
         validation: {
           isDate: true
         },
-        isValid: false
+        isValid: true
       }
     };
   }

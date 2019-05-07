@@ -22,14 +22,13 @@ namespace Api.Auth
     {
         private IBootstrapper _bootstrapper;
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -46,7 +45,6 @@ namespace Api.Auth
                         .AllowCredentials();
                 });
             });
-
 
             InvokeInitialStartup(services, Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -68,6 +66,7 @@ namespace Api.Auth
             // Config UseCors
             app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseGraphiQl("/api/graphql");
             app.UseMvc();
@@ -113,12 +112,6 @@ namespace Api.Auth
 
             services.AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddRazorPagesOptions(options =>
-            {
-                options.AllowAreas = true;
-            });
         }
     }
 }

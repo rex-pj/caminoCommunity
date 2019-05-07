@@ -17,3 +17,6 @@ Source/Coco.Server/Coco.UserDAL/obj/
 Source/Coco.Server/Coco.DAL/bin/
 Source/Coco.Server/Coco.Entities/bin/
 Source/Coco.Server/Api.Content/obj/
+Source/Coco.Server/Api.Farm/bin/
+Source/Coco.Server/Api.Content/bin/
+Source/Coco.Server/Coco.Common/bin/
