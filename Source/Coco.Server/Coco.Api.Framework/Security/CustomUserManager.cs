@@ -83,8 +83,8 @@ namespace Coco.Api.Framework.Security
             }
 
             //Add Salt to Password
-            string passwordSalted = AddSaltToPassword(user, password);
-            var result = await UpdatePasswordHash(passwordStore, user, passwordSalted);
+            //string passwordSalted = AddSaltToPassword(user, password);
+            var result = await UpdatePasswordHash(passwordStore, user, password);
             if (!result.Succeeded)
             {
                 return result;
@@ -186,12 +186,12 @@ namespace Coco.Api.Framework.Security
             }
 
             //Add Salt to Password
-            string passwordSalted = AddSaltToPassword(user, password);
+            //string passwordSalted = AddSaltToPassword(user, password);
 
-            var result = await VerifyPasswordAsync(passwordStore, user, passwordSalted);
+            var result = await VerifyPasswordAsync(passwordStore, user, password);
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
             {
-                await UpdatePasswordHash(passwordStore, user, passwordSalted, validatePassword: false);
+                await UpdatePasswordHash(passwordStore, user, password, validatePassword: false);
                 await UpdateUserAsync(user);
             }
 
@@ -309,7 +309,8 @@ namespace Coco.Api.Framework.Security
             string passwordHash = null;
             if (!string.IsNullOrEmpty(newPassword))
             {
-                passwordHash = PasswordHasher.HashPassword(user, newPassword);
+                string passwordSalted = AddSaltToPassword(user, newPassword);
+                passwordHash = PasswordHasher.HashPassword(user, passwordSalted);
             }
 
             await passwordStore.SetPasswordHashAsync(user, passwordHash, CancellationToken);
