@@ -120,14 +120,14 @@ export default class SignUpForm extends Component {
         isValid: true
       },
       password: {
-        value: "TestPassword",
+        value: "TestPassword@123",
         validation: {
           isRequired: true
         },
         isValid: true
       },
       confirmPassword: {
-        value: "TestPassword",
+        value: "TestPassword@123",
         validation: {
           isRequired: true,
           sameRefProperty: "password"

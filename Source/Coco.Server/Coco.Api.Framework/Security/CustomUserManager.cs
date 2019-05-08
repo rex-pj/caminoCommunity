@@ -2,6 +2,7 @@
 using Coco.Api.Framework.Commons.ErrorMessage;
 using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -34,11 +35,11 @@ namespace Coco.Api.Framework.Security
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<ApplicationUser>> logger)
+            ILogger<UserManager<ApplicationUser>> logger, IConfiguration configuration)
             : base(store, optionsAccessor, passwordHasher, userValidators,
               passwordValidators, keyNormalizer, errors, services, logger)
         {
-            _encryptKey = "CocoWeb_D@yl@d@ut01l@@1!";
+            _encryptKey = configuration.GetValue<string>("EncryptKey");
         }
         #endregion
 
@@ -67,8 +68,8 @@ namespace Coco.Api.Framework.Security
             }
 
             //Add Salt to Password
-            string passwordSalted = AddSaltToPassword(user, password);
-            var result = await UpdatePasswordHash(passwordStore, user, passwordSalted);
+            //string passwordSalted = AddSaltToPassword(user, password);
+            var result = await UpdatePasswordHash(passwordStore, user, password);
             if (!result.Succeeded)
             {
                 return result;
@@ -170,12 +171,12 @@ namespace Coco.Api.Framework.Security
             }
 
             //Add Salt to Password
-            string passwordSalted = AddSaltToPassword(user, password);
+            //string passwordSalted = AddSaltToPassword(user, password);
 
-            var result = await VerifyPasswordAsync(passwordStore, user, passwordSalted);
+            var result = await VerifyPasswordAsync(passwordStore, user, password);
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
             {
-                await UpdatePasswordHash(passwordStore, user, passwordSalted, validatePassword: false);
+                await UpdatePasswordHash(passwordStore, user, password, validatePassword: false);
                 await UpdateUserAsync(user);
             }
 
@@ -293,11 +294,38 @@ namespace Coco.Api.Framework.Security
             string passwordHash = null;
             if (!string.IsNullOrEmpty(newPassword))
             {
-                passwordHash = PasswordHasher.HashPassword(user, newPassword);
+                string passwordSalted = AddSaltToPassword(user, newPassword);
+                passwordHash = PasswordHasher.HashPassword(user, passwordSalted);
             }
 
             await passwordStore.SetPasswordHashAsync(user, passwordHash, CancellationToken);
             await UpdateSecurityStampInternal(user);
+            return IdentityResult.Success;
+        }
+
+        /// <summary>
+        /// Should return <see cref="IdentityResult.Success"/> if validation is successful. This is
+        /// called before updating the password hash.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
+        protected new async Task<IdentityResult> ValidatePasswordAsync(ApplicationUser user, string password)
+        {
+            var errors = new List<IdentityError>();
+            foreach (var v in PasswordValidators)
+            {
+                var result = await v.ValidateAsync(this, user, password);
+                if (!result.Succeeded)
+                {
+                    errors.AddRange(result.Errors);
+                }
+            }
+            if (errors.Count > 0)
+            {
+                Logger.LogWarning(14, "User {userId} password validation failed: {errors}.", await GetUserIdAsync(user), string.Join(";", errors.Select(e => e.Code)));
+                return IdentityResult.Failed(errors.ToArray());
+            }
             return IdentityResult.Success;
         }
 

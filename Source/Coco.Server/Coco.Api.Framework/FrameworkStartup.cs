@@ -9,6 +9,8 @@ namespace Coco.Api.Framework
     {
         public static IdentityBuilder AddCustomStores(this IdentityBuilder builder)
         {
+            builder.Services.AddTransient<IPasswordValidator<ApplicationUser>, CustomPasswordValidator>();
+            builder.Services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
 
             builder.Services.AddTransient<UserManager<ApplicationUser>, CustomUserManager>();
             builder.Services.AddTransient<SignInManager<ApplicationUser>, CustomSignInManager>();
