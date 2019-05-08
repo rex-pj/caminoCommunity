@@ -39,6 +39,22 @@ namespace Coco.Api.Framework.Security
               passwordValidators, keyNormalizer, errors, services, logger)
         {
             _encryptKey = "CocoWeb_D@yl@d@ut01l@@1!";
+
+            if (userValidators != null)
+            {
+                foreach (var v in userValidators)
+                {
+                    UserValidators.Add(v);
+                }
+            }
+
+            if (passwordValidators != null)
+            {
+                foreach (var v in passwordValidators)
+                {
+                    PasswordValidators.Add(v);
+                }
+            }
         }
         #endregion
 
@@ -298,6 +314,32 @@ namespace Coco.Api.Framework.Security
 
             await passwordStore.SetPasswordHashAsync(user, passwordHash, CancellationToken);
             await UpdateSecurityStampInternal(user);
+            return IdentityResult.Success;
+        }
+
+        /// <summary>
+        /// Should return <see cref="IdentityResult.Success"/> if validation is successful. This is
+        /// called before updating the password hash.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
+        protected new async Task<IdentityResult> ValidatePasswordAsync(ApplicationUser user, string password)
+        {
+            var errors = new List<IdentityError>();
+            foreach (var v in PasswordValidators)
+            {
+                var result = await v.ValidateAsync(this, user, password);
+                if (!result.Succeeded)
+                {
+                    errors.AddRange(result.Errors);
+                }
+            }
+            if (errors.Count > 0)
+            {
+                Logger.LogWarning(14, "User {userId} password validation failed: {errors}.", await GetUserIdAsync(user), string.Join(";", errors.Select(e => e.Code)));
+                return IdentityResult.Failed(errors.ToArray());
+            }
             return IdentityResult.Success;
         }
 
