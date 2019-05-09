@@ -2,6 +2,7 @@
 using Coco.Api.Framework.Commons.ErrorMessage;
 using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -34,27 +35,11 @@ namespace Coco.Api.Framework.Security
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<ApplicationUser>> logger)
+            ILogger<UserManager<ApplicationUser>> logger, IConfiguration configuration)
             : base(store, optionsAccessor, passwordHasher, userValidators,
               passwordValidators, keyNormalizer, errors, services, logger)
         {
-            _encryptKey = "CocoWeb_D@yl@d@ut01l@@1!";
-
-            if (userValidators != null)
-            {
-                foreach (var v in userValidators)
-                {
-                    UserValidators.Add(v);
-                }
-            }
-
-            if (passwordValidators != null)
-            {
-                foreach (var v in passwordValidators)
-                {
-                    PasswordValidators.Add(v);
-                }
-            }
+            _encryptKey = configuration.GetValue<string>("EncryptKey");
         }
         #endregion
 

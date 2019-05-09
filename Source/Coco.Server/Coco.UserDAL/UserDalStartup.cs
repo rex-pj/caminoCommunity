@@ -7,13 +7,11 @@ namespace Coco.UserDAL
 {
     public class UserDalStartup : IBootstrapper
     {
-        private readonly IConfiguration _config;
         private readonly string _connectionString;
 
         public UserDalStartup(IConfiguration config)
         {
-            _config = config;
-            _connectionString = _config.GetConnectionString("CocoUserEntities");
+            _connectionString = config.GetConnectionString("CocoUserEntities");
         }
 
         public void RegiserTypes(IServiceCollection services)
