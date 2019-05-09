@@ -3,6 +3,7 @@ using Coco.Api.Framework.Commons.ErrorMessage;
 using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -23,7 +24,7 @@ namespace Coco.Api.Framework.Security
         /// </summary>
         private IPasswordHasher<ApplicationUser> _passwordHasher { get; set; }
         internal readonly string _encryptKey;
-
+        private readonly IServiceProvider _services;
         #endregion
 
         #region Ctor
@@ -40,10 +41,61 @@ namespace Coco.Api.Framework.Security
               passwordValidators, keyNormalizer, errors, services, logger)
         {
             _encryptKey = configuration.GetValue<string>("EncryptKey");
+            _services = services;
+            KeyNormalizer = keyNormalizer;
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Finds and returns a user, if any, who has the specified user name.
+        /// </summary>
+        /// <param name="userName">The user name to search for.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="userName"/> if it exists.
+        /// </returns>
+        public override async Task<ApplicationUser> FindByNameAsync(string userName)
+        {
+            ThrowIfDisposed();
+            if (userName == null)
+            {
+                throw new ArgumentNullException(nameof(userName));
+            }
+            userName = NormalizeName(userName);
+
+            var user = await Store.FindByNameAsync(userName, CancellationToken);
+
+            // Need to potentially check all keys
+            if (user == null && Options.Stores.ProtectPersonalData)
+            {
+                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
+                var protector = _services.GetService<ILookupProtector>();
+                if (keyRing != null && protector != null)
+                {
+                    foreach (var key in keyRing.GetAllKeyIds())
+                    {
+                        var oldKey = protector.Protect(key, userName);
+                        user = await Store.FindByNameAsync(oldKey, CancellationToken);
+                        if (user != null)
+                        {
+                            return user;
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
+        /// <summary>
+        /// Normalize user or role name for consistent comparisons.
+        /// </summary>
+        /// <param name="name">The name to normalize.</param>
+        /// <returns>A normalized value representing the specified <paramref name="name"/>.</returns>
+        public virtual string NormalizeName(string name)
+        {
+            return (KeyNormalizer == null) ? name : name.Normalize();
+        }
+
         /// <summary>
         /// Creates the specified <paramref name="user"/> in the backing store with given password,
         /// as an asynchronous operation.
