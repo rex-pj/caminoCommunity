@@ -35,10 +35,26 @@ namespace Coco.Business.Implementation
             return userInfo.Id;
         }
 
-        public async Task<UserModel> FindUserByEmail(string email)
+        public async Task<UserModel> FindUserByEmail(string email, bool includeInActived = false)
         {
+            email = email.ToLower();
+
             var user = await _userInfoRepository
-                .Get(x => x.User.Email.Equals(email) && x.IsActived)
+                .Get(x => x.User.Email.Equals(email) && (includeInActived ? true : x.IsActived))
+                .Include(x => x.User)
+                .FirstOrDefaultAsync();
+
+            UserModel userModel = UserEntityToModel(user);
+
+            return userModel;
+        }
+
+        public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
+        {
+            username = username.ToLower();
+
+            var user = await _userInfoRepository
+                .Get(x => x.User.Email.Equals(username) && (includeInActived ? true : x.IsActived))
                 .Include(x => x.User)
                 .FirstOrDefaultAsync();
 
@@ -74,8 +90,8 @@ namespace Coco.Business.Implementation
             userInfo.StatusId = user.StatusId;
             userInfo.UpdatedById = user.UpdatedById;
             userInfo.UpdatedDate = DateTime.Now;
-            
-            if(userInfo.User == null)
+
+            if (userInfo.User == null)
             {
                 throw new ArgumentNullException(nameof(userInfo.User));
             }
@@ -135,7 +151,7 @@ namespace Coco.Business.Implementation
 
         private UserModel UserEntityToModel(UserInfo user)
         {
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
@@ -153,7 +169,8 @@ namespace Coco.Business.Implementation
                 Description = user.Description,
                 IsActived = user.IsActived,
                 PhoneNumber = user.PhoneNumber,
-                StatusId = user.StatusId
+                StatusId = user.StatusId,
+                Id = user.Id
             };
 
             if (user.User != null)

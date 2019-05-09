@@ -6,6 +6,7 @@ using Coco.Entities.Enums;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 
 namespace Api.Auth.GraphQLMutations
 {
