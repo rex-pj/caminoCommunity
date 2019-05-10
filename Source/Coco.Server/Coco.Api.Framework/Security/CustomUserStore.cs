@@ -71,6 +71,7 @@ namespace Coco.Api.Framework.Security
             }
         }
 
+        /// Todo: Re-Comments
         public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
@@ -100,7 +101,7 @@ namespace Coco.Api.Framework.Security
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = await _accountBusiness.FindUserByEmail(normalizedUserName);
+            var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
 
             return await Task.FromResult(GetLoggedUser(userEntity));
         }
@@ -333,7 +334,7 @@ namespace Coco.Api.Framework.Security
                 throw new ArgumentNullException(nameof(normalizedEmail));
             }
 
-            var userEntity = await _accountBusiness.FindUserByEmail(normalizedEmail);
+            var userEntity = await _accountBusiness.FindUserByEmail(normalizedEmail, true);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
@@ -457,7 +458,7 @@ namespace Coco.Api.Framework.Security
                 GenderId = userModel.GenderId,
                 IsActived = userModel.IsActived,
                 StatusId = userModel.StatusId,
-                UpdatedById = userModel.UpdatedById
+                UpdatedById = userModel.UpdatedById,
             };
 
             return applicationUser;

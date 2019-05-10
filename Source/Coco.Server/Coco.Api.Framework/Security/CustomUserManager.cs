@@ -48,52 +48,13 @@ namespace Coco.Api.Framework.Security
 
         #region Methods
         /// <summary>
-        /// Finds and returns a user, if any, who has the specified user name.
-        /// </summary>
-        /// <param name="userName">The user name to search for.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="userName"/> if it exists.
-        /// </returns>
-        public override async Task<ApplicationUser> FindByNameAsync(string userName)
-        {
-            ThrowIfDisposed();
-            if (userName == null)
-            {
-                throw new ArgumentNullException(nameof(userName));
-            }
-            userName = NormalizeName(userName);
-
-            var user = await Store.FindByNameAsync(userName, CancellationToken);
-
-            // Need to potentially check all keys
-            if (user == null && Options.Stores.ProtectPersonalData)
-            {
-                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
-                var protector = _services.GetService<ILookupProtector>();
-                if (keyRing != null && protector != null)
-                {
-                    foreach (var key in keyRing.GetAllKeyIds())
-                    {
-                        var oldKey = protector.Protect(key, userName);
-                        user = await Store.FindByNameAsync(oldKey, CancellationToken);
-                        if (user != null)
-                        {
-                            return user;
-                        }
-                    }
-                }
-            }
-            return user;
-        }
-
-        /// <summary>
         /// Normalize user or role name for consistent comparisons.
         /// </summary>
         /// <param name="name">The name to normalize.</param>
         /// <returns>A normalized value representing the specified <paramref name="name"/>.</returns>
         public virtual string NormalizeName(string name)
         {
-            return (KeyNormalizer == null) ? name : name.Normalize();
+            return (KeyNormalizer == null) ? name : KeyNormalizer.Normalize(name);
         }
 
         /// <summary>
@@ -119,8 +80,6 @@ namespace Coco.Api.Framework.Security
                 throw new ArgumentNullException(nameof(password));
             }
 
-            //Add Salt to Password
-            //string passwordSalted = AddSaltToPassword(user, password);
             var result = await UpdatePasswordHash(passwordStore, user, password);
             if (!result.Succeeded)
             {
@@ -131,39 +90,12 @@ namespace Coco.Api.Framework.Security
         }
 
         /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to create.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
-        public override async Task<IdentityResult> CreateAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-            await UpdateSecurityStampInternal(user);
-            var result = await ValidateUserAsync(user);
-            if (!result.Succeeded)
-            {
-                return result;
-            }
-            if (Options.Lockout.AllowedForNewUsers && SupportsUserLockout)
-            {
-                await GetUserLockoutStore().SetLockoutEnabledAsync(user, true, CancellationToken);
-            }
-            await UpdateNormalizedUserNameAsync(user);
-            await UpdateNormalizedEmailAsync(user);
-
-            return await Store.CreateAsync(user, CancellationToken);
-        }
-
-        /// <summary>
         /// Should return <see cref="IdentityResult.Success"/> if validation is successful. This is
         /// called before saving the user via Create or Update.
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
+        /// Todo: Re-Comments
         protected new async Task<IdentityResult> ValidateUserAsync(ApplicationUser user)
         {
             if (SupportsUserSecurityStamp)
@@ -185,24 +117,13 @@ namespace Coco.Api.Framework.Security
             }
             if (errors.Count > 0)
             {
-                Logger.LogWarning(13, "User {userId} validation failed: {errors}.", await GetUserIdAsync(user), 
+                Logger.LogWarning(13, "User {userId} validation failed: {errors}.", await GetUserIdAsync(user),
                     string.Join(";", errors.Select(e => e.Code)));
                 return IdentityResult.Failed(errors.ToArray());
             }
             return IdentityResult.Success;
         }
 
-        /// <summary>
-        /// Updates a user's password hash.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="newPassword">The new password.</param>
-        /// <param name="validatePassword">Whether to validate the password.</param>
-        /// <returns>Whether the password has was successfully updated.</returns>
-        protected override Task<IdentityResult> UpdatePasswordHash(ApplicationUser user, string newPassword, bool validatePassword)
-        {
-            return UpdatePasswordHash(GetPasswordStore(), user, newPassword, validatePassword);
-        }
 
         /// <summary>
         /// Returns a flag indicating whether the given <paramref name="password"/> is valid for the
@@ -221,9 +142,6 @@ namespace Coco.Api.Framework.Security
             {
                 return false;
             }
-
-            //Add Salt to Password
-            //string passwordSalted = AddSaltToPassword(user, password);
 
             var result = await VerifyPasswordAsync(passwordStore, user, password);
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
@@ -319,6 +237,7 @@ namespace Coco.Api.Framework.Security
         /// <param name="principal">The principal which contains the user id claim.</param>
         /// <returns>The user corresponding to the IdentityOptions.ClaimsIdentity.UserIdClaimType claim in
         /// the principal or null</returns>
+        /// Todo: Re-Comments
         public virtual Task<ApplicationUser> GetUserAsync(CustomClaimsPrincipal principal)
         {
             if (principal == null)
@@ -327,32 +246,6 @@ namespace Coco.Api.Framework.Security
             }
             var id = GetUserId(principal);
             return id == null ? Task.FromResult<ApplicationUser>(null) : FindByIdAsync(id);
-        }
-        #endregion
-
-        #region Privates
-        private async Task<IdentityResult> UpdatePasswordHash(IUserPasswordStore<ApplicationUser> passwordStore,
-            ApplicationUser user, string newPassword, bool validatePassword = true)
-        {
-            if (validatePassword)
-            {
-                var validate = await ValidatePasswordAsync(user, newPassword);
-                if (!validate.Succeeded)
-                {
-                    return validate;
-                }
-            }
-
-            string passwordHash = null;
-            if (!string.IsNullOrEmpty(newPassword))
-            {
-                string passwordSalted = AddSaltToPassword(user, newPassword);
-                passwordHash = PasswordHasher.HashPassword(user, passwordSalted);
-            }
-
-            await passwordStore.SetPasswordHashAsync(user, passwordHash, CancellationToken);
-            await UpdateSecurityStampInternal(user);
-            return IdentityResult.Success;
         }
 
         /// <summary>
@@ -378,6 +271,34 @@ namespace Coco.Api.Framework.Security
                 Logger.LogWarning(14, "User {userId} password validation failed: {errors}.", await GetUserIdAsync(user), string.Join(";", errors.Select(e => e.Code)));
                 return IdentityResult.Failed(errors.ToArray());
             }
+            return IdentityResult.Success;
+        }
+
+        #endregion
+
+        #region Privates
+        private async Task<IdentityResult> UpdatePasswordHash(IUserPasswordStore<ApplicationUser> passwordStore,
+            ApplicationUser user, string newPassword, bool validatePassword = true)
+        {
+            if (validatePassword)
+            {
+                var validate = await ValidatePasswordAsync(user, newPassword);
+                if (!validate.Succeeded)
+                {
+                    return validate;
+                }
+            }
+
+            // Custom password hashing
+            string passwordHashed = null;
+            if (!string.IsNullOrEmpty(newPassword))
+            {
+                string passwordSalted = AddSaltToPassword(user, newPassword);
+                passwordHashed = PasswordHasher.HashPassword(user, passwordSalted);
+            }
+
+            await passwordStore.SetPasswordHashAsync(user, passwordHashed, CancellationToken);
+            await UpdateSecurityStampInternal(user);
             return IdentityResult.Success;
         }
 
@@ -434,16 +355,6 @@ namespace Coco.Api.Framework.Security
             if (cast == null)
             {
                 throw new NotSupportedException(ExceptionMessageConst.StoreNotIUserSecurityStampStore);
-            }
-            return cast;
-        }
-
-        private IUserLockoutStore<ApplicationUser> GetUserLockoutStore()
-        {
-            var cast = Store as IUserLockoutStore<ApplicationUser>;
-            if (cast == null)
-            {
-                throw new NotSupportedException(ExceptionMessageConst.StoreNotIUserLockoutStore);
             }
             return cast;
         }

@@ -8,6 +8,7 @@ namespace Api.Auth.GraphQLTypes
         public RegisterResultType()
         {
             Field(x => x.Succeeded, type: typeof(BooleanGraphType));
+            Field(x => x.Errors, type: typeof(ListGraphType<IdentityErrorType>));
         }
     }
 }
