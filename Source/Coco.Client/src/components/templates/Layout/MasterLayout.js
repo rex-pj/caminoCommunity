@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components";
 import * as theme from "../../../utils/Theme";
 import { connect } from "react-redux";
 import Notifications from "../../organisms/Notification/Notifications";
+import UserContext from "../../../utils/Context/UserContext";
 
 const MasterLayout = ({ component: Component, ...rest }) => {
   return (
@@ -12,7 +13,14 @@ const MasterLayout = ({ component: Component, ...rest }) => {
         {...rest}
         render={matchProps => (
           <Fragment>
-            <Component {...matchProps} />
+            <UserContext.Provider
+              value={{
+                lang: "vn"
+              }}
+            >
+              <Component {...matchProps} />
+            </UserContext.Provider>
+
             <Notifications notify={rest.notify} />
           </Fragment>
         )}

@@ -9,6 +9,7 @@ namespace Api.Auth.GraphQLSchema
         public AccountSchema(IDependencyResolver resolver)
         {
             Mutation = resolver.Resolve<AccountMutation>();
+            Query = resolver.Resolve<AccountMutation>();
         }
     }
 }

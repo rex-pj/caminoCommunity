@@ -5,8 +5,29 @@ import * as actionTypes from "../../store/actions";
 import client from "../../utils/GraphQL/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQL/GraphQLQueries";
+import { getError } from "../../utils/Helper";
+import UserContext from "../../utils/Context/UserContext";
 
 class SignUpPage extends Component {
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+
+    this.state = {
+      isFormEnabled: false
+    };
+  }
+
+  // #region Life Cycle
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+  // #endregion Life Cycle
+
   showValidationError = (title, message) => {
     this.props.showValidationError(title, message);
   };
@@ -23,7 +44,10 @@ class SignUpPage extends Component {
         this.props.history.push("/auth/signin");
       })
       .catch(error => {
-        this.props.notifyError();
+        if (this._isMounted) {
+          this.setState({ isFormEnabled: true });
+        }
+        this.props.notifyError(error, this.context);
       });
   };
 
@@ -32,6 +56,7 @@ class SignUpPage extends Component {
       <SignUpForm
         signUp={this.signUp}
         showValidationError={this.showValidationError}
+        isFormEnabled={this.state.isFormEnabled}
       />
     );
   }
@@ -39,16 +64,41 @@ class SignUpPage extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    notifyError: () =>
-      dispatch({
-        type: actionTypes.NOTIFICATION,
-        payload: {
-          type: "error",
-          title: "Đăng ký KHÔNG thành công",
-          description: "Hãy nhấn tải lại trang hoặc quay lại sau",
-          url: "/auth/signup"
-        }
-      }),
+    notifyError: (error, userContext) => {
+      if (
+        error &&
+        error.networkError &&
+        error.networkError.result &&
+        error.networkError.result.errors
+      ) {
+        const errors = error.networkError.result.errors;
+
+        errors.forEach(item => {
+          dispatch({
+            type: actionTypes.NOTIFICATION,
+            payload: {
+              type: "error",
+              title: "Đăng ký KHÔNG thành công",
+              description: getError(item.extensions.code, userContext.lang),
+              url: "/auth/signup"
+            }
+          });
+        });
+      } else {
+        dispatch({
+          type: actionTypes.NOTIFICATION,
+          payload: {
+            type: "error",
+            title: "Đăng ký KHÔNG thành công",
+            description: getError(
+              "ErrorOccurredTryRefeshInputAgain",
+              userContext.lang
+            ),
+            url: "/auth/signup"
+          }
+        });
+      }
+    },
     showValidationError: (title, message) =>
       dispatch({
         type: actionTypes.NOTIFICATION,
@@ -61,6 +111,8 @@ const mapDispatchToProps = dispatch => {
       })
   };
 };
+
+SignUpPage.contextType = UserContext;
 
 export default connect(
   null,
