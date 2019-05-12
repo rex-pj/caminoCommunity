@@ -63,11 +63,17 @@ const FormRow = styled.div`
 
 const SubmitButton = styled(Button)`
   font-size: ${p => p.theme.fontSize.small};
-
+  cursor: pointer;
   border: 1px solid ${p => p.theme.color.secondary};
 
   :hover {
     color: ${p => p.theme.color.light};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.color.secondary};
+    color: ${p => p.theme.color.normal};
+    cursor: auto;
   }
 `;
 
@@ -243,6 +249,15 @@ export default class SignUpForm extends Component {
 
   render() {
     const { errors } = this.state;
+
+    let isFormValid = false;
+    for (let formIdentifier in this.formData) {
+      isFormValid = this.formData[formIdentifier].isValid;
+      if (!isFormValid) {
+        break;
+      }
+    }
+
     const isBirthDateInvalid =
       errors && errors["birthDate"] && !errors["birthDate"].isValid;
 
@@ -335,7 +350,12 @@ export default class SignUpForm extends Component {
                 </Selection>
               </FormRow>
               <FormFooter>
-                <SubmitButton type="submit">Ghi danh</SubmitButton>
+                <SubmitButton
+                  type="submit"
+                  disabled={!this.props.isFormEnabled && !isFormValid}
+                >
+                  Ghi danh
+                </SubmitButton>
               </FormFooter>
             </PanelBody>
           </div>

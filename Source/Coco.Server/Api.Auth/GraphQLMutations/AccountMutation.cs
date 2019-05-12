@@ -2,7 +2,9 @@
 using Api.Auth.Models;
 using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Models;
+using Coco.Common.Const;
 using Coco.Entities.Enums;
+using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -16,28 +18,48 @@ namespace Api.Auth.GraphQLMutations
         {
             FieldAsync(typeof(RegisterResultType), "adduser",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<RegisterInputType>> { Name = "user" }),
-                resolve: async context => 
+                resolve: async context =>
                 {
-                    var model = context.GetArgument<RegisterModel>("user");
-
-                    var parameters = new ApplicationUser()
+                    try
                     {
-                        BirthDate = model.BirthDate,
-                        CreatedDate = DateTime.Now,
-                        DisplayName = $"{model.Lastname} {model.Firstname}",
-                        Email = model.Email,
-                        Firstname = model.Firstname,
-                        Lastname = model.Lastname,
-                        GenderId = (byte)model.GenderId,
-                        StatusId = (byte)UserStatusEnum.IsPending,
-                        UpdatedDate = DateTime.Now,
-                        UserName = model.Email,
-                        PasswordSalt = SaltGenerator.GetSalt()
-                    };
+                        var model = context.GetArgument<RegisterModel>("user");
 
-                    var result = await userManager.CreateAsync(parameters, model.Password);
+                        var parameters = new ApplicationUser()
+                        {
+                            BirthDate = model.BirthDate,
+                            CreatedDate = DateTime.Now,
+                            DisplayName = $"{model.Lastname} {model.Firstname}",
+                            Email = model.Email,
+                            Firstname = model.Firstname,
+                            Lastname = model.Lastname,
+                            GenderId = (byte)model.GenderId,
+                            StatusId = (byte)UserStatusEnum.IsPending,
+                            UpdatedDate = DateTime.Now,
+                            UserName = model.Email,
+                            PasswordSalt = SaltGenerator.GetSalt()
+                        };
 
-                    return result;
+                        var result = await userManager.CreateAsync(parameters, model.Password);
+
+                        if (result.Errors != null && result.Errors.Any())
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                if(!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                                {
+                                    context.Errors.Add(new ExecutionError(error.Description) {
+                                        Code = error.Code
+                                    });
+                                }
+                            }
+                        }
+
+                        return result;
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                    }
                 });
         }
     }
