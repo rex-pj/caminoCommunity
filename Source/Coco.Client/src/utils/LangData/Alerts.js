@@ -1,4 +1,4 @@
-const Errors = {
+const Alerts = {
   DuplicateUserName: {
     en: "Your user name is already taken.",
     vn: "Tên đăng nhập của bạn đã được sử dụng"
@@ -18,7 +18,19 @@ const Errors = {
   PasswordRequiresUpper: {
     en: "Passwords must have at least one uppercase ('A'-'Z').",
     vn: "Mật khẩu bạn phải có ít nhất một ký tự viết hoa"
+  },
+  ErrorOccurredTryAgain: {
+    en: "An Error Occurred, Please Try Again Later",
+    vn: "Có lỗi xảy ra, vui lòng thử lại sau"
+  },
+  ErrorOccurredTryRefeshInputAgain: {
+    en: "An Error Occurred, Please Refersh and Try Again",
+    vn: "Có lỗi xảy ra, vui lòng nhấn tải lại trang và thử lại"
+  },
+  WrongInput: {
+    en: "Something is wrong. Please check your input and try again",
+    vn: "Có gì đó không đúng, vui lòng kiểm tra và nhập lại thông tin"
   }
 };
 
-export { Errors };
+export default Alerts;

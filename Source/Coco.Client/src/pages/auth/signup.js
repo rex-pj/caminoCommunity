@@ -5,7 +5,7 @@ import * as actionTypes from "../../store/actions";
 import client from "../../utils/GraphQL/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQL/GraphQLQueries";
-import { Errors } from "../../utils/LangData/Notifies";
+import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
 
 class SignUpPage extends Component {
@@ -79,12 +79,7 @@ const mapDispatchToProps = dispatch => {
             payload: {
               type: "error",
               title: "Đăng ký KHÔNG thành công",
-              description:
-                Errors &&
-                Errors[item.extensions.code] &&
-                Errors[item.extensions.code][userContext.lang]
-                  ? Errors[item.extensions.code][userContext.lang]
-                  : "Có lỗi xảy ra trong quá trình đăng ký, thấn tải lại trang và thử lại",
+              description: getError(item.extensions.code, userContext.lang),
               url: "/auth/signup"
             }
           });
@@ -95,8 +90,10 @@ const mapDispatchToProps = dispatch => {
           payload: {
             type: "error",
             title: "Đăng ký KHÔNG thành công",
-            description:
-              "Có lỗi xảy ra trong quá trình đăng ký, hãy nhấn tải lại trang hoặc quay lại sau",
+            description: getError(
+              "ErrorOccurredTryRefeshInputAgain",
+              userContext.lang
+            ),
             url: "/auth/signup"
           }
         });

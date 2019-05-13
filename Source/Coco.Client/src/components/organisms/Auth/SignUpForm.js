@@ -8,7 +8,7 @@ import { Button } from "../../../components/atoms/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import DaySelector from "../../../components/organisms/DaySelector";
-import { checkValidity } from "../../../utils/Helper";
+import { checkValidity } from "../../../utils/Validity";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${p => p.theme.size.normal};
@@ -105,40 +105,40 @@ export default class SignUpForm extends Component {
 
     this.formData = {
       lastname: {
-        value: "TestLastname",
+        value: "",
         validation: {
           isRequired: true
         },
-        isValid: true
+        isValid: false
       },
       firstname: {
-        value: "TestFirstname",
+        value: "",
         validation: {
           isRequired: true
         },
-        isValid: true
+        isValid: false
       },
       email: {
-        value: "trungle.it@gmail.com",
+        value: "",
         validation: {
           isEmail: true
         },
-        isValid: true
+        isValid: false
       },
       password: {
-        value: "TestPassword@123",
+        value: "",
         validation: {
           isRequired: true
         },
-        isValid: true
+        isValid: false
       },
       confirmPassword: {
-        value: "TestPassword@123",
+        value: "",
         validation: {
           isRequired: true,
           sameRefProperty: "password"
         },
-        isValid: true
+        isValid: false
       },
       genderId: {
         value: 1,
@@ -152,7 +152,7 @@ export default class SignUpForm extends Component {
         validation: {
           isDate: true
         },
-        isValid: true
+        isValid: false
       }
     };
   }
@@ -181,11 +181,7 @@ export default class SignUpForm extends Component {
     const { name, value } = evt.target;
 
     // Validate when input
-    this.formData[name].isValid = checkValidity(
-      this.formData,
-      value,
-      this.formData[name].validation
-    );
+    this.formData[name].isValid = checkValidity(this.formData, value, name);
 
     this.formData[name].value = value;
   };
@@ -214,7 +210,7 @@ export default class SignUpForm extends Component {
     this.formData["birthDate"].isValid = checkValidity(
       this.formData,
       value,
-      this.formData["birthDate"].validation
+      "birthDate"
     );
 
     if (this._isMounted) {
@@ -247,9 +243,7 @@ export default class SignUpForm extends Component {
     }
   };
 
-  render() {
-    const { errors } = this.state;
-
+  checkIsFormValid = () => {
     let isFormValid = false;
     for (let formIdentifier in this.formData) {
       isFormValid = this.formData[formIdentifier].isValid;
@@ -257,6 +251,14 @@ export default class SignUpForm extends Component {
         break;
       }
     }
+
+    return isFormValid;
+  };
+
+  render() {
+    const { errors } = this.state;
+
+    const isFormValid = this.checkIsFormValid();
 
     const isBirthDateInvalid =
       errors && errors["birthDate"] && !errors["birthDate"].isValid;
@@ -281,7 +283,7 @@ export default class SignUpForm extends Component {
                   placeholder="Nhập họ của bạn vào đây"
                   name="lastname"
                   onChange={e => this.handleInputChange(e)}
-                  onBlur={this.handleInputBlur}
+                  onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>
@@ -291,7 +293,7 @@ export default class SignUpForm extends Component {
                   placeholder="Nhập tên của bạn vào đây"
                   name="firstname"
                   onChange={e => this.handleInputChange(e)}
-                  onBlur={this.handleInputBlur}
+                  onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>
@@ -302,7 +304,7 @@ export default class SignUpForm extends Component {
                   type="email"
                   name="email"
                   onChange={e => this.handleInputChange(e)}
-                  onBlur={this.handleInputBlur}
+                  onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>
@@ -313,7 +315,7 @@ export default class SignUpForm extends Component {
                   type="password"
                   name="password"
                   onChange={e => this.handleInputChange(e)}
-                  onBlur={this.handleInputBlur}
+                  onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>
@@ -324,7 +326,7 @@ export default class SignUpForm extends Component {
                   type="password"
                   name="confirmPassword"
                   onChange={e => this.handleInputChange(e)}
-                  onBlur={this.handleInputBlur}
+                  onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>

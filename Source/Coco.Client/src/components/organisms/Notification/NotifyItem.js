@@ -61,7 +61,7 @@ export default class extends Component {
     this.timeOut = setTimeout(() => {
       closeLatestPopup && closeLatestPopup(notify.id);
       clearTimeout();
-    }, 3000);
+    }, 9000);
   }
 
   render() {

@@ -22,7 +22,7 @@ export default class extends Component {
     let { yearFrom, yearTo } = props;
     yearFrom = yearFrom ? yearFrom : 1900;
     yearTo = yearTo ? yearTo : new Date().getFullYear();
-    this.years = this.createArray(yearFrom, yearTo);
+    this.years = this.createArray(yearFrom, yearTo, true);
 
     const birthdate = props.value;
     if (birthdate) {
@@ -55,11 +55,19 @@ export default class extends Component {
     });
   };
 
-  createArray(from, to) {
+  createArray(from, to, isInvert) {
     const arr = [];
-    for (let index = to; index >= from; index--) {
-      arr.push(index);
+
+    if (!!isInvert) {
+      for (let index = to; index >= from; index--) {
+        arr.push(index);
+      }
+    } else {
+      for (let index = from; index <= to; index++) {
+        arr.push(index);
+      }
     }
+
     return arr;
   }
 

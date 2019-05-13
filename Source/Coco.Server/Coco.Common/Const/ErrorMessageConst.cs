@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Coco.Common.Const
+﻿namespace Coco.Common.Const
 {
     public class ErrorMessageConst
     {

@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Encode\" />
+    <Compile Remove="Encode\**" />
+    <EmbeddedResource Remove="Encode\**" />
+    <None Remove="Encode\**" />
   </ItemGroup>
 
 </Project>
