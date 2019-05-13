@@ -15,6 +15,9 @@ using Api.Auth.GraphQLTypes;
 using Api.Auth.GraphQLMutations;
 using GraphQL.Types;
 using Api.Auth.GraphQLSchema;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Api.Auth
 {
@@ -22,11 +25,11 @@ namespace Api.Auth
     {
         private IBootstrapper _bootstrapper;
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
-        public IConfiguration Configuration { get; }
+        private IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
 
@@ -46,30 +49,8 @@ namespace Api.Auth
                 });
             });
 
-            InvokeInitialStartup(services, Configuration);
+            InvokeInitialStartup(services, _configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            // Config UseCors
-            app.UseCors(MyAllowSpecificOrigins);
-
-            app.UseAuthentication();
-            app.UseHttpsRedirection();
-            app.UseGraphiQl("/api/graphql");
-            app.UseMvc();
         }
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
@@ -98,6 +79,27 @@ namespace Api.Auth
                 options.User.RequireUniqueEmail = true;
             });
 
+            var jwtSecretKey = _configuration.GetValue<string>("JwtSecretKey");
+            var secretKey = Encoding.ASCII.GetBytes(jwtSecretKey);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x => {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
@@ -112,6 +114,28 @@ namespace Api.Auth
 
             services.AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            // Config UseCors
+            app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseAuthentication();
+            app.UseHttpsRedirection();
+            app.UseGraphiQl("/api/graphql");
+            app.UseMvc();
         }
     }
 }
