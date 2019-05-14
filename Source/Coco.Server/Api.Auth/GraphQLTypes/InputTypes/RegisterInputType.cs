@@ -1,7 +1,7 @@
 ﻿using Api.Auth.Models;
 using GraphQL.Types;
 
-namespace Api.Auth.GraphQLTypes
+namespace Api.Auth.GraphQLTypes.InputTypes
 {
     public class RegisterInputType : InputObjectGraphType<RegisterModel>
     {

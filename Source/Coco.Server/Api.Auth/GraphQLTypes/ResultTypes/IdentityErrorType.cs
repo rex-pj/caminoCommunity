@@ -1,7 +1,7 @@
 ﻿using GraphQL.Types;
 using Microsoft.AspNetCore.Identity;
 
-namespace Api.Auth.GraphQLTypes
+namespace Api.Auth.GraphQLTypes.ResultTypes
 {
     public class IdentityErrorType : ObjectGraphType<IdentityError>
     {

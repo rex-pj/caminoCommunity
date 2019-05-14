@@ -1,4 +1,5 @@
-﻿using Api.Auth.GraphQLTypes;
+﻿using Api.Auth.GraphQLTypes.InputTypes;
+using Api.Auth.GraphQLTypes.ResultTypes;
 using Api.Auth.Models;
 using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Models;
