@@ -11,13 +11,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GraphiQl;
 using GraphQL;
-using Api.Auth.GraphQLTypes;
 using Api.Auth.GraphQLMutations;
 using GraphQL.Types;
 using Api.Auth.GraphQLSchema;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Api.Auth.GraphQLTypes.InputTypes;
+using Api.Auth.GraphQLTypes.ResultTypes;
+using Api.Auth.GraphQLQueries;
 
 namespace Api.Auth
 {
@@ -105,10 +107,14 @@ namespace Api.Auth
             #region GraphQL DI
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
             services.AddSingleton<RegisterInputType>();
+            services.AddSingleton<SigninInputType>();
+
+            services.AddSingleton<AccountMutation>();
+            services.AddSingleton<AccountQuery>();
 
             services.AddSingleton<ListGraphType>();
-            services.AddSingleton<AccountMutation>();
             services.AddSingleton<RegisterResultType>();
+            services.AddSingleton<SigninResultType>();
 
             var sp = services.BuildServiceProvider();
 

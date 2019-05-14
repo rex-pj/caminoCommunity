@@ -50,9 +50,70 @@ namespace Coco.Api.Framework.Security
             }
 
             var attempt = await CheckPasswordSignInAsync(user, password, lockoutOnFailure);
+
             return attempt.Succeeded
                 ? await SignInOrTwoFactorAsync(user, isPersistent)
                 : attempt;
+        }
+
+        /// <summary>
+        /// Signs in the specified <paramref name="user"/> if <paramref name="bypassTwoFactor"/> is set to false.
+        /// Otherwise stores the <paramref name="user"/> for use after a two factor check.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
+        /// <param name="loginProvider">The login provider to use. Default is null</param>
+        /// <param name="bypassTwoFactor">Flag indicating whether to bypass two factor authentication. Default is false</param>
+        /// <returns>Returns a <see cref="SignInResult"/></returns>
+        protected override async Task<SignInResult> SignInOrTwoFactorAsync(ApplicationUser user, bool isPersistent, string loginProvider = null, bool bypassTwoFactor = false)
+        {
+            if (!bypassTwoFactor && await IsTfaEnabled(user))
+            {
+                if (!await IsTwoFactorClientRememberedAsync(user))
+                {
+                    // Store the userId for use after two factor check
+                    var userId = await UserManager.GetUserIdAsync(user);
+                    await Context.SignInAsync(IdentityConstants.TwoFactorUserIdScheme, StoreTwoFactorInfo(userId, loginProvider));
+                    return SignInResult.TwoFactorRequired;
+                }
+            }
+            // Cleanup external cookie
+            if (loginProvider != null)
+            {
+                await Context.SignOutAsync(IdentityConstants.ExternalScheme);
+            }
+            await SignInAsync(user, isPersistent, loginProvider);
+            return SignInResult.Success;
+        }
+
+        /// <summary>
+        /// Signs in the specified <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user">The user to sign-in.</param>
+        /// <param name="authenticationProperties">Properties applied to the login and authentication cookie.</param>
+        /// <param name="authenticationMethod">Name of the method used to authenticate the user.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public override async Task SignInAsync(ApplicationUser user, AuthenticationProperties authenticationProperties, string authenticationMethod = null)
+        {
+            var userPrincipal = await CreateUserPrincipalAsync(user);
+            // Review: should we guard against CreateUserPrincipal returning null?
+            if (authenticationMethod != null)
+            {
+                userPrincipal.Identities.First().AddClaim(new Claim(ClaimTypes.AuthenticationMethod, authenticationMethod));
+            }
+            await Context.SignInAsync(IdentityConstants.ApplicationScheme,
+                userPrincipal,
+                authenticationProperties ?? new AuthenticationProperties());
+        }
+
+        /// <summary>
+        /// Creates a <see cref="ClaimsPrincipal"/> for the specified <paramref name="user"/>, as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user to create a <see cref="ClaimsPrincipal"/> for.</param>
+        /// <returns>The task object representing the asynchronous operation, containing the ClaimsPrincipal for the specified user.</returns>
+        public override async Task<ClaimsPrincipal> CreateUserPrincipalAsync(ApplicationUser user)
+        {
+            return await ClaimsFactory.CreateAsync(user);
         }
 
         /// <summary>
@@ -79,15 +140,6 @@ namespace Coco.Api.Framework.Security
         #endregion
 
         #region ClaimsPrincipal
-        /// <summary>
-        /// Creates a <see cref="ClaimsPrincipal"/> for the specified <paramref name="user"/>, as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to create a <see cref="ClaimsPrincipal"/> for.</param>
-        /// <returns>The task object representing the asynchronous operation, containing the ClaimsPrincipal for the specified user.</returns>
-        public new async Task<CustomClaimsPrincipal> CreateUserPrincipalAsync(ApplicationUser user)
-        {
-            return await ClaimsFactory.CreateAsync(user) as CustomClaimsPrincipal;
-        }
 
         /// <summary>
         /// Returns true if the principal has an identity with the application cookie identity

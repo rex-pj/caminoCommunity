@@ -11,6 +11,7 @@ namespace Coco.Api.Framework
         {
             builder.Services.AddTransient<IPasswordValidator<ApplicationUser>, CustomPasswordValidator>();
             builder.Services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
+            builder.Services.AddTransient<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
 
             builder.Services.AddTransient<UserManager<ApplicationUser>, CustomUserManager>();
             builder.Services.AddTransient<SignInManager<ApplicationUser>, CustomSignInManager>();

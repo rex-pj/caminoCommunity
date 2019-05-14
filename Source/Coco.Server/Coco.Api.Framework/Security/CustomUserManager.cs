@@ -175,7 +175,14 @@ namespace Coco.Api.Framework.Security
             {
                 return PasswordVerificationResult.Failed;
             }
-            return PasswordHasher.VerifyHashedPassword(user, hash, password);
+
+            string passwordSalted = null;
+            if (!string.IsNullOrEmpty(password))
+            {
+                passwordSalted = AddSaltToPassword(user, password);
+            }
+
+            return PasswordHasher.VerifyHashedPassword(user, hash, passwordSalted);
         }
 
         /// <summary>
