@@ -1,5 +1,5 @@
 ﻿using Coco.Business.Contracts;
-using Coco.Api.Framework.Security;
+using Coco.Api.Framework.AccountIdentity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -36,35 +36,35 @@ namespace Coco.Api.Framework.Attributes
 
             public void OnAuthorization(AuthorizationFilterContext filterContext)
             {
-                if (filterContext == null)
-                {
-                    throw new ArgumentNullException(nameof(filterContext));
-                }
+                //if (filterContext == null)
+                //{
+                //    throw new ArgumentNullException(nameof(filterContext));
+                //}
 
-                //check whether this filter has been overridden for the action
-                AuthorizeAdminAttribute actionFilter = filterContext.ActionDescriptor.FilterDescriptors
-                    .Where(filterDescriptor => filterDescriptor.Scope == FilterScope.Action)
-                    .Select(filterDescriptor => filterDescriptor.Filter).OfType<AuthorizeAdminAttribute>()
-                    .FirstOrDefault();
+                ////check whether this filter has been overridden for the action
+                //AuthorizeAdminAttribute actionFilter = filterContext.ActionDescriptor.FilterDescriptors
+                //    .Where(filterDescriptor => filterDescriptor.Scope == FilterScope.Action)
+                //    .Select(filterDescriptor => filterDescriptor.Filter).OfType<AuthorizeAdminAttribute>()
+                //    .FirstOrDefault();
 
-                if (actionFilter != null && actionFilter.IgnoreFilter && _ignoreFilter)
-                {
-                    return;
-                }
+                //if (actionFilter != null && actionFilter.IgnoreFilter && _ignoreFilter)
+                //{
+                //    return;
+                //}
 
-                //there is AdminAuthorizeFilter, so check access
-                if (filterContext.Filters.Any(filter => filter is AuthorizeAdminFilter))
-                {
-                    var user = new CustomClaimsPrincipal(filterContext.HttpContext.User, _roleBusiness);
-                    if (user != null)
-                    {
-                        var isAdmin = user.IsInRole("admin");
-                        if (!isAdmin)
-                        {
-                            filterContext.Result = new ForbidResult();
-                        }
-                    }
-                }
+                ////there is AdminAuthorizeFilter, so check access
+                //if (filterContext.Filters.Any(filter => filter is AuthorizeAdminFilter))
+                //{
+                //    var user = new ApplicationClaimsPrincipal(filterContext.HttpContext.User, _roleBusiness);
+                //    if (user != null)
+                //    {
+                //        var isAdmin = user.IsInRole("admin");
+                //        if (!isAdmin)
+                //        {
+                //            filterContext.Result = new ForbidResult();
+                //        }
+                //    }
+                //}
             }
         }
     }

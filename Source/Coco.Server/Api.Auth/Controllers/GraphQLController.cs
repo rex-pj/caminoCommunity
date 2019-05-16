@@ -38,7 +38,8 @@ namespace Api.Auth.Controllers
             {
                 Schema = _schema,
                 Query = query.Query,
-                Inputs = inputs
+                Inputs = inputs,
+                UserContext = this.HttpContext
             };
 
             var result = await _documentExecuter.ExecuteAsync(executionOptions);

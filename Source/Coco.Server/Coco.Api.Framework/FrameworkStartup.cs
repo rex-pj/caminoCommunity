@@ -1,30 +1,28 @@
-﻿using Coco.Api.Framework.Security;
+﻿using Coco.Api.Framework.AccountIdentity;
 using Coco.Api.Framework.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Api.Framework.AccountIdentity;
 
 namespace Coco.Api.Framework
 {
     public static class FrameworkStartup
     {
-        public static IdentityBuilder AddCustomStores(this IdentityBuilder builder)
+        public static void AddCustomStores(IServiceCollection services)
         {
-            builder.Services.AddTransient<IPasswordValidator<ApplicationUser>, CustomPasswordValidator>();
-            builder.Services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
-            builder.Services.AddTransient<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
+            services.AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>();
+            services.AddTransient<IUserValidator<ApplicationUser>, UserValidator>();
 
-            builder.Services.AddTransient<UserManager<ApplicationUser>, CustomUserManager>();
-            builder.Services.AddTransient<SignInManager<ApplicationUser>, CustomSignInManager>();
+            services.AddTransient<IAccountManager<ApplicationUser>, AccountManager>();
+            services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
 
-            builder.Services.AddTransient<IPasswordHasher<ApplicationUser>, TextHasher>();
+            services.AddTransient<IPasswordHasher<ApplicationUser>, TextHasher>();
 
-            builder.Services.AddTransient<IUserStore<ApplicationUser>, CustomUserStore>();
-            builder.Services.AddTransient<IUserPasswordStore<ApplicationUser>, CustomUserStore>();
-            builder.Services.AddTransient<IUserEmailStore<ApplicationUser>, CustomUserStore>();
+            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
+            services.AddTransient<IUserPasswordStore<ApplicationUser>, UserStore>();
+            //services.AddTransient<IUserEmailStore<ApplicationUser>, ApplicationUserStore>();
 
-            builder.Services.AddTransient<IRoleStore<ApplicationRole>, CustomRoleStore>();
-
-            return builder;
+            //services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
         }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using System;
-using Coco.Api.Framework;
-using Coco.Api.Framework.Models;
 using Coco.Business;
 using Coco.Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,29 +54,29 @@ namespace Api.Auth
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddCustomStores()
-                .AddDefaultTokenProviders();
+            //services.AddIdentity<ApplicationUser, ApplicationRole>()
+            //    .AddCustomStores()
+            //    .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    // Password settings.
+            //    options.Password.RequireDigit = true;
+            //    options.Password.RequireLowercase = true;
+            //    options.Password.RequireNonAlphanumeric = true;
+            //    options.Password.RequireUppercase = true;
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequiredUniqueChars = 1;
 
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+            //    // Lockout settings.
+            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            //    options.Lockout.MaxFailedAccessAttempts = 5;
+            //    options.Lockout.AllowedForNewUsers = true;
 
-                // User settings.
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            });
+            //    // User settings.
+            //    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            //    options.User.RequireUniqueEmail = true;
+            //});
 
             var jwtSecretKey = _configuration.GetValue<string>("JwtSecretKey");
             var secretKey = Encoding.ASCII.GetBytes(jwtSecretKey);
