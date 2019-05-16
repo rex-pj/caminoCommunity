@@ -1,5 +1,5 @@
-﻿using GraphQL.Types;
-using Microsoft.AspNetCore.Identity;
+﻿using Coco.Api.Framework.AccountIdentity.Entities;
+using GraphQL.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
 {

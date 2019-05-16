@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Coco.Api.Framework.AccountIdentity.Entities;
 using System;
 
 namespace Coco.Api.Framework.Models

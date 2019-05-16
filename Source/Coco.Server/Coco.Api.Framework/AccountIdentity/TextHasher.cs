@@ -1,51 +1,50 @@
-﻿using Coco.Api.Framework.Commons.Options;
-using Coco.Api.Framework.Commons.ErrorMessage;
-using Coco.Api.Framework.Models;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+﻿using Coco.Api.Framework.Models;
 using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Api.Framework.AccountIdentity.Commons.Enums;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace Coco.Api.Framework.Security
+namespace Coco.Api.Framework.AccountIdentity
 {
-    public class TextHasher : PasswordHasher<ApplicationUser>
+    public class TextHasher : IPasswordHasher<ApplicationUser>
     {
         #region Fields
-        private readonly PasswordHasherCompatibilityMode _compatibilityMode;
+        //private readonly PasswordHasherCompatibilityMode _compatibilityMode;
         private readonly int _iterCount;
         private readonly RandomNumberGenerator _randomNumber;
         #endregion
 
         #region Ctor
-        public TextHasher(IOptions<TextHasherOptions> optionsAccessor = null)
-            : base(optionsAccessor)
+        public TextHasher(
+            //IOptions<TextHasherOptions> optionsAccessor = null
+            )
         {
-            var options = optionsAccessor != null && optionsAccessor.Value != null 
-                ? optionsAccessor.Value as TextHasherOptions
-                : new TextHasherOptions();
+            //var options = optionsAccessor != null && optionsAccessor.Value != null 
+            //    ? optionsAccessor.Value as TextHasherOptions
+            //    : new TextHasherOptions();
 
-            _compatibilityMode = options.CompatibilityMode;
-            _randomNumber = options.Rng;
+            //_compatibilityMode = options.CompatibilityMode;
+            //_randomNumber = options.Rng;
 
-            switch (_compatibilityMode)
-            {
-                case PasswordHasherCompatibilityMode.IdentityV2:
-                    // nothing else to do
-                    break;
+            //switch (_compatibilityMode)
+            //{
+            //    case PasswordHasherCompatibilityMode.IdentityV2:
+            //        // nothing else to do
+            //        break;
 
-                case PasswordHasherCompatibilityMode.IdentityV3:
-                    _iterCount = options.IterationCount;
-                    if (_iterCount < 1)
-                    {
-                        throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherIterationCount);
-                    }
-                    break;
+            //    case PasswordHasherCompatibilityMode.IdentityV3:
+            //        _iterCount = options.IterationCount;
+            //        if (_iterCount < 1)
+            //        {
+            //            throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherIterationCount);
+            //        }
+            //        break;
 
-                default:
-                    throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherCompatibilityMode);
-            }
+            //    default:
+            //        throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherCompatibilityMode);
+            //}
         }
         #endregion
 
@@ -56,21 +55,21 @@ namespace Coco.Api.Framework.Security
         /// <param name="user">The user whose password is to be hashed.</param>
         /// <param name="password">The password to hash.</param>
         /// <returns>A hashed representation of the supplied <paramref name="password"/> for the specified <paramref name="user"/>.</returns>
-        public override string HashPassword(ApplicationUser user, string password)
+        public string HashPassword(ApplicationUser user, string password)
         {
             if (password == null)
             {
                 throw new ArgumentNullException(nameof(password));
             }          
 
-            if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
-            {
-                return Convert.ToBase64String(HashPasswordV2(password, _randomNumber));
-            }
-            else
-            {
+            //if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
+            //{
+            //    return Convert.ToBase64String(HashPasswordV2(password, _randomNumber));
+            //}
+            //else
+            //{
                 return Convert.ToBase64String(HashPasswordV3(password, _randomNumber));
-            }
+            //}
         }
 
         /// <summary>
@@ -81,7 +80,7 @@ namespace Coco.Api.Framework.Security
         /// <param name="providedPassword">The password supplied for comparison.</param>
         /// <returns>A <see cref="PasswordVerificationResult"/> indicating the result of a password hash comparison.</returns>
         /// <remarks>Implementations of this method should be time consistent.</remarks>
-        public override PasswordVerificationResult VerifyHashedPassword(ApplicationUser user, string hashedPassword, string providedPassword)
+        public PasswordVerificationResult VerifyHashedPassword(ApplicationUser user, string hashedPassword, string providedPassword)
         {
             if (hashedPassword == null)
             {
@@ -107,9 +106,11 @@ namespace Coco.Api.Framework.Security
                     if (VerifyHashedPasswordV2(decodedHashedPassword, providedPassword))
                     {
                         // This is an old password hash format - the caller needs to rehash if we're not running in an older compat mode.
-                        return (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV3)
-                            ? PasswordVerificationResult.SuccessRehashNeeded
-                            : PasswordVerificationResult.Success;
+                        //return (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV3)
+                        //    ? PasswordVerificationResult.SuccessRehashNeeded
+                        //    : PasswordVerificationResult.Success;
+
+                        return PasswordVerificationResult.SuccessRehashNeeded;
                     }
                     else
                     {

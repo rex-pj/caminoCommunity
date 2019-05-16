@@ -2,7 +2,7 @@
 
 namespace Api.Auth.Controllers
 {
-    [Route("api/auth")]
+    [Route("api")]
     [ApiController]
     public class HomeController : ControllerBase
     {

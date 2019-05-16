@@ -1,5 +1,5 @@
-﻿using GraphQL.Types;
-using Microsoft.AspNetCore.Identity;
+﻿using Coco.Api.Framework.AccountIdentity.Entities;
+using GraphQL.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
 {
@@ -7,7 +7,7 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
     {
         public RegisterResultType()
         {
-            Field(x => x.Succeeded, type: typeof(BooleanGraphType));
+            Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
             Field(x => x.Errors, type: typeof(ListGraphType<IdentityErrorType>));
         }
     }
