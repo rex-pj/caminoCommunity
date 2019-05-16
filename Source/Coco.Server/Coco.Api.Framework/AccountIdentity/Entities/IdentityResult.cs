@@ -21,5 +21,15 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
             }
             return result;
         }
+
+        public static IdentityResult Failed(IdentityError error)
+        {
+            var result = new IdentityResult(false);
+            if (error != null)
+            {
+                result.Errors.Add(error);
+            }
+            return result;
+        }
     }
 }
