@@ -1,47 +1,50 @@
 ﻿using Coco.Api.Framework.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Business.Contracts;
+using Coco.Api.Framework.AccountIdentity.Entities;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using Coco.Entities.Model.Account;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
-    public class UserStore : IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>
-    //:
-    //IUserStore<ApplicationUser>,
-    //IUserPasswordStore<ApplicationUser>,
-    //IUserEmailStore<ApplicationUser>
+    public class UserStore : IUserStore<ApplicationUser>
     {
-        //private readonly IAccountBusiness _accountBusiness;
+        private readonly IAccountBusiness _accountBusiness;
 
-        //public ApplicationUserStore(IAccountBusiness accountBusiness)
-        //{
-        //    _accountBusiness = accountBusiness;
-        //}
+        public UserStore(IAccountBusiness accountBusiness)
+        {
+            _accountBusiness = accountBusiness;
+        }
 
-        //#region IUserStore<LoggedUser> Members
-        //public Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-        //        if (cancellationToken != null)
-        //        {
-        //            cancellationToken.ThrowIfCancellationRequested();
-        //        }
+        #region IUserStore<LoggedUser> Members
+        public Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (cancellationToken != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
 
-        //        if (user == null)
-        //        {
-        //            throw new ArgumentNullException(nameof(user));
-        //        }
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
 
-        //        var userModel = GetUserEntity(user);
+                var userModel = GetUserEntity(user);
 
-        //        _accountBusiness.Add(userModel);
+                _accountBusiness.Add(userModel);
 
-        //        return Task.FromResult(IdentityResult.Success);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
-        //    }
-        //}
+                return Task.FromResult(new IdentityResult(true));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
+            }
+        }
+        #endregion
 
         //public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
         //{
@@ -132,37 +135,37 @@ namespace Coco.Api.Framework.AccountIdentity
         //    return Task.FromResult(user.Id.ToString());
         //}
 
-        //public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
+        public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
 
-        //    return Task.FromResult(user.UserName);
-        //}
+            return Task.FromResult(user.UserName);
+        }
 
-        //public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
+        public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
 
-        //    user.NormalizedUserName = normalizedName;
+            user.NormalizedUserName = normalizedName;
 
-        //    return Task.CompletedTask;
-        //}
+            return Task.CompletedTask;
+        }
 
         //public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
         //{
@@ -276,20 +279,7 @@ namespace Coco.Api.Framework.AccountIdentity
         //    return Task.CompletedTask;
         //}
 
-        //public Task<string> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(user.Email);
-        //}
+        
 
         //public Task<bool> GetEmailConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
         //{
@@ -350,120 +340,103 @@ namespace Coco.Api.Framework.AccountIdentity
         //    return Task.FromResult(user.NormalizedEmail);
         //}
 
-        //public Task SetNormalizedEmailAsync(ApplicationUser user, string normalizedEmail, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
 
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
+        #region Private Methods
+        private UserModel GetUserEntity(ApplicationUser LoggedUser)
+        {
+            if (LoggedUser == null)
+            {
+                return null;
+            }
 
-        //    user.NormalizedEmail = normalizedEmail;
+            var result = PopulateUserEntity(LoggedUser);
 
-        //    return Task.CompletedTask;
-        //}
-        //#endregion
+            return result;
+        }
 
-        //#region Private Methods
-        //private UserModel GetUserEntity(ApplicationUser LoggedUser)
-        //{
-        //    if (LoggedUser == null)
-        //    {
-        //        return null;
-        //    }
+        private ApplicationUser GetApplicationUser(UserModel entity)
+        {
+            if (entity == null)
+            {
+                return null;
+            }
 
-        //    var result = PopulateUserEntity(LoggedUser);
+            var result = PopulateLoggedUser(entity);
 
-        //    return result;
-        //}
+            return result;
+        }
 
-        //private ApplicationUser GetApplicationUser(UserModel entity)
-        //{
-        //    if (entity == null)
-        //    {
-        //        return null;
-        //    }
+        private UserModel PopulateUserEntity(ApplicationUser LoggedUser)
+        {
+            UserModel userModel = new UserModel()
+            {
+                Email = LoggedUser.Email,
+                Id = LoggedUser.Id,
+                Address = LoggedUser.Address,
+                BirthDate = LoggedUser.BirthDate,
+                CountryId = LoggedUser.CountryId,
+                CreatedById = LoggedUser.CreatedById,
+                Description = LoggedUser.Description,
+                DisplayName = LoggedUser.DisplayName,
+                Firstname = LoggedUser.Firstname,
+                Lastname = LoggedUser.Lastname,
+                GenderId = LoggedUser.GenderId,
+                IsActived = LoggedUser.IsActived,
+                Password = LoggedUser.PasswordHash,
+                PasswordSalt = LoggedUser.PasswordSalt,
+                PhoneNumber = LoggedUser.PhoneNumber,
+                StatusId = LoggedUser.StatusId,
+                UpdatedById = LoggedUser.UpdatedById
+            };
 
-        //    var result = PopulateLoggedUser(entity);
+            return userModel;
+        }
 
-        //    return result;
-        //}
+        private ApplicationUser GetLoggedUser(UserModel entity)
+        {
+            if (entity == null)
+            {
+                return null;
+            }
 
-        //private UserModel PopulateUserEntity(ApplicationUser LoggedUser)
-        //{
-        //    UserModel userModel = new UserModel()
-        //    {
-        //        Email = LoggedUser.Email,
-        //        Id = LoggedUser.Id,
-        //        Address = LoggedUser.Address,
-        //        BirthDate = LoggedUser.BirthDate,
-        //        CountryId = LoggedUser.CountryId,
-        //        CreatedById = LoggedUser.CreatedById,
-        //        Description = LoggedUser.Description,
-        //        DisplayName = LoggedUser.DisplayName,
-        //        Firstname = LoggedUser.Firstname,
-        //        Lastname = LoggedUser.Lastname,
-        //        GenderId = LoggedUser.GenderId,
-        //        IsActived = LoggedUser.IsActived,
-        //        Password = LoggedUser.PasswordHash,
-        //        PasswordSalt = LoggedUser.PasswordSalt,
-        //        PhoneNumber = LoggedUser.PhoneNumber,
-        //        StatusId = LoggedUser.StatusId,
-        //        UpdatedById = LoggedUser.UpdatedById
-        //    };
+            var result = PopulateLoggedUser(entity);
 
-        //    return userModel;
-        //}
+            return result;
+        }
 
-        //private ApplicationUser GetLoggedUser(UserModel entity)
-        //{
-        //    if (entity == null)
-        //    {
-        //        return null;
-        //    }
+        private ApplicationUser PopulateLoggedUser(UserModel userModel)
+        {
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                Email = userModel.Email,
+                Id = userModel.Id,
+                UserName = userModel.Email,
+                Lastname = userModel.Lastname,
+                Firstname = userModel.Firstname,
+                Password = userModel.Password,
+                PasswordHash = userModel.Password,
+                PasswordSalt = userModel.PasswordSalt,
+                PhoneNumber = userModel.PhoneNumber,
+                NormalizedUserName = userModel.Lastname + " " + userModel.Firstname,
+                Address = userModel.Address,
+                BirthDate = userModel.BirthDate,
+                CountryId = userModel.CountryId,
+                CreatedById = userModel.CreatedById,
+                Description = userModel.Description,
+                DisplayName = userModel.DisplayName,
+                GenderId = userModel.GenderId,
+                IsActived = userModel.IsActived,
+                StatusId = userModel.StatusId,
+                UpdatedById = userModel.UpdatedById,
+            };
 
-        //    var result = PopulateLoggedUser(entity);
+            return applicationUser;
+        }
+        #endregion
 
-        //    return result;
-        //}
+        public void Dispose()
+        {
 
-        //private ApplicationUser PopulateLoggedUser(UserModel userModel)
-        //{
-        //    ApplicationUser applicationUser = new ApplicationUser()
-        //    {
-        //        Email = userModel.Email,
-        //        Id = userModel.Id,
-        //        UserName = userModel.Email,
-        //        Lastname = userModel.Lastname,
-        //        Firstname = userModel.Firstname,
-        //        Password = userModel.Password,
-        //        PasswordHash = userModel.Password,
-        //        PasswordSalt = userModel.PasswordSalt,
-        //        PhoneNumber = userModel.PhoneNumber,
-        //        NormalizedUserName = userModel.Lastname + " " + userModel.Firstname,
-        //        Address = userModel.Address,
-        //        BirthDate = userModel.BirthDate,
-        //        CountryId = userModel.CountryId,
-        //        CreatedById = userModel.CreatedById,
-        //        Description = userModel.Description,
-        //        DisplayName = userModel.DisplayName,
-        //        GenderId = userModel.GenderId,
-        //        IsActived = userModel.IsActived,
-        //        StatusId = userModel.StatusId,
-        //        UpdatedById = userModel.UpdatedById,
-        //    };
-
-        //    return applicationUser;
-        //}
-        //#endregion
-
-        //public void Dispose()
-        //{
-
-        //}
+        }
     }
 }

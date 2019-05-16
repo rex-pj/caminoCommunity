@@ -2,7 +2,6 @@
 using Coco.Api.Framework.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.AccountIdentity;
 
 namespace Coco.Api.Framework
 {
@@ -10,6 +9,7 @@ namespace Coco.Api.Framework
     {
         public static void AddCustomStores(IServiceCollection services)
         {
+            services.AddTransient<ILookupNormalizer, LookupNormalizer>();
             services.AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>();
             services.AddTransient<IUserValidator<ApplicationUser>, UserValidator>();
 
@@ -20,9 +20,6 @@ namespace Coco.Api.Framework
 
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IUserPasswordStore<ApplicationUser>, UserStore>();
-            //services.AddTransient<IUserEmailStore<ApplicationUser>, ApplicationUserStore>();
-
-            //services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
         }
     }
 }

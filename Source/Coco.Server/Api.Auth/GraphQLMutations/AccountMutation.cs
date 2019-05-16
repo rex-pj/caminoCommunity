@@ -40,7 +40,7 @@ namespace Api.Auth.GraphQLMutations
                             PasswordSalt = SaltGenerator.GetSalt()
                         };
 
-                        //var result = await accountManager.CreateAsync(parameters, model.Password);
+                        var result = await accountManager.CreateAsync(parameters, model.Password);
 
                         //if (result.Errors != null && result.Errors.Any())
                         //{

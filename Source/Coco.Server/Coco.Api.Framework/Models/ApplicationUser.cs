@@ -21,5 +21,6 @@ namespace Coco.Api.Framework.Models
         public int? CountryId { get; set; }
         public bool IsActived { get; set; }
         public byte StatusId { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }
