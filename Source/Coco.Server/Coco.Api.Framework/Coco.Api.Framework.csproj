@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Coco.Entities\Coco.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commons\ErrorMessage\" />
+  </ItemGroup>
+
 </Project>

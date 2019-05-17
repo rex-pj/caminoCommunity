@@ -6,12 +6,23 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Coco.Entities.Model.Account;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
+        private bool _isDisposed;
+        /// <summary>
+        /// A navigation property for the users the store contains.
+        /// </summary>
+        public IQueryable<ApplicationUser> Users
+        {
+            get;
+        }
+
 
         public UserStore(IAccountBusiness accountBusiness)
         {
@@ -46,6 +57,21 @@ namespace Coco.Api.Framework.AccountIdentity
         }
         #endregion
 
+        /// <summary>
+        /// Gets the user, if any, associated with the specified, normalized email address.
+        /// </summary>
+        /// <param name="normalizedEmail">The normalized email address to return the user for.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>
+        /// The task object containing the results of the asynchronous lookup operation, the user if any associated with the specified normalized email address.
+        /// </returns>
+        public virtual Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            return Users.SingleOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
+        }
+
         //public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
         //{
         //    try
@@ -70,40 +96,39 @@ namespace Coco.Api.Framework.AccountIdentity
         //    }
         //}
 
-        ///// Todo: Re-Comments
-        //public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
+        public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-        //    if (string.IsNullOrWhiteSpace(userId))
-        //    {
-        //        throw new ArgumentNullException(nameof(userId));
-        //    }
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
 
-        //    if (!long.TryParse(userId, out long id))
-        //    {
-        //        throw new ArgumentOutOfRangeException(nameof(userId), $"{nameof(userId)} is not a valid GUID");
-        //    }
+            if (!long.TryParse(userId, out long id))
+            {
+                throw new ArgumentOutOfRangeException(nameof(userId), $"{nameof(userId)} is not a valid GUID");
+            }
 
-        //    var userEntity = await _accountBusiness.Find(id);
+            var userEntity = await _accountBusiness.Find(id);
 
-        //    return await Task.FromResult(GetLoggedUser(userEntity));
-        //}
+            return await Task.FromResult(GetLoggedUser(userEntity));
+        }
 
-        //public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
+        public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-        //    var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
+            var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
 
-        //    return await Task.FromResult(GetLoggedUser(userEntity));
-        //}
+            return await Task.FromResult(GetLoggedUser(userEntity));
+        }
 
         //public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
         //{
@@ -120,20 +145,20 @@ namespace Coco.Api.Framework.AccountIdentity
         //    return Task.FromResult(user.NormalizedUserName);
         //}
 
-        //public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
+        public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
 
-        //    return Task.FromResult(user.Id.ToString());
-        //}
+            return Task.FromResult(user.Id.ToString());
+        }
 
         public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
@@ -434,9 +459,23 @@ namespace Coco.Api.Framework.AccountIdentity
         }
         #endregion
 
+        /// <summary>
+        /// Throws if this class has been disposed.
+        /// </summary>
+        protected void ThrowIfDisposed()
+        {
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
+
+        /// <summary>
+        /// Dispose the store
+        /// </summary>
         public void Dispose()
         {
-
+            _isDisposed = true;
         }
     }
 }

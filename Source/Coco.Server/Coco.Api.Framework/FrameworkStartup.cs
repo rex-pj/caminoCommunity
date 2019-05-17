@@ -16,10 +16,13 @@ namespace Coco.Api.Framework
             services.AddTransient<IAccountManager<ApplicationUser>, AccountManager>();
             services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
 
-            services.AddTransient<IPasswordHasher<ApplicationUser>, TextHasher>();
+            services.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>();
 
+            services.AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>();
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
-            services.AddTransient<IUserPasswordStore<ApplicationUser>, UserStore>();
+            services.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>();
+            services.AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>();
+            services.AddTransient<ILookupProtector, SillyEncryptor>();
         }
     }
 }
