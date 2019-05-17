@@ -1,5 +1,4 @@
-﻿using System;
-using Coco.Business;
+﻿using Coco.Business;
 using Coco.Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +17,7 @@ using Api.Auth.GraphQLTypes.InputTypes;
 using Api.Auth.GraphQLTypes.ResultTypes;
 using Api.Auth.GraphQLQueries;
 using Coco.Api.Framework.AccountIdentity.Entities;
+using Coco.Api.Framework;
 
 namespace Api.Auth
 {
@@ -55,9 +55,7 @@ namespace Api.Auth
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddIdentity<ApplicationUser, ApplicationRole>()
-            //    .AddCustomStores()
-            //    .AddDefaultTokenProviders();
+            FrameworkStartup.AddCustomStores(services);
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -68,6 +66,8 @@ namespace Api.Auth
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
+
+                options.Stores.ProtectPersonalData = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";

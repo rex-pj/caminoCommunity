@@ -1,4 +1,7 @@
-﻿namespace Coco.Api.Framework.AccountIdentity.Entities
+﻿using Coco.Api.Framework.AccountIdentity.Commons.Constants;
+using Coco.Api.Framework.AccountIdentity.Commons.Helpers;
+
+namespace Coco.Api.Framework.AccountIdentity.Entities
 {
     /// <summary>
     /// Service to enable localization for application facing identity errors.
@@ -17,7 +20,7 @@
             return new IdentityError
             {
                 Code = nameof(DefaultError),
-                Description = Resources.DefaultError
+                Description = ExceptionConstant.DefaultError
             };
         }
 
@@ -30,7 +33,7 @@
             return new IdentityError
             {
                 Code = nameof(ConcurrencyFailure),
-                Description = Resources.ConcurrencyFailure
+                Description = ExceptionConstant.ConcurrencyFailure
             };
         }
 
@@ -43,7 +46,7 @@
             return new IdentityError
             {
                 Code = nameof(PasswordMismatch),
-                Description = Resources.PasswordMismatch
+                Description = ExceptionConstant.PasswordMismatch
             };
         }
 
@@ -56,7 +59,7 @@
             return new IdentityError
             {
                 Code = nameof(InvalidToken),
-                Description = Resources.InvalidToken
+                Description = ExceptionConstant.InvalidToken
             };
         }
 
@@ -69,7 +72,7 @@
             return new IdentityError
             {
                 Code = nameof(RecoveryCodeRedemptionFailed),
-                Description = Resources.RecoveryCodeRedemptionFailed
+                Description = ExceptionConstant.RecoveryCodeRedemptionFailed
             };
         }
 
@@ -82,7 +85,7 @@
             return new IdentityError
             {
                 Code = nameof(LoginAlreadyAssociated),
-                Description = Resources.LoginAlreadyAssociated
+                Description = ExceptionConstant.LoginAlreadyAssociated
             };
         }
 
@@ -179,7 +182,7 @@
             return new IdentityError
             {
                 Code = nameof(UserAlreadyHasPassword),
-                Description = Resources.UserAlreadyHasPassword
+                Description = ExceptionConstant.UserAlreadyHasPassword
             };
         }
 
@@ -192,7 +195,7 @@
             return new IdentityError
             {
                 Code = nameof(UserLockoutNotEnabled),
-                Description = Resources.UserLockoutNotEnabled
+                Description = ExceptionConstant.UserLockoutNotEnabled
             };
         }
 
@@ -261,7 +264,7 @@
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresNonAlphanumeric),
-                Description = Resources.PasswordRequiresNonAlphanumeric
+                Description = ExceptionConstant.PasswordRequiresNonAlphanumeric
             };
         }
 
@@ -274,7 +277,7 @@
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresDigit),
-                Description = Resources.PasswordRequiresDigit
+                Description = ExceptionConstant.PasswordRequiresDigit
             };
         }
 
@@ -287,7 +290,7 @@
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresLower),
-                Description = Resources.PasswordRequiresLower
+                Description = ExceptionConstant.PasswordRequiresLower
             };
         }
 
@@ -300,7 +303,7 @@
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresUpper),
-                Description = Resources.PasswordRequiresUpper
+                Description = ExceptionConstant.PasswordRequiresUpper
             };
         }
     }

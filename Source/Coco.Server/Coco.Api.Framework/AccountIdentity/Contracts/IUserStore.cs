@@ -1,14 +1,18 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Entities;
-using Coco.Api.Framework.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Coco.Api.Framework.AccountIdentity.Contracts
 {
-    public interface IUserStore<TUser> where TUser : class
+    public interface IUserStore<TUser> : IDisposable where TUser : class
     {
-        Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken);
-        Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken);
-        Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken);
+        Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken);
+        Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken);
+        Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken);
+        Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default);
+        Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
+        Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken);
+        Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
     }
 }

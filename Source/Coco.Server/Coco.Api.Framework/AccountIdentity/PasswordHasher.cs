@@ -5,10 +5,13 @@ using System.Security.Cryptography;
 using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.AccountIdentity.Commons.Enums;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.Options;
+using Coco.Api.Framework.AccountIdentity.Entities;
+using Coco.Api.Framework.AccountIdentity.Commons.Constants;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
-    public class TextHasher : IPasswordHasher<ApplicationUser>
+    public class PasswordHasher : IPasswordHasher<ApplicationUser>
     {
         #region Fields
         //private readonly PasswordHasherCompatibilityMode _compatibilityMode;
@@ -17,34 +20,21 @@ namespace Coco.Api.Framework.AccountIdentity
         #endregion
 
         #region Ctor
-        public TextHasher(
-            //IOptions<TextHasherOptions> optionsAccessor = null
+        public PasswordHasher(
+            IOptions<TextHasherOptions> optionsAccessor = null
             )
         {
-            //var options = optionsAccessor != null && optionsAccessor.Value != null 
-            //    ? optionsAccessor.Value as TextHasherOptions
-            //    : new TextHasherOptions();
+            var options = optionsAccessor != null && optionsAccessor.Value != null 
+                ? optionsAccessor.Value as TextHasherOptions
+                : new TextHasherOptions();
 
-            //_compatibilityMode = options.CompatibilityMode;
-            //_randomNumber = options.Rng;
+            _randomNumber = options.Rng;
 
-            //switch (_compatibilityMode)
-            //{
-            //    case PasswordHasherCompatibilityMode.IdentityV2:
-            //        // nothing else to do
-            //        break;
-
-            //    case PasswordHasherCompatibilityMode.IdentityV3:
-            //        _iterCount = options.IterationCount;
-            //        if (_iterCount < 1)
-            //        {
-            //            throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherIterationCount);
-            //        }
-            //        break;
-
-            //    default:
-            //        throw new InvalidOperationException(ExceptionMessageConst.InvalidPasswordHasherCompatibilityMode);
-            //}
+            _iterCount = options.IterationCount;
+            if (_iterCount < 1)
+            {
+                throw new InvalidOperationException(ExceptionConstant.InvalidPasswordHasherIterationCount);
+            }
         }
         #endregion
 
@@ -60,16 +50,9 @@ namespace Coco.Api.Framework.AccountIdentity
             if (password == null)
             {
                 throw new ArgumentNullException(nameof(password));
-            }          
+            }
 
-            //if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
-            //{
-            //    return Convert.ToBase64String(HashPasswordV2(password, _randomNumber));
-            //}
-            //else
-            //{
-                return Convert.ToBase64String(HashPasswordV3(password, _randomNumber));
-            //}
+            return Convert.ToBase64String(HashPasswordV3(password, _randomNumber));
         }
 
         /// <summary>
@@ -137,27 +120,7 @@ namespace Coco.Api.Framework.AccountIdentity
         }
         #endregion
 
-        #region Privates
-        
-        private byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
-        {
-            const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
-            const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-            const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-            const int SaltSize = 128 / 8; // 128 bits
-
-            // Produce a version 2 (see comment above) text hash.
-            byte[] salt = new byte[SaltSize];
-            rng.GetBytes(salt);
-            byte[] subkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
-
-            var outputBytes = new byte[1 + SaltSize + Pbkdf2SubkeyLength];
-            outputBytes[0] = 0x00; // format marker
-            Buffer.BlockCopy(salt, 0, outputBytes, 1, SaltSize);
-            Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
-            return outputBytes;
-        }
-
+        #region Privates       
         private byte[] HashPasswordV3(string password, RandomNumberGenerator rng)
         {
             return HashPasswordV3(password,

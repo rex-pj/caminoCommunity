@@ -2,18 +2,19 @@
 using Api.Auth.GraphQLTypes.ResultTypes;
 using Api.Auth.Models;
 using Coco.Api.Framework.AccountIdentity;
+using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Api.Framework.Models;
 using Coco.Common.Const;
 using GraphQL;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Http;
 using System;
 
 namespace Api.Auth.GraphQLQueries
 {
     public class AccountQuery : ObjectGraphType
     {
-        public AccountQuery(LoginManager loginManager, 
-            AccountManager accountManager)
+        public AccountQuery(ILoginManager<ApplicationUser> loginManager, 
+            IAccountManager<ApplicationUser> accountManager)
         {
             FieldAsync(typeof(SigninResultType), "signin",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<SigninInputType>> { Name = "signinModel" }),
@@ -24,9 +25,6 @@ namespace Api.Auth.GraphQLQueries
                         var model = context.GetArgument<SigninModel>("signinModel");
 
                         //var signinResult = await loginManager.PasswordSignInAsync(model.Username, model.Password, true, false);
-
-                        //var data = context.UserContext as DefaultHttpContext;
-                        //var data1 = data.Request.HttpContext.User;
 
                         return new SigninResultModel() {
                             
