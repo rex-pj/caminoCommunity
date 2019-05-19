@@ -24,7 +24,7 @@ namespace Api.Auth.GraphQLQueries
                     {
                         var model = context.GetArgument<SigninModel>("signinModel");
 
-                        //var signinResult = await loginManager.PasswordSignInAsync(model.Username, model.Password, true, false);
+                        var signinResult = await loginManager.LoginAsync(model.Username, model.Password);
 
                         return new SigninResultModel() {
                             

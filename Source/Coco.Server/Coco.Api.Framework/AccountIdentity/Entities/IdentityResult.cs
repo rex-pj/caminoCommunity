@@ -4,7 +4,7 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
 {
     public class IdentityResult
     {
-        public IdentityResult(bool isSuccess) {
+        public IdentityResult(bool isSuccess = false) {
             IsSuccess = isSuccess;
             Errors = new List<IdentityError>();
         }

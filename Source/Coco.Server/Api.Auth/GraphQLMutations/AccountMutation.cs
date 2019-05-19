@@ -37,10 +37,11 @@ namespace Api.Auth.GraphQLMutations
                             StatusId = (byte)UserStatusEnum.IsPending,
                             UpdatedDate = DateTime.Now,
                             UserName = model.Email,
-                            PasswordSalt = SaltGenerator.GetSalt()
+                            PasswordSalt = SaltGenerator.GetSalt(),
+                            Password = model.Password
                         };
 
-                        var result = await accountManager.CreateAsync(parameters, model.Password);
+                        var result = await accountManager.CreateAsync(parameters);
 
                         if (result.Errors != null && result.Errors.Any())
                         {

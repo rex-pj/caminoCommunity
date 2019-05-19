@@ -14,19 +14,17 @@ namespace Coco.Api.Framework.AccountIdentity
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
-        private bool _isDisposed;
         /// <summary>
-        /// A navigation property for the users the store contains.
+        /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
         /// </summary>
-        public IQueryable<ApplicationUser> Users
-        {
-            get;
-        }
+        /// <value>The <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.</value>
+        public IdentityErrorDescriber Describer { get; private set; }
+        private bool _isDisposed;
 
-
-        public UserStore(IAccountBusiness accountBusiness)
+        public UserStore(IAccountBusiness accountBusiness, IdentityErrorDescriber errors = null)
         {
             _accountBusiness = accountBusiness;
+            Describer = errors ?? new IdentityErrorDescriber();
         }
 
         #region IUserStore<LoggedUser> Members
@@ -65,36 +63,66 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The task object containing the results of the asynchronous lookup operation, the user if any associated with the specified normalized email address.
         /// </returns>
-        public virtual Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            return Users.SingleOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
+
+            var entity = await _accountBusiness.FindUserByEmail(normalizedEmail);
+            var result = GetLoggedUser(entity);
+            return result;
         }
 
-        //public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-        //        if (cancellationToken != null)
-        //        {
-        //            cancellationToken.ThrowIfCancellationRequested();
-        //        }
+        /// <summary>
+        /// Updates the specified <paramref name="user"/> in the user store.
+        /// </summary>
+        /// <param name="user">The user to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
 
-        //        if (user == null)
-        //        {
-        //            throw new ArgumentNullException(nameof(user));
-        //        }
+            try
+            {
+                var userModel = GetUserEntity(user);
+                await _accountBusiness.UpdateAsync(userModel);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return IdentityResult.Failed(Describer.ConcurrencyFailure());
+            }
+            return new IdentityResult(true);
+        }
 
-        //        _accountBusiness.Delete(user.Id);
+        public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (cancellationToken != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
 
-        //        return Task.FromResult(IdentityResult.Success);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
-        //    }
-        //}
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+
+                _accountBusiness.Delete(user.Id);
+
+                return Task.FromResult(new IdentityResult(true));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
+            }
+        }
 
         public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
@@ -130,20 +158,6 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(GetLoggedUser(userEntity));
         }
 
-        //public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(user.NormalizedUserName);
-        //}
 
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
@@ -174,197 +188,6 @@ namespace Coco.Api.Framework.AccountIdentity
 
             return Task.FromResult(user.UserName);
         }
-
-        public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
-        {
-            if (cancellationToken != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            user.NormalizedUserName = normalizedName;
-
-            return Task.CompletedTask;
-        }
-
-        //public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    user.UserName = userName;
-
-        //    return Task.CompletedTask;
-        //}
-
-        //public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-        //        if (cancellationToken != null)
-        //        {
-        //            cancellationToken.ThrowIfCancellationRequested();
-        //        }
-
-        //        if (user == null)
-        //        {
-        //            throw new ArgumentNullException(nameof(user));
-        //        }
-
-        //        var userModel = GetUserEntity(user);
-
-        //        _accountBusiness.Update(userModel);
-
-        //        return Task.FromResult(IdentityResult.Success);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
-        //    }
-        //}
-
-        //#endregion
-
-        //#region IUserPasswordStore<LoggedUser> Members
-        //public Task SetPasswordHashAsync(ApplicationUser user, string passwordHash, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    user.PasswordHash = passwordHash;
-
-        //    return Task.CompletedTask;
-        //}
-
-        //public Task<string> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(user.PasswordHash);
-        //}
-
-        //public Task<bool> HasPasswordAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(!string.IsNullOrWhiteSpace(user.PasswordHash));
-        //}
-        //#endregion
-
-        //#region IUserEmailStore<ApplicationUser> Members
-        //public Task SetEmailAsync(ApplicationUser user, string email, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    user.Email = email;
-
-        //    return Task.CompletedTask;
-        //}
-
-        
-
-        //public Task<bool> GetEmailConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(user.EmailConfirmed);
-        //}
-
-        //public Task SetEmailConfirmedAsync(ApplicationUser user, bool confirmed, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    user.EmailConfirmed = confirmed;
-
-        //    return Task.CompletedTask;
-        //}
-
-        //public async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
-        //{
-        //    if (string.IsNullOrWhiteSpace(normalizedEmail))
-        //    {
-        //        throw new ArgumentNullException(nameof(normalizedEmail));
-        //    }
-
-        //    var userEntity = await _accountBusiness.FindUserByEmail(normalizedEmail, true);
-
-        //    return await Task.FromResult(GetApplicationUser(userEntity));
-        //}
-
-        //public Task<string> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
-        //{
-        //    if (cancellationToken != null)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-        //    }
-
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(user));
-        //    }
-
-        //    return Task.FromResult(user.NormalizedEmail);
-        //}
-
 
         #region Private Methods
         private UserModel GetUserEntity(ApplicationUser LoggedUser)
@@ -442,7 +265,6 @@ namespace Coco.Api.Framework.AccountIdentity
                 PasswordHash = userModel.Password,
                 PasswordSalt = userModel.PasswordSalt,
                 PhoneNumber = userModel.PhoneNumber,
-                NormalizedUserName = userModel.Lastname + " " + userModel.Firstname,
                 Address = userModel.Address,
                 BirthDate = userModel.BirthDate,
                 CountryId = userModel.CountryId,
