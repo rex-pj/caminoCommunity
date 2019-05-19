@@ -72,7 +72,7 @@ namespace Coco.Business.Implementation
             _dbContext.SaveChanges();
         }
 
-        public bool Update(UserModel user)
+        public async Task<bool> UpdateAsync(UserModel user)
         {
             if (user.Id <= 0)
             {
@@ -101,7 +101,7 @@ namespace Coco.Business.Implementation
             userInfo.User.Lastname = user.Lastname;
 
             _userInfoRepository.Update(userInfo);
-            _dbContext.SaveChanges();
+           await _dbContext.SaveChangesAsync();
 
             return true;
         }

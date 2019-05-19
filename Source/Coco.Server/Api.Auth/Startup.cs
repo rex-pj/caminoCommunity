@@ -67,7 +67,7 @@ namespace Api.Auth
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
 
-                options.Stores.ProtectPersonalData = true;
+                options.Stores.ShouldProtectPersonalData = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";

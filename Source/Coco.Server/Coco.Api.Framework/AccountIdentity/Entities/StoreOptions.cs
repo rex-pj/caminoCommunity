@@ -15,6 +15,6 @@
         /// If set to true, the store must protect all personally identifying data for a user. 
         /// This will be enforced by requiring the store to implement <see cref="IProtectedUserStore{TUser}"/>.
         /// </summary>
-        public bool ProtectPersonalData { get; set; }
+        public bool ShouldProtectPersonalData { get; set; }
     }
 }

@@ -28,20 +28,11 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         /// </summary>
         public virtual string UserName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the normalized user name for this user.
-        /// </summary>
-        public virtual string NormalizedUserName { get; set; }
 
         /// <summary>
         /// Gets or sets the email address for this user.
         /// </summary>
         public virtual string Email { get; set; }
-
-        /// <summary>
-        /// Gets or sets the normalized email address for this user.
-        /// </summary>
-        public virtual string NormalizedEmail { get; set; }
 
         /// <summary>
         /// Gets or sets a salted and hashed representation of the password for this user.

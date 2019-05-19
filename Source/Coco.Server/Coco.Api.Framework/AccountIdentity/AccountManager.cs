@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Coco.Api.Framework.AccountIdentity.Commons.Enums;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -52,7 +53,8 @@ namespace Coco.Api.Framework.AccountIdentity
             this.UserStore = userStore;
             this.UserEmailStore = userEmailStore;
             this.UserPasswordStore = userPasswordStore;
-            
+
+            _services = services;
             _passwordHasher = passwordHasher;
             _lookupNormalizer = lookupNormalizer;
 
@@ -87,46 +89,30 @@ namespace Coco.Api.Framework.AccountIdentity
         public virtual async Task<IdentityResult> CreateAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (user.Password == null)
+            {
+                throw new ArgumentNullException(nameof(user.Password));
+            }
+
             var result = await ValidateUserAsync(user);
             if (!result.IsSuccess)
             {
                 return result;
             }
 
-            await UpdateNormalizedUserNameAsync(user);
-            await UpdateNormalizedEmailAsync(user);
-
-            return await UserStore.CreateAsync(user, CancellationToken);
-        }
-
-        /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with given password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to create.</param>
-        /// <param name="password">The password for the user to hash and store.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
-        
-        public virtual async Task<IdentityResult> CreateAsync(ApplicationUser user, string password)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (password == null)
-            {
-                throw new ArgumentNullException(nameof(password));
-            }
-            var result = await UpdatePasswordHash(user, password);
-            if (!result.IsSuccess)
+            var updatePasswordResult = await UpdatePasswordHash(user, user.Password);
+            if (!updatePasswordResult.IsSuccess)
             {
                 return result;
             }
-            return await CreateAsync(user);
+
+            return await UserStore.CreateAsync(user, CancellationToken);
         }
 
         /// <summary>
@@ -146,8 +132,16 @@ namespace Coco.Api.Framework.AccountIdentity
                     return validate;
                 }
             }
-            var hash = newPassword != null ? _passwordHasher.HashPassword(user, newPassword) : null;
-            await UserPasswordStore.SetPasswordHashAsync(user, hash, CancellationToken);
+
+            // Custom password hashing
+            string passwordHashed = null;
+            if (!string.IsNullOrEmpty(newPassword))
+            {
+                string passwordSalted = UserPasswordStore.AddSaltToPassword(user, newPassword);
+                passwordHashed = _passwordHasher.HashPassword(user, passwordSalted);
+            }
+
+            await UserPasswordStore.SetPasswordHashAsync(user, passwordHashed, CancellationToken);
             return new IdentityResult(true);
         }
 
@@ -180,30 +174,6 @@ namespace Coco.Api.Framework.AccountIdentity
                 return IdentityResult.Failed(errors.ToArray());
             }
             return new IdentityResult(true);
-        }
-
-
-        /// <summary>
-        /// Updates the normalized user name for the specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose user name should be normalized and updated.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public virtual async Task UpdateNormalizedUserNameAsync(ApplicationUser user)
-        {
-            var normalizedName = NormalizeName(await GetUserNameAsync(user));
-            normalizedName = ProtectPersonalData(normalizedName);
-            await UserStore.SetNormalizedUserNameAsync(user, normalizedName, CancellationToken);
-        }
-
-        /// <summary>
-        /// Updates the normalized email for the specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose email address should be normalized and updated.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public virtual async Task UpdateNormalizedEmailAsync(ApplicationUser user)
-        {
-            var email = await GetEmailAsync(user);
-            await UserEmailStore.SetNormalizedEmailAsync(user, ProtectPersonalData(NormalizeEmail(email)), CancellationToken);
         }
 
         /// <summary>
@@ -277,7 +247,7 @@ namespace Coco.Api.Framework.AccountIdentity
             var user = await UserStore.FindByEmailAsync(email, CancellationToken);
 
             // Need to potentially check all keys
-            if (user == null && Options.Stores.ProtectPersonalData)
+            if (user == null && Options.Stores.ShouldProtectPersonalData)
             {
                 var keyRing = _services.GetService<ILookupProtectorKeyRing>();
                 var protector = _services.GetService<ILookupProtector>();
@@ -311,12 +281,13 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 throw new ArgumentNullException(nameof(userName));
             }
+
             userName = NormalizeName(userName);
 
             var user = await UserStore.FindByNameAsync(userName, CancellationToken);
 
             //// Need to potentially check all keys
-            if (user == null && Options.Stores.ProtectPersonalData)
+            if (user == null && Options.Stores.ShouldProtectPersonalData)
             {
                 var keyRing = _services.GetService<ILookupProtectorKeyRing>();
                 var protector = _services.GetService<ILookupProtector>();
@@ -370,17 +341,84 @@ namespace Coco.Api.Framework.AccountIdentity
             ThrowIfDisposed();
             return await UserStore.GetUserIdAsync(user, CancellationToken);
         }
+
+        /// <summary>
+        /// Returns a flag indicating whether the given <paramref name="password"/> is valid for the
+        /// specified <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user">The user whose password should be validated.</param>
+        /// <param name="password">The password to validate</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
+        /// the specified <paramref name="password" /> matches the one store for the <paramref name="user"/>,
+        /// otherwise false.</returns>
+        public virtual async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                return false;
+            }
+
+            var result = await VerifyPasswordAsync(user, password);
+            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                await UpdatePasswordHash(user, password, validatePassword: false);
+                await UpdateUserAsync(user);
+            }
+
+            var success = result != PasswordVerificationResult.Failed;
+            return success;
+        }
+
+        /// <summary>
+        /// Called to update the user after validating and updating the normalized email/user name.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>Whether the operation was successful.</returns>
+        protected virtual async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
+        {
+            var result = await ValidateUserAsync(user);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
+            return await UserStore.UpdateAsync(user, CancellationToken);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="PasswordVerificationResult"/> indicating the result of a password hash comparison.
+        /// </summary>
+        /// <param name="store">The store containing a user's password.</param>
+        /// <param name="user">The user whose password should be verified.</param>
+        /// <param name="password">The password to verify.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="PasswordVerificationResult"/>
+        /// of the operation.
+        /// </returns>
+        protected virtual async Task<PasswordVerificationResult> VerifyPasswordAsync(ApplicationUser user, string password)
+        {
+            var hash = await UserPasswordStore.GetPasswordHashAsync(user, CancellationToken);
+            if (hash == null)
+            {
+                return PasswordVerificationResult.Failed;
+            }
+
+            string passwordSalted = UserPasswordStore.AddSaltToPassword(user, password);
+
+            return _passwordHasher.VerifyHashedPassword(user, hash, passwordSalted);
+        }
         #endregion
 
         #region Privates
         private string ProtectPersonalData(string data)
         {
-            //if (Options.Stores.ProtectPersonalData)
-            //{
-            //    var keyRing = _services.GetService<ILookupProtectorKeyRing>();
-            //    var protector = _services.GetService<ILookupProtector>();
-            //    return protector.Protect(keyRing.CurrentKeyId, data);
-            //}
+            if (Options.Stores.ShouldProtectPersonalData)
+            {
+                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
+                var protector = _services.GetService<ILookupProtector>();
+                return protector.Protect(keyRing.CurrentKeyId, data);
+            }
             return data;
         }
         #endregion

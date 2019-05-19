@@ -8,11 +8,12 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
     public interface IUserStore<TUser> : IDisposable where TUser : class
     {
         Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken);
-        Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken);
         Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken);
         Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default);
         Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
         Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default);
+
     }
 }
