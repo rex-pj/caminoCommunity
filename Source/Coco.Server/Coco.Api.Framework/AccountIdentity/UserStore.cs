@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Coco.Entities.Model.Account;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
+        internal readonly string _tokenEncryptKey;
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
         /// </summary>
@@ -21,10 +26,11 @@ namespace Coco.Api.Framework.AccountIdentity
         public IdentityErrorDescriber Describer { get; private set; }
         private bool _isDisposed;
 
-        public UserStore(IAccountBusiness accountBusiness, IdentityErrorDescriber errors = null)
+        public UserStore(IAccountBusiness accountBusiness, IConfiguration configuration, IdentityErrorDescriber errors = null)
         {
             _accountBusiness = accountBusiness;
             Describer = errors ?? new IdentityErrorDescriber();
+            _tokenEncryptKey = configuration.GetValue<string>("JwtSecretKey");
         }
 
         #region IUserStore<LoggedUser> Members
@@ -92,6 +98,20 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 var userModel = GetUserEntity(user);
                 await _accountBusiness.UpdateAsync(userModel);
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_tokenEncryptKey);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                userModel.AuthenticatorToken = tokenHandler.WriteToken(token);
             }
             catch (DbUpdateConcurrencyException)
             {
