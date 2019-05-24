@@ -74,8 +74,7 @@ namespace Api.Auth
                 options.User.RequireUniqueEmail = true;
             });
 
-            var jwtSecretKey = _configuration.GetValue<string>("JwtSecretKey");
-            var secretKey = Encoding.ASCII.GetBytes(jwtSecretKey);
+            var jwtSecretKey = _configuration["Jwt:SecretKey"];
 
             services.AddAuthentication(x =>
             {
@@ -89,7 +88,7 @@ namespace Api.Auth
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecretKey)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };

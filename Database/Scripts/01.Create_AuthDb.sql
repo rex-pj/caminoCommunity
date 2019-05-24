@@ -22,6 +22,14 @@ CREATE TABLE Account.[User]
 
 GO
 ALTER TABLE Account.[User]
+ADD SecurityStamp NVARCHAR(255) NULL;
+
+GO
+ALTER TABLE Account.[User]
+ADD AuthenticatorToken NVARCHAR(255) NULL;
+
+GO
+ALTER TABLE Account.[User]
 ADD CONSTRAINT PK_User
 PRIMARY KEY (Id);
 
