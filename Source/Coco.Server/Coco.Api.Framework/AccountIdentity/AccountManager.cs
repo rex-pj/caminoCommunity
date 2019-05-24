@@ -9,6 +9,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Coco.Api.Framework.AccountIdentity.Commons.Enums;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -22,6 +27,8 @@ namespace Coco.Api.Framework.AccountIdentity
         protected internal IUserStore<ApplicationUser> UserStore;
         protected internal IUserPasswordStore<ApplicationUser> UserPasswordStore;
         protected internal IUserEmailStore<ApplicationUser> UserEmailStore;
+        internal readonly string _tokenEncryptKey;
+        internal readonly int _tokenExpiryMinutes;
         public IList<IUserValidator<ApplicationUser>> UserValidators { get; } = new List<IUserValidator<ApplicationUser>>();
         public IList<IPasswordValidator<ApplicationUser>> PasswordValidators { get; } = new List<IPasswordValidator<ApplicationUser>>();
         public IdentityOptions Options { get; set; }
@@ -36,6 +43,7 @@ namespace Coco.Api.Framework.AccountIdentity
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly ILookupNormalizer _lookupNormalizer;
         private readonly IServiceProvider _services;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
@@ -47,6 +55,7 @@ namespace Coco.Api.Framework.AccountIdentity
             IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators,
             IEnumerable<IUserValidator<ApplicationUser>> userValidators,
             IServiceProvider services,
+            IConfiguration configuration,
             ILookupNormalizer lookupNormalizer)
         {
             this.Options = optionsAccessor?.Value ?? new IdentityOptions();
@@ -54,9 +63,12 @@ namespace Coco.Api.Framework.AccountIdentity
             this.UserEmailStore = userEmailStore;
             this.UserPasswordStore = userPasswordStore;
 
+            _configuration = configuration;
             _services = services;
             _passwordHasher = passwordHasher;
             _lookupNormalizer = lookupNormalizer;
+            _tokenEncryptKey = configuration["Jwt:SecretKey"];
+            _tokenExpiryMinutes = Convert.ToInt32(configuration["Jwt:ExpiryMinutes"]);
 
             if (userValidators != null)
             {
@@ -363,6 +375,23 @@ namespace Coco.Api.Framework.AccountIdentity
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 await UpdatePasswordHash(user, password, validatePassword: false);
+
+                var claim = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Email}{user.SecurityStamp}")
+                };
+
+                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
+
+                var token = new JwtSecurityToken(
+                    claims: claim,
+                    expires: DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes),
+                    signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256Signature)
+                );
+
+                var tokenKey = new JwtSecurityTokenHandler().WriteToken(token);
+                user.AuthenticatorToken = tokenKey;
+
                 await UpdateUserAsync(user);
             }
 

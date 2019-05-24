@@ -7,7 +7,8 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
     {
         public SigninResultType()
         {
-            Field(x => x.Token, type: typeof(BooleanGraphType));
+            Field(x => x.AuthenticatorToken, type: typeof(BooleanGraphType));
+            Field(x => x.Expiration, type: typeof(DateTimeGraphType));
         }
     }
 }

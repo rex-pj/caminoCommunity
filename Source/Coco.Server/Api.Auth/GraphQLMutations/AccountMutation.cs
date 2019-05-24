@@ -38,6 +38,7 @@ namespace Api.Auth.GraphQLMutations
                             UpdatedDate = DateTime.Now,
                             UserName = model.Email,
                             PasswordSalt = SaltGenerator.GetSalt(),
+                            SecurityStamp = SaltGenerator.GetSalt(),
                             Password = model.Password
                         };
 

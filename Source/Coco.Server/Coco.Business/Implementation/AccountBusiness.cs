@@ -99,6 +99,8 @@ namespace Coco.Business.Implementation
             userInfo.User.DisplayName = user.DisplayName;
             userInfo.User.Firstname = user.Firstname;
             userInfo.User.Lastname = user.Lastname;
+            userInfo.User.AuthenticatorToken = user.AuthenticatorToken;
+            userInfo.User.SecurityStamp = user.SecurityStamp;
 
             _userInfoRepository.Update(userInfo);
            await _dbContext.SaveChangesAsync();

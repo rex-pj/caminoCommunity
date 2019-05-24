@@ -23,6 +23,8 @@ namespace Coco.Entities.Domain.Account
         public string Email { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
+        public string AuthenticatorToken { get; set; }
+        public string SecurityStamp { get; set; }
         public virtual UserInfo UserInfo { get; set; }
         public virtual ICollection<UserInfo> CreatedUserInfos { get; set; }
         public virtual ICollection<UserInfo> UpdatedUserInfos { get; set; }
