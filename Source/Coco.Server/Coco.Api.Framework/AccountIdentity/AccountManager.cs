@@ -363,40 +363,32 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
         /// the specified <paramref name="password" /> matches the one store for the <paramref name="user"/>,
         /// otherwise false.</returns>
-        public virtual async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+        public virtual async Task<LoginResult> CheckPasswordAsync(ApplicationUser user, string password)
         {
             ThrowIfDisposed();
             if (user == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(user));
             }
 
-            var result = await VerifyPasswordAsync(user, password);
-            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+            var verifyResult = await VerifyPasswordAsync(user, password);
+
+            if (verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 await UpdatePasswordHash(user, password, validatePassword: false);
-
-                var claim = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Email}{user.SecurityStamp}")
-                };
-
-                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
-
-                var token = new JwtSecurityToken(
-                    claims: claim,
-                    expires: DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes),
-                    signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256Signature)
-                );
-
-                var tokenKey = new JwtSecurityTokenHandler().WriteToken(token);
-                user.AuthenticatorToken = tokenKey;
-
-                await UpdateUserAsync(user);
+                UpdateUserAuthenticate(user);
+                var result = await UpdateUserAsync(user);
+                return result;
+            }
+            else if (verifyResult == PasswordVerificationResult.Success)
+            {
+                UpdateUserAuthenticate(user);
+                var result = await UpdateUserAsync(user);
+                return result;
             }
 
-            var success = result != PasswordVerificationResult.Failed;
-            return success;
+            var success = verifyResult != PasswordVerificationResult.Failed;
+            return new LoginResult(success);
         }
 
         /// <summary>
@@ -404,15 +396,36 @@ namespace Coco.Api.Framework.AccountIdentity
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
+        protected virtual async Task<LoginResult> UpdateUserAsync(ApplicationUser user)
         {
             var result = await ValidateUserAsync(user);
             if (!result.IsSuccess)
             {
-                return result;
+                return LoginResult.Failed(result.Errors.ToArray());
             }
 
             return await UserStore.UpdateAsync(user, CancellationToken);
+        }
+
+        private void UpdateUserAuthenticate(ApplicationUser user)
+        {
+            if (DateTime.Now > user.Expiration)
+            {
+                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
+                var expiration = DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes);
+
+                var token = new JwtSecurityToken(
+                    claims: new[]
+                    {
+                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Email}{user.SecurityStamp}")
+                    },
+                    expires: expiration,
+                    signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256Signature)
+                );
+
+                user.Expiration = expiration;
+                user.AuthenticatorToken = new JwtSecurityTokenHandler().WriteToken(token);
+            }
         }
 
         /// <summary>

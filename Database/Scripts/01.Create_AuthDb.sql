@@ -16,17 +16,12 @@ CREATE TABLE Account.[User]
 	FirstName NVARCHAR(255) NOT NULL,
 	DisplayName NVARCHAR(255) NOT NULL,
 	Email NVARCHAR(255) NOT NULL,
-	[Password] NVARCHAR(255) NOT NULL,
-	PasswordSalt NVARCHAR(255) NOT NULL
+	[Password] NVARCHAR(MAX) NOT NULL,
+	PasswordSalt NVARCHAR(MAX) NOT NULL,
+	SecurityStamp NVARCHAR(MAX) NULL,
+	AuthenticatorToken NVARCHAR(MAX) NULL,
+	Expiration DATETIME2 NULL
 )
-
-GO
-ALTER TABLE Account.[User]
-ADD SecurityStamp NVARCHAR(255) NULL;
-
-GO
-ALTER TABLE Account.[User]
-ADD AuthenticatorToken NVARCHAR(255) NULL;
 
 GO
 ALTER TABLE Account.[User]

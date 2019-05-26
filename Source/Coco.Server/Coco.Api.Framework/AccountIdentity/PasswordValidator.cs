@@ -48,6 +48,10 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 errors.Add(Describer.PasswordTooShort(options.RequiredLength));
             }
+            if (string.IsNullOrWhiteSpace(password) || password.Length > options.MaxLength)
+            {
+                errors.Add(Describer.PasswordTooLong(options.RequiredLength));
+            }
             if (options.RequireNonAlphanumeric && password.All(IsLetterOrDigit))
             {
                 errors.Add(Describer.PasswordRequiresNonAlphanumeric());

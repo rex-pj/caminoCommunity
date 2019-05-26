@@ -24,5 +24,6 @@ namespace Coco.Api.Framework.Models
         public string PhoneNumber { get; set; }
         public string AuthenticatorToken { get; set; }
         public string SecurityStamp { get; set; }
+        public DateTime? Expiration { get; set; }
     }
 }

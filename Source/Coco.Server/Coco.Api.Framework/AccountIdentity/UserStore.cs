@@ -79,7 +79,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="user">The user to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public virtual async Task<LoginResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -92,13 +92,17 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 var userModel = GetUserEntity(user);
 
-                await _accountBusiness.UpdateAsync(userModel);
+                var result = await _accountBusiness.UpdateAsync(userModel);
+
+                return new LoginResult(true) {
+                    AuthenticatorToken = result.AuthenticatorToken,
+                    Expiration = result.Expiration
+                };
             }
             catch (DbUpdateConcurrencyException)
             {
-                return IdentityResult.Failed(Describer.ConcurrencyFailure());
+                return LoginResult.Failed(Describer.ConcurrencyFailure());
             }
-            return new IdentityResult(true);
         }
 
         public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -215,27 +219,30 @@ namespace Coco.Api.Framework.AccountIdentity
             return result;
         }
 
-        private UserModel PopulateUserEntity(ApplicationUser LoggedUser)
+        private UserModel PopulateUserEntity(ApplicationUser loggedUser)
         {
             UserModel userModel = new UserModel()
             {
-                Email = LoggedUser.Email,
-                Id = LoggedUser.Id,
-                Address = LoggedUser.Address,
-                BirthDate = LoggedUser.BirthDate,
-                CountryId = LoggedUser.CountryId,
-                CreatedById = LoggedUser.CreatedById,
-                Description = LoggedUser.Description,
-                DisplayName = LoggedUser.DisplayName,
-                Firstname = LoggedUser.Firstname,
-                Lastname = LoggedUser.Lastname,
-                GenderId = LoggedUser.GenderId,
-                IsActived = LoggedUser.IsActived,
-                Password = LoggedUser.PasswordHash,
-                PasswordSalt = LoggedUser.PasswordSalt,
-                PhoneNumber = LoggedUser.PhoneNumber,
-                StatusId = LoggedUser.StatusId,
-                UpdatedById = LoggedUser.UpdatedById
+                Email = loggedUser.Email,
+                Id = loggedUser.Id,
+                Address = loggedUser.Address,
+                BirthDate = loggedUser.BirthDate,
+                CountryId = loggedUser.CountryId,
+                CreatedById = loggedUser.CreatedById,
+                Description = loggedUser.Description,
+                DisplayName = loggedUser.DisplayName,
+                Firstname = loggedUser.Firstname,
+                Lastname = loggedUser.Lastname,
+                GenderId = loggedUser.GenderId,
+                IsActived = loggedUser.IsActived,
+                Password = loggedUser.PasswordHash,
+                PasswordSalt = loggedUser.PasswordSalt,
+                PhoneNumber = loggedUser.PhoneNumber,
+                StatusId = loggedUser.StatusId,
+                UpdatedById = loggedUser.UpdatedById,
+                Expiration = loggedUser.Expiration,
+                AuthenticatorToken = loggedUser.AuthenticatorToken,
+                SecurityStamp = loggedUser.SecurityStamp
             };
 
             return userModel;
@@ -276,6 +283,9 @@ namespace Coco.Api.Framework.AccountIdentity
                 IsActived = userModel.IsActived,
                 StatusId = userModel.StatusId,
                 UpdatedById = userModel.UpdatedById,
+                Expiration = userModel.Expiration,
+                AuthenticatorToken = userModel.AuthenticatorToken,
+                SecurityStamp = userModel.SecurityStamp
             };
 
             return applicationUser;

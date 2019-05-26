@@ -51,16 +51,23 @@ namespace Coco.Business.Implementation
 
         public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
         {
-            username = username.ToLower();
+            try
+            {
+                username = username.ToLower();
 
-            var user = await _userInfoRepository
-                .Get(x => x.User.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                .Include(x => x.User)
-                .FirstOrDefaultAsync();
+                var user = await _userInfoRepository
+                    .Get(x => x.User.Email.Equals(username) && (includeInActived ? true : x.IsActived))
+                    .Include(x => x.User)
+                    .FirstOrDefaultAsync();
 
-            UserModel userModel = UserEntityToModel(user);
+                UserModel userModel = UserEntityToModel(user);
 
-            return userModel;
+                return userModel;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public void Delete(long id)
@@ -72,7 +79,7 @@ namespace Coco.Business.Implementation
             _dbContext.SaveChanges();
         }
 
-        public async Task<bool> UpdateAsync(UserModel user)
+        public async Task<UserModel> UpdateAsync(UserModel user)
         {
             if (user.Id <= 0)
             {
@@ -101,11 +108,12 @@ namespace Coco.Business.Implementation
             userInfo.User.Lastname = user.Lastname;
             userInfo.User.AuthenticatorToken = user.AuthenticatorToken;
             userInfo.User.SecurityStamp = user.SecurityStamp;
+            userInfo.User.Expiration = user.Expiration;
 
             _userInfoRepository.Update(userInfo);
-           await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-            return true;
+            return user;
         }
 
         public async Task<UserModel> Find(long id)
@@ -144,7 +152,10 @@ namespace Coco.Business.Implementation
                     Firstname = userModel.Firstname,
                     Lastname = userModel.Lastname,
                     Password = userModel.Password,
-                    PasswordSalt = userModel.PasswordSalt
+                    PasswordSalt = userModel.PasswordSalt,
+                    AuthenticatorToken = userModel.AuthenticatorToken,
+                    SecurityStamp = userModel.SecurityStamp,
+                    Expiration = userModel.Expiration
                 }
             };
 
@@ -183,6 +194,9 @@ namespace Coco.Business.Implementation
                 userModel.Lastname = user.User.Lastname;
                 userModel.Password = user.User.Password;
                 userModel.PasswordSalt = user.User.PasswordSalt;
+                userModel.Expiration = user.User.Expiration;
+                userModel.AuthenticatorToken = user.User.AuthenticatorToken;
+                userModel.SecurityStamp = user.User.SecurityStamp;
             }
 
             return userModel;
