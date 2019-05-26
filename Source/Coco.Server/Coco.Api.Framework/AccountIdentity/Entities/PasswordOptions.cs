@@ -9,6 +9,11 @@
         /// Gets or sets the minimum length a password must be. Defaults to 6.
         /// </summary>
         public int RequiredLength { get; set; } = 6;
+        
+        /// <summary>
+        /// Gets or sets the maximum length a password must be. Defaults to 16.
+        /// </summary>
+        public int MaxLength { get; set; } = 16;
 
         /// <summary>
         /// Gets or sets the minimum number of unique characters which a password must contain. Defaults to 1.

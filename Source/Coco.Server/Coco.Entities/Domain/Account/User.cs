@@ -2,6 +2,7 @@
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Farm;
 using Coco.Entities.Domain.Work;
+using System;
 using System.Collections.Generic;
 
 namespace Coco.Entities.Domain.Account
@@ -25,6 +26,7 @@ namespace Coco.Entities.Domain.Account
         public string PasswordSalt { get; set; }
         public string AuthenticatorToken { get; set; }
         public string SecurityStamp { get; set; }
+        public DateTime? Expiration { get; set; }
         public virtual UserInfo UserInfo { get; set; }
         public virtual ICollection<UserInfo> CreatedUserInfos { get; set; }
         public virtual ICollection<UserInfo> UpdatedUserInfos { get; set; }

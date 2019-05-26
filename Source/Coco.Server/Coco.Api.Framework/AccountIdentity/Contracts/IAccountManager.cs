@@ -13,6 +13,6 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<TUser> FindByEmailAsync(string email);
         Task<TUser> FindByNameAsync(string userName);
         Task<string> GetUserIdAsync(TUser user);
-        Task<bool> CheckPasswordAsync(TUser user, string password);
+        Task<LoginResult> CheckPasswordAsync(TUser user, string password);
     }
 }

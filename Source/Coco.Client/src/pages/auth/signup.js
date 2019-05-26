@@ -99,6 +99,7 @@ const mapDispatchToProps = dispatch => {
         });
       }
     },
+
     showValidationError: (title, message) =>
       dispatch({
         type: actionTypes.NOTIFICATION,

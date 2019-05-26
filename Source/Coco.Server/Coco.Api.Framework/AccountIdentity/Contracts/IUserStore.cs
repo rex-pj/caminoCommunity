@@ -13,7 +13,7 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
         Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default);
+        Task<LoginResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default);
 
     }
 }

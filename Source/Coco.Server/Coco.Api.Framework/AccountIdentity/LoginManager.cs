@@ -82,11 +82,9 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (await _accountManager.CheckPasswordAsync(user, password))
-            {
-                return new LoginResult(true);
-            }
-            return new LoginResult();
+            var result = await _accountManager.CheckPasswordAsync(user, password);
+
+            return result;
         }
     }
 }

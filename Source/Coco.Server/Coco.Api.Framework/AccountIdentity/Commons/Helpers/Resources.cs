@@ -42,6 +42,11 @@
             return $"Passwords must be at least {length} characters.";
         }
 
+        internal static string FormatPasswordTooLong(int length)
+        {
+            return $"Passwords must be shorter than {length} characters.";
+        }
+
         internal static string FormatUserNotInRole(string role)
         {
             return $"User is not in role '{role}'.";
