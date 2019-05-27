@@ -409,23 +409,20 @@ namespace Coco.Api.Framework.AccountIdentity
 
         private void UpdateUserAuthenticate(ApplicationUser user)
         {
-            if (DateTime.Now > user.Expiration)
-            {
-                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
-                var expiration = DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes);
+            var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
+            var expiration = DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes);
 
-                var token = new JwtSecurityToken(
-                    claims: new[]
-                    {
+            var token = new JwtSecurityToken(
+                claims: new[]
+                {
                     new Claim(JwtRegisteredClaimNames.Sub, $"{user.Email}{user.SecurityStamp}")
-                    },
-                    expires: expiration,
-                    signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256Signature)
-                );
+                },
+                expires: expiration,
+                signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256Signature)
+            );
 
-                user.Expiration = expiration;
-                user.AuthenticatorToken = new JwtSecurityTokenHandler().WriteToken(token);
-            }
+            user.Expiration = expiration;
+            user.AuthenticatorToken = new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         /// <summary>

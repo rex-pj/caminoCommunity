@@ -17,7 +17,10 @@ query signin($signinModel: SigninInputType!){
   signin(signinModel: $signinModel){
     authenticatorToken,
     isSuccess,
-    errors
+    errors {
+      code
+      description
+    }
   }
 }
 `;
