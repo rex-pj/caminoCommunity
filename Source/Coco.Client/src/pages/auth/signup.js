@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actionTypes from "../../store/actions";
+import { raiseError } from "../../store/notify";
 import client from "../../utils/GraphQL/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQL/GraphQLQueries";
@@ -47,7 +47,7 @@ class SignUpPage extends Component {
         if (this._isMounted) {
           this.setState({ isFormEnabled: true });
         }
-        this.props.notifyError(error, this.context);
+        this.props.notifyError(error, this.context.lang);
       });
   };
 
@@ -64,7 +64,7 @@ class SignUpPage extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    notifyError: (error, userContext) => {
+    notifyError: (error, lang) => {
       if (
         error &&
         error.networkError &&
@@ -74,42 +74,26 @@ const mapDispatchToProps = dispatch => {
         const errors = error.networkError.result.errors;
 
         errors.forEach(item => {
-          dispatch({
-            type: actionTypes.NOTIFICATION,
-            payload: {
-              type: "error",
-              title: "Đăng ký KHÔNG thành công",
-              description: getError(item.extensions.code, userContext.lang),
-              url: "/auth/signup"
-            }
-          });
+          raiseError(
+            dispatch,
+            "Đăng ký KHÔNG thành công",
+            getError(item.extensions.code, lang),
+            "/auth/signup"
+          );
         });
       } else {
-        dispatch({
-          type: actionTypes.NOTIFICATION,
-          payload: {
-            type: "error",
-            title: "Đăng ký KHÔNG thành công",
-            description: getError(
-              "ErrorOccurredTryRefeshInputAgain",
-              userContext.lang
-            ),
-            url: "/auth/signup"
-          }
-        });
+        raiseError(
+          dispatch,
+          "Đăng ký KHÔNG thành công",
+          getError("ErrorOccurredTryRefeshInputAgain", lang),
+          "/auth/signup"
+        );
       }
     },
 
-    showValidationError: (title, message) =>
-      dispatch({
-        type: actionTypes.NOTIFICATION,
-        payload: {
-          type: "error",
-          title: title,
-          description: message,
-          url: "#"
-        }
-      })
+    showValidationError: (title, message) => {
+      raiseError(dispatch, title, message, "#");
+    }
   };
 };
 

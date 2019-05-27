@@ -69,7 +69,7 @@ namespace Coco.Api.Framework.AccountIdentity
             ThrowIfDisposed();
 
             var entity = await _accountBusiness.FindUserByEmail(normalizedEmail);
-            var result = GetLoggedUser(entity);
+            var result = GetApplicationUser(entity);
             return result;
         }
 
@@ -148,7 +148,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
             var userEntity = await _accountBusiness.Find(id);
 
-            return await Task.FromResult(GetLoggedUser(userEntity));
+            return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
         public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -160,7 +160,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
             var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
 
-            return await Task.FromResult(GetLoggedUser(userEntity));
+            return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
 
@@ -207,18 +207,6 @@ namespace Coco.Api.Framework.AccountIdentity
             return result;
         }
 
-        private ApplicationUser GetApplicationUser(UserModel entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var result = PopulateLoggedUser(entity);
-
-            return result;
-        }
-
         private UserModel PopulateUserEntity(ApplicationUser loggedUser)
         {
             UserModel userModel = new UserModel()
@@ -248,19 +236,19 @@ namespace Coco.Api.Framework.AccountIdentity
             return userModel;
         }
 
-        private ApplicationUser GetLoggedUser(UserModel entity)
+        private ApplicationUser GetApplicationUser(UserModel entity)
         {
             if (entity == null)
             {
                 return null;
             }
 
-            var result = PopulateLoggedUser(entity);
+            var result = PopulateApplicationUser(entity);
 
             return result;
         }
 
-        private ApplicationUser PopulateLoggedUser(UserModel userModel)
+        private ApplicationUser PopulateApplicationUser(UserModel userModel)
         {
             ApplicationUser applicationUser = new ApplicationUser()
             {

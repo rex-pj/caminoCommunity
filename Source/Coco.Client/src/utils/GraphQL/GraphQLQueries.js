@@ -12,7 +12,7 @@ export const ADD_USER = gpl`
   }
 `;
 
-export const Signin = gpl`
+export const SIGNIN = gpl`
 query signin($signinModel: SigninInputType!){
   signin(signinModel: $signinModel){
     authenticatorToken,
