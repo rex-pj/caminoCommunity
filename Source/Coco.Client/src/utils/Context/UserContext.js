@@ -1,7 +1,8 @@
 import React from "react";
 
 let userData = {
-  lang: "vn"
+  lang: "vn",
+  authenticatorToken: null
 };
 
 const UserContext = React.createContext(userData);

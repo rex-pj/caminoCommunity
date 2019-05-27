@@ -9,6 +9,7 @@ import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNav
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import DaySelector from "../../../components/organisms/DaySelector";
 import { checkValidity } from "../../../utils/Validity";
+import SignupModel from "../../../models/SignupModel";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${p => p.theme.size.normal};
@@ -103,58 +104,7 @@ export default class SignUpForm extends Component {
       errors: {}
     };
 
-    this.formData = {
-      lastname: {
-        value: "",
-        validation: {
-          isRequired: true
-        },
-        isValid: false
-      },
-      firstname: {
-        value: "",
-        validation: {
-          isRequired: true
-        },
-        isValid: false
-      },
-      email: {
-        value: "",
-        validation: {
-          isEmail: true
-        },
-        isValid: false
-      },
-      password: {
-        value: "",
-        validation: {
-          isRequired: true
-        },
-        isValid: false
-      },
-      confirmPassword: {
-        value: "",
-        validation: {
-          isRequired: true,
-          sameRefProperty: "password"
-        },
-        isValid: false
-      },
-      genderId: {
-        value: 1,
-        validation: {
-          isRequired: true
-        },
-        isValid: true
-      },
-      birthDate: {
-        value: new Date(),
-        validation: {
-          isDate: true
-        },
-        isValid: false
-      }
-    };
+    this.formData = SignupModel;
   }
 
   // #region Life Cycle
