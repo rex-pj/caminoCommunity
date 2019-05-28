@@ -1,14 +1,15 @@
+import * as actionTypes from "../actions";
 const initialState = {
   notify: null
 };
 
 const reducer = (state = initialState, action) => {
-  if (action.type === "NOTIFICATION") {
+  if (action.type === actionTypes.NOTIFICATION) {
     return {
       ...state,
       notify: action.payload
     };
-  } else if (action.type === "UNNOTIFICATION") {
+  } else if (action.type === actionTypes.UNNOTIFICATION) {
     return state;
   }
 

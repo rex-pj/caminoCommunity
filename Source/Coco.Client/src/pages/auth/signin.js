@@ -43,6 +43,13 @@ class SingnInPage extends Component {
       })
       .then(result => {
         const { data } = result;
+        const { signin } = data;
+
+        if (!signin || !signin.isSuccess) {
+          this.props.notifyError(data.signin.errors, this.context.lang);
+          return;
+        }
+
         setLogin(data.signin.authenticatorToken);
         this.props.history.push("/");
       })
