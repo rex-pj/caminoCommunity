@@ -7,6 +7,7 @@ import UserContext from "../../utils/Context/UserContext";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { raiseError } from "../../store/notify";
+import { setLogin } from "../../services/AuthService";
 
 class SingnInPage extends Component {
   constructor(props) {
@@ -41,6 +42,8 @@ class SingnInPage extends Component {
         }
       })
       .then(result => {
+        const { data } = result;
+        setLogin(data.signin.authenticatorToken);
         this.props.history.push("/");
       })
       .catch(error => {
@@ -76,7 +79,7 @@ const mapDispatchToProps = dispatch => {
         errors.forEach(item => {
           raiseError(
             dispatch,
-            "Đăng ký KHÔNG thành công",
+            "Đăng nhập KHÔNG thành công",
             getError(item.extensions.code, lang),
             "/auth/signin"
           );
