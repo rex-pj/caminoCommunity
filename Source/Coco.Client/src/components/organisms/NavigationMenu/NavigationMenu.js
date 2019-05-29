@@ -1,7 +1,8 @@
-import React, { Fragment } from "react";
-import { withRouter } from "react-router-dom";
+import React from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
+import UserContext from "../../../utils/Context/UserContext";
+import ProfileNavigation from "./ProfileNavigation";
 
 const List = styled.ul`
   list-style: none;
@@ -44,25 +45,25 @@ const AuthButton = styled(RouterLinkButton)`
   }
 `;
 
-export default withRouter(props => {
-  const { location } = props;
-  const { pathname } = location;
+export default props => {
   return (
-    <List className={props.className}>
-      {pathname !== "/auth/signup" ? (
-        <ListItem>
-          <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
-        </ListItem>
-      ) : null}
+    <UserContext.Consumer>
+      {({ isLogin }) =>
+        isLogin ? (
+          <ProfileNavigation />
+        ) : (
+          <List className={props.className}>
+            <ListItem>
+              <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
+            </ListItem>
 
-      {pathname !== "/auth/signin" ? (
-        <Fragment>
-          <Devided />
-          <ListItem>
-            <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
-          </ListItem>
-        </Fragment>
-      ) : null}
-    </List>
+            <Devided />
+            <ListItem>
+              <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
+            </ListItem>
+          </List>
+        )
+      }
+    </UserContext.Consumer>
   );
-});
+};

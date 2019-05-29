@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import SearchBar from "../../Search/SearchBar";
 import NavigationMenu from "../../NavigationMenu/NavigationMenu";
-import UserContext from "../../../../utils/Context/UserContext";
 
 const NavRoot = styled.nav`
   background-color: ${p => p.theme.color.primary};
@@ -17,7 +16,7 @@ const NavMenu = styled(NavigationMenu)`
   float: right;
 `;
 
-function Header(props, context) {
+function Header() {
   return (
     <NavRoot className="navbar">
       <div className="container-fluid">
@@ -31,11 +30,7 @@ function Header(props, context) {
           </div>
           <div className="col offset-1 offset-sm-0 offset-md-0 offset-lg-1">
             <div className="clearfix">
-              <UserContext.Consumer>
-                {({ isLogin, authenticatorToken }) =>
-                  isLogin ? <div>Is Login</div> : <NavMenu />
-                }
-              </UserContext.Consumer>
+              <NavMenu />
             </div>
           </div>
         </div>
