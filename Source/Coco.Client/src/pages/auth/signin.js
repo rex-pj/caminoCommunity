@@ -51,6 +51,7 @@ class SingnInPage extends Component {
         }
 
         setLogin(data.signin.authenticatorToken);
+        this.context.login();
         this.props.history.push("/");
       })
       .catch(error => {
