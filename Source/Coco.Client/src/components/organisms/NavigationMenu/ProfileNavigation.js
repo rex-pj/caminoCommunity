@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
 import { Button } from "../../atoms/Buttons";
 import { ImageCircle } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import DropdownButton from "../../molecules/DropdownButton";
 
 const Root = styled.div`
   float: right;
@@ -17,7 +18,7 @@ const ProfileButton = styled(RouterLinkButton)`
   }
 `;
 
-const PorfileButotnGroup = styled(ButtonGroup)`
+const PorfileButtonGroup = styled(ButtonGroup)`
   ${ProfileButton},
   ${Button} {
     border: 1px solid ${p => p.theme.color.secondary};
@@ -31,6 +32,17 @@ const PorfileButotnGroup = styled(ButtonGroup)`
       color: ${p => p.theme.color.light};
     }
   }
+
+  .profile-dropdown {
+    ${Button} {
+      border-left: 0;
+    }
+
+    button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
 `;
 
 const UserName = styled.span`
@@ -38,10 +50,29 @@ const UserName = styled.span`
   color: inherit;
 `;
 
-export default () => {
+export default function() {
+  const [profileState, setProfileState] = useState({ dropdowns: null });
+
+  useEffect(() => {
+    if (profileState.dropdowns === null) {
+      setProfileState({
+        dropdowns: [
+          {
+            name: "Thông tin cá nhân",
+            url: "/trungle.it"
+          },
+          {
+            name: "Thoát",
+            url: "/auth/signout"
+          }
+        ]
+      });
+    }
+  });
+
   return (
     <Root>
-      <PorfileButotnGroup>
+      <PorfileButtonGroup>
         <ProfileButton to="/trungle.it">
           <ImageCircle
             src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
@@ -49,10 +80,13 @@ export default () => {
           />
           <UserName>Lê Trung</UserName>
         </ProfileButton>
-        <Button>
-          <FontAwesomeIcon icon="caret-down" />
-        </Button>
-      </PorfileButotnGroup>
+        {profileState.dropdowns ? (
+          <DropdownButton
+            className="profile-dropdown"
+            dropdown={profileState.dropdowns}
+          />
+        ) : null}
+      </PorfileButtonGroup>
     </Root>
   );
-};
+}

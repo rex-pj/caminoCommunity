@@ -48,7 +48,8 @@ class App extends Component {
         lang: "vn",
         authenticatorToken: loggedUser.tokenkey,
         isLogin: loggedUser.isLogin,
-        login: this.login
+        login: this.login,
+        logout: this.logout
       };
     });
   };
@@ -65,7 +66,17 @@ class App extends Component {
     });
   };
 
+  logout = () => {
+    this.setState(() => {
+      return {
+        authenticatorToken: null,
+        isLogin: false
+      };
+    });
+  };
+
   render() {
+    console.log("logout");
     return (
       <UserContext.Provider value={this.state}>
         <Provider store={store}>
@@ -136,7 +147,11 @@ class App extends Component {
                 path="/auth/signup"
                 component={() => <AsyncPage page="./pages/auth/signup" />}
               />
-
+              <DefaultLayout
+                exact={true}
+                path="/auth/signout"
+                component={() => <AsyncPage page="./pages/auth/signout" />}
+              />
               <DefaultLayout
                 exact={true}
                 path={["/feeds", "/feeds/page/:pageNumber"]}

@@ -215,6 +215,10 @@ class ThumbnailSlider extends Component {
     );
   }
 
+  componentWillUnmount() {
+    this.currentRef.current.removeEventListener("keydown", this.onChangeImage);
+  }
+
   onChangeImage = e => {
     var originator = e.keyCode || e.which;
 
