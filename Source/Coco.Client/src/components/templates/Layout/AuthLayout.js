@@ -29,7 +29,7 @@ const Wrap = styled.div`
   }
 `;
 
-export default ({ component: Component, ...rest }) => {
+function AuthLayout({ component: Component, ...rest }) {
   return (
     <MasterLayout
       {...rest}
@@ -44,4 +44,6 @@ export default ({ component: Component, ...rest }) => {
       )}
     />
   );
-};
+}
+
+export default AuthLayout;

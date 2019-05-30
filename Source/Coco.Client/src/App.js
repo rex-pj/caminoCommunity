@@ -76,7 +76,6 @@ class App extends Component {
   };
 
   render() {
-    console.log("logout");
     return (
       <UserContext.Provider value={this.state}>
         <Provider store={store}>
@@ -126,7 +125,6 @@ class App extends Component {
                   <AsyncPage page="./pages/farm-groups/detail" />
                 )}
               />
-
               <DefaultLayout
                 exact={true}
                 path={["/news", "/news/page/:pageNumber"]}
@@ -147,7 +145,7 @@ class App extends Component {
                 path="/auth/signup"
                 component={() => <AsyncPage page="./pages/auth/signup" />}
               />
-              <DefaultLayout
+              <AuthLayout
                 exact={true}
                 path="/auth/signout"
                 component={() => <AsyncPage page="./pages/auth/signout" />}
