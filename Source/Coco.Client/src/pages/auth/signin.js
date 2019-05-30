@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
-import client from "../../utils/GraphQL/GraphQLClient";
+import { authClient } from "../../utils/GraphQL/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQL/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
@@ -15,7 +15,7 @@ class SingnInPage extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormEnabled: false
+      isFormEnabled: true
     };
   }
 
@@ -34,7 +34,11 @@ class SingnInPage extends Component {
   };
 
   signIn = async data => {
-    await client
+    if (this._isMounted) {
+      this.setState({ isFormEnabled: false });
+    }
+
+    await authClient
       .query({
         query: SIGNIN,
         variables: {
@@ -47,10 +51,13 @@ class SingnInPage extends Component {
 
         if (!signin || !signin.isSuccess) {
           this.props.notifyError(data.signin.errors, this.context.lang);
+          if (this._isMounted) {
+            this.setState({ isFormEnabled: true });
+          }
           return;
         }
 
-        setLogin(data.signin.authenticatorToken);
+        setLogin(data.signin.userInfo, data.signin.authenticatorToken);
         this.context.login();
         this.props.history.push("/");
       })

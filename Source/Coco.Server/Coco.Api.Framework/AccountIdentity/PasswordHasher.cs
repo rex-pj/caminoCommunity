@@ -118,6 +118,7 @@ namespace Coco.Api.Framework.AccountIdentity
                     return PasswordVerificationResult.Failed; // unknown format marker
             }
         }
+
         #endregion
 
         #region Privates       
@@ -148,6 +149,25 @@ namespace Coco.Api.Framework.AccountIdentity
             return outputBytes;
         }
 
+        private static byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
+        {
+            const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
+            const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
+            const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
+            const int SaltSize = 128 / 8; // 128 bits
+
+            // Produce a version 2 (see comment above) text hash.
+            byte[] salt = new byte[SaltSize];
+            rng.GetBytes(salt);
+            byte[] subkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
+
+            var outputBytes = new byte[1 + SaltSize + Pbkdf2SubkeyLength];
+            outputBytes[0] = 0x00; // format marker
+            Buffer.BlockCopy(salt, 0, outputBytes, 1, SaltSize);
+            Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
+            return outputBytes;
+        }
+
         private static bool VerifyHashedPasswordV2(byte[] hashedPassword, string password)
         {
             const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
@@ -174,7 +194,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
         private static bool VerifyHashedPasswordV3(byte[] hashedPassword, string password, out int iterCount)
         {
-            iterCount = default(int);
+            iterCount = default;
 
             try
             {

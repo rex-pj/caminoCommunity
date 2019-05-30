@@ -20,13 +20,13 @@ const ButtonCaret = styled(Button)`
 const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: 100%;
+  top: calc(100% + ${p => p.theme.size.exTiny});
   background: ${p => p.theme.color.white};
   box-shadow: ${p => p.theme.shadow.BoxShadow};
   min-width: calc(${p => p.theme.size.large} * 3);
   border-radius: ${p => p.theme.borderRadius.normal};
-  border-top-right-radius: 0;
   border: 1px solid ${p => p.theme.color.exLight};
+  padding: ${p => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
     margin-bottom: 0;
@@ -41,6 +41,18 @@ const DropdownList = styled(Dropdown)`
     padding: ${p => p.theme.size.distance};
     border-radius: 0;
     font-weight: 600;
+  }
+
+  :after {
+    position: absolute;
+    top: -${p => p.theme.size.exTiny};
+    right: ${p => p.theme.size.exTiny};
+    content: " ";
+    width: 0;
+    height: 0;
+    border-left: ${p => p.theme.size.exTiny} solid transparent;
+    border-right: ${p => p.theme.size.exTiny} solid transparent;
+    border-bottom: ${p => p.theme.size.exTiny} solid ${p => p.theme.color.white};
   }
 `;
 

@@ -101,7 +101,8 @@ export default class SignUpForm extends Component {
     this.state = {
       birthDate: null,
       isFormValid: false,
-      errors: {}
+      errors: {},
+      shouldRender: false
     };
 
     this.formData = SignupModel;
@@ -134,6 +135,12 @@ export default class SignUpForm extends Component {
     this.formData[name].isValid = checkValidity(this.formData, value, name);
 
     this.formData[name].value = value;
+
+    if (!!this._isMounted) {
+      this.setState({
+        shouldRender: true
+      });
+    }
   };
 
   handleBirthDateBlur = evt => {
@@ -147,9 +154,11 @@ export default class SignUpForm extends Component {
       errors["birthDate"].isValid = true;
     }
 
-    this.setState({
-      errors
-    });
+    if (!!this._isMounted) {
+      this.setState({
+        errors
+      });
+    }
   };
 
   handleBirthdateChange = value => {
@@ -304,7 +313,7 @@ export default class SignUpForm extends Component {
               <FormFooter>
                 <SubmitButton
                   type="submit"
-                  disabled={!this.props.isFormEnabled && !isFormValid}
+                  disabled={!this.props.isFormEnabled || !isFormValid}
                 >
                   Ghi danh
                 </SubmitButton>

@@ -23,6 +23,7 @@ namespace Coco.Api.Framework
             services.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>();
             services.AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>();
             services.AddTransient<ILookupProtector, SillyEncryptor>();
+            services.AddTransient<ITextCrypter, TextCrypter>();
         }
     }
 }

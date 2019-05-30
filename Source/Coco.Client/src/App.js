@@ -9,7 +9,8 @@ import {
   ProductPageLayout,
   FrameLayout,
   AuthLayout,
-  ProfileLayout
+  ProfileLayout,
+  PromptLayout
 } from "./components/templates/Layout";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -37,7 +38,10 @@ class App extends Component {
     this.state = {
       isLogin: false,
       authenticatorToken: null,
-      lang: "vn"
+      lang: "vn",
+      userInfo: {},
+      login: this.login,
+      logout: this.logout
     };
   }
 
@@ -48,8 +52,10 @@ class App extends Component {
         lang: "vn",
         authenticatorToken: loggedUser.tokenkey,
         isLogin: loggedUser.isLogin,
-        login: this.login,
-        logout: this.logout
+        userInfo: {
+          displayName: loggedUser.displayName,
+          userHashedId: loggedUser.userHashedId
+        }
       };
     });
   };
@@ -62,21 +68,27 @@ class App extends Component {
     const loggedUser = getUserInfo();
     this.setState({
       authenticatorToken: loggedUser.tokenkey,
-      isLogin: loggedUser.isLogin
+      isLogin: loggedUser.isLogin,
+      userInfo: {
+        displayName: loggedUser.displayName,
+        userHashedId: loggedUser.userHashedId
+      }
     });
   };
 
   logout = () => {
-    this.setState(() => {
-      return {
-        authenticatorToken: null,
-        isLogin: false
-      };
-    });
+    if (this.state.isLogin) {
+      this.setState(() => {
+        return {
+          authenticatorToken: null,
+          isLogin: false,
+          userInfo: {}
+        };
+      });
+    }
   };
 
   render() {
-    console.log("logout");
     return (
       <UserContext.Provider value={this.state}>
         <Provider store={store}>
@@ -126,7 +138,6 @@ class App extends Component {
                   <AsyncPage page="./pages/farm-groups/detail" />
                 )}
               />
-
               <DefaultLayout
                 exact={true}
                 path={["/news", "/news/page/:pageNumber"]}
@@ -147,7 +158,7 @@ class App extends Component {
                 path="/auth/signup"
                 component={() => <AsyncPage page="./pages/auth/signup" />}
               />
-              <DefaultLayout
+              <PromptLayout
                 exact={true}
                 path="/auth/signout"
                 component={() => <AsyncPage page="./pages/auth/signout" />}
@@ -164,6 +175,10 @@ class App extends Component {
               />
               <ProfileLayout
                 path="/:id"
+                component={() => <AsyncPage page="./pages/user/profile" />}
+              />
+              <ProfileLayout
+                path="/profile/:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
             </Switch>

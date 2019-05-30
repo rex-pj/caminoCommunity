@@ -43,7 +43,6 @@ namespace Coco.Api.Framework.AccountIdentity
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly ILookupNormalizer _lookupNormalizer;
         private readonly IServiceProvider _services;
-        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
@@ -63,7 +62,6 @@ namespace Coco.Api.Framework.AccountIdentity
             this.UserEmailStore = userEmailStore;
             this.UserPasswordStore = userPasswordStore;
 
-            _configuration = configuration;
             _services = services;
             _passwordHasher = passwordHasher;
             _lookupNormalizer = lookupNormalizer;

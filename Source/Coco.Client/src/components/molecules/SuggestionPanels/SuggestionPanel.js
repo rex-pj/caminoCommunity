@@ -9,7 +9,7 @@ import { AnchorLink } from "../../atoms/Links";
 import Overlay from "../../atoms/Overlay";
 
 const ListGroupItem = styled.li`
-  background-color: ${p => p.theme.color.white};
+  padding-bottom: ${p => p.theme.size.tiny};
 
   &.first-item .thumbnail > img {
     border-top-left-radius: ${p => p.theme.borderRadius.normal};

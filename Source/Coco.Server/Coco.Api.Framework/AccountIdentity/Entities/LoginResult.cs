@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Coco.Api.Framework.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Coco.Api.Framework.AccountIdentity.Entities
@@ -8,6 +9,7 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         public string AuthenticatorToken { get; set; }
         public DateTime? Expiration { get; set; }
         public bool IsSuccess { get; set; }
+        public UserInfo UserInfo { get; internal set; }
         public List<IdentityError> Errors { get; set; }
 
         public LoginResult(bool isSuccess = false)

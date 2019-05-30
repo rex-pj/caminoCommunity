@@ -7,12 +7,16 @@ using System.Threading;
 using System;
 using Coco.Entities.Model.Account;
 using Microsoft.EntityFrameworkCore;
+using Coco.Api.Framework.Mapping;
+using Microsoft.Extensions.Configuration;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
+        private readonly ITextCrypter _textCrypter;
+        private readonly string _textCrypterSaltKey;
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
         /// </summary>
@@ -21,9 +25,13 @@ namespace Coco.Api.Framework.AccountIdentity
         private bool _isDisposed;
 
         public UserStore(IAccountBusiness accountBusiness,
+            ITextCrypter textCrypter,
+            IConfiguration configuration,
             IdentityErrorDescriber errors = null)
         {
+            _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _accountBusiness = accountBusiness;
+            _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
 
@@ -93,10 +101,12 @@ namespace Coco.Api.Framework.AccountIdentity
                 var userModel = GetUserEntity(user);
 
                 var result = await _accountBusiness.UpdateAsync(userModel);
+                string userHashedId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
                 return new LoginResult(true) {
                     AuthenticatorToken = result.AuthenticatorToken,
-                    Expiration = result.Expiration
+                    Expiration = result.Expiration,
+                    UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userHashedId)
                 };
             }
             catch (DbUpdateConcurrencyException)

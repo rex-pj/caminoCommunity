@@ -3,6 +3,7 @@ import React from "react";
 let userData = {
   lang: "vn",
   authenticatorToken: null,
+  userInfo: {},
   isLogin: false
 };
 
