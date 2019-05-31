@@ -4,7 +4,6 @@ import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
 import { Button } from "../../atoms/Buttons";
 import { ImageCircle } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
-
 import DropdownButton from "../../molecules/DropdownButton";
 
 const Root = styled.div`
@@ -24,6 +23,7 @@ const PorfileButtonGroup = styled(ButtonGroup)`
     border: 1px solid ${p => p.theme.color.secondary};
     font-size: ${p => p.theme.fontSize.exSmall};
     padding: 3px ${p => p.theme.size.exTiny};
+    margin: 1px 0;
     font-weight: 600;
     height: ${p => p.theme.size.normal};
     vertical-align: middle;

@@ -18,15 +18,13 @@ class SingnOutPage extends Component {
   componentDidMount() {
     this._isMounted = true;
 
-    if (!!this.context.isLogin) {
-      const { history } = this.props;
-      logOut();
-      this.context.logout();
+    logOut();
+    this.context.logout();
 
-      setTimeout(function() {
-        history.push("/");
-      }, 1000);
-    }
+    const { history } = this.props;
+    setTimeout(function() {
+      history.push("/");
+    }, 1000);
   }
 
   componentWillUnmount() {

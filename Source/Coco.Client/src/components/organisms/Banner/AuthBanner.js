@@ -4,6 +4,7 @@ import { Image } from "../../atoms/Images";
 import { PageInfo } from "../../../utils/Constant";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AnchorLink } from "../../atoms/Links";
 
 const Root = styled.div`
   background: url(${`${process.env.PUBLIC_URL}/images/auth-bg.jpg`}) no-repeat
@@ -19,12 +20,12 @@ const Root = styled.div`
 const Instruction = styled.div`
   text-align: center;
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 50%;
+  bottom: 50%;
   left: 0;
   right: 0;
   margin: auto ${p => p.theme.size.distance};
-  height: 180px;
+  min-height: 180px;
   padding: ${p => p.theme.size.distance};
   background: ${p => p.theme.rgbaColor.light};
   border-radius: ${p => p.theme.borderRadius.medium};
@@ -61,10 +62,20 @@ const Instruction = styled.div`
     font-size: ${p => p.theme.fontSize.small};
     font-weight: 600;
   }
+
+  a {
+    color: ${p => p.theme.color.white};
+    font-size: ${p => p.theme.fontSize.small};
+    font-weight: 600;
+    font-size: ${p => p.theme.fontSize.normal};
+    margin-top: ${p => p.theme.size.exTiny};
+    display: block;
+    text-decoration: underline;
+  }
 `;
 
 export default function(props) {
-  const { imageUrl, icon, title, instruction } = props;
+  const { imageUrl, icon, title, instruction, actionUrl, actionText } = props;
   return (
     <Root>
       <Instruction>
@@ -77,6 +88,9 @@ export default function(props) {
         {icon ? <FontAwesomeIcon icon={icon} /> : null}
         <SecondaryHeading>{title}</SecondaryHeading>
         <p>{instruction}</p>
+        {actionUrl && actionText ? (
+          <AnchorLink to={actionUrl}>{actionText}</AnchorLink>
+        ) : null}
       </Instruction>
     </Root>
   );

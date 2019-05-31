@@ -1,46 +1,28 @@
 import React from "react";
-import styled from "styled-components";
-import MasterLayout from "./MasterLayout";
-
-const Root = styled.div`
-  background-color: ${p => p.theme.color.exLight};
-  height: 100%;
-`;
-
-const Container = styled.div`
-  position: relative;
-  height: 100%;
-  width: 100%;
-  padding-top: 50px;
-`;
-
-const Wrap = styled.div`
-  width: 750px;
-  max-width: 100%;
-  background-color: ${p => p.theme.color.primary};
-  min-height: 500px;
-  border-radius: ${p => p.theme.borderRadius.medium};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  margin: auto;
-  overflow: hidden;
-
-  .row {
-    height: 100%;
-  }
-`;
+import PromptLayout from "./PromptLayout";
+import UserContext from "../../../utils/Context/UserContext";
+import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 
 function AuthLayout({ component: Component, ...rest }) {
   return (
-    <MasterLayout
+    <PromptLayout
       {...rest}
       component={matchProps => (
-        <Root>
-          <Container>
-            <Wrap>
+        <UserContext.Consumer>
+          {({ isLogin }) =>
+            isLogin ? (
+              <AuthBanner
+                icon="exclamation-triangle"
+                title="Bạn đã đăng nhập rồi"
+                instruction="Hãy trở lại trang chủ để theo dõi nhiều nhà nông khác"
+                actionUrl="/"
+                actionText="Trở về trang chủ"
+              />
+            ) : (
               <Component {...matchProps} />
-            </Wrap>
-          </Container>
-        </Root>
+            )
+          }
+        </UserContext.Consumer>
       )}
     />
   );

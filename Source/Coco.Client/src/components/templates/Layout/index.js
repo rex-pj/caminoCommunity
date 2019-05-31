@@ -7,6 +7,7 @@ import FrameLayout from "./FrameLayout";
 import AuthLayout from "./AuthLayout";
 import ProfileLayout from "./ProfileLayout";
 import MasterLayout from "./MasterLayout";
+import PromptLayout from "./PromptLayout";
 
 export {
   FrameLayout,
@@ -17,5 +18,6 @@ export {
   ProductPageLayout,
   AuthLayout,
   ProfileLayout,
-  MasterLayout
+  MasterLayout,
+  PromptLayout
 };

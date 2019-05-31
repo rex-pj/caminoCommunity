@@ -9,7 +9,8 @@ import {
   ProductPageLayout,
   FrameLayout,
   AuthLayout,
-  ProfileLayout
+  ProfileLayout,
+  PromptLayout
 } from "./components/templates/Layout";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -67,12 +68,14 @@ class App extends Component {
   };
 
   logout = () => {
-    this.setState(() => {
-      return {
-        authenticatorToken: null,
-        isLogin: false
-      };
-    });
+    if (this.state.isLogin) {
+      this.setState(() => {
+        return {
+          authenticatorToken: null,
+          isLogin: false
+        };
+      });
+    }
   };
 
   render() {
@@ -145,7 +148,7 @@ class App extends Component {
                 path="/auth/signup"
                 component={() => <AsyncPage page="./pages/auth/signup" />}
               />
-              <AuthLayout
+              <PromptLayout
                 exact={true}
                 path="/auth/signout"
                 component={() => <AsyncPage page="./pages/auth/signout" />}
