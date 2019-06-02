@@ -118,6 +118,22 @@ namespace Coco.Api.Framework.AccountIdentity
                     return PasswordVerificationResult.Failed; // unknown format marker
             }
         }
+
+        /// <summary>
+        /// Returns a hashed representation of the supplied <paramref name="text"/> for the specified <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user">The user whose text is to be hashed.</param>
+        /// <param name="text">The text to hash.</param>
+        /// <returns>A hashed representation of the supplied <paramref name="password"/> for the specified <paramref name="user"/>.</returns>
+        public string HashText(string text)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+
+            return Convert.ToBase64String(HashPasswordV2(text, _randomNumber));
+        }
         #endregion
 
         #region Privates       
@@ -145,6 +161,25 @@ namespace Coco.Api.Framework.AccountIdentity
             WriteNetworkByteOrder(outputBytes, 9, (uint)saltSize);
             Buffer.BlockCopy(salt, 0, outputBytes, 13, salt.Length);
             Buffer.BlockCopy(subkey, 0, outputBytes, 13 + saltSize, subkey.Length);
+            return outputBytes;
+        }
+
+        private static byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
+        {
+            const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
+            const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
+            const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
+            const int SaltSize = 128 / 8; // 128 bits
+
+            // Produce a version 2 (see comment above) text hash.
+            byte[] salt = new byte[SaltSize];
+            rng.GetBytes(salt);
+            byte[] subkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
+
+            var outputBytes = new byte[1 + SaltSize + Pbkdf2SubkeyLength];
+            outputBytes[0] = 0x00; // format marker
+            Buffer.BlockCopy(salt, 0, outputBytes, 1, SaltSize);
+            Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
             return outputBytes;
         }
 

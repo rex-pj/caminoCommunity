@@ -38,7 +38,10 @@ class App extends Component {
     this.state = {
       isLogin: false,
       authenticatorToken: null,
-      lang: "vn"
+      lang: "vn",
+      userInfo: {},
+      login: this.login,
+      logout: this.logout
     };
   }
 
@@ -49,8 +52,10 @@ class App extends Component {
         lang: "vn",
         authenticatorToken: loggedUser.tokenkey,
         isLogin: loggedUser.isLogin,
-        login: this.login,
-        logout: this.logout
+        userInfo: {
+          displayName: loggedUser.displayName,
+          userHashedId: loggedUser.userHashedId
+        }
       };
     });
   };
@@ -63,7 +68,11 @@ class App extends Component {
     const loggedUser = getUserInfo();
     this.setState({
       authenticatorToken: loggedUser.tokenkey,
-      isLogin: loggedUser.isLogin
+      isLogin: loggedUser.isLogin,
+      userInfo: {
+        displayName: loggedUser.displayName,
+        userHashedId: loggedUser.userHashedId
+      }
     });
   };
 
@@ -72,7 +81,8 @@ class App extends Component {
       this.setState(() => {
         return {
           authenticatorToken: null,
-          isLogin: false
+          isLogin: false,
+          userInfo: {}
         };
       });
     }
@@ -165,6 +175,10 @@ class App extends Component {
               />
               <ProfileLayout
                 path="/:id"
+                component={() => <AsyncPage page="./pages/user/profile" />}
+              />
+              <ProfileLayout
+                path="/profile/:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
             </Switch>

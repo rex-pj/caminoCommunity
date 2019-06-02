@@ -14,7 +14,7 @@ class SignUpPage extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormEnabled: false
+      isFormEnabled: true
     };
   }
 
@@ -33,6 +33,10 @@ class SignUpPage extends Component {
   };
 
   signUp = async data => {
+    if (this._isMounted) {
+      this.setState({ isFormEnabled: true });
+    }
+
     await client
       .mutate({
         mutation: ADD_USER,

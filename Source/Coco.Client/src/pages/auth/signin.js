@@ -15,7 +15,7 @@ class SingnInPage extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormEnabled: false
+      isFormEnabled: true
     };
   }
 
@@ -34,6 +34,10 @@ class SingnInPage extends Component {
   };
 
   signIn = async data => {
+    if (this._isMounted) {
+      this.setState({ isFormEnabled: false });
+    }
+
     await client
       .query({
         query: SIGNIN,
@@ -47,10 +51,13 @@ class SingnInPage extends Component {
 
         if (!signin || !signin.isSuccess) {
           this.props.notifyError(data.signin.errors, this.context.lang);
+          if (this._isMounted) {
+            this.setState({ isFormEnabled: true });
+          }
           return;
         }
 
-        setLogin(data.signin.authenticatorToken);
+        setLogin(data.signin.userInfo, data.signin.authenticatorToken);
         this.context.login();
         this.props.history.push("/");
       })

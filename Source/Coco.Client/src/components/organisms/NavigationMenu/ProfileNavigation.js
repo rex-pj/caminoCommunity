@@ -50,7 +50,7 @@ const UserName = styled.span`
   color: inherit;
 `;
 
-export default function() {
+export default function(props) {
   const [profileState, setProfileState] = useState({ dropdowns: null });
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function() {
             src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
             alt=""
           />
-          <UserName>Lê Trung</UserName>
+          <UserName>{props.userInfo.displayName}</UserName>
         </ProfileButton>
         {profileState.dropdowns ? (
           <DropdownButton

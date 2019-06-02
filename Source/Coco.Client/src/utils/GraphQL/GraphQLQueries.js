@@ -15,6 +15,10 @@ export const ADD_USER = gpl`
 export const SIGNIN = gpl`
 query signin($signinModel: SigninInputType!){
   signin(signinModel: $signinModel){
+    userInfo {
+      displayName,
+      userHashedId
+    },
     authenticatorToken,
     isSuccess,
     errors {

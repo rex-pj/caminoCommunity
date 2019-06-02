@@ -25,6 +25,10 @@ const Textbox = styled(TextboxSecondary)`
   :focus {
     background-color: ${p => p.theme.color.moreDark};
   }
+
+  &.invalid {
+    border: 1px solid ${p => p.theme.color.dangerLight};
+  }
 `;
 
 const FormFooter = styled(PanelFooter)`
@@ -49,6 +53,12 @@ const SubmitButton = styled(Button)`
   :hover {
     color: ${p => p.theme.color.light};
   }
+
+  :disabled {
+    background-color: ${p => p.theme.color.secondary};
+    color: ${p => p.theme.color.normal};
+    cursor: auto;
+  }
 `;
 
 export default class extends Component {
@@ -57,7 +67,8 @@ export default class extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormValid: false
+      isFormValid: false,
+      shouldRender: false
     };
 
     this.formData = SigninModel;
@@ -88,8 +99,13 @@ export default class extends Component {
 
     // Validate when input
     this.formData[name].isValid = checkValidity(this.formData, value, name);
-
     this.formData[name].value = value;
+
+    if (!!this._isMounted) {
+      this.setState({
+        shouldRender: true
+      });
+    }
   };
 
   checkIsFormValid = () => {
@@ -130,6 +146,8 @@ export default class extends Component {
   };
 
   render() {
+    const isFormValid = this.checkIsFormValid();
+
     return (
       <form onSubmit={e => this.onSignin(e)} method="POST">
         <div className="row no-gutters">
@@ -164,7 +182,12 @@ export default class extends Component {
                 />
               </FormRow>
               <FormFooter>
-                <SubmitButton type="submit">Đăng Nhập</SubmitButton>
+                <SubmitButton
+                  disabled={!this.props.isFormEnabled || !isFormValid}
+                  type="submit"
+                >
+                  Đăng Nhập
+                </SubmitButton>
               </FormFooter>
             </PanelBody>
           </div>
