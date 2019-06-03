@@ -7,7 +7,7 @@ namespace Api.Auth.Controllers
 {
     [ApiController]
     [Route("api/graphql")]
-    public class GraphQLController : BaseGraphQLController
+    public class GraphQLController : GraphQLBaseController
     {
         public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter) :
             base(schema, documentExecuter)

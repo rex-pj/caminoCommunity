@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 namespace Coco.Api.Framework.Controllers
 {
     [ApiController]
-    public class BaseGraphQLController : BaseController
+    [Route("[controller]")]
+    public class GraphQLBaseController : BaseController
     {
         protected readonly ISchema _schema;
         protected readonly IDocumentExecuter _documentExecuter;
 
-        public BaseGraphQLController(ISchema schema, IDocumentExecuter documentExecuter) :
+        public GraphQLBaseController(ISchema schema, IDocumentExecuter documentExecuter) :
             base()
         {
             _schema = schema;

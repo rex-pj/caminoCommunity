@@ -9,6 +9,8 @@ import {
   setLocalStorage,
   getLocalStorageByKey
 } from "./StorageService";
+// import { authorizedClient } from "../utils/GraphQL/GraphQLClient";
+import { GET_LOGGED_USER } from "../utils/GraphQL/GraphQLQueries";
 
 function removeUserToken() {
   removeLocalStorage(AUTH_KEY);
@@ -22,11 +24,22 @@ function getUserToken() {
   return getLocalStorageByKey(AUTH_KEY);
 }
 
-function getUserInfo() {
+const getUserInfo = async () => {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const displayName = getLocalStorageByKey(AUTH_DISPLAY_NAME);
   const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
+
+  // await authorizedClient
+  //   .query({
+  //     query: GET_LOGGED_USER
+  //   })
+  //   .then(result => {
+  //     console.log(result);
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   });
 
   return {
     isLogin,
@@ -34,7 +47,7 @@ function getUserInfo() {
     displayName,
     userHashedId
   };
-}
+};
 
 function setLogin(userInfo, token) {
   if (userInfo) {

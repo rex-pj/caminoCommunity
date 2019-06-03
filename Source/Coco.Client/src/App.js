@@ -19,6 +19,7 @@ import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
 import { getUserInfo } from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
+import LoggedUser from "./utils/Context/LoggedUser";
 
 // Redux
 const rootReducer = combineReducers({
@@ -35,18 +36,11 @@ library.add(fas);
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isLogin: false,
-      authenticatorToken: null,
-      lang: "vn",
-      userInfo: {},
-      login: this.login,
-      logout: this.logout
-    };
+    this.state = { ...LoggedUser, login: this.login, logout: this.logout };
   }
 
-  initializeSiteContext = () => {
-    const loggedUser = getUserInfo();
+  initializeSiteContext = async () => {
+    const loggedUser = await getUserInfo();
     this.setState(() => {
       return {
         lang: "vn",
@@ -64,8 +58,8 @@ class App extends Component {
     this.initializeSiteContext();
   }
 
-  login = () => {
-    const loggedUser = getUserInfo();
+  login = async () => {
+    const loggedUser = await getUserInfo();
     this.setState({
       authenticatorToken: loggedUser.tokenkey,
       isLogin: loggedUser.isLogin,

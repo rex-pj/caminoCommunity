@@ -10,14 +10,12 @@ using GraphQL;
 using Api.Auth.GraphQLMutations;
 using GraphQL.Types;
 using Api.Auth.GraphQLSchema;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Api.Auth.GraphQLTypes.InputTypes;
 using Api.Auth.GraphQLTypes.ResultTypes;
 using Api.Auth.GraphQLQueries;
 using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework;
+using Api.Auth.GraphQLResolver;
 
 namespace Api.Auth
 {
@@ -74,29 +72,11 @@ namespace Api.Auth
                 options.User.RequireUniqueEmail = true;
             });
 
-            var jwtSecretKey = _configuration["Jwt:SecretKey"];
-
-            services.AddAuthentication(x =>
-            {
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x => {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecretKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
-
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
+            services.AddSingleton<AccountResolver>();
+
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
             services.AddSingleton<RegisterInputType>();
             services.AddSingleton<SigninInputType>();
