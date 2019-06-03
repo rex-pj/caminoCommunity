@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
-import client from "../../utils/GraphQL/GraphQLClient";
+import { authClient } from "../../utils/GraphQL/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQL/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
@@ -38,7 +38,7 @@ class SingnInPage extends Component {
       this.setState({ isFormEnabled: false });
     }
 
-    await client
+    await authClient
       .query({
         query: SIGNIN,
         variables: {

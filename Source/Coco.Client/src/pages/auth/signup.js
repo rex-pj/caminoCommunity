@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { raiseError } from "../../store/notify";
-import client from "../../utils/GraphQL/GraphQLClient";
+import { authClient } from "../../utils/GraphQL/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQL/GraphQLQueries";
 import { getError } from "../../utils/Helper";
@@ -37,7 +37,7 @@ class SignUpPage extends Component {
       this.setState({ isFormEnabled: true });
     }
 
-    await client
+    await authClient
       .mutate({
         mutation: ADD_USER,
         variables: {

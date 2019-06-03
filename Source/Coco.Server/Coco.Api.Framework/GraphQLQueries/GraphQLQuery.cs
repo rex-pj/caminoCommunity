@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace Api.Auth.GraphQLQueries
+namespace Coco.Api.Framework.GraphQLQueries
 {
     public class GraphQLQuery
     {

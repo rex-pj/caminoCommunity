@@ -119,21 +119,6 @@ namespace Coco.Api.Framework.AccountIdentity
             }
         }
 
-        /// <summary>
-        /// Returns a hashed representation of the supplied <paramref name="text"/> for the specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose text is to be hashed.</param>
-        /// <param name="text">The text to hash.</param>
-        /// <returns>A hashed representation of the supplied <paramref name="password"/> for the specified <paramref name="user"/>.</returns>
-        public string HashText(string text)
-        {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-
-            return Convert.ToBase64String(HashPasswordV2(text, _randomNumber));
-        }
         #endregion
 
         #region Privates       
@@ -209,7 +194,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
         private static bool VerifyHashedPasswordV3(byte[] hashedPassword, string password, out int iterCount)
         {
-            iterCount = default(int);
+            iterCount = default;
 
             try
             {

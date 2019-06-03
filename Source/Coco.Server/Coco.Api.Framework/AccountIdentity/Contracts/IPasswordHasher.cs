@@ -7,6 +7,5 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
     {
         string HashPassword(ApplicationUser user, string password);
         PasswordVerificationResult VerifyHashedPassword(ApplicationUser user, string hashedPassword, string providedPassword);
-        string HashText(string text);
     }
 }
