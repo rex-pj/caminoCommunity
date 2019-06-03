@@ -1,12 +1,6 @@
 import React from "react";
+import LoggedUser from "./LoggedUser";
 
-let userData = {
-  lang: "vn",
-  authenticatorToken: null,
-  userInfo: {},
-  isLogin: false
-};
-
-const UserContext = React.createContext(userData);
+const UserContext = React.createContext(LoggedUser);
 
 export default UserContext;

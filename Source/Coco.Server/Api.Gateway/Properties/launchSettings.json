@@ -20,6 +20,7 @@
     "Api.Gateway": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "api/gateway",
       "applicationUrl": "http://localhost:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
