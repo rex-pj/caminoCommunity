@@ -32,16 +32,11 @@ query signin($signinModel: SigninInputType!){
 export const GET_LOGGED_USER = gpl`
 query getLoggedUser {
   getLoggedUser {
-    userInfo {
-      displayName,
-      userHashedId
-    },
-    authenticatorToken,
-    isSuccess,
-    errors {
-      code
-      description
-    }
+    lastname,
+    firstname,
+    email,
+    displayName,
+    userHashedId
   }
 }
 `;

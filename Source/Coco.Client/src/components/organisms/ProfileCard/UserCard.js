@@ -70,7 +70,9 @@ export default function(props) {
           <Menubar menuList={menuList} />
         </StaticBar>
         <Username>
-          <AnchorLink to="/trungle.it">Năm Râu Đen</AnchorLink>
+          <AnchorLink to={`/${props.userInfo.userHashedId}`}>
+            {props.userInfo.displayName}
+          </AnchorLink>
         </Username>
       </BoxShadowBar>
     </Root>

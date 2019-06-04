@@ -38,9 +38,9 @@ namespace Coco.Api.Framework.Attributes
                 }
 
                 //check whether this filter has been overridden for the action
-                AuthorizeAdminAttribute actionFilter = filterContext.ActionDescriptor.FilterDescriptors
+                AuthorizeLoggedUserAttribute actionFilter = filterContext.ActionDescriptor.FilterDescriptors
                     .Where(filterDescriptor => filterDescriptor.Scope == FilterScope.Action)
-                    .Select(filterDescriptor => filterDescriptor.Filter).OfType<AuthorizeAdminAttribute>()
+                    .Select(filterDescriptor => filterDescriptor.Filter).OfType<AuthorizeLoggedUserAttribute>()
                     .FirstOrDefault();
 
                 if (actionFilter != null && actionFilter.IgnoreFilter && _ignoreFilter)

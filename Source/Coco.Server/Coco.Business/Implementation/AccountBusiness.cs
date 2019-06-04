@@ -5,6 +5,7 @@ using Coco.Entities.Model.Account;
 using Coco.UserDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Implementation
@@ -123,9 +124,23 @@ namespace Coco.Business.Implementation
                 .Include(x => x.User)
                 .FirstOrDefaultAsync();
 
-            UserModel userModel = UserEntityToModel(user);
+            var userModel = UserEntityToModel(user);
 
             return userModel;
+        }
+
+        public async Task<UserModel> FindByTokenAsync(long id, string authenticatorToken)
+        {
+            var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id)).Include(x => x.User).FirstOrDefaultAsync();
+
+            if (existUser != null && existUser.User.AuthenticatorToken.Equals(authenticatorToken))
+            {
+                var userModel = UserEntityToModel(existUser);
+
+                return userModel;
+            }
+
+            return new UserModel();
         }
 
         #region Privates

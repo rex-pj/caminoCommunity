@@ -42,6 +42,7 @@ namespace Api.Auth
                 {
                     builder.WithOrigins("http://localhost:3000")
                         .AllowAnyMethod()
+                        //.WithExposedHeaders("HeaderUserHash")
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });

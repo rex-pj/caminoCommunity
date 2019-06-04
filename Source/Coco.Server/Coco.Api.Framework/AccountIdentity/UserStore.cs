@@ -17,6 +17,7 @@ namespace Coco.Api.Framework.AccountIdentity
         private readonly IAccountBusiness _accountBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
+        
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
         /// </summary>
@@ -169,6 +170,21 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
+
+            return await Task.FromResult(GetApplicationUser(userEntity));
+        }
+
+        public async Task<ApplicationUser> FindByTokenAsync(string userIdHased, string authenticatorToken, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
+            var userId = long.Parse(userIdDecrypted);
+
+            var userEntity = await _accountBusiness.FindByTokenAsync(userId, authenticatorToken);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
