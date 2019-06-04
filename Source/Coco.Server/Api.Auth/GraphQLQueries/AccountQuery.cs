@@ -20,9 +20,8 @@ namespace Api.Auth.GraphQLQueries
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<SigninInputType>> { Name = "signinModel" }),
                 resolve: async context => await accountResolver.Signin(context));
 
-            FieldAsync(typeof(SigninResultType), "getLoggedUser",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<SigninInputType>>()),
-                resolve: async context => await accountResolver.Signin(context));
+            FieldAsync(typeof(UserInfoResultType), "getLoggedUser",
+                resolve: async context => await accountResolver.GetLoggedUser(context));
         }
     }
 }

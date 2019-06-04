@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import UserCard from "./UserCard";
 import { PanelDefault } from "../../atoms/Panels";
+import UserContext from "../../../utils/Context/UserContext";
 
 const Root = styled(PanelDefault)`
   position: relative;
@@ -37,7 +38,11 @@ export default class extends Component {
     const { menuList } = this.state;
     return (
       <Root>
-        <Card menuList={menuList} />
+        <UserContext.Consumer>
+          {({ isLogin, userInfo }) =>
+            isLogin ? <Card userInfo={userInfo} menuList={menuList} /> : null
+          }
+        </UserContext.Consumer>
       </Root>
     );
   }
