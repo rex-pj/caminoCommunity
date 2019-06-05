@@ -19,7 +19,7 @@ const ListItem = styled.li`
   }
 
   :hover a {
-    color: ${p => p.theme.color.primary};
+    color: ${p => p.theme.color.brown};
     text-decoration: none;
   }
 

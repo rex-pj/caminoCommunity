@@ -59,7 +59,7 @@ export default function(props) {
         dropdowns: [
           {
             name: "Thông tin cá nhân",
-            url: "/trungle.it"
+            url: `?id=${props.userInfo.userHashedId}`
           },
           {
             name: "Thoát",
@@ -73,7 +73,12 @@ export default function(props) {
   return (
     <Root>
       <PorfileButtonGroup>
-        <ProfileButton to="/trungle.it">
+        <ProfileButton
+          to={{
+            pathname: "/profile",
+            search: `?id=${props.userInfo.userHashedId}`
+          }}
+        >
           <ImageCircle
             src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
             alt=""

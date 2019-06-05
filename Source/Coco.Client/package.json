@@ -17,6 +17,7 @@
     "express": "^4.16.4",
     "graphql": "^14.2.1",
     "pushstate-server": "^1.14.0",
+    "query-string": "^6.5.0",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
     "react-dom": "^16.8.6",

@@ -4,6 +4,7 @@ import Timeline from "./timeline";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
+import queryString from "query-string";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
@@ -27,6 +28,7 @@ export default withRouter(
     constructor(props) {
       super(props);
 
+      var search = queryString.parse(props.location.search);
       const userIdentity = {
         avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         url: "/trungle.it",

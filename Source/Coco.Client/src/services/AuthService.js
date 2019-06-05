@@ -69,6 +69,8 @@ function setLogin(userInfo, token) {
 function logOut() {
   removeUserToken();
   removeLocalStorage(AUTH_LOGIN_KEY);
+  removeLocalStorage(AUTH_DISPLAY_NAME);
+  removeLocalStorage(AUTH_USER_HASHED_ID);
 }
 
 export {

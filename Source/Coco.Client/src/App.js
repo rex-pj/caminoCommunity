@@ -168,11 +168,11 @@ class App extends Component {
                 component={() => <AsyncPage page="./pages/feeds" />}
               />
               <ProfileLayout
-                path="/:id"
+                path="/profile?id=:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
               <ProfileLayout
-                path="/profile/:id"
+                path="/:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
             </Switch>
