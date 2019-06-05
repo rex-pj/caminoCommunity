@@ -30,13 +30,32 @@ query signin($signinModel: SigninInputType!){
 `;
 
 export const GET_LOGGED_USER = gpl`
-query getLoggedUser {
-  getLoggedUser {
+query loggedUser {
+  loggedUser {
     lastname,
     firstname,
     email,
     displayName,
     userHashedId
+  }
+}
+`;
+
+export const GET_FULL_LOGGED_USER_INFO = gpl`
+query fullLoggedUserInfo {
+  fullLoggedUserInfo {
+    lastname,
+    firstname,
+    email,
+    displayName,
+    userHashedId,
+    address,
+    birthDate,
+    countryId,
+    countryName,
+    description,
+    createdDate,
+    phoneNumber
   }
 }
 `;

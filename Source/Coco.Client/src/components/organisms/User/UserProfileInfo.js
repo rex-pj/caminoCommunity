@@ -37,10 +37,6 @@ const ChildItem = styled.li`
 `;
 
 export default class extends Component {
-  componentDidMount() {
-    this.props.loadUserInfo();
-  }
-
   render() {
     const { userInfo } = this.props;
     return (

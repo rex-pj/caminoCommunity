@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { Switch, withRouter } from "react-router-dom";
+import queryString from "query-string";
 import Timeline from "./timeline";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
-import queryString from "query-string";
+import { getFullLoggedUserInfo } from "../../services/AuthService";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
@@ -28,34 +29,40 @@ export default withRouter(
     constructor(props) {
       super(props);
 
-      var search = queryString.parse(props.location.search);
-      const userIdentity = {
-        avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-        url: "/trungle.it",
-        name: "Anh Sáu",
-        coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
-      };
-
       this.state = {
-        userIdentity,
-        userInfo: null
+        userIdentity: {},
+        userInfo: {}
       };
     }
 
-    loadUserInfo = () => {
-      this.setState({
-        userInfo: {
-          blast:
-            "Boru Land is a community platform for the future. This community is a great place to ask questions, request features, report bugs, and chat with the Spectrum team.",
-          address: "189 Hòa Nam, Ninh Hương, Bình Tuy, Việt Nam",
-          country: "Việt Nam",
-          joinedDate: "07/12/2017",
-          birthDate: "22/03/1990",
-          email: "trungle.it@gmail.com",
-          mobile: "0905095576"
-        }
+    async componentDidMount() {
+      var searchParams = queryString.parse(this.props.location.search);
+      const user = await getFullLoggedUserInfo(searchParams.userHashedId);
+
+      const userIdentity = {
+        avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+        url: `profile?id=${user.userHashedId}`,
+        name: user.displayName,
+        coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
+      };
+
+      const userInfo = {
+        blast: user.description,
+        address: user.address,
+        country: user.countryName,
+        joinedDate: user.createdDate,
+        birthDate: user.birthDate,
+        email: user.email,
+        mobile: user.phoneNumber
+      };
+
+      this.setState(() => {
+        return {
+          userIdentity,
+          userInfo
+        };
       });
-    };
+    }
 
     render() {
       const { userIdentity, userInfo } = this.state;
@@ -68,10 +75,7 @@ export default withRouter(
           </CoverNav>
           <div className="row">
             <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
-              <UserProfileInfo
-                userInfo={userInfo}
-                loadUserInfo={this.loadUserInfo}
-              />
+              <UserProfileInfo userInfo={userInfo} />
             </div>
             <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
               <Switch>

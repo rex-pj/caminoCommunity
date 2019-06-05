@@ -337,6 +337,26 @@ namespace Coco.Api.Framework.AccountIdentity
             return user;
         }
 
+        /// <summary>
+        /// Finds and returns a full data of user, if any, who has the specified authenticator token and user id in hashed.
+        /// </summary>
+        /// <param name="authenticatorToken">The authenticator token to search for.</param>
+        /// <param name="userIdHased">The user id hased has been hashed</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
+        /// </returns>
+        public virtual async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased, string authenticatorToken)
+        {
+            ThrowIfDisposed();
+            if (authenticatorToken == null)
+            {
+                throw new ArgumentNullException(nameof(authenticatorToken));
+            }
+
+            var user = await UserStore.GetFullByTokenAsync(userIdHased, authenticatorToken, CancellationToken);
+            return user;
+        }
+
         ///// <summary>
         ///// Should return <see cref="IdentityResult.Success"/> if validation is successful. This is
         ///// called before saving the user via Create or Update.
