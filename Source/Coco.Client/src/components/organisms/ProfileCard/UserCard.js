@@ -70,7 +70,12 @@ export default function(props) {
           <Menubar menuList={menuList} />
         </StaticBar>
         <Username>
-          <AnchorLink to={`/${props.userInfo.userHashedId}`}>
+          <AnchorLink
+            to={{
+              pathname: "/profile",
+              search: `?id=${props.userInfo.userHashedId}`
+            }}
+          >
             {props.userInfo.displayName}
           </AnchorLink>
         </Username>
