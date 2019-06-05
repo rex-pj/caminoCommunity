@@ -57,7 +57,6 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        [AuthorizeLoggedUser]
         public async Task<UserInfo> GetLoggedUser(ResolveFieldContext<object> context)
         {
             try
@@ -72,6 +71,27 @@ namespace Api.Auth.GraphQLResolver
                 var result = await _accountManager.FindByTokenAsync(userHashedId, userAuthenticationToken);
 
                 return UserInfoMapping.ApplicationUserToUserInfo(result, userHashedId);
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<UserInfo> GetFullLoggedUser(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var httpContext = context.UserContext as DefaultHttpContext;
+                var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
+
+                var userAuthenticationToken = httpHeaders.HeaderAuthorization;
+                var userHashedIds = httpHeaders.GetCommaSeparatedValues("x-header-user-hash");
+                var userHashedId = userHashedIds.FirstOrDefault();
+
+                var result = await _accountManager.GetFullByTokenAsync(userHashedId, userAuthenticationToken);
+
+                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userHashedId);
             }
             catch (Exception ex)
             {

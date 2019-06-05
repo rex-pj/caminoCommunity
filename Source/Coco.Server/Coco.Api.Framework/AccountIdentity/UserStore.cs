@@ -189,6 +189,20 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
+        public async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased, string authenticatorToken, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
+            var userId = long.Parse(userIdDecrypted);
+
+            var userEntity = await _accountBusiness.GetFullByTokenAsync(userId, authenticatorToken);
+
+            return await Task.FromResult(GetFullApplicationUser(userEntity));
+        }
 
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
@@ -221,45 +235,16 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         #region Private Methods
-        private UserModel GetUserEntity(ApplicationUser LoggedUser)
+        private UserModel GetUserEntity(ApplicationUser loggedUser)
         {
-            if (LoggedUser == null)
+            if (loggedUser == null)
             {
                 return null;
             }
 
-            var result = PopulateUserEntity(LoggedUser);
+            var result = UserInfoMapping.PopulateUserEntity(loggedUser);
 
             return result;
-        }
-
-        private UserModel PopulateUserEntity(ApplicationUser loggedUser)
-        {
-            UserModel userModel = new UserModel()
-            {
-                Email = loggedUser.Email,
-                Id = loggedUser.Id,
-                Address = loggedUser.Address,
-                BirthDate = loggedUser.BirthDate,
-                CountryId = loggedUser.CountryId,
-                CreatedById = loggedUser.CreatedById,
-                Description = loggedUser.Description,
-                DisplayName = loggedUser.DisplayName,
-                Firstname = loggedUser.Firstname,
-                Lastname = loggedUser.Lastname,
-                GenderId = loggedUser.GenderId,
-                IsActived = loggedUser.IsActived,
-                Password = loggedUser.PasswordHash,
-                PasswordSalt = loggedUser.PasswordSalt,
-                PhoneNumber = loggedUser.PhoneNumber,
-                StatusId = loggedUser.StatusId,
-                UpdatedById = loggedUser.UpdatedById,
-                Expiration = loggedUser.Expiration,
-                AuthenticatorToken = loggedUser.AuthenticatorToken,
-                SecurityStamp = loggedUser.SecurityStamp
-            };
-
-            return userModel;
         }
 
         private ApplicationUser GetApplicationUser(UserModel entity)
@@ -269,40 +254,21 @@ namespace Coco.Api.Framework.AccountIdentity
                 return null;
             }
 
-            var result = PopulateApplicationUser(entity);
+            var result = UserInfoMapping.PopulateApplicationUser(entity);
 
             return result;
         }
 
-        private ApplicationUser PopulateApplicationUser(UserModel userModel)
+        private ApplicationUser GetFullApplicationUser(UserFullModel entity)
         {
-            ApplicationUser applicationUser = new ApplicationUser()
+            if (entity == null)
             {
-                Email = userModel.Email,
-                Id = userModel.Id,
-                UserName = userModel.Email,
-                Lastname = userModel.Lastname,
-                Firstname = userModel.Firstname,
-                Password = userModel.Password,
-                PasswordHash = userModel.Password,
-                PasswordSalt = userModel.PasswordSalt,
-                PhoneNumber = userModel.PhoneNumber,
-                Address = userModel.Address,
-                BirthDate = userModel.BirthDate,
-                CountryId = userModel.CountryId,
-                CreatedById = userModel.CreatedById,
-                Description = userModel.Description,
-                DisplayName = userModel.DisplayName,
-                GenderId = userModel.GenderId,
-                IsActived = userModel.IsActived,
-                StatusId = userModel.StatusId,
-                UpdatedById = userModel.UpdatedById,
-                Expiration = userModel.Expiration,
-                AuthenticatorToken = userModel.AuthenticatorToken,
-                SecurityStamp = userModel.SecurityStamp
-            };
+                return null;
+            }
 
-            return applicationUser;
+            var result = UserInfoMapping.PopulateFullApplicationUser(entity);
+
+            return result;
         }
         #endregion
 

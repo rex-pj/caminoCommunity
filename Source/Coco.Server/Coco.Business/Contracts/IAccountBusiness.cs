@@ -12,5 +12,6 @@ namespace Coco.Business.Contracts
         void Delete(long id);
         Task<UserModel> UpdateAsync(UserModel user);
         Task<UserModel> FindByTokenAsync(long id, string authenticatorToken);
+        Task<UserFullModel> GetFullByTokenAsync(long id, string authenticatorToken);
     }
 }

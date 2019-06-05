@@ -17,7 +17,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
-import { getUserInfo } from "./services/AuthService";
+import { getLoggedUserInfo } from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
 
@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   initializeSiteContext = async () => {
-    const loggedUser = await getUserInfo();
+    const loggedUser = await getLoggedUserInfo();
     this.setState(() => {
       return {
         lang: "vn",
@@ -59,7 +59,7 @@ class App extends Component {
   }
 
   login = async () => {
-    const loggedUser = await getUserInfo();
+    const loggedUser = await getLoggedUserInfo();
     this.setState({
       authenticatorToken: loggedUser.tokenkey,
       isLogin: loggedUser.isLogin,

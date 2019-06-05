@@ -1,4 +1,5 @@
 ﻿using Coco.Business.Contracts;
+using Coco.Business.Mapping;
 using Coco.Contract;
 using Coco.Entities.Domain.Account;
 using Coco.Entities.Model.Account;
@@ -28,7 +29,7 @@ namespace Coco.Business.Implementation
                 throw new ArgumentNullException(nameof(userModel));
             }
 
-            UserInfo userInfo = UserModelToEntity(userModel);
+            UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
 
             _userInfoRepository.Insert(userInfo);
             _dbContext.SaveChanges();
@@ -45,7 +46,7 @@ namespace Coco.Business.Implementation
                 .Include(x => x.User)
                 .FirstOrDefaultAsync();
 
-            UserModel userModel = UserEntityToModel(user);
+            UserModel userModel = UserMapping.UserEntityToModel(user);
 
             return userModel;
         }
@@ -61,7 +62,7 @@ namespace Coco.Business.Implementation
                     .Include(x => x.User)
                     .FirstOrDefaultAsync();
 
-                UserModel userModel = UserEntityToModel(user);
+                UserModel userModel = UserMapping.UserEntityToModel(user);
 
                 return userModel;
             }
@@ -124,7 +125,7 @@ namespace Coco.Business.Implementation
                 .Include(x => x.User)
                 .FirstOrDefaultAsync();
 
-            var userModel = UserEntityToModel(user);
+            var userModel = UserMapping.UserEntityToModel(user);
 
             return userModel;
         }
@@ -135,7 +136,7 @@ namespace Coco.Business.Implementation
 
             if (existUser != null && existUser.User.AuthenticatorToken.Equals(authenticatorToken))
             {
-                var userModel = UserEntityToModel(existUser);
+                var userModel = UserMapping.UserEntityToModel(existUser);
 
                 return userModel;
             }
@@ -143,79 +144,21 @@ namespace Coco.Business.Implementation
             return new UserModel();
         }
 
-        #region Privates
-        private UserInfo UserModelToEntity(UserModel userModel)
+        public async Task<UserFullModel> GetFullByTokenAsync(long id, string authenticatorToken)
         {
-            UserInfo user = new UserInfo
-            {
-                GenderId = userModel.GenderId,
-                UpdatedDate = DateTime.Now,
-                CreatedDate = DateTime.Now,
-                UpdatedById = userModel.UpdatedById,
-                CreatedById = userModel.CreatedById,
-                Address = userModel.Address,
-                BirthDate = userModel.BirthDate,
-                CountryId = userModel.CountryId,
-                Description = userModel.Description,
-                IsActived = false,
-                PhoneNumber = userModel.PhoneNumber,
-                StatusId = 1,
-                User = new User()
-                {
-                    DisplayName = userModel.DisplayName,
-                    Email = userModel.Email,
-                    Firstname = userModel.Firstname,
-                    Lastname = userModel.Lastname,
-                    Password = userModel.Password,
-                    PasswordSalt = userModel.PasswordSalt,
-                    AuthenticatorToken = userModel.AuthenticatorToken,
-                    SecurityStamp = userModel.SecurityStamp,
-                    Expiration = userModel.Expiration
-                }
-            };
+            var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id))
+                .Include(x => x.Country)
+                .Include(x => x.Gender)
+                .Include(x => x.User).FirstOrDefaultAsync();
 
-            return user;
-        }
-
-        private UserModel UserEntityToModel(UserInfo user)
-        {
-            if (user == null)
+            if (existUser != null && existUser.User.AuthenticatorToken.Equals(authenticatorToken))
             {
-                return null;
+                var userModel = UserMapping.FullUserEntityToModel(existUser);
+
+                return userModel;
             }
 
-            UserModel userModel = new UserModel
-            {
-                GenderId = user.GenderId,
-                UpdatedDate = user.UpdatedDate,
-                CreatedDate = user.CreatedDate,
-                UpdatedById = user.UpdatedById,
-                CreatedById = user.CreatedById,
-                Address = user.Address,
-                BirthDate = user.BirthDate,
-                CountryId = user.CountryId,
-                Description = user.Description,
-                IsActived = user.IsActived,
-                PhoneNumber = user.PhoneNumber,
-                StatusId = user.StatusId,
-                Id = user.Id
-            };
-
-            if (user.User != null)
-            {
-                userModel.DisplayName = user.User.DisplayName;
-                userModel.Email = user.User.Email;
-                userModel.Firstname = user.User.Firstname;
-                userModel.Lastname = user.User.Lastname;
-                userModel.Password = user.User.Password;
-                userModel.PasswordSalt = user.User.PasswordSalt;
-                userModel.Expiration = user.User.Expiration;
-                userModel.AuthenticatorToken = user.User.AuthenticatorToken;
-                userModel.SecurityStamp = user.User.SecurityStamp;
-            }
-
-            return userModel;
+            return new UserFullModel();
         }
-        #endregion
     }
 }
