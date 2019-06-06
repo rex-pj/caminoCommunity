@@ -17,7 +17,7 @@ namespace Coco.Api.Framework.AccountIdentity
         private readonly IAccountBusiness _accountBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
-        
+
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
         /// </summary>
@@ -104,7 +104,8 @@ namespace Coco.Api.Framework.AccountIdentity
                 var result = await _accountBusiness.UpdateAsync(userModel);
                 string userHashedId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
-                return new LoginResult(true) {
+                return new LoginResult(true)
+                {
                     AuthenticatorToken = result.AuthenticatorToken,
                     Expiration = result.Expiration,
                     UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userHashedId)
@@ -174,7 +175,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
-        public async Task<ApplicationUser> FindByTokenAsync(string userIdHased, string authenticatorToken, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> FindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
@@ -184,12 +185,23 @@ namespace Coco.Api.Framework.AccountIdentity
             var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var userEntity = await _accountBusiness.FindByTokenAsync(userId, authenticatorToken);
+            var user = await FindByIdAsync(userId, cancellationToken);
+            return await Task.FromResult(user);
+        }
+
+        private async Task<ApplicationUser> FindByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            var userEntity = await _accountBusiness.FindByIdAsync(id);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
-        public async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased, string authenticatorToken, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> GetFullByFindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
@@ -199,8 +211,18 @@ namespace Coco.Api.Framework.AccountIdentity
             var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var userEntity = await _accountBusiness.GetFullByTokenAsync(userId, authenticatorToken);
+            var user = await GetFullByIdAsync(userId, cancellationToken);
+            return await Task.FromResult(user);
+        }
 
+        public async Task<ApplicationUser> GetFullByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            var userEntity = await _accountBusiness.GetFullByIdAsync(id);
             return await Task.FromResult(GetFullApplicationUser(userEntity));
         }
 

@@ -6,7 +6,6 @@ export default withRouter(
     componentDidMount() {}
 
     render() {
-      console.log(this.props);
       return <div>Followings</div>;
     }
   }

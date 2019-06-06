@@ -6,7 +6,6 @@ export default withRouter(
     componentDidMount() {}
 
     render() {
-      console.log(this.props);
       return <div>Đẹp trai 6 múi</div>;
     }
   }

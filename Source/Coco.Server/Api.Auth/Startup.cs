@@ -76,18 +76,15 @@ namespace Api.Auth
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
-            services.AddSingleton<AccountResolver>();
-
-            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
-            services.AddSingleton<RegisterInputType>();
-            services.AddSingleton<SigninInputType>();
-
-            services.AddSingleton<AccountMutation>();
-            services.AddSingleton<AccountQuery>();
-
-            services.AddSingleton<ListGraphType>();
-            services.AddSingleton<RegisterResultType>();
-            services.AddSingleton<SigninResultType>();
+            services.AddSingleton<AccountResolver>()
+                .AddSingleton<IDocumentExecuter, DocumentExecuter>()
+                .AddSingleton<RegisterInputType>()
+                .AddSingleton<SigninInputType>()
+                .AddSingleton<AccountMutation>()
+                .AddSingleton<AccountQuery>()
+                .AddSingleton<ListGraphType>()
+                .AddSingleton<RegisterResultType>()
+                .AddSingleton<SigninResultType>();
 
             var sp = services.BuildServiceProvider();
 
@@ -109,12 +106,11 @@ namespace Api.Auth
             }
 
             // Config UseCors
-            app.UseCors(MyAllowSpecificOrigins);
-
-            app.UseAuthentication();
-            app.UseHttpsRedirection();
-            app.UseGraphiQl("/api/graphql");
-            app.UseMvc();
+            app.UseCors(MyAllowSpecificOrigins)
+                .UseAuthentication()
+                .UseHttpsRedirection()
+                .UseGraphiQl("/api/graphql")
+                .UseMvc();
         }
     }
 }

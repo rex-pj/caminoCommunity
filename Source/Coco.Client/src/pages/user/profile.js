@@ -28,6 +28,7 @@ export default withRouter(
   class extends Component {
     constructor(props) {
       super(props);
+      this._isMounted = false;
 
       this.state = {
         userIdentity: {},
@@ -36,32 +37,38 @@ export default withRouter(
     }
 
     async componentDidMount() {
+      this._isMounted = true;
       var searchParams = queryString.parse(this.props.location.search);
-      const user = await getFullLoggedUserInfo(searchParams.userHashedId);
 
-      const userIdentity = {
-        avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-        url: `profile?id=${user.userHashedId}`,
-        name: user.displayName,
-        coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
-      };
-
-      const userInfo = {
-        blast: user.description,
-        address: user.address,
-        country: user.countryName,
-        joinedDate: user.createdDate,
-        birthDate: user.birthDate,
-        email: user.email,
-        mobile: user.phoneNumber
-      };
-
-      this.setState(() => {
-        return {
-          userIdentity,
-          userInfo
+      await getFullLoggedUserInfo(searchParams.userHashedId).then(user => {
+        const userIdentity = {
+          avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+          url: `profile?id=${user.userHashedId}`,
+          name: user.displayName,
+          coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
         };
+
+        const userInfo = {
+          blast: user.description,
+          address: user.address,
+          country: user.countryName,
+          joinedDate: user.createdDate,
+          birthDate: user.birthDate,
+          email: user.email,
+          mobile: user.phoneNumber
+        };
+
+        if (this._isMounted) {
+          this.setState({
+            userIdentity,
+            userInfo
+          });
+        }
       });
+    }
+
+    componentWillUnmount() {
+      this._isMounted = false;
     }
 
     render() {
@@ -74,9 +81,6 @@ export default withRouter(
             <ProfileNavigation />
           </CoverNav>
           <div className="row">
-            <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
-              <UserProfileInfo userInfo={userInfo} />
-            </div>
             <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
               <Switch>
                 <Timeline
@@ -163,6 +167,9 @@ export default withRouter(
                   )}
                 />
               </Switch>
+            </div>
+            <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
+              <UserProfileInfo userInfo={userInfo} />
             </div>
           </div>
         </Fragment>
