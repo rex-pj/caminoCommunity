@@ -9,11 +9,11 @@ import {
   setLocalStorage,
   getLocalStorageByKey
 } from "./StorageService";
-import { authorizedClient } from "../utils/GraphQL/GraphQLClient";
+import { authClient } from "../utils/GraphQLClient";
 import {
   GET_LOGGED_USER,
   GET_FULL_LOGGED_USER_INFO
-} from "../utils/GraphQL/GraphQLQueries";
+} from "../utils/GraphQLQueries";
 
 function removeUserToken() {
   removeLocalStorage(AUTH_KEY);
@@ -38,7 +38,7 @@ const getLoggedUserInfo = async () => {
     userHashedId
   };
 
-  await authorizedClient
+  await authClient
     .query({
       query: GET_LOGGED_USER
     })
@@ -72,7 +72,7 @@ const getFullLoggedUserInfo = async userHashedId => {
     userHashedId
   };
 
-  await authorizedClient
+  await authClient
     .query({
       query: GET_FULL_LOGGED_USER_INFO
     })

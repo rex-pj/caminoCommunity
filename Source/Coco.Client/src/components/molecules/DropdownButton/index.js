@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Button } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
@@ -10,7 +10,7 @@ const DropdownGroup = styled.div`
   display: inline-block;
 `;
 
-const ButtonCaret = styled(Button)`
+const ButtonCaret = styled(ButtonTransparent)`
   padding: 0;
   text-align: center;
   width: ${p => p.theme.size.small};
@@ -92,13 +92,13 @@ export default class extends Component {
   };
 
   render() {
-    const { className, dropdown } = this.props;
+    const { className, dropdown, icon } = this.props;
     const { isShown } = this.state;
 
     return (
       <DropdownGroup className={className} ref={this.currentRef}>
         <ButtonCaret onClick={this.show}>
-          <FontAwesomeIcon icon="caret-down" />
+          <FontAwesomeIcon icon={icon ? icon : "caret-down"} />
         </ButtonCaret>
         {dropdown && isShown ? (
           <DropdownList>

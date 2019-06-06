@@ -1,14 +1,12 @@
 ﻿using Api.Auth.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.AccountIdentity.Entities;
-using Coco.Api.Framework.Attributes;
+using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Common.Const;
 using GraphQL;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,16 +59,11 @@ namespace Api.Auth.GraphQLResolver
         {
             try
             {
-                var httpContext = context.UserContext as DefaultHttpContext;
-                var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
+                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
-                var userAuthenticationToken = httpHeaders.HeaderAuthorization;
-                var userHashedIds = httpHeaders.GetCommaSeparatedValues("x-header-user-hash");
-                var userHashedId = userHashedIds.FirstOrDefault();
+                var result = await _accountManager.GetLoggingUser(userHeaderParams.UserIdHashed, userHeaderParams.AuthenticationToken);
 
-                var result = await _accountManager.FindByTokenAsync(userHashedId, userAuthenticationToken);
-
-                return UserInfoMapping.ApplicationUserToUserInfo(result, userHashedId);
+                return UserInfoMapping.ApplicationUserToUserInfo(result, userHeaderParams.UserIdHashed);
             }
             catch (Exception ex)
             {
@@ -82,16 +75,11 @@ namespace Api.Auth.GraphQLResolver
         {
             try
             {
-                var httpContext = context.UserContext as DefaultHttpContext;
-                var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
+                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
-                var userAuthenticationToken = httpHeaders.HeaderAuthorization;
-                var userHashedIds = httpHeaders.GetCommaSeparatedValues("x-header-user-hash");
-                var userHashedId = userHashedIds.FirstOrDefault();
+                var result = await _accountManager.GetFullByTokenAsync(userHeaderParams.UserIdHashed);
 
-                var result = await _accountManager.GetFullByTokenAsync(userHashedId, userAuthenticationToken);
-
-                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userHashedId);
+                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userHeaderParams.UserIdHashed);
             }
             catch (Exception ex)
             {

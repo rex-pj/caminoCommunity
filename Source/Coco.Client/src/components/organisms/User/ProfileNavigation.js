@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter, NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { HorizontalList } from "../../atoms/List";
+import DropdownButton from "../../molecules/DropdownButton";
 
 const Root = styled.div`
   position: relative;
@@ -12,14 +13,13 @@ const ListItem = styled.li`
   display: inline-block;
   margin: 0 ${p => p.theme.size.distance};
 
-  a.active,
-  &:hover a.active {
+  a.actived {
     color: ${p => p.theme.color.warning};
     text-decoration: none;
   }
 
   :hover a {
-    color: ${p => p.theme.color.brown};
+    color: ${p => p.theme.color.warning};
     text-decoration: none;
   }
 
@@ -33,41 +33,68 @@ const ListItem = styled.li`
   }
 `;
 
+const NavLinkActived = props => {
+  const { match, location, children } = props;
+  let { pageNav } = props;
+  let { pathname, search } = location;
+  pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
+  let { url } = match;
+
+  pageNav = pageNav ? `/${pageNav}` : "";
+
+  return (
+    <NavLink
+      to={`${url}${pageNav}${search}`}
+      className={pathname === `${url}${pageNav}` ? "actived" : ""}
+    >
+      {children}
+    </NavLink>
+  );
+};
+
 export default withRouter(
   class extends Component {
     render() {
-      const { match, className, location } = this.props;
-      let { pathname } = location;
-      pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
-      let { url } = match;
-      url = url ? url.replace(/\/$/, "") : url;
+      const { className } = this.props;
       return (
         <Root>
-          <HorizontalList className={className}>
-            <ListItem>
-              <NavLink
-                to={`${url}/feeds`}
-                className={pathname === url ? "active" : ""}
-              >
-                Tất cả
-              </NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to={`${url}/posts`}>Bài Viết</NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to={`${url}/products`}>Sản Phẩm</NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to={`${url}/farms`}>Nông Trại</NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to={`${url}/followings`}>Được Theo Dõi</NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to={`${url}/about`}>Giới thiệu</NavLink>
-            </ListItem>
-          </HorizontalList>
+          <div className="row">
+            <div className="col-auto mr-auto">
+              <HorizontalList className={className}>
+                <ListItem>
+                  <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
+                </ListItem>
+                <ListItem>
+                  <NavLinkActived pageNav="posts" {...this.props}>
+                    Bài Viết
+                  </NavLinkActived>
+                </ListItem>
+                <ListItem>
+                  <NavLinkActived pageNav="products" {...this.props}>
+                    Sản Phẩm
+                  </NavLinkActived>
+                </ListItem>
+                <ListItem>
+                  <NavLinkActived pageNav="farms" {...this.props}>
+                    Nông Trại
+                  </NavLinkActived>
+                </ListItem>
+                <ListItem>
+                  <NavLinkActived pageNav="followings" {...this.props}>
+                    Được Theo Dõi
+                  </NavLinkActived>
+                </ListItem>
+                <ListItem>
+                  <NavLinkActived pageNav="about" {...this.props}>
+                    Giới thiệu
+                  </NavLinkActived>
+                </ListItem>
+              </HorizontalList>
+            </div>
+            <div className="col-auto">
+              <DropdownButton icon="ellipsis-v" />
+            </div>
+          </div>
         </Root>
       );
     }

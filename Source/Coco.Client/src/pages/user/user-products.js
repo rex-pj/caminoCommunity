@@ -39,7 +39,7 @@ export default withRouter(
       this.state = {
         products,
         totalPage: 10,
-        baseUrl: this.props.userUrl + "/products",
+        baseUrl: this.props.userUrl + "/products?id=c9c3qxhlNcJ8Ee/LOFK5PQ==",
         currentPage: page ? page : 1
       };
     }

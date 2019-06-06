@@ -88,7 +88,6 @@ export default class extends Component {
   }
   render() {
     const { farm, breadcrumbs, farmProducts } = this.props;
-    console.log(farm.images);
     return (
       <Fragment>
         <PanelDefault>

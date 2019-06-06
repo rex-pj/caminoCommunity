@@ -255,26 +255,8 @@ namespace Coco.Api.Framework.AccountIdentity
 
             email = NormalizeEmail(email);
             var user = await UserStore.FindByEmailAsync(email, CancellationToken);
-
-            // Need to potentially check all keys
-            if (user == null && Options.Stores.ShouldProtectPersonalData)
-            {
-                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
-                var protector = _services.GetService<ILookupProtector>();
-                if (keyRing != null && protector != null)
-                {
-                    foreach (var key in keyRing.GetAllKeyIds())
-                    {
-                        var oldKey = protector.Protect(key, email);
-                        user = await UserStore.FindByEmailAsync(oldKey, CancellationToken);
-                        if (user != null)
-                        {
-                            return user;
-                        }
-                    }
-                }
-            }
             return user;
+
         }
 
         /// <summary>
@@ -295,25 +277,6 @@ namespace Coco.Api.Framework.AccountIdentity
             userName = NormalizeName(userName);
 
             ApplicationUser user = await UserStore.FindByNameAsync(userName, CancellationToken);
-
-            //// Need to potentially check all keys
-            if (user == null && Options.Stores.ShouldProtectPersonalData)
-            {
-                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
-                var protector = _services.GetService<ILookupProtector>();
-                if (keyRing != null && protector != null)
-                {
-                    foreach (var key in keyRing.GetAllKeyIds())
-                    {
-                        var oldKey = protector.Protect(key, userName);
-                        user = await UserStore.FindByNameAsync(oldKey, CancellationToken);
-                        if (user != null)
-                        {
-                            return user;
-                        }
-                    }
-                }
-            }
             return user;
         }
 
@@ -325,15 +288,27 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> FindByTokenAsync(string userIdHased, string authenticatorToken)
+        public virtual async Task<ApplicationUser> GetLoggingUser(string userIdHased, string authenticatorToken)
         {
             ThrowIfDisposed();
-            if (authenticatorToken == null)
+            if (string.IsNullOrEmpty(userIdHased))
+            {
+                throw new ArgumentNullException(nameof(userIdHased));
+            }
+
+            if (string.IsNullOrEmpty(authenticatorToken))
             {
                 throw new ArgumentNullException(nameof(authenticatorToken));
             }
 
-            var user = await UserStore.FindByTokenAsync(userIdHased, authenticatorToken, CancellationToken);
+            var user = await UserStore.FindByHashedIdAsync(userIdHased, CancellationToken);
+
+            if (!user.AuthenticatorToken.Equals(authenticatorToken))
+            {
+                throw new SecurityTokenException();
+
+            }
+
             return user;
         }
 
@@ -345,15 +320,15 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased, string authenticatorToken)
+        public virtual async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased)
         {
             ThrowIfDisposed();
-            if (authenticatorToken == null)
+            if (string.IsNullOrEmpty(userIdHased))
             {
-                throw new ArgumentNullException(nameof(authenticatorToken));
+                throw new ArgumentNullException(nameof(userIdHased));
             }
 
-            var user = await UserStore.GetFullByTokenAsync(userIdHased, authenticatorToken, CancellationToken);
+            var user = await UserStore.GetFullByFindByHashedIdAsync(userIdHased, CancellationToken);
             return user;
         }
 

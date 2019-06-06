@@ -126,15 +126,17 @@ namespace Coco.Business.Implementation
                 .FirstOrDefaultAsync();
 
             var userModel = UserMapping.UserEntityToModel(user);
-
             return userModel;
         }
 
-        public async Task<UserModel> FindByTokenAsync(long id, string authenticatorToken)
+        public async Task<UserModel> FindByIdAsync(long id)
         {
-            var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id)).Include(x => x.User).FirstOrDefaultAsync();
+            var existUser = await _userInfoRepository
+                .Get(x => x.Id.Equals(id))
+                .Include(x => x.User)
+                .FirstOrDefaultAsync();
 
-            if (existUser != null && existUser.User.AuthenticatorToken.Equals(authenticatorToken))
+            if (existUser != null)
             {
                 var userModel = UserMapping.UserEntityToModel(existUser);
 
@@ -144,17 +146,16 @@ namespace Coco.Business.Implementation
             return new UserModel();
         }
 
-        public async Task<UserFullModel> GetFullByTokenAsync(long id, string authenticatorToken)
+        public async Task<UserFullModel> GetFullByIdAsync(long id)
         {
             var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id))
                 .Include(x => x.Country)
                 .Include(x => x.Gender)
                 .Include(x => x.User).FirstOrDefaultAsync();
 
-            if (existUser != null && existUser.User.AuthenticatorToken.Equals(authenticatorToken))
+            if (existUser != null)
             {
                 var userModel = UserMapping.FullUserEntityToModel(existUser);
-
                 return userModel;
             }
 

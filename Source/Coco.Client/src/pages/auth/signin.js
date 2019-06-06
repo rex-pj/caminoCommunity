@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
-import { authClient } from "../../utils/GraphQL/GraphQLClient";
-import { SIGNIN } from "../../utils/GraphQL/GraphQLQueries";
+import { defaultClient } from "../../utils/GraphQLClient";
+import { SIGNIN } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
 import { withRouter } from "react-router-dom";
@@ -38,7 +38,7 @@ class SingnInPage extends Component {
       this.setState({ isFormEnabled: false });
     }
 
-    await authClient
+    await defaultClient
       .query({
         query: SIGNIN,
         variables: {

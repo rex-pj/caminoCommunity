@@ -11,7 +11,7 @@ namespace Coco.Business.Contracts
         Task<UserModel> FindUserByUsername(string username, bool includeInActived = false);
         void Delete(long id);
         Task<UserModel> UpdateAsync(UserModel user);
-        Task<UserModel> FindByTokenAsync(long id, string authenticatorToken);
-        Task<UserFullModel> GetFullByTokenAsync(long id, string authenticatorToken);
+        Task<UserModel> FindByIdAsync(long id);
+        Task<UserFullModel> GetFullByIdAsync(long id);
     }
 }
