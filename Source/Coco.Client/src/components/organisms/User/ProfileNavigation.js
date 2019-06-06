@@ -13,14 +13,13 @@ const ListItem = styled.li`
   display: inline-block;
   margin: 0 ${p => p.theme.size.distance};
 
-  a.active,
-  &:hover a.active {
+  a.actived {
     color: ${p => p.theme.color.warning};
     text-decoration: none;
   }
 
   :hover a {
-    color: ${p => p.theme.color.brown};
+    color: ${p => p.theme.color.warning};
     text-decoration: none;
   }
 
@@ -34,70 +33,61 @@ const ListItem = styled.li`
   }
 `;
 
+const NavLinkActived = props => {
+  const { match, location, children } = props;
+  let { pageNav } = props;
+  let { pathname, search } = location;
+  pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
+  let { url } = match;
+
+  pageNav = pageNav ? `/${pageNav}` : "";
+
+  return (
+    <NavLink
+      to={`${url}${pageNav}${search}`}
+      className={pathname === `${url}${pageNav}` ? "actived" : ""}
+    >
+      {children}
+    </NavLink>
+  );
+};
+
 export default withRouter(
   class extends Component {
     render() {
-      const { match, className, location } = this.props;
-      let { pathname, search } = location;
-      pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
-      let { url } = match;
-      url = url ? url.replace(/\/$/, "") : url;
+      const { className } = this.props;
       return (
         <Root>
           <div className="row">
             <div className="col-auto mr-auto">
               <HorizontalList className={className}>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/feeds${search}`}
-                    className={
-                      pathname === url || pathname === `${url}/feeds`
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    Tất cả
-                  </NavLink>
+                  <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/posts${search}`}
-                    className={pathname === `${url}/posts` ? "active" : ""}
-                  >
+                  <NavLinkActived pageNav="posts" {...this.props}>
                     Bài Viết
-                  </NavLink>
+                  </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/products${search}`}
-                    className={pathname === `${url}/products` ? "active" : ""}
-                  >
+                  <NavLinkActived pageNav="products" {...this.props}>
                     Sản Phẩm
-                  </NavLink>
+                  </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/farms${search}`}
-                    className={pathname === `${url}/farms` ? "active" : ""}
-                  >
+                  <NavLinkActived pageNav="farms" {...this.props}>
                     Nông Trại
-                  </NavLink>
+                  </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/followings${search}`}
-                    className={pathname === `${url}/followings` ? "active" : ""}
-                  >
+                  <NavLinkActived pageNav="followings" {...this.props}>
                     Được Theo Dõi
-                  </NavLink>
+                  </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLink
-                    to={`${url}/about${search}`}
-                    className={pathname === `${url}/about` ? "active" : ""}
-                  >
+                  <NavLinkActived pageNav="about" {...this.props}>
                     Giới thiệu
-                  </NavLink>
+                  </NavLinkActived>
                 </ListItem>
               </HorizontalList>
             </div>

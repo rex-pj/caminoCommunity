@@ -59,7 +59,7 @@ export default function(props) {
         dropdowns: [
           {
             name: "Thông tin cá nhân",
-            url: `profile?id=${props.userInfo.userHashedId}`
+            url: `/profile?id=${props.userInfo.userHashedId}`
           },
           {
             name: "Thoát",

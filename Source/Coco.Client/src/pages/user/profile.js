@@ -43,7 +43,7 @@ export default withRouter(
       await getFullLoggedUserInfo(searchParams.userHashedId).then(user => {
         const userIdentity = {
           avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          url: `profile?id=${user.userHashedId}`,
+          url: `/profile?id=${user.userHashedId}`,
           name: user.displayName,
           coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
         };
@@ -86,6 +86,7 @@ export default withRouter(
                 <Timeline
                   path={[
                     `${match.url}/posts/`,
+                    `${match.url}/posts?id=:id`,
                     `${match.url}/posts/page/:page`
                   ]}
                   exact={true}
@@ -100,6 +101,7 @@ export default withRouter(
                 <Timeline
                   path={[
                     `${match.url}/products/`,
+                    `${match.url}/products?id=:id`,
                     `${match.url}/products/page/:page`
                   ]}
                   exact={true}
@@ -114,6 +116,7 @@ export default withRouter(
                 <Timeline
                   path={[
                     `${match.url}/farms/`,
+                    `${match.url}/farms?id=:id`,
                     `${match.url}/farms/page/:page`
                   ]}
                   exact={true}
@@ -128,6 +131,7 @@ export default withRouter(
                 <Timeline
                   path={[
                     `${match.url}/followings/`,
+                    `${match.url}/followings?id=:id`,
                     `${match.url}/followings/page/:page`
                   ]}
                   exact={true}
@@ -155,6 +159,7 @@ export default withRouter(
                     `${match.url}`,
                     `${match.url}/page/:page`,
                     `${match.url}/feeds`,
+                    `${match.url}/feeds?id=:id`,
                     `${match.url}/feeds/page/:page`
                   ]}
                   exact={true}
