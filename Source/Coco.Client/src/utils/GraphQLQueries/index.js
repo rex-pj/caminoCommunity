@@ -13,49 +13,49 @@ export const ADD_USER = gpl`
 `;
 
 export const SIGNIN = gpl`
-query signin($signinModel: SigninInputType!){
-  signin(signinModel: $signinModel){
-    userInfo {
-      displayName,
-      userHashedId
-    },
-    authenticatorToken,
-    isSuccess,
-    errors {
-      code
-      description
+  query signin($signinModel: SigninInputType!){
+    signin(signinModel: $signinModel){
+      userInfo {
+        displayName,
+        userHashedId
+      },
+      authenticatorToken,
+      isSuccess,
+      errors {
+        code
+        description
+      }
     }
   }
-}
 `;
 
 export const GET_LOGGED_USER = gpl`
-query loggedUser {
-  loggedUser {
-    lastname,
-    firstname,
-    email,
-    displayName,
-    userHashedId
+mutation loggedUser{
+    loggedUser{
+      lastname,
+      firstname,
+      email,
+      displayName,
+      userHashedId
+    }
   }
-}
 `;
 
 export const GET_FULL_LOGGED_USER_INFO = gpl`
-query fullLoggedUserInfo {
-  fullLoggedUserInfo {
-    lastname,
-    firstname,
-    email,
-    displayName,
-    userHashedId,
-    address,
-    birthDate,
-    countryId,
-    countryName,
-    description,
-    createdDate,
-    phoneNumber
+  query fullLoggedUserInfo{
+    fullLoggedUserInfo{
+      lastname,
+      firstname,
+      email,
+      displayName,
+      userHashedId,
+      address,
+      birthDate,
+      countryId,
+      countryName,
+      description,
+      createdDate,
+      phoneNumber
+    }
   }
-}
 `;

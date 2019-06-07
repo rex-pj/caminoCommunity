@@ -50,7 +50,6 @@ const getLoggedUserInfo = async () => {
         ...currentUser,
         ...loggedUser
       };
-      return currentUser;
     })
     .catch(error => {
       console.log(error);
@@ -84,7 +83,6 @@ const getFullLoggedUserInfo = async userHashedId => {
         ...currentUser,
         ...loggedUser
       };
-      return currentUser;
     })
     .catch(error => {
       console.log(error);
