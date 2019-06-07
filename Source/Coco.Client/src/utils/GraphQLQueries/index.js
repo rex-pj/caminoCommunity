@@ -30,7 +30,7 @@ export const SIGNIN = gpl`
 `;
 
 export const GET_LOGGED_USER = gpl`
-mutation loggedUser{
+query {
     loggedUser{
       lastname,
       firstname,
@@ -42,7 +42,7 @@ mutation loggedUser{
 `;
 
 export const GET_FULL_LOGGED_USER_INFO = gpl`
-  query fullLoggedUserInfo{
+  query {
     fullLoggedUserInfo{
       lastname,
       firstname,
