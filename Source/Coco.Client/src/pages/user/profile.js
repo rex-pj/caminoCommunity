@@ -43,7 +43,7 @@ export default withRouter(
       await getFullLoggedUserInfo(searchParams.userHashedId).then(user => {
         const userIdentity = {
           avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          url: `/profile?id=${user.userHashedId}`,
+          url: user.userHashedId ? `/profile?id=${user.userHashedId}` : "",
           name: user.displayName,
           coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
         };

@@ -27,7 +27,7 @@ function getUserToken() {
   return getLocalStorageByKey(AUTH_KEY);
 }
 
-const getLoggedUserInfo = async () => {
+async function getLoggedUserInfo() {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
@@ -42,24 +42,23 @@ const getLoggedUserInfo = async () => {
     .query({
       query: GET_LOGGED_USER
     })
-    .then(result => {
-      const data = result.data;
-      const loggedUser = data.loggedUser;
+    .then(response => {
+      const { data } = response;
+      const { loggedUser } = data;
 
       currentUser = {
         ...currentUser,
         ...loggedUser
       };
-      return currentUser;
     })
     .catch(error => {
       console.log(error);
     });
 
   return currentUser;
-};
+}
 
-const getFullLoggedUserInfo = async userHashedId => {
+async function getFullLoggedUserInfo(userHashedId) {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   userHashedId = userHashedId
@@ -76,22 +75,21 @@ const getFullLoggedUserInfo = async userHashedId => {
     .query({
       query: GET_FULL_LOGGED_USER_INFO
     })
-    .then(result => {
-      const data = result.data;
-      const loggedUser = data.fullLoggedUserInfo;
+    .then(response => {
+      const { data } = response;
+      const { fullLoggedUserInfo } = data;
 
       currentUser = {
         ...currentUser,
-        ...loggedUser
+        ...fullLoggedUserInfo
       };
-      return currentUser;
     })
     .catch(error => {
       console.log(error);
     });
 
   return currentUser;
-};
+}
 
 function setLogin(userInfo, token) {
   if (userInfo) {

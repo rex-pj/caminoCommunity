@@ -56,6 +56,7 @@ const StaticBar = styled.div`
 
 export default function(props) {
   const { className, menuList } = props;
+  const userHashedId = props.userInfo ? props.userInfo.userHashedId : null;
   return (
     <Root className={className}>
       <ProfileImage src={`${process.env.PUBLIC_URL}/photos/farmer.png`} />
@@ -73,10 +74,10 @@ export default function(props) {
           <AnchorLink
             to={{
               pathname: "/profile",
-              search: `?id=${props.userInfo.userHashedId}`
+              search: userHashedId ? `?id=${userHashedId}` : ""
             }}
           >
-            {props.userInfo.displayName}
+            {props.userInfo ? props.userInfo.displayName : ""}
           </AnchorLink>
         </Username>
       </BoxShadowBar>
