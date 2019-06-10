@@ -7,7 +7,7 @@ import UserContext from "../../utils/Context/UserContext";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { raiseError } from "../../store/notify";
-import { setLogin } from "../../services/AuthService";
+import AuthService from "../../services/AuthService";
 
 class SingnInPage extends Component {
   constructor(props) {
@@ -57,7 +57,10 @@ class SingnInPage extends Component {
           return;
         }
 
-        setLogin(data.signin.userInfo, data.signin.authenticatorToken);
+        AuthService.setLogin(
+          data.signin.userInfo,
+          data.signin.authenticatorToken
+        );
         this.context.login();
         this.props.history.push("/");
       })
