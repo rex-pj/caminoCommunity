@@ -30,7 +30,7 @@ export const SIGNIN = gpl`
 `;
 
 export const GET_LOGGED_USER = gpl`
-query {
+  query{
     loggedUser{
       lastname,
       firstname,

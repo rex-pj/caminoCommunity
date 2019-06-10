@@ -17,7 +17,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
-import { getLoggedUserInfo } from "./services/AuthService";
+import AuthService from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
 
@@ -40,44 +40,50 @@ class App extends Component {
   }
 
   initializeSiteContext = async () => {
-    const loggedUser = await getLoggedUserInfo();
-    this.setState(() => {
-      return {
-        lang: "vn",
-        authenticatorToken: loggedUser.tokenkey,
-        isLogin: loggedUser.isLogin,
-        userInfo: {
-          displayName: loggedUser.displayName,
-          userHashedId: loggedUser.userHashedId
-        }
-      };
-    });
+    await AuthService.getLoggedUserInfo()
+      .then(user => {
+        this.setState({
+          lang: "vn",
+          authenticatorToken: user.tokenkey,
+          isLogin: user.isLogin,
+          userInfo: {
+            displayName: user.displayName,
+            userHashedId: user.userHashedId
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
-  componentDidMount() {
-    this.initializeSiteContext();
+  async componentDidMount() {
+    await this.initializeSiteContext();
   }
 
   login = async () => {
-    const loggedUser = await getLoggedUserInfo();
-    this.setState({
-      authenticatorToken: loggedUser.tokenkey,
-      isLogin: loggedUser.isLogin,
-      userInfo: {
-        displayName: loggedUser.displayName,
-        userHashedId: loggedUser.userHashedId
-      }
-    });
+    await AuthService.getLoggedUserInfo()
+      .then(user => {
+        this.setState({
+          authenticatorToken: user.tokenkey,
+          isLogin: user.isLogin,
+          userInfo: {
+            displayName: user.displayName,
+            userHashedId: user.userHashedId
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   logout = () => {
     if (this.state.isLogin) {
-      this.setState(() => {
-        return {
-          authenticatorToken: null,
-          isLogin: false,
-          userInfo: {}
-        };
+      this.setState({
+        authenticatorToken: null,
+        isLogin: false,
+        userInfo: {}
       });
     }
   };

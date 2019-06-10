@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { logOut } from "../../services/AuthService";
+import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
 import UserContext from "../../utils/Context/UserContext";
 import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
@@ -18,7 +18,7 @@ class SingnOutPage extends Component {
   componentDidMount() {
     this._isMounted = true;
 
-    logOut();
+    AuthService.logOut();
     this.context.logout();
 
     const { history } = this.props;

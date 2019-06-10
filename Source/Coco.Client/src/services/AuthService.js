@@ -108,7 +108,7 @@ function logOut() {
   removeLocalStorage(AUTH_USER_HASHED_ID);
 }
 
-export {
+export default {
   removeUserToken,
   setUserToken,
   getUserToken,
