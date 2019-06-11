@@ -3,11 +3,7 @@ import { Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import * as theme from "../../../utils/Theme";
 import { connect } from "react-redux";
-import loadable from "@loadable/component";
-
-const Notifications = loadable(() =>
-  import("../../organisms/Notification/Notifications")
-);
+import Notifications from "../../organisms/Notification/Notifications";
 
 const MasterLayout = ({ component: Component, ...rest }) => {
   return (

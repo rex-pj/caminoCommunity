@@ -1,11 +1,7 @@
 import React from "react";
-import loadable from "@loadable/component";
 import PromptLayout from "./PromptLayout";
 import UserContext from "../../../utils/Context/UserContext";
-
-const AuthBanner = loadable(() =>
-  import("../../../components/organisms/Banner/AuthBanner")
-);
+import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 
 function AuthLayout({ component: Component, ...rest }) {
   return (

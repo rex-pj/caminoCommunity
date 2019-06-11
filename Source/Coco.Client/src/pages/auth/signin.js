@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import loadable from "@loadable/component";
+import SignInForm from "../../components/organisms/Auth/SignInForm";
 import { defaultClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
@@ -8,9 +8,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { raiseError } from "../../store/notify";
 import AuthService from "../../services/AuthService";
-const SignInForm = loadable(() =>
-  import("../../components/organisms/Auth/SignInForm")
-);
 
 class SingnInPage extends Component {
   constructor(props) {

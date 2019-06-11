@@ -1,6 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-export default withRouter(function() {
-  return <div>Followings</div>;
-});
+export default withRouter(
+  class extends Component {
+    componentDidMount() {}
+
+    render() {
+      return <div>Followings</div>;
+    }
+  }
+);

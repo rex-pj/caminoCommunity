@@ -1,23 +1,32 @@
-import React, { Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import ArticleListItem from "../../organisms/Article/ArticleListItem";
 import { Pagination } from "../../molecules/Paging";
-import loadable from "@loadable/component";
-const Breadcrumb = loadable(() => import("../../molecules/Breadcrumb"));
+import Breadcrumb from "../../molecules/Breadcrumb";
 
-export default function(props) {
-  const { articles, breadcrumbs, totalPage, baseUrl, currentPage } = props;
+export default class Article extends Component {
+  render() {
+    const {
+      articles,
+      breadcrumbs,
+      totalPage,
+      baseUrl,
+      currentPage
+    } = this.props;
 
-  return (
-    <Fragment>
-      <Breadcrumb list={breadcrumbs} />
-      {articles
-        ? articles.map(item => <ArticleListItem key={item.id} article={item} />)
-        : null}
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        currentPage={currentPage}
-      />
-    </Fragment>
-  );
+    return (
+      <Fragment>
+        <Breadcrumb list={breadcrumbs} />
+        {articles
+          ? articles.map(item => (
+              <ArticleListItem key={item.id} article={item} />
+            ))
+          : null}
+        <Pagination
+          totalPage={totalPage}
+          baseUrl={baseUrl}
+          currentPage={currentPage}
+        />
+      </Fragment>
+    );
+  }
 }

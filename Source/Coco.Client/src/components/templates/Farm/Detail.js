@@ -1,5 +1,4 @@
-import React, { useEffect, Fragment } from "react";
-import loadable from "@loadable/component";
+import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { PrimaryTitle } from "../../atoms/Titles";
 import { HorizontalList } from "../../atoms/List";
@@ -8,18 +7,11 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelDefault } from "../../atoms/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Breadcrumb from "../../molecules/Breadcrumb";
 import { ButtonIconOutline } from "../../molecules/ButtonIcons";
+import ProductItem from "../../organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../atoms/Heading";
-
-const ProductItem = loadable(() =>
-  import("../../organisms/Product/ProductItem")
-);
-
-const ThumbnailSlider = loadable(() =>
-  import("../../molecules/ThumbnailSlider")
-);
-
-const Breadcrumb = loadable(() => import("../../molecules/Breadcrumb"));
+import ThumbnailSlider from "../../molecules/ThumbnailSlider";
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${p => p.theme.size.exTiny};
@@ -90,80 +82,81 @@ const FarmProductsBox = styled.div`
   margin-top: ${p => p.theme.size.distance};
 `;
 
-export default function(props) {
-  const { farm, breadcrumbs, farmProducts } = props;
-  useEffect(function() {
-    props.fetchFarmProducts();
-  });
+export default class extends Component {
+  componentDidMount() {
+    this.props.fetchFarmProducts();
+  }
+  render() {
+    const { farm, breadcrumbs, farmProducts } = this.props;
+    return (
+      <Fragment>
+        <PanelDefault>
+          <ThumbnailSlider images={farm.images} numberOfDisplay={5} />
+          <BreadCrumbNav list={breadcrumbs} />
+          <PanelBody>
+            <TopBarInfo>
+              <Title>{farm.title}</Title>
+              <FontAwesomeIcon icon="map-marker-alt" />
+              <span>{farm.address}</span>
 
-  return (
-    <Fragment>
-      <PanelDefault>
-        <ThumbnailSlider images={farm.images} numberOfDisplay={5} />
-        <BreadCrumbNav list={breadcrumbs} />
-        <PanelBody>
-          <TopBarInfo>
-            <Title>{farm.title}</Title>
-            <FontAwesomeIcon icon="map-marker-alt" />
-            <span>{farm.address}</span>
+              <FollowButton icon="user-plus" size="sm">
+                Theo dõi
+              </FollowButton>
+            </TopBarInfo>
+            <div className="clearfix">
+              <ContentBody>{farm.content}</ContentBody>
 
-            <FollowButton icon="user-plus" size="sm">
-              Theo dõi
-            </FollowButton>
-          </TopBarInfo>
-          <div className="clearfix">
-            <ContentBody>{farm.content}</ContentBody>
-
-            <div className="interactive-toolbar">
-              <div className="row">
-                <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-                  <HorizontalList>
-                    <InteractiveItem>
-                      <HorizontalReactBar
-                        reactionNumber={farm.reactionNumber}
-                      />
-                    </InteractiveItem>
-                    <InteractiveItem>
-                      <FontButtonItem
-                        icon="comments"
-                        title="Thảo luận"
-                        dynamicText={farm.commentNumber}
-                      />
-                    </InteractiveItem>
-                    <InteractiveItem>
-                      <FontButtonItem icon="bookmark" title="Đánh dấu" />
-                    </InteractiveItem>
-                  </HorizontalList>
-                </div>
-                <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-                  <PostActions>
-                    <ActionButton>
-                      <FontAwesomeIcon icon="angle-down" />
-                    </ActionButton>
-                  </PostActions>
+              <div className="interactive-toolbar">
+                <div className="row">
+                  <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                    <HorizontalList>
+                      <InteractiveItem>
+                        <HorizontalReactBar
+                          reactionNumber={farm.reactionNumber}
+                        />
+                      </InteractiveItem>
+                      <InteractiveItem>
+                        <FontButtonItem
+                          icon="comments"
+                          title="Thảo luận"
+                          dynamicText={farm.commentNumber}
+                        />
+                      </InteractiveItem>
+                      <InteractiveItem>
+                        <FontButtonItem icon="bookmark" title="Đánh dấu" />
+                      </InteractiveItem>
+                    </HorizontalList>
+                  </div>
+                  <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
+                    <PostActions>
+                      <ActionButton>
+                        <FontAwesomeIcon icon="angle-down" />
+                      </ActionButton>
+                    </PostActions>
+                  </div>
                 </div>
               </div>
             </div>
+          </PanelBody>
+        </PanelDefault>
+        <FarmProductsBox>
+          <TertiaryHeading>Sản phẩm của nông trại</TertiaryHeading>
+          <div className="row">
+            {farmProducts
+              ? farmProducts.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
+                    >
+                      <ProductItem product={item} />
+                    </div>
+                  );
+                })
+              : null}
           </div>
-        </PanelBody>
-      </PanelDefault>
-      <FarmProductsBox>
-        <TertiaryHeading>Sản phẩm của nông trại</TertiaryHeading>
-        <div className="row">
-          {farmProducts
-            ? farmProducts.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                  >
-                    <ProductItem product={item} />
-                  </div>
-                );
-              })
-            : null}
-        </div>
-      </FarmProductsBox>
-    </Fragment>
-  );
+        </FarmProductsBox>
+      </Fragment>
+    );
+  }
 }

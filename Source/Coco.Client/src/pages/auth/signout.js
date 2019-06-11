@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import loadable from "@loadable/component";
 import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
 import UserContext from "../../utils/Context/UserContext";
-const SignOutPanel = loadable(() =>
-  import("../../components/organisms/Auth/SignOutPanel")
-);
+import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
 
 class SingnOutPage extends Component {
   constructor(props) {

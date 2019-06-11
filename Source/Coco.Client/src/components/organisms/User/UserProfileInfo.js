@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VerticalList } from "../../atoms/List";
@@ -45,39 +45,41 @@ function UnserInfoChild(props) {
       {!!isEmail ? (
         <a href={`mailto:${children}`}>{children}</a>
       ) : (
-        <span>{children}</span>
-      )}
+          <span>{children}</span>
+        )}
     </ChildItem>
   ) : null;
-}
+};
 
-export default function(props) {
-  const { userInfo } = props;
-  return (
-    <Root>
-      {userInfo ? (
-        <InfoList>
-          <UnserInfoChild className="text-justify">
-            {userInfo.blast}
-          </UnserInfoChild>
-          <UnserInfoChild icon="map-marked-alt">
-            {userInfo.address}
-          </UnserInfoChild>
-          <UnserInfoChild icon="map-marker-alt">
-            {userInfo.country}
-          </UnserInfoChild>
-          <UnserInfoChild icon="baby">
-            {format(userInfo.birthDate, "MMMM, DD YYYY")}
-          </UnserInfoChild>
-          <UnserInfoChild icon="calendar-alt">
-            {format(userInfo.joinedDate, "MMMM, DD YYYY")}
-          </UnserInfoChild>
-          <UnserInfoChild icon="envelope" isEmail={true}>
-            {userInfo.email}
-          </UnserInfoChild>
-          <UnserInfoChild icon="mobile-alt">{userInfo.mobile}</UnserInfoChild>
-        </InfoList>
-      ) : null}
-    </Root>
-  );
+export default class extends Component {
+  render() {
+    const { userInfo } = this.props;
+    return (
+      <Root>
+        {userInfo ? (
+          <InfoList>
+            <UnserInfoChild className="text-justify">
+              {userInfo.blast}
+            </UnserInfoChild>
+            <UnserInfoChild icon="map-marked-alt">
+              {userInfo.address}
+            </UnserInfoChild>
+            <UnserInfoChild icon="map-marker-alt">
+              {userInfo.country}
+            </UnserInfoChild>
+            <UnserInfoChild icon="baby">
+              {format(userInfo.birthDate, "MMMM, DD YYYY")}
+            </UnserInfoChild>
+            <UnserInfoChild icon="calendar-alt">
+              {format(userInfo.joinedDate, "MMMM, DD YYYY")}
+            </UnserInfoChild>
+            <UnserInfoChild icon="envelope" isEmail={true}>
+              {userInfo.email}
+            </UnserInfoChild>
+            <UnserInfoChild icon="mobile-alt">{userInfo.mobile}</UnserInfoChild>
+          </InfoList>
+        ) : null}
+      </Root>
+    );
+  }
 }
