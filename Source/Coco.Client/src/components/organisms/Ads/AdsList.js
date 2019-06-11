@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
 import { VerticalList } from "../../atoms/List";
@@ -33,10 +33,10 @@ const Root = styled.div`
   }
 `;
 
-export default class AdsList extends Component {
-  constructor(props) {
-    super(props);
+export default function (props) {
+  const [advertisements, setAdvertisements] = useState([]);
 
+  useEffect(function () {
     const listAds = [];
     for (let i = 0; i < 1; i++) {
       listAds.push({
@@ -49,28 +49,23 @@ export default class AdsList extends Component {
       });
     }
 
-    this.state = {
-      listAds: listAds
-    };
-  }
+    setAdvertisements(listAds);
+  })
 
-  render() {
-    const { listAds } = this.state;
-    return (
-      <Root>
-        <QuaternaryHeading>
-          <span>Gợi Ý</span>
-          <FontAwesomeIcon icon="bullhorn" />
-        </QuaternaryHeading>
-        <div>
-          <VerticalList>
-            {listAds &&
-              listAds.map((ads, index) => (
-                <AdsItem key={index} ads={ads} index={index} />
-              ))}
-          </VerticalList>
-        </div>
-      </Root>
-    );
-  }
+  return (
+    <Root>
+      <QuaternaryHeading>
+        <span>Gợi Ý</span>
+        <FontAwesomeIcon icon="bullhorn" />
+      </QuaternaryHeading>
+      <div>
+        <VerticalList>
+          {advertisements &&
+            advertisements.map((ads, index) => (
+              <AdsItem key={index} ads={ads} index={index} />
+            ))}
+        </VerticalList>
+      </div>
+    </Root>
+  );
 }

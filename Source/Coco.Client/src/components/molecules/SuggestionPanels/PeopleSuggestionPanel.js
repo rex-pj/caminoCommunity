@@ -49,13 +49,13 @@ const Avatar = styled(ThumbnailCircle)`
   }
 `;
 
-export default props => {
+export default function (props) {
   const { data, className, index } = props;
   return (
     <ListItem
       className={`${className ? className : ""}${className ? " " : ""}${
         index === 0 ? "first-item" : ""
-      }`}
+        }`}
     >
       <div className="row">
         <div className="col col-3 col-sm-3 col-md-4 col-lg-4 col-xl-3">

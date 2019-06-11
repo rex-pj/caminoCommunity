@@ -1,7 +1,7 @@
 import React from "react";
 import AuthBanner from "../Banner/AuthBanner";
 
-export default () => {
+export default function() {
   return (
     <div className="row no-gutters">
       <div className="col col-12">

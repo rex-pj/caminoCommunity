@@ -43,21 +43,21 @@ const ListBar = styled(HorizontalList)`
   }
 `;
 
-export default props => {
+export default function (props) {
   const { menuList } = props;
   return (
     <ListBar percent={menuList ? 100 / menuList.length : 0}>
       {menuList
         ? menuList.map((item, index) => (
-            <MenubarItem
-              key={index}
-              title={item.description}
-              className={index === 0 ? "first" : null}
-            >
-              <FontAwesomeIcon icon={item.icon} />
-              <Content>{item.text}</Content>
-            </MenubarItem>
-          ))
+          <MenubarItem
+            key={index}
+            title={item.description}
+            className={index === 0 ? "first" : null}
+          >
+            <FontAwesomeIcon icon={item.icon} />
+            <Content>{item.text}</Content>
+          </MenubarItem>
+        ))
         : null}
     </ListBar>
   );

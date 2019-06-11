@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
@@ -61,57 +61,40 @@ const SubmitButton = styled(Button)`
   }
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default function (props) {
+  let formData = SigninModel;
+  console.log(formData);
+  const [isValidForm, setIsFormValid] = useState(false);
 
-    this.state = {
-      isFormValid: false,
-      shouldRender: false
-    };
+  useEffect(function () {
+    const isFormValid = checkIsFormValid();
+    setIsFormValid(isFormValid);
+  });
 
-    this.formData = SigninModel;
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  handleInputBlur = evt => {
+  function handleInputBlur(evt) {
     const { name } = evt.target;
-    if (!this.formData[name].isValid) {
+    if (!formData[name].isValid) {
       evt.target.classList.add("invalid");
     } else {
       evt.target.classList.remove("invalid");
     }
   };
 
-  handleInputChange = evt => {
-    this.formData = this.formData || {};
+  function handleInputChange(evt) {
+    formData = formData || {};
     const { name, value } = evt.target;
 
     // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
-    this.formData[name].value = value;
+    formData[name].isValid = checkValidity(formData, value, name);
+    formData[name].value = value;
 
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
-    }
+    setIsFormValid(formData[name].isValid);
   };
 
-  checkIsFormValid = () => {
+  function checkIsFormValid() {
     let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid;
       if (!isFormValid) {
         break;
       }
@@ -120,15 +103,15 @@ export default class extends Component {
     return isFormValid;
   };
 
-  onSignin = e => {
+  function onSignin(e) {
     e.preventDefault();
 
     let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        this.props.showValidationError(
+        props.showValidationError(
           "Thông tin bạn nhập có thể bị sai",
           "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
         );
@@ -137,62 +120,58 @@ export default class extends Component {
 
     if (!!isFormValid) {
       const signinData = {};
-      for (const formIdentifier in this.formData) {
-        signinData[formIdentifier] = this.formData[formIdentifier].value;
+      for (const formIdentifier in formData) {
+        signinData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      this.props.onSignin(signinData);
+      props.onSignin(signinData);
     }
   };
 
-  render() {
-    const isFormValid = this.checkIsFormValid();
-
-    return (
-      <form onSubmit={e => this.onSignin(e)} method="POST">
-        <div className="row no-gutters">
-          <div className="col col-12 col-sm-7">
-            <AuthBanner
-              imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-              title="Đăng Nhập"
-              instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
-            />
-          </div>
-          <div className="col col-12 col-sm-5">
-            <AuthNavigation />
-            <PanelBody>
-              <FormRow>
-                <Label>E-mail</Label>
-                <Textbox
-                  placeholder="Nhập e-mail"
-                  type="email"
-                  name="username"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Mật khẩu</Label>
-                <Textbox
-                  placeholder="Nhập mật khẩu"
-                  type="password"
-                  name="password"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormFooter>
-                <SubmitButton
-                  disabled={!this.props.isFormEnabled || !isFormValid}
-                  type="submit"
-                >
-                  Đăng Nhập
-                </SubmitButton>
-              </FormFooter>
-            </PanelBody>
-          </div>
+  return (
+    <form onSubmit={e => onSignin(e)} method="POST">
+      <div className="row no-gutters">
+        <div className="col col-12 col-sm-7">
+          <AuthBanner
+            imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
+            title="Đăng Nhập"
+            instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
+          />
         </div>
-      </form>
-    );
-  }
+        <div className="col col-12 col-sm-5">
+          <AuthNavigation />
+          <PanelBody>
+            <FormRow>
+              <Label>E-mail</Label>
+              <Textbox
+                placeholder="Nhập e-mail"
+                type="email"
+                name="username"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Mật khẩu</Label>
+              <Textbox
+                placeholder="Nhập mật khẩu"
+                type="password"
+                name="password"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormFooter>
+              <SubmitButton
+                disabled={!props.isFormEnabled || !isValidForm}
+                type="submit"
+              >
+                Đăng Nhập
+              </SubmitButton>
+            </FormFooter>
+          </PanelBody>
+        </div>
+      </div>
+    </form>
+  );
 }

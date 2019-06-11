@@ -43,7 +43,7 @@ const TitleTail = styled.span`
   height: ${p => p.theme.size.normal};
 `;
 
-export default () => {
+export default function () {
   return (
     <div className="clearfix">
       <LogoImageLink href="/">

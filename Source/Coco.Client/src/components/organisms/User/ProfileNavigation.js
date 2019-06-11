@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter, NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { HorizontalList } from "../../atoms/List";
@@ -52,51 +52,48 @@ const NavLinkActived = props => {
   );
 };
 
-export default withRouter(
-  class extends Component {
-    render() {
-      const { className } = this.props;
-      return (
-        <Root>
-          <div className="row">
-            <div className="col-auto mr-auto">
-              <HorizontalList className={className}>
-                <ListItem>
-                  <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
-                </ListItem>
-                <ListItem>
-                  <NavLinkActived pageNav="posts" {...this.props}>
-                    Bài Viết
-                  </NavLinkActived>
-                </ListItem>
-                <ListItem>
-                  <NavLinkActived pageNav="products" {...this.props}>
-                    Sản Phẩm
-                  </NavLinkActived>
-                </ListItem>
-                <ListItem>
-                  <NavLinkActived pageNav="farms" {...this.props}>
-                    Nông Trại
-                  </NavLinkActived>
-                </ListItem>
-                <ListItem>
-                  <NavLinkActived pageNav="followings" {...this.props}>
-                    Được Theo Dõi
-                  </NavLinkActived>
-                </ListItem>
-                <ListItem>
-                  <NavLinkActived pageNav="about" {...this.props}>
-                    Giới thiệu
-                  </NavLinkActived>
-                </ListItem>
-              </HorizontalList>
-            </div>
-            <div className="col-auto">
-              <DropdownButton icon="ellipsis-v" />
-            </div>
-          </div>
-        </Root>
-      );
-    }
-  }
+export default withRouter(function (props) {
+  const { className } = props;
+  return (
+    <Root>
+      <div className="row">
+        <div className="col-auto mr-auto">
+          <HorizontalList className={className}>
+            <ListItem>
+              <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
+            </ListItem>
+            <ListItem>
+              <NavLinkActived pageNav="posts" {...this.props}>
+                Bài Viết
+              </NavLinkActived>
+            </ListItem>
+            <ListItem>
+              <NavLinkActived pageNav="products" {...this.props}>
+                Sản Phẩm
+              </NavLinkActived>
+            </ListItem>
+            <ListItem>
+              <NavLinkActived pageNav="farms" {...this.props}>
+                Nông Trại
+              </NavLinkActived>
+            </ListItem>
+            <ListItem>
+              <NavLinkActived pageNav="followings" {...this.props}>
+                Được Theo Dõi
+              </NavLinkActived>
+            </ListItem>
+            <ListItem>
+              <NavLinkActived pageNav="about" {...this.props}>
+                Giới thiệu
+              </NavLinkActived>
+            </ListItem>
+          </HorizontalList>
+        </div>
+        <div className="col-auto">
+          <DropdownButton icon="ellipsis-v" />
+        </div>
+      </div>
+    </Root>
+  );
+}
 );

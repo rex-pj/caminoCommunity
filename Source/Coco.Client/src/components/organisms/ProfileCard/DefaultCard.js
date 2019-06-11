@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import UserCard from "./UserCard";
@@ -14,36 +14,32 @@ const Card = styled(UserCard)`
   border-radius: 0;
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default function (props) {
+  const [menu, setMenu] = useState([]);
 
-    this.state = {
-      menuList: [
-        {
-          icon: faUserCheck,
-          text: "800",
-          description: "Được theo Dõi"
-        },
-        {
-          icon: faComments,
-          text: "350",
-          description: "Chủ Đề"
+  useEffect(function () {
+    const menuList = [
+      {
+        icon: faUserCheck,
+        text: "800",
+        description: "Được theo Dõi"
+      },
+      {
+        icon: faComments,
+        text: "350",
+        description: "Chủ Đề"
+      }
+    ];
+    setMenu(menuList);
+  })
+
+  return (
+    <Root>
+      <UserContext.Consumer>
+        {({ isLogin, userInfo }) =>
+          isLogin ? <Card userInfo={userInfo} menuList={menu} /> : null
         }
-      ]
-    };
-  }
-
-  render() {
-    const { menuList } = this.state;
-    return (
-      <Root>
-        <UserContext.Consumer>
-          {({ isLogin, userInfo }) =>
-            isLogin ? <Card userInfo={userInfo} menuList={menuList} /> : null
-          }
-        </UserContext.Consumer>
-      </Root>
-    );
-  }
+      </UserContext.Consumer>
+    </Root>
+  );
 }

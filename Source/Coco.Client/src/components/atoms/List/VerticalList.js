@@ -11,6 +11,6 @@ const VList = styled.ul`
   }
 `;
 
-export default props => {
+export default function (props) {
   return <VList className={props.className}>{props.children}</VList>;
 };

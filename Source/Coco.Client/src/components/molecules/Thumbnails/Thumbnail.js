@@ -8,13 +8,15 @@ const Root = styled.span`
   display: block;
 `;
 
-export default props => (
-  <Root className={props.className} onClick={props.onClick}>
-    <Image
-      src={props.src}
-      alt={props.alt}
-      width={props.width}
-      height={props.height}
-    />
-  </Root>
-);
+export default function (props) {
+  return (
+    <Root className={props.className} onClick={props.onClick}>
+      <Image
+        src={props.src}
+        alt={props.alt}
+        width={props.width}
+        height={props.height}
+      />
+    </Root>
+  )
+}

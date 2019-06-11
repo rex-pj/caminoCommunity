@@ -76,7 +76,7 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default props => {
+export default function(props) {
   const { farmGroup } = props;
 
   return (

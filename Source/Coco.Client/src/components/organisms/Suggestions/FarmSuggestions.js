@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import FarmSuggestionItem from "./FarmSuggestionItem";
 import { VerticalList } from "../../atoms/List";
@@ -16,10 +16,10 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default class FarmSuggestions extends Component {
-  constructor(props) {
-    super(props);
+export default function (props) {
+  const [farms, setFarms] = useState([]);
 
+  useEffect(function () {
     let farms = [];
     for (let i = 0; i < 3; i++) {
       farms.push({
@@ -34,25 +34,20 @@ export default class FarmSuggestions extends Component {
       });
     }
 
-    this.state = {
-      farms: farms
-    };
-  }
+    setFarms(farms);
+  })
 
-  render() {
-    const { farms } = this.state;
-    return (
-      <div>
-        <QuaternaryHeading>Thăm Quan Nông Trại Khác?</QuaternaryHeading>
-        <Root>
-          <List>
-            {farms &&
-              farms.map((farm, index) => (
-                <FarmSuggestionItem key={index} farm={farm} index={index} />
-              ))}
-          </List>
-        </Root>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <QuaternaryHeading>Thăm Quan Nông Trại Khác?</QuaternaryHeading>
+      <Root>
+        <List>
+          {farms &&
+            farms.map((farm, index) => (
+              <FarmSuggestionItem key={index} farm={farm} index={index} />
+            ))}
+        </List>
+      </Root>
+    </div>
+  );
 }

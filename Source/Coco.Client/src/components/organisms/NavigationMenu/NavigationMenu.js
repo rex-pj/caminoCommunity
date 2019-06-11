@@ -45,24 +45,24 @@ const AuthButton = styled(RouterLinkButton)`
   }
 `;
 
-export default props => {
+export default function (props) {
   return (
     <UserContext.Consumer>
       {({ isLogin, userInfo }) =>
         isLogin ? (
           <ProfileNavigation userInfo={userInfo} />
         ) : (
-          <List className={props.className}>
-            <ListItem>
-              <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
-            </ListItem>
+            <List className={props.className}>
+              <ListItem>
+                <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
+              </ListItem>
 
-            <Devided />
-            <ListItem>
-              <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
-            </ListItem>
-          </List>
-        )
+              <Devided />
+              <ListItem>
+                <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
+              </ListItem>
+            </List>
+          )
       }
     </UserContext.Consumer>
   );

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
@@ -39,28 +39,25 @@ const ListItem = styled.li`
   }
 `;
 
-export default withRouter(
-  class extends Component {
-    render() {
-      const { match, className } = this.props;
-      const { path } = match;
-      return (
-        <Root>
-          <HorizontalList className={className}>
-            <ListItem className={path === "/auth/signup" ? "actived" : ""}>
-              <NavButton to="/auth/signup">Đăng Ký</NavButton>
-            </ListItem>
-            <ListItem className={path === "/auth/signin" ? "actived" : ""}>
-              <NavButton to="/auth/signin">Đăng Nhập</NavButton>
-            </ListItem>
-            <ListItem>
-              <NavButton to="/">
-                <FontAwesomeIcon icon="home" />
-              </NavButton>
-            </ListItem>
-          </HorizontalList>
-        </Root>
-      );
-    }
-  }
-);
+export default withRouter(function (props) {
+  const { match, className } = props;
+  const { path } = match;
+
+  return (
+    <Root>
+      <HorizontalList className={className}>
+        <ListItem className={path === "/auth/signup" ? "actived" : ""}>
+          <NavButton to="/auth/signup">Đăng Ký</NavButton>
+        </ListItem>
+        <ListItem className={path === "/auth/signin" ? "actived" : ""}>
+          <NavButton to="/auth/signin">Đăng Nhập</NavButton>
+        </ListItem>
+        <ListItem>
+          <NavButton to="/">
+            <FontAwesomeIcon icon="home" />
+          </NavButton>
+        </ListItem>
+      </HorizontalList>
+    </Root>
+  );
+});

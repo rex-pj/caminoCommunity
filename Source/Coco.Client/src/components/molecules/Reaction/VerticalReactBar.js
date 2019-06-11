@@ -27,7 +27,7 @@ const ReactionNumber = styled.div`
   font-size: ${p => p.theme.fontSize.exSmall};
 `;
 
-export default props => {
+export default function(props) {
   const { reactionNumber } = props;
   return (
     <ReactBar>

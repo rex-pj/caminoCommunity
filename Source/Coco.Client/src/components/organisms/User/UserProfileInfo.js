@@ -37,7 +37,7 @@ const ChildItem = styled.li`
   }
 `;
 
-const UnserInfoChild = props => {
+function UnserInfoChild(props) {
   const { className, children, icon, isEmail } = props;
   return children ? (
     <ChildItem className={className}>
@@ -45,8 +45,8 @@ const UnserInfoChild = props => {
       {!!isEmail ? (
         <a href={`mailto:${children}`}>{children}</a>
       ) : (
-        <span>{children}</span>
-      )}
+          <span>{children}</span>
+        )}
     </ChildItem>
   ) : null;
 };

@@ -5,7 +5,7 @@ const Root = styled.div`
   background-color: ${p => p.theme.color.secondary};
 `;
 
-export default () => {
+export default function () {
   return (
     <Root>
       <span>Footer</span>

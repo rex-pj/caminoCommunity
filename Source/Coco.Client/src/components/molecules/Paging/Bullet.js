@@ -5,16 +5,9 @@ import {
   RouterLinkButtonOutlineSecondary
 } from "../../atoms/RouterLinkButtons";
 
-export default props => {
+export default function (props) {
   const { baseUrl, children, currentPage, pageNumber, disabled } = props;
   let to = {};
-  // if (baseUrl && pageNumber) {
-  //   to = { pathname: baseUrl, search: `page=${pageNumber}` };
-  // } else if (baseUrl) {
-  //   to = { pathname: baseUrl };
-  // } else if (pageNumber) {
-  //   to = { search: `page=${pageNumber}` };
-  // }
 
   to = `${baseUrl}${"/page/"}${pageNumber}`;
   if (baseUrl && pageNumber) {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { ButtonTransparent } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -55,29 +55,27 @@ const Root = styled.div`
   }
 `;
 
-export default class extends Component {
-  componentDidMount() {
-    const { closeLatestPopup, notify } = this.props;
+export default function (props) {
+  const { notify } = this.props;
+  const className = notify.type === "error" ? "error" : "info";
+
+  useEffect(function () {
+    const { closeLatestPopup, notify } = props;
     this.timeOut = setTimeout(() => {
       closeLatestPopup && closeLatestPopup(notify.id);
       clearTimeout();
     }, 9000);
-  }
+  })
 
-  render() {
-    const { notify } = this.props;
-
-    const className = notify.type === "error" ? "error" : "info";
-    return (
-      <Root className={className}>
-        <ClearButton onClick={() => this.props.closePopup(notify)}>
-          <FontAwesomeIcon icon="times" />
-        </ClearButton>
-        <LinkTo href={notify.url} type={notify.type}>
-          <Title>{notify.title}</Title>
-          <Description>{notify.description}</Description>
-        </LinkTo>
-      </Root>
-    );
-  }
+  return (
+    <Root className={className}>
+      <ClearButton onClick={() => this.props.closePopup(notify)}>
+        <FontAwesomeIcon icon="times" />
+      </ClearButton>
+      <LinkTo href={notify.url} type={notify.type}>
+        <Title>{notify.title}</Title>
+        <Description>{notify.description}</Description>
+      </LinkTo>
+    </Root>
+  );
 }

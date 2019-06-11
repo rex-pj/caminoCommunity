@@ -28,7 +28,7 @@ const ReactButton = styled.span`
   }
 `;
 
-export default props => {
+export default function (props) {
   const { reactionNumber } = props;
   return (
     <div className={props.className}>

@@ -11,6 +11,7 @@
     "@loadable/server": "^5.7.0",
     "apollo-boost": "^0.4.2",
     "apollo-link-context": "^1.0.17",
+    "apollo-link-state": "^0.4.2",
     "axios": "^0.18.0",
     "date-fns": "^1.30.1",
     "dotenv": "^7.0.0",
@@ -26,8 +27,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "^2.1.8",
     "redux": "^4.0.1",
-    "styled-components": "^4.3.1",
-    "surge": "^0.18.0"
+    "styled-components": "^4.3.1"
   },
   "scripts": {
     "start": "react-scripts start",

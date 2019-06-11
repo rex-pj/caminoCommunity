@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { ButtonTransparent } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -56,62 +56,45 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default function (props) {
+  const [isShown, setShow] = useState(false);
+  const { className, dropdown, icon } = props;
+  let currentRef = useRef();
 
-    this.state = {
-      isShown: false
+  useEffect(function () {
+    document.addEventListener("click", onHide, false);
+
+    return function cleanup() {
+      document.removeEventListener("click", onHide);
     };
+  });
 
-    this.currentRef = React.createRef();
-  }
-
-  componentDidMount() {
-    document.addEventListener("click", this.onHide, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("click", this.onHide);
-  }
-
-  onHide = e => {
-    if (!this.currentRef.current.contains(e.target)) {
-      this.setState({
-        isShown: false
-      });
+  function onHide(e) {
+    if (!currentRef.current.contains(e.target)) {
+      setShow(false);
     }
   };
 
-  show = () => {
-    this.setState(() => {
-      return {
-        isShown: !this.state.isShown
-      };
-    });
+  function show() {
+    setShow(!isShown);
   };
 
-  render() {
-    const { className, dropdown, icon } = this.props;
-    const { isShown } = this.state;
-
-    return (
-      <DropdownGroup className={className} ref={this.currentRef}>
-        <ButtonCaret onClick={this.show}>
-          <FontAwesomeIcon icon={icon ? icon : "caret-down"} />
-        </ButtonCaret>
-        {dropdown && isShown ? (
-          <DropdownList>
-            {dropdown.map((item, index) => (
-              <ModuleMenuListItem key={index}>
-                <a href={item.url}>
-                  <span>{item.name}</span>
-                </a>
-              </ModuleMenuListItem>
-            ))}
-          </DropdownList>
-        ) : null}
-      </DropdownGroup>
-    );
-  }
+  return (
+    <DropdownGroup className={className} ref={currentRef}>
+      <ButtonCaret onClick={show}>
+        <FontAwesomeIcon icon={icon ? icon : "caret-down"} />
+      </ButtonCaret>
+      {dropdown && isShown ? (
+        <DropdownList>
+          {dropdown.map((item, index) => (
+            <ModuleMenuListItem key={index}>
+              <a href={item.url}>
+                <span>{item.name}</span>
+              </a>
+            </ModuleMenuListItem>
+          ))}
+        </DropdownList>
+      ) : null}
+    </DropdownGroup>
+  );
 }
