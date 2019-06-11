@@ -52,7 +52,7 @@ const NavLinkActived = props => {
   );
 };
 
-export default withRouter(function (props) {
+export default withRouter(function(props) {
   const { className } = props;
   return (
     <Root>
@@ -60,30 +60,30 @@ export default withRouter(function (props) {
         <div className="col-auto mr-auto">
           <HorizontalList className={className}>
             <ListItem>
-              <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
+              <NavLinkActived {...props}>Tất cả</NavLinkActived>
             </ListItem>
             <ListItem>
-              <NavLinkActived pageNav="posts" {...this.props}>
+              <NavLinkActived pageNav="posts" {...props}>
                 Bài Viết
               </NavLinkActived>
             </ListItem>
             <ListItem>
-              <NavLinkActived pageNav="products" {...this.props}>
+              <NavLinkActived pageNav="products" {...props}>
                 Sản Phẩm
               </NavLinkActived>
             </ListItem>
             <ListItem>
-              <NavLinkActived pageNav="farms" {...this.props}>
+              <NavLinkActived pageNav="farms" {...props}>
                 Nông Trại
               </NavLinkActived>
             </ListItem>
             <ListItem>
-              <NavLinkActived pageNav="followings" {...this.props}>
+              <NavLinkActived pageNav="followings" {...props}>
                 Được Theo Dõi
               </NavLinkActived>
             </ListItem>
             <ListItem>
-              <NavLinkActived pageNav="about" {...this.props}>
+              <NavLinkActived pageNav="about" {...props}>
                 Giới thiệu
               </NavLinkActived>
             </ListItem>
@@ -95,5 +95,4 @@ export default withRouter(function (props) {
       </div>
     </Root>
   );
-}
-);
+});

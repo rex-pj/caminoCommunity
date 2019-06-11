@@ -1,14 +1,18 @@
 import React from "react";
+import loadable from "@loadable/component";
 import FrameLayout from "./FrameLayout";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../atoms/Panels";
-import AdsList from "../../organisms/Ads/AdsList";
-import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
   FarmSuggestions,
   GroupSuggestions,
   ConnectionSuggestions
 } from "../../organisms/Suggestions";
+
+const AuthorCard = loadable(() =>
+  import("../../organisms/ProfileCard/AuthorCard")
+);
+const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   margin-top: ${p => p.theme.size.normal};

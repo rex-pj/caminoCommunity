@@ -1,16 +1,20 @@
 import React from "react";
+import loadable from "@loadable/component";
 import FrameLayout from "./FrameLayout";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../atoms/Panels";
-import AdsList from "../../organisms/Ads/AdsList";
-import DefaultCard from "../../organisms/ProfileCard/DefaultCard";
-import Interesting from "../../organisms/Interesting";
-import Shorcut from "../../organisms/Shortcut";
 import {
   FarmSuggestions,
   GroupSuggestions,
   ConnectionSuggestions
 } from "../../organisms/Suggestions";
+
+const Shorcut = loadable(() => import("../../organisms/Shortcut"));
+const Interesting = loadable(() => import("../../organisms/Interesting"));
+const DefaultCard = loadable(() =>
+  import("../../organisms/ProfileCard/DefaultCard")
+);
+const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -25,7 +29,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default ({ component: Component, ...rest }) => {
+function DefaultLayout({ component: Component, ...rest }) {
   return (
     <FrameLayout
       {...rest}
@@ -71,4 +75,6 @@ export default ({ component: Component, ...rest }) => {
       )}
     />
   );
-};
+}
+
+export default DefaultLayout;

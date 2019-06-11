@@ -20,7 +20,7 @@ import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
 import AuthService from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from "react-apollo";
 import { authClient } from "./utils/GraphQLClient";
 
 // Redux

@@ -55,21 +55,21 @@ const Root = styled.div`
   }
 `;
 
-export default function (props) {
-  const { notify } = this.props;
+export default function(props) {
+  const { notify } = props;
   const className = notify.type === "error" ? "error" : "info";
 
-  useEffect(function () {
+  useEffect(function() {
     const { closeLatestPopup, notify } = props;
-    this.timeOut = setTimeout(() => {
+    setTimeout(() => {
       closeLatestPopup && closeLatestPopup(notify.id);
       clearTimeout();
     }, 9000);
-  })
+  });
 
   return (
     <Root className={className}>
-      <ClearButton onClick={() => this.props.closePopup(notify)}>
+      <ClearButton onClick={() => props.closePopup(notify)}>
         <FontAwesomeIcon icon="times" />
       </ClearButton>
       <LinkTo href={notify.url} type={notify.type}>

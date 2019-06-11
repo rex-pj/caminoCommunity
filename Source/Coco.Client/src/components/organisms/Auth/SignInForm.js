@@ -61,12 +61,11 @@ const SubmitButton = styled(Button)`
   }
 `;
 
-export default function (props) {
+export default function(props) {
   let formData = SigninModel;
-  console.log(formData);
   const [isValidForm, setIsFormValid] = useState(false);
 
-  useEffect(function () {
+  useEffect(function() {
     const isFormValid = checkIsFormValid();
     setIsFormValid(isFormValid);
   });
@@ -78,7 +77,7 @@ export default function (props) {
     } else {
       evt.target.classList.remove("invalid");
     }
-  };
+  }
 
   function handleInputChange(evt) {
     formData = formData || {};
@@ -89,7 +88,7 @@ export default function (props) {
     formData[name].value = value;
 
     setIsFormValid(formData[name].isValid);
-  };
+  }
 
   function checkIsFormValid() {
     let isFormValid = false;
@@ -101,7 +100,7 @@ export default function (props) {
     }
 
     return isFormValid;
-  };
+  }
 
   function onSignin(e) {
     e.preventDefault();
@@ -126,7 +125,7 @@ export default function (props) {
 
       props.onSignin(signinData);
     }
-  };
+  }
 
   return (
     <form onSubmit={e => onSignin(e)} method="POST">

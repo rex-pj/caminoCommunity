@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import loadable from "@loadable/component";
 import { connect } from "react-redux";
 import { raiseError } from "../../store/notify";
 import { defaultClient } from "../../utils/GraphQLClient";
-import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
+const SignUpForm = loadable(() =>
+  import("../../components/organisms/Auth/SignUpForm")
+);
 
 class SignUpPage extends Component {
   constructor(props) {

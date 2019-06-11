@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Route } from "react-router-dom";
 
-export default ({ component: Component, ...rest }) => {
+export default function({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
@@ -12,4 +12,4 @@ export default ({ component: Component, ...rest }) => {
       )}
     />
   );
-};
+}
