@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import GroupSuggestionItem from "./GroupSuggestionItem";
 import { VerticalList } from "../../atoms/List";
@@ -17,10 +17,10 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default function (props) {
-  const [groups, setGroups] = useState([]);
+export default class GroupSuggestions extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(function () {
     let groups = [];
     for (let i = 0; i < 3; i++) {
       groups.push({
@@ -34,22 +34,27 @@ export default function (props) {
       });
     }
 
-    setGroups(groups);
-  })
+    this.state = {
+      groups: groups
+    };
+  }
 
-  return (
-    <div>
-      <QuaternaryHeading>
-        Tham Gia Nông Hội Để Kết Nối Tốt Hơn!
-      </QuaternaryHeading>
-      <Root>
-        <List>
-          {groups &&
-            groups.map((group, index) => (
-              <GroupSuggestionItem key={index} group={group} index={index} />
-            ))}
-        </List>
-      </Root>
-    </div>
-  );
+  render() {
+    const { groups } = this.state;
+    return (
+      <div>
+        <QuaternaryHeading>
+          Tham Gia Nông Hội Để Kết Nối Tốt Hơn!
+        </QuaternaryHeading>
+        <Root>
+          <List>
+            {groups &&
+              groups.map((group, index) => (
+                <GroupSuggestionItem key={index} group={group} index={index} />
+              ))}
+          </List>
+        </Root>
+      </div>
+    );
+  }
 }

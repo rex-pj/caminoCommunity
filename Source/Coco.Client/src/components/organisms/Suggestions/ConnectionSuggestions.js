@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../atoms/List";
@@ -10,10 +10,10 @@ const Root = styled.div`
   background-color: ${p => p.theme.color.white};
 `;
 
-export default function (props) {
-  const [connections, setConnections] = useState([]);
+export default class ConnectionSuggestions extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(function () {
     let connections = [];
     for (let i = 0; i < 3; i++) {
       connections.push({
@@ -27,24 +27,29 @@ export default function (props) {
       });
     }
 
-    setConnections(connections);
-  })
+    this.state = {
+      connections: connections
+    };
+  }
 
-  return (
-    <div>
-      <QuaternaryHeading>Kết Nối Nhà Nông</QuaternaryHeading>
-      <Root>
-        <VerticalList>
-          {connections &&
-            connections.map((connection, index) => (
-              <ConnectionSuggestionItem
-                key={index}
-                connection={connection}
-                index={index}
-              />
-            ))}
-        </VerticalList>
-      </Root>
-    </div>
-  );
+  render() {
+    const { connections } = this.state;
+    return (
+      <div>
+        <QuaternaryHeading>Kết Nối Nhà Nông</QuaternaryHeading>
+        <Root>
+          <VerticalList>
+            {connections &&
+              connections.map((connection, index) => (
+                <ConnectionSuggestionItem
+                  key={index}
+                  connection={connection}
+                  index={index}
+                />
+              ))}
+          </VerticalList>
+        </Root>
+      </div>
+    );
+  }
 }

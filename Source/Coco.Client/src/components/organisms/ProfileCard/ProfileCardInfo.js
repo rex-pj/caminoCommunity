@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VerticalList } from "../../atoms/List";
@@ -46,40 +46,42 @@ const ChildItem = styled.li`
   }
 `;
 
-export default function (props) {
-  const { profileInfos } = props;
-  return (
-    <Root>
-      <PanelBody>
-        {profileInfos
-          ? profileInfos.map((item, index) => {
-            const { infos } = item;
-            return (
-              <ParentItem key={index}>
-                <Label>{item.name}</Label>
-                {infos ? (
-                  <InfoList>
-                    {infos.map((info, index) => {
-                      return (
-                        <ChildItem key={index} isLink={!!info.url}>
-                          <FontAwesomeIcon icon={info.icon} />
-                          {info.url ? (
-                            <AnchorLink to={info.url} as={info.url}>
-                              {info.name}
-                            </AnchorLink>
-                          ) : (
-                              <span>{info.name}</span>
-                            )}
-                        </ChildItem>
-                      );
-                    })}
-                  </InfoList>
-                ) : null}
-              </ParentItem>
-            );
-          })
-          : null}
-      </PanelBody>
-    </Root>
-  );
+export default class extends Component {
+  render() {
+    const { profileInfos } = this.props;
+    return (
+      <Root>
+        <PanelBody>
+          {profileInfos
+            ? profileInfos.map((item, index) => {
+                const { infos } = item;
+                return (
+                  <ParentItem key={index}>
+                    <Label>{item.name}</Label>
+                    {infos ? (
+                      <InfoList>
+                        {infos.map((info, index) => {
+                          return (
+                            <ChildItem key={index} isLink={!!info.url}>
+                              <FontAwesomeIcon icon={info.icon} />
+                              {info.url ? (
+                                <AnchorLink to={info.url} as={info.url}>
+                                  {info.name}
+                                </AnchorLink>
+                              ) : (
+                                <span>{info.name}</span>
+                              )}
+                            </ChildItem>
+                          );
+                        })}
+                      </InfoList>
+                    ) : null}
+                  </ParentItem>
+                );
+              })
+            : null}
+        </PanelBody>
+      </Root>
+    );
+  }
 }

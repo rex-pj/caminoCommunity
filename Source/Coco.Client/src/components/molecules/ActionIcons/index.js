@@ -35,7 +35,7 @@ const Link = styled(AnchorLink)`
   }
 `;
 
-function FontButtonItem(props) {
+const FontButtonItem = props => {
   const { icon, title, dynamicText } = props;
   return (
     <Root>

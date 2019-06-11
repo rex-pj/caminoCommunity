@@ -102,7 +102,7 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default function(props) {
+export default props => {
   const { farm } = props;
   const { creator } = farm;
 

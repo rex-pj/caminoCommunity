@@ -12,6 +12,6 @@ const HList = styled.ul`
   }
 `;
 
-export default function (props) {
+export default props => {
   return <HList className={props.className}>{props.children}</HList>;
 };

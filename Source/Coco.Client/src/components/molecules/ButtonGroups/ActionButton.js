@@ -13,7 +13,7 @@ const Button = styled(ButtonTransparent)`
   height: ${p => p.theme.size.small};
 `;
 
-export default function (props) {
+export default props => {
   return (
     <ButtonGroups className={props.className}>
       <Button>{props.children}</Button>

@@ -48,7 +48,7 @@ const ListItem = styled.li`
   }
 `;
 
-export default function(props) {
+export default props => {
   const { list, className } = props;
   return (
     <Root className={className}>

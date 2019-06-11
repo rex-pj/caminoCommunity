@@ -1,7 +1,7 @@
 import React from "react";
 import { AdsSuggestionPanel } from "../../molecules/SuggestionPanels";
 
-export default function (props) {
+export default props => {
   const { className, index } = props;
   let { ads } = props;
 

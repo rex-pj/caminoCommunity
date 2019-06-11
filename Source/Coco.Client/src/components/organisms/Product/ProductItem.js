@@ -97,7 +97,7 @@ const FarmInfo = styled(RowItem)`
   }
 `;
 
-export default function (props) {
+export default props => {
   const { product } = props;
   const { creator } = product;
 

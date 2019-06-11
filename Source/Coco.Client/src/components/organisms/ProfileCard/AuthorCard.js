@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import UserCard from "./UserCard";
@@ -16,12 +16,10 @@ const Card = styled(UserCard)`
   border-bottom: 1px solid ${p => p.theme.rgbaColor.dark};
 `;
 
-export default function(props) {
+export default class extends Component {
+  constructor(props) {
+    super(props);
 
-  const [infos, setInfosState] = useState([]);
-  const [menu, setMenu] = useState([]);
-
-  useEffect(function(){
     const infos = [
       {
         name: "Công việc",
@@ -72,28 +70,30 @@ export default function(props) {
       }
     ];
 
-    setInfosState(infos);
+    this.state = {
+      menuList: [
+        {
+          icon: faUserCheck,
+          text: "800",
+          description: "Được theo Dõi"
+        },
+        {
+          icon: faComments,
+          text: "350",
+          description: "Chủ Đề"
+        }
+      ],
+      infos
+    };
+  }
 
-    const menuList = [
-      {
-        icon: faUserCheck,
-        text: "800",
-        description: "Được theo Dõi"
-      },
-      {
-        icon: faComments,
-        text: "350",
-        description: "Chủ Đề"
-      }
-    ];
-
-    setMenu(menuList);
-  });
-
-  return (
-    <Root>
-      <Card menuList={menu} />
-      <ProfileCardInfo profileInfos={infos} />
-    </Root>
-  );
+  render() {
+    const { menuList, infos } = this.state;
+    return (
+      <Root>
+        <Card menuList={menuList} />
+        <ProfileCardInfo profileInfos={infos} />
+      </Root>
+    );
+  }
 }

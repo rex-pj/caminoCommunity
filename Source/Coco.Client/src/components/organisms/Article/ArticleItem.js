@@ -51,7 +51,7 @@ const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default function(props) {
+export default props => {
   const { article } = props;
   const { creator } = article;
 

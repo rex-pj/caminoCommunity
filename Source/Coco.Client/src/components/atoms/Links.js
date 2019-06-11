@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 
-const AnchorLink = withRouter(function ({ ...props }) {
+const AnchorLink = withRouter(({ ...props }) => {
   const { match, children, target, to } = props;
   let { className } = props;
   let { path } = match;
@@ -16,6 +16,6 @@ const AnchorLink = withRouter(function ({ ...props }) {
       {children}
     </Link>
   );
-})
+});
 
 export { AnchorLink };

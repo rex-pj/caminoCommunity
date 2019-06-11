@@ -22,7 +22,7 @@ const PageItem = styled.li`
   }
 `;
 
-export default function (props) {
+export default props => {
   const { totalPage, baseUrl } = props;
   let { currentPage } = props;
   currentPage = Number(currentPage);
@@ -32,15 +32,15 @@ export default function (props) {
     currentPage < 2
       ? currentPage
       : currentPage === 2
-        ? currentPage - 1
-        : currentPage - 2;
+      ? currentPage - 1
+      : currentPage - 2;
 
   const last =
     currentPage <= totalPage - 2
       ? currentPage + 2
       : currentPage === totalPage - 1
-        ? currentPage + 1
-        : currentPage;
+      ? currentPage + 1
+      : currentPage;
 
   let pageItems = [];
   for (let i = first; i <= last; i++) {

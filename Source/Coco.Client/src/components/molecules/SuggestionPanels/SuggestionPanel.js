@@ -73,7 +73,7 @@ const Body = styled.div`
   padding-bottom: 0;
 `;
 
-export default function(props) {
+export default props => {
   const { data, className, index } = props;
   return (
     <ListGroupItem

@@ -2,7 +2,7 @@ import React from "react";
 import { PageInfo } from "../../../utils/Constant";
 import AuthBanner from "../Banner/AuthBanner";
 
-export default function () {
+export default () => {
   return (
     <div className="row no-gutters">
       <div className="col col-12">

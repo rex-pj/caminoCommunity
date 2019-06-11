@@ -3,13 +3,12 @@ import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
-import { withClientState } from 'apollo-link-state';
 
-const authHttpLink = createHttpLink({
+let authHttpLink = createHttpLink({
   uri: process.env.REACT_APP_AUTH_API_URL
 });
 
-const authLink = setContext(async (_, { headers }) => {
+let authLink = setContext(async (_, { headers }) => {
   const token = localStorage.getItem(AUTH_KEY);
   const authorization = token ? token : "";
   const userHash = localStorage.getItem(AUTH_USER_HASHED_ID);
@@ -22,12 +21,10 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-const authClient = new ApolloClient({
+let authClient = new ApolloClient({
   link: authLink.concat(authHttpLink),
   cache: new InMemoryCache(),
   ssrMode: true,
-  initialState: withClientState,
-  ssrForceFetchDelay: 100,
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "cache-and-network",

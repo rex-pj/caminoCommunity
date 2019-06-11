@@ -22,13 +22,13 @@ const Body = styled.div`
   padding-bottom: ${p => p.theme.size.exTiny};
 `;
 
-export default function (props) {
+export default props => {
   const { data, className, index } = props;
   return (
     <ListItem
       className={`${className ? className : ""}${className ? " " : ""}${
         index === 0 ? "first-item" : ""
-        }`}
+      }`}
     >
       <div>
         <Body>

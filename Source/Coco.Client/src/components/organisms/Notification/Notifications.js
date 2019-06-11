@@ -63,15 +63,15 @@ class Notifications extends Component {
       <Root>
         {notifications
           ? notifications.map((item, index) => {
-            return (
-              <NotifyItem
-                key={index}
-                closePopup={this.closePopup}
-                closeLatestPopup={this.closeLatestPopup}
-                notify={item}
-              />
-            );
-          })
+              return (
+                <NotifyItem
+                  key={index}
+                  closePopup={this.closePopup}
+                  closeLatestPopup={this.closeLatestPopup}
+                  notify={item}
+                />
+              );
+            })
           : null}
       </Root>
     );

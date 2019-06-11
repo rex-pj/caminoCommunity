@@ -33,7 +33,7 @@ const MoreInfo = styled.p`
   margin-bottom: 0;
 `;
 
-export default function(props) {
+export default props => {
   const { profile, className } = props;
   return (
     <div className={`${className} row no-gutters`}>
