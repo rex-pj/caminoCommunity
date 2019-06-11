@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { Switch, withRouter } from "react-router-dom";
-// import queryString from "query-string";
+import queryString from "query-string";
 import Timeline from "./timeline";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
-// import { getFullLoggedUserInfo } from "../../services/AuthService";
+import AuthService from "../../services/AuthService";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
@@ -38,33 +38,35 @@ export default withRouter(
 
     async componentDidMount() {
       this._isMounted = true;
-      // var searchParams = queryString.parse(this.props.location.search);
+      var searchParams = queryString.parse(this.props.location.search);
 
-      // await getFullLoggedUserInfo(searchParams.userHashedId).then(user => {
-      //   const userIdentity = {
-      //     avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-      //     url: user.userHashedId ? `/profile?id=${user.userHashedId}` : "",
-      //     name: user.displayName,
-      //     coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
-      //   };
+      await AuthService.getFullLoggedUserInfo(searchParams.userHashedId).then(
+        user => {
+          const userIdentity = {
+            avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+            url: user.userHashedId ? `/profile?id=${user.userHashedId}` : "",
+            name: user.displayName,
+            coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
+          };
 
-      //   const userInfo = {
-      //     blast: user.description,
-      //     address: user.address,
-      //     country: user.countryName,
-      //     joinedDate: user.createdDate,
-      //     birthDate: user.birthDate,
-      //     email: user.email,
-      //     mobile: user.phoneNumber
-      //   };
+          const userInfo = {
+            blast: user.description,
+            address: user.address,
+            country: user.countryName,
+            joinedDate: user.createdDate,
+            birthDate: user.birthDate,
+            email: user.email,
+            mobile: user.phoneNumber
+          };
 
-      //   if (this._isMounted) {
-      //     this.setState({
-      //       userIdentity,
-      //       userInfo
-      //     });
-      //   }
-      // });
+          if (this._isMounted) {
+            this.setState({
+              userIdentity,
+              userInfo
+            });
+          }
+        }
+      );
     }
 
     componentWillUnmount() {
