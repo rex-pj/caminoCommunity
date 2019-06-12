@@ -24,27 +24,27 @@ export default class Shorcut extends Component {
         {
           icon: "warehouse",
           text: "Nông trại",
-          href: "/farms"
+          href: "/farms/"
         },
         {
           icon: "flag",
           text: "Nông hội",
-          href: "/farm-groups"
+          href: "/farm-groups/"
         },
         {
           icon: "apple-alt",
           text: "Sản phẩm",
-          href: "/products"
+          href: "/products/"
         },
         {
           icon: "book",
           text: "Bài viết",
-          href: "/articles"
+          href: "/articles/"
         },
         {
           icon: "newspaper",
           text: "Thông báo",
-          href: "/news"
+          href: "/news/"
         }
       ]
     };

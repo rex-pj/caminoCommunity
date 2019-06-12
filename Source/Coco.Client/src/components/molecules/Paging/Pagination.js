@@ -23,7 +23,7 @@ const PageItem = styled.li`
 `;
 
 export default props => {
-  const { totalPage, baseUrl } = props;
+  const { totalPage, baseUrl, pageQuery } = props;
   let { currentPage } = props;
   currentPage = Number(currentPage);
   currentPage = currentPage <= 0 ? 1 : currentPage;
@@ -46,7 +46,12 @@ export default props => {
   for (let i = first; i <= last; i++) {
     pageItems.push(
       <PageItem key={i}>
-        <Bullet currentPage={currentPage} pageNumber={i} baseUrl={baseUrl}>
+        <Bullet
+          currentPage={currentPage}
+          pageNumber={i}
+          baseUrl={baseUrl}
+          pageQuery={pageQuery}
+        >
           {i}
         </Bullet>
       </PageItem>

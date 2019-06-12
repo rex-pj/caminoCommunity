@@ -27,7 +27,7 @@ namespace Api.Gateway
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
+                    builder.WithOrigins("http://localhost:3000", "http://localhost:5000", "http://localhost:45678")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();

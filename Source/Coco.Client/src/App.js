@@ -17,7 +17,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
-// import AuthService from "./services/AuthService";
+import AuthService from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
 // import { ApolloProvider } from "react-apollo";
@@ -42,21 +42,21 @@ class App extends Component {
   }
 
   initializeSiteContext = async () => {
-    // await AuthService.getLoggedUserInfo()
-    //   .then(user => {
-    //     this.setState({
-    //       lang: "vn",
-    //       authenticatorToken: user.tokenkey,
-    //       isLogin: user.isLogin,
-    //       userInfo: {
-    //         displayName: user.displayName,
-    //         userHashedId: user.userHashedId
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
+    await AuthService.getLoggedUserInfo()
+      .then(user => {
+        this.setState({
+          lang: "vn",
+          authenticatorToken: user.tokenkey,
+          isLogin: user.isLogin,
+          userInfo: {
+            displayName: user.displayName,
+            userHashedId: user.userHashedId
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   async componentDidMount() {
@@ -64,20 +64,20 @@ class App extends Component {
   }
 
   login = async () => {
-    // await AuthService.getLoggedUserInfo()
-    //   .then(user => {
-    //     this.setState({
-    //       authenticatorToken: user.tokenkey,
-    //       isLogin: user.isLogin,
-    //       userInfo: {
-    //         displayName: user.displayName,
-    //         userHashedId: user.userHashedId
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
+    await AuthService.getLoggedUserInfo()
+      .then(user => {
+        this.setState({
+          authenticatorToken: user.tokenkey,
+          isLogin: user.isLogin,
+          userInfo: {
+            displayName: user.displayName,
+            userHashedId: user.userHashedId
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   logout = () => {
@@ -177,12 +177,18 @@ class App extends Component {
                 component={() => <AsyncPage page="./pages/feeds" />}
               />
               <ProfileLayout
+                exact={true}
                 path="/profile?id=:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
               <ProfileLayout
                 path="/:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
+              />
+              <PromptLayout
+                exact={true}
+                path="*"
+                component={() => <AsyncPage page="./pages/error/not-found" />}
               />
             </Switch>
           </BrowserRouter>

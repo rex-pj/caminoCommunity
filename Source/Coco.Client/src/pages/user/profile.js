@@ -75,7 +75,11 @@ export default withRouter(
 
     render() {
       const { userIdentity, userInfo } = this.state;
-      const { match } = this.props;
+      const { match, location } = this.props;
+
+      const currentUrl = match.url;
+      const search = location.search;
+
       return (
         <Fragment>
           <CoverNav>
@@ -87,29 +91,31 @@ export default withRouter(
               <Switch>
                 <Timeline
                   path={[
-                    `${match.url}/posts/`,
-                    `${match.url}/posts?id=:id`,
-                    `${match.url}/posts/page/:page`
+                    `${currentUrl}/posts`,
+                    `${currentUrl}/posts/page/:page`,
+                    `${currentUrl}/posts${search}`,
+                    `${currentUrl}/posts/page/:page${search}`
                   ]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
                       {...props}
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       page="./user-posts"
                     />
                   )}
                 />
                 <Timeline
                   path={[
-                    `${match.url}/products/`,
-                    `${match.url}/products?id=:id`,
-                    `${match.url}/products/page/:page`
+                    `${currentUrl}/products`,
+                    `${currentUrl}/products/page/:page`,
+                    `${currentUrl}/products${search}`,
+                    `${currentUrl}/products/page/:page${search}`
                   ]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       {...props}
                       page="./user-products"
                     />
@@ -117,14 +123,15 @@ export default withRouter(
                 />
                 <Timeline
                   path={[
-                    `${match.url}/farms/`,
-                    `${match.url}/farms?id=:id`,
-                    `${match.url}/farms/page/:page`
+                    `${currentUrl}/farms`,
+                    `${currentUrl}/farms/page/:page`,
+                    `${currentUrl}/farms${search}`,
+                    `${currentUrl}/farms/page/:page${search}`
                   ]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       {...props}
                       page="./user-farms"
                     />
@@ -132,42 +139,70 @@ export default withRouter(
                 />
                 <Timeline
                   path={[
-                    `${match.url}/followings/`,
-                    `${match.url}/followings?id=:id`,
-                    `${match.url}/followings/page/:page`
+                    `${currentUrl}/followings`,
+                    `${currentUrl}/followings/page/:page`,
+                    `${currentUrl}/followings${search}`,
+                    `${currentUrl}/followings/page/:page${search}`
                   ]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       {...props}
                       page="./user-followings"
                     />
                   )}
                 />
                 <Timeline
-                  path={[`${match.url}/about`]}
+                  path={[`${currentUrl}/about`]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       {...props}
                       page="./user-about"
                     />
                   )}
                 />
                 <Timeline
+                  location={{
+                    pathname: currentUrl,
+                    search: search
+                  }}
+                  exact={true}
+                  component={props => (
+                    <AsyncTabContent
+                      userUrl={match.url}
+                      {...props}
+                      page="./user-feeds"
+                    />
+                  )}
+                />
+                <Timeline
+                  location={{
+                    pathname: currentUrl
+                  }}
+                  exact={true}
+                  component={props => (
+                    <AsyncTabContent
+                      userUrl={match.url}
+                      {...props}
+                      page="../error/not-found"
+                    />
+                  )}
+                />
+                <Timeline
                   path={[
-                    `${match.url}`,
-                    `${match.url}/page/:page`,
-                    `${match.url}/feeds`,
-                    `${match.url}/feeds?id=:id`,
-                    `${match.url}/feeds/page/:page`
+                    `${currentUrl}/page/:page${search}`,
+                    `${currentUrl}/feeds`,
+                    `${currentUrl}/feeds/page/:page`,
+                    `${currentUrl}/feeds${search}`,
+                    `${currentUrl}/feeds/page/:page${search}`
                   ]}
                   exact={true}
                   component={props => (
                     <AsyncTabContent
-                      userUrl={this.props.match.url}
+                      userUrl={match.url}
                       {...props}
                       page="./user-feeds"
                     />
