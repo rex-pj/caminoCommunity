@@ -65,7 +65,6 @@ export default class Shorcut extends Component {
               <IconBlock>
                 <FontAwesomeIcon icon={item.icon} />
               </IconBlock>
-
               <span>{item.text}</span>
             </AnchorLink>
           </ModuleMenuListItem>

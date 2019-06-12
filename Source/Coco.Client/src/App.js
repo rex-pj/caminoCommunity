@@ -17,9 +17,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
-import AuthService from "./services/AuthService";
+// import AuthService from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
+// import { ApolloProvider } from "react-apollo";
+// import { authClient } from "./utils/GraphQLClient";
 
 // Redux
 const rootReducer = combineReducers({
@@ -40,21 +42,21 @@ class App extends Component {
   }
 
   initializeSiteContext = async () => {
-    await AuthService.getLoggedUserInfo()
-      .then(user => {
-        this.setState({
-          lang: "vn",
-          authenticatorToken: user.tokenkey,
-          isLogin: user.isLogin,
-          userInfo: {
-            displayName: user.displayName,
-            userHashedId: user.userHashedId
-          }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    // await AuthService.getLoggedUserInfo()
+    //   .then(user => {
+    //     this.setState({
+    //       lang: "vn",
+    //       authenticatorToken: user.tokenkey,
+    //       isLogin: user.isLogin,
+    //       userInfo: {
+    //         displayName: user.displayName,
+    //         userHashedId: user.userHashedId
+    //       }
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
   };
 
   async componentDidMount() {
@@ -62,20 +64,20 @@ class App extends Component {
   }
 
   login = async () => {
-    await AuthService.getLoggedUserInfo()
-      .then(user => {
-        this.setState({
-          authenticatorToken: user.tokenkey,
-          isLogin: user.isLogin,
-          userInfo: {
-            displayName: user.displayName,
-            userHashedId: user.userHashedId
-          }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    // await AuthService.getLoggedUserInfo()
+    //   .then(user => {
+    //     this.setState({
+    //       authenticatorToken: user.tokenkey,
+    //       isLogin: user.isLogin,
+    //       userInfo: {
+    //         displayName: user.displayName,
+    //         userHashedId: user.userHashedId
+    //       }
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
   };
 
   logout = () => {
@@ -90,6 +92,7 @@ class App extends Component {
 
   render() {
     return (
+      // <ApolloProvider client={authClient}>
       <UserContext.Provider value={this.state}>
         <Provider store={store}>
           <BrowserRouter>
@@ -185,6 +188,7 @@ class App extends Component {
           </BrowserRouter>
         </Provider>
       </UserContext.Provider>
+      // </ApolloProvider>
     );
   }
 }
