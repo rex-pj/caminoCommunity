@@ -9,7 +9,7 @@ import {
   ConnectionSuggestions
 } from "../../organisms/Suggestions";
 
-const Shorcut = loadable(() => import("../../organisms/Shortcut"));
+import Shortcut from "../../organisms/Shortcut";
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
@@ -28,7 +28,7 @@ const Column = styled.div`
   margin-top: ${p => p.theme.size.normal};
 `;
 
-export default function(props) {
+export default function (props) {
   const { info, children } = props;
 
   return (
@@ -40,7 +40,7 @@ export default function(props) {
               <FarmGroupInfo info={info} />
             </PageColumnPanel>
             <PageColumnPanel>
-              <Shorcut />
+              <Shortcut />
             </PageColumnPanel>
             <PageColumnPanel>
               <Interesting />

@@ -9,7 +9,9 @@ import {
   ConnectionSuggestions
 } from "../../organisms/Suggestions";
 
-const Shorcut = loadable(() => import("../../organisms/Shortcut"));
+import Shortcut from "../../organisms/Shortcut";
+
+// const Shortcut = loadable(() => import("../../organisms/Shortcut"));
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const DefaultCard = loadable(() =>
   import("../../organisms/ProfileCard/DefaultCard")
@@ -41,7 +43,7 @@ function DefaultLayout({ component: Component, ...rest }) {
                 <DefaultCard />
               </PageColumnPanel>
               <PageColumnPanel>
-                <Shorcut />
+                <Shortcut />
               </PageColumnPanel>
               <PageColumnPanel>
                 <Interesting />
