@@ -20,6 +20,8 @@ import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
 import AuthService from "./services/AuthService";
 import UserContext from "./utils/Context/UserContext";
 import LoggedUser from "./utils/Context/LoggedUser";
+// import { ApolloProvider } from "react-apollo";
+// import { authClient } from "./utils/GraphQLClient";
 
 // Redux
 const rootReducer = combineReducers({
@@ -90,6 +92,7 @@ class App extends Component {
 
   render() {
     return (
+      // <ApolloProvider client={authClient}>
       <UserContext.Provider value={this.state}>
         <Provider store={store}>
           <BrowserRouter>
@@ -181,10 +184,19 @@ class App extends Component {
                 path="/:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
+              <PromptLayout
+                path="/404"
+                component={() => <AsyncPage page="./pages/not-found" />}
+              />
+              <PromptLayout
+                path="/*"
+                component={() => <AsyncPage page="./pages/not-found" />}
+              />
             </Switch>
           </BrowserRouter>
         </Provider>
       </UserContext.Provider>
+      // </ApolloProvider>
     );
   }
 }
