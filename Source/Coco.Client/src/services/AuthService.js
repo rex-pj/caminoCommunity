@@ -52,7 +52,7 @@ async function getLoggedUserInfo() {
       };
     })
     .catch(error => {
-      console.log(error);
+      // console.log(error);
     });
 
   return currentUser;
@@ -85,7 +85,7 @@ async function getFullLoggedUserInfo(userHashedId) {
       };
     })
     .catch(error => {
-      console.log(error);
+      // console.log(error);
     });
 
   return currentUser;

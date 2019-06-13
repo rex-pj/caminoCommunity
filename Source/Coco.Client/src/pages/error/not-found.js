@@ -1,7 +1,14 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { withRouter } from "react-router-dom";
 
-export default class extends Component {
-  render() {
-    return <div>404 Not found</div>;
+export default withRouter(
+  class extends Component {
+    render() {
+      return (
+        <Fragment>
+          <div>404 NOT FOUND</div>
+        </Fragment>
+      );
+    }
   }
-}
+);
