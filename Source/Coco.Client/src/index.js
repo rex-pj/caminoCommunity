@@ -1,6 +1,7 @@
 import "@babel/polyfill";
 import React from "react";
 import { hydrate, render } from "react-dom";
+import { loadableReady } from "@loadable/component";
 // import { render } from "react-snapshot";
 import "./index.css";
 import App from "./App";
@@ -12,7 +13,9 @@ delete window.__APOLLO_STORE__;
 
 const rootElement = document.getElementById("root");
 if (rootElement.hasChildNodes()) {
-  hydrate(<App />, rootElement);
+  loadableReady(() => {
+    hydrate(<App />, rootElement);
+  });
 } else {
   render(<App />, rootElement);
 }
