@@ -79,7 +79,7 @@ export default class extends Component {
         id: i + 1,
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/trungle.it",
+          profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
           name: "Ông 5 Đất"
         },
         thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,

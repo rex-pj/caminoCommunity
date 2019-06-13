@@ -6,17 +6,16 @@ import {
 } from "../../atoms/RouterLinkButtons";
 
 export default props => {
-  const { baseUrl, children, currentPage, pageNumber, disabled } = props;
-  let to = {};
-  // if (baseUrl && pageNumber) {
-  //   to = { pathname: baseUrl, search: `page=${pageNumber}` };
-  // } else if (baseUrl) {
-  //   to = { pathname: baseUrl };
-  // } else if (pageNumber) {
-  //   to = { search: `page=${pageNumber}` };
-  // }
+  const {
+    baseUrl,
+    children,
+    currentPage,
+    pageNumber,
+    disabled,
+    pageQuery
+  } = props;
 
-  to = `${baseUrl}${"/page/"}${pageNumber}`;
+  let to = `${baseUrl}${"/page/"}${pageNumber}`;
   if (baseUrl && pageNumber) {
     to = `${baseUrl}${"/page/"}${pageNumber}`;
   } else if (baseUrl) {
@@ -25,6 +24,10 @@ export default props => {
     to = `${"/page/"}${pageNumber}`;
   } else {
     to = "/";
+  }
+
+  if (pageQuery) {
+    to = `${to}${pageQuery}`;
   }
 
   let ButtonItem = null;

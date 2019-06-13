@@ -177,6 +177,7 @@ class App extends Component {
                 component={() => <AsyncPage page="./pages/feeds" />}
               />
               <ProfileLayout
+                exact={true}
                 path="/profile?id=:id"
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
@@ -185,12 +186,9 @@ class App extends Component {
                 component={() => <AsyncPage page="./pages/user/profile" />}
               />
               <PromptLayout
-                path="/404"
-                component={() => <AsyncPage page="./pages/not-found" />}
-              />
-              <PromptLayout
-                path="/*"
-                component={() => <AsyncPage page="./pages/not-found" />}
+                exact={true}
+                path="*"
+                component={() => <AsyncPage page="./pages/error/not-found" />}
               />
             </Switch>
           </BrowserRouter>

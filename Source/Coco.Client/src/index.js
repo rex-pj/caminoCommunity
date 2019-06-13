@@ -7,11 +7,14 @@ import App from "./App";
 // import * as serviceWorker from "./serviceWorker";
 require("dotenv").config();
 
+// Allow the passed state to be garbage-collected
+delete window.__APOLLO_STORE__;
+
 const rootElement = document.getElementById("root");
 if (rootElement.hasChildNodes()) {
-    hydrate(<App />, rootElement);
+  hydrate(<App />, rootElement);
 } else {
-    render(<App />, rootElement);
+  render(<App />, rootElement);
 }
 
 // render(<App />, document.getElementById("root"));

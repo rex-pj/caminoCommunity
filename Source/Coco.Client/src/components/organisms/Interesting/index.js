@@ -42,7 +42,7 @@ export default class extends Component {
         {
           icon: "flag",
           text: "Đây là đâu tôi là ai Farm",
-          href: "/farms/1s"
+          href: "/farms/1"
         },
         {
           icon: "apple-alt",

@@ -15,7 +15,7 @@ export default withRouter(
           id: i + 1,
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-            profileUrl: "/trungle.it",
+            profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
             name: "Anh Sáu"
           },
           createdDate: "26/11/2018 9:28",
@@ -34,20 +34,28 @@ export default withRouter(
         articles.push(articleItem);
       }
 
-      const { match } = this.props;
+      const { match, location } = this.props;
       const { params } = match;
       const { page } = params;
 
       this.state = {
         articles,
         totalPage: 10,
+        pageQuery: location.search,
         baseUrl: this.props.userUrl + "/posts",
         currentPage: page ? page : 1
       };
     }
 
     render() {
-      const { articles, totalPage, baseUrl, currentPage } = this.state;
+      const {
+        articles,
+        totalPage,
+        baseUrl,
+        currentPage,
+        pageQuery
+      } = this.state;
+
       return (
         <Fragment>
           {articles
@@ -58,6 +66,7 @@ export default withRouter(
           <Pagination
             totalPage={totalPage}
             baseUrl={baseUrl}
+            pageQuery={pageQuery}
             currentPage={currentPage}
           />
         </Fragment>

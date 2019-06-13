@@ -4,7 +4,7 @@ export default class extends Component {
   render() {
     return (
       <Fragment>
-        <div>Not found</div>
+        <div>502 Error</div>
       </Fragment>
     );
   }
