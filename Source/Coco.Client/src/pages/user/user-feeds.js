@@ -16,7 +16,7 @@ export default withRouter(
         id: "2",
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+          profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
           name: "Anh Sáu"
         },
         createdDate: "26/11/2018 9:28",
@@ -49,7 +49,7 @@ export default withRouter(
         url: `${UrlConstant.Product.url}1`,
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+          profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
           name: "Bác Chín"
         }
       };
@@ -58,7 +58,7 @@ export default withRouter(
         id: "3",
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+          profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
           name: "Ông 5 Đất",
           info: "Nông dân"
         },
@@ -99,16 +99,14 @@ export default withRouter(
         feeds: feeds
       };
 
-      const { match, location } = this.props;
-      const { params } = match;
-      const { page } = params;
+      const { location, pageNumber } = this.props;
 
       this.state = {
         feeds,
         totalPage: 10,
         pageQuery: location.search,
-        baseUrl: this.props.userUrl,
-        currentPage: page ? page : 1
+        baseUrl: this.props.userUrl + "/feeds",
+        currentPage: pageNumber ? pageNumber : 1
       };
     }
 

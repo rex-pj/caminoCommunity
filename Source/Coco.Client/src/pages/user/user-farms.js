@@ -15,7 +15,7 @@ export default withRouter(
           id: i + 1,
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-            profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+            profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
             name: "Ông 5 Đất"
           },
           thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
@@ -33,16 +33,14 @@ export default withRouter(
         farms.push(farmItem);
       }
 
-      const { match, location } = this.props;
-      const { params } = match;
-      const { page } = params;
+      const { location, pageNumber } = this.props;
 
       this.state = {
         farms,
         totalPage: 10,
         pageQuery: location.search,
         baseUrl: this.props.userUrl + "/farms",
-        currentPage: page ? page : 1
+        currentPage: pageNumber ? pageNumber : 1
       };
     }
 

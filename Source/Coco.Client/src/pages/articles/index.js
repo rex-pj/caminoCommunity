@@ -12,7 +12,7 @@ export default class extends Component {
         id: i + 1,
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+          profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
           name: "Anh Sáu"
         },
         createdDate: "26/11/2018 9:28",

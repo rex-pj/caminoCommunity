@@ -60,7 +60,7 @@ export default function(props) {
         dropdowns: [
           {
             name: "Thông tin cá nhân",
-            url: userHashedId ? `/profile?id=${userHashedId}` : ""
+            url: userHashedId ? `/profile/${userHashedId}` : ""
           },
           {
             name: "Thoát",
@@ -74,12 +74,7 @@ export default function(props) {
   return (
     <Root>
       <PorfileButtonGroup>
-        <ProfileButton
-          to={{
-            pathname: "/profile",
-            search: userHashedId ? `?id=${userHashedId}` : ""
-          }}
-        >
+        <ProfileButton to={`/profile/${userHashedId}`}>
           <ImageCircle
             src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
             alt=""

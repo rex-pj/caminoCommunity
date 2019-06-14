@@ -15,7 +15,7 @@ export default withRouter(
           id: i + 1,
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-            profileUrl: "/profile?id=SXaSDRHRfds3zUDFQzC6jg==",
+            profileUrl: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
             name: "Anh Sáu"
           },
           createdDate: "26/11/2018 9:28",
@@ -34,16 +34,14 @@ export default withRouter(
         articles.push(articleItem);
       }
 
-      const { match, location } = this.props;
-      const { params } = match;
-      const { page } = params;
+      const { location, pageNumber } = this.props;
 
       this.state = {
         articles,
         totalPage: 10,
         pageQuery: location.search,
         baseUrl: this.props.userUrl + "/posts",
-        currentPage: page ? page : 1
+        currentPage: pageNumber ? pageNumber : 1
       };
     }
 
