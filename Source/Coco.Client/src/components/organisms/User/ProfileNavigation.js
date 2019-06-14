@@ -34,18 +34,18 @@ const ListItem = styled.li`
 `;
 
 const NavLinkActived = props => {
-  const { match, location, children } = props;
+  const { location, children, userId } = props;
   let { pageNav } = props;
-  let { pathname, search } = location;
+  let { pathname } = location;
   pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
-  let { url } = match;
 
   pageNav = pageNav ? `/${pageNav}` : "";
+  const baseUrl = "/profile";
 
   return (
     <NavLink
-      to={`${url}${pageNav}${search}`}
-      className={pathname === `${url}${pageNav}` ? "actived" : ""}
+      to={`${baseUrl}/${userId}${pageNav}`}
+      className={pathname === `${baseUrl}/${userId}${pageNav}` ? "actived" : ""}
     >
       {children}
     </NavLink>
@@ -55,37 +55,59 @@ const NavLinkActived = props => {
 export default withRouter(
   class extends Component {
     render() {
-      const { className } = this.props;
+      const { className, userId } = this.props;
       return (
         <Root>
           <div className="row">
             <div className="col-auto mr-auto">
               <HorizontalList className={className}>
                 <ListItem>
-                  <NavLinkActived {...this.props}>Tất cả</NavLinkActived>
+                  <NavLinkActived {...this.props} userId={userId}>
+                    Tất cả
+                  </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLinkActived pageNav="posts" {...this.props}>
+                  <NavLinkActived
+                    pageNav="posts"
+                    {...this.props}
+                    userId={userId}
+                  >
                     Bài Viết
                   </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLinkActived pageNav="products" {...this.props}>
+                  <NavLinkActived
+                    pageNav="products"
+                    {...this.props}
+                    userId={userId}
+                  >
                     Sản Phẩm
                   </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLinkActived pageNav="farms" {...this.props}>
+                  <NavLinkActived
+                    pageNav="farms"
+                    {...this.props}
+                    userId={userId}
+                  >
                     Nông Trại
                   </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLinkActived pageNav="followings" {...this.props}>
+                  <NavLinkActived
+                    pageNav="followings"
+                    {...this.props}
+                    userId={userId}
+                  >
                     Được Theo Dõi
                   </NavLinkActived>
                 </ListItem>
                 <ListItem>
-                  <NavLinkActived pageNav="about" {...this.props}>
+                  <NavLinkActived
+                    pageNav="about"
+                    {...this.props}
+                    userId={userId}
+                  >
                     Giới thiệu
                   </NavLinkActived>
                 </ListItem>
