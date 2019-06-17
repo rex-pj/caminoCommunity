@@ -5,7 +5,7 @@ import styled from "styled-components";
 import loadable from "@loadable/component";
 import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
 import Timeline from "./timeline";
-import { GET_FULL_LOGGED_USER_INFO } from "../../utils/GraphQLQueries";
+import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
@@ -37,11 +37,11 @@ export default withRouter(
     }
 
     async componentDidMount() {
-      // this._isMounted = true;
+      this._isMounted = true;
       // const { match } = this.props;
       // const { params } = match;
       // const { userId } = params;
-      // await AuthService.getFullLoggedUserInfo(userId).then(user => {
+      // await AuthService.getFullUserInfo(userId).then(user => {
       //   const userIdentity = {
       //     avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
       //     url: user.userHashedId ? `/profile/${user.userHashedId}` : "",
@@ -80,11 +80,24 @@ export default withRouter(
 
       return (
         <Fragment>
-          <Query query={GET_FULL_LOGGED_USER_INFO} />
-          <CoverNav>
-            <UserProfileCover userIdentity={userIdentity} />
-            <ProfileNavigation userId={userId} />
-          </CoverNav>
+          <Query
+            query={GET_FULL_USER_INFO}
+            variables={{
+              criterias: {
+                userId
+              }
+            }}
+          >
+            {({ loading, error, data }) => {
+              return (
+                <CoverNav>
+                  <UserProfileCover userIdentity={userIdentity} />
+                  <ProfileNavigation userId={userId} />
+                </CoverNav>
+              );
+            }}
+          </Query>
+
           <div className="row">
             <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
               <Switch>

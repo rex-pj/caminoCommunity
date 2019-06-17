@@ -42,14 +42,18 @@ namespace Coco.Api.Framework.AccountIdentity
                         memoryStream.Close();
                     }
 
-                    return Convert.ToBase64String(cipherTextBytes);
+                    var rs = BitConverter.ToUInt64(cipherTextBytes);
+                    return rs.ToString();
                 }
             }
         }
 
         public string Decrypt(string encryptedText, string saltKey)
         {
-            var cipherTextBytes = Convert.FromBase64String(encryptedText);
+            ulong encryptedId = Convert.ToUInt64(encryptedText);
+
+            var cipherTextBytes = BitConverter.GetBytes(encryptedId);
+            //var cipherTextBytes = Convert.FromBase64String(encryptedText);
             using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);
