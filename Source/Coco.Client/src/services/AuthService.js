@@ -10,10 +10,7 @@ import {
   getLocalStorageByKey
 } from "./StorageService";
 import { authClient } from "../utils/GraphQLClient";
-import {
-  GET_LOGGED_USER,
-  GET_FULL_LOGGED_USER_INFO
-} from "../utils/GraphQLQueries";
+import { GET_LOGGED_USER, GET_FULL_USER_INFO } from "../utils/GraphQLQueries";
 
 function removeUserToken() {
   removeLocalStorage(AUTH_KEY);
@@ -52,13 +49,13 @@ async function getLoggedUserInfo() {
       };
     })
     .catch(error => {
-      // console.log(error);
+      console.log(error);
     });
 
   return currentUser;
 }
 
-async function getFullLoggedUserInfo(userHashedId) {
+async function getFullUserInfo(userHashedId) {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   userHashedId = userHashedId
@@ -73,19 +70,19 @@ async function getFullLoggedUserInfo(userHashedId) {
 
   await authClient
     .query({
-      query: GET_FULL_LOGGED_USER_INFO
+      query: GET_FULL_USER_INFO
     })
     .then(response => {
       const { data } = response;
-      const { fullLoggedUserInfo } = data;
+      const { fullUserInfo } = data;
 
       currentUser = {
         ...currentUser,
-        ...fullLoggedUserInfo
+        ...fullUserInfo
       };
     })
     .catch(error => {
-      // console.log(error);
+      console.log(error);
     });
 
   return currentUser;
@@ -113,7 +110,7 @@ export default {
   setUserToken,
   getUserToken,
   getLoggedUserInfo,
-  getFullLoggedUserInfo,
+  getFullUserInfo,
   setLogin,
   logOut
 };

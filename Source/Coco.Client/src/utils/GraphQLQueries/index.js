@@ -41,9 +41,9 @@ export const GET_LOGGED_USER = gpl`
   }
 `;
 
-export const GET_FULL_LOGGED_USER_INFO = gpl`
-  query {
-    fullLoggedUserInfo{
+export const GET_FULL_USER_INFO = gpl`
+  query($criterias: FindUserInputType!){
+    fullUserInfo(criterias: $criterias){
       lastname,
       firstname,
       email,

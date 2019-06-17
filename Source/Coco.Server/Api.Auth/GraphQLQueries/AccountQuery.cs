@@ -17,8 +17,9 @@ namespace Api.Auth.GraphQLQueries
             FieldAsync<UserInfoResultType>("loggedUser",
                 resolve: async context => await accountResolver.GetLoggedUser(context));
 
-            FieldAsync<FullUserInfoResultType>("fullLoggedUserInfo",
-                resolve: async context => await accountResolver.GetFullLoggedUser(context));
+            FieldAsync<FullUserInfoResultType>("fullUserInfo",
+                arguments: new QueryArguments(new QueryArgument<FindUserInputType> { Name = "criterias" }),
+                resolve: async context => await accountResolver.GetFullUserInfo(context));
         }
     }
 }

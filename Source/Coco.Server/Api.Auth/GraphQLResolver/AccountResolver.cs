@@ -1,10 +1,12 @@
 ﻿using Api.Auth.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.AccountIdentity.Entities;
+using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Common.Const;
+using Coco.Entities.Enums;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -71,15 +73,69 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<UserInfo> GetFullLoggedUser(ResolveFieldContext<object> context)
+        public async Task<UserInfo> GetFullUserInfo(ResolveFieldContext<object> context)
         {
             try
             {
-                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
+                var model = context.GetArgument<FindUserModel>("criterias");
 
-                var result = await _accountManager.GetFullByTokenAsync(userHeaderParams.UserIdHashed);
+                string userIdHased = model.UserId;
+                if (string.IsNullOrEmpty(model.UserId))
+                {
+                    var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
+                    userIdHased = userHeaderParams.UserIdHashed;
+                }
 
-                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userHeaderParams.UserIdHashed);
+                var result = await _accountManager.GetFullByTokenAsync(userIdHased);
+
+                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userIdHased);
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<IdentityResult> Signup(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<RegisterModel>("user");
+
+                var parameters = new ApplicationUser()
+                {
+                    BirthDate = model.BirthDate,
+                    CreatedDate = DateTime.Now,
+                    DisplayName = $"{model.Lastname} {model.Firstname}",
+                    Email = model.Email,
+                    Firstname = model.Firstname,
+                    Lastname = model.Lastname,
+                    GenderId = (byte)model.GenderId,
+                    StatusId = (byte)UserStatusEnum.IsPending,
+                    UpdatedDate = DateTime.Now,
+                    UserName = model.Email,
+                    PasswordSalt = SaltGenerator.GetSalt(),
+                    SecurityStamp = SaltGenerator.GetSalt(),
+                    Password = model.Password
+                };
+
+                var result = await _accountManager.CreateAsync(parameters);
+
+                if (result.Errors != null && result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                        {
+                            context.Errors.Add(new ExecutionError(error.Description)
+                            {
+                                Code = error.Code
+                            });
+                        }
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
