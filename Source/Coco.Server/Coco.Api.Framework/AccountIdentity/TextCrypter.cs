@@ -1,4 +1,5 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Api.Framework.Commons.Helpers;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -42,26 +43,14 @@ namespace Coco.Api.Framework.AccountIdentity
                         memoryStream.Close();
                     }
 
-                    var rs = ByteArrayToString(cipherTextBytes);
-                    return rs.ToString();
+                    return DataConverter.BytesToString(cipherTextBytes);
                 }
             }
         }
 
-        private string ByteArrayToString(byte[] ba)
-        {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
-                hex.AppendFormat("{0:x2}", b);
-            return hex.ToString();
-        }
-
         public string Decrypt(string encryptedText, string saltKey)
         {
-            //ulong encryptedId = Convert.ToUInt64(encryptedText);
-
-            var cipherTextBytes = StringToByteArray(encryptedText);
-            //var cipherTextBytes = Convert.FromBase64String(encryptedText);
+            var cipherTextBytes = DataConverter.StringToBytes(encryptedText);
             using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);
@@ -81,18 +70,10 @@ namespace Coco.Api.Framework.AccountIdentity
                         }
                         memoryStream.Close();
                     }
+
                     return plainText;
                 }
             }
         }
-        private byte[] StringToByteArray(String hex)
-        {
-            int NumberChars = hex.Length;
-            byte[] bytes = new byte[NumberChars / 2];
-            for (int i = 0; i < NumberChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
-        }
-
     }
 }
