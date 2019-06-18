@@ -42,17 +42,25 @@ namespace Coco.Api.Framework.AccountIdentity
                         memoryStream.Close();
                     }
 
-                    var rs = BitConverter.ToUInt64(cipherTextBytes);
+                    var rs = ByteArrayToString(cipherTextBytes);
                     return rs.ToString();
                 }
             }
         }
 
+        private string ByteArrayToString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
+        }
+
         public string Decrypt(string encryptedText, string saltKey)
         {
-            ulong encryptedId = Convert.ToUInt64(encryptedText);
+            //ulong encryptedId = Convert.ToUInt64(encryptedText);
 
-            var cipherTextBytes = BitConverter.GetBytes(encryptedId);
+            var cipherTextBytes = StringToByteArray(encryptedText);
             //var cipherTextBytes = Convert.FromBase64String(encryptedText);
             using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
@@ -77,5 +85,14 @@ namespace Coco.Api.Framework.AccountIdentity
                 }
             }
         }
+        private byte[] StringToByteArray(String hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
+        }
+
     }
 }
