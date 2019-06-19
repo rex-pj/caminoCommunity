@@ -2,7 +2,8 @@ import {
   AUTH_KEY,
   AUTH_LOGIN_KEY,
   AUTH_DISPLAY_NAME,
-  AUTH_USER_HASHED_ID
+  AUTH_USER_HASHED_ID,
+  AUTH_USER_LANGUAGE
 } from "../utils/AppSettings";
 import {
   removeLocalStorage,
@@ -28,11 +29,15 @@ async function getLoggedUserInfo() {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
+  let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
+
+  userLanguage = userLanguage ? userLanguage : "vn";
 
   let currentUser = {
     isLogin,
     tokenkey,
-    userHashedId
+    userHashedId,
+    userLanguage
   };
 
   await authClient
@@ -51,6 +56,32 @@ async function getLoggedUserInfo() {
     .catch(error => {
       console.log(error);
     });
+
+  return currentUser;
+}
+
+function parseUserInfo(response) {
+  console.log(response);
+  const tokenkey = getLocalStorageByKey(AUTH_KEY);
+  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+  const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
+  let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
+
+  userLanguage = userLanguage ? userLanguage : "vn";
+
+  let currentUser = {
+    isLogin,
+    tokenkey,
+    userHashedId,
+    userLanguage
+  };
+
+  const { loggedUser } = response;
+
+  currentUser = {
+    ...currentUser,
+    ...loggedUser
+  };
 
   return currentUser;
 }
@@ -112,5 +143,6 @@ export default {
   getLoggedUserInfo,
   getFullUserInfo,
   setLogin,
-  logOut
+  logOut,
+  parseUserInfo
 };
