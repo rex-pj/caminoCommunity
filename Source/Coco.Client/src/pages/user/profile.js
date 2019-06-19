@@ -29,41 +29,22 @@ export default withRouter(
     constructor(props) {
       super(props);
       this._isMounted = false;
-
-      this.state = {
-        userIdentity: {},
-        userInfo: {}
-      };
     }
 
     async componentDidMount() {
       this._isMounted = true;
-      // const { match } = this.props;
-      // const { params } = match;
-      // const { userId } = params;
-      // await AuthService.getFullUserInfo(userId).then(user => {
-      //   const userIdentity = {
-      //     avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-      //     url: user.userHashedId ? `/profile/${user.userHashedId}` : "",
-      //     name: user.displayName,
-      //     coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
-      //   };
-      //   const userInfo = {
-      //     blast: user.description,
-      //     address: user.address,
-      //     country: user.countryName,
-      //     joinedDate: user.createdDate,
-      //     birthDate: user.birthDate,
-      //     email: user.email,
-      //     mobile: user.phoneNumber
-      //   };
-      //   if (this._isMounted) {
-      //     this.setState({
-      //       userIdentity,
-      //       userInfo
-      //     });
-      //   }
-      // });
+    }
+
+    parseUserInfo(response) {
+      const { fullUserInfo } = response;
+      return {
+        ...fullUserInfo,
+        avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+        url: fullUserInfo.userHashedId
+          ? `/profile/${fullUserInfo.userHashedId}`
+          : "",
+        coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
+      };
     }
 
     componentWillUnmount() {
@@ -71,7 +52,6 @@ export default withRouter(
     }
 
     render() {
-      const { userIdentity, userInfo } = this.state;
       const { match } = this.props;
       const { params } = match;
       const { userId, pageNumber } = params;
@@ -79,121 +59,124 @@ export default withRouter(
       const baseUrl = "/profile";
 
       return (
-        <Fragment>
-          <Query
-            query={GET_FULL_USER_INFO}
-            variables={{
-              criterias: {
-                userId
-              }
-            }}
-          >
-            {({ loading, error, data }) => {
-              return (
+        <Query
+          query={GET_FULL_USER_INFO}
+          variables={{
+            criterias: {
+              userId
+            }
+          }}
+        >
+          {({ loading, error, data }) => {
+            if (loading) {
+              return <div>Loading</div>;
+            }
+            const userInfo = this.parseUserInfo(data);
+            return (
+              <Fragment>
                 <CoverNav>
-                  <UserProfileCover userIdentity={userIdentity} />
+                  <UserProfileCover userInfo={userInfo} />
                   <ProfileNavigation userId={userId} />
                 </CoverNav>
-              );
-            }}
-          </Query>
-
-          <div className="row">
-            <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
-              <Switch>
-                <Timeline
-                  path={[`${baseUrl}/:userId/about`]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-about"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[
-                    `${baseUrl}/:userId/posts`,
-                    `${baseUrl}/:userId/posts/page/:pageNumber`
-                  ]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      pageNumber={pageNumber}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-posts"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[
-                    `${baseUrl}/:userId/products`,
-                    `${baseUrl}/:userId/products/page/:pageNumber`
-                  ]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      pageNumber={pageNumber}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-products"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[
-                    `${baseUrl}/:userId/farms`,
-                    `${baseUrl}/:userId/farms/page/:pageNumber`
-                  ]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      pageNumber={pageNumber}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-farms"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[
-                    `${baseUrl}/:userId/followings`,
-                    `${baseUrl}/:userId/followings/page/:pageNumber`
-                  ]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      pageNumber={pageNumber}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-followings"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[
-                    `${baseUrl}/:userId`,
-                    `${baseUrl}/:userId/feeds`,
-                    `${baseUrl}/:userId/feeds/page/:pageNumber`
-                  ]}
-                  component={props => (
-                    <AsyncTabContent
-                      {...props}
-                      pageNumber={pageNumber}
-                      userUrl={`${baseUrl}/${userId}`}
-                      page="./user-feeds"
-                    />
-                  )}
-                />
-                <Timeline
-                  path={[`${baseUrl}`]}
-                  exact={true}
-                  component={() => <div>NOT FOUND</div>}
-                />
-              </Switch>
-            </div>
-            <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
-              <UserProfileInfo userInfo={userInfo} />
-            </div>
-          </div>
-        </Fragment>
+                <div className="row">
+                  <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
+                    <Switch>
+                      <Timeline
+                        path={[`${baseUrl}/:userId/about`]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-about"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[
+                          `${baseUrl}/:userId/posts`,
+                          `${baseUrl}/:userId/posts/page/:pageNumber`
+                        ]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            pageNumber={pageNumber}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-posts"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[
+                          `${baseUrl}/:userId/products`,
+                          `${baseUrl}/:userId/products/page/:pageNumber`
+                        ]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            pageNumber={pageNumber}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-products"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[
+                          `${baseUrl}/:userId/farms`,
+                          `${baseUrl}/:userId/farms/page/:pageNumber`
+                        ]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            pageNumber={pageNumber}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-farms"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[
+                          `${baseUrl}/:userId/followings`,
+                          `${baseUrl}/:userId/followings/page/:pageNumber`
+                        ]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            pageNumber={pageNumber}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-followings"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[
+                          `${baseUrl}/:userId`,
+                          `${baseUrl}/:userId/feeds`,
+                          `${baseUrl}/:userId/feeds/page/:pageNumber`
+                        ]}
+                        component={props => (
+                          <AsyncTabContent
+                            {...props}
+                            pageNumber={pageNumber}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page="./user-feeds"
+                          />
+                        )}
+                      />
+                      <Timeline
+                        path={[`${baseUrl}`]}
+                        exact={true}
+                        component={() => <div>NOT FOUND</div>}
+                      />
+                    </Switch>
+                  </div>
+                  <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
+                    <UserProfileInfo userInfo={userInfo} />
+                  </div>
+                </div>
+              </Fragment>
+            );
+          }}
+        </Query>
       );
     }
   }

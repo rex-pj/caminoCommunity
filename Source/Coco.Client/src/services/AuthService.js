@@ -2,7 +2,8 @@ import {
   AUTH_KEY,
   AUTH_LOGIN_KEY,
   AUTH_DISPLAY_NAME,
-  AUTH_USER_HASHED_ID
+  AUTH_USER_HASHED_ID,
+  AUTH_USER_LANGUAGE
 } from "../utils/AppSettings";
 import {
   removeLocalStorage,
@@ -10,7 +11,7 @@ import {
   getLocalStorageByKey
 } from "./StorageService";
 import { authClient } from "../utils/GraphQLClient";
-import { GET_LOGGED_USER, GET_FULL_USER_INFO } from "../utils/GraphQLQueries";
+import { GET_LOGGED_USER } from "../utils/GraphQLQueries";
 
 function removeUserToken() {
   removeLocalStorage(AUTH_KEY);
@@ -28,11 +29,15 @@ async function getLoggedUserInfo() {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
+  let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
+
+  userLanguage = userLanguage ? userLanguage : "vn";
 
   let currentUser = {
     isLogin,
     tokenkey,
-    userHashedId
+    userHashedId,
+    userLanguage
   };
 
   await authClient
@@ -55,40 +60,30 @@ async function getLoggedUserInfo() {
   return currentUser;
 }
 
-async function getFullUserInfo(userHashedId) {
-  const tokenkey = getLocalStorageByKey(AUTH_KEY);
+function parseUserInfo(response) {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
-  userHashedId = userHashedId
-    ? userHashedId
-    : getLocalStorageByKey(AUTH_USER_HASHED_ID);
+  let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
+
+  userLanguage = userLanguage ? userLanguage : "vn";
 
   let currentUser = {
     isLogin,
-    tokenkey,
-    userHashedId
+    userLanguage
   };
 
-  await authClient
-    .query({
-      query: GET_FULL_USER_INFO
-    })
-    .then(response => {
-      const { data } = response;
-      const { fullUserInfo } = data;
+  if (response) {
+    const { loggedUser } = response;
 
-      currentUser = {
-        ...currentUser,
-        ...fullUserInfo
-      };
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    currentUser = {
+      ...currentUser,
+      ...loggedUser
+    };
+  }
 
   return currentUser;
 }
 
-function setLogin(userInfo, token) {
+const setLogin = (userInfo, token) => {
   if (userInfo) {
     setLocalStorage(AUTH_DISPLAY_NAME, userInfo.displayName);
     setLocalStorage(AUTH_USER_HASHED_ID, userInfo.userHashedId);
@@ -96,7 +91,7 @@ function setLogin(userInfo, token) {
 
   setUserToken(token);
   setLocalStorage(AUTH_LOGIN_KEY, true);
-}
+};
 
 function logOut() {
   removeUserToken();
@@ -110,7 +105,7 @@ export default {
   setUserToken,
   getUserToken,
   getLoggedUserInfo,
-  getFullUserInfo,
   setLogin,
-  logOut
+  logOut,
+  parseUserInfo
 };

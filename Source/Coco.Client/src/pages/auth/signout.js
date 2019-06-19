@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
-import UserContext from "../../utils/Context/UserContext";
 import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
 
 class SingnOutPage extends Component {
@@ -10,16 +9,16 @@ class SingnOutPage extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormEnabled: false
+      isFormEnabled: false,
+      shoudRedirect: false
     };
   }
 
   // #region Life Cycle
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
 
     AuthService.logOut();
-    this.context.logout();
 
     const { history } = this.props;
     setTimeout(function() {
@@ -37,7 +36,5 @@ class SingnOutPage extends Component {
     return <SignOutPanel />;
   }
 }
-
-SingnOutPage.contextType = UserContext;
 
 export default withRouter(SingnOutPage);

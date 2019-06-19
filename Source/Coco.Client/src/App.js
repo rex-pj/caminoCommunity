@@ -17,10 +17,10 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
-import UserContext from "./utils/Context/UserContext";
-import LoggedUser from "./utils/Context/LoggedUser";
 import { ApolloProvider } from "react-apollo";
 import { authClient } from "./utils/GraphQLClient";
+import SessionContext from "./utils/Context/SessionContext";
+import AuthService from "./services/AuthService";
 
 // Redux
 const rootReducer = combineReducers({
@@ -37,62 +37,42 @@ library.add(fas);
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...LoggedUser, login: this.login, logout: this.logout };
+
+    this.state = {
+      lang: "vn",
+      isLogin: false
+    };
   }
 
-  initializeSiteContext = async () => {
-    // await AuthService.getLoggedUserInfo()
-    //   .then(user => {
-    //     this.setState({
-    //       lang: "vn",
-    //       authenticatorToken: user.tokenkey,
-    //       isLogin: user.isLogin,
-    //       userInfo: {
-    //         displayName: user.displayName,
-    //         userHashedId: user.userHashedId
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     // console.log(error);
-    //   });
-  };
-
-  async componentDidMount() {
-    await this.initializeSiteContext();
-  }
-
-  login = async () => {
-    // await AuthService.getLoggedUserInfo()
-    //   .then(user => {
-    //     this.setState({
-    //       authenticatorToken: user.tokenkey,
-    //       isLogin: user.isLogin,
-    //       userInfo: {
-    //         displayName: user.displayName,
-    //         userHashedId: user.userHashedId
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     // console.log(error);
-    //   });
-  };
-
-  logout = () => {
-    if (this.state.isLogin) {
+  initializeSiteContext = () => {
+    const user = AuthService.parseUserInfo();
+    if (user) {
       this.setState({
-        authenticatorToken: null,
-        isLogin: false,
-        userInfo: {}
+        lang: "vn",
+        isLogin: user.isLogin
       });
     }
   };
 
+  login = () => {
+    this.setState({
+      isLogin: true
+    });
+  };
+
+  componentDidMount() {
+    this.initializeSiteContext();
+  }
+
   render() {
     return (
-      <ApolloProvider client={authClient}>
-        <UserContext.Provider value={this.state}>
+      <SessionContext.Provider
+        value={{
+          login: this.login,
+          isLogin: this.state.isLogin
+        }}
+      >
+        <ApolloProvider client={authClient}>
           <Provider store={store}>
             <BrowserRouter>
               <Switch>
@@ -191,8 +171,8 @@ class App extends Component {
               </Switch>
             </BrowserRouter>
           </Provider>
-        </UserContext.Provider>
-      </ApolloProvider>
+        </ApolloProvider>
+      </SessionContext.Provider>
     );
   }
 }

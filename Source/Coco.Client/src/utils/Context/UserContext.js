@@ -1,6 +1,6 @@
 import React from "react";
-import LoggedUser from "./LoggedUser";
+import loggedUser from "./LoggedUser";
 
-const UserContext = React.createContext(LoggedUser);
+const UserContext = React.createContext(loggedUser);
 
 export default UserContext;

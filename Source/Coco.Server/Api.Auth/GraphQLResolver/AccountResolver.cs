@@ -64,12 +64,16 @@ namespace Api.Auth.GraphQLResolver
                 var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
                 var result = await _accountManager.GetLoggingUser(userHeaderParams.UserIdHashed, userHeaderParams.AuthenticationToken);
+                if(result == null)
+                {
+                    return new UserInfo();
+                }
 
                 return UserInfoMapping.ApplicationUserToUserInfo(result, userHeaderParams.UserIdHashed);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 

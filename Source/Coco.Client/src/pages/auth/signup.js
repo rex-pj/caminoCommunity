@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { raiseError } from "../../store/notify";
+import { raiseError } from "../../store/commands";
 import { defaultClient } from "../../utils/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQLQueries";
