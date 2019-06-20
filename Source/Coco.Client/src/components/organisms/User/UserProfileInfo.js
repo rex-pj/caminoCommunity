@@ -71,7 +71,7 @@ export default class extends Component {
               {format(userInfo.birthDate, "MMMM, DD YYYY")}
             </UnserInfoChild>
             <UnserInfoChild icon="calendar-alt">
-              {format(userInfo.joinedDate, "MMMM, DD YYYY")}
+              {format(userInfo.createdDate, "MMMM, DD YYYY")}
             </UnserInfoChild>
             <UnserInfoChild icon="envelope" isEmail={true}>
               {userInfo.email}

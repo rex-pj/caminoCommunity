@@ -64,18 +64,18 @@ const ProfileImage = styled(ImageCircle)`
 `;
 
 export default function(props) {
-  const { userIdentity } = props;
+  const { userInfo } = props;
   return (
     <GroupThumbnail>
-      <a href={userIdentity.url} className="cover-link">
-        <Thumbnail src={userIdentity.coverImageUrl} alt="" />
+      <a href={userInfo.url} className="cover-link">
+        <Thumbnail src={userInfo.coverImageUrl} alt="" />
         <ThumbnailOverlay />
       </a>
-      <a href={userIdentity.url} className="profile-name">
-        {userIdentity.name}
+      <a href={userInfo.url} className="profile-name">
+        {userInfo.displayName}
       </a>
-      <a href={userIdentity.url} className="profile-link">
-        <ProfileImage src={userIdentity.avatarUrl} />
+      <a href={userInfo.url} className="profile-link">
+        <ProfileImage src={userInfo.avatarUrl} />
       </a>
 
       <ConnectButton icon="user-plus" size="sm">

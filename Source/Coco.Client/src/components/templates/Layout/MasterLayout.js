@@ -5,7 +5,7 @@ import * as theme from "../../../utils/Theme";
 import { connect } from "react-redux";
 import Notifications from "../../organisms/Notification/Notifications";
 
-const MasterLayout = ({ component: Component, ...rest }) => {
+function MasterLayout({ component: Component, ...rest }) {
   return (
     <ThemeProvider theme={theme}>
       <Route
@@ -19,7 +19,7 @@ const MasterLayout = ({ component: Component, ...rest }) => {
       />
     </ThemeProvider>
   );
-};
+}
 
 const mapStateToProps = state => {
   return {

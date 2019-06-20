@@ -3,10 +3,10 @@ import SignInForm from "../../components/organisms/Auth/SignInForm";
 import { defaultClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
-import UserContext from "../../utils/Context/UserContext";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { raiseError } from "../../store/notify";
+import { raiseError } from "../../store/commands";
+import SessionContext from "../../utils/Context/SessionContext";
 import AuthService from "../../services/AuthService";
 
 class SingnInPage extends Component {
@@ -15,7 +15,8 @@ class SingnInPage extends Component {
     this._isMounted = false;
 
     this.state = {
-      isFormEnabled: true
+      isFormEnabled: true,
+      shouldRedirect: false
     };
   }
 
@@ -26,6 +27,7 @@ class SingnInPage extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+    clearTimeout();
   }
   // #endregion Life Cycle
 
@@ -61,6 +63,7 @@ class SingnInPage extends Component {
           data.signin.userInfo,
           data.signin.authenticatorToken
         );
+
         this.context.login();
         this.props.history.push("/");
       })
@@ -118,7 +121,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-SingnInPage.contextType = UserContext;
+SingnInPage.contextType = SessionContext;
 
 export default connect(
   null,
