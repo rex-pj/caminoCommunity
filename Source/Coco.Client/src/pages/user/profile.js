@@ -71,6 +71,9 @@ export default withRouter(
             if (loading) {
               return <div>Loading</div>;
             }
+            if (error) {
+              return <div>Error</div>;
+            }
             const userInfo = this.parseUserInfo(data);
             return (
               <Fragment>
