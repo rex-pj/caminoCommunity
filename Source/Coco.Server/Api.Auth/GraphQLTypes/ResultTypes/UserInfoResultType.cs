@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
 {
-    public class FullUserInfoResultType : ObjectGraphType<UserInfo>
+    public class UserInfoResultType : ObjectGraphType<UserInfo>
     {
-        public FullUserInfoResultType()
+        public UserInfoResultType()
         {
             Field(x => x.Lastname, type: typeof(StringGraphType));
             Field(x => x.Firstname, type: typeof(StringGraphType));
@@ -16,8 +16,8 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
 
             Field(x => x.Address, type: typeof(StringGraphType));
             Field(x => x.BirthDate, type: typeof(DateTimeGraphType));
-            Field(x => x.CountryId, type: typeof(IntGraphType)); //Todo: Country
-            Field(x => x.CountryName, type: typeof(StringGraphType)); //Todo: Country
+            Field(x => x.CountryId, type: typeof(IntGraphType));
+            Field(x => x.CountryName, type: typeof(StringGraphType));
             Field(x => x.Description, type: typeof(StringGraphType));
             Field(x => x.CreatedDate, type: typeof(DateTimeGraphType));
             Field(x => x.PhoneNumber, type: typeof(StringGraphType));

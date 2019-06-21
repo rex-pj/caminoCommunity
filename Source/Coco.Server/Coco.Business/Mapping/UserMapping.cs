@@ -102,7 +102,7 @@ namespace Coco.Business.Mapping
                 IsActived = user.IsActived,
                 PhoneNumber = user.PhoneNumber,
                 StatusId = user.StatusId,
-                Id = user.Id,
+                Id = user.Id
             };
 
             if(user.Country != null)
@@ -114,6 +114,11 @@ namespace Coco.Business.Mapping
             if(user.Gender != null)
             {
                 userModel.GenderLabel = user.Gender.Name;
+            }
+
+            if(user.Status != null)
+            {
+                userModel.StatusLabel = user.Status.Name;
             }
 
             if (user.User != null)

@@ -28,5 +28,6 @@ namespace Coco.Api.Framework.Models
         public string AuthenticatorToken { get; set; }
         public string SecurityStamp { get; set; }
         public DateTime? Expiration { get; set; }
+        public string StatusLabel { get; set; }
     }
 }

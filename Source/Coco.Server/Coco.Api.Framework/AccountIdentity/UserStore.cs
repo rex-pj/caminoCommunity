@@ -9,6 +9,7 @@ using Coco.Entities.Model.Account;
 using Microsoft.EntityFrameworkCore;
 using Coco.Api.Framework.Mapping;
 using Microsoft.Extensions.Configuration;
+using Coco.Entities.Model.General;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -255,6 +256,84 @@ namespace Coco.Api.Framework.AccountIdentity
 
             return Task.FromResult(user.UserName);
         }
+
+        /// <summary>
+        /// Updates the specified <paramref name="user"/> in the user store.
+        /// </summary>
+        /// <param name="user">The user info to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<IdentityResult> UpdateInfoAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            try
+            {
+                var userModel = GetUserEntity(user);
+
+                var result = await _accountBusiness.UpdateInfoAsync(userModel);
+
+                return new IdentityResult(true);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return IdentityResult.Failed(Describer.ConcurrencyFailure());
+            }
+        }
+
+        /// <summary>
+        /// Updates the specified <paramref name="model"/> in the user store.
+        /// </summary>
+        /// <param name="model">The user info to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel model, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            if (model.PropertyName == null)
+            {
+                throw new ArgumentNullException(nameof(model.PropertyName));
+            }
+
+            if (model.Key == null)
+            {
+                throw new ArgumentNullException(nameof(model.Key));
+            }
+
+            try
+            {
+                var userIdDecrypted = _textCrypter.Decrypt(model.Key.ToString(), _textCrypterSaltKey);
+                var userId = long.Parse(userIdDecrypted);
+                var userModel = new UpdatePerItem()
+                {
+                    Key = userId,
+                    Value = model.Value,
+                    PropertyName = model.PropertyName
+                };
+
+                var result = await _accountBusiness.UpdateInfoItemAsync(userModel);
+
+                model.Value = result.Value;
+
+                return UpdatePerItemResultModel.Success(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return UpdatePerItemResultModel.Failed(Describer.ConcurrencyFailure());
+            }
+        }
+
 
         #region Private Methods
         private UserModel GetUserEntity(ApplicationUser loggedUser)

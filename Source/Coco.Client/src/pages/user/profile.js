@@ -5,13 +5,16 @@ import styled from "styled-components";
 import loadable from "@loadable/component";
 import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
 import Timeline from "./timeline";
-import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries";
+import { GET_USER_INFO } from "../../utils/GraphQLQueries";
+import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
 const UserProfileCover = loadable(() =>
   import("../../components/organisms/User/UserProfileCover")
 );
+
 const UserProfileInfo = loadable(() =>
   import("../../components/organisms/User/UserProfileInfo")
 );
@@ -60,7 +63,7 @@ export default withRouter(
 
       return (
         <Query
-          query={GET_FULL_USER_INFO}
+          query={GET_USER_INFO}
           variables={{
             criterias: {
               userId
@@ -69,11 +72,12 @@ export default withRouter(
         >
           {({ loading, error, data }) => {
             if (loading) {
-              return <div>Loading</div>;
+              return <Loading>Loading</Loading>;
             }
             if (error) {
-              return <div>Error</div>;
+              return <ErrorBlock>Error</ErrorBlock>;
             }
+
             const userInfo = this.parseUserInfo(data);
             return (
               <Fragment>
@@ -89,6 +93,7 @@ export default withRouter(
                         component={props => (
                           <AsyncTabContent
                             {...props}
+                            userId={userId}
                             userUrl={`${baseUrl}/${userId}`}
                             page="./user-about"
                           />

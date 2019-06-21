@@ -27,7 +27,7 @@ namespace Api.Auth.GraphQLResolver
             _accountManager = accountManager;
         }
 
-        public async Task<LoginResult> Signin(ResolveFieldContext<object> context)
+        public async Task<LoginResult> SigninAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<UserInfo> GetLoggedUser(ResolveFieldContext<object> context)
+        public async Task<UserInfo> GetLoggedUserAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -73,11 +73,11 @@ namespace Api.Auth.GraphQLResolver
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<UserInfo> GetFullUserInfo(ResolveFieldContext<object> context)
+        public async Task<UserInfo> GetFullUserInfoAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<IdentityResult> Signup(ResolveFieldContext<object> context)
+        public async Task<IdentityResult> SignupAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace Api.Auth.GraphQLResolver
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
                     GenderId = (byte)model.GenderId,
-                    StatusId = (byte)UserStatusEnum.IsPending,
+                    StatusId = (byte)UserStatusEnum.Pending,
                     UpdatedDate = DateTime.Now,
                     UserName = model.Email,
                     PasswordSalt = SaltGenerator.GetSalt(),
@@ -124,6 +124,82 @@ namespace Api.Auth.GraphQLResolver
                 };
 
                 var result = await _accountManager.CreateAsync(parameters);
+
+                if (result.Errors != null && result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                        {
+                            context.Errors.Add(new ExecutionError(error.Description)
+                            {
+                                Code = error.Code
+                            });
+                        }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<IdentityResult> UpdateUserInfoAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UserInfoUpdateModel>("user");
+
+                var parameters = new ApplicationUser()
+                {
+                    BirthDate = model.BirthDate,
+                    DisplayName = $"{model.Lastname} {model.Firstname}",
+                    Email = model.Email,
+                    Firstname = model.Firstname,
+                    Lastname = model.Lastname,
+                    GenderId = (byte)model.GenderId,
+                    UpdatedDate = DateTime.Now,
+                    UserName = model.Email,
+                    Description = model.Description,
+                    Address = model.Address,
+                    CountryId = model.CountryId,
+                    PhoneNumber = model.PhoneNumber
+                };
+
+                var result = await _accountManager.UpdateInfoAsync(parameters);
+
+                if (result.Errors != null && result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                        {
+                            context.Errors.Add(new ExecutionError(error.Description)
+                            {
+                                Code = error.Code
+                            });
+                        }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<UpdatePerItemResultModel> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UpdatePerItemModel>("criterias");
+
+                var result = await _accountManager.UpdateInfoItemAsync(model);
 
                 if (result.Errors != null && result.Errors.Any())
                 {

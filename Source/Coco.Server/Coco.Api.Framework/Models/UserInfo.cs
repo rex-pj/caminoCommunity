@@ -15,12 +15,13 @@ namespace Coco.Api.Framework.Models
         public DateTime? BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public byte? GenderId { get; set; }
+        public int? GenderId { get; set; }
         public string GenderLabel { get; set; }
         public bool IsActived { get; set; }
-        public byte StatusId { get; set; }
+        public int StatusId { get; set; }
         public int? CountryId { get; set; }
         public string CountryName { get; set; }
         public string CountryCode { get; set; }
+        public string StatusLabel { get; set; }
     }
 }
