@@ -7,6 +7,7 @@ import UserContext from "../../../utils/Context/UserContext";
 import AuthService from "../../../services/AuthService";
 import { getLocalStorageByKey } from "../../../services/StorageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
+import PageLoading from "../../molecules/Loading/PageLoading";
 
 export default function({ component: Component, ...rest }) {
   function parseLoggedUser(response) {
@@ -31,7 +32,7 @@ export default function({ component: Component, ...rest }) {
       <Query query={GET_LOGGED_USER}>
         {({ loading, error, data }) => {
           if (loading) {
-            return <div>Loading</div>;
+            return <PageLoading {...rest} />;
           }
 
           const user = parseLoggedUser(data);

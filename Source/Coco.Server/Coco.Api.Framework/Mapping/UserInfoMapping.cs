@@ -24,6 +24,9 @@ namespace Coco.Api.Framework.Mapping
                 CountryId = user.CountryId,
                 IsActived = user.IsActived,
                 StatusId = user.StatusId,
+                CountryCode = user.CountryCode,
+                GenderLabel = user.GenderLabel,
+                CountryName = user.CountryName
             };
         }
 

@@ -256,6 +256,36 @@ namespace Coco.Api.Framework.AccountIdentity
             return Task.FromResult(user.UserName);
         }
 
+        /// <summary>
+        /// Updates the specified <paramref name="user"/> in the user store.
+        /// </summary>
+        /// <param name="user">The user info to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<IdentityResult> UpdateInfoAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            try
+            {
+                var userModel = GetUserEntity(user);
+
+                var result = await _accountBusiness.UpdateInfoAsync(userModel);
+
+                return new IdentityResult(true);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return IdentityResult.Failed(Describer.ConcurrencyFailure());
+            }
+        }
+
+
         #region Private Methods
         private UserModel GetUserEntity(ApplicationUser loggedUser)
         {

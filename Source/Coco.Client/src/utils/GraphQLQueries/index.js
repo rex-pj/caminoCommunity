@@ -59,3 +59,25 @@ export const GET_FULL_USER_INFO = gpl`
     }
   }
 `;
+
+export const GET_USER_INFO_TO_UPDATE = gpl`
+  query($criterias: FindUserInputType!){
+    fullUserInfo(criterias: $criterias){
+      birthDate,
+      displayName,
+      email,
+      firstname,
+      lastname,
+      genderId,
+      updatedDate,
+      description,
+      address,
+      countryId,
+      phoneNumber,
+      statusId,
+      genderLabel,
+      countryName,
+      isActived
+    }
+  }
+`;

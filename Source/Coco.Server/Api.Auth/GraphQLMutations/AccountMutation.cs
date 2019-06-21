@@ -12,6 +12,10 @@ namespace Api.Auth.GraphQLMutations
             FieldAsync(typeof(RegisterResultType), "adduser",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<RegisterInputType>> { Name = "user" }),
                 resolve: async context => await accountResolver.Signup(context));
+
+            FieldAsync(typeof(IdentityResultType), "updateUserInfo",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserInfoUpdateInputType>> { Name = "userInfo" }),
+                resolve: async context => await accountResolver.UpdateUserInfo(context));
         }
     }
 }

@@ -460,6 +460,28 @@ namespace Coco.Api.Framework.AccountIdentity
 
             return _passwordHasher.VerifyHashedPassword(user, hash, passwordSalted);
         }
+
+        /// <summary>
+        /// Creates the specified <paramref name="user"/> in the backing store with no password,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user to create.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<IdentityResult> UpdateInfoAsync(ApplicationUser user)
+        {
+            ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return await UserStore.UpdateInfoAsync(user, CancellationToken);
+        }
+
         #endregion
 
         #region Privates

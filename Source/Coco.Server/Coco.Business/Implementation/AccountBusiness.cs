@@ -118,6 +118,37 @@ namespace Coco.Business.Implementation
             return user;
         }
 
+        public async Task<UserModel> UpdateInfoAsync(UserModel user)
+        {
+            if (user.Id <= 0)
+            {
+                throw new ArgumentNullException("User Id");
+            }
+
+            UserInfo userInfo = _userInfoRepository.Find(user.Id);
+            userInfo.BirthDate = user.BirthDate;
+            userInfo.CountryId = user.CountryId;
+            userInfo.Description = user.Description;
+            userInfo.GenderId = user.GenderId;
+            userInfo.PhoneNumber = user.PhoneNumber;
+            userInfo.UpdatedById = user.Id;
+            userInfo.UpdatedDate = DateTime.Now;
+
+            if (userInfo.User == null)
+            {
+                throw new ArgumentNullException(nameof(userInfo.User));
+            }
+
+            userInfo.User.DisplayName = user.DisplayName;
+            userInfo.User.Firstname = user.Firstname;
+            userInfo.User.Lastname = user.Lastname;
+
+            _userInfoRepository.Update(userInfo);
+            await _dbContext.SaveChangesAsync();
+
+            return user;
+        }
+
         public async Task<UserModel> Find(long id)
         {
             var user = await _userInfoRepository

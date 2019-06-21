@@ -84,7 +84,8 @@ namespace Api.Auth
                 .AddSingleton<AccountQuery>()
                 .AddSingleton<ListGraphType>()
                 .AddSingleton<RegisterResultType>()
-                .AddSingleton<SigninResultType>();
+                .AddSingleton<SigninResultType>()
+                .AddSingleton<FullUserInfoResultType>();
 
             var sp = services.BuildServiceProvider();
 

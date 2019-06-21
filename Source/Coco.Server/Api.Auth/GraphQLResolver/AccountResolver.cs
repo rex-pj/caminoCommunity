@@ -73,7 +73,7 @@ namespace Api.Auth.GraphQLResolver
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -124,6 +124,52 @@ namespace Api.Auth.GraphQLResolver
                 };
 
                 var result = await _accountManager.CreateAsync(parameters);
+
+                if (result.Errors != null && result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                        {
+                            context.Errors.Add(new ExecutionError(error.Description)
+                            {
+                                Code = error.Code
+                            });
+                        }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<IdentityResult> UpdateUserInfo(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UserInfoUpdateModel>("user");
+
+                var parameters = new ApplicationUser()
+                {
+                    BirthDate = model.BirthDate,
+                    DisplayName = $"{model.Lastname} {model.Firstname}",
+                    Email = model.Email,
+                    Firstname = model.Firstname,
+                    Lastname = model.Lastname,
+                    GenderId = (byte)model.GenderId,
+                    UpdatedDate = DateTime.Now,
+                    UserName = model.Email,
+                    Description = model.Description,
+                    Address = model.Address,
+                    CountryId = model.CountryId,
+                    PhoneNumber = model.PhoneNumber
+                };
+
+                var result = await _accountManager.UpdateInfoAsync(parameters);
 
                 if (result.Errors != null && result.Errors.Any())
                 {
