@@ -6,7 +6,6 @@ import DropdownButton from "../../molecules/DropdownButton";
 
 const Root = styled.div`
   position: relative;
-  padding-left: 135px;
 `;
 
 const ListItem = styled.li`

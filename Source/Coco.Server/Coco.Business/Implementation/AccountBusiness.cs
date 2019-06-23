@@ -3,10 +3,12 @@ using Coco.Business.Mapping;
 using Coco.Contract;
 using Coco.Entities.Domain.Account;
 using Coco.Entities.Model.Account;
+using Coco.Entities.Model.General;
 using Coco.UserDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Implementation
@@ -182,7 +184,9 @@ namespace Coco.Business.Implementation
             var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id))
                 .Include(x => x.Country)
                 .Include(x => x.Gender)
-                .Include(x => x.User).FirstOrDefaultAsync();
+                .Include(x => x.Status)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync();
 
             if (existUser != null)
             {
@@ -191,6 +195,30 @@ namespace Coco.Business.Implementation
             }
 
             return new UserFullModel();
+        }
+
+        public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
+        {
+            if (model.PropertyName == null)
+            {
+                throw new ArgumentNullException(nameof(model.PropertyName));
+            }
+
+            if (model.Key == null)
+            {
+                throw new ArgumentNullException(nameof(model.Key));
+            }
+
+            var userInfo = _userInfoRepository.Find(model.Key);
+            
+            Type type = userInfo.GetType();
+            PropertyInfo propertyInfo = type.GetProperty(model.PropertyName);
+            propertyInfo.SetValue(userInfo, Convert.ChangeType(model.Value, propertyInfo.PropertyType), null);
+
+            _userInfoRepository.Update(userInfo);
+            await _dbContext.SaveChangesAsync();
+
+            return model;
         }
     }
 }

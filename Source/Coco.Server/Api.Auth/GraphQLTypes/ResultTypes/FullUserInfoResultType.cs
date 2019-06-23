@@ -25,6 +25,7 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
             Field(x => x.CountryCode, type: typeof(StringGraphType));
             Field(x => x.CountryName, type: typeof(StringGraphType));
             Field(x => x.StatusId, type: typeof(IntGraphType));
+            Field(x => x.StatusLabel, type: typeof(StringGraphType));
         }
     }
 }

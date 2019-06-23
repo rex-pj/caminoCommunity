@@ -41,11 +41,9 @@ export const GET_LOGGED_USER = gpl`
   }
 `;
 
-export const GET_FULL_USER_INFO = gpl`
+export const GET_USER_INFO = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
-      lastname,
-      firstname,
       email,
       displayName,
       userHashedId,
@@ -60,6 +58,26 @@ export const GET_FULL_USER_INFO = gpl`
   }
 `;
 
+export const GET_FULL_USER_INFO = gpl`
+  query($criterias: FindUserInputType!){
+    fullUserInfo(criterias: $criterias){
+      birthDate,
+      displayName,
+      email,
+      firstname,
+      lastname,
+      createdDate,
+      description,
+      address,
+      phoneNumber,
+      genderLabel,
+      countryName,
+      statusLabel,
+      userHashedId
+    }
+  }
+`;
+
 export const GET_USER_INFO_TO_UPDATE = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
@@ -69,15 +87,29 @@ export const GET_USER_INFO_TO_UPDATE = gpl`
       firstname,
       lastname,
       genderId,
-      updatedDate,
+      createdDate,
       description,
       address,
       countryId,
       phoneNumber,
       statusId,
       genderLabel,
-      countryName,
-      isActived
+      countryName
+    }
+  }
+`;
+
+export const UPDATE_USER_INFO_PER_ITEM = gpl`
+  mutation UpdateUserInfoItem($criterias: UpdatePerItemInputType!){
+    updateUserInfoItem(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        value
+      }
     }
   }
 `;

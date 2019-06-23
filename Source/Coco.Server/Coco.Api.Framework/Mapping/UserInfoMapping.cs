@@ -119,7 +119,8 @@ namespace Coco.Api.Framework.Mapping
                 CountryCode = userModel.CountryCode,
                 CountryName = userModel.CountryName,
                 GenderLabel = userModel.GenderLabel,
-                CreatedDate = userModel.CreatedDate
+                CreatedDate = userModel.CreatedDate,
+                StatusLabel = userModel.StatusLabel
             };
 
             return applicationUser;
@@ -146,7 +147,8 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = user.StatusId,
                 CountryCode = user.CountryCode,
                 CountryName = user.CountryName,
-                GenderLabel = user.GenderLabel
+                GenderLabel = user.GenderLabel,
+                StatusLabel = user.StatusLabel
             };
         }
     }

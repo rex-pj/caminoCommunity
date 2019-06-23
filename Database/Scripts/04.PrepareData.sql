@@ -4,27 +4,27 @@ USE CocoUserDb
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('IsPending', 'The user is wating for approval')
+('Pending', 'The user is wating for approval')
 
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('IsActived', 'Active user')
+('Actived', 'Active user')
 
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('IsReporting', 'The user is being reported')
+('Reported', 'The user is being reported')
 
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('IsInactived', 'The user is Inactived')
+('Inactived', 'The user is Inactived')
 
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('IsBlocked', 'The user is being blocked')
+('Blocked', 'The user is being blocked')
 
 -- USER ROLE --
 INSERT INTO Auth.[Role]

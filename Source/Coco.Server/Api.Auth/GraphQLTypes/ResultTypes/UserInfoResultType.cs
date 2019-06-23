@@ -16,8 +16,8 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
 
             Field(x => x.Address, type: typeof(StringGraphType));
             Field(x => x.BirthDate, type: typeof(DateTimeGraphType));
-            Field(x => x.CountryId, type: typeof(IntGraphType)); //Todo: Country
-            Field(x => x.CountryName, type: typeof(StringGraphType)); //Todo: Country
+            Field(x => x.CountryId, type: typeof(IntGraphType));
+            Field(x => x.CountryName, type: typeof(StringGraphType));
             Field(x => x.Description, type: typeof(StringGraphType));
             Field(x => x.CreatedDate, type: typeof(DateTimeGraphType));
             Field(x => x.PhoneNumber, type: typeof(StringGraphType));

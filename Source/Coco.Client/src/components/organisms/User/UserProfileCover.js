@@ -18,23 +18,22 @@ const GroupThumbnail = styled.div`
     overflow: hidden;
   }
 
-  a.profile-link {
+  a.profile-avatar {
     position: absolute;
-    bottom: -${p => p.theme.size.normal};
-    left: ${p => p.theme.size.small};
+    bottom: ${p => p.theme.size.distance};
+    left: ${p => p.theme.size.distance};
     width: 110px;
     height: 110px;
     border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
     background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
     z-index: 1;
     border-radius: 100%;
-    z-index: 1;
   }
 
   a.profile-name {
     position: absolute;
-    bottom: ${p => p.theme.size.exTiny};
-    left: 150px;
+    bottom: ${p => p.theme.size.distance};
+    left: 135px;
     z-index: 2;
     font-weight: 600;
     color: ${p => p.theme.color.white};
@@ -74,7 +73,7 @@ export default function(props) {
       <a href={userInfo.url} className="profile-name">
         {userInfo.displayName}
       </a>
-      <a href={userInfo.url} className="profile-link">
+      <a href={userInfo.url} className="profile-avatar">
         <ProfileImage src={userInfo.avatarUrl} />
       </a>
 

@@ -465,7 +465,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// Creates the specified <paramref name="user"/> in the backing store with no password,
         /// as an asynchronous operation.
         /// </summary>
-        /// <param name="user">The user to create.</param>
+        /// <param name="user">The user to updated.</param>
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
@@ -480,6 +480,27 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             return await UserStore.UpdateInfoAsync(user, CancellationToken);
+        }
+
+        /// <summary>
+        /// Creates the specified <paramref name="user"/> in the backing store with no password,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user to update by item.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel user)
+        {
+            ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return await UserStore.UpdateInfoItemAsync(user, CancellationToken);
         }
 
         #endregion

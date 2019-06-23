@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { Query } from "react-apollo";
-import { GET_USER_INFO_TO_UPDATE } from "../../utils/GraphQLQueries";
+import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -12,7 +12,7 @@ export default withRouter(
       const { userId } = this.props;
       return (
         <Query
-          query={GET_USER_INFO_TO_UPDATE}
+          query={GET_FULL_USER_INFO}
           variables={{
             criterias: {
               userId
@@ -26,7 +26,7 @@ export default withRouter(
             if (error) {
               return <ErrorBlock>Error</ErrorBlock>;
             }
-            return <About userInfo={data} />;
+            return <About userInfo={data.fullUserInfo} />;
           }}
         </Query>
       );

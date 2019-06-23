@@ -1,4 +1,5 @@
 ﻿using Coco.Entities.Model.Account;
+using Coco.Entities.Model.General;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Contracts
@@ -14,5 +15,6 @@ namespace Coco.Business.Contracts
         Task<UserModel> FindByIdAsync(long id);
         Task<UserFullModel> GetFullByIdAsync(long id);
         Task<UserModel> UpdateInfoAsync(UserModel user);
+        Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model);
     }
 }
