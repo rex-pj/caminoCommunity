@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
 
-const TextData = styled.span`
+const TextLabel = styled.span`
   &.can-edit {
     border-bottom: 1px dashed ${p => p.theme.color.normal};
   }
@@ -13,9 +13,15 @@ const TextData = styled.span`
   }
 `;
 
-// <Textbox value={props.value} />
+const TextEditing = styled(Textbox)`
+  border: 0;
+  border-bottom: 1px dashed ${p => p.theme.color.normal};
+  border-radius: 0;
+`;
+
 export default function(props) {
   const [isOpenTextBox, setTextBoxOpen] = useState(false);
+  const [value, setValue] = useState(props.value);
   function openTextBox() {
     setTextBoxOpen(true);
   }
@@ -24,20 +30,46 @@ export default function(props) {
     setTextBoxOpen(false);
   }
 
-  function onDataUp(e) {
+  async function onDataUp(e) {
+    const currentValue = props.value ? props.value : "";
+
     if (e.keyCode === 13 && props.onUpdated) {
-      if (!!props.primaryKey && !!props.propertyName) {
-        props.onUpdated({
-          primaryKey: props.primaryKey,
-          value: e.target.value,
-          propertyName: props.propertyName
-        });
+      if (
+        !!props.primaryKey &&
+        !!props.name &&
+        e.target.value !== currentValue
+      ) {
+        await props
+          .onUpdated({
+            primaryKey: props.primaryKey,
+            value: e.target.value,
+            propertyName: props.name
+          })
+          .then(function(response) {
+            const { data } = response;
+            const { updateUserInfoItem } = data;
+            const { result } = updateUserInfoItem;
+            setValue(result.value);
+          })
+          .catch(function(errors) {
+            console.log(errors);
+          });
       }
 
-      setTextBoxOpen(false);
+      closeTextBox();
     } else if (e.keyCode === 13) {
-      setTextBoxOpen(false);
+      closeTextBox();
+      setValue(value);
     }
+  }
+
+  function onBlur() {
+    closeTextBox();
+    setValue(value);
+  }
+
+  function onChanged(e) {
+    setValue(e.target.value);
   }
 
   let emptyText = "Empty";
@@ -45,34 +77,40 @@ export default function(props) {
     emptyText = props.emptyText;
   }
 
-  if (!props.disabled && !!isOpenTextBox && !!props.value) {
+  if (!props.disabled && !!isOpenTextBox && !!value) {
     return (
-      <Textbox
-        value={props.value}
-        onBlur={closeTextBox}
+      <TextEditing
+        value={value}
+        onBlur={onBlur}
         autoFocus={true}
         onKeyUp={onDataUp}
+        onChange={onChanged}
       />
     );
   } else if (!props.disabled && !!isOpenTextBox) {
     return (
-      <Textbox onBlur={closeTextBox} autoFocus={true} onKeyUp={onDataUp} />
+      <TextEditing
+        onBlur={onBlur}
+        autoFocus={true}
+        onKeyUp={onDataUp}
+        onChange={props.onChanged}
+      />
     );
   }
 
-  if (!props.value && !props.disabled) {
+  if (!value && !props.disabled) {
     return (
-      <TextData className="can-edit empty" onClick={openTextBox}>
+      <TextLabel className="can-edit empty" onClick={openTextBox}>
         {emptyText}
-      </TextData>
+      </TextLabel>
     );
   }
 
   return !props.disabled ? (
-    <TextData className="can-edit" onClick={openTextBox}>
-      {props.value}
-    </TextData>
+    <TextLabel className="can-edit" onClick={openTextBox}>
+      {value}
+    </TextLabel>
   ) : (
-    <TextData className="disabled">{props.value}</TextData>
+    <TextLabel className="disabled">{value}</TextLabel>
   );
 }

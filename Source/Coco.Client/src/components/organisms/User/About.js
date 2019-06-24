@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { Mutation } from "react-apollo";
 import { PanelBody } from "../../../components/atoms/Panels";
 import { VerticalList } from "../../atoms/List";
 import { format } from "date-fns";
 import TextEditable from "../../molecules/Editable/TextEditable";
+import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${p => p.theme.borderRadius.normal};
@@ -72,64 +74,96 @@ const UnserInfoWWithLabel = props => {
 export default function(props) {
   const { userInfo } = props;
 
-  function onEditable(e) {
-    console.log(e);
+  async function onEditable(e, updateUserInfoItem) {
+    if (updateUserInfoItem) {
+      return await updateUserInfoItem({
+        variables: {
+          criterias: {
+            key: e.primaryKey,
+            value: e.value,
+            propertyName: e.propertyName
+          }
+        }
+      });
+    }
   }
 
   return (
     <MainPanel>
       <Root>
         {userInfo ? (
-          <InfoList>
-            <UnserInfoWWithLabel label="Họ &amp; Tên">
-              <div className="row">
-                <div className="col-auto">{userInfo.lastname}</div>
-                <div className="col-auto">{userInfo.firstname}</div>
-              </div>
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Về bản thân">
-              <TextEditable
-                value={userInfo.description}
-                primaryKey={userInfo.userHashedId}
-                propertyName="Description"
-                onUpdated={onEditable}
-              />
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Giới tính">
-              <TextEditable
-                value={userInfo.genderLabel}
-                primaryKey={userInfo.userHashedId}
-                propertyName="GenderLabel"
-                onUpdated={onEditable}
-              />
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Địa chỉ">
-              <TextEditable
-                value={userInfo.address}
-                primaryKey={userInfo.userHashedId}
-                propertyName="Adreess"
-                onUpdated={onEditable}
-              />
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Quốc gia">
-              {userInfo.country}
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Sinh nhật">
-              {format(userInfo.birthDate, "MMMM, DD YYYY")}
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Ngày tham gia">
-              {format(userInfo.createdDate, "MMMM, DD YYYY")}
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Email" isEmail={true}>
-              {userInfo.email}
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Điện thoại">
-              {userInfo.mobile}
-            </UnserInfoWWithLabel>
-            <UnserInfoWWithLabel label="Trạng thái">
-              {userInfo.statusLabel}
-            </UnserInfoWWithLabel>
-          </InfoList>
+          <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
+            {updateUserInfoItem => (
+              <InfoList>
+                <UnserInfoWWithLabel label="Họ &amp; Tên">
+                  <div className="row">
+                    <div className="col-auto">
+                      <TextEditable
+                        value={userInfo.lastname}
+                        primaryKey={userInfo.userHashedId}
+                        name="lastname"
+                        onUpdated={e => onEditable(e, updateUserInfoItem)}
+                      />
+                    </div>
+                    <div className="col-auto">-</div>
+                    <div className="col-auto">
+                      <TextEditable
+                        value={userInfo.firstname}
+                        primaryKey={userInfo.userHashedId}
+                        name="firstname"
+                        onUpdated={e => onEditable(e, updateUserInfoItem)}
+                      />
+                    </div>
+                  </div>
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Tên hiển thị">
+                  <TextEditable
+                    value={userInfo.displayName}
+                    primaryKey={userInfo.userHashedId}
+                    name="displayName"
+                    onUpdated={e => onEditable(e, updateUserInfoItem)}
+                  />
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Về bản thân">
+                  <TextEditable
+                    value={userInfo.description}
+                    primaryKey={userInfo.userHashedId}
+                    name="description"
+                    onUpdated={e => onEditable(e, updateUserInfoItem)}
+                  />
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Điện thoại">
+                  {userInfo.mobile}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Giới tính">
+                  {userInfo.genderLabel}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Địa chỉ">
+                  <TextEditable
+                    value={userInfo.address}
+                    primaryKey={userInfo.userHashedId}
+                    name="address"
+                    onUpdated={e => onEditable(e, updateUserInfoItem)}
+                  />
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Quốc gia">
+                  {userInfo.country}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Sinh nhật">
+                  {format(userInfo.birthDate, "MMMM, DD YYYY")}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Email" isEmail={true}>
+                  {userInfo.email}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Ngày tham gia">
+                  {format(userInfo.createdDate, "MMMM, DD YYYY")}
+                </UnserInfoWWithLabel>
+                <UnserInfoWWithLabel label="Trạng thái">
+                  {userInfo.statusLabel}
+                </UnserInfoWWithLabel>
+              </InfoList>
+            )}
+          </Mutation>
         ) : null}
       </Root>
     </MainPanel>

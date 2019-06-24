@@ -320,7 +320,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetFullByTokenAsync(string userIdHased)
+        public virtual async Task<ApplicationUser> GetFullByHashIdAsync(string userIdHased)
         {
             ThrowIfDisposed();
             if (string.IsNullOrEmpty(userIdHased))
@@ -483,24 +483,35 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
+        /// Creates the specified <paramref name="model"/> in the backing store with no password,
         /// as an asynchronous operation.
         /// </summary>
-        /// <param name="user">The user to update by item.</param>
+        /// <param name="model">The user to update by item.</param>
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel user)
+        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel model, string token)
         {
             ThrowIfDisposed();
 
-            if (user == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserStore.UpdateInfoItemAsync(user, CancellationToken);
+            if (model.Key == null || string.IsNullOrEmpty(model.Key.ToString()))
+            {
+                throw new ArgumentNullException(nameof(model.Key));
+            }
+
+            var user = await GetFullByHashIdAsync(model.Key.ToString());
+            if (user == null || !user.AuthenticatorToken.Equals(token))
+            {
+                throw new UnauthorizedAccessException(nameof(user));
+            }
+
+            return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
         #endregion

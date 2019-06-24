@@ -108,7 +108,8 @@ export const UPDATE_USER_INFO_PER_ITEM = gpl`
         description
       },
       result {
-        value
+        value,
+        propertyName
       }
     }
   }

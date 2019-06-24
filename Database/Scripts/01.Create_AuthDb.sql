@@ -12,15 +12,18 @@ GO
 CREATE TABLE Account.[User]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1),
-	Lastname NVARCHAR(255) NOT NULL,
-	FirstName NVARCHAR(255) NOT NULL,
-	DisplayName NVARCHAR(255) NOT NULL,
 	Email NVARCHAR(255) NOT NULL,
 	[Password] NVARCHAR(MAX) NOT NULL,
 	PasswordSalt NVARCHAR(MAX) NOT NULL,
 	SecurityStamp NVARCHAR(MAX) NULL,
 	AuthenticatorToken NVARCHAR(MAX) NULL,
-	Expiration DATETIME2 NULL
+	Expiration DATETIME2 NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NULL,
+	CreatedById BIGINT NULL,
+	IsActived BIT NOT NULL,
+	StatusId TINYINT NOT NULL
 )
 
 GO
@@ -33,20 +36,16 @@ GO
 CREATE TABLE Account.UserInfo
 (
 	Id BIGINT NOT NULL,
+	Lastname NVARCHAR(255) NOT NULL,
+	FirstName NVARCHAR(255) NOT NULL,
+	DisplayName NVARCHAR(255) NOT NULL,
 	PhoneNumber VARCHAR(50) NULL,
 	[Address] NVARCHAR(255) NULL,
 	[Description] NVARCHAR(500) NULL,
 	BirthDate DATETIME2 NULL,
-	CreatedDate DATETIME2 NOT NULL,
-	UpdatedDate DATETIME2 NOT NULL,
-	UpdatedById BIGINT NULL,
-	CreatedById BIGINT NULL,
 	GenderId TINYINT NULL,
-	CountryId SMALLINT NULL,
-	IsActived BIT NOT NULL,
-	StatusId TINYINT NOT NULL
+	CountryId SMALLINT NULL
 )
-
 
 GO
 ALTER TABLE Account.UserInfo
@@ -71,9 +70,10 @@ ALTER TABLE Account.[Status]
 ADD CONSTRAINT PK_Status
 PRIMARY KEY (Id);
 
+
 GO
-ALTER TABLE Account.[UserInfo]
-ADD CONSTRAINT FK_UserInfo_Status
+ALTER TABLE Account.[User]
+ADD CONSTRAINT FK_User_Status
 FOREIGN KEY (StatusId) REFERENCES Account.[Status](Id);
 --  --
 GO

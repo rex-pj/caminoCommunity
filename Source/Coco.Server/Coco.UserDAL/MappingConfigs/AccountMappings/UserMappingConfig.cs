@@ -18,11 +18,11 @@ namespace Coco.UserDAL.MappingConfigs.AccountMappings
                 .HasForeignKey<UserInfo>(e => e.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(x => x.CreatedUserInfos)
+            builder.HasMany(x => x.CreatedUsers)
                 .WithOne(x => x.CreatedBy)
                 .HasForeignKey(x => x.CreatedById);
 
-            builder.HasMany(x => x.UpdatedUserInfos)
+            builder.HasMany(x => x.UpdatedUsers)
                 .WithOne(x => x.UpdatedBy)
                 .HasForeignKey(x => x.UpdatedById);
 

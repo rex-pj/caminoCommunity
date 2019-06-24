@@ -7,7 +7,6 @@ using Coco.Entities.Model.General;
 using Coco.UserDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -17,10 +16,12 @@ namespace Coco.Business.Implementation
     {
         private readonly CocoUserDbContext _dbContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
+        private readonly IRepository<User> _userRepository;
 
-        public AccountBusiness(CocoUserDbContext dbContext, IRepository<UserInfo> userInfoRepository)
+        public AccountBusiness(CocoUserDbContext dbContext, IRepository<User> userRepository, IRepository<UserInfo> userInfoRepository)
         {
             _dbContext = dbContext;
+            _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
         }
 
@@ -30,6 +31,9 @@ namespace Coco.Business.Implementation
             {
                 throw new ArgumentNullException(nameof(userModel));
             }
+
+            userModel.StatusId = 1;
+            userModel.IsActived = false;
 
             UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
 
@@ -43,9 +47,9 @@ namespace Coco.Business.Implementation
         {
             email = email.ToLower();
 
-            var user = await _userInfoRepository
-                .Get(x => x.User.Email.Equals(email) && (includeInActived ? true : x.IsActived))
-                .Include(x => x.User)
+            var user = await _userRepository
+                .Get(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
+                .Include(x => x.UserInfo)
                 .FirstOrDefaultAsync();
 
             UserModel userModel = UserMapping.UserEntityToModel(user);
@@ -59,9 +63,9 @@ namespace Coco.Business.Implementation
             {
                 username = username.ToLower();
 
-                var user = await _userInfoRepository
-                    .Get(x => x.User.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                    .Include(x => x.User)
+                var user = await _userRepository
+                    .Get(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
+                    .Include(x => x.UserInfo)
                     .FirstOrDefaultAsync();
 
                 UserModel userModel = UserMapping.UserEntityToModel(user);
@@ -76,48 +80,51 @@ namespace Coco.Business.Implementation
 
         public void Delete(long id)
         {
-            var user = _userInfoRepository.Find(id);
+            var user = _userRepository.Find(id);
             user.IsActived = false;
 
-            _userInfoRepository.Update(user);
+            _userRepository.Update(user);
             _dbContext.SaveChanges();
         }
 
-        public async Task<UserModel> UpdateAsync(UserModel user)
+        public async Task<UserModel> UpdateAsync(UserModel model)
         {
-            if (user.Id <= 0)
+            if (model.Id <= 0)
             {
                 throw new ArgumentNullException("User Id");
             }
 
-            UserInfo userInfo = _userInfoRepository.Find(user.Id);
-            userInfo.Address = user.Address;
-            userInfo.BirthDate = user.BirthDate;
-            userInfo.CountryId = user.CountryId;
-            userInfo.Description = user.Description;
-            userInfo.GenderId = user.GenderId;
-            userInfo.IsActived = user.IsActived;
-            userInfo.PhoneNumber = user.PhoneNumber;
-            userInfo.StatusId = user.StatusId;
-            userInfo.UpdatedById = user.UpdatedById;
-            userInfo.UpdatedDate = DateTime.Now;
+            var user = _userRepository.Find(model.Id);
+            
+            user.IsActived = model.IsActived;
+            user.StatusId = model.StatusId;
+            user.UpdatedById = model.UpdatedById;
+            user.UpdatedDate = DateTime.Now;
+            user.AuthenticatorToken = model.AuthenticatorToken;
+            user.SecurityStamp = model.SecurityStamp;
+            user.Expiration = model.Expiration;
 
-            if (userInfo.User == null)
+
+            user.UserInfo.DisplayName = model.DisplayName;
+            user.UserInfo.Firstname = model.Firstname;
+            user.UserInfo.Lastname = model.Lastname;
+            
+            if (user.UserInfo == null)
             {
-                throw new ArgumentNullException(nameof(userInfo.User));
+                throw new ArgumentNullException(nameof(user.UserInfo));
             }
 
-            userInfo.User.DisplayName = user.DisplayName;
-            userInfo.User.Firstname = user.Firstname;
-            userInfo.User.Lastname = user.Lastname;
-            userInfo.User.AuthenticatorToken = user.AuthenticatorToken;
-            userInfo.User.SecurityStamp = user.SecurityStamp;
-            userInfo.User.Expiration = user.Expiration;
+            user.UserInfo.Address = model.Address;
+            user.UserInfo.BirthDate = model.BirthDate;
+            user.UserInfo.CountryId = model.CountryId;
+            user.UserInfo.Description = model.Description;
+            user.UserInfo.GenderId = model.GenderId;
+            user.UserInfo.PhoneNumber = model.PhoneNumber;
 
-            _userInfoRepository.Update(userInfo);
+            _userRepository.Update(user);
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            return model;
         }
 
         public async Task<UserModel> UpdateInfoAsync(UserModel user)
@@ -133,17 +140,17 @@ namespace Coco.Business.Implementation
             userInfo.Description = user.Description;
             userInfo.GenderId = user.GenderId;
             userInfo.PhoneNumber = user.PhoneNumber;
-            userInfo.UpdatedById = user.Id;
-            userInfo.UpdatedDate = DateTime.Now;
+            userInfo.DisplayName = user.DisplayName;
+            userInfo.Firstname = user.Firstname;
+            userInfo.Lastname = user.Lastname;
 
             if (userInfo.User == null)
             {
                 throw new ArgumentNullException(nameof(userInfo.User));
             }
 
-            userInfo.User.DisplayName = user.DisplayName;
-            userInfo.User.Firstname = user.Firstname;
-            userInfo.User.Lastname = user.Lastname;
+            userInfo.User.UpdatedById = user.Id;
+            userInfo.User.UpdatedDate = DateTime.Now;
 
             _userInfoRepository.Update(userInfo);
             await _dbContext.SaveChangesAsync();
@@ -153,9 +160,9 @@ namespace Coco.Business.Implementation
 
         public async Task<UserModel> Find(long id)
         {
-            var user = await _userInfoRepository
+            var user = await _userRepository
                 .Get(x => x.Id == id && x.IsActived)
-                .Include(x => x.User)
+                .Include(x => x.UserInfo)
                 .FirstOrDefaultAsync();
 
             var userModel = UserMapping.UserEntityToModel(user);
@@ -164,9 +171,9 @@ namespace Coco.Business.Implementation
 
         public async Task<UserModel> FindByIdAsync(long id)
         {
-            var existUser = await _userInfoRepository
+            var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
-                .Include(x => x.User)
+                .Include(x => x.UserInfo)
                 .FirstOrDefaultAsync();
 
             if (existUser != null)
@@ -181,11 +188,11 @@ namespace Coco.Business.Implementation
 
         public async Task<UserFullModel> GetFullByIdAsync(long id)
         {
-            var existUser = await _userInfoRepository.Get(x => x.Id.Equals(id))
-                .Include(x => x.Country)
-                .Include(x => x.Gender)
+            var existUser = await _userRepository.Get(x => x.Id.Equals(id))
                 .Include(x => x.Status)
-                .Include(x => x.User)
+                .Include(x => x.UserInfo)
+                .Include(x => x.UserInfo.Country)
+                .Include(x => x.UserInfo.Gender)
                 .FirstOrDefaultAsync();
 
             if (existUser != null)
@@ -212,7 +219,7 @@ namespace Coco.Business.Implementation
             var userInfo = _userInfoRepository.Find(model.Key);
             
             Type type = userInfo.GetType();
-            PropertyInfo propertyInfo = type.GetProperty(model.PropertyName);
+            PropertyInfo propertyInfo = type.GetProperty(model.PropertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             propertyInfo.SetValue(userInfo, Convert.ChangeType(model.Value, propertyInfo.PropertyType), null);
 
             _userInfoRepository.Update(userInfo);
