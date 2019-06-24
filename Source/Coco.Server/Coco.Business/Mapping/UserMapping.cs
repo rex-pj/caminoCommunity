@@ -1,8 +1,6 @@
 ﻿using Coco.Entities.Domain.Account;
 using Coco.Entities.Model.Account;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Coco.Business.Mapping
 {
@@ -13,35 +11,35 @@ namespace Coco.Business.Mapping
             UserInfo user = new UserInfo
             {
                 GenderId = userModel.GenderId,
-                UpdatedDate = DateTime.Now,
-                CreatedDate = DateTime.Now,
-                UpdatedById = userModel.UpdatedById,
-                CreatedById = userModel.CreatedById,
                 Address = userModel.Address,
                 BirthDate = userModel.BirthDate,
                 CountryId = userModel.CountryId,
                 Description = userModel.Description,
-                IsActived = false,
                 PhoneNumber = userModel.PhoneNumber,
-                StatusId = 1,
+                DisplayName = userModel.DisplayName,
+                Firstname = userModel.Firstname,
+                Lastname = userModel.Lastname,
                 User = new User()
                 {
-                    DisplayName = userModel.DisplayName,
+                    UpdatedDate = DateTime.Now,
+                    CreatedDate = DateTime.Now,
+                    UpdatedById = userModel.UpdatedById,
+                    CreatedById = userModel.CreatedById,
                     Email = userModel.Email,
-                    Firstname = userModel.Firstname,
-                    Lastname = userModel.Lastname,
                     Password = userModel.Password,
                     PasswordSalt = userModel.PasswordSalt,
                     AuthenticatorToken = userModel.AuthenticatorToken,
                     SecurityStamp = userModel.SecurityStamp,
-                    Expiration = userModel.Expiration
+                    Expiration = userModel.Expiration,
+                    IsActived = userModel.IsActived,
+                    StatusId = userModel.StatusId,
                 }
             };
 
             return user;
         }
 
-        public static UserModel UserEntityToModel(UserInfo user)
+        public static UserModel UserEntityToModel(User user)
         {
             if (user == null)
             {
@@ -50,38 +48,39 @@ namespace Coco.Business.Mapping
 
             UserModel userModel = new UserModel
             {
-                GenderId = user.GenderId,
                 UpdatedDate = user.UpdatedDate,
                 CreatedDate = user.CreatedDate,
                 UpdatedById = user.UpdatedById,
                 CreatedById = user.CreatedById,
-                Address = user.Address,
-                BirthDate = user.BirthDate,
-                CountryId = user.CountryId,
-                Description = user.Description,
                 IsActived = user.IsActived,
-                PhoneNumber = user.PhoneNumber,
                 StatusId = user.StatusId,
+                Email = user.Email,
+                Password = user.Password,
+                PasswordSalt = user.PasswordSalt,
+                Expiration = user.Expiration,
+                AuthenticatorToken = user.AuthenticatorToken,
+                SecurityStamp = user.SecurityStamp,
                 Id = user.Id
             };
 
-            if (user.User != null)
+            if (user.UserInfo != null)
             {
-                userModel.DisplayName = user.User.DisplayName;
-                userModel.Email = user.User.Email;
-                userModel.Firstname = user.User.Firstname;
-                userModel.Lastname = user.User.Lastname;
-                userModel.Password = user.User.Password;
-                userModel.PasswordSalt = user.User.PasswordSalt;
-                userModel.Expiration = user.User.Expiration;
-                userModel.AuthenticatorToken = user.User.AuthenticatorToken;
-                userModel.SecurityStamp = user.User.SecurityStamp;
+                userModel.GenderId = user.UserInfo.GenderId;
+                userModel.Address = user.UserInfo.Address;
+                userModel.BirthDate = user.UserInfo.BirthDate;
+                userModel.CountryId = user.UserInfo.CountryId;
+                userModel.Description = user.UserInfo.Description;
+                userModel.PhoneNumber = user.UserInfo.PhoneNumber;
+                userModel.Id = user.Id;
+                userModel.DisplayName = user.UserInfo.DisplayName;
+                userModel.Firstname = user.UserInfo.Firstname;
+                userModel.Lastname = user.UserInfo.Lastname;
             }
 
             return userModel;
         }
 
-        public static UserFullModel FullUserEntityToModel(UserInfo user)
+        public static UserFullModel FullUserEntityToModel(User user)
         {
             if (user == null)
             {
@@ -90,48 +89,48 @@ namespace Coco.Business.Mapping
 
             UserFullModel userModel = new UserFullModel
             {
-                GenderId = user.GenderId,
+                StatusId = user.StatusId,
                 UpdatedDate = user.UpdatedDate,
                 CreatedDate = user.CreatedDate,
                 UpdatedById = user.UpdatedById,
                 CreatedById = user.CreatedById,
-                Address = user.Address,
-                BirthDate = user.BirthDate,
-                CountryId = user.CountryId,
-                Description = user.Description,
                 IsActived = user.IsActived,
-                PhoneNumber = user.PhoneNumber,
-                StatusId = user.StatusId,
+                Email = user.Email,
+                Password = user.Password,
+                PasswordSalt = user.PasswordSalt,
+                Expiration = user.Expiration,
+                AuthenticatorToken = user.AuthenticatorToken,
+                SecurityStamp = user.SecurityStamp,
                 Id = user.Id
             };
 
-            if(user.Country != null)
-            {
-                userModel.CountryName = user.Country.Name;
-                userModel.CountryCode = user.Country.Code;
-            }
-
-            if(user.Gender != null)
-            {
-                userModel.GenderLabel = user.Gender.Name;
-            }
-
-            if(user.Status != null)
+            if (user.Status != null)
             {
                 userModel.StatusLabel = user.Status.Name;
             }
 
-            if (user.User != null)
+            if (user.UserInfo != null)
             {
-                userModel.DisplayName = user.User.DisplayName;
-                userModel.Email = user.User.Email;
-                userModel.Firstname = user.User.Firstname;
-                userModel.Lastname = user.User.Lastname;
-                userModel.Password = user.User.Password;
-                userModel.PasswordSalt = user.User.PasswordSalt;
-                userModel.Expiration = user.User.Expiration;
-                userModel.AuthenticatorToken = user.User.AuthenticatorToken;
-                userModel.SecurityStamp = user.User.SecurityStamp;
+                userModel.GenderId = user.UserInfo.GenderId;
+                userModel.Address = user.UserInfo.Address;
+                userModel.BirthDate = user.UserInfo.BirthDate;
+                userModel.CountryId = user.UserInfo.CountryId;
+                userModel.Description = user.UserInfo.Description;
+                userModel.PhoneNumber = user.UserInfo.PhoneNumber;
+                userModel.DisplayName = user.UserInfo.DisplayName;
+                userModel.Firstname = user.UserInfo.Firstname;
+                userModel.Lastname = user.UserInfo.Lastname;
+            }
+
+            if (user.UserInfo.Country != null)
+            {
+                userModel.CountryName = user.UserInfo.Country.Name;
+                userModel.CountryCode = user.UserInfo.Country.Code;
+            }
+
+            if (user.UserInfo.Gender != null)
+            {
+                userModel.GenderLabel = user.UserInfo.Gender.Name;
             }
 
             return userModel;

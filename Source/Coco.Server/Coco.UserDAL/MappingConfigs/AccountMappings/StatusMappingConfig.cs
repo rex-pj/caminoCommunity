@@ -13,7 +13,7 @@ namespace Coco.UserDAL.MappingConfigs.AccountMappings
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasMany(x => x.UserInfos)
+            builder.HasMany(x => x.Users)
                 .WithOne(x => x.Status)
                 .HasForeignKey(x => x.StatusId);
         }

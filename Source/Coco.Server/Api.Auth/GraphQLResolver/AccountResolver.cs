@@ -90,7 +90,7 @@ namespace Api.Auth.GraphQLResolver
                     userIdHased = userHeaderParams.UserIdHashed;
                 }
 
-                var result = await _accountManager.GetFullByTokenAsync(userIdHased);
+                var result = await _accountManager.GetFullByHashIdAsync(userIdHased);
 
                 return UserInfoMapping.ApplicationUserToFullUserInfo(result, userIdHased);
             }
@@ -198,9 +198,9 @@ namespace Api.Auth.GraphQLResolver
             try
             {
                 var model = context.GetArgument<UpdatePerItemModel>("criterias");
+                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
-                var result = await _accountManager.UpdateInfoItemAsync(model);
-
+                var result = await _accountManager.UpdateInfoItemAsync(model, userHeaderParams.AuthenticationToken);
                 if (result.Errors != null && result.Errors.Any())
                 {
                     foreach (var error in result.Errors)
