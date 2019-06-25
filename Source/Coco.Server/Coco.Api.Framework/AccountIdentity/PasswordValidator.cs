@@ -32,7 +32,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="user">The user whose password should be validated.</param>
         /// <param name="password">The password supplied for validation</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public virtual Task<IdentityResult> ValidateAsync(IAccountManager<ApplicationUser> manager, ApplicationUser user, string password)
+        public virtual Task<ApiResult> ValidateAsync(IAccountManager<ApplicationUser> manager, ApplicationUser user, string password)
         {
             if (password == null)
             {
@@ -42,7 +42,7 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 throw new ArgumentNullException(nameof(manager));
             }
-            var errors = new List<IdentityError>();
+            var errors = new List<ApiError>();
             var options = manager.Options.Password;
             if (string.IsNullOrWhiteSpace(password) || password.Length < options.RequiredLength)
             {
@@ -74,8 +74,8 @@ namespace Coco.Api.Framework.AccountIdentity
             }
             return
                 Task.FromResult(errors.Count == 0
-                    ? new IdentityResult(true)
-                    : IdentityResult.Failed(errors.ToArray()));
+                    ? new ApiResult(true)
+                    : ApiResult.Failed(errors.ToArray()));
         }
 
         /// <summary>

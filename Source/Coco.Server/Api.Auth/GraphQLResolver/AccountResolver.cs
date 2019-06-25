@@ -1,6 +1,5 @@
 ﻿using Api.Auth.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Mapping;
@@ -10,6 +9,7 @@ using Coco.Entities.Enums;
 using GraphQL;
 using GraphQL.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +27,7 @@ namespace Api.Auth.GraphQLResolver
             _accountManager = accountManager;
         }
 
-        public async Task<LoginResult> SigninAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -35,19 +35,7 @@ namespace Api.Auth.GraphQLResolver
 
                 var result = await _loginManager.LoginAsync(model.Username, model.Password);
 
-                if (result.Errors != null && result.Errors.Any())
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
-                        {
-                            context.Errors.Add(new ExecutionError(error.Description)
-                            {
-                                Code = error.Code
-                            });
-                        }
-                    }
-                }
+                HandleContextError(context, result.Errors);
 
                 return result;
             }
@@ -100,7 +88,7 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<IdentityResult> SignupAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> SignupAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -125,19 +113,7 @@ namespace Api.Auth.GraphQLResolver
 
                 var result = await _accountManager.CreateAsync(parameters);
 
-                if (result.Errors != null && result.Errors.Any())
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
-                        {
-                            context.Errors.Add(new ExecutionError(error.Description)
-                            {
-                                Code = error.Code
-                            });
-                        }
-                    }
-                }
+                HandleContextError(context, result.Errors);
 
                 return result;
             }
@@ -147,7 +123,7 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<IdentityResult> UpdateUserInfoAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateUserInfoAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -170,20 +146,7 @@ namespace Api.Auth.GraphQLResolver
                 };
 
                 var result = await _accountManager.UpdateInfoAsync(parameters);
-
-                if (result.Errors != null && result.Errors.Any())
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
-                        {
-                            context.Errors.Add(new ExecutionError(error.Description)
-                            {
-                                Code = error.Code
-                            });
-                        }
-                    }
-                }
+                HandleContextError(context, result.Errors);
 
                 return result;
             }
@@ -193,7 +156,7 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<UpdatePerItemResultModel> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
         {
             try
             {
@@ -201,25 +164,30 @@ namespace Api.Auth.GraphQLResolver
                 var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
                 var result = await _accountManager.UpdateInfoItemAsync(model, userHeaderParams.AuthenticationToken);
-                if (result.Errors != null && result.Errors.Any())
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
-                        {
-                            context.Errors.Add(new ExecutionError(error.Description)
-                            {
-                                Code = error.Code
-                            });
-                        }
-                    }
-                }
+                HandleContextError(context, result.Errors);
 
                 return result;
             }
             catch (Exception ex)
             {
                 throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        private void HandleContextError(ResolveFieldContext<object> context, IEnumerable<ApiError> errors)
+        {
+            if (errors != null && errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
+                    {
+                        context.Errors.Add(new ExecutionError(error.Description)
+                        {
+                            Code = error.Code
+                        });
+                    }
+                }
             }
         }
     }

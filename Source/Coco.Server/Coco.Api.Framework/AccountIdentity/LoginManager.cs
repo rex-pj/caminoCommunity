@@ -32,12 +32,12 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="lockoutOnFailure">Flag indicating if the user account should be locked if the sign in fails.</param>
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<LoginResult> LoginAsync(string userName, string password)
+        public virtual async Task<ApiResult> LoginAsync(string userName, string password)
         {
             var user = await _accountManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return new LoginResult();
+                return new ApiResult();
             }
 
             return await LoginAsync(user, password);
@@ -54,7 +54,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="lockoutOnFailure">Flag indicating if the user account should be locked if the sign in fails.</param>
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<LoginResult> LoginAsync(ApplicationUser user, string password)
+        public virtual async Task<ApiResult> LoginAsync(ApplicationUser user, string password)
         {
             if (user == null)
             {
@@ -75,7 +75,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
         /// <returns></returns>
-        public virtual async Task<LoginResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
+        public virtual async Task<ApiResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
         {
             if (user == null)
             {

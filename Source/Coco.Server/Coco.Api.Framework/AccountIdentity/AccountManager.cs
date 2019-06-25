@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Coco.Api.Framework.AccountIdentity.Commons.Enums;
+using Coco.Api.Framework.Commons.Enums;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
@@ -96,7 +96,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<IdentityResult> CreateAsync(ApplicationUser user)
+        public virtual async Task<ApiResult> CreateAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
 
@@ -132,7 +132,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="newPassword">The new password.</param>
         /// <param name="validatePassword">Whether to validate the password.</param>
         /// <returns>Whether the password has was successfully updated.</returns>
-        protected virtual async Task<IdentityResult> UpdatePasswordHash(ApplicationUser user, string newPassword, bool validatePassword = true)
+        protected virtual async Task<ApiResult> UpdatePasswordHash(ApplicationUser user, string newPassword, bool validatePassword = true)
         {
             if (validatePassword)
             {
@@ -152,19 +152,19 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             await UserPasswordStore.SetPasswordHashAsync(user, passwordHashed, CancellationToken);
-            return new IdentityResult(true);
+            return new ApiResult(true);
         }
 
         /// <summary>
-        /// Should return <see cref="IdentityResult.Success"/> if validation is successful. This is
+        /// Should return <see cref="ApiResult.Success"/> if validation is successful. This is
         /// called before updating the password hash.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="password">The password.</param>
-        /// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
-        protected async Task<IdentityResult> ValidatePasswordAsync(ApplicationUser user, string password)
+        /// <returns>A <see cref="ApiResult"/> representing whether validation was successful.</returns>
+        protected async Task<ApiResult> ValidatePasswordAsync(ApplicationUser user, string password)
         {
-            var errors = new List<IdentityError>();
+            var errors = new List<ApiError>();
             var isValid = true;
             foreach (var v in PasswordValidators)
             {
@@ -181,9 +181,9 @@ namespace Coco.Api.Framework.AccountIdentity
             }
             if (!isValid)
             {
-                return IdentityResult.Failed(errors.ToArray());
+                return ApiResult.Failed(errors.ToArray());
             }
-            return new IdentityResult(true);
+            return new ApiResult(true);
         }
 
         /// <summary>
@@ -338,9 +338,9 @@ namespace Coco.Api.Framework.AccountIdentity
         ///// </summary>
         ///// <param name="user">The user</param>
         ///// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
-        protected virtual async Task<IdentityResult> ValidateUserAsync(ApplicationUser user)
+        protected virtual async Task<ApiResult> ValidateUserAsync(ApplicationUser user)
         {
-            var errors = new List<IdentityError>();
+            var errors = new List<ApiError>();
             foreach (var v in UserValidators)
             {
                 var result = await v.ValidateAsync(this, user);
@@ -351,9 +351,9 @@ namespace Coco.Api.Framework.AccountIdentity
             }
             if (errors.Count > 0)
             {
-                return IdentityResult.Failed(errors.ToArray());
+                return ApiResult.Failed(errors.ToArray());
             }
-            return new IdentityResult(true);
+            return new ApiResult(true);
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
         /// the specified <paramref name="password" /> matches the one store for the <paramref name="user"/>,
         /// otherwise false.</returns>
-        public virtual async Task<LoginResult> CheckPasswordAsync(ApplicationUser user, string password)
+        public virtual async Task<ApiResult> CheckPasswordAsync(ApplicationUser user, string password)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -401,7 +401,7 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var success = verifyResult != PasswordVerificationResult.Failed;
-            return new LoginResult(success);
+            return new ApiResult(success);
         }
 
         /// <summary>
@@ -409,12 +409,12 @@ namespace Coco.Api.Framework.AccountIdentity
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<LoginResult> UpdateUserAsync(ApplicationUser user)
+        protected virtual async Task<ApiResult> UpdateUserAsync(ApplicationUser user)
         {
             var result = await ValidateUserAsync(user);
             if (!result.IsSuccess)
             {
-                return LoginResult.Failed(result.Errors.ToArray());
+                return ApiResult.Failed(result.Errors.ToArray());
             }
 
             return await UserStore.UpdateAsync(user, CancellationToken);
@@ -470,7 +470,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<IdentityResult> UpdateInfoAsync(ApplicationUser user)
+        public virtual async Task<ApiResult> UpdateInfoAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
 
@@ -491,7 +491,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel model, string token)
+        public virtual async Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token)
         {
             ThrowIfDisposed();
 

@@ -1,5 +1,6 @@
-﻿using Coco.Api.Framework.AccountIdentity.Commons.Constants;
-using Coco.Api.Framework.AccountIdentity.Commons.Helpers;
+﻿using Coco.Api.Framework.Commons.Constants;
+using Coco.Api.Framework.Commons.Helpers;
+using Coco.Api.Framework.Models;
 
 namespace Coco.Api.Framework.AccountIdentity.Entities
 {
@@ -12,12 +13,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
     public class IdentityErrorDescriber
     {
         /// <summary>
-        /// Returns the default <see cref="IdentityError"/>.
+        /// Returns the default <see cref="ApiError"/>.
         /// </summary>
-        /// <returns>The default <see cref="IdentityError"/>.</returns>
-        public virtual IdentityError DefaultError()
+        /// <returns>The default <see cref="ApiError"/>.</returns>
+        public virtual ApiError DefaultError()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(DefaultError),
                 Description = ExceptionConstant.DefaultError
@@ -25,12 +26,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a concurrency failure.
+        /// Returns an <see cref="ApiError"/> indicating a concurrency failure.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a concurrency failure.</returns>
-        public virtual IdentityError ConcurrencyFailure()
+        /// <returns>An <see cref="ApiError"/> indicating a concurrency failure.</returns>
+        public virtual ApiError ConcurrencyFailure()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(ConcurrencyFailure),
                 Description = ExceptionConstant.ConcurrencyFailure
@@ -38,12 +39,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password mismatch.
+        /// Returns an <see cref="ApiError"/> indicating a password mismatch.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a password mismatch.</returns>
-        public virtual IdentityError PasswordMismatch()
+        /// <returns>An <see cref="ApiError"/> indicating a password mismatch.</returns>
+        public virtual ApiError PasswordMismatch()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordMismatch),
                 Description = ExceptionConstant.PasswordMismatch
@@ -51,12 +52,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating an invalid token.
+        /// Returns an <see cref="ApiError"/> indicating an invalid token.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating an invalid token.</returns>
-        public virtual IdentityError InvalidToken()
+        /// <returns>An <see cref="ApiError"/> indicating an invalid token.</returns>
+        public virtual ApiError InvalidToken()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(InvalidToken),
                 Description = ExceptionConstant.InvalidToken
@@ -64,12 +65,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a recovery code was not redeemed.
+        /// Returns an <see cref="ApiError"/> indicating a recovery code was not redeemed.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a recovery code was not redeemed.</returns>
-        public virtual IdentityError RecoveryCodeRedemptionFailed()
+        /// <returns>An <see cref="ApiError"/> indicating a recovery code was not redeemed.</returns>
+        public virtual ApiError RecoveryCodeRedemptionFailed()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(RecoveryCodeRedemptionFailed),
                 Description = ExceptionConstant.RecoveryCodeRedemptionFailed
@@ -77,12 +78,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating an external login is already associated with an account.
+        /// Returns an <see cref="ApiError"/> indicating an external login is already associated with an account.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating an external login is already associated with an account.</returns>
-        public virtual IdentityError LoginAlreadyAssociated()
+        /// <returns>An <see cref="ApiError"/> indicating an external login is already associated with an account.</returns>
+        public virtual ApiError LoginAlreadyAssociated()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(LoginAlreadyAssociated),
                 Description = ExceptionConstant.LoginAlreadyAssociated
@@ -90,96 +91,96 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified user <paramref name="userName"/> is invalid.
+        /// Returns an <see cref="ApiError"/> indicating the specified user <paramref name="userName"/> is invalid.
         /// </summary>
         /// <param name="userName">The user name that is invalid.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specified user <paramref name="userName"/> is invalid.</returns>
-        public virtual IdentityError InvalidUserName(string userName)
+        /// <returns>An <see cref="ApiError"/> indicating the specified user <paramref name="userName"/> is invalid.</returns>
+        public virtual ApiError InvalidUserName(string userName)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(InvalidUserName),
-                Description = Resources.FormatInvalidUserName(userName)
+                Description = MessageResources.FormatInvalidUserName(userName)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified <paramref name="email"/> is invalid.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is invalid.
         /// </summary>
         /// <param name="email">The email that is invalid.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specified <paramref name="email"/> is invalid.</returns>
-        public virtual IdentityError InvalidEmail(string email)
+        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is invalid.</returns>
+        public virtual ApiError InvalidEmail(string email)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(InvalidEmail),
-                Description = Resources.FormatInvalidEmail(email)
+                Description = MessageResources.FormatInvalidEmail(email)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified <paramref name="userName"/> already exists.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="userName"/> already exists.
         /// </summary>
         /// <param name="userName">The user name that already exists.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specified <paramref name="userName"/> already exists.</returns>
-        public virtual IdentityError DuplicateUserName(string userName)
+        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="userName"/> already exists.</returns>
+        public virtual ApiError DuplicateUserName(string userName)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(DuplicateUserName),
-                Description = Resources.FormatDuplicateUserName(userName)
+                Description = MessageResources.FormatDuplicateUserName(userName)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified <paramref name="email"/> is already associated with an account.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an account.
         /// </summary>
         /// <param name="email">The email that is already associated with an account.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specified <paramref name="email"/> is already associated with an account.</returns>
-        public virtual IdentityError DuplicateEmail(string email)
+        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an account.</returns>
+        public virtual ApiError DuplicateEmail(string email)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(DuplicateEmail),
-                Description = Resources.FormatDuplicateEmail(email)
+                Description = MessageResources.FormatDuplicateEmail(email)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified <paramref name="role"/> name is invalid.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="role"/> name is invalid.
         /// </summary>
         /// <param name="role">The invalid role.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specific role <paramref name="role"/> name is invalid.</returns>
-        public virtual IdentityError InvalidRoleName(string role)
+        /// <returns>An <see cref="ApiError"/> indicating the specific role <paramref name="role"/> name is invalid.</returns>
+        public virtual ApiError InvalidRoleName(string role)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(InvalidRoleName),
-                Description = Resources.FormatInvalidRoleName(role)
+                Description = MessageResources.FormatInvalidRoleName(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating the specified <paramref name="role"/> name already exists.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="role"/> name already exists.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating the specific role <paramref name="role"/> name already exists.</returns>
-        public virtual IdentityError DuplicateRoleName(string role)
+        /// <returns>An <see cref="ApiError"/> indicating the specific role <paramref name="role"/> name already exists.</returns>
+        public virtual ApiError DuplicateRoleName(string role)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(DuplicateRoleName),
-                Description = Resources.FormatDuplicateRoleName(role)
+                Description = MessageResources.FormatDuplicateRoleName(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a user already has a password.
+        /// Returns an <see cref="ApiError"/> indicating a user already has a password.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a user already has a password.</returns>
-        public virtual IdentityError UserAlreadyHasPassword()
+        /// <returns>An <see cref="ApiError"/> indicating a user already has a password.</returns>
+        public virtual ApiError UserAlreadyHasPassword()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(UserAlreadyHasPassword),
                 Description = ExceptionConstant.UserAlreadyHasPassword
@@ -187,12 +188,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating user lockout is not enabled.
+        /// Returns an <see cref="ApiError"/> indicating user lockout is not enabled.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating user lockout is not enabled.</returns>
-        public virtual IdentityError UserLockoutNotEnabled()
+        /// <returns>An <see cref="ApiError"/> indicating user lockout is not enabled.</returns>
+        public virtual ApiError UserLockoutNotEnabled()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(UserLockoutNotEnabled),
                 Description = ExceptionConstant.UserLockoutNotEnabled
@@ -200,82 +201,82 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a user is already in the specified <paramref name="role"/>.
+        /// Returns an <see cref="ApiError"/> indicating a user is already in the specified <paramref name="role"/>.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating a user is already in the specified <paramref name="role"/>.</returns>
-        public virtual IdentityError UserAlreadyInRole(string role)
+        /// <returns>An <see cref="ApiError"/> indicating a user is already in the specified <paramref name="role"/>.</returns>
+        public virtual ApiError UserAlreadyInRole(string role)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(UserAlreadyInRole),
-                Description = Resources.FormatUserAlreadyInRole(role)
+                Description = MessageResources.FormatUserAlreadyInRole(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a user is not in the specified <paramref name="role"/>.
+        /// Returns an <see cref="ApiError"/> indicating a user is not in the specified <paramref name="role"/>.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating a user is not in the specified <paramref name="role"/>.</returns>
-        public virtual IdentityError UserNotInRole(string role)
+        /// <returns>An <see cref="ApiError"/> indicating a user is not in the specified <paramref name="role"/>.</returns>
+        public virtual ApiError UserNotInRole(string role)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(UserNotInRole),
-                Description = Resources.FormatUserNotInRole(role)
+                Description = MessageResources.FormatUserNotInRole(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
+        /// Returns an <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
         /// </summary>
         /// <param name="length">The length that is not long enough.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.</returns>
-        public virtual IdentityError PasswordTooShort(int length)
+        /// <returns>An <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.</returns>
+        public virtual ApiError PasswordTooShort(int length)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordTooShort),
-                Description = Resources.FormatPasswordTooShort(length)
+                Description = MessageResources.FormatPasswordTooShort(length)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
+        /// Returns an <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
         /// </summary>
         /// <param name="length">The length that is too long.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating a password of the specified <paramref name="length"/> does not meet the maximum length requirements.</returns>
-        public virtual IdentityError PasswordTooLong(int length)
+        /// <returns>An <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the maximum length requirements.</returns>
+        public virtual ApiError PasswordTooLong(int length)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordTooLong),
-                Description = Resources.FormatPasswordTooLong(length)
+                Description = MessageResources.FormatPasswordTooLong(length)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.
+        /// Returns an <see cref="ApiError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.
         /// </summary>
         /// <param name="uniqueChars">The number of different chars that must be used.</param>
-        /// <returns>An <see cref="IdentityError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.</returns>
-        public virtual IdentityError PasswordRequiresUniqueChars(int uniqueChars)
+        /// <returns>An <see cref="ApiError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.</returns>
+        public virtual ApiError PasswordRequiresUniqueChars(int uniqueChars)
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordRequiresUniqueChars),
-                Description = Resources.FormatPasswordRequiresUniqueChars(uniqueChars)
+                Description = MessageResources.FormatPasswordRequiresUniqueChars(uniqueChars)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password entered does not contain a non-alphanumeric character, which is required by the password policy.
+        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a non-alphanumeric character, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a password entered does not contain a non-alphanumeric character.</returns>
-        public virtual IdentityError PasswordRequiresNonAlphanumeric()
+        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a non-alphanumeric character.</returns>
+        public virtual ApiError PasswordRequiresNonAlphanumeric()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordRequiresNonAlphanumeric),
                 Description = ExceptionConstant.PasswordRequiresNonAlphanumeric
@@ -283,12 +284,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password entered does not contain a numeric character, which is required by the password policy.
+        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a numeric character, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a password entered does not contain a numeric character.</returns>
-        public virtual IdentityError PasswordRequiresDigit()
+        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a numeric character.</returns>
+        public virtual ApiError PasswordRequiresDigit()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordRequiresDigit),
                 Description = ExceptionConstant.PasswordRequiresDigit
@@ -296,12 +297,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password entered does not contain a lower case letter, which is required by the password policy.
+        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a lower case letter, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a password entered does not contain a lower case letter.</returns>
-        public virtual IdentityError PasswordRequiresLower()
+        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a lower case letter.</returns>
+        public virtual ApiError PasswordRequiresLower()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordRequiresLower),
                 Description = ExceptionConstant.PasswordRequiresLower
@@ -309,12 +310,12 @@ namespace Coco.Api.Framework.AccountIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="IdentityError"/> indicating a password entered does not contain an upper case letter, which is required by the password policy.
+        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain an upper case letter, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="IdentityError"/> indicating a password entered does not contain an upper case letter.</returns>
-        public virtual IdentityError PasswordRequiresUpper()
+        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain an upper case letter.</returns>
+        public virtual ApiError PasswordRequiresUpper()
         {
-            return new IdentityError
+            return new ApiError
             {
                 Code = nameof(PasswordRequiresUpper),
                 Description = ExceptionConstant.PasswordRequiresUpper

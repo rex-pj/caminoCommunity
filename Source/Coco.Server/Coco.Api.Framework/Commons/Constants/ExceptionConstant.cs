@@ -1,4 +1,4 @@
-﻿namespace Coco.Api.Framework.AccountIdentity.Commons.Constants
+﻿namespace Coco.Api.Framework.Commons.Constants
 {
     public class ExceptionConstant
     {

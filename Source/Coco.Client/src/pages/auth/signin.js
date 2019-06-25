@@ -47,9 +47,10 @@ class SingnInPage extends Component {
           signinModel: data
         }
       })
-      .then(result => {
-        const { data } = result;
+      .then(response => {
+        const { data } = response;
         const { signin } = data;
+        const { result } = signin;
 
         if (!signin || !signin.isSuccess) {
           this.props.notifyError(data.signin.errors, this.context.lang);
@@ -59,10 +60,7 @@ class SingnInPage extends Component {
           return;
         }
 
-        AuthService.setLogin(
-          data.signin.userInfo,
-          data.signin.authenticatorToken
-        );
+        AuthService.setLogin(result.userInfo, result.authenticatorToken);
 
         this.context.login();
         this.props.history.push("/");

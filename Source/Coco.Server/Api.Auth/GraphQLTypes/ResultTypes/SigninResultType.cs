@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Entities;
+﻿using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
@@ -9,7 +9,6 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
         {
             Field(x => x.AuthenticatorToken, type: typeof(StringGraphType));
             Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
-            Field(x => x.Errors, type: typeof(ListGraphType<IdentityErrorType>));
             Field(x => x.UserInfo, type: typeof(UserInfoResultType));
         }
     }

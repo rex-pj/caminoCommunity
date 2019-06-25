@@ -3,11 +3,11 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.AccountIdentity.Commons.Enums;
+using Coco.Api.Framework.Commons.Enums;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Coco.Api.Framework.AccountIdentity.Entities;
-using Coco.Api.Framework.AccountIdentity.Commons.Constants;
+using Coco.Api.Framework.Commons.Constants;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
