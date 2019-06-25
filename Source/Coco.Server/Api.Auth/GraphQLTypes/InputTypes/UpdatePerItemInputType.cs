@@ -11,6 +11,7 @@ namespace Api.Auth.GraphQLTypes.InputTypes
             Field(x => x.PropertyName, false, typeof(StringGraphType));
             Field(x => x.Value, false, typeof(StringGraphType));
             Field(x => x.Type, false, typeof(IntGraphType));
+            Field(x => x.CanEdit, false, typeof(BooleanGraphType));
         }
     }
 }

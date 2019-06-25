@@ -46,16 +46,18 @@ export const GET_LOGGED_USER = gpl`
 export const GET_USER_INFO = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
-      email,
-      displayName,
-      userHashedId,
-      address,
-      birthDate,
-      countryId,
-      countryName,
-      description,
-      createdDate,
-      phoneNumber
+      result{
+        email,
+        displayName,
+        userHashedId,
+        address,
+        birthDate,
+        countryId,
+        countryName,
+        description,
+        createdDate,
+        phoneNumber
+      }
     }
   }
 `;
@@ -63,19 +65,22 @@ export const GET_USER_INFO = gpl`
 export const GET_FULL_USER_INFO = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
-      birthDate,
-      displayName,
-      email,
-      firstname,
-      lastname,
-      createdDate,
-      description,
-      address,
-      phoneNumber,
-      genderLabel,
-      countryName,
-      statusLabel,
-      userHashedId
+      accessMode,
+      result{
+        birthDate,
+        displayName,
+        email,
+        firstname,
+        lastname,
+        createdDate,
+        description,
+        address,
+        phoneNumber,
+        genderLabel,
+        countryName,
+        statusLabel,
+        userHashedId
+      }
     }
   }
 `;
@@ -83,20 +88,22 @@ export const GET_FULL_USER_INFO = gpl`
 export const GET_USER_INFO_TO_UPDATE = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
-      birthDate,
-      displayName,
-      email,
-      firstname,
-      lastname,
-      genderId,
-      createdDate,
-      description,
-      address,
-      countryId,
-      phoneNumber,
-      statusId,
-      genderLabel,
-      countryName
+      result{
+        birthDate,
+        displayName,
+        email,
+        firstname,
+        lastname,
+        genderId,
+        createdDate,
+        description,
+        address,
+        countryId,
+        phoneNumber,
+        statusId,
+        genderLabel,
+        countryName
+      }
     }
   }
 `;

@@ -40,12 +40,11 @@ export default withRouter(
 
     parseUserInfo(response) {
       const { fullUserInfo } = response;
+      const { result } = fullUserInfo;
       return {
-        ...fullUserInfo,
+        ...result,
         avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-        url: fullUserInfo.userHashedId
-          ? `/profile/${fullUserInfo.userHashedId}`
-          : "",
+        url: result.userHashedId ? `/profile/${result.userHashedId}` : "",
         coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
       };
     }

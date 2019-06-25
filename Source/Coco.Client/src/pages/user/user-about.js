@@ -26,7 +26,12 @@ export default withRouter(
             if (error) {
               return <ErrorBlock>Error</ErrorBlock>;
             }
-            return <About userInfo={data.fullUserInfo} />;
+
+            const { fullUserInfo } = data;
+            const { result, accessMode } = fullUserInfo;
+            const canEdit = accessMode === "CAN_EDIT";
+
+            return <About userInfo={result} canEdit={canEdit} />;
           }}
         </Query>
       );

@@ -65,22 +65,31 @@ namespace Api.Auth.GraphQLResolver
             }
         }
 
-        public async Task<UserInfo> GetFullUserInfoAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> GetFullUserInfoAsync(ResolveFieldContext<object> context)
         {
             try
             {
                 var model = context.GetArgument<FindUserModel>("criterias");
 
-                string userIdHased = model.UserId;
+                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
+                var userIdHased = model.UserId;
+
                 if (string.IsNullOrEmpty(model.UserId))
                 {
-                    var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
                     userIdHased = userHeaderParams.UserIdHashed;
                 }
 
-                var result = await _accountManager.GetFullByHashIdAsync(userIdHased);
+                var user = await _accountManager.GetFullByHashIdAsync(userIdHased);
 
-                return UserInfoMapping.ApplicationUserToFullUserInfo(result, userIdHased);
+                var result = UserInfoMapping.ApplicationUserToFullUserInfo(user);
+                result.UserHashedId = userIdHased;
+
+                if (!user.AuthenticatorToken.Equals(userHeaderParams.AuthenticationToken))
+                {
+                    return ApiResult<UserInfo>.Success(result);
+                }
+
+                return ApiResult<UserInfo>.Success(result, true);
             }
             catch (Exception ex)
             {
@@ -112,7 +121,6 @@ namespace Api.Auth.GraphQLResolver
                 };
 
                 var result = await _accountManager.CreateAsync(parameters);
-
                 HandleContextError(context, result.Errors);
 
                 return result;
@@ -162,6 +170,11 @@ namespace Api.Auth.GraphQLResolver
             {
                 var model = context.GetArgument<UpdatePerItemModel>("criterias");
                 var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
+
+                if (!model.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
                 var result = await _accountManager.UpdateInfoItemAsync(model, userHeaderParams.AuthenticationToken);
                 HandleContextError(context, result.Errors);
