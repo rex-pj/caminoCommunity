@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Commons.Enums;
+﻿using Coco.Api.Framework.Commons.Enums;
 using Coco.Api.Framework.Models;
 
 namespace Coco.Api.Framework.AccountIdentity.Contracts

@@ -38,7 +38,7 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         #region IUserStore<LoggedUser> Members
-        public Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public Task<ApiResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             try
             {
@@ -56,11 +56,11 @@ namespace Coco.Api.Framework.AccountIdentity
 
                 _accountBusiness.Add(userModel);
 
-                return Task.FromResult(new IdentityResult(true));
+                return Task.FromResult(new ApiResult(true));
             }
             catch (Exception ex)
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
+                return Task.FromResult(ApiResult.Failed(new ApiError { Code = ex.Message, Description = ex.Message }));
             }
         }
         #endregion
@@ -89,7 +89,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="user">The user to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<LoginResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -105,20 +105,23 @@ namespace Coco.Api.Framework.AccountIdentity
                 var result = await _accountBusiness.UpdateAsync(userModel);
                 string userHashedId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
-                return new LoginResult(true)
+                return new ApiResult<LoginResult>(true)
                 {
-                    AuthenticatorToken = result.AuthenticatorToken,
-                    Expiration = result.Expiration,
-                    UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userHashedId)
+                    Result = new LoginResult()
+                    {
+                        AuthenticatorToken = result.AuthenticatorToken,
+                        Expiration = result.Expiration,
+                        UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userHashedId)
+                    }
                 };
             }
             catch (DbUpdateConcurrencyException)
             {
-                return LoginResult.Failed(Describer.ConcurrencyFailure());
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
             }
         }
 
-        public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public Task<ApiResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             try
             {
@@ -134,11 +137,11 @@ namespace Coco.Api.Framework.AccountIdentity
 
                 _accountBusiness.Delete(user.Id);
 
-                return Task.FromResult(new IdentityResult(true));
+                return Task.FromResult(new ApiResult(true));
             }
             catch (Exception ex)
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError { Code = ex.Message, Description = ex.Message }));
+                return Task.FromResult(ApiResult.Failed(new ApiError { Code = ex.Message, Description = ex.Message }));
             }
         }
 
@@ -263,7 +266,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="user">The user info to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<IdentityResult> UpdateInfoAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateInfoAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -278,11 +281,11 @@ namespace Coco.Api.Framework.AccountIdentity
 
                 var result = await _accountBusiness.UpdateInfoAsync(userModel);
 
-                return new IdentityResult(true);
+                return new ApiResult(true);
             }
             catch (DbUpdateConcurrencyException)
             {
-                return IdentityResult.Failed(Describer.ConcurrencyFailure());
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
             }
         }
 
@@ -292,7 +295,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="model">The user info to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<UpdatePerItemResultModel> UpdateInfoItemAsync(UpdatePerItemModel model, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -326,11 +329,11 @@ namespace Coco.Api.Framework.AccountIdentity
 
                 model.Value = result.Value;
 
-                return UpdatePerItemResultModel.Success(model);
+                return ApiResult<UpdatePerItemModel>.Success(model);
             }
             catch (DbUpdateConcurrencyException)
             {
-                return UpdatePerItemResultModel.Failed(Describer.ConcurrencyFailure());
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
             }
         }
 

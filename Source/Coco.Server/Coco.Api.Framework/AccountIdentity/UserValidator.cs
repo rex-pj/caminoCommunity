@@ -32,7 +32,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="manager">The <see cref="UserManager{TUser}"/> that can be used to retrieve user properties.</param>
         /// <param name="user">The user to validate.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the validation operation.</returns>
-        public virtual async Task<IdentityResult> ValidateAsync(IAccountManager<ApplicationUser> manager, ApplicationUser user)
+        public virtual async Task<ApiResult> ValidateAsync(IAccountManager<ApplicationUser> manager, ApplicationUser user)
         {
             if (manager == null)
             {
@@ -42,16 +42,16 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            var errors = new List<IdentityError>();
+            var errors = new List<ApiError>();
             await ValidateUserName(manager, user, errors);
             if (manager.Options.User.RequireUniqueEmail)
             {
                 await ValidateEmail(manager, user, errors);
             }
-            return errors.Count > 0 ? IdentityResult.Failed(errors.ToArray()) : new IdentityResult(true);
+            return errors.Count > 0 ? ApiResult.Failed(errors.ToArray()) : new ApiResult(true);
         }
 
-        private async Task ValidateUserName(IAccountManager<ApplicationUser> manager, ApplicationUser user, ICollection<IdentityError> errors)
+        private async Task ValidateUserName(IAccountManager<ApplicationUser> manager, ApplicationUser user, ICollection<ApiError> errors)
         {
             var userName = await manager.GetUserNameAsync(user);
             if (string.IsNullOrWhiteSpace(userName))
@@ -75,7 +75,7 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         // make sure email is not empty, valid, and unique
-        private async Task ValidateEmail(IAccountManager<ApplicationUser> manager, ApplicationUser user, List<IdentityError> errors)
+        private async Task ValidateEmail(IAccountManager<ApplicationUser> manager, ApplicationUser user, List<ApiError> errors)
         {
             var email = await manager.GetEmailAsync(user);
             if (string.IsNullOrWhiteSpace(email))

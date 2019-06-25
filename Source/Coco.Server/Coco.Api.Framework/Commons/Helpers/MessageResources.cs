@@ -1,6 +1,6 @@
-﻿namespace Coco.Api.Framework.AccountIdentity.Commons.Helpers
+﻿namespace Coco.Api.Framework.Commons.Helpers
 {
-    public class Resources
+    public class MessageResources
     {
         public static string FormatInvalidUserName(string userName)
         {

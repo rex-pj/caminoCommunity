@@ -1,4 +1,4 @@
-﻿namespace Coco.Api.Framework.AccountIdentity.Commons.Enums
+﻿namespace Coco.Api.Framework.Commons.Enums
 {
     /// <summary>
     /// Specifies the results for password verification.
