@@ -65,21 +65,31 @@ export const GET_USER_INFO = gpl`
 export const GET_FULL_USER_INFO = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
-      accessMode,
-      result{
-        birthDate,
-        displayName,
-        email,
-        firstname,
-        lastname,
-        createdDate,
-        description,
-        address,
-        phoneNumber,
-        genderLabel,
-        countryName,
-        statusLabel,
+      accessMode
+      result {
+        birthDate
+        displayName
+        email
+        firstname
+        lastname
+        createdDate
+        description
+        address
+        phoneNumber
+        genderLabel
+        genderId
+        countryName
+        countryId
+        statusLabel
         userHashedId
+        genderSelections {
+          id
+          text
+        }
+        countrySelections {
+          id
+          text
+        }
       }
     }
   }

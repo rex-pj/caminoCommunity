@@ -14,7 +14,7 @@ namespace Coco.Entities.Model.Account
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public byte? GenderId { get; set; }
-        public int? CountryId { get; set; }
+        public short? CountryId { get; set; }
         public bool IsActived { get; set; }
         public byte StatusId { get; set; }
         public string Lastname { get; set; }

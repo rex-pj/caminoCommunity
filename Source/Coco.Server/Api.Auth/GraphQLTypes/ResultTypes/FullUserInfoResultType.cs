@@ -1,9 +1,10 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
 {
-    public class FullUserInfoResultType : ObjectGraphType<UserInfo>
+    public class FullUserInfoResultType : ObjectGraphType<UserInfoExt>
     {
         public FullUserInfoResultType()
         {
@@ -26,6 +27,8 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
             Field(x => x.CountryName, type: typeof(StringGraphType));
             Field(x => x.StatusId, type: typeof(IntGraphType));
             Field(x => x.StatusLabel, type: typeof(StringGraphType));
+            Field(x => x.GenderSelections, type: typeof(ListGraphType<GenderSelectOptionType>));
+            Field(x => x.CountrySelections, type: typeof(ListGraphType<CountrySelectOptionType>));
         }
     }
 }

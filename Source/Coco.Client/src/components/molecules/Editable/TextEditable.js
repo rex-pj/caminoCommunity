@@ -25,7 +25,8 @@ const TextEditing = styled(Textbox)`
 
 export default function(props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState(props.value ? props.value : "");
+
   function openTextBox() {
     setIsOpen(true);
   }
@@ -41,7 +42,7 @@ export default function(props) {
       if (
         !!props.primaryKey &&
         !!props.name &&
-        e.target.value !== currentValue
+        currentValue !== e.target.value
       ) {
         await props
           .onUpdated({
@@ -56,6 +57,7 @@ export default function(props) {
             setValue(result.value);
           })
           .catch(function(errors) {
+            setValue(currentValue);
             console.log(errors);
           });
       }
@@ -64,6 +66,9 @@ export default function(props) {
     } else if (e.keyCode === 13) {
       closeTextBox();
       setValue(value);
+    } else if (e.keyCode === 27) {
+      closeTextBox();
+      setValue(currentValue);
     }
   }
 
@@ -72,7 +77,7 @@ export default function(props) {
     setValue(value);
   }
 
-  function onChanged(e) {
+  function onChange(e) {
     setValue(e.target.value);
   }
 
@@ -81,23 +86,15 @@ export default function(props) {
     emptyText = props.emptyText;
   }
 
-  if (!props.disabled && !!isOpen && !!value) {
+  if (!props.disabled && !!isOpen) {
     return (
       <TextEditing
-        value={value}
+        name={props.name}
+        value={value ? value : ""}
         onBlur={onBlur}
         autoFocus={true}
         onKeyUp={onDataUp}
-        onChange={onChanged}
-      />
-    );
-  } else if (!props.disabled && !!isOpen) {
-    return (
-      <TextEditing
-        onBlur={onBlur}
-        autoFocus={true}
-        onKeyUp={onDataUp}
-        onChange={props.onChanged}
+        onChange={onChange}
       />
     );
   }

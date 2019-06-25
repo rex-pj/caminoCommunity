@@ -4,6 +4,35 @@ namespace Coco.Api.Framework.Models
 {
     public class UserInfo
     {
+        public UserInfo()
+        {
+
+        }
+
+        public UserInfo(UserInfo userInfo)
+        {
+            Address = userInfo.Address;
+            UserHashedId = userInfo.UserHashedId;
+            Email = userInfo.Email;
+            Lastname = userInfo.Lastname;
+            Firstname = userInfo.Firstname;
+            DisplayName = userInfo.DisplayName;
+            Address = userInfo.Address;
+            PhoneNumber = userInfo.PhoneNumber;
+            Description = userInfo.Description;
+            BirthDate = userInfo.BirthDate;
+            CreatedDate = userInfo.CreatedDate;
+            UpdatedDate = userInfo.UpdatedDate;
+            GenderId = userInfo.GenderId;
+            GenderLabel = userInfo.GenderLabel;
+            IsActived = userInfo.IsActived;
+            StatusId = userInfo.StatusId;
+            StatusLabel = userInfo.StatusLabel;
+            CountryId = userInfo.CountryId;
+            CountryCode = userInfo.CountryCode;
+            CountryName = userInfo.CountryName;
+        }
+
         public string UserHashedId { get; set; }
         public string Email { get; set; }
         public string Lastname { get; set; }
@@ -19,9 +48,9 @@ namespace Coco.Api.Framework.Models
         public string GenderLabel { get; set; }
         public bool IsActived { get; set; }
         public int StatusId { get; set; }
-        public int? CountryId { get; set; }
-        public string CountryName { get; set; }
-        public string CountryCode { get; set; }
         public string StatusLabel { get; set; }
+        public short? CountryId { get; set; }
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
     }
 }

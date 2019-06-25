@@ -2,10 +2,11 @@
 {
     public enum UserStatusEnum
     {
-        Pending = 1,
-        Actived = 2,
-        Reported = 3,
-        Inactived = 4,
-        Blocked = 5
+        New = 1,
+        Pending = 2,
+        Actived = 3,
+        Reported = 4,
+        Inactived = 5,
+        Blocked = 6
     }
 }

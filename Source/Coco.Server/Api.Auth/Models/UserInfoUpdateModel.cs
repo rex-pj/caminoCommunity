@@ -16,7 +16,7 @@ namespace Api.Auth.Models
         public int? GenderId { get; set; }
         public string Address { get; set; }
         public string Description { get; set; }
-        public int? CountryId { get; set; }
+        public short? CountryId { get; set; }
         public string PhoneNumber { get; set; }
     }
 }

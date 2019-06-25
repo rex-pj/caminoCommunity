@@ -7,7 +7,7 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { Button } from "../../../components/atoms/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import DaySelector from "../../../components/organisms/DaySelector";
+import DaySelector from "../../../components/molecules/DaySelector";
 import { checkValidity } from "../../../utils/Validity";
 import SignupModel from "../../../models/SignupModel";
 
