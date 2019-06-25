@@ -126,11 +126,10 @@ namespace Coco.Api.Framework.Mapping
             return applicationUser;
         }
 
-        public static UserInfo ApplicationUserToFullUserInfo(ApplicationUser user, string userHashedId)
+        public static UserInfo ApplicationUserToFullUserInfo(ApplicationUser user)
         {
             return new UserInfo()
             {
-                UserHashedId = userHashedId,
                 Email = user.Email,
                 Lastname = user.Lastname,
                 Firstname = user.Firstname,

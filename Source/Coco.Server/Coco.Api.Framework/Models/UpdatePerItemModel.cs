@@ -7,6 +7,7 @@ namespace Coco.Api.Framework.Models
         public object Key { get; set; }
         public string PropertyName { get; set; }
         public object Value { get; set; }
+        public bool CanEdit { get; set; }
         public EditableTypeEnum Type { get; set; }
     }
 }

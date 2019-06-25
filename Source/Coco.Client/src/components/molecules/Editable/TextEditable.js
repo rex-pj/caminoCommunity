@@ -3,8 +3,12 @@ import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
 
 const TextLabel = styled.span`
+  display: inline-block;
+
   &.can-edit {
     border-bottom: 1px dashed ${p => p.theme.color.normal};
+    line-height: ${p => p.theme.size.normal};
+    height: ${p => p.theme.size.normal};
   }
 
   &.empty {
@@ -20,14 +24,14 @@ const TextEditing = styled(Textbox)`
 `;
 
 export default function(props) {
-  const [isOpenTextBox, setTextBoxOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(props.value);
   function openTextBox() {
-    setTextBoxOpen(true);
+    setIsOpen(true);
   }
 
   function closeTextBox() {
-    setTextBoxOpen(false);
+    setIsOpen(false);
   }
 
   async function onDataUp(e) {
@@ -77,7 +81,7 @@ export default function(props) {
     emptyText = props.emptyText;
   }
 
-  if (!props.disabled && !!isOpenTextBox && !!value) {
+  if (!props.disabled && !!isOpen && !!value) {
     return (
       <TextEditing
         value={value}
@@ -87,7 +91,7 @@ export default function(props) {
         onChange={onChanged}
       />
     );
-  } else if (!props.disabled && !!isOpenTextBox) {
+  } else if (!props.disabled && !!isOpen) {
     return (
       <TextEditing
         onBlur={onBlur}
