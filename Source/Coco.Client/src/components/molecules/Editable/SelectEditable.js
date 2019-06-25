@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Textbox } from "../../atoms/Textboxes";
 
 const TextLabel = styled.span`
   display: inline-block;
@@ -18,9 +17,34 @@ const TextLabel = styled.span`
 `;
 
 export default function(props) {
+  const { selections } = props;
+  const [selected, updateSelected] = useState({
+    id: "",
+    value: ""
+  });
+
+  useEffect(function() {
+    if (selections) {
+      const firstSelection = selections[0];
+      updateSelected({
+        id: firstSelection.id,
+        value: firstSelection.value
+      });
+    }
+  });
+
+  let emptyText = "Empty";
+  if (props.emptyText) {
+    emptyText = props.emptyText;
+  }
+
+  if ((!selected || !selected.value) && !props.disabled) {
+    return <TextLabel className="can-edit empty">{emptyText}</TextLabel>;
+  }
+
   return !props.disabled ? (
-    <TextLabel className="can-edit" />
+    <TextLabel className="can-edit">{selected.value}</TextLabel>
   ) : (
-    <TextLabel className="disabled" />
+    <TextLabel className="disabled">{selected.value}</TextLabel>
   );
 }
