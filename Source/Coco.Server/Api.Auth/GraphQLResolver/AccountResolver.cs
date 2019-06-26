@@ -70,21 +70,19 @@ namespace Api.Auth.GraphQLResolver
             try
             {
                 var model = context.GetArgument<FindUserModel>("criterias");
-
-                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
-                var userIdHased = model.UserId;
+                var headerParams = HttpHelper.GetAuthorizationHeaders(context);
+                var userHashId = model.UserId;
 
                 if (string.IsNullOrEmpty(model.UserId))
                 {
-                    userIdHased = userHeaderParams.UserIdHashed;
+                    userHashId = headerParams.UserIdHashed;
                 }
 
-                var user = await _accountManager.GetFullByHashIdAsync(userIdHased);
+                var user = await _accountManager.GetFullByHashIdAsync(userHashId);
 
                 var result = UserInfoMapping.ApplicationUserToFullUserInfo(user);
-                result.UserHashedId = userIdHased;
-
-                if (!user.AuthenticatorToken.Equals(userHeaderParams.AuthenticationToken))
+                result.UserHashedId = userHashId;
+                if (!user.AuthenticatorToken.Equals(headerParams.AuthenticationToken))
                 {
                     return ApiResult<UserInfo>.Success(result);
                 }

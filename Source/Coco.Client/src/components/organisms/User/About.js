@@ -149,6 +149,7 @@ export default function(props) {
                     name="genderId"
                     onUpdated={e => onEditable(e, updateUserInfoItem)}
                     disabled={!canEdit}
+                    selections={[{ id: 1, text: "Nam" }, { id: 2, text: "Nữ" }]}
                   />
                 </UnserInfoWWithLabel>
                 <UnserInfoWWithLabel label="Địa chỉ">

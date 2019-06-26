@@ -77,6 +77,7 @@ export const GET_FULL_USER_INFO = gpl`
         address,
         phoneNumber,
         genderLabel,
+        genderId,
         countryName,
         statusLabel,
         userHashedId
