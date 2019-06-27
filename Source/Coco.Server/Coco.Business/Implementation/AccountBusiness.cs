@@ -220,7 +220,9 @@ namespace Coco.Business.Implementation
             
             Type type = userInfo.GetType();
             PropertyInfo propertyInfo = type.GetProperty(model.PropertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            propertyInfo.SetValue(userInfo, Convert.ChangeType(model.Value, propertyInfo.PropertyType), null);
+
+            Type propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+            propertyInfo.SetValue(userInfo, Convert.ChangeType(model.Value, propertyType), null);
 
             _userInfoRepository.Update(userInfo);
             await _dbContext.SaveChangesAsync();

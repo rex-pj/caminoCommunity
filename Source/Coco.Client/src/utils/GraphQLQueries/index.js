@@ -80,7 +80,11 @@ export const GET_FULL_USER_INFO = gpl`
         genderId,
         countryName,
         statusLabel,
-        userHashedId
+        userHashedId,
+        genderSelections {
+          id,
+          text
+        }
       }
     }
   }

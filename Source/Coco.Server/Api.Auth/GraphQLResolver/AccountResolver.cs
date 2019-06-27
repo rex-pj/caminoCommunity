@@ -84,10 +84,13 @@ namespace Api.Auth.GraphQLResolver
                 result.UserHashedId = userHashId;
                 if (!user.AuthenticatorToken.Equals(headerParams.AuthenticationToken))
                 {
-                    return ApiResult<UserInfo>.Success(result);
+                    return ApiResult<UserInfoExt>.Success(result);
                 }
 
-                return ApiResult<UserInfo>.Success(result, true);
+                var genderOptions = EnumHelper.EnumToSelectList<GenderEnum>();
+
+                result.GenderSelections = genderOptions;
+                return ApiResult<UserInfoExt>.Success(result, true);
             }
             catch (Exception ex)
             {

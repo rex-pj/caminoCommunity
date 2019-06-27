@@ -149,7 +149,7 @@ export default function(props) {
                     name="genderId"
                     onUpdated={e => onEditable(e, updateUserInfoItem)}
                     disabled={!canEdit}
-                    selections={[{ id: 1, text: "Nam" }, { id: 2, text: "Nữ" }]}
+                    selections={userInfo.genderSelections}
                   />
                 </UnserInfoWWithLabel>
                 <UnserInfoWWithLabel label="Địa chỉ">
@@ -157,7 +157,7 @@ export default function(props) {
                     value={userInfo.address}
                     primaryKey={userInfo.userHashedId}
                     name="address"
-                    onUpdated={e => onEditable(e, updateUserInfoItem)}
+                    onChanged={e => onEditable(e, updateUserInfoItem)}
                     disabled={!canEdit}
                   />
                 </UnserInfoWWithLabel>

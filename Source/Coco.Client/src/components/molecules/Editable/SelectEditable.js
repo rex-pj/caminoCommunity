@@ -1,4 +1,4 @@
-import React, { useState, useRef, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import { Selection } from "../../atoms/Selections";
 
@@ -43,113 +43,98 @@ function Options(props) {
 
 export default function(props) {
   const { selections, value, name, disabled } = props;
-  const [isOpen, setIsOpen] = useState(false);
-  const currentRef = useRef();
   let emptyText = "---Select---";
   if (props.emptyText) {
     emptyText = props.emptyText;
   }
 
-  const current = value
-    ? selections.find(item => item.id.toString() === value.toString())
-    : { id: 0, text: emptyText };
+  const current =
+    value && selections
+      ? selections.find(item => item.id.toString() === value.toString())
+      : { id: 0, text: "Not selected" };
 
   const [selectedValue, updateSelectedValue] = useState({
-    id: value ? value : null,
+    id: current ? current.id : null,
     text: current ? current.text : null
   });
 
-  function openSelection() {
-    setIsOpen(true);
-  }
-
-  function closeSelection() {
-    setIsOpen(false);
-  }
-
-  function onBlur() {
-    closeSelection();
-  }
-
   function onChanged(e) {
-    const currentValue = selections.find(function(element) {
-      return element.id.toString() === e.target.value;
-    });
+    const { name, primaryKey } = props;
+    const currentValue = selections
+      ? selections.find(function(element) {
+          return element.id.toString() === e.target.value;
+        })
+      : { id: 0, text: emptyText };
 
     if (currentValue) {
       updateSelectedValue(currentValue);
+      if (props.onUpdated) {
+        props
+          .onUpdated({
+            primaryKey,
+            value: currentValue.id,
+            propertyName: name
+          })
+          .then(function(response) {})
+          .catch(function(errors) {
+            const oldValue = selections
+              ? selections.find(function(element) {
+                  return element.id.toString() === value.toString();
+                })
+              : { id: 0, text: emptyText };
+
+            console.log(errors);
+            updateSelectedValue({
+              id: value,
+              text: oldValue.text
+            });
+          });
+      }
     } else {
       updateSelectedValue({ id: 0, text: emptyText });
     }
-
-    if (props.onChanged) {
-      props.onChanged(e);
-    }
-    closeSelection();
   }
 
-  const canSelect = !props.disabled && !!isOpen;
-  if (canSelect && !!selectedValue) {
+  if (!props.disabled && !!selectedValue) {
     return (
       <SelectBox
-        ref={currentRef}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
         value={selectedValue.id}
-        onBlur={onBlur}
-        autoFocus={true}
         onChange={onChanged}
       >
         <Options selections={selections} emptyText={emptyText} />
       </SelectBox>
     );
-  } else if (canSelect && value) {
+  } else if (!props.disabled && value) {
     return (
       <SelectBox
-        ref={currentRef}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
-        onBlur={onBlur}
-        autoFocus={true}
         onChange={props.onChanged}
         value={value}
       >
         <Options selections={selections} emptyText={emptyText} />
       </SelectBox>
     );
-  } else if (canSelect) {
+  } else if (!props.disabled) {
     return (
       <SelectBox
-        ref={currentRef}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
-        onBlur={onBlur}
-        autoFocus={true}
         onChange={props.onChanged}
       >
         <Options selections={selections} emptyText={emptyText} />
       </SelectBox>
     );
-  }
-
-  if (!selectedValue && !props.disabled) {
+  } else {
     return (
-      <TextLabel className="can-edit empty" onClick={openSelection}>
+      <TextLabel className="disabled">
         {selectedValue ? selectedValue.text : emptyText}
       </TextLabel>
     );
   }
-
-  return !props.disabled ? (
-    <TextLabel className="can-edit" onClick={openSelection}>
-      {selectedValue ? selectedValue.text : emptyText}
-    </TextLabel>
-  ) : (
-    <TextLabel className="disabled">
-      {selectedValue ? selectedValue.text : emptyText}
-    </TextLabel>
-  );
 }

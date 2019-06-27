@@ -1,5 +1,6 @@
 ﻿using Coco.Api.Framework.Models;
 using Coco.Entities.Model.Account;
+using System.Collections.Generic;
 
 namespace Coco.Api.Framework.Mapping
 {
@@ -126,9 +127,9 @@ namespace Coco.Api.Framework.Mapping
             return applicationUser;
         }
 
-        public static UserInfo ApplicationUserToFullUserInfo(ApplicationUser user)
+        public static UserInfoExt ApplicationUserToFullUserInfo(ApplicationUser user)
         {
-            return new UserInfo()
+            var userInfo = new UserInfo()
             {
                 Email = user.Email,
                 Lastname = user.Lastname,
@@ -149,6 +150,9 @@ namespace Coco.Api.Framework.Mapping
                 GenderLabel = user.GenderLabel,
                 StatusLabel = user.StatusLabel
             };
+
+            var result = new UserInfoExt(userInfo);
+            return result;
         }
     }
 }
