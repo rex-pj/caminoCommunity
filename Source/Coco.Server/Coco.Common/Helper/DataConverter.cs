@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Coco.Api.Framework.Commons.Helpers
+namespace Coco.Commons.Helper
 {
     public class DataConverter
     {

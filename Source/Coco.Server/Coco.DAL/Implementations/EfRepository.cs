@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Coco.DAL.Implementations
@@ -232,7 +233,43 @@ namespace Coco.DAL.Implementations
             _dbSet.RemoveRange(entities);
         }
 
-        
+        /// <summary>
+        /// Update entity by Property Name
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual void UpdateByName(TEntity entity, object value, string propertyName, bool isIgnoreCase = false)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            var type = entity.GetType();
+            PropertyInfo propertyInfo;
+            if (isIgnoreCase)
+            {
+                propertyInfo = type.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            }
+            else
+            {
+                propertyInfo = type.GetProperty(propertyName);
+            }
+
+            if (propertyInfo == null)
+            {
+                throw new ArgumentNullException(nameof(propertyInfo));
+            }
+
+            var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+            propertyInfo.SetValue(entity, Convert.ChangeType(value, propertyType), null);
+
+            _dbSet.Update(entity);
+        }
         #endregion
     }
 }

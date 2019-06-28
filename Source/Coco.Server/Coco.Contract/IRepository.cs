@@ -90,6 +90,12 @@ namespace Coco.Contract
         /// </summary>
         /// <param name="entities">Entities</param>
         void Delete(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Update entity by Property Name
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        void UpdateByName(TEntity entity, object value, string propertyName, bool isIgnoreCase = false);
         #endregion
     }
 }

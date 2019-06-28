@@ -26,6 +26,7 @@ const TextEditing = styled(Textbox)`
 export default function(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(props.value);
+
   function openTextBox() {
     setIsOpen(true);
   }
@@ -56,6 +57,7 @@ export default function(props) {
             setValue(result.value);
           })
           .catch(function(errors) {
+            setValue(currentValue);
             console.log(errors);
           });
       }
@@ -72,8 +74,12 @@ export default function(props) {
     setValue(value);
   }
 
-  function onChanged(e) {
-    setValue(e.target.value);
+  function onChange(e) {
+    if (props.onChange) {
+      props.onChange(e);
+    } else {
+      setValue(e.target.value);
+    }
   }
 
   let emptyText = "Empty";
@@ -84,20 +90,22 @@ export default function(props) {
   if (!props.disabled && !!isOpen && !!value) {
     return (
       <TextEditing
+        name={props.name}
         value={value}
         onBlur={onBlur}
         autoFocus={true}
         onKeyUp={onDataUp}
-        onChange={onChanged}
+        onChange={onChange}
       />
     );
   } else if (!props.disabled && !!isOpen) {
     return (
       <TextEditing
+        name={props.name}
         onBlur={onBlur}
         autoFocus={true}
         onKeyUp={onDataUp}
-        onChange={props.onChanged}
+        onChange={onChange}
       />
     );
   }

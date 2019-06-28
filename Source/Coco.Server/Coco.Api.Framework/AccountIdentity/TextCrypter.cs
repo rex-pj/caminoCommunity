@@ -1,5 +1,5 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.Commons.Helpers;
+using Coco.Commons.Helper;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Security.Cryptography;

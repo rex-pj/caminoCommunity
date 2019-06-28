@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, Component } from "react";
 import styled from "styled-components";
 import { Mutation } from "react-apollo";
 import { PanelBody } from "../../../components/atoms/Panels";
@@ -73,10 +73,17 @@ const UnserInfoWWithLabel = props => {
   );
 };
 
-export default function(props) {
-  const { userInfo, canEdit } = props;
+export default class extends Component {
+  constructor(props) {
+    super(props);
+    const { userInfo } = props;
 
-  async function onEditable(e, updateUserInfoItem) {
+    this.state = {
+      ...userInfo
+    };
+  }
+  async onEditable(e, updateUserInfoItem) {
+    const { canEdit } = this.props;
     if (updateUserInfoItem) {
       return await updateUserInfoItem({
         variables: {
@@ -91,96 +98,264 @@ export default function(props) {
     }
   }
 
-  return (
-    <MainPanel>
-      <Root>
-        {userInfo ? (
-          <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
-            {updateUserInfoItem => (
-              <InfoList>
-                <UnserInfoWWithLabel label="Họ &amp; Tên">
-                  <div className="row">
-                    <div className="col-auto">
-                      <TextEditable
-                        value={userInfo.lastname}
-                        primaryKey={userInfo.userHashedId}
-                        name="lastname"
-                        onUpdated={e => onEditable(e, updateUserInfoItem)}
-                        disabled={!canEdit}
-                      />
+  handleInputChange(e) {
+    const targetName = e.target.name;
+
+    this.setState({
+      [targetName]: e.target.value
+    });
+
+    console.log(this.state.displayName);
+  }
+
+  render() {
+    const { userInfo, canEdit } = this.props;
+    return (
+      <MainPanel>
+        <Root>
+          {userInfo ? (
+            <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
+              {updateUserInfoItem => (
+                <InfoList>
+                  <UnserInfoWWithLabel label="Họ &amp; Tên">
+                    <div className="row">
+                      <div className="col-auto">
+                        <TextEditable
+                          value={this.state.lastname}
+                          onChange={e => this.handleInputChange(e)}
+                          primaryKey={this.state.userHashedId}
+                          name="lastname"
+                          onUpdated={e =>
+                            this.onEditable(e, updateUserInfoItem)
+                          }
+                          disabled={!canEdit}
+                        />
+                      </div>
+                      <div className="col-auto">-</div>
+                      <div className="col-auto">
+                        <TextEditable
+                          value={this.state.firstname}
+                          onChange={e => this.handleInputChange(e)}
+                          primaryKey={this.state.userHashedId}
+                          name="firstname"
+                          onUpdated={e =>
+                            this.onEditable(e, updateUserInfoItem)
+                          }
+                          disabled={!canEdit}
+                        />
+                      </div>
                     </div>
-                    <div className="col-auto">-</div>
-                    <div className="col-auto">
-                      <TextEditable
-                        value={userInfo.firstname}
-                        primaryKey={userInfo.userHashedId}
-                        name="firstname"
-                        onUpdated={e => onEditable(e, updateUserInfoItem)}
-                        disabled={!canEdit}
-                      />
-                    </div>
-                  </div>
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Tên hiển thị">
-                  <TextEditable
-                    value={userInfo.displayName}
-                    primaryKey={userInfo.userHashedId}
-                    name="displayName"
-                    onUpdated={e => onEditable(e, updateUserInfoItem)}
-                    disabled={!canEdit}
-                  />
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Về bản thân">
-                  <TextEditable
-                    value={userInfo.description}
-                    primaryKey={userInfo.userHashedId}
-                    name="description"
-                    onUpdated={e => onEditable(e, updateUserInfoItem)}
-                    disabled={!canEdit}
-                  />
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Điện thoại">
-                  {userInfo.mobile}
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Giới tính">
-                  <SelectEditable
-                    value={userInfo.genderId}
-                    primaryKey={userInfo.userHashedId}
-                    name="genderId"
-                    onUpdated={e => onEditable(e, updateUserInfoItem)}
-                    disabled={!canEdit}
-                    selections={userInfo.genderSelections}
-                  />
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Địa chỉ">
-                  <TextEditable
-                    value={userInfo.address}
-                    primaryKey={userInfo.userHashedId}
-                    name="address"
-                    onChanged={e => onEditable(e, updateUserInfoItem)}
-                    disabled={!canEdit}
-                  />
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Quốc gia">
-                  {userInfo.country}
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Sinh nhật">
-                  {format(userInfo.birthDate, "MMMM, DD YYYY")}
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Email" isEmail={true}>
-                  {userInfo.email}
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Ngày tham gia">
-                  {format(userInfo.createdDate, "MMMM, DD YYYY")}
-                </UnserInfoWWithLabel>
-                <UnserInfoWWithLabel label="Trạng thái">
-                  {userInfo.statusLabel}
-                </UnserInfoWWithLabel>
-              </InfoList>
-            )}
-          </Mutation>
-        ) : null}
-      </Root>
-    </MainPanel>
-  );
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Tên hiển thị">
+                    <TextEditable
+                      value={this.state.displayName}
+                      onChange={e => this.handleInputChange(e)}
+                      primaryKey={this.state.userHashedId}
+                      name="displayName"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                    />
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Về bản thân">
+                    <TextEditable
+                      value={this.state.description}
+                      onChange={e => this.handleInputChange(e)}
+                      primaryKey={this.state.userHashedId}
+                      name="description"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                    />
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Điện thoại">
+                    <TextEditable
+                      value={this.state.phoneNumber}
+                      onChange={e => this.handleInputChange(e)}
+                      primaryKey={this.state.userHashedId}
+                      name="phoneNumber"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                    />
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Giới tính">
+                    <SelectEditable
+                      value={this.state.genderId}
+                      onChange={e => this.handleInputChange(e)}
+                      primaryKey={this.state.userHashedId}
+                      name="genderId"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                      selections={this.state.genderSelections}
+                    />
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Địa chỉ">
+                    <TextEditable
+                      value={this.state.address}
+                      onChange={e => this.handleInputChange(e)}
+                      primaryKey={this.state.userHashedId}
+                      name="address"
+                      onChanged={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                    />
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Quốc gia">
+                    {this.state.country}
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Sinh nhật">
+                    {format(this.state.birthDate, "MMMM, DD YYYY")}
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Email" isEmail={true}>
+                    {this.state.email}
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Ngày tham gia">
+                    {format(this.state.createdDate, "MMMM, DD YYYY")}
+                  </UnserInfoWWithLabel>
+                  <UnserInfoWWithLabel label="Trạng thái">
+                    {this.state.statusLabel}
+                  </UnserInfoWWithLabel>
+                </InfoList>
+              )}
+            </Mutation>
+          ) : null}
+        </Root>
+      </MainPanel>
+    );
+  }
 }
+
+// function(props) {
+//   const { userInfo, canEdit } = props;
+//   const [userData, updateUserData] = useState(userInfo);
+
+//   async function onEditable(e, updateUserInfoItem) {
+//     if (updateUserInfoItem) {
+//       return await updateUserInfoItem({
+//         variables: {
+//           criterias: {
+//             key: e.primaryKey,
+//             value: e.value,
+//             propertyName: e.propertyName,
+//             canEdit
+//           }
+//         }
+//       });
+//     }
+//   }
+
+//   function handleInputChange(e) {
+//     let data = {
+//       ...userData
+//     };
+
+//     data[e.target.name] = e.target.value;
+
+//     updateUserData(() => data);
+
+//     console.log(data.displayName);
+//   }
+
+//   return (
+//     <MainPanel>
+//       <Root>
+//         {userInfo ? (
+//           <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
+//             {updateUserInfoItem => (
+//               <InfoList>
+//                 <UnserInfoWWithLabel label="Họ &amp; Tên">
+//                   <div className="row">
+//                     <div className="col-auto">
+//                       <TextEditable
+//                         value={userData.lastname}
+//                         onChange={e => handleInputChange(e)}
+//                         primaryKey={userData.userHashedId}
+//                         name="lastname"
+//                         onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                         disabled={!canEdit}
+//                       />
+//                     </div>
+//                     <div className="col-auto">-</div>
+//                     <div className="col-auto">
+//                       <TextEditable
+//                         value={userData.firstname}
+//                         onChange={e => handleInputChange(e)}
+//                         primaryKey={userData.userHashedId}
+//                         name="firstname"
+//                         onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                         disabled={!canEdit}
+//                       />
+//                     </div>
+//                   </div>
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Tên hiển thị">
+//                   <TextEditable
+//                     value={userData.displayName}
+//                     onChange={e => handleInputChange(e)}
+//                     primaryKey={userData.userHashedId}
+//                     name="displayName"
+//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                     disabled={!canEdit}
+//                   />
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Về bản thân">
+//                   <TextEditable
+//                     value={userData.description}
+//                     onChange={e => handleInputChange(e)}
+//                     primaryKey={userData.userHashedId}
+//                     name="description"
+//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                     disabled={!canEdit}
+//                   />
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Điện thoại">
+//                   <TextEditable
+//                     value={userData.phoneNumber}
+//                     onChange={e => handleInputChange(e)}
+//                     primaryKey={userData.userHashedId}
+//                     name="phoneNumber"
+//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                     disabled={!canEdit}
+//                   />
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Giới tính">
+//                   <SelectEditable
+//                     value={userData.genderId}
+//                     onChange={e => handleInputChange(e)}
+//                     primaryKey={userData.userHashedId}
+//                     name="genderId"
+//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
+//                     disabled={!canEdit}
+//                     selections={userData.genderSelections}
+//                   />
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Địa chỉ">
+//                   <TextEditable
+//                     value={userData.address}
+//                     onChange={e => handleInputChange(e)}
+//                     primaryKey={userData.userHashedId}
+//                     name="address"
+//                     onChanged={e => onEditable(e, updateUserInfoItem)}
+//                     disabled={!canEdit}
+//                   />
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Quốc gia">
+//                   {userData.country}
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Sinh nhật">
+//                   {format(userData.birthDate, "MMMM, DD YYYY")}
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Email" isEmail={true}>
+//                   {userData.email}
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Ngày tham gia">
+//                   {format(userData.createdDate, "MMMM, DD YYYY")}
+//                 </UnserInfoWWithLabel>
+//                 <UnserInfoWWithLabel label="Trạng thái">
+//                   {userData.statusLabel}
+//                 </UnserInfoWWithLabel>
+//               </InfoList>
+//             )}
+//           </Mutation>
+//         ) : null}
+//       </Root>
+//     </MainPanel>
+//   );
+// }

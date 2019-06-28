@@ -1,5 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
+using Coco.Business.Validation;
+using Coco.Business.Validation.Interfaces;
 using Coco.Contract;
 using Coco.Entities.Domain.Account;
 using Coco.Entities.Model.Account;
@@ -95,7 +97,7 @@ namespace Coco.Business.Implementation
             }
 
             var user = _userRepository.Find(model.Id);
-            
+
             user.IsActived = model.IsActived;
             user.StatusId = model.StatusId;
             user.UpdatedById = model.UpdatedById;
@@ -108,7 +110,7 @@ namespace Coco.Business.Implementation
             user.UserInfo.DisplayName = model.DisplayName;
             user.UserInfo.Firstname = model.Firstname;
             user.UserInfo.Lastname = model.Lastname;
-            
+
             if (user.UserInfo == null)
             {
                 throw new ArgumentNullException(nameof(user.UserInfo));
@@ -217,17 +219,55 @@ namespace Coco.Business.Implementation
             }
 
             var userInfo = _userInfoRepository.Find(model.Key);
-            
-            Type type = userInfo.GetType();
-            PropertyInfo propertyInfo = type.GetProperty(model.PropertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            Type propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-            propertyInfo.SetValue(userInfo, Convert.ChangeType(model.Value, propertyType), null);
+            bool canUpdate = ValidateInfoItem(model, userInfo);
 
-            _userInfoRepository.Update(userInfo);
+            if (!canUpdate)
+            {
+                throw new ArgumentException(model.PropertyName);
+            }
+
+            _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _dbContext.SaveChangesAsync();
 
             return model;
+        }
+
+        private bool ValidateInfoItem(UpdatePerItem model, UserInfo userInfo)
+        {
+            bool isValid = true;
+            if (model.PropertyName.Equals(nameof(userInfo.Lastname),
+                StringComparison.InvariantCultureIgnoreCase)
+                || model.PropertyName.Equals(nameof(userInfo.Firstname),
+                StringComparison.InvariantCultureIgnoreCase)
+                || model.PropertyName.Equals(nameof(userInfo.DisplayName),
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (model.Value == null || string.IsNullOrEmpty(model.Value.ToString()))
+                {
+                    isValid = false;
+                }
+            }
+            else if (model.PropertyName.Equals(nameof(userInfo.PhoneNumber),
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                IValidation phoneValidation = new PhoneValidation();
+                if (model.Value == null || string.IsNullOrEmpty(model.Value.ToString())
+                    || !phoneValidation.IsValid(model.Value.ToString()))
+                {
+                    isValid = false;
+                }
+            }
+            else if (model.PropertyName.Equals(nameof(userInfo.BirthDate),
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (model.Value == null)
+                {
+                    isValid = false;
+                }
+            }
+
+            return isValid;
         }
     }
 }
