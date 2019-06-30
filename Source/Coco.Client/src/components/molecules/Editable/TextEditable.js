@@ -25,7 +25,7 @@ const TextEditing = styled(Textbox)`
 
 export default function(props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState(props.value ? props.value : "");
 
   function openTextBox() {
     setIsOpen(true);
@@ -38,12 +38,9 @@ export default function(props) {
   async function onDataUp(e) {
     const currentValue = props.value ? props.value : "";
 
+    console.log(e);
     if (e.keyCode === 13 && props.onUpdated) {
-      if (
-        !!props.primaryKey &&
-        !!props.name &&
-        e.target.value !== currentValue
-      ) {
+      if (!!props.primaryKey && !!props.name) {
         await props
           .onUpdated({
             primaryKey: props.primaryKey,
@@ -75,10 +72,9 @@ export default function(props) {
   }
 
   function onChange(e) {
+    setValue(e.target.value);
     if (props.onChange) {
       props.onChange(e);
-    } else {
-      setValue(e.target.value);
     }
   }
 
@@ -103,6 +99,7 @@ export default function(props) {
       <TextEditing
         name={props.name}
         onBlur={onBlur}
+        value={value}
         autoFocus={true}
         onKeyUp={onDataUp}
         onChange={onChange}

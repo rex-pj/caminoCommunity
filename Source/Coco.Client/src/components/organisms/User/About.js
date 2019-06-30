@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import { Mutation } from "react-apollo";
 import { PanelBody } from "../../../components/atoms/Panels";
@@ -82,6 +82,7 @@ export default class extends Component {
       ...userInfo
     };
   }
+
   async onEditable(e, updateUserInfoItem) {
     const { canEdit } = this.props;
     if (updateUserInfoItem) {
@@ -104,8 +105,6 @@ export default class extends Component {
     this.setState({
       [targetName]: e.target.value
     });
-
-    console.log(this.state.displayName);
   }
 
   render() {
@@ -193,7 +192,7 @@ export default class extends Component {
                       onChange={e => this.handleInputChange(e)}
                       primaryKey={this.state.userHashedId}
                       name="address"
-                      onChanged={e => this.onEditable(e, updateUserInfoItem)}
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
                   </UnserInfoWWithLabel>
@@ -221,141 +220,3 @@ export default class extends Component {
     );
   }
 }
-
-// function(props) {
-//   const { userInfo, canEdit } = props;
-//   const [userData, updateUserData] = useState(userInfo);
-
-//   async function onEditable(e, updateUserInfoItem) {
-//     if (updateUserInfoItem) {
-//       return await updateUserInfoItem({
-//         variables: {
-//           criterias: {
-//             key: e.primaryKey,
-//             value: e.value,
-//             propertyName: e.propertyName,
-//             canEdit
-//           }
-//         }
-//       });
-//     }
-//   }
-
-//   function handleInputChange(e) {
-//     let data = {
-//       ...userData
-//     };
-
-//     data[e.target.name] = e.target.value;
-
-//     updateUserData(() => data);
-
-//     console.log(data.displayName);
-//   }
-
-//   return (
-//     <MainPanel>
-//       <Root>
-//         {userInfo ? (
-//           <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
-//             {updateUserInfoItem => (
-//               <InfoList>
-//                 <UnserInfoWWithLabel label="Họ &amp; Tên">
-//                   <div className="row">
-//                     <div className="col-auto">
-//                       <TextEditable
-//                         value={userData.lastname}
-//                         onChange={e => handleInputChange(e)}
-//                         primaryKey={userData.userHashedId}
-//                         name="lastname"
-//                         onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                         disabled={!canEdit}
-//                       />
-//                     </div>
-//                     <div className="col-auto">-</div>
-//                     <div className="col-auto">
-//                       <TextEditable
-//                         value={userData.firstname}
-//                         onChange={e => handleInputChange(e)}
-//                         primaryKey={userData.userHashedId}
-//                         name="firstname"
-//                         onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                         disabled={!canEdit}
-//                       />
-//                     </div>
-//                   </div>
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Tên hiển thị">
-//                   <TextEditable
-//                     value={userData.displayName}
-//                     onChange={e => handleInputChange(e)}
-//                     primaryKey={userData.userHashedId}
-//                     name="displayName"
-//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                     disabled={!canEdit}
-//                   />
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Về bản thân">
-//                   <TextEditable
-//                     value={userData.description}
-//                     onChange={e => handleInputChange(e)}
-//                     primaryKey={userData.userHashedId}
-//                     name="description"
-//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                     disabled={!canEdit}
-//                   />
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Điện thoại">
-//                   <TextEditable
-//                     value={userData.phoneNumber}
-//                     onChange={e => handleInputChange(e)}
-//                     primaryKey={userData.userHashedId}
-//                     name="phoneNumber"
-//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                     disabled={!canEdit}
-//                   />
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Giới tính">
-//                   <SelectEditable
-//                     value={userData.genderId}
-//                     onChange={e => handleInputChange(e)}
-//                     primaryKey={userData.userHashedId}
-//                     name="genderId"
-//                     onUpdated={e => onEditable(e, updateUserInfoItem)}
-//                     disabled={!canEdit}
-//                     selections={userData.genderSelections}
-//                   />
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Địa chỉ">
-//                   <TextEditable
-//                     value={userData.address}
-//                     onChange={e => handleInputChange(e)}
-//                     primaryKey={userData.userHashedId}
-//                     name="address"
-//                     onChanged={e => onEditable(e, updateUserInfoItem)}
-//                     disabled={!canEdit}
-//                   />
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Quốc gia">
-//                   {userData.country}
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Sinh nhật">
-//                   {format(userData.birthDate, "MMMM, DD YYYY")}
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Email" isEmail={true}>
-//                   {userData.email}
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Ngày tham gia">
-//                   {format(userData.createdDate, "MMMM, DD YYYY")}
-//                 </UnserInfoWWithLabel>
-//                 <UnserInfoWWithLabel label="Trạng thái">
-//                   {userData.statusLabel}
-//                 </UnserInfoWWithLabel>
-//               </InfoList>
-//             )}
-//           </Mutation>
-//         ) : null}
-//       </Root>
-//     </MainPanel>
-//   );
-// }
