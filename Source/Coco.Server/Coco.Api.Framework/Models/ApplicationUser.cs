@@ -19,7 +19,7 @@ namespace Coco.Api.Framework.Models
         public DateTime? UpdatedDate { get; set; }
         public byte? GenderId { get; set; }
         public string GenderLabel { get; set; }
-        public int? CountryId { get; set; }
+        public short? CountryId { get; set; }
         public string CountryName { get; set; }
         public string CountryCode { get; set; }
         public bool IsActived { get; set; }

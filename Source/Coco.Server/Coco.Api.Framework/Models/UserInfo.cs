@@ -49,7 +49,7 @@ namespace Coco.Api.Framework.Models
         public bool IsActived { get; set; }
         public int StatusId { get; set; }
         public string StatusLabel { get; set; }
-        public int? CountryId { get; set; }
+        public short? CountryId { get; set; }
         public string CountryCode { get; set; }
         public string CountryName { get; set; }
     }

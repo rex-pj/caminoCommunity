@@ -3,7 +3,7 @@ using GraphQL.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class SelectOptionType : ObjectGraphType<SelectOption>
+    public class SelectOptionType<T> : ObjectGraphType<T> where T : SelectOption
     {
         public SelectOptionType()
         {
@@ -11,5 +11,10 @@ namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
             Field(x => x.Text, type: (typeof(StringGraphType)));
             Field(x => x.IsSelected, type: (typeof(BooleanGraphType)));
         }
+    }
+
+    public class SelectOptionType : SelectOptionType<SelectOption>
+    {
+        public SelectOptionType() : base() {}
     }
 }

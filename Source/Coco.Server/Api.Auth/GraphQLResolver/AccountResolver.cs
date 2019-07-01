@@ -4,6 +4,7 @@ using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
+using Coco.Business.Contracts;
 using Coco.Common.Const;
 using Coco.Entities.Enums;
 using GraphQL;
@@ -19,12 +20,14 @@ namespace Api.Auth.GraphQLResolver
     {
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IAccountManager<ApplicationUser> _accountManager;
+        private readonly ICountryBusiness _countryBusiness;
 
         public AccountResolver(ILoginManager<ApplicationUser> loginManager,
-            IAccountManager<ApplicationUser> accountManager)
+            IAccountManager<ApplicationUser> accountManager, ICountryBusiness countryBusiness)
         {
             _loginManager = loginManager;
             _accountManager = accountManager;
+            _countryBusiness = countryBusiness;
         }
 
         public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
@@ -52,7 +55,7 @@ namespace Api.Auth.GraphQLResolver
                 var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
 
                 var result = await _accountManager.GetLoggingUser(userHeaderParams.UserIdHashed, userHeaderParams.AuthenticationToken);
-                if(result == null)
+                if (result == null)
                 {
                     return new UserInfo();
                 }
@@ -90,11 +93,21 @@ namespace Api.Auth.GraphQLResolver
                 var genderOptions = EnumHelper.EnumToSelectList<GenderEnum>();
 
                 result.GenderSelections = genderOptions;
+                var countries = _countryBusiness.GetAll();
+                if (countries != null && countries.Any())
+                {
+                    result.CountrySelections = countries.Select(x => new SelectOption()
+                    {
+                        Id = x.Id.ToString(),
+                        Text = $"[{x.Code}] - {x.Name}"
+                    });
+                }
+
                 return ApiResult<UserInfoExt>.Success(result, true);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw new ExecutionError(ex.ToString(), ex);
             }
         }
 

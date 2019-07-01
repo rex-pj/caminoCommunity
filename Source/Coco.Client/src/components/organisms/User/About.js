@@ -173,6 +173,14 @@ export default class extends Component {
                     />
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Quốc gia">
+                    <SelectEditable
+                      value={userInfo.countryId}
+                      primaryKey={userInfo.userHashedId}
+                      name="countryId"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                      selections={userInfo.countrySelections}
+                    />
                     {userInfo.country}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Sinh nhật">

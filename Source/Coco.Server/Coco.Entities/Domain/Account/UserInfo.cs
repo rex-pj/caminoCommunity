@@ -22,7 +22,7 @@ namespace Coco.Entities.Domain.Account
         [Required]
         public DateTime? BirthDate { get; set; }
         public byte? GenderId { get; set; }
-        public int? CountryId { get; set; }
+        public short? CountryId { get; set; }
         public virtual User User { get; set; }
         public virtual Gender Gender { get; set; }
         public virtual Country Country { get; set; }

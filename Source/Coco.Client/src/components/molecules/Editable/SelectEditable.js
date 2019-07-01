@@ -31,7 +31,9 @@ function Options(props) {
   const { selections, emptyText } = props;
   return selections ? (
     <Fragment>
-      <option value={0}>{emptyText}</option>
+      <option value={0} disabled={true}>
+        {emptyText}
+      </option>
       {selections.map(item => (
         <option key={item.id} value={item.id}>
           {item.text}
