@@ -6,6 +6,7 @@ import { VerticalList } from "../../atoms/List";
 import { format } from "date-fns";
 import TextEditable from "../../molecules/Editable/TextEditable";
 import SelectEditable from "../../molecules/Editable/SelectEditable";
+import DateTimeEditable from "../../molecules/Editable/DateTimeEditable";
 import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
 
 const MainPanel = styled(PanelBody)`
@@ -158,6 +159,7 @@ export default class extends Component {
                       value={userInfo.genderId}
                       primaryKey={userInfo.userHashedId}
                       name="genderId"
+                      emptyText="Chọn giới tính"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                       selections={userInfo.genderSelections}
@@ -177,6 +179,7 @@ export default class extends Component {
                       value={userInfo.countryId}
                       primaryKey={userInfo.userHashedId}
                       name="countryId"
+                      emptyText="Chọn quốc gia của bạn"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                       selections={userInfo.countrySelections}
@@ -184,7 +187,13 @@ export default class extends Component {
                     {userInfo.country}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Sinh nhật">
-                    {format(userInfo.birthDate, "MMMM, DD YYYY")}
+                    <DateTimeEditable
+                      value={userInfo.birthDate}
+                      primaryKey={userInfo.userHashedId}
+                      name="birthDate"
+                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
+                      disabled={!canEdit}
+                    />
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Email" isEmail={true}>
                     {userInfo.email}

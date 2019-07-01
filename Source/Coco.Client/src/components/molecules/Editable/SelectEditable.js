@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { Selection } from "../../atoms/Selections";
 
@@ -17,6 +17,14 @@ const TextLabel = styled.span`
     color: ${p => p.theme.color.danger};
     font-weight: 400;
   }
+
+  &.success {
+    border: 1px solid ${p => p.theme.color.secondary};
+  }
+
+  &.fail {
+    border: 1px solid ${p => p.theme.color.dangerLight};
+  }
 `;
 
 const SelectBox = styled(Selection)`
@@ -25,7 +33,20 @@ const SelectBox = styled(Selection)`
   border: 0;
   border-bottom: 1px dashed ${p => p.theme.color.normal};
   border-radius: 0;
+
+  &.success {
+    border: 1px solid ${p => p.theme.color.secondary};
+  }
+
+  &.fail {
+    border: 1px solid ${p => p.theme.color.dangerLight};
+  }
 `;
+
+const updateStatus = {
+  success: "success",
+  fail: "fail"
+};
 
 function Options(props) {
   const { selections, emptyText } = props;
@@ -45,10 +66,17 @@ function Options(props) {
 
 export default function(props) {
   const { selections, value, name, disabled } = props;
+  const [status, setStatus] = useState("");
+  let statusTimer = null;
+
   let emptyText = "---Select---";
   if (props.emptyText) {
     emptyText = props.emptyText;
   }
+
+  useEffect(() => {
+    return () => clearTimeout(statusTimer);
+  }, []);
 
   const current =
     value && selections
@@ -63,7 +91,7 @@ export default function(props) {
   function onChanged(e) {
     const { name, primaryKey } = props;
     const currentValue = selections
-      ? selections.find(function(element) {
+      ? selections.find(element => {
           return element.id.toString() === e.target.value;
         })
       : { id: 0, text: emptyText };
@@ -77,19 +105,22 @@ export default function(props) {
             value: currentValue.id,
             propertyName: name
           })
-          .then(function(response) {})
-          .catch(function(errors) {
+          .then(response => {
+            showSuccess();
+          })
+          .catch(errors => {
             const oldValue = selections
-              ? selections.find(function(element) {
+              ? selections.find(element => {
                   return element.id.toString() === value.toString();
                 })
               : { id: 0, text: emptyText };
 
-            console.log(errors);
             updateSelectedValue({
               id: value,
               text: oldValue.text
             });
+
+            showError();
           });
       }
     } else {
@@ -97,9 +128,24 @@ export default function(props) {
     }
   }
 
+  function showError() {
+    setStatus(updateStatus.fail);
+    statusTimer = setTimeout(() => {
+      setStatus("");
+    }, 1000);
+  }
+
+  function showSuccess() {
+    setStatus(updateStatus.success);
+    statusTimer = setTimeout(() => {
+      setStatus("");
+    }, 1000);
+  }
+
   if (!props.disabled && !!selectedValue) {
     return (
       <SelectBox
+        className={`${status}`}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
@@ -112,6 +158,7 @@ export default function(props) {
   } else if (!props.disabled && value) {
     return (
       <SelectBox
+        className={`${status}`}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
@@ -124,6 +171,7 @@ export default function(props) {
   } else if (!props.disabled) {
     return (
       <SelectBox
+        className={`${status}`}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
@@ -134,7 +182,7 @@ export default function(props) {
     );
   } else {
     return (
-      <TextLabel className="disabled">
+      <TextLabel className={`disabled ${status}`}>
         {selectedValue ? selectedValue.text : emptyText}
       </TextLabel>
     );

@@ -99,7 +99,7 @@ namespace Api.Auth.GraphQLResolver
                     result.CountrySelections = countries.Select(x => new SelectOption()
                     {
                         Id = x.Id.ToString(),
-                        Text = $"[{x.Code}] - {x.Name}"
+                        Text = x.Name
                     });
                 }
 
