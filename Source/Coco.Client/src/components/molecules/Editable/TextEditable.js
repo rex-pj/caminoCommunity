@@ -38,9 +38,12 @@ export default function(props) {
   async function onDataUp(e) {
     const currentValue = props.value ? props.value : "";
 
-    console.log(e);
     if (e.keyCode === 13 && props.onUpdated) {
-      if (!!props.primaryKey && !!props.name) {
+      if (
+        !!props.primaryKey &&
+        !!props.name &&
+        currentValue !== e.target.value
+      ) {
         await props
           .onUpdated({
             primaryKey: props.primaryKey,
@@ -63,6 +66,9 @@ export default function(props) {
     } else if (e.keyCode === 13) {
       closeTextBox();
       setValue(value);
+    } else if (e.keyCode === 27) {
+      closeTextBox();
+      setValue(currentValue);
     }
   }
 
@@ -73,9 +79,6 @@ export default function(props) {
 
   function onChange(e) {
     setValue(e.target.value);
-    if (props.onChange) {
-      props.onChange(e);
-    }
   }
 
   let emptyText = "Empty";
@@ -83,23 +86,12 @@ export default function(props) {
     emptyText = props.emptyText;
   }
 
-  if (!props.disabled && !!isOpen && !!value) {
+  if (!props.disabled && !!isOpen) {
     return (
       <TextEditing
         name={props.name}
-        value={value}
+        value={value ? value : ""}
         onBlur={onBlur}
-        autoFocus={true}
-        onKeyUp={onDataUp}
-        onChange={onChange}
-      />
-    );
-  } else if (!props.disabled && !!isOpen) {
-    return (
-      <TextEditing
-        name={props.name}
-        onBlur={onBlur}
-        value={value}
         autoFocus={true}
         onKeyUp={onDataUp}
         onChange={onChange}

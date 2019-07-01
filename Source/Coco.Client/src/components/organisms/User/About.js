@@ -74,15 +74,6 @@ const UnserInfoWWithLabel = props => {
 };
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
-    const { userInfo } = props;
-
-    this.state = {
-      ...userInfo
-    };
-  }
-
   async onEditable(e, updateUserInfoItem) {
     const { canEdit } = this.props;
     if (updateUserInfoItem) {
@@ -99,14 +90,6 @@ export default class extends Component {
     }
   }
 
-  handleInputChange(e) {
-    const targetName = e.target.name;
-
-    this.setState({
-      [targetName]: e.target.value
-    });
-  }
-
   render() {
     const { userInfo, canEdit } = this.props;
     return (
@@ -120,9 +103,8 @@ export default class extends Component {
                     <div className="row">
                       <div className="col-auto">
                         <TextEditable
-                          value={this.state.lastname}
-                          onChange={e => this.handleInputChange(e)}
-                          primaryKey={this.state.userHashedId}
+                          value={userInfo.lastname}
+                          primaryKey={userInfo.userHashedId}
                           name="lastname"
                           onUpdated={e =>
                             this.onEditable(e, updateUserInfoItem)
@@ -133,9 +115,8 @@ export default class extends Component {
                       <div className="col-auto">-</div>
                       <div className="col-auto">
                         <TextEditable
-                          value={this.state.firstname}
-                          onChange={e => this.handleInputChange(e)}
-                          primaryKey={this.state.userHashedId}
+                          value={userInfo.firstname}
+                          primaryKey={userInfo.userHashedId}
                           name="firstname"
                           onUpdated={e =>
                             this.onEditable(e, updateUserInfoItem)
@@ -147,9 +128,8 @@ export default class extends Component {
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Tên hiển thị">
                     <TextEditable
-                      value={this.state.displayName}
-                      onChange={e => this.handleInputChange(e)}
-                      primaryKey={this.state.userHashedId}
+                      value={userInfo.displayName}
+                      primaryKey={userInfo.userHashedId}
                       name="displayName"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -157,9 +137,8 @@ export default class extends Component {
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Về bản thân">
                     <TextEditable
-                      value={this.state.description}
-                      onChange={e => this.handleInputChange(e)}
-                      primaryKey={this.state.userHashedId}
+                      value={userInfo.description}
+                      primaryKey={userInfo.userHashedId}
                       name="description"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -167,9 +146,8 @@ export default class extends Component {
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Điện thoại">
                     <TextEditable
-                      value={this.state.phoneNumber}
-                      onChange={e => this.handleInputChange(e)}
-                      primaryKey={this.state.userHashedId}
+                      value={userInfo.phoneNumber}
+                      primaryKey={userInfo.userHashedId}
                       name="phoneNumber"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -177,39 +155,37 @@ export default class extends Component {
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Giới tính">
                     <SelectEditable
-                      value={this.state.genderId}
-                      onChange={e => this.handleInputChange(e)}
-                      primaryKey={this.state.userHashedId}
+                      value={userInfo.genderId}
+                      primaryKey={userInfo.userHashedId}
                       name="genderId"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
-                      selections={this.state.genderSelections}
+                      selections={userInfo.genderSelections}
                     />
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Địa chỉ">
                     <TextEditable
-                      value={this.state.address}
-                      onChange={e => this.handleInputChange(e)}
-                      primaryKey={this.state.userHashedId}
+                      value={userInfo.address}
+                      primaryKey={userInfo.userHashedId}
                       name="address"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Quốc gia">
-                    {this.state.country}
+                    {userInfo.country}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Sinh nhật">
-                    {format(this.state.birthDate, "MMMM, DD YYYY")}
+                    {format(userInfo.birthDate, "MMMM, DD YYYY")}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Email" isEmail={true}>
-                    {this.state.email}
+                    {userInfo.email}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Ngày tham gia">
-                    {format(this.state.createdDate, "MMMM, DD YYYY")}
+                    {format(userInfo.createdDate, "MMMM, DD YYYY")}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Trạng thái">
-                    {this.state.statusLabel}
+                    {userInfo.statusLabel}
                   </UnserInfoWWithLabel>
                 </InfoList>
               )}
