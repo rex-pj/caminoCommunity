@@ -266,6 +266,13 @@ namespace Coco.Business.Implementation
                     isValid = false;
                 }
             }
+            else if (model.PropertyName.Equals(nameof(userInfo.Id),
+                StringComparison.InvariantCultureIgnoreCase)
+                || model.PropertyName.Equals(nameof(userInfo.User),
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                isValid = false;
+            }
 
             return isValid;
         }

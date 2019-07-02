@@ -126,7 +126,7 @@ namespace Api.Auth.GraphQLResolver
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
                     GenderId = (byte)model.GenderId,
-                    StatusId = (byte)UserStatusEnum.Pending,
+                    StatusId = (byte)UserStatusEnum.New,
                     UpdatedDate = DateTime.Now,
                     UserName = model.Email,
                     PasswordSalt = SaltGenerator.GetSalt(),

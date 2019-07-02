@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import DaySelector from "../DaySelector";
 import { format } from "date-fns";
@@ -29,57 +29,91 @@ const TextLabel = styled.span`
 `;
 
 const DateTimePicker = styled(DaySelector)`
-  &.success {
-    border: 1px solid ${p => p.theme.color.secondary};
+  select {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px dashed ${p => p.theme.color.secondary};
+    cursor: pointer;
   }
 
-  &.fail {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+  &.success select {
+    border-bottom: 2px solid ${p => p.theme.color.secondary};
+  }
+
+  &.fail select {
+    border-bottom: 2px solid ${p => p.theme.color.dangerLight};
   }
 `;
 
+const updateStatus = {
+  success: "success",
+  fail: "fail"
+};
+
 export default function(props) {
   const { value, name, disabled } = props;
-
+  const [status, setStatus] = useState("");
   const [currentDate, updateCurrentDate] = useState(value);
+  let statusTimer = null;
 
-  function onChanged(e) {
+  useEffect(() => {
+    return () => clearTimeout(statusTimer);
+  }, []);
+
+  function onChanged(date) {
     const { name, primaryKey } = props;
 
-    if (currentDate) {
+    if (date) {
+      const dateTime = format(date, "MM/DD/YYYY");
       if (props.onUpdated) {
         props
           .onUpdated({
             primaryKey,
-            value: currentDate.toString(),
+            value: dateTime,
             propertyName: name
           })
-          .then(response => {})
-          .catch(errors => {});
+          .then(response => {
+            showSuccess();
+          })
+          .catch(errors => {
+            showError();
+          });
       }
     } else {
       updateCurrentDate(value);
     }
   }
 
-  function onBlur() {}
+  function showError() {
+    setStatus(updateStatus.fail);
+    statusTimer = setTimeout(() => {
+      setStatus("");
+    }, 1000);
+  }
+
+  function showSuccess() {
+    setStatus(updateStatus.success);
+    statusTimer = setTimeout(() => {
+      setStatus("");
+    }, 1000);
+  }
 
   if (!props.disabled && !!currentDate) {
     return (
       <DateTimePicker
+        className={`${status}`}
         name={name}
         disabled={disabled}
         value={currentDate}
-        onBlur={onBlur}
         onDateChanged={date => onChanged(date)}
       />
     );
   } else if (!props.disabled && value) {
     return (
       <DateTimePicker
+        className={`${status}`}
         name={name}
         disabled={disabled}
-        onBlur={onBlur}
         onDateChanged={date => onChanged(date)}
         value={value}
       />
@@ -87,9 +121,9 @@ export default function(props) {
   } else if (!props.disabled) {
     return (
       <DateTimePicker
+        className={`${status}`}
         name={name}
         disabled={disabled}
-        onBlur={onBlur}
         onDateChanged={date => onChanged(date)}
       />
     );

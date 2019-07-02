@@ -4,7 +4,12 @@ USE CocoUserDb
 INSERT INTO Account.[Status]
 ([Name], [Description])
 VALUES
-('Pending', 'The user is wating for approval')
+('New', 'New creating user')
+
+INSERT INTO Account.[Status]
+([Name], [Description])
+VALUES
+('Pending', 'Waiting for verification')
 
 INSERT INTO Account.[Status]
 ([Name], [Description])

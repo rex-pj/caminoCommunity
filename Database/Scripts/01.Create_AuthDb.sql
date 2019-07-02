@@ -105,6 +105,7 @@ GO
 ALTER TABLE Work.Career
 ADD CONSTRAINT FK_Career_UpdatedBy
 FOREIGN KEY (UpdatedById) REFERENCES Account.[User](Id);
+
 -- USER BUSINESS --
 GO
 CREATE TABLE Work.UserCareer

@@ -33,6 +33,7 @@ const SelectBox = styled(Selection)`
   border: 0;
   border-bottom: 1px dashed ${p => p.theme.color.normal};
   border-radius: 0;
+  max-width: 100%;
 
   &.success {
     border: 1px solid ${p => p.theme.color.secondary};

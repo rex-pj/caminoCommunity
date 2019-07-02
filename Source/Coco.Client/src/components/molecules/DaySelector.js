@@ -85,7 +85,9 @@ export default class extends Component {
   };
 
   handleOnBlur = () => {
-    this.props.onBlur();
+    if (this.props.onBlur) {
+      this.props.onBlur();
+    }
   };
 
   render() {
