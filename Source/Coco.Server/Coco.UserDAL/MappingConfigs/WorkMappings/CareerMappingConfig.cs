@@ -9,7 +9,7 @@ namespace Coco.UserDAL.MappingConfigs.WorkMappings
     {
         public void Configure(EntityTypeBuilder<Career> builder)
         {
-            builder.ToTable(nameof(Career), TableSchemaConst.WORK);
+            builder.ToTable(nameof(Career), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 

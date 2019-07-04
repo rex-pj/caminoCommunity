@@ -9,7 +9,7 @@ namespace Coco.UserDAL.MappingConfigs.AccountMappings
     {
         public void Configure(EntityTypeBuilder<Gender> builder)
         {
-            builder.ToTable(nameof(Gender), TableSchemaConst.ACCOUNT);
+            builder.ToTable(nameof(Gender), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 

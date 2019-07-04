@@ -7,17 +7,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GraphiQl;
 using GraphQL;
-using Api.Auth.GraphQLMutations;
+using Api.Identity.Mutations;
 using GraphQL.Types;
-using Api.Auth.GraphQLSchema;
-using Api.Auth.GraphQLTypes.InputTypes;
-using Api.Auth.GraphQLTypes.ResultTypes;
-using Api.Auth.GraphQLQueries;
+using Api.Identity.GraphQLSchemas;
+using Api.Identity.GraphQLTypes.InputTypes;
+using Api.Identity.GraphQLTypes.ResultTypes;
+using Api.Identity.Queries;
 using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework;
-using Api.Auth.GraphQLResolver;
+using Api.Identity.Resolvers;
 
-namespace Api.Auth
+namespace Api.Identity
 {
     public class Startup
     {
@@ -40,9 +40,12 @@ namespace Api.Auth
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "http://localhost:5000", "http://localhost:45678")
+                    builder.WithOrigins(
+                        "http://localhost:3000",
+                        "http://localhost:7000",
+                        "http://localhost:5000", 
+                        "http://localhost:45678")
                         .AllowAnyMethod()
-                        //.WithExposedHeaders("HeaderUserHash")
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });
@@ -78,13 +81,9 @@ namespace Api.Auth
             #region GraphQL DI
             services.AddSingleton<AccountResolver>()
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<RegisterInputType>()
-                .AddSingleton<SigninInputType>()
                 .AddSingleton<AccountMutation>()
                 .AddSingleton<AccountQuery>()
                 .AddSingleton<ListGraphType>()
-                .AddSingleton<RegisterResultType>()
-                .AddSingleton<SigninResultType>()
                 .AddSingleton<FullUserInfoResultType>();
 
             var sp = services.BuildServiceProvider();

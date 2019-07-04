@@ -3,12 +3,8 @@ CREATE DATABASE CocoDb
 GO
 USE CocoDb
 
---MENU--
 GO
-CREATE SCHEMA CMDB
-
-GO
-CREATE TABLE CMDB.Menu
+CREATE TABLE dbo.Menu
 (
 	Id SMALLINT NOT NULL IDENTITY(1,1),
 	Name NVARCHAR(255) NOT NULL,
@@ -22,21 +18,21 @@ CREATE TABLE CMDB.Menu
 )
 
 GO
-ALTER TABLE CMDB.Menu
+ALTER TABLE dbo.Menu
 ADD CONSTRAINT PK_Menu
 PRIMARY KEY (Id);
 
 GO
-ALTER TABLE CMDB.Menu
+ALTER TABLE dbo.Menu
 ADD CONSTRAINT FK_Menu_ParentMenu
-FOREIGN KEY (ParentMenuId) REFERENCES CMDB.Menu(Id);
+FOREIGN KEY (ParentMenuId) REFERENCES dbo.Menu(Id);
 
 GO
-CREATE SCHEMA Farm;
+CREATE SCHEMA Agri;
 
 --GROUP--
 GO
-CREATE TABLE Farm.[Group](
+CREATE TABLE Agri.[Group](
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	Title NVARCHAR(255) NULL,
 	[Description] NVARCHAR(500) NULL,
@@ -47,13 +43,13 @@ CREATE TABLE Farm.[Group](
 )
 
 GO
-ALTER TABLE Farm.[Group]
+ALTER TABLE Agri.[Group]
 ADD CONSTRAINT PK_Group
 PRIMARY KEY (Id);
 
 --GROUP ROLE--
 GO
-CREATE TABLE Farm.[GroupRole]
+CREATE TABLE Agri.[GroupRole]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	[Name] NVARCHAR(255) NOT NULL,
@@ -61,12 +57,13 @@ CREATE TABLE Farm.[GroupRole]
 )
 
 GO
-ALTER TABLE Farm.[GroupRole]
+ALTER TABLE Agri.[GroupRole]
 ADD CONSTRAINT PK_GroupRole
 PRIMARY KEY (Id);
+
 --FARMER GROUP--
 GO
-CREATE TABLE Farm.UserGroup(
+CREATE TABLE Agri.UserGroup(
 	UserId BIGINT NOT NULL,
 	GroupId BIGINT NOT NULL,
 	JoinedDate DATETIME2 NULL,
@@ -75,17 +72,18 @@ CREATE TABLE Farm.UserGroup(
 )
 
 GO
-ALTER TABLE Farm.UserGroup
+ALTER TABLE Agri.UserGroup
 ADD CONSTRAINT PK_UserGroup
 PRIMARY KEY (UserId, GroupId);
 
 GO
-ALTER TABLE Farm.UserGroup
+ALTER TABLE Agri.UserGroup
 ADD CONSTRAINT FK_UserGroup_Group
-FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);
+FOREIGN KEY (GroupId) REFERENCES Agri.[Group](Id);
+
 --FARM--
 GO
-CREATE TABLE Farm.Farm
+CREATE TABLE Agri.Farm
 (
 	Id BIGINT NOT NULL,
 	Title NVARCHAR(255) NULL,
@@ -97,13 +95,13 @@ CREATE TABLE Farm.Farm
 )
 
 GO
-ALTER TABLE Farm.Farm
+ALTER TABLE Agri.Farm
 ADD CONSTRAINT PK_Farm
 PRIMARY KEY (Id);
 
 -- FARM ROLE --
 GO
-CREATE TABLE Farm.[FarmRole]
+CREATE TABLE Agri.[FarmRole]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	Name NVARCHAR(255) NOT NULL,
@@ -111,12 +109,12 @@ CREATE TABLE Farm.[FarmRole]
 )
 
 GO
-ALTER TABLE Farm.[FarmRole]
+ALTER TABLE Agri.[FarmRole]
 ADD CONSTRAINT PK_FarmRole
 PRIMARY KEY (Id);
 --User FARM--
 GO
-CREATE TABLE Farm.UserFarm(
+CREATE TABLE Agri.UserFarm(
 	UserId BIGINT NOT NULL,
 	FarmId BIGINT NOT NULL,
 	JoinedDate DATETIME2 NULL,
@@ -125,18 +123,18 @@ CREATE TABLE Farm.UserFarm(
 )
 
 GO
-ALTER TABLE Farm.UserFarm
+ALTER TABLE Agri.UserFarm
 ADD CONSTRAINT PK_UserFarm
 PRIMARY KEY (UserId, FarmId);
 
 GO
-ALTER TABLE Farm.UserFarm
+ALTER TABLE Agri.UserFarm
 ADD CONSTRAINT FK_UserFarm_Farm
-FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+FOREIGN KEY (FarmId) REFERENCES Agri.Farm(Id);
 
 --GROUP FARM--
 GO
-CREATE TABLE Farm.FarmGroup(
+CREATE TABLE Agri.FarmGroup(
 	GroupId BIGINT NOT NULL,
 	FarmId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -146,48 +144,48 @@ CREATE TABLE Farm.FarmGroup(
 )
 
 GO
-ALTER TABLE Farm.FarmGroup
+ALTER TABLE Agri.FarmGroup
 ADD CONSTRAINT PK_FarmGroup
 PRIMARY KEY (GroupId, FarmId);
 
 GO
-ALTER TABLE Farm.FarmGroup
+ALTER TABLE Agri.FarmGroup
 ADD CONSTRAINT FK_FarmGroup_GroupId
-FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);
+FOREIGN KEY (GroupId) REFERENCES Agri.[Group](Id);
 
 GO
-ALTER TABLE Farm.FarmGroup
+ALTER TABLE Agri.FarmGroup
 ADD CONSTRAINT FK_FarmGroup_Farm
-FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+FOREIGN KEY (FarmId) REFERENCES Agri.Farm(Id);
 -- CATEGORY --
 GO
-CREATE TABLE Farm.CategoryOfProduct
+CREATE TABLE Agri.[Catalog]
 (
 	Id INT NOT NULL IDENTITY(1,1),
-	Name NVARCHAR(255) NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(1000) NOT NULL,
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ParentCategoryId INT NULL
+	ParentCatalogId INT NULL
 )
 
 GO
-ALTER TABLE Farm.CategoryOfProduct
-ADD CONSTRAINT PK_CategoryOfProduct
+ALTER TABLE Agri.[Catalog]
+ADD CONSTRAINT PK_Catalog
 PRIMARY KEY (Id);
 
 GO
-ALTER TABLE Farm.CategoryOfProduct
-ADD CONSTRAINT FK_CategoryOfProduct_ParentCategory
-FOREIGN KEY (ParentCategoryId) REFERENCES Farm.CategoryOfProduct(Id);
+ALTER TABLE Agri.[Catalog]
+ADD CONSTRAINT FK_Catalog_ParentCatalog
+FOREIGN KEY (ParentCatalogId) REFERENCES Agri.[Catalog](Id);
 
 --PRODUCT--
 GO
-CREATE TABLE Farm.Product(
+CREATE TABLE Agri.Product(
 	Id BIGINT NOT NULL IDENTITY(1,1),
-	Name NVARCHAR(255) NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(1000) NOT NULL,
 	Content NVARCHAR(MAX) NOT NULL,
 	UpdatedDate DATETIME2 NOT NULL,
@@ -197,35 +195,36 @@ CREATE TABLE Farm.Product(
 )
 
 GO
-ALTER TABLE Farm.[Product]
+ALTER TABLE Agri.[Product]
 ADD CONSTRAINT PK_Product
 PRIMARY KEY (Id);
+
 -- PRODUCT CATEGORY --
 GO
-CREATE TABLE Farm.ProductCategory
+CREATE TABLE Agri.Category
 (
 	ProductId BIGINT NOT NULL,
 	CategoryId INT NOT NULL
 )
 
 GO
-ALTER TABLE Farm.ProductCategory
-ADD CONSTRAINT FK_ProductCategory_CategoryOfProduct
-FOREIGN KEY (CategoryId) REFERENCES Farm.CategoryOfProduct(Id);
+ALTER TABLE Agri.Category
+ADD CONSTRAINT FK_Category_Catalog
+FOREIGN KEY (CategoryId) REFERENCES Agri.[Catalog](Id);
 
 GO
-ALTER TABLE Farm.ProductCategory
-ADD CONSTRAINT FK_ProductCategory_Product
-FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+ALTER TABLE Agri.Category
+ADD CONSTRAINT FK_Category_Product
+FOREIGN KEY (ProductId) REFERENCES Agri.Product(Id);
 
 GO
-ALTER TABLE Farm.ProductCategory
-ADD CONSTRAINT PK_ProductCategory
+ALTER TABLE Agri.Category
+ADD CONSTRAINT PK_Category
 PRIMARY KEY (ProductId, CategoryId);
 
 --FARM PRODUCT--
 GO
-CREATE TABLE Farm.FarmProduct(
+CREATE TABLE Agri.FarmProduct(
 	FarmId BIGINT NOT NULL,
 	ProductId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -235,23 +234,23 @@ CREATE TABLE Farm.FarmProduct(
 )
 
 GO
-ALTER TABLE Farm.FarmProduct
+ALTER TABLE Agri.FarmProduct
 ADD CONSTRAINT PK_FarmProduct
 PRIMARY KEY (FarmId, ProductId);
 
 GO
-ALTER TABLE Farm.FarmProduct
+ALTER TABLE Agri.FarmProduct
 ADD CONSTRAINT FK_FarmProduct_Product
-FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+FOREIGN KEY (ProductId) REFERENCES Agri.Product(Id);
 
 GO
-ALTER TABLE Farm.FarmProduct
+ALTER TABLE Agri.FarmProduct
 ADD CONSTRAINT FK_FarmProduct_Farm
-FOREIGN KEY (FarmId) REFERENCES Farm.Farm(Id);
+FOREIGN KEY (FarmId) REFERENCES Agri.Farm(Id);
 
 --PRODUCT GROUP--
 GO
-CREATE TABLE Farm.GroupProduct(
+CREATE TABLE Agri.GroupProduct(
 	GroupId BIGINT NOT NULL,
 	ProductId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -261,16 +260,16 @@ CREATE TABLE Farm.GroupProduct(
 )
 
 GO
-ALTER TABLE Farm.GroupProduct
+ALTER TABLE Agri.GroupProduct
 ADD CONSTRAINT PK_GroupProduct
 PRIMARY KEY (GroupId, ProductId);
 
 GO
-ALTER TABLE Farm.GroupProduct
+ALTER TABLE Agri.GroupProduct
 ADD CONSTRAINT FK_GroupProduct_Product
-FOREIGN KEY (ProductId) REFERENCES Farm.Product(Id);
+FOREIGN KEY (ProductId) REFERENCES Agri.Product(Id);
 
 GO
-ALTER TABLE Farm.GroupProduct
+ALTER TABLE Agri.GroupProduct
 ADD CONSTRAINT FK_GroupProduct_Group
-FOREIGN KEY (GroupId) REFERENCES Farm.[Group](Id);
+FOREIGN KEY (GroupId) REFERENCES Agri.[Group](Id);

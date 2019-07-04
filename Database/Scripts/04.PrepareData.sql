@@ -1,71 +1,69 @@
-USE CocoUserDb
+USE Coco_IdentityDb
 
 -- USER STATUS --
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('New', 'New creating user')
 
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('Pending', 'Waiting for verification')
 
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('Actived', 'Active user')
 
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('Reported', 'The user is being reported')
 
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('Inactived', 'The user is Inactived')
 
-INSERT INTO Account.[Status]
+INSERT INTO dbo.[Status]
 ([Name], [Description])
 VALUES
 ('Blocked', 'The user is being blocked')
 
 -- USER ROLE --
-INSERT INTO Auth.[Role]
+INSERT INTO dbo.[Role]
 ([Name], [Description])
 VALUES
 ('Admin', 'The administrator')
 
-INSERT INTO Auth.[Role]
+INSERT INTO dbo.[Role]
 ([Name], [Description])
 VALUES
 ('Moderator', 'The moderator')
 
-INSERT INTO Auth.[Role]
+INSERT INTO dbo.[Role]
 ([Name], [Description])
 VALUES
 ('Approver', 'The approver')
 
 -- GENDER --
-INSERT INTO Account.Gender
+INSERT INTO dbo.Gender
 ([Name])
 VALUES
 ('Male')
 
-INSERT INTO Account.Gender
+INSERT INTO dbo.Gender
 ([Name])
 VALUES
 ('Female')
 
-INSERT INTO Account.Gender
+INSERT INTO dbo.Gender
 ([Name])
 VALUES
 ('Undefined')
 
 -- COUNTRY --
-USE [CocoUserDb]
-GO
 SET IDENTITY_INSERT [dbo].[Country] ON 
 GO
 INSERT [dbo].[Country] ([Id], [Code], [Name]) VALUES (2, N'AFG', N'Afghanistan')

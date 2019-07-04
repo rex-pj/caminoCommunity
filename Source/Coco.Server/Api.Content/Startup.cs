@@ -8,6 +8,7 @@ namespace Api.Content
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "AllowOrigin";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -18,6 +19,20 @@ namespace Api.Content
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000",
+                        "http://localhost:5000",
+                        "http://localhost:45678")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -34,8 +49,10 @@ namespace Api.Content
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseCors(MyAllowSpecificOrigins)
+                .UseAuthentication()
+                .UseHttpsRedirection()
+                .UseMvc();
         }
     }
 }

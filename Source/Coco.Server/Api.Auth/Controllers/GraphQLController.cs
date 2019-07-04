@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Coco.Api.Framework.Controllers;
+﻿using Coco.Api.Framework.Controllers;
 using GraphQL;
 using GraphQL.Types;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Auth.Controllers
+namespace Api.Identity.Controllers
 {
-    [ApiController]
     [Route("api/graphql")]
+    [ApiController]
     public class GraphQLController : GraphQLBaseController
     {
         public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter) :
