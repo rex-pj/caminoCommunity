@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Auth", "Api.Auth\Api.Auth.csproj", "{8825C9F0-3AFC-40DC-B824-DA8351CC1CCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Identity", "Api.Auth\Api.Identity.csproj", "{8825C9F0-3AFC-40DC-B824-DA8351CC1CCE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Content", "Api.Content\Api.Content.csproj", "{07451B52-2E44-4C62-975D-8DE4721E043F}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.Entities", "Coco.Entit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.UserDAL", "Coco.UserDAL\Coco.UserDAL.csproj", "{F9AABEF5-2997-48EB-B4EC-B45C9A6E0D4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coco.Api.Framework", "Coco.Api.Framework\Coco.Api.Framework.csproj", "{043AF4A0-F538-4BDE-977A-EFFA195D4B66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.Api.Framework", "Coco.Api.Framework\Coco.Api.Framework.csproj", "{043AF4A0-F538-4BDE-977A-EFFA195D4B66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

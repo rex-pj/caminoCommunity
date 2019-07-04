@@ -2,7 +2,7 @@
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
-namespace Api.Auth.GraphQLTypes.ResultTypes
+namespace Api.Identity.GraphQLTypes.ResultTypes
 {
     public class ItemUpdatedResultType : ObjectGraphType<UpdatePerItemModel>
     {

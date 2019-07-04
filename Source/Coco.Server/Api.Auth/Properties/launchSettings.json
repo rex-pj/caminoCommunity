@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Api.Auth": {
+    "Api.Identity": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api",

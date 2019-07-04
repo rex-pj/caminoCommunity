@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Auth.Controllers
+namespace Api.Identity.Controllers
 {
     [Route("api")]
     [ApiController]
@@ -9,7 +9,7 @@ namespace Api.Auth.Controllers
         [HttpGet, Route("")]
         public IActionResult Index()
         {
-            return Content("Auth Api");
+            return Content("Identity Api");
         }
     }
 }

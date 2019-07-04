@@ -3,7 +3,7 @@ using Coco.Api.Framework.Controllers;
 using GraphQL;
 using GraphQL.Types;
 
-namespace Api.Auth.Controllers
+namespace Api.Identity.Controllers
 {
     [ApiController]
     [Route("api/graphql")]

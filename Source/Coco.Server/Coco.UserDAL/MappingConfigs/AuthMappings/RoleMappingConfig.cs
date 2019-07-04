@@ -9,7 +9,7 @@ namespace Coco.UserDAL.MappingConfigs.AuthMappings
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable(nameof(Role), TableSchemaConst.AUTH);
+            builder.ToTable(nameof(Role), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 

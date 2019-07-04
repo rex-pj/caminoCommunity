@@ -1,11 +1,11 @@
-﻿using Api.Auth.GraphQLResolver;
-using Api.Auth.GraphQLTypes.InputTypes;
-using Api.Auth.GraphQLTypes.ResultTypes;
+﻿using Api.Identity.GraphQLResolver;
+using Api.Identity.GraphQLTypes.InputTypes;
+using Api.Identity.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
-namespace Api.Auth.GraphQLQueries
+namespace Api.Identity.GraphQLQueries
 {
     public class AccountQuery : ObjectGraphType
     {

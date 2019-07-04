@@ -1,4 +1,4 @@
-﻿using Api.Auth.Models;
+﻿using Api.Identity.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Api.Auth.GraphQLResolver
+namespace Api.Identity.GraphQLResolver
 {
     public class AccountResolver
     {

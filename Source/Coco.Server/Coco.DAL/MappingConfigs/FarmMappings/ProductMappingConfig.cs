@@ -9,7 +9,7 @@ namespace Coco.DAL.MappingConfigs.FarmMappings
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.ToTable(nameof(Product), TableSchemaConst.FARM);
+            builder.ToTable(nameof(Product), TableSchemaConst.AGRICULTURE);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
         }

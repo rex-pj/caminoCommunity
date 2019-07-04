@@ -1,7 +1,7 @@
-﻿using Api.Auth.Models;
+﻿using Api.Identity.Models;
 using GraphQL.Types;
 
-namespace Api.Auth.GraphQLTypes.InputTypes
+namespace Api.Identity.GraphQLTypes.InputTypes
 {
     public class UserInfoUpdateInputType : InputObjectGraphType<UserInfoUpdateModel>
     {

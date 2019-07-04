@@ -2,7 +2,7 @@
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
-namespace Api.Auth.GraphQLTypes.InputTypes
+namespace Api.Identity.GraphQLTypes.InputTypes
 {
     public class UpdatePerItemInputType : InputObjectGraphType<UpdatePerItemModel>
     {

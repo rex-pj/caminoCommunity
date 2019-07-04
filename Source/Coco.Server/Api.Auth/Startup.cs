@@ -7,17 +7,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GraphiQl;
 using GraphQL;
-using Api.Auth.GraphQLMutations;
+using Api.Identity.GraphQLMutations;
 using GraphQL.Types;
-using Api.Auth.GraphQLSchema;
-using Api.Auth.GraphQLTypes.InputTypes;
-using Api.Auth.GraphQLTypes.ResultTypes;
-using Api.Auth.GraphQLQueries;
+using Api.Identity.GraphQLSchema;
+using Api.Identity.GraphQLTypes.InputTypes;
+using Api.Identity.GraphQLTypes.ResultTypes;
+using Api.Identity.GraphQLQueries;
 using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework;
-using Api.Auth.GraphQLResolver;
+using Api.Identity.GraphQLResolver;
 
-namespace Api.Auth
+namespace Api.Identity
 {
     public class Startup
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Auth.Models
+namespace Api.Identity.Models
 {
     public class RegisterModel
     {

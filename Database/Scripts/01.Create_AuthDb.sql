@@ -1,15 +1,11 @@
-CREATE DATABASE CocoUserDb
+CREATE DATABASE Coco_IdentityDb
 
 GO
-USE CocoUserDb
-
-
-GO
-CREATE SCHEMA Account
+USE Coco_IdentityDb;
 
 --USER--
 GO
-CREATE TABLE Account.[User]
+CREATE TABLE dbo.[User]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	Email NVARCHAR(255) NOT NULL,
@@ -27,13 +23,13 @@ CREATE TABLE Account.[User]
 )
 
 GO
-ALTER TABLE Account.[User]
+ALTER TABLE dbo.[User]
 ADD CONSTRAINT PK_User
 PRIMARY KEY (Id);
 
 --USER INFO--
 GO
-CREATE TABLE Account.UserInfo
+CREATE TABLE dbo.UserInfo
 (
 	Id BIGINT NOT NULL,
 	Lastname NVARCHAR(255) NOT NULL,
@@ -48,17 +44,17 @@ CREATE TABLE Account.UserInfo
 )
 
 GO
-ALTER TABLE Account.UserInfo
+ALTER TABLE dbo.UserInfo
 ADD CONSTRAINT PK_UserInfo
 PRIMARY KEY (Id);
 
 GO
-ALTER TABLE Account.[UserInfo]
+ALTER TABLE dbo.[UserInfo]
 ADD CONSTRAINT FK_UserInfo_User
-FOREIGN KEY (Id) REFERENCES Account.[User](Id);
+FOREIGN KEY (Id) REFERENCES dbo.[User](Id);
 
 -- USER STATUS--
-CREATE TABLE Account.[Status]
+CREATE TABLE dbo.[Status]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	Name VARCHAR(255) NOT NULL,
@@ -66,21 +62,18 @@ CREATE TABLE Account.[Status]
 )
 
 GO
-ALTER TABLE Account.[Status]
+ALTER TABLE dbo.[Status]
 ADD CONSTRAINT PK_Status
 PRIMARY KEY (Id);
 
 
 GO
-ALTER TABLE Account.[User]
+ALTER TABLE dbo.[User]
 ADD CONSTRAINT FK_User_Status
-FOREIGN KEY (StatusId) REFERENCES Account.[Status](Id);
---  --
-GO
-CREATE SCHEMA Work
+FOREIGN KEY (StatusId) REFERENCES dbo.[Status](Id);
 
 GO
-CREATE TABLE Work.Career
+CREATE TABLE dbo.Career
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	Name NVARCHAR(10),
@@ -92,49 +85,46 @@ CREATE TABLE Work.Career
 )
 
 GO
-ALTER TABLE Work.Career
+ALTER TABLE dbo.Career
 ADD CONSTRAINT PK_Career
 PRIMARY KEY (Id);
 
 GO
-ALTER TABLE Work.Career
+ALTER TABLE dbo.Career
 ADD CONSTRAINT FK_Career_CreatedBy
-FOREIGN KEY (CreatedById) REFERENCES Account.[User](Id);
+FOREIGN KEY (CreatedById) REFERENCES dbo.[User](Id);
 
 GO
-ALTER TABLE Work.Career
+ALTER TABLE dbo.Career
 ADD CONSTRAINT FK_Career_UpdatedBy
-FOREIGN KEY (UpdatedById) REFERENCES Account.[User](Id);
+FOREIGN KEY (UpdatedById) REFERENCES dbo.[User](Id);
 
 -- USER BUSINESS --
 GO
-CREATE TABLE Work.UserCareer
+CREATE TABLE dbo.UserCareer
 (
 	CareerId TINYINT NOT NULL,
 	UserId BIGINT NOT NULL
 )
 
 GO
-ALTER TABLE Work.UserCareer
+ALTER TABLE dbo.UserCareer
 ADD CONSTRAINT FK_UserCareer_User
-FOREIGN KEY (UserId) REFERENCES Account.[User](Id);
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
 
 GO
-ALTER TABLE Work.UserCareer
+ALTER TABLE dbo.UserCareer
 ADD CONSTRAINT FK_UserCareer_Career
-FOREIGN KEY (CareerId) REFERENCES Work.Career(Id);
+FOREIGN KEY (CareerId) REFERENCES dbo.Career(Id);
 
 GO
-ALTER TABLE Work.UserCareer
+ALTER TABLE dbo.UserCareer
 ADD CONSTRAINT PK_UserCareer
 PRIMARY KEY (CareerId, UserId);
 
-/**CREATE AUTH SCHEMA**/
-GO
-CREATE SCHEMA Auth;
 --ROLE--
 GO
-CREATE TABLE Auth.[Role]
+CREATE TABLE dbo.[Role]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	Name VARCHAR(255) NOT NULL,
@@ -142,13 +132,13 @@ CREATE TABLE Auth.[Role]
 )
 
 GO
-ALTER TABLE Auth.[Role]
+ALTER TABLE dbo.[Role]
 ADD CONSTRAINT PK_Role
 PRIMARY KEY (Id);
 
 --USER_ROLE--
 GO
-CREATE TABLE Auth.[UserRole]
+CREATE TABLE dbo.[UserRole]
 (
 	RoleId TINYINT NOT NULL,
 	UserId BIGINT NOT NULL,
@@ -157,30 +147,30 @@ CREATE TABLE Auth.[UserRole]
 )
 
 GO
-ALTER TABLE Auth.[UserRole]
+ALTER TABLE dbo.[UserRole]
 ADD CONSTRAINT FK_UserRole_User
-FOREIGN KEY (UserId) REFERENCES Account.[User](Id);
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
 
 GO
-ALTER TABLE Auth.[UserRole]
+ALTER TABLE dbo.[UserRole]
 ADD CONSTRAINT FK_UserRole_Role
-FOREIGN KEY (RoleId) REFERENCES Auth.[Role](Id);
+FOREIGN KEY (RoleId) REFERENCES dbo.[Role](Id);
 
 GO
-ALTER TABLE Auth.[UserRole]
+ALTER TABLE dbo.[UserRole]
 ADD CONSTRAINT PK_UserRole
 PRIMARY KEY (RoleId, UserId);
 
 
 --GENDER--
-CREATE TABLE Account.Gender
+CREATE TABLE dbo.Gender
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	Name NVARCHAR(10)
 )
 
 GO
-ALTER TABLE Account.Gender
+ALTER TABLE dbo.Gender
 ADD CONSTRAINT PK_Gender
 PRIMARY KEY (Id);
 
@@ -200,14 +190,11 @@ PRIMARY KEY (Id);
 
 /**FOREIGN KEY**/
 GO
-ALTER TABLE Account.[UserInfo]
+ALTER TABLE dbo.[UserInfo]
 ADD CONSTRAINT FK_UserInfo_Gender
-FOREIGN KEY (GenderId) REFERENCES Account.Gender(Id);
+FOREIGN KEY (GenderId) REFERENCES dbo.Gender(Id);
 
 GO
-ALTER TABLE Account.[UserInfo]
+ALTER TABLE dbo.[UserInfo]
 ADD CONSTRAINT FK_UserInfo_Country
 FOREIGN KEY (CountryId) REFERENCES dbo.Country(Id);
-
-
-
