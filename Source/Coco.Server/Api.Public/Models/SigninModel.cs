@@ -1,4 +1,4 @@
-﻿namespace Api.Identity.Models
+﻿namespace Api.Public.Models
 {
     public class SigninModel
     {

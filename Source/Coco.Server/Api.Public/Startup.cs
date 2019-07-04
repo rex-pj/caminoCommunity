@@ -1,35 +1,36 @@
-﻿using Coco.Business;
+﻿using Api.Public.GraphQLSchemas;
+using Api.Public.GraphQLTypes.InputTypes;
+using Api.Public.GraphQLTypes.ResultTypes;
+using Api.Public.Mutations;
+using Api.Public.Queries;
+using Api.Public.Resolvers;
+using Coco.Api.Framework;
+using Coco.Api.Framework.AccountIdentity.Entities;
+using Coco.Business;
 using Coco.Contract;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using GraphiQl;
-using GraphQL;
-using Api.Identity.Mutations;
-using GraphQL.Types;
-using Api.Identity.GraphQLSchemas;
-using Api.Identity.GraphQLTypes.InputTypes;
-using Api.Identity.GraphQLTypes.ResultTypes;
-using Api.Identity.Queries;
-using Coco.Api.Framework.AccountIdentity.Entities;
-using Coco.Api.Framework;
-using Api.Identity.Resolvers;
 
-namespace Api.Identity
+namespace Api.Public
 {
     public class Startup
     {
         private IBootstrapper _bootstrapper;
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
-        private IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
+            Configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
+
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,7 +49,7 @@ namespace Api.Identity
                 });
             });
 
-            InvokeInitialStartup(services, _configuration);
+            InvokeInitialStartup(services, Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -78,10 +79,13 @@ namespace Api.Identity
             #region GraphQL DI
             services.AddSingleton<AccountResolver>()
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
+                .AddSingleton<RegisterInputType>()
+                .AddSingleton<SigninInputType>()
                 .AddSingleton<AccountMutation>()
                 .AddSingleton<AccountQuery>()
                 .AddSingleton<ListGraphType>()
-                .AddSingleton<FullUserInfoResultType>();
+                .AddSingleton<RegisterResultType>()
+                .AddSingleton<SigninResultType>();
 
             var sp = services.BuildServiceProvider();
 
@@ -102,7 +106,6 @@ namespace Api.Identity
                 app.UseHsts();
             }
 
-            // Config UseCors
             app.UseCors(MyAllowSpecificOrigins)
                 .UseAuthentication()
                 .UseHttpsRedirection()

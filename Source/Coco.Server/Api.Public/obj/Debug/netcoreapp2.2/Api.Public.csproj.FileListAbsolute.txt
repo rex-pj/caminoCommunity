@@ -1,0 +1,11 @@
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\bin\Debug\netcoreapp2.2\Api.Public.deps.json
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\bin\Debug\netcoreapp2.2\Api.Public.runtimeconfig.json
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\bin\Debug\netcoreapp2.2\Api.Public.runtimeconfig.dev.json
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\bin\Debug\netcoreapp2.2\Api.Public.dll
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.csproj.CoreCompileInputs.cache
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.RazorAssemblyInfo.cache
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.RazorAssemblyInfo.cs
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.AssemblyInfoInputs.cache
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.AssemblyInfo.cs
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.RazorTargetAssemblyInfo.cache
+D:\Work\GitSpace\Coco.Web\Source\Coco.Server\Api.Public\obj\Debug\netcoreapp2.2\Api.Public.csprojAssemblyReference.cache

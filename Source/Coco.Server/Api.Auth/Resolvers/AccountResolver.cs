@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Api.Identity.GraphQLResolver
+namespace Api.Identity.Resolvers
 {
     public class AccountResolver
     {
@@ -28,24 +28,6 @@ namespace Api.Identity.GraphQLResolver
             _loginManager = loginManager;
             _accountManager = accountManager;
             _countryBusiness = countryBusiness;
-        }
-
-        public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
-        {
-            try
-            {
-                var model = context.GetArgument<SigninModel>("signinModel");
-
-                var result = await _loginManager.LoginAsync(model.Username, model.Password);
-
-                HandleContextError(context, result.Errors);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
-            }
         }
 
         public async Task<UserInfo> GetLoggedUserAsync(ResolveFieldContext<object> context)
@@ -108,40 +90,6 @@ namespace Api.Identity.GraphQLResolver
             catch (Exception ex)
             {
                 throw new ExecutionError(ex.ToString(), ex);
-            }
-        }
-
-        public async Task<ApiResult> SignupAsync(ResolveFieldContext<object> context)
-        {
-            try
-            {
-                var model = context.GetArgument<RegisterModel>("user");
-
-                var parameters = new ApplicationUser()
-                {
-                    BirthDate = model.BirthDate,
-                    CreatedDate = DateTime.Now,
-                    DisplayName = $"{model.Lastname} {model.Firstname}",
-                    Email = model.Email,
-                    Firstname = model.Firstname,
-                    Lastname = model.Lastname,
-                    GenderId = (byte)model.GenderId,
-                    StatusId = (byte)UserStatusEnum.New,
-                    UpdatedDate = DateTime.Now,
-                    UserName = model.Email,
-                    PasswordSalt = SaltGenerator.GetSalt(),
-                    SecurityStamp = SaltGenerator.GetSalt(),
-                    Password = model.Password
-                };
-
-                var result = await _accountManager.CreateAsync(parameters);
-                HandleContextError(context, result.Errors);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
 

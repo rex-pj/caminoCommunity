@@ -6,12 +6,12 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7002
+          "Port": 7001
         }
       ],
-      "UpstreamPathTemplate": "/content-api/{catchAll}",
-      "DelegatingHandlers": ["GraphQlDelegatingHandler"],
-      "UpstreamHttpMethod": ["Post", "Get"]
+      "UpstreamPathTemplate": "/identity-api/{catchAll}",
+      "DelegatingHandlers": [ "GraphQlDelegatingHandler" ],
+      "UpstreamHttpMethod": [ "Post", "Get" ]
     },
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
@@ -19,12 +19,12 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7001
+          "Port": 7004
         }
       ],
-      "UpstreamPathTemplate": "/auth-api/{catchAll}",
-      "DelegatingHandlers": ["GraphQlDelegatingHandler"],
-      "UpstreamHttpMethod": ["Post", "Get"]
+      "UpstreamPathTemplate": "/public-api/{catchAll}",
+      "DelegatingHandlers": [ "GraphQlDelegatingHandler" ],
+      "UpstreamHttpMethod": [ "Post", "Get" ]
     }
   ],
   "GlobalConfiguration": {

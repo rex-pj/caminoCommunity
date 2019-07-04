@@ -2,7 +2,7 @@
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
-namespace Api.Identity.GraphQLTypes.ResultTypes
+namespace Api.Public.GraphQLTypes.ResultTypes
 {
     public class RegisterResultType: ObjectGraphType<ApiResult>
     {

@@ -1,9 +1,9 @@
-﻿using Api.Identity.GraphQLMutations;
-using Api.Identity.GraphQLQueries;
+﻿using Api.Public.Mutations;
+using Api.Public.Queries;
 using GraphQL;
 using GraphQL.Types;
 
-namespace Api.Identity.GraphQLSchema
+namespace Api.Public.GraphQLSchemas
 {
     public class AccountSchema : Schema
     {
