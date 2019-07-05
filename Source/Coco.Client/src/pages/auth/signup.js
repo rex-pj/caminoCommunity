@@ -7,6 +7,7 @@ import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { ADD_USER } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import UserContext from "../../utils/Context/UserContext";
+import { Mutation } from "react-apollo";
 
 class SignUpPage extends Component {
   constructor(props) {
@@ -32,36 +33,40 @@ class SignUpPage extends Component {
     this.props.showValidationError(title, message);
   };
 
-  signUp = async data => {
+  signUp = async (data, addUser) => {
     if (this._isMounted) {
       this.setState({ isFormEnabled: true });
     }
 
-    await defaultClient
-      .mutate({
-        mutation: ADD_USER,
+    if (addUser) {
+      await addUser({
         variables: {
           user: data
         }
       })
-      .then(result => {
-        this.props.history.push("/auth/signin");
-      })
-      .catch(error => {
-        if (this._isMounted) {
-          this.setState({ isFormEnabled: true });
-        }
-        this.props.notifyError(error, this.context.lang);
-      });
+        .then(result => {
+          this.props.history.push("/auth/signin");
+        })
+        .catch(error => {
+          if (this._isMounted) {
+            this.setState({ isFormEnabled: true });
+          }
+          this.props.notifyError(error, this.context.lang);
+        });
+    }
   };
 
   render() {
     return (
-      <SignUpForm
-        signUp={this.signUp}
-        showValidationError={this.showValidationError}
-        isFormEnabled={this.state.isFormEnabled}
-      />
+      <Mutation mutation={ADD_USER} client={defaultClient}>
+        {adduser => (
+          <SignUpForm
+            signUp={data => this.signUp(data, adduser)}
+            showValidationError={this.showValidationError}
+            isFormEnabled={this.state.isFormEnabled}
+          />
+        )}
+      </Mutation>
     );
   }
 }

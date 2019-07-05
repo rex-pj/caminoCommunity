@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
+import { Mutation } from "react-apollo";
 import { defaultClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
@@ -35,51 +36,55 @@ class SingnInPage extends Component {
     this.props.showValidationError(title, message);
   };
 
-  signIn = async data => {
+  signIn = async (data, signin) => {
     if (this._isMounted) {
       this.setState({ isFormEnabled: false });
     }
 
-    await defaultClient
-      .query({
-        query: SIGNIN,
+    if (signin) {
+      await signin({
         variables: {
           signinModel: data
         }
       })
-      .then(response => {
-        const { data } = response;
-        const { signin } = data;
-        const { result } = signin;
+        .then(response => {
+          const { data } = response;
+          const { signin } = data;
+          const { result } = signin;
 
-        if (!signin || !signin.isSuccess) {
-          this.props.notifyError(data.signin.errors, this.context.lang);
+          if (!signin || !signin.isSuccess) {
+            this.props.notifyError(data.signin.errors, this.context.lang);
+            if (this._isMounted) {
+              this.setState({ isFormEnabled: true });
+            }
+            return;
+          }
+
+          AuthService.setLogin(result.userInfo, result.authenticatorToken);
+
+          this.context.login();
+          this.props.history.push("/");
+        })
+        .catch(error => {
           if (this._isMounted) {
             this.setState({ isFormEnabled: true });
           }
-          return;
-        }
-
-        AuthService.setLogin(result.userInfo, result.authenticatorToken);
-
-        this.context.login();
-        this.props.history.push("/");
-      })
-      .catch(error => {
-        if (this._isMounted) {
-          this.setState({ isFormEnabled: true });
-        }
-        this.props.notifyError(error, this.context.lang);
-      });
+          this.props.notifyError(error, this.context.lang);
+        });
+    }
   };
 
   render() {
     return (
-      <SignInForm
-        onSignin={this.signIn}
-        showValidationError={this.showValidationError}
-        isFormEnabled={this.state.isFormEnabled}
-      />
+      <Mutation mutation={SIGNIN} client={defaultClient}>
+        {signin => (
+          <SignInForm
+            onSignin={data => this.signIn(data, signin)}
+            showValidationError={this.showValidationError}
+            isFormEnabled={this.state.isFormEnabled}
+          />
+        )}
+      </Mutation>
     );
   }
 }

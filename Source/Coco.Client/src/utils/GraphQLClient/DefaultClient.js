@@ -3,11 +3,11 @@ import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 
-const authHttpLink = createHttpLink({
-  uri: process.env.REACT_APP_AUTH_API_URL
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_PUBLIC_API_URL
 });
 
-const authLink = setContext(async (_, { headers }) => {
+const contextLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers
@@ -16,7 +16,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const defaultClient = new ApolloClient({
-  link: authLink.concat(authHttpLink),
+  link: contextLink.concat(httpLink),
   cache: new InMemoryCache(),
   ssrMode: true,
   defaultOptions: {

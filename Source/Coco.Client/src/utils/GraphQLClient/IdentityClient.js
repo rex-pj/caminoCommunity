@@ -8,11 +8,11 @@ const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;
 
-const authHttpLink = createHttpLink({
-  uri: process.env.REACT_APP_AUTH_API_URL
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_IDENTITY_API_URL
 });
 
-const authLink = setContext(async (_, { headers }) => {
+const contextLink = setContext(async (_, { headers }) => {
   const token = localStorage.getItem(AUTH_KEY);
   const authorization = token ? token : "";
   const userHash = localStorage.getItem(AUTH_USER_HASHED_ID);
@@ -35,8 +35,8 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-let authClient = new ApolloClient({
-  link: authLink.concat(authHttpLink),
+let client = new ApolloClient({
+  link: contextLink.concat(httpLink),
   cache: new InMemoryCache(),
   ssrMode: true,
   initialState: preloadedState,
@@ -56,7 +56,7 @@ let authClient = new ApolloClient({
 
 // Tell react-snap how to save state
 window.snapSaveState = () => ({
-  __APOLLO_STORE__: authClient.store.getCache()
+  __APOLLO_STORE__: client.store.getCache()
 });
 
-export default authClient;
+export default client;

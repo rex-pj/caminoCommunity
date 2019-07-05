@@ -18,7 +18,7 @@ import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import summaryNoticeReducer from "./store/reducer/summaryNoticeReducer";
 import { ApolloProvider } from "react-apollo";
-import { authClient } from "./utils/GraphQLClient";
+import { identityClient } from "./utils/GraphQLClient";
 import SessionContext from "./utils/Context/SessionContext";
 import AuthService from "./services/AuthService";
 
@@ -72,7 +72,7 @@ class App extends Component {
           isLogin: this.state.isLogin
         }}
       >
-        <ApolloProvider client={authClient}>
+        <ApolloProvider client={identityClient}>
           <Provider store={store}>
             <BrowserRouter>
               <Switch>
