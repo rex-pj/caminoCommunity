@@ -13,7 +13,7 @@ export const ADD_USER = gpl`
 `;
 
 export const SIGNIN = gpl`
-  query signin($signinModel: SigninInputType!){
+  mutation signin($signinModel: SigninInputType!){
     signin(signinModel: $signinModel){
       result {
         userInfo {

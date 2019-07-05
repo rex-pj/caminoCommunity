@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import TextEditable from "../../molecules/Editable/TextEditable";
 import SelectEditable from "../../molecules/Editable/SelectEditable";
 import DateTimeEditable from "../../molecules/Editable/DateTimeEditable";
+import TextAreaEditable from "../../molecules/Editable/TextAreaEditable";
 import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
 
 const MainPanel = styled(PanelBody)`
@@ -137,7 +138,9 @@ export default class extends Component {
                     />
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Về bản thân">
-                    <TextEditable
+                    <TextAreaEditable
+                      rows={5}
+                      cols={50}
                       value={userInfo.description}
                       primaryKey={userInfo.userHashedId}
                       name="description"

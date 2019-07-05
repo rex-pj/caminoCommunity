@@ -10,7 +10,7 @@ import {
   setLocalStorage,
   getLocalStorageByKey
 } from "./StorageService";
-import { authClient } from "../utils/GraphQLClient";
+import { identityClient } from "../utils/GraphQLClient";
 import { GET_LOGGED_USER } from "../utils/GraphQLQueries";
 
 function removeUserToken() {
@@ -40,7 +40,7 @@ async function getLoggedUserInfo() {
     userLanguage
   };
 
-  await authClient
+  await identityClient
     .query({
       query: GET_LOGGED_USER
     })

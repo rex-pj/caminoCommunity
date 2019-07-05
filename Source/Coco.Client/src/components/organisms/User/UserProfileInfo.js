@@ -20,6 +20,14 @@ const ChildItem = styled.li`
 
   span {
     color: inherit;
+    word-break: break-all;
+  }
+
+  div {
+    color: inherit;
+    display: block;
+    max-width: 100%;
+    word-break: break-all;
   }
 
   svg {
@@ -59,7 +67,7 @@ export default class extends Component {
         {userInfo ? (
           <InfoList>
             <UnserInfoChild className="text-justify">
-              {userInfo.blast}
+              {userInfo.description}
             </UnserInfoChild>
             <UnserInfoChild icon="map-marked-alt">
               {userInfo.address}
