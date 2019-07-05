@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 namespace Coco.Api.Framework.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class GraphQLBaseController : BaseController
+    public abstract class GraphQLBaseController : BaseController
     {
         protected readonly ISchema _schema;
         protected readonly IDocumentExecuter _documentExecuter;
@@ -25,7 +24,7 @@ namespace Coco.Api.Framework.Controllers
 
         [HttpPost]
         [EnableCors("AllowOrigin")]
-        public async Task<IActionResult> Post([FromBody]GraphQLQuery query)
+        public virtual async Task<IActionResult> Post([FromBody]GraphQLQuery query)
         {
             if (query == null)
             {

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj": {}
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj": {}
   },
   "projects": {
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj",
         "projectName": "Api.Public",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Api.Public\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Api.Public\\Api.Public.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Api.Public\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,13 +25,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj"
               }
             }
           }
@@ -79,20 +80,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj",
         "projectName": "Coco.Api.Framework",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\Coco.Api.Framework.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Api.Framework\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -100,19 +101,20 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj"
               },
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj"
               },
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
               }
             }
           }
@@ -158,7 +160,7 @@
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[5.4.0, )"
+              "version": "[5.5.0, )"
             },
             "System.Security.Cryptography.ProtectedData": {
               "target": "Package",
@@ -173,20 +175,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj",
         "projectName": "Coco.Business",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\Coco.Business.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Business\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -194,19 +196,20 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
               },
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj"
               },
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj"
               }
             }
           }
@@ -235,20 +238,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj",
         "projectName": "Coco.Common",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\Coco.Common.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -256,7 +259,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
@@ -287,20 +291,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj",
         "projectName": "Coco.Contract",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -308,13 +312,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
               }
             }
           }
@@ -351,20 +356,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj",
         "projectName": "Coco.DAL",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\Coco.DAL.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -372,16 +377,17 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
               },
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj"
               }
             }
           }
@@ -418,20 +424,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj",
         "projectName": "Coco.Entities",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\Coco.Entities.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Entities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -439,7 +445,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
@@ -470,20 +477,20 @@
         }
       }
     },
-    "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj": {
+    "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj",
+        "projectUniqueName": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj",
         "projectName": "Coco.UserDAL",
-        "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj",
-        "packagesPath": "C:\\Users\\letru\\.nuget\\packages\\",
-        "outputPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\obj\\",
+        "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\Coco.UserDAL.csproj",
+        "packagesPath": "C:\\Users\\trunglth\\.nuget\\packages\\",
+        "outputPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.UserDAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\letru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trunglth\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -491,13 +498,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget-hc-mti.azurewebsites.net/nuget": {}
         },
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
-                "projectPath": "D:\\Work\\GitSpace\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
+              "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj": {
+                "projectPath": "D:\\ExWork\\Coco.Web\\Source\\Coco.Server\\Coco.Contract\\Coco.Contract.csproj"
               }
             }
           }

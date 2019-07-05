@@ -1,33 +1,52 @@
 {
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7000"
+  },
   "ReRoutes": [
     {
-      "DownstreamPathTemplate": "/api/{catchAll}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7001
-        }
+      "DelegatingHandlers": [
+        "GraphQlDelegatingHandler"
       ],
-      "UpstreamPathTemplate": "/identity-api/{catchAll}",
-      "DelegatingHandlers": [ "GraphQlDelegatingHandler" ],
-      "UpstreamHttpMethod": [ "Post", "Get" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/{catchAll}",
-      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 7004
         }
       ],
-      "UpstreamPathTemplate": "/public-api/{catchAll}",
-      "DelegatingHandlers": [ "GraphQlDelegatingHandler" ],
-      "UpstreamHttpMethod": [ "Post", "Get" ]
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "UpstreamPathTemplate": "/public-api/{catchAll}"
+    },
+    {
+      "DelegatingHandlers": [
+        "GraphQlDelegatingHandler"
+      ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7002
+        }
+      ],
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "UpstreamPathTemplate": "/content-api/{catchAll}"
+    },
+    {
+      "DelegatingHandlers": [
+        "GraphQlDelegatingHandler"
+      ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "UpstreamPathTemplate": "/identity-api/{catchAll}"
     }
-  ],
-  "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7000"
-  }
+  ]
 }

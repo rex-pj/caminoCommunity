@@ -41,9 +41,11 @@ namespace Api.Public
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "http://localhost:5000", "http://localhost:45678")
+                    builder.WithOrigins("http://localhost:3000",
+                        "http://localhost:7000",
+                        "http://localhost:5000", 
+                        "http://localhost:45678")
                         .AllowAnyMethod()
-                        //.WithExposedHeaders("HeaderUserHash")
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });

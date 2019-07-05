@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Farm.Controllers
 {
-    [Route("api/farm")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class FarmController : ControllerBase
+    public class HomeController : ControllerBase
     {
         // GET api/values
         [HttpGet, Route("")]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> Index()
         {
             return new string[] { "Farm1", "Farm2" };
         }

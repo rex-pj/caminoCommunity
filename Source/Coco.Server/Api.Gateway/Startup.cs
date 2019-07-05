@@ -27,7 +27,9 @@ namespace Api.Gateway
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "http://localhost:5000", "http://localhost:45678")
+                    builder.WithOrigins("http://localhost:3000", 
+                        "http://localhost:5000", 
+                        "http://localhost:45678")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
@@ -52,11 +54,11 @@ namespace Api.Gateway
             }
 
             // Config UseCors
-            app.UseCors(MyAllowSpecificOrigins);
-
-            app.UseHttpsRedirection();
-            app.UseOcelot().Wait();
-            app.UseMvc();
+            app.UseCors(MyAllowSpecificOrigins)
+                .UseHttpsRedirection()
+                .UseMvc()
+                .UseOcelot()
+                .Wait();
         }
     }
 }

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Content.Controllers
 {
-    [Route("api/posts")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PostController : ControllerBase
+    public class HomeController : ControllerBase
     {
         // GET api/user
         [HttpGet, Route("")]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> Index()
         {
             return new string[] { "post1", "post2" };
         }
