@@ -1,9 +1,9 @@
 ﻿using Coco.Entities.Constant;
-using Coco.Entities.Domain.Account;
+using Coco.Entities.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.UserDAL.MappingConfigs.AccountMappings
+namespace Coco.IdentityDAL.MappingConfigs
 {
     public class UserInfoMappingConfig : IEntityTypeConfiguration<UserInfo>
     {

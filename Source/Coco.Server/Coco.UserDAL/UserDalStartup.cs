@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Coco.UserDAL
+namespace Coco.IdentityDAL
 {
     public class UserDalStartup : IBootstrapper
     {

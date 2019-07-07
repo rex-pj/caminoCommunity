@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Coco.UserDAL.Implementations
+namespace Coco.IdentityDAL.Implementations
 {
     public class EfUserRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {

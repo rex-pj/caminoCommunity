@@ -2,7 +2,7 @@
 using Coco.Contract;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Model.Auth;
-using Coco.UserDAL;
+using Coco.IdentityDAL;
 using System;
 using System.Linq;
 

@@ -10,10 +10,8 @@ using GraphQL;
 using Api.Identity.Mutations;
 using GraphQL.Types;
 using Api.Identity.GraphQLSchemas;
-using Api.Identity.GraphQLTypes.InputTypes;
 using Api.Identity.GraphQLTypes.ResultTypes;
 using Api.Identity.Queries;
-using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework;
 using Api.Identity.Resolvers;
 
@@ -59,23 +57,6 @@ namespace Api.Identity
         {
             FrameworkStartup.AddCustomStores(services);
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
-
-                options.Stores.ShouldProtectPersonalData = true;
-
-                // User settings.
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            });
-
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
@@ -88,7 +69,8 @@ namespace Api.Identity
 
             var sp = services.BuildServiceProvider();
 
-            services.AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            services
+                .AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
         }
 

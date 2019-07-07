@@ -1,10 +1,19 @@
-﻿using Coco.Api.Framework.GraphQLQueries;
+﻿using Coco.Api.Framework.AccountIdentity;
+using Coco.Api.Framework.Commons.Helpers;
+using Coco.Api.Framework.GraphQLQueries;
+using Coco.Api.Framework.GraphQLTypes;
+using Coco.Business.Contracts;
 using GraphQL;
 using GraphQL.Types;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Coco.Api.Framework.Controllers
@@ -30,6 +39,12 @@ namespace Coco.Api.Framework.Controllers
             {
                 throw new ArgumentNullException(nameof(query));
             }
+            var headers = HttpHelper.GetAuthorizationHeaders(this.HttpContext);
+
+            await _schema.ExecuteAsync(_=> {
+                _.Query = "...";
+                _.UserContext = new GraphQLUserContext();
+            });
 
             var inputs = query.Variables?.ToInputs();
             var executionOptions = new ExecutionOptions()

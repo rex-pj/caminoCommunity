@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Content.Controllers
@@ -9,9 +9,10 @@ namespace Api.Content.Controllers
     {
         // GET api/user
         [HttpGet, Route("")]
-        public ActionResult<IEnumerable<string>> Index()
+        [EnableCors("AllowOrigin")]
+        public IActionResult Index()
         {
-            return new string[] { "post1", "post2" };
+            return Content("Content Api");
         }
     }
 }

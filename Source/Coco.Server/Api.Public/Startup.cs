@@ -91,7 +91,8 @@ namespace Api.Public
 
             var sp = services.BuildServiceProvider();
 
-            services.AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            services
+                .AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
         }
 

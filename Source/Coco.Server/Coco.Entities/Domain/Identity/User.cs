@@ -1,11 +1,10 @@
 ﻿using Coco.Entities.Base;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Farm;
 using Coco.Entities.Domain.Work;
 using System;
 using System.Collections.Generic;
 
-namespace Coco.Entities.Domain.Account
+namespace Coco.Entities.Domain.Identity
 {
     public class User : BaseEntity
     {
@@ -19,6 +18,9 @@ namespace Coco.Entities.Domain.Account
         
         public long Id { get; set; }
         public string Email { get; set; }
+        public string Lastname { get; set; }
+        public string Firstname { get; set; }
+        public string DisplayName { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
         public string AuthenticatorToken { get; set; }

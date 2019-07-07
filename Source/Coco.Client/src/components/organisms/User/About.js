@@ -103,39 +103,13 @@ export default class extends Component {
                 <InfoList>
                   <UnserInfoWWithLabel label="Họ &amp; Tên">
                     <div className="row">
-                      <div className="col-auto">
-                        <TextEditable
-                          value={userInfo.lastname}
-                          primaryKey={userInfo.userHashedId}
-                          name="lastname"
-                          onUpdated={e =>
-                            this.onEditable(e, updateUserInfoItem)
-                          }
-                          disabled={!canEdit}
-                        />
-                      </div>
+                      <div className="col-auto">{userInfo.lastname}</div>
                       <div className="col-auto">-</div>
-                      <div className="col-auto">
-                        <TextEditable
-                          value={userInfo.firstname}
-                          primaryKey={userInfo.userHashedId}
-                          name="firstname"
-                          onUpdated={e =>
-                            this.onEditable(e, updateUserInfoItem)
-                          }
-                          disabled={!canEdit}
-                        />
-                      </div>
+                      <div className="col-auto">{userInfo.firstname}</div>
                     </div>
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Tên hiển thị">
-                    <TextEditable
-                      value={userInfo.displayName}
-                      primaryKey={userInfo.userHashedId}
-                      name="displayName"
-                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
-                      disabled={!canEdit}
-                    />
+                    {userInfo.displayName}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Về bản thân">
                     <TextAreaEditable

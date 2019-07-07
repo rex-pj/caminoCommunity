@@ -7,13 +7,13 @@ using System.Linq;
 
 namespace Coco.Api.Framework.Commons.Helpers
 {
-    public class HttpHelper
+    public static class HttpHelper
     {
-        public static UserAuthenticationHeaders GetAuthorizationHeaders(ResolveFieldContext<object> context)
+        public static UserAuthenticationHeaders GetAuthorizationHeaders(HttpContext context)
         {
-            var httpContext = context.UserContext as DefaultHttpContext;
+            var httpContext = context as DefaultHttpContext;
             var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
-
+            
             var authenticationToken = httpHeaders.HeaderAuthorization;
             var userHashedIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
             var userHashedId = userHashedIds.FirstOrDefault();

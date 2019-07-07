@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Dbo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.UserDAL.MappingConfigs.DboMappings
+namespace Coco.IdentityDAL.MappingConfigs
 {
     public class CountryMappingConfig : IEntityTypeConfiguration<Country>
     {

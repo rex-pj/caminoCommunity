@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Farm.Controllers
@@ -9,9 +9,10 @@ namespace Api.Farm.Controllers
     {
         // GET api/values
         [HttpGet, Route("")]
-        public ActionResult<IEnumerable<string>> Index()
+        [EnableCors("AllowOrigin")]
+        public IActionResult Index()
         {
-            return new string[] { "Farm1", "Farm2" };
+            return Content("Farm Api");
         }
     }
 }

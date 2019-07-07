@@ -3,13 +3,12 @@ using Coco.Business.Mapping;
 using Coco.Business.Validation;
 using Coco.Business.Validation.Interfaces;
 using Coco.Contract;
-using Coco.Entities.Domain.Account;
+using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
 using Coco.Entities.Model.General;
-using Coco.UserDAL;
+using Coco.IdentityDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Implementation
@@ -105,11 +104,9 @@ namespace Coco.Business.Implementation
             user.AuthenticatorToken = model.AuthenticatorToken;
             user.SecurityStamp = model.SecurityStamp;
             user.Expiration = model.Expiration;
-
-
-            user.UserInfo.DisplayName = model.DisplayName;
-            user.UserInfo.Firstname = model.Firstname;
-            user.UserInfo.Lastname = model.Lastname;
+            user.DisplayName = model.DisplayName;
+            user.Firstname = model.Firstname;
+            user.Lastname = model.Lastname;
 
             if (user.UserInfo == null)
             {
@@ -142,15 +139,15 @@ namespace Coco.Business.Implementation
             userInfo.Description = user.Description;
             userInfo.GenderId = user.GenderId;
             userInfo.PhoneNumber = user.PhoneNumber;
-            userInfo.DisplayName = user.DisplayName;
-            userInfo.Firstname = user.Firstname;
-            userInfo.Lastname = user.Lastname;
 
             if (userInfo.User == null)
             {
                 throw new ArgumentNullException(nameof(userInfo.User));
             }
 
+            userInfo.User.DisplayName = user.DisplayName;
+            userInfo.User.Firstname = user.Firstname;
+            userInfo.User.Lastname = user.Lastname;
             userInfo.User.UpdatedById = user.Id;
             userInfo.User.UpdatedDate = DateTime.Now;
 
@@ -220,6 +217,11 @@ namespace Coco.Business.Implementation
 
             var userInfo = _userInfoRepository.Find(model.Key);
 
+            if (userInfo == null)
+            {
+                throw new ArgumentNullException(nameof(userInfo));
+            }
+
             bool canUpdate = ValidateInfoItem(model, userInfo);
 
             if (!canUpdate)
@@ -235,20 +237,13 @@ namespace Coco.Business.Implementation
 
         private bool ValidateInfoItem(UpdatePerItem model, UserInfo userInfo)
         {
-            bool isValid = true;
-            if (model.PropertyName.Equals(nameof(userInfo.Lastname),
-                StringComparison.InvariantCultureIgnoreCase)
-                || model.PropertyName.Equals(nameof(userInfo.Firstname),
-                StringComparison.InvariantCultureIgnoreCase)
-                || model.PropertyName.Equals(nameof(userInfo.DisplayName),
-                StringComparison.InvariantCultureIgnoreCase))
+            if (userInfo == null)
             {
-                if (model.Value == null || string.IsNullOrEmpty(model.Value.ToString()))
-                {
-                    isValid = false;
-                }
+                throw new ArgumentNullException(nameof(userInfo));
             }
-            else if (model.PropertyName.Equals(nameof(userInfo.PhoneNumber),
+
+            bool isValid = true;
+            if (model.PropertyName.Equals(nameof(userInfo.PhoneNumber),
                 StringComparison.InvariantCultureIgnoreCase))
             {
                 IValidation phoneValidation = new PhoneValidation();

@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Coco.UserDAL.MappingConfigs.AuthMappings;
-using Coco.UserDAL.MappingConfigs.AccountMappings;
-using Coco.UserDAL.MappingConfigs.DboMappings;
-using Coco.UserDAL.MappingConfigs.WorkMappings;
-using Coco.Entities.Domain.Account;
+using Coco.IdentityDAL.MappingConfigs;
+using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Design;
 
-namespace Coco.UserDAL
+namespace Coco.IdentityDAL
 {
     public class CocoUserDbContext : DbContext
     {

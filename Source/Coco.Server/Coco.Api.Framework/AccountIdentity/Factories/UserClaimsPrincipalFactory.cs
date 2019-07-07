@@ -1,4 +1,4 @@
-﻿namespace Coco.Api.Framework.AccountIdentity
+﻿namespace Coco.Api.Framework.AccountIdentity.Factories
 {
     public class UserClaimsPrincipalFactory //: UserClaimsPrincipalFactory<ApplicationUser>
     {
