@@ -12,7 +12,7 @@ namespace Coco.Business.Contracts
         Task<UserModel> FindUserByUsername(string username, bool includeInActived = false);
         void Delete(long id);
         Task<UserModel> UpdateAsync(UserModel user);
-        Task<UserModel> FindByIdAsync(long id);
+        UserModel FindByIdAsync(long id);
         Task<UserFullModel> GetFullByIdAsync(long id);
         Task<UserModel> UpdateInfoAsync(UserModel user);
         Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model);

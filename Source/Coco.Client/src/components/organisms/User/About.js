@@ -103,46 +103,20 @@ export default class extends Component {
                 <InfoList>
                   <UnserInfoWWithLabel label="Họ &amp; Tên">
                     <div className="row">
-                      <div className="col-auto">
-                        <TextEditable
-                          value={userInfo.lastname}
-                          primaryKey={userInfo.userHashedId}
-                          name="lastname"
-                          onUpdated={e =>
-                            this.onEditable(e, updateUserInfoItem)
-                          }
-                          disabled={!canEdit}
-                        />
-                      </div>
+                      <div className="col-auto">{userInfo.lastname}</div>
                       <div className="col-auto">-</div>
-                      <div className="col-auto">
-                        <TextEditable
-                          value={userInfo.firstname}
-                          primaryKey={userInfo.userHashedId}
-                          name="firstname"
-                          onUpdated={e =>
-                            this.onEditable(e, updateUserInfoItem)
-                          }
-                          disabled={!canEdit}
-                        />
-                      </div>
+                      <div className="col-auto">{userInfo.firstname}</div>
                     </div>
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Tên hiển thị">
-                    <TextEditable
-                      value={userInfo.displayName}
-                      primaryKey={userInfo.userHashedId}
-                      name="displayName"
-                      onUpdated={e => this.onEditable(e, updateUserInfoItem)}
-                      disabled={!canEdit}
-                    />
+                    {userInfo.displayName}
                   </UnserInfoWWithLabel>
                   <UnserInfoWWithLabel label="Về bản thân">
                     <TextAreaEditable
                       rows={5}
                       cols={50}
                       value={userInfo.description}
-                      primaryKey={userInfo.userHashedId}
+                      primaryKey={userInfo.userIdentityId}
                       name="description"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -151,7 +125,7 @@ export default class extends Component {
                   <UnserInfoWWithLabel label="Điện thoại">
                     <TextEditable
                       value={userInfo.phoneNumber}
-                      primaryKey={userInfo.userHashedId}
+                      primaryKey={userInfo.userIdentityId}
                       name="phoneNumber"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -160,7 +134,8 @@ export default class extends Component {
                   <UnserInfoWWithLabel label="Giới tính">
                     <SelectEditable
                       value={userInfo.genderId}
-                      primaryKey={userInfo.userHashedId}
+                      text={userInfo.genderLabel}
+                      primaryKey={userInfo.userIdentityId}
                       name="genderId"
                       emptyText="Chọn giới tính"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
@@ -171,7 +146,7 @@ export default class extends Component {
                   <UnserInfoWWithLabel label="Địa chỉ">
                     <TextEditable
                       value={userInfo.address}
-                      primaryKey={userInfo.userHashedId}
+                      primaryKey={userInfo.userIdentityId}
                       name="address"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
@@ -180,7 +155,8 @@ export default class extends Component {
                   <UnserInfoWWithLabel label="Quốc gia">
                     <SelectEditable
                       value={userInfo.countryId}
-                      primaryKey={userInfo.userHashedId}
+                      text={userInfo.countryName}
+                      primaryKey={userInfo.userIdentityId}
                       name="countryId"
                       emptyText="Chọn quốc gia của bạn"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
@@ -192,7 +168,7 @@ export default class extends Component {
                   <UnserInfoWWithLabel label="Sinh nhật">
                     <DateTimeEditable
                       value={userInfo.birthDate}
-                      primaryKey={userInfo.userHashedId}
+                      primaryKey={userInfo.userIdentityId}
                       name="birthDate"
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}

@@ -1,7 +1,7 @@
 ﻿using Coco.Entities.Base;
 using System.Collections.Generic;
 
-namespace Coco.Entities.Domain.Account
+namespace Coco.Entities.Domain.Identity
 {
     public class Gender : BaseEntity
     {

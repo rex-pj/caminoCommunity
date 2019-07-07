@@ -1,6 +1,6 @@
 const LoggedUser = {
   isLogin: false,
-  authenticatorToken: null,
+  authenticationToken: null,
   lang: "vn",
   userInfo: {}
 };

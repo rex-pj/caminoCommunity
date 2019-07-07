@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
     <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
-    <ProjectReference Include="..\Coco.UserDAL\Coco.UserDAL.csproj" />
+    <ProjectReference Include="..\Coco.UserDAL\Coco.IdentityDAL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,14 +17,12 @@ namespace Api.Public.Resolvers
     {
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IAccountManager<ApplicationUser> _accountManager;
-        private readonly ICountryBusiness _countryBusiness;
 
         public AccountResolver(ILoginManager<ApplicationUser> loginManager,
-            IAccountManager<ApplicationUser> accountManager, ICountryBusiness countryBusiness)
+            IAccountManager<ApplicationUser> accountManager)
         {
             _loginManager = loginManager;
             _accountManager = accountManager;
-            _countryBusiness = countryBusiness;
         }
 
         public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)

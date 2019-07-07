@@ -18,9 +18,9 @@ export const SIGNIN = gpl`
       result {
         userInfo {
           displayName,
-          userHashedId
+          userIdentityId
         },
-        authenticatorToken,
+        authenticationToken,
       },
       isSuccess,
       errors {
@@ -38,7 +38,7 @@ export const GET_LOGGED_USER = gpl`
       firstname,
       email,
       displayName,
-      userHashedId
+      userIdentityId
     }
   }
 `;
@@ -49,7 +49,7 @@ export const GET_USER_INFO = gpl`
       result{
         email,
         displayName,
-        userHashedId,
+        userIdentityId,
         address,
         birthDate,
         countryId,
@@ -81,7 +81,7 @@ export const GET_FULL_USER_INFO = gpl`
         countryName
         countryId
         statusLabel
-        userHashedId
+        userIdentityId
         genderSelections {
           id
           text

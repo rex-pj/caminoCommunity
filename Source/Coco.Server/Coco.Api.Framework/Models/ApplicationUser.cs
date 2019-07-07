@@ -25,7 +25,8 @@ namespace Coco.Api.Framework.Models
         public bool IsActived { get; set; }
         public byte StatusId { get; set; }
         public string PhoneNumber { get; set; }
-        public string AuthenticatorToken { get; set; }
+        public string AuthenticationToken { get; set; }
+        public string UserIdentityId { get; set; }
         public string SecurityStamp { get; set; }
         public DateTime? Expiration { get; set; }
         public string StatusLabel { get; set; }

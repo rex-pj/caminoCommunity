@@ -1,48 +1,38 @@
 ﻿using Api.Identity.Models;
 using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
+using Coco.Api.Framework.Resolvers;
 using Coco.Business.Contracts;
 using Coco.Common.Const;
 using Coco.Entities.Enums;
 using GraphQL;
 using GraphQL.Types;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Identity.Resolvers
 {
-    public class AccountResolver
+    public class AccountResolver : BaseResolver
     {
-        private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IAccountManager<ApplicationUser> _accountManager;
         private readonly ICountryBusiness _countryBusiness;
 
-        public AccountResolver(ILoginManager<ApplicationUser> loginManager,
-            IAccountManager<ApplicationUser> accountManager, ICountryBusiness countryBusiness)
+        public AccountResolver(IAccountManager<ApplicationUser> accountManager,
+            ICountryBusiness countryBusiness)
         {
-            _loginManager = loginManager;
             _accountManager = accountManager;
             _countryBusiness = countryBusiness;
         }
 
-        public async Task<UserInfo> GetLoggedUserAsync(ResolveFieldContext<object> context)
+        public UserInfo GetLoggedUser(IWorkContext workContext)
         {
             try
             {
-                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
-
-                var result = await _accountManager.GetLoggingUser(userHeaderParams.UserIdHashed, userHeaderParams.AuthenticationToken);
-                if (result == null)
-                {
-                    return new UserInfo();
-                }
-
-                return UserInfoMapping.ApplicationUserToUserInfo(result, userHeaderParams.UserIdHashed);
+                return UserInfoMapping.ApplicationUserToUserInfo(workContext.CurrentUser,
+                    workContext.CurrentUser.UserIdentityId);
             }
             catch (Exception ex)
             {
@@ -55,19 +45,21 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = context.GetArgument<FindUserModel>("criterias");
-                var headerParams = HttpHelper.GetAuthorizationHeaders(context);
-                var userHashId = model.UserId;
 
-                if (string.IsNullOrEmpty(model.UserId))
+                var userContext = context.UserContext as IWorkContext;
+                var userIdentityId = model.UserId;
+
+                if (string.IsNullOrEmpty(model.UserId) && userContext != null
+                    && userContext.CurrentUser != null)
                 {
-                    userHashId = headerParams.UserIdHashed;
+                    userIdentityId = userContext.CurrentUser.UserIdentityId;
                 }
 
-                var user = await _accountManager.GetFullByHashIdAsync(userHashId);
+                var user = await _accountManager.GetFullByHashIdAsync(userIdentityId);
 
                 var result = UserInfoMapping.ApplicationUserToFullUserInfo(user);
-                result.UserHashedId = userHashId;
-                if (!user.AuthenticatorToken.Equals(headerParams.AuthenticationToken))
+                result.UserIdentityId = userIdentityId;
+                if (userContext.CurrentUser == null || !user.AuthenticationToken.Equals(userContext.AuthenticationToken))
                 {
                     return ApiResult<UserInfoExt>.Success(result);
                 }
@@ -131,14 +123,19 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = context.GetArgument<UpdatePerItemModel>("criterias");
-                var userHeaderParams = HttpHelper.GetAuthorizationHeaders(context);
+                var userContext = context.UserContext as IWorkContext;
 
                 if (!model.CanEdit)
                 {
                     throw new UnauthorizedAccessException();
                 }
 
-                var result = await _accountManager.UpdateInfoItemAsync(model, userHeaderParams.AuthenticationToken);
+                if (userContext == null || userContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var result = await _accountManager.UpdateInfoItemAsync(model, userContext.CurrentUser.AuthenticationToken);
                 HandleContextError(context, result.Errors);
 
                 return result;
@@ -146,23 +143,6 @@ namespace Api.Identity.Resolvers
             catch (Exception ex)
             {
                 throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
-            }
-        }
-
-        private void HandleContextError(ResolveFieldContext<object> context, IEnumerable<ApiError> errors)
-        {
-            if (errors != null && errors.Any())
-            {
-                foreach (var error in errors)
-                {
-                    if (!context.Errors.Any() || !context.Errors.Any(x => error.Code.Equals(x.Code)))
-                    {
-                        context.Errors.Add(new ExecutionError(error.Description)
-                        {
-                            Code = error.Code
-                        });
-                    }
-                }
             }
         }
     }

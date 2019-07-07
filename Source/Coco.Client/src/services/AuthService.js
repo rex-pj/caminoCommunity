@@ -28,7 +28,7 @@ function getUserToken() {
 async function getLoggedUserInfo() {
   const tokenkey = getLocalStorageByKey(AUTH_KEY);
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
-  const userHashedId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
+  const userIdentityId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
   let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
 
   userLanguage = userLanguage ? userLanguage : "vn";
@@ -36,7 +36,7 @@ async function getLoggedUserInfo() {
   let currentUser = {
     isLogin,
     tokenkey,
-    userHashedId,
+    userIdentityId,
     userLanguage
   };
 
@@ -86,7 +86,7 @@ function parseUserInfo(response) {
 const setLogin = (userInfo, token) => {
   if (userInfo) {
     setLocalStorage(AUTH_DISPLAY_NAME, userInfo.displayName);
-    setLocalStorage(AUTH_USER_HASHED_ID, userInfo.userHashedId);
+    setLocalStorage(AUTH_USER_HASHED_ID, userInfo.userIdentityId);
   }
 
   setUserToken(token);

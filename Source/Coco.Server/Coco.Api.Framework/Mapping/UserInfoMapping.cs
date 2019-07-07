@@ -6,11 +6,11 @@ namespace Coco.Api.Framework.Mapping
 {
     public static class UserInfoMapping
     {
-        public static UserInfo ApplicationUserToUserInfo(ApplicationUser user, string userHashedId)
+        public static UserInfo ApplicationUserToUserInfo(ApplicationUser user, string userIdentityId)
         {
             return new UserInfo()
             {
-                UserHashedId = userHashedId,
+                UserIdentityId = userIdentityId,
                 Email = user.Email,
                 Lastname = user.Lastname,
                 Firstname = user.Firstname,
@@ -55,7 +55,7 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = userModel.StatusId,
                 UpdatedById = userModel.UpdatedById,
                 Expiration = userModel.Expiration,
-                AuthenticatorToken = userModel.AuthenticatorToken,
+                AuthenticationToken = userModel.AuthenticationToken,
                 SecurityStamp = userModel.SecurityStamp
             };
 
@@ -84,7 +84,7 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = loggedUser.StatusId,
                 UpdatedById = loggedUser.UpdatedById,
                 Expiration = loggedUser.Expiration,
-                AuthenticatorToken = loggedUser.AuthenticatorToken,
+                AuthenticationToken = loggedUser.AuthenticationToken,
                 SecurityStamp = loggedUser.SecurityStamp
             };
 
@@ -115,7 +115,7 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = userModel.StatusId,
                 UpdatedById = userModel.UpdatedById,
                 Expiration = userModel.Expiration,
-                AuthenticatorToken = userModel.AuthenticatorToken,
+                AuthenticationToken = userModel.AuthenticationToken,
                 SecurityStamp = userModel.SecurityStamp,
                 CountryCode = userModel.CountryCode,
                 CountryName = userModel.CountryName,

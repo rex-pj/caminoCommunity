@@ -15,11 +15,11 @@ export default function({ component: Component, ...rest }) {
 
     const user = {
       lang: "vn",
-      authenticatorToken: data.tokenkey,
+      authenticationToken: data.tokenkey,
       isLogin: data.isLogin,
       userInfo: {
         displayName: data.displayName,
-        userHashedId: data.userHashedId
+        userIdentityId: data.userIdentityId
       }
     };
     return user;

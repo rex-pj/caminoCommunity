@@ -7,7 +7,7 @@ namespace Api.Public.GraphQLTypes.ResultTypes
     {
         public SigninResultType()
         {
-            Field(x => x.AuthenticatorToken, type: typeof(StringGraphType));
+            Field(x => x.AuthenticationToken, type: typeof(StringGraphType));
             Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
             Field(x => x.UserInfo, type: typeof(UserInfoResultType));
         }

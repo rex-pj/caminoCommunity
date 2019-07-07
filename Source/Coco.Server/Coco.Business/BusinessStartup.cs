@@ -3,12 +3,12 @@ using Coco.Business.Implementation;
 using Coco.Contract;
 using Coco.DAL;
 using Coco.DAL.Implementations;
-using Coco.Entities.Domain.Account;
+using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Farm;
-using Coco.UserDAL;
-using Coco.UserDAL.Implementations;
+using Coco.IdentityDAL;
+using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

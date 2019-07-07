@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Work;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.UserDAL.MappingConfigs.WorkMappings
+namespace Coco.IdentityDAL.MappingConfigs
 {
     public class UserCareerMappingConfig : IEntityTypeConfiguration<UserCareer>
     {

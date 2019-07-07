@@ -485,7 +485,7 @@
         "dependencies": {
           "Coco.Contract": "1.0.0",
           "Coco.DAL": "1.0.0",
-          "Coco.UserDAL": "1.0.0"
+          "Coco.IdentityDAL": "1.0.0"
         },
         "runtime": {
           "Coco.Business.dll": {}
@@ -537,15 +537,15 @@
           "Coco.Entities.dll": {}
         }
       },
-      "Coco.UserDAL/1.0.0": {
+      "Coco.IdentityDAL/1.0.0": {
         "dependencies": {
           "Coco.Contract": "1.0.0"
         },
         "runtime": {
-          "Coco.UserDAL.dll": {}
+          "Coco.IdentityDAL.dll": {}
         },
         "compile": {
-          "Coco.UserDAL.dll": {}
+          "Coco.IdentityDAL.dll": {}
         }
       },
       "Microsoft.AspNet.WebApi.Client/5.2.6": {
@@ -3695,7 +3695,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Coco.UserDAL/1.0.0": {
+    "Coco.IdentityDAL/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

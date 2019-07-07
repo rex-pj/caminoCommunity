@@ -14,8 +14,8 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
         Task<ApiResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default);
-        Task<TUser> FindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken);
-        Task<TUser> GetFullByFindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken);
+        TUser FindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken);
+        Task<TUser> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken);
         Task<ApiResult> UpdateInfoAsync(TUser user, CancellationToken cancellationToken = default);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel user, CancellationToken cancellationToken = default);
 

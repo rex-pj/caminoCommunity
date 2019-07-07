@@ -7,21 +7,21 @@ using System.Linq;
 
 namespace Coco.Api.Framework.Commons.Helpers
 {
-    public class HttpHelper
+    public static class HttpHelper
     {
-        public static UserAuthenticationHeaders GetAuthorizationHeaders(ResolveFieldContext<object> context)
+        public static WorkContextHeaders GetAuthorizationHeaders(HttpContext context)
         {
-            var httpContext = context.UserContext as DefaultHttpContext;
+            var httpContext = context as DefaultHttpContext;
             var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
-
+            
             var authenticationToken = httpHeaders.HeaderAuthorization;
-            var userHashedIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
-            var userHashedId = userHashedIds.FirstOrDefault();
+            var userIdentityIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
+            var userHashedId = userIdentityIds.FirstOrDefault();
 
-            var headerParams = new UserAuthenticationHeaders()
+            var headerParams = new WorkContextHeaders()
             {
                 AuthenticationToken = authenticationToken,
-                UserIdHashed = userHashedId
+                UserIdentityId = userHashedId
             };
 
             return headerParams;

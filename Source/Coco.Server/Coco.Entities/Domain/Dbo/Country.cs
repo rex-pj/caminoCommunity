@@ -1,5 +1,5 @@
 ﻿using Coco.Entities.Base;
-using Coco.Entities.Domain.Account;
+using Coco.Entities.Domain.Identity;
 using System;
 using System.Collections.Generic;
 

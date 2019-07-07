@@ -15,8 +15,8 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<TUser> FindByNameAsync(string userName);
         Task<string> GetUserIdAsync(TUser user);
         Task<ApiResult> CheckPasswordAsync(TUser user, string password);
-        Task<TUser> GetLoggingUser(string userIdHased, string authenticatorToken);
-        Task<TUser> GetFullByHashIdAsync(string userIdHased);
+        TUser GetLoggingUser(string userIdentityId, string authenticationToken);
+        Task<TUser> GetFullByHashIdAsync(string userIdentityId);
         Task<ApiResult> UpdateInfoAsync(TUser user);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token);
     }

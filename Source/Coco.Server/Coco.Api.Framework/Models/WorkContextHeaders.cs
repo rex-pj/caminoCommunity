@@ -1,8 +1,8 @@
 ﻿namespace Coco.Api.Framework.Models
 {
-    public class UserAuthenticationHeaders
+    public class WorkContextHeaders
     {
         public string AuthenticationToken { get; set; }
-        public string UserIdHashed { get; set; }
+        public string UserIdentityId { get; set; }
     }
 }

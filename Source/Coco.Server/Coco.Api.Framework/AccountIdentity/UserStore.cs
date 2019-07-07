@@ -103,15 +103,15 @@ namespace Coco.Api.Framework.AccountIdentity
                 var userModel = GetUserEntity(user);
 
                 var result = await _accountBusiness.UpdateAsync(userModel);
-                string userHashedId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
+                string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
                 return new ApiResult<LoginResult>(true)
                 {
                     Result = new LoginResult()
                     {
-                        AuthenticatorToken = result.AuthenticatorToken,
+                        AuthenticationToken = result.AuthenticationToken,
                         Expiration = result.Expiration,
-                        UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userHashedId)
+                        UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userIdentityId)
                     }
                 };
             }
@@ -179,40 +179,40 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
-        public async Task<ApplicationUser> FindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken)
+        public ApplicationUser FindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
+            var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var user = await FindByIdAsync(userId, cancellationToken);
-            return await Task.FromResult(user);
+            var user = FindByIdAsync(userId, cancellationToken);
+            return user;
         }
 
-        private async Task<ApplicationUser> FindByIdAsync(long id, CancellationToken cancellationToken)
+        private ApplicationUser FindByIdAsync(long id, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = await _accountBusiness.FindByIdAsync(id);
+            var userEntity = _accountBusiness.FindByIdAsync(id);
 
-            return await Task.FromResult(GetApplicationUser(userEntity));
+            return GetApplicationUser(userEntity);
         }
 
-        public async Task<ApplicationUser> GetFullByFindByHashedIdAsync(string userIdHased, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userIdDecrypted = _textCrypter.Decrypt(userIdHased, _textCrypterSaltKey);
+            var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
             var user = await GetFullByIdAsync(userId, cancellationToken);

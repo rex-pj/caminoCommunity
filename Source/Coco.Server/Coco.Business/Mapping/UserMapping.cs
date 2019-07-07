@@ -1,6 +1,7 @@
-﻿using Coco.Entities.Domain.Account;
+﻿using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
 using System;
+using System.Web;
 
 namespace Coco.Business.Mapping
 {
@@ -16,11 +17,11 @@ namespace Coco.Business.Mapping
                 CountryId = userModel.CountryId,
                 Description = userModel.Description,
                 PhoneNumber = userModel.PhoneNumber,
-                DisplayName = userModel.DisplayName,
-                Firstname = userModel.Firstname,
-                Lastname = userModel.Lastname,
                 User = new User()
                 {
+                    DisplayName = userModel.DisplayName,
+                    Firstname = userModel.Firstname,
+                    Lastname = userModel.Lastname,
                     UpdatedDate = DateTime.Now,
                     CreatedDate = DateTime.Now,
                     UpdatedById = userModel.UpdatedById,
@@ -28,7 +29,7 @@ namespace Coco.Business.Mapping
                     Email = userModel.Email,
                     Password = userModel.Password,
                     PasswordSalt = userModel.PasswordSalt,
-                    AuthenticatorToken = userModel.AuthenticatorToken,
+                    AuthenticatorToken = userModel.AuthenticationToken,
                     SecurityStamp = userModel.SecurityStamp,
                     Expiration = userModel.Expiration,
                     IsActived = userModel.IsActived,
@@ -48,6 +49,9 @@ namespace Coco.Business.Mapping
 
             UserModel userModel = new UserModel
             {
+                DisplayName = user.DisplayName,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
                 UpdatedDate = user.UpdatedDate,
                 CreatedDate = user.CreatedDate,
                 UpdatedById = user.UpdatedById,
@@ -58,7 +62,7 @@ namespace Coco.Business.Mapping
                 Password = user.Password,
                 PasswordSalt = user.PasswordSalt,
                 Expiration = user.Expiration,
-                AuthenticatorToken = user.AuthenticatorToken,
+                AuthenticationToken = user.AuthenticatorToken,
                 SecurityStamp = user.SecurityStamp,
                 Id = user.Id
             };
@@ -69,12 +73,8 @@ namespace Coco.Business.Mapping
                 userModel.Address = user.UserInfo.Address;
                 userModel.BirthDate = user.UserInfo.BirthDate;
                 userModel.CountryId = user.UserInfo.CountryId;
-                userModel.Description = user.UserInfo.Description;
                 userModel.PhoneNumber = user.UserInfo.PhoneNumber;
                 userModel.Id = user.Id;
-                userModel.DisplayName = user.UserInfo.DisplayName;
-                userModel.Firstname = user.UserInfo.Firstname;
-                userModel.Lastname = user.UserInfo.Lastname;
             }
 
             return userModel;
@@ -99,9 +99,12 @@ namespace Coco.Business.Mapping
                 Password = user.Password,
                 PasswordSalt = user.PasswordSalt,
                 Expiration = user.Expiration,
-                AuthenticatorToken = user.AuthenticatorToken,
+                AuthenticationToken = user.AuthenticatorToken,
                 SecurityStamp = user.SecurityStamp,
-                Id = user.Id
+                Id = user.Id,
+                DisplayName = user.DisplayName,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
             };
 
             if (user.Status != null)
@@ -117,9 +120,6 @@ namespace Coco.Business.Mapping
                 userModel.CountryId = user.UserInfo.CountryId;
                 userModel.Description = user.UserInfo.Description;
                 userModel.PhoneNumber = user.UserInfo.PhoneNumber;
-                userModel.DisplayName = user.UserInfo.DisplayName;
-                userModel.Firstname = user.UserInfo.Firstname;
-                userModel.Lastname = user.UserInfo.Lastname;
             }
 
             if (user.UserInfo.Country != null)

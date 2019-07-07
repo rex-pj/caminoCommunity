@@ -4,6 +4,7 @@ using Api.Identity.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
+using Coco.Api.Framework.AccountIdentity;
 
 namespace Api.Identity.Queries
 {
@@ -11,12 +12,20 @@ namespace Api.Identity.Queries
     {
         public AccountQuery(AccountResolver accountResolver)
         {
-            FieldAsync<UserInfoResultType>("loggedUser",
-                resolve: async context => await accountResolver.GetLoggedUserAsync(context));
+            Field<UserInfoResultType>("loggedUser",
+                resolve: context =>
+                {
+                    var userContext = context.UserContext as WorkContext;
+                    return accountResolver.GetLoggedUser(userContext);
+                });
 
             FieldAsync<ApiResultType<FullUserInfoResultType, UserInfoExt>>("fullUserInfo",
                 arguments: new QueryArguments(new QueryArgument<FindUserInputType> { Name = "criterias" }),
-                resolve: async context => await accountResolver.GetFullUserInfoAsync(context));
+                resolve: async context =>
+                {
+                    var userContext = context.UserContext as WorkContext;
+                    return await accountResolver.GetFullUserInfoAsync(context);
+                });
         }
     }
 }

@@ -66,7 +66,7 @@ function Options(props) {
 }
 
 export default function(props) {
-  const { selections, value, name, disabled } = props;
+  const { selections, value, name, disabled, text } = props;
   const [status, setStatus] = useState("");
   let statusTimer = null;
 
@@ -79,10 +79,14 @@ export default function(props) {
     return () => clearTimeout(statusTimer);
   }, []);
 
-  const current =
-    value && selections
-      ? selections.find(item => item.id.toString() === value.toString())
-      : { id: 0, text: "Not selected" };
+  let current = null;
+  if (value && selections && selections.count > 0) {
+    current = selections.find(item => item.id.toString() === value.toString());
+  } else if (value && text) {
+    current = { id: value, text: text };
+  } else {
+    current = { id: 0, text: "Not selected" };
+  }
 
   const [selectedValue, updateSelectedValue] = useState({
     id: current ? current.id : null,

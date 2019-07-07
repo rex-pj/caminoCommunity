@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.UserDAL.MappingConfigs.AuthMappings
+namespace Coco.IdentityDAL.MappingConfigs
 {
     public class RoleMappingConfig : IEntityTypeConfiguration<Role>
     {

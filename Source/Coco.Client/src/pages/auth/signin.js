@@ -60,7 +60,7 @@ class SingnInPage extends Component {
             return;
           }
 
-          AuthService.setLogin(result.userInfo, result.authenticatorToken);
+          AuthService.setLogin(result.userInfo, result.authenticationToken);
 
           this.context.login();
           this.props.history.push("/");

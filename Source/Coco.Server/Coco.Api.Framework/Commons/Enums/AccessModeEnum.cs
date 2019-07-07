@@ -1,6 +1,6 @@
 ﻿namespace Coco.Api.Framework.Commons.Enums
 {
-    public enum AccessModifierEnum
+    public enum AccessModeEnum
     {
         ReadOnly = 1,
         CanEdit = 2

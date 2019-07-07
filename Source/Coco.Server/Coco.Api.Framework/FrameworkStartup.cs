@@ -2,6 +2,7 @@
 using Coco.Api.Framework.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Api.Framework.AccountIdentity.Contracts;
+using Microsoft.AspNetCore.Http;
 
 namespace Coco.Api.Framework
 {
@@ -9,21 +10,20 @@ namespace Coco.Api.Framework
     {
         public static void AddCustomStores(IServiceCollection services)
         {
-            services.AddTransient<ILookupNormalizer, LookupNormalizer>();
-            services.AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>();
-            services.AddTransient<IUserValidator<ApplicationUser>, UserValidator>();
-
-            services.AddTransient<IAccountManager<ApplicationUser>, AccountManager>();
-            services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
-
-            services.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>();
-
-            services.AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>();
-            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
-            services.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>();
-            services.AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>();
-            services.AddTransient<ILookupProtector, SillyEncryptor>();
-            services.AddTransient<ITextCrypter, TextCrypter>();
+            services.AddTransient<ILookupNormalizer, LookupNormalizer>()
+                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                .AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>()
+                .AddTransient<IUserValidator<ApplicationUser>, UserValidator>()
+                .AddTransient<IAccountManager<ApplicationUser>, AccountManager>()
+                .AddTransient<ILoginManager<ApplicationUser>, LoginManager>()
+                .AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
+                .AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
+                .AddTransient<IUserStore<ApplicationUser>, UserStore>()
+                .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
+                .AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>()
+                .AddTransient<ILookupProtector, SillyEncryptor>()
+                .AddTransient<ITextCrypter, TextCrypter>()
+                .AddTransient<IWorkContext, WorkContext>();
         }
     }
 }
