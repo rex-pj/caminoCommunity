@@ -12,7 +12,7 @@ namespace Api.Public.GraphQLTypes.ResultTypes
             Field(x => x.Email, type: typeof(StringGraphType));
             Field(x => x.DisplayName, type: typeof(StringGraphType));
             Field(x => x.IsActived, type: typeof(BooleanGraphType));
-            Field(x => x.UserHashedId, type: typeof(StringGraphType));
+            Field(x => x.UserIdentityId, type: typeof(StringGraphType));
 
             Field(x => x.Address, type: typeof(StringGraphType));
             Field(x => x.BirthDate, type: typeof(DateTimeGraphType));

@@ -12,7 +12,7 @@ namespace Coco.Api.Framework.Models
         public UserInfo(UserInfo userInfo)
         {
             Address = userInfo.Address;
-            UserHashedId = userInfo.UserHashedId;
+            UserIdentityId = userInfo.UserIdentityId;
             Email = userInfo.Email;
             Lastname = userInfo.Lastname;
             Firstname = userInfo.Firstname;
@@ -33,7 +33,7 @@ namespace Coco.Api.Framework.Models
             CountryName = userInfo.CountryName;
         }
 
-        public string UserHashedId { get; set; }
+        public string UserIdentityId { get; set; }
         public string Email { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }

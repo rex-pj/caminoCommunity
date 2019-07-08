@@ -56,7 +56,7 @@ const StaticBar = styled.div`
 
 export default function(props) {
   const { className, menuList } = props;
-  const userHashedId = props.userInfo ? props.userInfo.userHashedId : null;
+  const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
   return (
     <Root className={className}>
       <ProfileImage src={`${process.env.PUBLIC_URL}/photos/farmer.png`} />
@@ -71,7 +71,7 @@ export default function(props) {
           <Menubar menuList={menuList} />
         </StaticBar>
         <Username>
-          <AnchorLink to={userHashedId ? `/profile/${userHashedId}` : ""}>
+          <AnchorLink to={userIdentityId ? `/profile/${userIdentityId}` : ""}>
             {props.userInfo ? props.userInfo.displayName : ""}
           </AnchorLink>
         </Username>

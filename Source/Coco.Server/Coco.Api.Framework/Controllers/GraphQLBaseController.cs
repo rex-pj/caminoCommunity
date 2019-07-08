@@ -1,19 +1,11 @@
-﻿using Coco.Api.Framework.AccountIdentity;
-using Coco.Api.Framework.Commons.Helpers;
+﻿using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.GraphQLQueries;
-using Coco.Api.Framework.GraphQLTypes;
-using Coco.Business.Contracts;
 using GraphQL;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Coco.Api.Framework.Controllers
@@ -23,12 +15,14 @@ namespace Coco.Api.Framework.Controllers
     {
         protected readonly ISchema _schema;
         protected readonly IDocumentExecuter _documentExecuter;
+        protected readonly IWorkContext _workContext;
 
-        public GraphQLBaseController(ISchema schema, IDocumentExecuter documentExecuter) :
+        public GraphQLBaseController(ISchema schema, IDocumentExecuter documentExecuter, IWorkContext workContext) :
             base()
         {
             _schema = schema;
             _documentExecuter = documentExecuter;
+            _workContext = workContext;
         }
 
         [HttpPost]
@@ -39,12 +33,6 @@ namespace Coco.Api.Framework.Controllers
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            var headers = HttpHelper.GetAuthorizationHeaders(this.HttpContext);
-
-            await _schema.ExecuteAsync(_=> {
-                _.Query = "...";
-                _.UserContext = new GraphQLUserContext();
-            });
 
             var inputs = query.Variables?.ToInputs();
             var executionOptions = new ExecutionOptions()
@@ -52,7 +40,7 @@ namespace Coco.Api.Framework.Controllers
                 Schema = _schema,
                 Query = query.Query,
                 Inputs = inputs,
-                UserContext = this.HttpContext
+                UserContext = _workContext
             };
 
             var result = await _documentExecuter.ExecuteAsync(executionOptions);

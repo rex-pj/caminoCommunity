@@ -18,7 +18,7 @@ namespace Coco.Api.Framework.Models
 
         public static ApiResult Success(TResult result, bool canEdit)
         {
-            var accessMode = canEdit ? AccessModifierEnum.CanEdit : AccessModifierEnum.ReadOnly;
+            var accessMode = canEdit ? AccessModeEnum.CanEdit : AccessModeEnum.ReadOnly;
             var updateResult = new ApiResult<TResult>(true)
             {
                 Result = result,
@@ -36,7 +36,7 @@ namespace Coco.Api.Framework.Models
             Errors = new List<ApiError>();
         }
 
-        public AccessModifierEnum AccessMode { get; set; }
+        public AccessModeEnum AccessMode { get; set; }
 
         public bool IsSuccess { get; set; }
         public List<ApiError> Errors { get; protected set; }

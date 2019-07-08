@@ -9,6 +9,7 @@ using Coco.Entities.Model.General;
 using Coco.IdentityDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Implementation
@@ -101,7 +102,7 @@ namespace Coco.Business.Implementation
             user.StatusId = model.StatusId;
             user.UpdatedById = model.UpdatedById;
             user.UpdatedDate = DateTime.Now;
-            user.AuthenticatorToken = model.AuthenticatorToken;
+            user.AuthenticatorToken = model.AuthenticationToken;
             user.SecurityStamp = model.SecurityStamp;
             user.Expiration = model.Expiration;
             user.DisplayName = model.DisplayName;
@@ -168,12 +169,12 @@ namespace Coco.Business.Implementation
             return userModel;
         }
 
-        public async Task<UserModel> FindByIdAsync(long id)
+        public UserModel FindByIdAsync(long id)
         {
-            var existUser = await _userRepository
+            var existUser = _userRepository
                 .Get(x => x.Id.Equals(id))
                 .Include(x => x.UserInfo)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
             if (existUser != null)
             {

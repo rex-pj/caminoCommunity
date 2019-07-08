@@ -283,27 +283,27 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <summary>
         /// Finds and returns a user, if any, who has the specified authenticator token and user id in hashed.
         /// </summary>
-        /// <param name="authenticatorToken">The authenticator token to search for.</param>
-        /// <param name="userIdHased">The user id hased has been hashed</param>
+        /// <param name="authenticationToken">The authenticator token to search for.</param>
+        /// <param name="userIdentityId">The user id hased has been hashed</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticationToken"/> and <paramref name="userIdentityId"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetLoggingUser(string userIdHased, string authenticatorToken)
+        public virtual ApplicationUser GetLoggingUser(string userIdentityId, string authenticationToken)
         {
             ThrowIfDisposed();
-            if (string.IsNullOrEmpty(userIdHased))
+            if (string.IsNullOrEmpty(userIdentityId))
             {
-                throw new ArgumentNullException(nameof(userIdHased));
+                throw new ArgumentNullException(nameof(userIdentityId));
             }
 
-            if (string.IsNullOrEmpty(authenticatorToken))
+            if (string.IsNullOrEmpty(authenticationToken))
             {
-                throw new ArgumentNullException(nameof(authenticatorToken));
+                throw new ArgumentNullException(nameof(authenticationToken));
             }
 
-            var user = await UserStore.FindByHashedIdAsync(userIdHased, CancellationToken);
+            var user = UserStore.FindByHashedIdAsync(userIdentityId, CancellationToken);
 
-            if (!user.AuthenticatorToken.Equals(authenticatorToken))
+            if (!user.AuthenticationToken.Equals(authenticationToken))
             {
                 throw new SecurityTokenException();
 
@@ -316,19 +316,19 @@ namespace Coco.Api.Framework.AccountIdentity
         /// Finds and returns a full data of user, if any, who has the specified authenticator token and user id in hashed.
         /// </summary>
         /// <param name="authenticatorToken">The authenticator token to search for.</param>
-        /// <param name="userIdHased">The user id hased has been hashed</param>
+        /// <param name="userIdentityId">The user id hased has been hashed</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdHased"/> if it exists.
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdentityId"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetFullByHashIdAsync(string userIdHased)
+        public virtual async Task<ApplicationUser> GetFullByHashIdAsync(string userIdentityId)
         {
             ThrowIfDisposed();
-            if (string.IsNullOrEmpty(userIdHased))
+            if (string.IsNullOrEmpty(userIdentityId))
             {
-                throw new ArgumentNullException(nameof(userIdHased));
+                throw new ArgumentNullException(nameof(userIdentityId));
             }
 
-            var user = await UserStore.GetFullByFindByHashedIdAsync(userIdHased, CancellationToken);
+            var user = await UserStore.GetFullByFindByHashedIdAsync(userIdentityId, CancellationToken);
             return user;
         }
 
@@ -435,7 +435,7 @@ namespace Coco.Api.Framework.AccountIdentity
             );
 
             user.Expiration = expiration;
-            user.AuthenticatorToken = new JwtSecurityTokenHandler().WriteToken(token);
+            user.AuthenticationToken = new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var user = await GetFullByHashIdAsync(model.Key.ToString());
-            if (user == null || !user.AuthenticatorToken.Equals(token))
+            if (user == null || !user.AuthenticationToken.Equals(token))
             {
                 throw new UnauthorizedAccessException(nameof(user));
             }

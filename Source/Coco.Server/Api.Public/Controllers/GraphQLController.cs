@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.Controllers;
 using Coco.Api.Framework.GraphQLQueries;
 using GraphQL;
@@ -12,8 +13,8 @@ namespace Api.Public.Controllers
     [ApiController]
     public class GraphQLController : GraphQLBaseController
     {
-        public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter) :
-            base(schema, documentExecuter)
+        public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter, IWorkContext workContext) :
+            base(schema, documentExecuter, workContext)
         {
         }
 

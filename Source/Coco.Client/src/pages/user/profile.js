@@ -44,7 +44,7 @@ export default withRouter(
       return {
         ...result,
         avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-        url: result.userHashedId ? `/profile/${result.userHashedId}` : "",
+        url: result.userIdentityId ? `/profile/${result.userIdentityId}` : "",
         coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
       };
     }

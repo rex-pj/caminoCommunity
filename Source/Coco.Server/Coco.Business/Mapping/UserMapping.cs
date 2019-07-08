@@ -29,7 +29,7 @@ namespace Coco.Business.Mapping
                     Email = userModel.Email,
                     Password = userModel.Password,
                     PasswordSalt = userModel.PasswordSalt,
-                    AuthenticatorToken = userModel.AuthenticatorToken,
+                    AuthenticatorToken = userModel.AuthenticationToken,
                     SecurityStamp = userModel.SecurityStamp,
                     Expiration = userModel.Expiration,
                     IsActived = userModel.IsActived,
@@ -62,7 +62,7 @@ namespace Coco.Business.Mapping
                 Password = user.Password,
                 PasswordSalt = user.PasswordSalt,
                 Expiration = user.Expiration,
-                AuthenticatorToken = user.AuthenticatorToken,
+                AuthenticationToken = user.AuthenticatorToken,
                 SecurityStamp = user.SecurityStamp,
                 Id = user.Id
             };
@@ -99,7 +99,7 @@ namespace Coco.Business.Mapping
                 Password = user.Password,
                 PasswordSalt = user.PasswordSalt,
                 Expiration = user.Expiration,
-                AuthenticatorToken = user.AuthenticatorToken,
+                AuthenticationToken = user.AuthenticatorToken,
                 SecurityStamp = user.SecurityStamp,
                 Id = user.Id,
                 DisplayName = user.DisplayName,

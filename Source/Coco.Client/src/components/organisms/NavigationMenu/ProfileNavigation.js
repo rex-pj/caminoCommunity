@@ -53,14 +53,14 @@ const UserName = styled.span`
 export default function(props) {
   const [profileState, setProfileState] = useState({ dropdowns: null });
 
-  const userHashedId = props.userInfo ? props.userInfo.userHashedId : null;
+  const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
   useEffect(() => {
     if (profileState.dropdowns === null) {
       setProfileState({
         dropdowns: [
           {
             name: "Thông tin cá nhân",
-            url: userHashedId ? `/profile/${userHashedId}` : ""
+            url: userIdentityId ? `/profile/${userIdentityId}` : ""
           },
           {
             name: "Thoát",
@@ -74,7 +74,7 @@ export default function(props) {
   return (
     <Root>
       <PorfileButtonGroup>
-        <ProfileButton to={`/profile/${userHashedId}`}>
+        <ProfileButton to={`/profile/${userIdentityId}`}>
           <ImageCircle
             src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
             alt=""
