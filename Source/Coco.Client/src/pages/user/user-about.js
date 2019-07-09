@@ -5,6 +5,7 @@ import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { defaultClient } from "../../utils/GraphQLClient";
 
 export default withRouter(
   class extends Component {
@@ -18,6 +19,7 @@ export default withRouter(
               userId
             }
           }}
+          client={defaultClient}
         >
           {({ loading, error, data }) => {
             if (loading) {

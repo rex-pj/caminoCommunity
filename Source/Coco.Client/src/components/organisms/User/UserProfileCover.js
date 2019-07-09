@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
-import { Thumbnail } from "../../molecules/Thumbnails";
+import loadable from "@loadable/component";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
-import Overlay from "../../atoms/Overlay";
-import { ImageCircle } from "../../atoms/Images";
+const ProfileAvatar = loadable(() => import("./ProfileAvatar")),
+  UserCoverPhoto = loadable(() => import("./UserCoverPhoto"));
 
 const GroupThumbnail = styled.div`
   margin-top: 0;
@@ -12,39 +12,26 @@ const GroupThumbnail = styled.div`
   max-height: 300px;
   background-color: ${p => p.theme.color.normal};
 
-  a.cover-link {
-    display: block;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  a.profile-avatar {
-    position: absolute;
-    bottom: ${p => p.theme.size.distance};
-    left: ${p => p.theme.size.distance};
-    width: 110px;
-    height: 110px;
-    border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
-    background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
-    z-index: 1;
-    border-radius: 100%;
-  }
-
-  a.profile-name {
-    position: absolute;
-    bottom: ${p => p.theme.size.distance};
-    left: 135px;
-    z-index: 2;
+  .profile-name {
     font-weight: 600;
     color: ${p => p.theme.color.white};
     font-size: ${p => p.theme.fontSize.large};
   }
+
+  h2 {
+    left: 135px;
+    bottom: ${p => p.theme.size.small};
+    z-index: 3;
+    margin-bottom: 0;
+    position: absolute;
+  }
 `;
 
-const ThumbnailOverlay = styled(Overlay)`
-  height: 100px;
-  top: auto;
-  bottom: 0;
+const AvatarBlock = styled(ProfileAvatar)`
+  position: absolute;
+  bottom: ${p => p.theme.size.distance};
+  left: ${p => p.theme.size.distance};
+  z-index: 3;
 `;
 
 const ConnectButton = styled(ButtonIconOutlineSecondary)`
@@ -55,31 +42,42 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
   position: absolute;
   bottom: ${p => p.theme.size.distance};
   right: ${p => p.theme.size.distance};
-  z-index: 1;
+  z-index: 3;
 `;
 
-const ProfileImage = styled(ImageCircle)`
-  display: block;
-`;
+export default class extends Component {
+  onToggleEditMode = e => {
+    this.setState({
+      isEditCoverMode: e
+    });
+  };
 
-export default function(props) {
-  const { userInfo } = props;
-  return (
-    <GroupThumbnail>
-      <a href={userInfo.url} className="cover-link">
-        <Thumbnail src={userInfo.coverImageUrl} alt="" />
-        <ThumbnailOverlay />
-      </a>
-      <a href={userInfo.url} className="profile-name">
-        {userInfo.displayName}
-      </a>
-      <a href={userInfo.url} className="profile-avatar">
-        <ProfileImage src={userInfo.avatarUrl} />
-      </a>
+  render() {
+    const { userInfo, canEdit } = this.props;
+    const { isEditCoverMode } = this.state;
 
-      <ConnectButton icon="user-plus" size="sm">
-        Kết nối
-      </ConnectButton>
-    </GroupThumbnail>
-  );
+    return (
+      <GroupThumbnail>
+        <UserCoverPhoto
+          userInfo={userInfo}
+          canEdit={canEdit}
+          onEditMode={this.onToggleEditMode}
+        />
+        <AvatarBlock
+          userInfo={userInfo}
+          canEdit={canEdit && !isEditCoverMode}
+        />
+        <h2>
+          <a href={userInfo.url} className="profile-name">
+            {userInfo.displayName}
+          </a>
+        </h2>
+        {!isEditCoverMode ? (
+          <ConnectButton icon="user-plus" size="sm">
+            Kết nối
+          </ConnectButton>
+        ) : null}
+      </GroupThumbnail>
+    );
+  }
 }

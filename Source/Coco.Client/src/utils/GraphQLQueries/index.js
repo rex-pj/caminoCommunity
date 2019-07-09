@@ -38,7 +38,8 @@ export const GET_LOGGED_USER = gpl`
       firstname,
       email,
       displayName,
-      userIdentityId
+      userIdentityId,
+      avatarUrl
     }
   }
 `;
@@ -46,17 +47,19 @@ export const GET_LOGGED_USER = gpl`
 export const GET_USER_INFO = gpl`
   query($criterias: FindUserInputType!){
     fullUserInfo(criterias: $criterias){
+      accessMode
       result{
-        email,
-        displayName,
-        userIdentityId,
-        address,
-        birthDate,
-        countryId,
-        countryName,
-        description,
-        createdDate,
-        phoneNumber
+        email
+        displayName
+        userIdentityId
+        address
+        birthDate
+        countryName
+        description
+        createdDate
+        phoneNumber,
+        avatarUrl,
+        coverPhotoUrl
       }
     }
   }
@@ -95,29 +98,6 @@ export const GET_FULL_USER_INFO = gpl`
   }
 `;
 
-export const GET_USER_INFO_TO_UPDATE = gpl`
-  query($criterias: FindUserInputType!){
-    fullUserInfo(criterias: $criterias){
-      result{
-        birthDate,
-        displayName,
-        email,
-        firstname,
-        lastname,
-        genderId,
-        createdDate,
-        description,
-        address,
-        countryId,
-        phoneNumber,
-        statusId,
-        genderLabel,
-        countryName
-      }
-    }
-  }
-`;
-
 export const UPDATE_USER_INFO_PER_ITEM = gpl`
   mutation UpdateUserInfoItem($criterias: UpdatePerItemInputType!){
     updateUserInfoItem(criterias: $criterias){
@@ -129,6 +109,42 @@ export const UPDATE_USER_INFO_PER_ITEM = gpl`
       result {
         value,
         propertyName
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER_AVATAR = gpl`
+  mutation UpdateAvatar($criterias: UpdateAvatarInputType!){
+    updateAvatar(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        photoUrl,
+        xAxis,
+        yAxis,
+        width,
+        height,
+        contentType,
+        canEdit
+      }
+    }
+  }
+`;
+
+export const DELETE_USER_AVATAR = gpl`
+  mutation DeleteAvatar($criterias: DeleteAvatarInputType!){
+    deleteAvatar(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        canEdit
       }
     }
   }

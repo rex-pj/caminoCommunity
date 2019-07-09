@@ -11,6 +11,7 @@ using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Coco.Business.ValidationStrategies;
 
 namespace Coco.Business
 {
@@ -23,21 +24,24 @@ namespace Coco.Business
         {
             _config = config;
             _dalStartup = new DalStartup(_config);
-            _userDalStartup = new UserDalStartup(_config);
+            _userDalStartup = new IdentityDalStartup(_config);
         }
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddTransient<IAccountBusiness, AccountBusiness>();
-            services.AddTransient<ICountryBusiness, CountryBusiness>();
-            services.AddTransient<IRoleBusiness, RoleBusiness>();
+            services.AddTransient<IAccountBusiness, AccountBusiness>()
+                .AddTransient<ICountryBusiness, CountryBusiness>()
+                .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
+                .AddTransient<IRoleBusiness, RoleBusiness>();
 
-            services.AddTransient<IRepository<User>, EfUserRepository<User>>();
-            services.AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>();
-            services.AddTransient<IRepository<Country>, EfUserRepository<Country>>();
-            services.AddTransient<IRepository<Role>, EfUserRepository<Role>>();
+            services.AddTransient<IRepository<User>, EfUserRepository<User>>()
+                .AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>()
+                .AddTransient<IRepository<Country>, EfUserRepository<Country>>()
+                .AddTransient<IRepository<Role>, EfUserRepository<Role>>()
+                .AddTransient<IRepository<UserPhoto>, EfUserRepository<UserPhoto>>();
 
-            services.AddTransient<IRepository<Product>, EfRepository<Product>>();
+            services.AddTransient<IRepository<Product>, EfRepository<Product>>()
+                .AddTransient<ValidationStrategyContext>();
             
             _dalStartup.RegiserTypes(services);
             _userDalStartup.RegiserTypes(services);

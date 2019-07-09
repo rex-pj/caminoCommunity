@@ -9,8 +9,11 @@ const AnchorLink = withRouter(({ ...props }) => {
 
   path = path ? (path.split(":") ? path.split(":")[0] : path) : null;
 
+  const toNormalized = to ? to.split("/")[1] : to;
+  const pathNormalized = path.split("/")[1];
+
   const activedClass =
-    path === to || path === `${to}/` ? `${className}${" actived"}` : className;
+    pathNormalized === toNormalized ? `${className}${" actived"}` : className;
   return (
     <Link to={to} className={`${activedClass}`} target={target}>
       {children}

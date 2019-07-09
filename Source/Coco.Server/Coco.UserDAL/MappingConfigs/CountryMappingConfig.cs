@@ -12,6 +12,10 @@ namespace Coco.IdentityDAL.MappingConfigs
             builder.ToTable(nameof(Country), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            builder.HasMany(x => x.UserInfos)
+                .WithOne(x => x.Country)
+                .HasForeignKey(x => x.CountryId);
         }
     }
 }

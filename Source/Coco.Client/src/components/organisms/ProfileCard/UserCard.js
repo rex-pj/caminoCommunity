@@ -5,6 +5,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Menubar from "./Menubar";
 import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
+import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const Root = styled.div`
   position: relative;
@@ -44,6 +45,18 @@ const ProfileImage = styled(ImageCircle)`
   z-index: 1;
 `;
 
+const EmptyAvatar = styled(NoAvatar)`
+  border-radius: ${p => p.theme.borderRadius.large};
+  width: 55px;
+  height: 55px;
+  font-size: 24px;
+  position: absolute;
+  top: -20px;
+  left: 15px;
+  border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
+  z-index: 1;
+`;
+
 const BoxShadowBar = styled.div`
   position: relative;
 `;
@@ -56,10 +69,20 @@ const StaticBar = styled.div`
 
 export default function(props) {
   const { className, menuList } = props;
-  const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
+  const { userInfo } = props;
+  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
   return (
     <Root className={className}>
-      <ProfileImage src={`${process.env.PUBLIC_URL}/photos/farmer.png`} />
+      {userInfo && userInfo.avatarUrl ? (
+        <ProfileImage
+          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${
+            userInfo.avatarUrl
+          }`}
+        />
+      ) : (
+        <EmptyAvatar />
+      )}
+
       <BoxShadowBar>
         <CoverWrapper>
           <Thumbnail

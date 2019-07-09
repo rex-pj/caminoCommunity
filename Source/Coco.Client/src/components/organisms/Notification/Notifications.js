@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import NotifyItem from "./NotifyItem";
 import { connect } from "react-redux";
-import * as actionTypes from "../../../store/actions";
+import * as actionTypes from "../../../store/notifyActions";
 
 const Root = styled.div`
   position: absolute;
@@ -78,4 +78,10 @@ class Notifications extends Component {
   }
 }
 
-export default connect()(Notifications);
+const mapStateToProps = state => {
+  return {
+    notify: state.notifyRdc.notify
+  };
+};
+
+export default connect(mapStateToProps)(Notifications);

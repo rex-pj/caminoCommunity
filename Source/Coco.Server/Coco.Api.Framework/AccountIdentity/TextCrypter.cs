@@ -1,5 +1,5 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Commons.Helper;
+using Coco.Commons.Helpers;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Security.Cryptography;
@@ -42,14 +42,14 @@ namespace Coco.Api.Framework.AccountIdentity
                         memoryStream.Close();
                     }
 
-                    return DataConverter.BytesToString(cipherTextBytes);
+                    return DataConverters.BytesToString(cipherTextBytes);
                 }
             }
         }
 
         public string Decrypt(string encryptedText, string saltKey)
         {
-            var cipherTextBytes = DataConverter.StringToBytes(encryptedText);
+            var cipherTextBytes = DataConverters.StringToBytes(encryptedText);
             using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);

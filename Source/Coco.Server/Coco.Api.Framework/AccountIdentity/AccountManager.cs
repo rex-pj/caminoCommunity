@@ -14,6 +14,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Coco.Entities.Model.General;
+using Coco.Entities.Model.Account;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -301,12 +303,11 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(authenticationToken));
             }
 
-            var user = UserStore.FindByHashedIdAsync(userIdentityId, CancellationToken);
+            var user = UserStore.FindByIdentityId(userIdentityId, CancellationToken);
 
-            if (!user.AuthenticationToken.Equals(authenticationToken))
+            if (!user.AuthenticationToken.Equals(authenticationToken) && !user.IsActived)
             {
-                throw new SecurityTokenException();
-
+                throw new UnauthorizedAccessException();
             }
 
             return user;
@@ -320,7 +321,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdentityId"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetFullByHashIdAsync(string userIdentityId)
+        public virtual async Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId)
         {
             ThrowIfDisposed();
             if (string.IsNullOrEmpty(userIdentityId))
@@ -462,27 +463,6 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to updated.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
-        public virtual async Task<ApiResult> UpdateInfoAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return await UserStore.UpdateInfoAsync(user, CancellationToken);
-        }
-
-        /// <summary>
         /// Creates the specified <paramref name="model"/> in the backing store with no password,
         /// as an asynchronous operation.
         /// </summary>
@@ -512,6 +492,30 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
+        }
+
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
+        {
+            ThrowIfDisposed();
+
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
+        }
+
+        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId)
+        {
+            ThrowIfDisposed();
+
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            return await UserStore.DeleteAvatarAsync(userId, CancellationToken);
         }
 
         #endregion

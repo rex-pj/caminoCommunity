@@ -31,6 +31,40 @@ const Button = styled.button`
   }
 `;
 
+const ButtonSecondary = styled(Button)`
+  border: 1px solid ${p => p.theme.color.normal};
+  background-color: ${p => p.theme.color.light};
+  color: ${p => p.theme.color.normal};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.rgbaColor.moreLight};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.rgbaColor.moreLight};
+  }
+`;
+
+const ButtonAlert = styled(Button)`
+  border: 1px solid ${p => p.theme.color.warning};
+  background-color: ${p => p.theme.color.warningLight};
+  color: ${p => p.theme.color.warning};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.warningLight};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.warningLight};
+  }
+`;
+
 const ButtonCircle = styled(Button)`
   border-radius: 100%;
 `;
@@ -111,12 +145,31 @@ const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
   }
 `;
 
+const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
+  border: 1px solid ${p => p.theme.color.dangerLight};
+  color: ${p => p.theme.color.dangerLight};
+
+  :active,
+  :hover,
+  :focus-within {
+    color: ${p => p.theme.color.danger};
+    background-color: transparent;
+  }
+
+  :disabled {
+    color: ${p => p.theme.color.danger};
+  }
+`;
+
 export {
   Button,
+  ButtonSecondary,
   ButtonCircle,
   ButtonTransparent,
   ButtonOutlineSecondary,
   ButtonOutlineDark,
   ButtonOutlineNormal,
-  ButtonOutlinePrimary
+  ButtonOutlinePrimary,
+  ButtonAlert,
+  ButtonOutlineDanger
 };

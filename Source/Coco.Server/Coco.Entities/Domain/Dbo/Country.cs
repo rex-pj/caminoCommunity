@@ -1,6 +1,5 @@
 ﻿using Coco.Entities.Base;
 using Coco.Entities.Domain.Identity;
-using System;
 using System.Collections.Generic;
 
 namespace Coco.Entities.Domain.Dbo

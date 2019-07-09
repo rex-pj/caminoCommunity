@@ -18,8 +18,9 @@ namespace Coco.DAL
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddTransient<IConfigurationRoot, ConfigurationRoot>();
-            services.AddDbContext<CocoDbContext>(x => x.UseSqlServer(_connectionString), ServiceLifetime.Scoped);
+            services.AddTransient<IConfigurationRoot, ConfigurationRoot>()
+                .AddDbContext<CocoDbContext>
+                (x => x.UseSqlServer(_connectionString));
         }
     }
 }

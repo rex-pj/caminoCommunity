@@ -4,7 +4,7 @@ import { VerticalList } from "../../atoms/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
 import { QuaternaryHeading } from "../../atoms/Heading";
-import { AnchorLink } from "../../atoms/Links";
+import { NavLink } from "react-router-dom";
 
 const Root = styled.div`
   margin-bottom: 15px;
@@ -96,12 +96,12 @@ export default class extends Component {
               title={item.description}
               index={index}
             >
-              <AnchorLink to={item.href}>
+              <NavLink to={item.href}>
                 <IconBlock>
                   <FontAwesomeIcon icon={item.icon} />
                 </IconBlock>
                 <span>{item.text}</span>
-              </AnchorLink>
+              </NavLink>
             </ModuleMenuListItem>
           ))}
         </ListControl>

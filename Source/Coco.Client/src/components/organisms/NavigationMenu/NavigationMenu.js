@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
 import UserContext from "../../../utils/Context/UserContext";
-import ProfileNavigation from "./ProfileNavigation";
+import ProfileNavigationMenu from "./ProfileNavigationMenu";
 
 const List = styled.ul`
   list-style: none;
@@ -50,7 +50,7 @@ export default props => {
     <UserContext.Consumer>
       {({ isLogin, userInfo }) =>
         isLogin ? (
-          <ProfileNavigation userInfo={userInfo} />
+          <ProfileNavigationMenu userInfo={userInfo} />
         ) : (
           <List className={props.className}>
             <ListItem>

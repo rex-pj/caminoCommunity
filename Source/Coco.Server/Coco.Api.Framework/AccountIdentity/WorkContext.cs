@@ -4,7 +4,6 @@ using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -60,7 +59,7 @@ namespace Coco.Api.Framework.AccountIdentity
         {
             var headerParams = GetAuthorizationHeaders();
 
-            var user = new ApplicationUser();
+            ApplicationUser user = null;
             if (headerParams != null
                 && !string.IsNullOrEmpty(headerParams.AuthenticationToken)
                 && !string.IsNullOrEmpty(headerParams.UserIdentityId))

@@ -27,12 +27,17 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = user.StatusId,
                 CountryCode = user.CountryCode,
                 GenderLabel = user.GenderLabel,
-                CountryName = user.CountryName
+                CountryName = user.CountryName,
+                AvatarUrl = user.AvatarUrl
             };
         }
 
         public static ApplicationUser PopulateApplicationUser(UserModel userModel)
         {
+            if (userModel == null) {
+                return null;
+            }
+
             ApplicationUser applicationUser = new ApplicationUser()
             {
                 Email = userModel.Email,
@@ -56,7 +61,8 @@ namespace Coco.Api.Framework.Mapping
                 UpdatedById = userModel.UpdatedById,
                 Expiration = userModel.Expiration,
                 AuthenticationToken = userModel.AuthenticationToken,
-                SecurityStamp = userModel.SecurityStamp
+                SecurityStamp = userModel.SecurityStamp,
+                AvatarUrl = userModel.AvatarUrl
             };
 
             return applicationUser;
@@ -121,13 +127,15 @@ namespace Coco.Api.Framework.Mapping
                 CountryName = userModel.CountryName,
                 GenderLabel = userModel.GenderLabel,
                 CreatedDate = userModel.CreatedDate,
-                StatusLabel = userModel.StatusLabel
+                StatusLabel = userModel.StatusLabel,
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
             };
 
             return applicationUser;
         }
 
-        public static UserInfoExt ApplicationUserToFullUserInfo(ApplicationUser user)
+        public static UserInfoExt FullUserModelToInfo(UserFullModel user)
         {
             var userInfo = new UserInfo()
             {
@@ -148,7 +156,9 @@ namespace Coco.Api.Framework.Mapping
                 CountryCode = user.CountryCode,
                 CountryName = user.CountryName,
                 GenderLabel = user.GenderLabel,
-                StatusLabel = user.StatusLabel
+                StatusLabel = user.StatusLabel,
+                AvatarUrl = user.AvatarUrl,
+                CoverPhotoUrl = user.CoverPhotoUrl
             };
 
             var result = new UserInfoExt(userInfo);

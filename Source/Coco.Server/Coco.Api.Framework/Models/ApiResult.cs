@@ -9,6 +9,12 @@ namespace Coco.Api.Framework.Models
 
         public TResult Result { get; set; }
 
+        public static ApiResult Success()
+        {
+            var updateResult = new ApiResult(true);
+            return updateResult;
+        }
+
         public static ApiResult Success(TResult result)
         {
             var updateResult = new ApiResult<TResult>(true);

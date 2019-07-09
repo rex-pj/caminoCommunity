@@ -64,7 +64,7 @@ export default class extends Component {
           {
             icon: "envelope",
             name: "trungle.it@gmail.com",
-            url: "/profile/SXaSDRHRfds3zUDFQzC6jg=="
+            url: "/profile/4976920d11d17ddb37cd40c54330ba8e"
           }
         ]
       }
