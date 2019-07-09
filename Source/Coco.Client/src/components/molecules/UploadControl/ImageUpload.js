@@ -1,13 +1,20 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { ButtonTransparent } from "../../atoms/Buttons";
 import DefaultModal from "../../atoms/Modals/DefaultModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const InputFile = styled.input.attrs(p => ({ type: "file" }))`
   display: none;
 `;
 
-const UploadButton = styled(ButtonTransparent)``;
+const UploadButton = styled.span`
+  display: block;
+
+  svg,
+  path {
+    color: inherit;
+  }
+`;
 
 class ImageUpload extends Component {
   constructor(props) {
@@ -48,7 +55,9 @@ class ImageUpload extends Component {
 
     return (
       <div className={this.props.className}>
-        <UploadButton onClick={this.openFileUpload}>Click</UploadButton>
+        <UploadButton onClick={this.openFileUpload}>
+          <FontAwesomeIcon icon="camera" />
+        </UploadButton>
         <InputFile
           ref={this.fileRef}
           type="file"
