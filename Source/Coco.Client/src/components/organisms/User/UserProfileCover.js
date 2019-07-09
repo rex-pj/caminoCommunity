@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Thumbnail } from "../../molecules/Thumbnails";
+import ProfileAvatar from "./ProfileAvatar";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
-import Overlay from "../../atoms/Overlay";
 import { ImageCircle } from "../../atoms/Images";
 
 const GroupThumbnail = styled.div`
@@ -41,12 +40,6 @@ const GroupThumbnail = styled.div`
   }
 `;
 
-const ThumbnailOverlay = styled(Overlay)`
-  height: 100px;
-  top: auto;
-  bottom: 0;
-`;
-
 const ConnectButton = styled(ButtonIconOutlineSecondary)`
   padding: ${p => p.theme.size.tiny};
   font-size: ${p => p.theme.fontSize.exSmall};
@@ -63,13 +56,10 @@ const ProfileImage = styled(ImageCircle)`
 `;
 
 export default function(props) {
-  const { userInfo } = props;
+  const { userInfo, canEdit } = props;
   return (
     <GroupThumbnail>
-      <a href={userInfo.url} className="cover-link">
-        <Thumbnail src={userInfo.coverImageUrl} alt="" />
-        <ThumbnailOverlay />
-      </a>
+      <ProfileAvatar userInfo={userInfo} canEdit={canEdit} />
       <a href={userInfo.url} className="profile-name">
         {userInfo.displayName}
       </a>

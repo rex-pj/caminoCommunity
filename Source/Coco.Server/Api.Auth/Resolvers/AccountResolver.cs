@@ -40,51 +40,6 @@ namespace Api.Identity.Resolvers
             }
         }
 
-        public async Task<ApiResult> GetFullUserInfoAsync(ResolveFieldContext<object> context)
-        {
-            try
-            {
-                var model = context.GetArgument<FindUserModel>("criterias");
-
-                var userContext = context.UserContext as IWorkContext;
-                var userIdentityId = model.UserId;
-
-                if (string.IsNullOrEmpty(model.UserId) && userContext != null
-                    && userContext.CurrentUser != null)
-                {
-                    userIdentityId = userContext.CurrentUser.UserIdentityId;
-                }
-
-                var user = await _accountManager.GetFullByHashIdAsync(userIdentityId);
-
-                var result = UserInfoMapping.ApplicationUserToFullUserInfo(user);
-                result.UserIdentityId = userIdentityId;
-                if (userContext.CurrentUser == null || !user.AuthenticationToken.Equals(userContext.AuthenticationToken))
-                {
-                    return ApiResult<UserInfoExt>.Success(result);
-                }
-
-                var genderOptions = EnumHelper.EnumToSelectList<GenderEnum>();
-
-                result.GenderSelections = genderOptions;
-                var countries = _countryBusiness.GetAll();
-                if (countries != null && countries.Any())
-                {
-                    result.CountrySelections = countries.Select(x => new SelectOption()
-                    {
-                        Id = x.Id.ToString(),
-                        Text = x.Name
-                    });
-                }
-
-                return ApiResult<UserInfoExt>.Success(result, true);
-            }
-            catch (Exception ex)
-            {
-                throw new ExecutionError(ex.ToString(), ex);
-            }
-        }
-
         public async Task<ApiResult> UpdateUserInfoAsync(ResolveFieldContext<object> context)
         {
             try

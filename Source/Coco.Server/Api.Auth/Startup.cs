@@ -64,8 +64,7 @@ namespace Api.Identity
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
                 .AddSingleton<AccountMutation>()
                 .AddSingleton<AccountQuery>()
-                .AddSingleton<ListGraphType>()
-                .AddSingleton<FullUserInfoResultType>();
+                .AddSingleton<ListGraphType>();
 
             var sp = services.BuildServiceProvider();
 

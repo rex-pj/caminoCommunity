@@ -33,6 +33,10 @@ namespace Coco.Api.Framework.Mapping
 
         public static ApplicationUser PopulateApplicationUser(UserModel userModel)
         {
+            if (userModel == null) {
+                return null;
+            }
+
             ApplicationUser applicationUser = new ApplicationUser()
             {
                 Email = userModel.Email,

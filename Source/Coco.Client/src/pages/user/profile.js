@@ -8,6 +8,7 @@ import Timeline from "./timeline";
 import { GET_USER_INFO } from "../../utils/GraphQLQueries";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { defaultClient } from "../../utils/GraphQLClient";
 
 const AsyncTabContent = loadable(props => import(`${props.page}`));
 
@@ -40,9 +41,12 @@ export default withRouter(
 
     parseUserInfo(response) {
       const { fullUserInfo } = response;
-      const { result } = fullUserInfo;
+      const { result, accessMode } = fullUserInfo;
+      const canEdit = accessMode === "CAN_EDIT";
+
       return {
         ...result,
+        canEdit,
         avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         url: result.userIdentityId ? `/profile/${result.userIdentityId}` : "",
         coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
@@ -68,6 +72,7 @@ export default withRouter(
               userId
             }
           }}
+          client={defaultClient}
         >
           {({ loading, error, data }) => {
             if (loading) {
@@ -81,7 +86,10 @@ export default withRouter(
             return (
               <Fragment>
                 <CoverNav>
-                  <UserProfileCover userInfo={userInfo} />
+                  <UserProfileCover
+                    userInfo={userInfo}
+                    canEdit={userInfo.canEdit}
+                  />
                   <ProfileNavigation userId={userId} />
                 </CoverNav>
                 <div className="row">
