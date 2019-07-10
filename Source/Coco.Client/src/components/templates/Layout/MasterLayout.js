@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components";
 import * as theme from "../../../utils/Theme";
 import { connect } from "react-redux";
 import Notifications from "../../organisms/Notification/Notifications";
+import Modal from "../../atoms/Modals/Modal";
 
 function MasterLayout({ component: Component, ...rest }) {
   return (
@@ -14,6 +15,7 @@ function MasterLayout({ component: Component, ...rest }) {
           <Fragment>
             <Component {...matchProps} />
             <Notifications notify={rest.notify} />
+            <Modal options={rest.modal} />
           </Fragment>
         )}
       />
@@ -23,7 +25,8 @@ function MasterLayout({ component: Component, ...rest }) {
 
 const mapStateToProps = state => {
   return {
-    notify: state.notifyRdc.notify
+    notify: state.notifyRdc.notify,
+    modal: state.modalReducer.options
   };
 };
 

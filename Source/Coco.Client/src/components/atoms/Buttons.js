@@ -31,6 +31,22 @@ const Button = styled.button`
   }
 `;
 
+const ButtonSecondary = styled(Button)`
+  border: 1px solid ${p => p.theme.color.normal};
+  background-color: ${p => p.theme.color.light};
+  color: ${p => p.theme.color.normal};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.rgbaColor.moreLight};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.rgbaColor.moreLight};
+  }
+`;
+
 const ButtonCircle = styled(Button)`
   border-radius: 100%;
 `;
@@ -113,6 +129,7 @@ const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
 
 export {
   Button,
+  ButtonSecondary,
   ButtonCircle,
   ButtonTransparent,
   ButtonOutlineSecondary,

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import DefaultModal from "../../atoms/Modals/DefaultModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const InputFile = styled.input.attrs(p => ({ type: "file" }))`
@@ -19,7 +18,6 @@ const UploadButton = styled.span`
 class ImageUpload extends Component {
   constructor(props) {
     super(props);
-    this.state = { file: "", imagePreviewUrl: "" };
 
     this.fileRef = React.createRef();
   }
@@ -27,14 +25,17 @@ class ImageUpload extends Component {
   handleImageChange = e => {
     e.preventDefault();
 
-    let reader = new FileReader();
-    let file = e.target.files[0];
+    const reader = new FileReader();
+    const file = e.target.files[0];
 
     reader.onloadend = () => {
-      this.setState({
-        file: file,
-        imagePreviewUrl: reader.result
-      });
+      if (this.props.onChange) {
+        this.props.onChange({
+          event: e,
+          file,
+          preview: reader.result
+        });
+      }
     };
 
     reader.readAsDataURL(file);
@@ -47,12 +48,6 @@ class ImageUpload extends Component {
   };
 
   render() {
-    let { imagePreviewUrl } = this.state;
-    let imagePreview = null;
-    if (imagePreviewUrl) {
-      imagePreview = <img alt="" src={imagePreviewUrl} />;
-    }
-
     return (
       <div className={this.props.className}>
         <UploadButton onClick={this.openFileUpload}>
@@ -63,7 +58,6 @@ class ImageUpload extends Component {
           type="file"
           onChange={e => this.handleImageChange(e)}
         />
-        <DefaultModal>{imagePreview}</DefaultModal>
       </div>
     );
   }

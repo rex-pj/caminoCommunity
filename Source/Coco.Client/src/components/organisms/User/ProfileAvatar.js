@@ -1,10 +1,13 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
-import { ImageCircle } from "../../atoms/Images";
+import { ImageRound } from "../../atoms/Images";
+import { openModal } from "../../../store/commands";
 
-const ProfileImage = styled(ImageCircle)`
+const ProfileImage = styled(ImageRound)`
   display: block;
+  border-radius: ${p => p.theme.borderRadius.medium};
 `;
 
 const Wrap = styled.div`
@@ -13,22 +16,26 @@ const Wrap = styled.div`
 
 const AvatarUpload = styled(ImageUpload)`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -15px;
+  right: -15px;
   z-index: 2;
   text-align: center;
   margin: auto;
 
   span {
-    color: ${p => p.theme.color.light};
+    color: ${p => p.theme.color.exLight};
     width: ${p => p.theme.size.medium};
     height: ${p => p.theme.size.medium};
     border-radius: 100%;
     padding: 0 ${p => p.theme.size.exTiny};
-    background-color: ${p => p.theme.rgbaColor.exDark};
+    background-color: ${p => p.theme.rgbaColor.moreDark};
     border: 1px solid ${p => p.theme.rgbaColor.dark};
     cursor: pointer;
     font-weight: 600;
+
+    :hover {
+      background-color: ${p => p.theme.rgbaColor.exDark};
+    }
 
     svg {
       display: block;
@@ -43,18 +50,37 @@ const AvatarLink = styled.a`
   height: 110px;
   border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
   background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
-  border-radius: 100%;
+  border-radius: 20px;
 `;
 
-export default function(props) {
-  const { userInfo, canEdit } = props;
+class ProfileAvatar extends Component {
+  onChangeAvatar = e => {
+    this.props.openUploadModal(e.preview, "Upload Modal", "crop-image");
+  };
 
-  return (
-    <Wrap className={props.className}>
-      <AvatarLink href={userInfo.url}>
-        <ProfileImage src={userInfo.avatarUrl} />
-      </AvatarLink>
-      {!!canEdit ? <AvatarUpload /> : null}
-    </Wrap>
-  );
+  render() {
+    const { userInfo, canEdit, className } = this.props;
+
+    return (
+      <Wrap className={className}>
+        <AvatarLink href={userInfo.url}>
+          <ProfileImage src={userInfo.avatarUrl} />
+        </AvatarLink>
+        {!!canEdit ? <AvatarUpload onChange={this.onChangeAvatar} /> : null}
+      </Wrap>
+    );
+  }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    openUploadModal: (children, title, modalType) => {
+      openModal(dispatch, children, title, modalType);
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ProfileAvatar);
