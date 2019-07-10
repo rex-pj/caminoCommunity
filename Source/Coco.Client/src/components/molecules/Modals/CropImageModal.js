@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
-import { PanelFooter } from "../Panels";
-import { Button, ButtonSecondary } from "../Buttons";
+import { PanelFooter, PanelBody } from "../../atoms/Panels";
+import { Button, ButtonSecondary } from "../../atoms/Buttons";
 import ReactCrop from "react-image-crop";
 
 const ImageWrap = styled.div`
@@ -106,15 +106,17 @@ export default class extends Component {
     const { crop, src } = this.state;
     return (
       <Fragment>
-        <ImageWrap>
-          <ReactCrop
-            src={src}
-            crop={crop}
-            onImageLoaded={this.onImageLoaded}
-            onComplete={this.onCropComplete}
-            onChange={this.onCropChange}
-          />
-        </ImageWrap>
+        <PanelBody>
+          <ImageWrap>
+            <ReactCrop
+              src={src}
+              crop={crop}
+              onImageLoaded={this.onImageLoaded}
+              onComplete={this.onCropComplete}
+              onChange={this.onCropChange}
+            />
+          </ImageWrap>
+        </PanelBody>
         <PanelFooter>
           <Button size="sm" onClick={this.onExecute}>
             Upload

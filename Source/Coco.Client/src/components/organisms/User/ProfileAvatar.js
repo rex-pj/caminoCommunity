@@ -55,8 +55,14 @@ const AvatarLink = styled.a`
 
 class ProfileAvatar extends Component {
   onChangeAvatar = e => {
-    this.props.openUploadModal(e.preview, "Upload Modal", "crop-image");
+    this.props.openUploadModal(e.preview, "Upload avatar", "crop-image");
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.modalPayload !== nextProps.modalPayload) {
+      console.log(nextProps);
+    }
+  }
 
   render() {
     const { userInfo, canEdit, className } = this.props;
@@ -80,7 +86,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+const mapStateToProps = state => {
+  return {
+    modalPayload: state.modalReducer.payload
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ProfileAvatar);

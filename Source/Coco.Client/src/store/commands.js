@@ -36,4 +36,13 @@ function closeModal(dispatch, isOpen, children, title) {
   });
 }
 
-export { raiseError, openModal, closeModal };
+function modalPushData(dispatch, data) {
+  dispatch({
+    type: modalActions.PUSH_DATA,
+    payload: {
+      ...data
+    }
+  });
+}
+
+export { raiseError, openModal, closeModal, modalPushData };

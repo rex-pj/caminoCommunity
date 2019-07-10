@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import { PanelBody, PanelFooter } from "../Panels";
-import { Button, ButtonSecondary } from "../Buttons";
+import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { Button, ButtonSecondary } from "../../atoms/Buttons";
 
 export default function(props) {
   const { children } = props;

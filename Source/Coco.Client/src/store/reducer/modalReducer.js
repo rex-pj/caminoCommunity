@@ -1,4 +1,5 @@
 const initialState = {
+  payload: null,
   options: {
     isOpen: false,
     children: null,
@@ -16,6 +17,11 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       options: action.payload
+    };
+  } else if (action.type === "PUSH_DATA") {
+    return {
+      ...state,
+      payload: action.payload
     };
   }
 

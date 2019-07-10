@@ -4,7 +4,8 @@ import { ThemeProvider } from "styled-components";
 import * as theme from "../../../utils/Theme";
 import { connect } from "react-redux";
 import Notifications from "../../organisms/Notification/Notifications";
-import Modal from "../../atoms/Modals/Modal";
+import Modal from "../../molecules/Modals/Modal";
+import { modalPushData } from "../../../store/commands";
 
 function MasterLayout({ component: Component, ...rest }) {
   return (
@@ -15,13 +16,21 @@ function MasterLayout({ component: Component, ...rest }) {
           <Fragment>
             <Component {...matchProps} />
             <Notifications notify={rest.notify} />
-            <Modal options={rest.modal} />
+            <Modal options={rest.modal} pushData={rest.openUploadModal} />
           </Fragment>
         )}
       />
     </ThemeProvider>
   );
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    openUploadModal: data => {
+      modalPushData(dispatch, data);
+    }
+  };
+};
 
 const mapStateToProps = state => {
   return {
@@ -30,4 +39,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(MasterLayout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MasterLayout);

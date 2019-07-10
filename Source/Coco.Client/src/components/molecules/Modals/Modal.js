@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
-import { PanelDefault, PanelFooter } from "../Panels";
+import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
 import CropImageModal from "./CropImageModal";
 
@@ -12,19 +12,24 @@ const Root = styled(PanelDefault)`
   z-index: 100;
   margin: 0 auto;
   max-width: 980px;
-  max-height: 100%;
   position: absolute;
 `;
 
 const Scroll = styled.div`
   position: relative;
 
+  ${PanelHeading} {
+    border-bottom: 1px solid ${p => p.theme.color.light};
+    font-weight: 600;
+  }
+
   ${PanelFooter} {
     border-top: 1px solid ${p => p.theme.color.light};
     text-align: right;
 
     button {
-      margin-left: 3px;
+      margin-left: ${p => p.theme.size.tiny};
+      border-radius: ${p => p.theme.borderRadius.large};
     }
   }
 `;
@@ -62,7 +67,9 @@ export default class extends Component {
   };
 
   onExecute = e => {
-    console.log(e);
+    if (this.props.pushData) {
+      this.props.pushData(e);
+    }
   };
 
   render() {
@@ -73,14 +80,16 @@ export default class extends Component {
     }
 
     const { className, options } = this.props;
-    const { modalType, children } = options;
+    const { modalType, children, title } = options;
 
     return (
       <Fragment>
         <Root className={className}>
           <Scroll>
+            <PanelHeading>{title}</PanelHeading>
             {modalType === "crop-image" ? (
               <CropImageModal
+                title={title}
                 closeModal={this.closeModal}
                 onExecute={this.onExecute}
               >
