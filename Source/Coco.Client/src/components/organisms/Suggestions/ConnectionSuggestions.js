@@ -20,7 +20,7 @@ export default class ConnectionSuggestions extends Component {
         name: "Ông Năm Cự",
         description:
           "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
-        url: "/profile/SXaSDRHRfds3zUDFQzC6jg==",
+        url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
 
         id: "1212234r5423",
         ImageUrl: `${process.env.PUBLIC_URL}/photos/conn-farmer.png`
