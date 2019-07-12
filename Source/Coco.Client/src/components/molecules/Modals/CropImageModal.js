@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
 import { Button, ButtonSecondary } from "../../atoms/Buttons";
 import AvatarEditor from "react-avatar-editor";
-import Slider, { Range } from "rc-slider";
+import Slider from "rc-slider";
 
 const ImageWrap = styled.div`
   text-align: center;
@@ -19,6 +19,11 @@ const ImageWrap = styled.div`
   }
 `;
 
+const SliderWrap = styled.div`
+  max-width: 300px;
+  margin: 0 auto;
+`;
+
 export default class extends Component {
   constructor(props) {
     super(props);
@@ -26,11 +31,9 @@ export default class extends Component {
     this.state = {
       src: props.children,
       crop: {
-        unit: "%",
-        width: 200,
-        height: 200,
-        scale: 1,
-        keepSelection: true
+        width: 250,
+        height: 250,
+        scale: 1
       }
     };
 
@@ -39,17 +42,37 @@ export default class extends Component {
 
   onExecute = e => {
     if (this.editor) {
-      const canvas = this.editor.getImage().toDataURL();
+      const { crop, src } = this.state;
+      let image = this.editor.getImage();
+      if (!image) {
+        return;
+      }
 
-      const { src } = this.state;
+      if (image.width < crop.width || image.height < crop.height) {
+        image = this.editor.getImageScaledToCanvas();
+      }
+
+      const imageBase64 = image.toDataURL();
       if (this.props.onExecute) {
         this.props.onExecute({
           event: e,
-          croppedImageUrl: canvas,
+          croppedImageUrl: imageBase64,
           sourceImageUrl: src
         });
       }
     }
+  };
+
+  onUpdateScale = e => {
+    let { crop } = this.state;
+    crop = {
+      ...crop,
+      scale: e
+    };
+
+    this.setState({
+      crop
+    });
   };
 
   render() {
@@ -69,7 +92,9 @@ export default class extends Component {
               rotate={0}
             />
           </ImageWrap>
-          <Slider />
+          <SliderWrap>
+            <Slider onChange={this.onUpdateScale} min={1} max={5} />
+          </SliderWrap>
         </PanelBody>
         <PanelFooter>
           <Button size="sm" onClick={this.onExecute}>

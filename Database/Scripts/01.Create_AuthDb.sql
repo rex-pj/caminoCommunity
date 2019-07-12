@@ -40,7 +40,9 @@ CREATE TABLE dbo.UserInfo
 	[Description] NVARCHAR(500) NULL,
 	BirthDate DATETIME2 NULL,
 	GenderId TINYINT NULL,
-	CountryId SMALLINT NULL
+	CountryId SMALLINT NULL,
+	Photo NVARCHAR(MAX) NULL,
+	CoverPhoto NVARCHAR(MAX) NULL
 )
 
 GO

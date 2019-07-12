@@ -262,6 +262,19 @@ namespace Coco.Business.Implementation
                     isValid = false;
                 }
             }
+            // Check for photo & cover photo
+            else if (model.PropertyName.Equals(nameof(userInfo.Photo),
+                StringComparison.InvariantCultureIgnoreCase)
+                || model.PropertyName.Equals(nameof(userInfo.Photo),
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                IValidation base64ImageValidation = new Base64ImageValidation();
+
+                if (!base64ImageValidation.IsValid(model.Value.ToString()))
+                {
+                    isValid = false;
+                }
+            }
             else if (model.PropertyName.Equals(nameof(userInfo.Id),
                 StringComparison.InvariantCultureIgnoreCase)
                 || model.PropertyName.Equals(nameof(userInfo.User),
