@@ -125,7 +125,9 @@ namespace Coco.Api.Framework.Mapping
                 CountryName = userModel.CountryName,
                 GenderLabel = userModel.GenderLabel,
                 CreatedDate = userModel.CreatedDate,
-                StatusLabel = userModel.StatusLabel
+                StatusLabel = userModel.StatusLabel,
+                Photo = userModel.Photo,
+                CoverPhoto = userModel.CoverPhoto
             };
 
             return applicationUser;
@@ -152,7 +154,9 @@ namespace Coco.Api.Framework.Mapping
                 CountryCode = user.CountryCode,
                 CountryName = user.CountryName,
                 GenderLabel = user.GenderLabel,
-                StatusLabel = user.StatusLabel
+                StatusLabel = user.StatusLabel,
+                Photo = user.Photo,
+                CoverPhoto = user.CoverPhoto
             };
 
             var result = new UserInfoExt(userInfo);

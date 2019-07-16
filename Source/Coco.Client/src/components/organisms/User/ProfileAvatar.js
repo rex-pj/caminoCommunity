@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 import { ImageRound } from "../../atoms/Images";
-import { openModal } from "../../../store/commands";
+import { openModal, closeModal } from "../../../store/commands";
 import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
 import { Mutation } from "react-apollo";
 
@@ -56,26 +56,74 @@ const AvatarLink = styled.a`
 `;
 
 class ProfileAvatar extends Component {
-  onChangeAvatar = e => {
+  constructor(props) {
+    super(props);
+
+    const { userInfo } = props;
+    this.state = {
+      avatarUrl: userInfo.photo
+    };
+    this.updateUserInfoItem = null;
+  }
+
+  onChangeAvatar = (e, updateUserInfoItem) => {
+    this.updateUserInfoItem = updateUserInfoItem;
     this.props.openUploadModal(e.preview, "Upload avatar", "crop-image");
   };
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     if (this.props.modalPayload !== nextProps.modalPayload) {
-      console.log(nextProps);
+      if (this.updateUserInfoItem) {
+        const { canEdit, userInfo, modalPayload } = nextProps;
+        const { userIdentityId } = userInfo;
+        const { croppedImageUrl } = modalPayload;
+        return await this.updateUserInfoItem({
+          variables: {
+            criterias: {
+              key: userIdentityId,
+              value: croppedImageUrl,
+              propertyName: "photo",
+              canEdit
+            }
+          }
+        })
+          .then(response => {
+            const { data } = response;
+            const { updateUserInfoItem } = data;
+            const { result } = updateUserInfoItem;
+            this.setState({
+              avatarUrl: result.value
+            });
+            this.updateUserInfoItem = null;
+
+            this.props.closeUploadModal();
+          })
+          .catch(error => {
+            this.updateUserInfoItem = null;
+          });
+      }
     }
   }
 
   render() {
     const { userInfo, canEdit, className } = this.props;
 
+    const { avatarUrl } = this.state;
     return (
-      <Wrap className={className}>
-        <AvatarLink href={userInfo.url}>
-          <ProfileImage src={userInfo.avatarUrl} />
-        </AvatarLink>
-        {!!canEdit ? <AvatarUpload onChange={this.onChangeAvatar} /> : null}
-      </Wrap>
+      <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
+        {updateUserInfoItem => (
+          <Wrap className={className}>
+            <AvatarLink href={userInfo.url}>
+              <ProfileImage src={avatarUrl} />
+            </AvatarLink>
+            {!!canEdit ? (
+              <AvatarUpload
+                onChange={e => this.onChangeAvatar(e, updateUserInfoItem)}
+              />
+            ) : null}
+          </Wrap>
+        )}
+      </Mutation>
     );
   }
 }
@@ -84,6 +132,9 @@ const mapDispatchToProps = dispatch => {
   return {
     openUploadModal: (children, title, modalType) => {
       openModal(dispatch, children, title, modalType);
+    },
+    closeUploadModal: () => {
+      closeModal(dispatch);
     }
   };
 };

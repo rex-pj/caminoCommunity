@@ -30,5 +30,7 @@ namespace Coco.Api.Framework.Models
         public string SecurityStamp { get; set; }
         public DateTime? Expiration { get; set; }
         public string StatusLabel { get; set; }
+        public string Photo { get; set; }
+        public string CoverPhoto { get; set; }
     }
 }

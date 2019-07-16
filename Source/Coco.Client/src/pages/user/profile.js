@@ -47,7 +47,7 @@ export default withRouter(
       return {
         ...result,
         canEdit,
-        avatarUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+        avatarUrl: result.photo,
         url: result.userIdentityId ? `/profile/${result.userIdentityId}` : "",
         coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
       };

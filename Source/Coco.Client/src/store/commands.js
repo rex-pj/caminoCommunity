@@ -25,12 +25,10 @@ function openModal(dispatch, children, title, modalType) {
   });
 }
 
-function closeModal(dispatch, isOpen, children, title) {
+function closeModal(dispatch) {
   dispatch({
     type: modalActions.OPEN,
     payload: {
-      title: title,
-      children: children,
       isOpen: false
     }
   });

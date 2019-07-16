@@ -53,11 +53,12 @@ export const GET_USER_INFO = gpl`
         userIdentityId
         address
         birthDate
-        countryId
         countryName
         description
         createdDate
-        phoneNumber
+        phoneNumber,
+        photo,
+        coverPhoto
       }
     }
   }

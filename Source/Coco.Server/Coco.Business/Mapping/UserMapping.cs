@@ -120,6 +120,8 @@ namespace Coco.Business.Mapping
                 userModel.CountryId = user.UserInfo.CountryId;
                 userModel.Description = user.UserInfo.Description;
                 userModel.PhoneNumber = user.UserInfo.PhoneNumber;
+                userModel.Photo = user.UserInfo.Photo;
+                userModel.CoverPhoto = user.UserInfo.CoverPhoto;
             }
 
             if (user.UserInfo.Country != null)

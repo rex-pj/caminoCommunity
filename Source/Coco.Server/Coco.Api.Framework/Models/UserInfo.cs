@@ -31,6 +31,8 @@ namespace Coco.Api.Framework.Models
             CountryId = userInfo.CountryId;
             CountryCode = userInfo.CountryCode;
             CountryName = userInfo.CountryName;
+            Photo = userInfo.Photo;
+            CoverPhoto = userInfo.CoverPhoto;
         }
 
         public string UserIdentityId { get; set; }
@@ -52,5 +54,7 @@ namespace Coco.Api.Framework.Models
         public short? CountryId { get; set; }
         public string CountryCode { get; set; }
         public string CountryName { get; set; }
+        public string Photo { get; set; }
+        public string CoverPhoto { get; set; }
     }
 }
