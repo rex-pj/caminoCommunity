@@ -4,6 +4,8 @@ import styled from "styled-components";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 import { ImageRound } from "../../atoms/Images";
 import { openModal } from "../../../store/commands";
+import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
+import { Mutation } from "react-apollo";
 
 const ProfileImage = styled(ImageRound)`
   display: block;

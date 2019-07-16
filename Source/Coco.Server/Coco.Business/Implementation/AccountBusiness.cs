@@ -1,7 +1,6 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
-using Coco.Business.Validation;
-using Coco.Business.Validation.Interfaces;
+using Coco.Business.ValidationStrategies;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
@@ -19,12 +18,15 @@ namespace Coco.Business.Implementation
         private readonly CocoUserDbContext _dbContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
-
-        public AccountBusiness(CocoUserDbContext dbContext, IRepository<User> userRepository, IRepository<UserInfo> userInfoRepository)
+        private readonly ValidationStrategyContext _validationStrategyContext;
+        public AccountBusiness(CocoUserDbContext dbContext, IRepository<User> userRepository,
+            ValidationStrategyContext validationStrategyContext,
+            IRepository<UserInfo> userInfoRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
+            _validationStrategyContext = validationStrategyContext;
         }
 
         public long Add(UserModel userModel)
@@ -223,7 +225,8 @@ namespace Coco.Business.Implementation
                 throw new ArgumentNullException(nameof(userInfo));
             }
 
-            bool canUpdate = ValidateInfoItem(model, userInfo);
+            _validationStrategyContext.SetStrategy(new UserInfoItemUpdationValidationStratergy(_validationStrategyContext));
+            bool canUpdate = _validationStrategyContext.Validate(model);
 
             if (!canUpdate)
             {
@@ -234,56 +237,6 @@ namespace Coco.Business.Implementation
             await _dbContext.SaveChangesAsync();
 
             return model;
-        }
-
-        private bool ValidateInfoItem(UpdatePerItem model, UserInfo userInfo)
-        {
-            if (userInfo == null)
-            {
-                throw new ArgumentNullException(nameof(userInfo));
-            }
-
-            bool isValid = true;
-            if (model.PropertyName.Equals(nameof(userInfo.PhoneNumber),
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                IValidation phoneValidation = new PhoneValidation();
-                if (model.Value == null || string.IsNullOrEmpty(model.Value.ToString())
-                    || !phoneValidation.IsValid(model.Value.ToString()))
-                {
-                    isValid = false;
-                }
-            }
-            else if (model.PropertyName.Equals(nameof(userInfo.BirthDate),
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (model.Value == null)
-                {
-                    isValid = false;
-                }
-            }
-            // Check for photo & cover photo
-            else if (model.PropertyName.Equals(nameof(userInfo.Photo),
-                StringComparison.InvariantCultureIgnoreCase)
-                || model.PropertyName.Equals(nameof(userInfo.Photo),
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                IValidation base64ImageValidation = new Base64ImageValidation();
-
-                if (!base64ImageValidation.IsValid(model.Value.ToString()))
-                {
-                    isValid = false;
-                }
-            }
-            else if (model.PropertyName.Equals(nameof(userInfo.Id),
-                StringComparison.InvariantCultureIgnoreCase)
-                || model.PropertyName.Equals(nameof(userInfo.User),
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                isValid = false;
-            }
-
-            return isValid;
         }
     }
 }

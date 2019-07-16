@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
     <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
     <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
     <ProjectReference Include="..\Coco.UserDAL\Coco.IdentityDAL.csproj" />

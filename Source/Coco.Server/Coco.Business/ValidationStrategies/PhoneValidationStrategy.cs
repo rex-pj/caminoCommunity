@@ -1,16 +1,20 @@
-﻿using Coco.Business.Validation.Interfaces;
+﻿using Coco.Business.ValidationStrategies.Interfaces;
+using Coco.Business.ValidationStrategies.Models;
 using System;
+using System.Collections.Generic;
 
-namespace Coco.Business.Validation
+namespace Coco.Business.ValidationStrategies
 {
-    public class PhoneValidation : IValidation
+    public class PhoneValidationStrategy : IValidationStrategy
     {
         private const string AdditionalPhoneNumberCharacters = "-.()";
         private const string ExtensionAbbreviationExtDot = "ext.";
         private const string ExtensionAbbreviationExt = "ext";
         private const string ExtensionAbbreviationX = "x";
 
-        public bool IsValid(string value)
+        public IEnumerable<ErrorObject> Errors { get; set; }
+
+        public bool IsValid<T>(T value)
         {
             if (value == null)
             {

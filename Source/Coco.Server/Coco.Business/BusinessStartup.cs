@@ -11,6 +11,7 @@ using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Coco.Business.ValidationStrategies;
 
 namespace Coco.Business
 {
@@ -38,6 +39,7 @@ namespace Coco.Business
             services.AddTransient<IRepository<Role>, EfUserRepository<Role>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>();
+            services.AddTransient<ValidationStrategyContext>();
             
             _dalStartup.RegiserTypes(services);
             _userDalStartup.RegiserTypes(services);
