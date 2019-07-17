@@ -14,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Coco.Entities.Model.General;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -512,6 +513,27 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
+        }
+
+        /// <summary>
+        /// Creates the specified <paramref name="model"/> in the backing store with no password,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="model">The model to update user photo.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<ApiResult> UpdatePhotoAsync(UpdateAvatarModel model, long userId)
+        {
+            ThrowIfDisposed();
+
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            return await UserStore.UpdatePhotoAsync(model, userId, CancellationToken);
         }
 
         #endregion

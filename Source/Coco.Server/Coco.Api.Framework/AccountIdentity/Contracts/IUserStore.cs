@@ -1,4 +1,5 @@
 ﻿using Coco.Api.Framework.Models;
+using Coco.Entities.Model.General;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<TUser> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken);
         Task<ApiResult> UpdateInfoAsync(TUser user, CancellationToken cancellationToken = default);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel user, CancellationToken cancellationToken = default);
+        Task<ApiResult> UpdatePhotoAsync(UpdateAvatarModel model, long userId, CancellationToken cancellationToken = default);
 
     }
 }

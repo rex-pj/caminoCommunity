@@ -52,12 +52,18 @@ export default class extends Component {
         image = this.editor.getImageScaledToCanvas();
       }
 
-      const imageBase64 = image.toDataURL();
+      // const rect = this.editor.calculatePosition();
+      const rect = this.editor.getCroppingRect();
+
       if (this.props.onExecute) {
         this.props.onExecute({
           event: e,
-          croppedImageUrl: imageBase64,
-          sourceImageUrl: src
+          sourceImageUrl: src,
+          xAxis: rect.x,
+          yAxis: rect.y,
+          width: rect.width,
+          height: rect.height,
+          contentType: ""
         });
       }
     }

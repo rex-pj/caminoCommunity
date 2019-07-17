@@ -1,6 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
 using Coco.Business.ValidationStrategies;
+using Coco.Common.Helper;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
@@ -234,6 +235,41 @@ namespace Coco.Business.Implementation
             }
 
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
+            await _dbContext.SaveChangesAsync();
+
+            return model;
+        }
+
+        public async Task<UpdateAvatarModel> UpdatePhotoAsync(UpdateAvatarModel model, long userId)
+        {
+            var userInfo = _userInfoRepository.Find(userId);
+
+            if (userInfo == null)
+            {
+                throw new ArgumentNullException(nameof(userInfo));
+            }
+
+            _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
+            bool canUpdate = _validationStrategyContext.Validate(model.PhotoUrl);
+
+            if (!canUpdate)
+            {
+                throw new ArgumentException(model.PhotoUrl);
+            }
+
+            _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
+            canUpdate = _validationStrategyContext.Validate(model);
+
+            if (!canUpdate)
+            {
+                throw new ArgumentException("Avatar Url");
+            }
+
+            var newImage = ImageHelper
+                .CropBase64Image(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height);
+
+            userInfo.Photo = newImage;
+            _userInfoRepository.Update(userInfo);
             await _dbContext.SaveChangesAsync();
 
             return model;

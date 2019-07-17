@@ -1,6 +1,4 @@
-﻿using Coco.Business.Contracts;
-using Coco.Api.Framework.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Coco.Api.Framework.AccountIdentity;
 
 namespace Coco.Api.Framework.Controllers

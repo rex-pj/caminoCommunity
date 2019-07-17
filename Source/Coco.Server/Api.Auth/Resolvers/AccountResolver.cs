@@ -7,6 +7,7 @@ using Coco.Api.Framework.Resolvers;
 using Coco.Business.Contracts;
 using Coco.Common.Const;
 using Coco.Entities.Enums;
+using Coco.Entities.Model.General;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -91,6 +92,34 @@ namespace Api.Identity.Resolvers
                 }
 
                 var result = await _accountManager.UpdateInfoItemAsync(model, userContext.CurrentUser.AuthenticationToken);
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<ApiResult> UpdateAvatarAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UpdateAvatarModel>("criterias");
+                var userContext = context.UserContext as IWorkContext;
+
+                if (!model.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                if (userContext == null || userContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var result = await _accountManager.UpdatePhotoAsync(model, userContext.CurrentUser.Id);
                 HandleContextError(context, result.Errors);
 
                 return result;

@@ -74,16 +74,26 @@ class ProfileAvatar extends Component {
   async componentWillReceiveProps(nextProps) {
     if (this.props.modalPayload !== nextProps.modalPayload) {
       if (this.updateUserInfoItem) {
-        const { canEdit, userInfo, modalPayload } = nextProps;
-        const { userIdentityId } = userInfo;
-        const { croppedImageUrl } = modalPayload;
+        const { canEdit, modalPayload } = nextProps;
+        const {
+          sourceImageUrl,
+          xAxis,
+          yAxis,
+          width,
+          height,
+          contentType
+        } = modalPayload;
+
         return await this.updateUserInfoItem({
           variables: {
             criterias: {
-              key: userIdentityId,
-              value: croppedImageUrl,
-              propertyName: "photo",
-              canEdit
+              PhotoUrl: sourceImageUrl,
+              canEdit,
+              xAxis,
+              yAxis,
+              width,
+              height,
+              contentType
             }
           }
         })
