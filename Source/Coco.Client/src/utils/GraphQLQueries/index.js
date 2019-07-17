@@ -135,3 +135,24 @@ export const UPDATE_USER_INFO_PER_ITEM = gpl`
     }
   }
 `;
+
+export const UPDATE_USER_AVATAR = gpl`
+  mutation UpdateAvatar($criterias: UpdateAvatarInputType!){
+    updateAvatar(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        photoUrl,
+        xAxis,
+        yAxis,
+        width,
+        height,
+        contentType,
+        canEdit
+      }
+    }
+  }
+`;

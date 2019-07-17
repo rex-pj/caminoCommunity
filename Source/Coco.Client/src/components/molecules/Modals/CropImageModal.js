@@ -36,9 +36,9 @@ export default class extends Component {
         scale: 1
       }
     };
-
-    this.setEditorRef = editor => (this.editor = editor);
   }
+
+  setEditorRef = editor => (this.editor = editor);
 
   onExecute = e => {
     if (this.editor) {
@@ -55,12 +55,14 @@ export default class extends Component {
       // const rect = this.editor.calculatePosition();
       const rect = this.editor.getCroppingRect();
 
+      const xAxis = parseInt(rect.x * 100);
+      const yAxis = parseInt(rect.x * 100);
       if (this.props.onExecute) {
         this.props.onExecute({
           event: e,
           sourceImageUrl: src,
-          xAxis: rect.x,
-          yAxis: rect.y,
+          xAxis: xAxis,
+          yAxis: yAxis,
           width: rect.width,
           height: rect.height,
           contentType: ""

@@ -25,9 +25,7 @@ namespace Coco.Business.ValidationStrategies
             }
 
             var image = ImageHelper.Base64ToImage(data.PhotoUrl);
-            if(image.Width < 100 || image.Height < 100 
-                || data.Width < image.Width
-                || data.Height < image.Height)
+            if(image.Width < 100 || image.Height < 100)
             {
                 return false;
             }

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 import { ImageRound } from "../../atoms/Images";
 import { openModal, closeModal } from "../../../store/commands";
-import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
+import { UPDATE_USER_AVATAR } from "../../../utils/GraphQLQueries";
 import { Mutation } from "react-apollo";
 
 const ProfileImage = styled(ImageRound)`
@@ -63,17 +63,17 @@ class ProfileAvatar extends Component {
     this.state = {
       avatarUrl: userInfo.photo
     };
-    this.updateUserInfoItem = null;
+    this.updateAvatar = null;
   }
 
-  onChangeAvatar = (e, updateUserInfoItem) => {
-    this.updateUserInfoItem = updateUserInfoItem;
+  onChangeAvatar = (e, updateAvatar) => {
+    this.updateAvatar = updateAvatar;
     this.props.openUploadModal(e.preview, "Upload avatar", "crop-image");
   };
 
   async componentWillReceiveProps(nextProps) {
     if (this.props.modalPayload !== nextProps.modalPayload) {
-      if (this.updateUserInfoItem) {
+      if (this.updateAvatar) {
         const { canEdit, modalPayload } = nextProps;
         const {
           sourceImageUrl,
@@ -84,10 +84,10 @@ class ProfileAvatar extends Component {
           contentType
         } = modalPayload;
 
-        return await this.updateUserInfoItem({
+        return await this.updateAvatar({
           variables: {
             criterias: {
-              PhotoUrl: sourceImageUrl,
+              photoUrl: sourceImageUrl,
               canEdit,
               xAxis,
               yAxis,
@@ -99,17 +99,17 @@ class ProfileAvatar extends Component {
         })
           .then(response => {
             const { data } = response;
-            const { updateUserInfoItem } = data;
-            const { result } = updateUserInfoItem;
+            const { updateAvatar } = data;
+            const { result } = updateAvatar;
             this.setState({
               avatarUrl: result.value
             });
-            this.updateUserInfoItem = null;
+            this.updateAvatar = null;
 
             this.props.closeUploadModal();
           })
           .catch(error => {
-            this.updateUserInfoItem = null;
+            this.updateAvatar = null;
           });
       }
     }
@@ -120,15 +120,15 @@ class ProfileAvatar extends Component {
 
     const { avatarUrl } = this.state;
     return (
-      <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
-        {updateUserInfoItem => (
+      <Mutation mutation={UPDATE_USER_AVATAR}>
+        {updateAvatar => (
           <Wrap className={className}>
             <AvatarLink href={userInfo.url}>
               <ProfileImage src={avatarUrl} />
             </AvatarLink>
             {!!canEdit ? (
               <AvatarUpload
-                onChange={e => this.onChangeAvatar(e, updateUserInfoItem)}
+                onChange={e => this.onChangeAvatar(e, updateAvatar)}
               />
             ) : null}
           </Wrap>
