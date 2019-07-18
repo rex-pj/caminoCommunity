@@ -102,7 +102,7 @@ class ProfileAvatar extends Component {
             const { updateAvatar } = data;
             const { result } = updateAvatar;
             this.setState({
-              avatarUrl: result.value
+              avatarUrl: result.photoUrl
             });
             this.updateAvatar = null;
 
@@ -124,7 +124,7 @@ class ProfileAvatar extends Component {
         {updateAvatar => (
           <Wrap className={className}>
             <AvatarLink href={userInfo.url}>
-              <ProfileImage src={avatarUrl} />
+              <ProfileImage src={`data:image/png;base64,${avatarUrl}`} />
             </AvatarLink>
             {!!canEdit ? (
               <AvatarUpload

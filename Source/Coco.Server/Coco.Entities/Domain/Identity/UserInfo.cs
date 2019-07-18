@@ -10,7 +10,6 @@ namespace Coco.Entities.Domain.Identity
         public long Id { get; set; }
         [Phone]
         public string PhoneNumber { get; set; }
-        [Required]
         public string Address { get; set; }
         public string Description { get; set; }
         [Required]

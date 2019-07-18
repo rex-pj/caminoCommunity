@@ -272,6 +272,7 @@ namespace Coco.Business.Implementation
             _userInfoRepository.Update(userInfo);
             await _dbContext.SaveChangesAsync();
 
+            model.PhotoUrl = newImage;
             return model;
         }
     }

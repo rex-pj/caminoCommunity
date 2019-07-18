@@ -18,13 +18,8 @@ namespace Coco.Common.Helper
             }
         }
 
-        public static string ToBase64String(this Bitmap bmp, ImageFormat imageFormat)
+        public static string ToBase64String(this Bitmap bmp)
         {
-            //MemorySteam ms = new MemorySteam();
-            //bmp.Save(ms, ImageFormat.Png);
-            //byte[] byteImage = ms.ToArray();
-            //Convert.ToBase64String(byteImage);
-
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 string base64String = string.Empty;
@@ -42,22 +37,25 @@ namespace Coco.Common.Helper
             }
         }
 
-        public static string CropBase64Image(string base64String, int x, int y, int width, int height)
+        public static string CropBase64Image(string base64String, double x, double y, double width, double height)
         {
             var image = Base64ToImage(base64String);
-            var source = image as Bitmap;
+            var xAxis = (int)(x * image.Width);
+            var yAxis = (int)(y * image.Height);
+            var newWidth = (int)(width * image.Width);
+            var newHeight = (int)(height * image.Height);
 
-            var target = new Bitmap(width, height);
-
-            using (var graphic = Graphics.FromImage(target))
+            var cropRect = new Rectangle(xAxis, yAxis, newWidth, newHeight);
+            using (var target = new Bitmap(newWidth, newHeight))
             {
-                graphic.DrawImage(source,
-                    new RectangleF(x, y, width, height),
-                    new RectangleF(0, 0, source.Width, source.Height),
-                    GraphicsUnit.Pixel);
+                using (var graphic = Graphics.FromImage(target))
+                {
+                    graphic.DrawImage(image, new Rectangle(0, 0, target.Width, target.Height), cropRect,
+                        GraphicsUnit.Pixel);
 
-                var targetImage = ToBase64String(target, target.RawFormat);
-                return targetImage;
+                    var targetImage = ToBase64String(target);
+                    return targetImage;
+                }
             }
         }
     }

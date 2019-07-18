@@ -42,27 +42,15 @@ export default class extends Component {
 
   onExecute = e => {
     if (this.editor) {
-      const { crop, src } = this.state;
-      let image = this.editor.getImage();
-      if (!image) {
-        return;
-      }
-
-      if (image.width < crop.width || image.height < crop.height) {
-        image = this.editor.getImageScaledToCanvas();
-      }
-
-      // const rect = this.editor.calculatePosition();
+      const { src } = this.state;
       const rect = this.editor.getCroppingRect();
 
-      const xAxis = parseInt(rect.x * 100);
-      const yAxis = parseInt(rect.x * 100);
       if (this.props.onExecute) {
         this.props.onExecute({
           event: e,
           sourceImageUrl: src,
-          xAxis: xAxis,
-          yAxis: yAxis,
+          xAxis: rect.x,
+          yAxis: rect.y,
           width: rect.width,
           height: rect.height,
           contentType: ""

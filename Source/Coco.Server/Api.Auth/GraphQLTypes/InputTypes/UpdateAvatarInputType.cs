@@ -8,10 +8,10 @@ namespace Api.Identity.GraphQLTypes.InputTypes
         public UpdateAvatarInputType()
         {
             Field(x => x.ContentType, false, typeof(StringGraphType));
-            Field(x => x.Height, false, typeof(IntGraphType));
-            Field(x => x.Width, false, typeof(IntGraphType));
-            Field(x => x.XAxis, false, typeof(IntGraphType));
-            Field(x => x.YAxis, false, typeof(IntGraphType));
+            Field(x => x.Height, false, typeof(FloatGraphType));
+            Field(x => x.Width, false, typeof(FloatGraphType));
+            Field(x => x.XAxis, false, typeof(FloatGraphType));
+            Field(x => x.YAxis, false, typeof(FloatGraphType));
             Field(x => x.PhotoUrl, false, typeof(StringGraphType));
             Field(x => x.CanEdit, false, typeof(BooleanGraphType));
         }
