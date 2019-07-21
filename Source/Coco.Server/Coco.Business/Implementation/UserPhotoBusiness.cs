@@ -16,11 +16,11 @@ namespace Coco.Business.Implementation
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly CocoUserDbContext _dbContext;
+        private readonly ICocoIdentityDbContext _dbContext;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(CocoUserDbContext dbContext,
+        public UserPhotoBusiness(ICocoIdentityDbContext dbContext,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
@@ -61,38 +61,42 @@ namespace Coco.Business.Implementation
             var avatarType = (byte)UserPhotoTypeEnum.Avatar;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId == userId && x.TypeId == avatarType)
-                .AsNoTracking()
                 .FirstOrDefault();
 
-            if (userPhoto == null)
+            using(var transaction = _dbContext.Database.BeginTransaction())
             {
-                userPhoto = new UserPhoto()
+                if (userPhoto == null)
                 {
-                    CreatedById = userId,
-                    CreatedDate = DateTime.Now,
-                    ImageData = newImage,
-                    TypeId = (byte)UserPhotoTypeEnum.Avatar,
-                    UserId = userId,
-                    Name = model.FileName,
-                    Code = model.AvatarCode
-                };
+                    userPhoto = new UserPhoto()
+                    {
+                        CreatedById = userId,
+                        CreatedDate = DateTime.Now,
+                        ImageData = newImage,
+                        TypeId = (byte)UserPhotoTypeEnum.Avatar,
+                        UserId = userId,
+                        Name = model.FileName,
+                        Code = model.AvatarCode,
+                    };
 
-                _userPhotoRepository.Insert(userPhoto);
+                    _userPhotoRepository.Insert(userPhoto);
+                }
+                else
+                {
+                    userPhoto.ImageData = newImage;
+                    userPhoto.Name = model.FileName;
+                    userPhoto.Code = model.AvatarCode;
+                    _userPhotoRepository.Update(userPhoto);
+                }
+
+                userInfo.AvatarUrl = model.AvatarCode;
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+
+                model.PhotoUrl = userPhoto.Code;
+                return model;
             }
-            else
-            {
-                userPhoto.ImageData = newImage;
-                userPhoto.Name = model.FileName;
-                userPhoto.Code = model.AvatarCode;
-                userPhoto.UserId = userId;
-                _userPhotoRepository.Update(userPhoto);
-            }
-
-            userInfo.AvatarUrl = model.AvatarCode;
-            await _dbContext.SaveChangesAsync();
-
-            model.PhotoUrl = userInfo.AvatarUrl;
-            return model;
+            
         }
 
         public async Task<UserPhoto> GetAvatarByIdAsync(long id)

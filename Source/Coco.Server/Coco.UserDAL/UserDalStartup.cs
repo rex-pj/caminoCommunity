@@ -11,13 +11,13 @@ namespace Coco.IdentityDAL
 
         public UserDalStartup(IConfiguration config)
         {
-            _connectionString = config.GetConnectionString("CocoUserEntities");
+            _connectionString = config.GetConnectionString("CocoIdentityEntities");
         }
 
         public void RegiserTypes(IServiceCollection services)
         {
             services.AddTransient<IConfigurationRoot, ConfigurationRoot>();
-            services.AddDbContext<CocoUserDbContext>(x => x.UseSqlServer(_connectionString));
+            services.AddDbContext<ICocoIdentityDbContext, CocoIdentityDbContext>(x => x.UseSqlServer(_connectionString));
         }
     }
 }

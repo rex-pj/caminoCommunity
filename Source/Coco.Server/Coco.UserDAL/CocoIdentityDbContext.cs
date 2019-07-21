@@ -3,11 +3,23 @@ using Coco.IdentityDAL.MappingConfigs;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
+using Coco.Entities.Base;
+using System.Threading.Tasks;
 
 namespace Coco.IdentityDAL
 {
-    public class CocoUserDbContext : DbContext
+    public class CocoIdentityDbContext : DbContext, ICocoIdentityDbContext
     {
+        /// <summary>
+        /// Creates a DbSet that can be used to query and save instances of entity
+        /// </summary>
+        /// <typeparam name="TEntity">Entity type</typeparam>
+        /// <returns>A set for the given entity type</returns>
+        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity
+        {
+            return base.Set<TEntity>();
+        }
+
         #region DbSets
         public DbSet<Gender> Gender { get; set; }
         public DbSet<Status> Status { get; set; }
@@ -20,7 +32,7 @@ namespace Coco.IdentityDAL
 
         #region Ctor
 
-        public CocoUserDbContext(DbContextOptions<CocoUserDbContext> options) : base(options) { }
+        public CocoIdentityDbContext(DbContextOptions<CocoIdentityDbContext> options) : base(options) { }
 
         #endregion
 
@@ -41,6 +53,11 @@ namespace Coco.IdentityDAL
 
             modelBuilder.ApplyConfiguration(new CareerMappingConfig())
                 .ApplyConfiguration(new UserCareerMappingConfig());
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await base.SaveChangesAsync();
         }
     }
 }

@@ -15,11 +15,11 @@ namespace Coco.Business.Implementation
 {
     public class AccountBusiness : IAccountBusiness
     {
-        private readonly CocoUserDbContext _identityContext;
+        private readonly ICocoIdentityDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public AccountBusiness(CocoUserDbContext identityContext, IRepository<User> userRepository,
+        public AccountBusiness(ICocoIdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserInfo> userInfoRepository)
         {

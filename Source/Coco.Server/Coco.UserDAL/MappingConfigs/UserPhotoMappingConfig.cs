@@ -13,6 +13,9 @@ namespace Coco.IdentityDAL.MappingConfigs
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id)
                 .ValueGeneratedOnAdd();
+
+            builder.HasOne(x => x.UserInfo)
+                .WithMany(x => x.UserPhotos);
         }
     }
 }

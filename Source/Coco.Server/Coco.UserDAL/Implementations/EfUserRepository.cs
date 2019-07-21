@@ -15,7 +15,7 @@ namespace Coco.IdentityDAL.Implementations
     {
         #region Fields
 
-        private readonly CocoUserDbContext _dbContext;
+        private readonly ICocoIdentityDbContext _dbContext;
 
         private DbSet<TEntity> _dbSet;
 
@@ -36,7 +36,7 @@ namespace Coco.IdentityDAL.Implementations
 
         #region Ctor
 
-        public EfUserRepository(CocoUserDbContext context)
+        public EfUserRepository(ICocoIdentityDbContext context)
         {
             this._dbContext = context;
         }
