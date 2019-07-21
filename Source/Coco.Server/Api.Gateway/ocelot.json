@@ -19,6 +19,18 @@
       "UpstreamPathTemplate": "/public-api/{catchAll}"
     },
     {
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/cdn/{catchAll}"
+    },
+    {
       "DelegatingHandlers": [
         "GraphQlDelegatingHandler"
       ],

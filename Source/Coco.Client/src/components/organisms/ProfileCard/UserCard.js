@@ -56,10 +56,17 @@ const StaticBar = styled.div`
 
 export default function(props) {
   const { className, menuList } = props;
-  const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
+  const { userInfo } = props;
+  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
+  const { avatarUrl } = userInfo;
   return (
     <Root className={className}>
-      <ProfileImage src={`${process.env.PUBLIC_URL}/photos/farmer.png`} />
+      {avatarUrl ? (
+        <ProfileImage
+          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
+        />
+      ) : null}
+
       <BoxShadowBar>
         <CoverWrapper>
           <Thumbnail

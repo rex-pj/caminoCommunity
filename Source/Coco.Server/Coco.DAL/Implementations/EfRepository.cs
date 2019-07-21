@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -20,6 +19,19 @@ namespace Coco.DAL.Implementations
 
         private DbSet<TEntity> _dbSet;
 
+        /// <summary>
+        /// Gets an entity set
+        /// </summary>
+        protected virtual DbSet<TEntity> DbSet
+        {
+            get
+            {
+                if (_dbSet == null)
+                    _dbSet = _dbContext.Set<TEntity>();
+
+                return _dbSet;
+            }
+        }
         #endregion
 
         #region Ctor
@@ -27,10 +39,6 @@ namespace Coco.DAL.Implementations
         public EfRepository(CocoDbContext context)
         {
             this._dbContext = context;
-            if (this._dbSet == null)
-            {
-                this._dbSet = _dbContext.Set<TEntity>();
-            }
         }
         #endregion
 
@@ -41,7 +49,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public IQueryable<TEntity> Get()
         {
-            return _dbSet;
+            return DbSet;
         }
 
         /// <summary>
@@ -51,7 +59,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter)
         {
-            return _dbSet.Where(filter);
+            return DbSet.Where(filter);
         }
 
         /// <summary>
@@ -60,7 +68,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await DbSet.ToListAsync();
         }
 
         /// <summary>
@@ -70,7 +78,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await _dbSet.Where(filter).ToListAsync();
+            return await DbSet.Where(filter).ToListAsync();
         }
 
         /// <summary>
@@ -80,8 +88,18 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public TEntity FirstOrDefault()
         {
-            return _dbSet.FirstOrDefault();
+            return DbSet.FirstOrDefault();
         }
+
+        /// <summary>
+        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
+        /// </summary>
+        public virtual IQueryable<TEntity> TableNoTracking => DbSet.AsNoTracking();
+
+        /// <summary>
+        /// Gets a table
+        /// </summary>
+        public virtual IQueryable<TEntity> Table => DbSet;
 
         /// <summary>
         /// Get first or default async
@@ -90,7 +108,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync()
         {
-            return await _dbSet.FirstOrDefaultAsync();
+            return await DbSet.FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -100,7 +118,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
         {
-            return _dbSet.FirstOrDefault(filter);
+            return DbSet.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -110,7 +128,7 @@ namespace Coco.DAL.Implementations
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await _dbSet.FirstOrDefaultAsync(filter);
+            return await DbSet.FirstOrDefaultAsync(filter);
         }
 
         /// <summary>
@@ -120,7 +138,7 @@ namespace Coco.DAL.Implementations
         /// <returns>Entity</returns>
         public virtual TEntity Find(object id)
         {
-            return _dbSet.Find(id);
+            return DbSet.Find(id);
         }
 
         /// <summary>
@@ -130,7 +148,7 @@ namespace Coco.DAL.Implementations
         /// <returns>Entity</returns>
         public virtual async Task<TEntity> FindAsync(object id)
         {
-            return await _dbSet.FindAsync(id);
+            return await DbSet.FindAsync(id);
         }
 
         /// <summary>
@@ -144,7 +162,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dbSet.Add(entity);
+            DbSet.Add(entity);
         }
 
         /// <summary>
@@ -158,7 +176,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            _dbSet.AddRange(entities);
+            DbSet.AddRange(entities);
         }
 
         /// <summary>
@@ -172,7 +190,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dbSet.Update(entity);
+            DbSet.Update(entity);
         }
 
         /// <summary>
@@ -186,7 +204,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            _dbSet.UpdateRange(entities);
+            DbSet.UpdateRange(entities);
         }
 
         /// <summary>
@@ -200,7 +218,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dbSet.Remove(entity);
+            DbSet.Remove(entity);
         }
 
         /// <summary>
@@ -230,7 +248,7 @@ namespace Coco.DAL.Implementations
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            _dbSet.RemoveRange(entities);
+            DbSet.RemoveRange(entities);
         }
 
         /// <summary>
@@ -268,7 +286,7 @@ namespace Coco.DAL.Implementations
             var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
             propertyInfo.SetValue(entity, Convert.ChangeType(value, propertyType), null);
 
-            _dbSet.Update(entity);
+            DbSet.Update(entity);
         }
         #endregion
     }

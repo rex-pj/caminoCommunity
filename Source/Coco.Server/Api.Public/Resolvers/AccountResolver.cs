@@ -88,10 +88,10 @@ namespace Api.Public.Resolvers
             try
             {
                 var model = context.GetArgument<FindUserModel>("criterias");
-
-                var userContext = context.UserContext as IWorkContext;
+                
                 var userIdentityId = model.UserId;
 
+                var userContext = context.UserContext as IWorkContext;
                 if (string.IsNullOrEmpty(model.UserId) && userContext != null
                     && userContext.CurrentUser != null)
                 {
@@ -100,7 +100,7 @@ namespace Api.Public.Resolvers
 
                 var user = await _accountManager.GetFullByHashIdAsync(userIdentityId);
 
-                var result = UserInfoMapping.ApplicationUserToFullUserInfo(user);
+                var result = UserInfoMapping.FullUserModelToInfo(user);
                 result.UserIdentityId = userIdentityId;
                 if (userContext.CurrentUser == null || !user.AuthenticationToken.Equals(userContext.AuthenticationToken))
                 {

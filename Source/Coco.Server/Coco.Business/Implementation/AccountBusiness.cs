@@ -1,7 +1,6 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
 using Coco.Business.ValidationStrategies;
-using Coco.Common.Helper;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
@@ -16,15 +15,15 @@ namespace Coco.Business.Implementation
 {
     public class AccountBusiness : IAccountBusiness
     {
-        private readonly CocoUserDbContext _dbContext;
+        private readonly CocoUserDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public AccountBusiness(CocoUserDbContext dbContext, IRepository<User> userRepository,
+        public AccountBusiness(CocoUserDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserInfo> userInfoRepository)
         {
-            _dbContext = dbContext;
+            _identityContext = identityContext;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -43,7 +42,7 @@ namespace Coco.Business.Implementation
             UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
 
             _userInfoRepository.Insert(userInfo);
-            _dbContext.SaveChanges();
+            _identityContext.SaveChanges();
 
             return userInfo.Id;
         }
@@ -89,7 +88,7 @@ namespace Coco.Business.Implementation
             user.IsActived = false;
 
             _userRepository.Update(user);
-            _dbContext.SaveChanges();
+            _identityContext.SaveChanges();
         }
 
         public async Task<UserModel> UpdateAsync(UserModel model)
@@ -125,40 +124,9 @@ namespace Coco.Business.Implementation
             user.UserInfo.PhoneNumber = model.PhoneNumber;
 
             _userRepository.Update(user);
-            await _dbContext.SaveChangesAsync();
+            await _identityContext.SaveChangesAsync();
 
             return model;
-        }
-
-        public async Task<UserModel> UpdateInfoAsync(UserModel user)
-        {
-            if (user.Id <= 0)
-            {
-                throw new ArgumentNullException("User Id");
-            }
-
-            UserInfo userInfo = _userInfoRepository.Find(user.Id);
-            userInfo.BirthDate = user.BirthDate;
-            userInfo.CountryId = user.CountryId;
-            userInfo.Description = user.Description;
-            userInfo.GenderId = user.GenderId;
-            userInfo.PhoneNumber = user.PhoneNumber;
-
-            if (userInfo.User == null)
-            {
-                throw new ArgumentNullException(nameof(userInfo.User));
-            }
-
-            userInfo.User.DisplayName = user.DisplayName;
-            userInfo.User.Firstname = user.Firstname;
-            userInfo.User.Lastname = user.Lastname;
-            userInfo.User.UpdatedById = user.Id;
-            userInfo.User.UpdatedDate = DateTime.Now;
-
-            _userInfoRepository.Update(userInfo);
-            await _dbContext.SaveChangesAsync();
-
-            return user;
         }
 
         public async Task<UserModel> Find(long id)
@@ -166,6 +134,7 @@ namespace Coco.Business.Implementation
             var user = await _userRepository
                 .Get(x => x.Id == id && x.IsActived)
                 .Include(x => x.UserInfo)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             var userModel = UserMapping.UserEntityToModel(user);
@@ -177,6 +146,7 @@ namespace Coco.Business.Implementation
             var existUser = _userRepository
                 .Get(x => x.Id.Equals(id))
                 .Include(x => x.UserInfo)
+                .AsNoTracking()
                 .FirstOrDefault();
 
             if (existUser != null)
@@ -196,6 +166,7 @@ namespace Coco.Business.Implementation
                 .Include(x => x.UserInfo)
                 .Include(x => x.UserInfo.Country)
                 .Include(x => x.UserInfo.Gender)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (existUser != null)
@@ -235,44 +206,8 @@ namespace Coco.Business.Implementation
             }
 
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
-            await _dbContext.SaveChangesAsync();
+            await _identityContext.SaveChangesAsync();
 
-            return model;
-        }
-
-        public async Task<UpdateAvatarModel> UpdatePhotoAsync(UpdateAvatarModel model, long userId)
-        {
-            var userInfo = _userInfoRepository.Find(userId);
-
-            if (userInfo == null)
-            {
-                throw new ArgumentNullException(nameof(userInfo));
-            }
-
-            _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
-            bool canUpdate = _validationStrategyContext.Validate(model.PhotoUrl);
-
-            if (!canUpdate)
-            {
-                throw new ArgumentException(model.PhotoUrl);
-            }
-
-            _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
-            canUpdate = _validationStrategyContext.Validate(model);
-
-            if (!canUpdate)
-            {
-                throw new ArgumentException("Avatar Url");
-            }
-
-            var newImage = ImageHelper
-                .CropBase64Image(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height);
-
-            userInfo.Photo = newImage;
-            _userInfoRepository.Update(userInfo);
-            await _dbContext.SaveChangesAsync();
-
-            model.PhotoUrl = newImage;
             return model;
         }
     }

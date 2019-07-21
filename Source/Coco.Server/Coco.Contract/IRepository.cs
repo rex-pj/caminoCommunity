@@ -96,6 +96,16 @@ namespace Coco.Contract
         /// </summary>
         /// <param name="entity">Entity</param>
         void UpdateByName(TEntity entity, object value, string propertyName, bool isIgnoreCase = false);
+
+        /// <summary>
+        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
+        /// </summary>
+        IQueryable<TEntity> TableNoTracking { get; }
+
+        /// <summary>
+        /// Gets a table
+        /// </summary>
+        IQueryable<TEntity> Table { get; }
         #endregion
     }
 }

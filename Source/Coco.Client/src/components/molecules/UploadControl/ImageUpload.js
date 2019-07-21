@@ -13,6 +13,11 @@ const UploadButton = styled.span`
   path {
     color: inherit;
   }
+
+  > span {
+    color: inherit;
+    margin-left: ${p => p.theme.size.exTiny};
+  }
 `;
 
 class ImageUpload extends Component {
@@ -52,6 +57,7 @@ class ImageUpload extends Component {
       <div className={this.props.className}>
         <UploadButton onClick={this.openFileUpload}>
           <FontAwesomeIcon icon="camera" />
+          <span>{this.props.children}</span>
         </UploadButton>
         <InputFile
           ref={this.fileRef}

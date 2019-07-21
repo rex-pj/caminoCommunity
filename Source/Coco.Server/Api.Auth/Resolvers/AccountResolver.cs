@@ -19,58 +19,23 @@ namespace Api.Identity.Resolvers
     public class AccountResolver : BaseResolver
     {
         private readonly IAccountManager<ApplicationUser> _accountManager;
-        private readonly ICountryBusiness _countryBusiness;
 
-        public AccountResolver(IAccountManager<ApplicationUser> accountManager,
-            ICountryBusiness countryBusiness)
+        public AccountResolver(IAccountManager<ApplicationUser> accountManager)
         {
             _accountManager = accountManager;
-            _countryBusiness = countryBusiness;
         }
 
         public UserInfo GetLoggedUser(IWorkContext workContext)
         {
             try
             {
-                return UserInfoMapping.ApplicationUserToUserInfo(workContext.CurrentUser,
+                var currentUser = workContext.CurrentUser;
+                return UserInfoMapping.ApplicationUserToUserInfo(currentUser,
                     workContext.CurrentUser.UserIdentityId);
             }
             catch (Exception ex)
             {
                 throw ex;
-            }
-        }
-
-        public async Task<ApiResult> UpdateUserInfoAsync(ResolveFieldContext<object> context)
-        {
-            try
-            {
-                var model = context.GetArgument<UserInfoUpdateModel>("user");
-
-                var parameters = new ApplicationUser()
-                {
-                    BirthDate = model.BirthDate,
-                    DisplayName = $"{model.Lastname} {model.Firstname}",
-                    Email = model.Email,
-                    Firstname = model.Firstname,
-                    Lastname = model.Lastname,
-                    GenderId = (byte)model.GenderId,
-                    UpdatedDate = DateTime.Now,
-                    UserName = model.Email,
-                    Description = model.Description,
-                    Address = model.Address,
-                    CountryId = model.CountryId,
-                    PhoneNumber = model.PhoneNumber
-                };
-
-                var result = await _accountManager.UpdateInfoAsync(parameters);
-                HandleContextError(context, result.Errors);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
 
@@ -119,7 +84,7 @@ namespace Api.Identity.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var result = await _accountManager.UpdatePhotoAsync(model, userContext.CurrentUser.Id);
+                var result = await _accountManager.UpdateAvatarAsync(model, userContext.CurrentUser.Id);
                 HandleContextError(context, result.Errors);
 
                 return result;

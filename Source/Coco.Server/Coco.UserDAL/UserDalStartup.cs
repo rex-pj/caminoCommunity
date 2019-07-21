@@ -17,7 +17,7 @@ namespace Coco.IdentityDAL
         public void RegiserTypes(IServiceCollection services)
         {
             services.AddTransient<IConfigurationRoot, ConfigurationRoot>();
-            services.AddDbContext<CocoUserDbContext>(x => x.UseSqlServer(_connectionString), ServiceLifetime.Scoped);
+            services.AddDbContext<CocoUserDbContext>(x => x.UseSqlServer(_connectionString));
         }
     }
 }

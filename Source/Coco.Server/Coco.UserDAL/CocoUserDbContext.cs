@@ -15,6 +15,7 @@ namespace Coco.IdentityDAL
         public DbSet<UserInfo> UserInfo { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Country> Country { get; set; }
+        public DbSet<UserPhoto> UserPhoto { get; set; }
         #endregion
 
         #region Ctor
@@ -27,18 +28,19 @@ namespace Coco.IdentityDAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new GenderMappingConfig());
-            modelBuilder.ApplyConfiguration(new StatusMappingConfig());
-            modelBuilder.ApplyConfiguration(new UserInfoMappingConfig());
-            modelBuilder.ApplyConfiguration(new UserMappingConfig());
+            modelBuilder.ApplyConfiguration(new GenderMappingConfig())
+                .ApplyConfiguration(new StatusMappingConfig())
+                .ApplyConfiguration(new UserPhotoMappingConfig())
+                .ApplyConfiguration(new UserInfoMappingConfig())
+                .ApplyConfiguration(new UserMappingConfig());
 
-            modelBuilder.ApplyConfiguration(new RoleMappingConfig());
-            modelBuilder.ApplyConfiguration(new UserRoleMappingConfig());
+            modelBuilder.ApplyConfiguration(new RoleMappingConfig())
+                .ApplyConfiguration(new UserRoleMappingConfig());
 
             modelBuilder.ApplyConfiguration(new CountryMappingConfig());
 
-            modelBuilder.ApplyConfiguration(new CareerMappingConfig());
-            modelBuilder.ApplyConfiguration(new UserCareerMappingConfig());
+            modelBuilder.ApplyConfiguration(new CareerMappingConfig())
+                .ApplyConfiguration(new UserCareerMappingConfig());
         }
     }
 }

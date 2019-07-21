@@ -38,7 +38,8 @@ export const GET_LOGGED_USER = gpl`
       firstname,
       email,
       displayName,
-      userIdentityId
+      userIdentityId,
+      avatarUrl
     }
   }
 `;
@@ -57,8 +58,8 @@ export const GET_USER_INFO = gpl`
         description
         createdDate
         phoneNumber,
-        photo,
-        coverPhoto
+        avatarUrl,
+        coverPhotoUrl
       }
     }
   }
@@ -92,29 +93,6 @@ export const GET_FULL_USER_INFO = gpl`
           id
           text
         }
-      }
-    }
-  }
-`;
-
-export const GET_USER_INFO_TO_UPDATE = gpl`
-  query($criterias: FindUserInputType!){
-    fullUserInfo(criterias: $criterias){
-      result{
-        birthDate,
-        displayName,
-        email,
-        firstname,
-        lastname,
-        genderId,
-        createdDate,
-        description,
-        address,
-        countryId,
-        phoneNumber,
-        statusId,
-        genderLabel,
-        countryName
       }
     }
   }

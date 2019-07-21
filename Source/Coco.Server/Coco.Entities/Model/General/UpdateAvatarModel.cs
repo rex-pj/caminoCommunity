@@ -9,5 +9,8 @@
         public double Height { get; set; }
         public string ContentType { get; set; }
         public bool CanEdit { get; set; }
+        public string FileName { get; set; }
+        public long AvatarId { get; set; }
+        public string AvatarCode { get; set; }
     }
 }

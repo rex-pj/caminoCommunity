@@ -1,5 +1,6 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework.Models;
+using Coco.Entities.Model.Account;
 using Coco.Entities.Model.General;
 using System;
 using System.Threading.Tasks;
@@ -17,9 +18,8 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<string> GetUserIdAsync(TUser user);
         Task<ApiResult> CheckPasswordAsync(TUser user, string password);
         TUser GetLoggingUser(string userIdentityId, string authenticationToken);
-        Task<TUser> GetFullByHashIdAsync(string userIdentityId);
-        Task<ApiResult> UpdateInfoAsync(TUser user);
+        Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token);
-        Task<ApiResult> UpdatePhotoAsync(UpdateAvatarModel model, long userId);
+        Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId);
     }
 }

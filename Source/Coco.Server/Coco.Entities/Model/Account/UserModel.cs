@@ -26,5 +26,6 @@ namespace Coco.Entities.Model.Account
         public string AuthenticationToken { get; set; }
         public DateTime? Expiration { get; set; }
         public string SecurityStamp { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }

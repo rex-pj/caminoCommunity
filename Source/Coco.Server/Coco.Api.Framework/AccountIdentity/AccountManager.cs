@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
+using Coco.Entities.Model.Account;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -321,7 +322,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdentityId"/> if it exists.
         /// </returns>
-        public virtual async Task<ApplicationUser> GetFullByHashIdAsync(string userIdentityId)
+        public virtual async Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId)
         {
             ThrowIfDisposed();
             if (string.IsNullOrEmpty(userIdentityId))
@@ -463,27 +464,6 @@ namespace Coco.Api.Framework.AccountIdentity
         }
 
         /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to updated.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
-        public virtual async Task<ApiResult> UpdateInfoAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return await UserStore.UpdateInfoAsync(user, CancellationToken);
-        }
-
-        /// <summary>
         /// Creates the specified <paramref name="model"/> in the backing store with no password,
         /// as an asynchronous operation.
         /// </summary>
@@ -524,7 +504,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<ApiResult> UpdatePhotoAsync(UpdateAvatarModel model, long userId)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
         {
             ThrowIfDisposed();
 
@@ -533,7 +513,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserStore.UpdatePhotoAsync(model, userId, CancellationToken);
+            return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
         }
 
         #endregion

@@ -13,13 +13,13 @@ function raiseError(dispatch, title, description, url) {
   });
 }
 
-function openModal(dispatch, children, title, modalType) {
+function openModal(dispatch, data, title, modalType) {
   dispatch({
     type: modalActions.OPEN,
     payload: {
       title: title,
-      children: children,
       isOpen: true,
+      data,
       modalType: modalType
     }
   });
