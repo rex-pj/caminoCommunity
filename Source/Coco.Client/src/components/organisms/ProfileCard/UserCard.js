@@ -58,12 +58,11 @@ export default function(props) {
   const { className, menuList } = props;
   const { userInfo } = props;
   const userIdentityId = userInfo ? userInfo.userIdentityId : null;
-  const { avatarUrl } = userInfo;
   return (
     <Root className={className}>
-      {avatarUrl ? (
+      {userInfo && userInfo.avatarUrl ? (
         <ProfileImage
-          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
+          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.avatarUrl}`}
         />
       ) : null}
 

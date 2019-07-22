@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { VerticalList } from "../../atoms/List";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { AnchorLink } from "../../atoms/Links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
 
@@ -61,12 +61,12 @@ export default class Shorcut extends Component {
             title={item.description}
             index={index}
           >
-            <NavLink to={item.href} activeClassName="actived" exact={true}>
+            <AnchorLink to={item.href}>
               <IconBlock>
                 <FontAwesomeIcon icon={item.icon} />
               </IconBlock>
               <span>{item.text}</span>
-            </NavLink>
+            </AnchorLink>
           </ModuleMenuListItem>
         ))}
       </VerticalList>

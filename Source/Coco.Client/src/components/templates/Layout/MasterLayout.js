@@ -16,7 +16,7 @@ function MasterLayout({ component: Component, ...rest }) {
           <Fragment>
             <Component {...matchProps} />
             <Notifications notify={rest.notify} />
-            <Modal options={rest.modal} pushData={rest.pushData} />
+            <Modal options={rest.modal} onExecute={rest.onExecute} />
           </Fragment>
         )}
       />
@@ -26,7 +26,7 @@ function MasterLayout({ component: Component, ...rest }) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    pushData: data => {
+    onExecute: data => {
       modalPushData(dispatch, data);
     }
   };

@@ -67,8 +67,8 @@ export default class extends Component {
   };
 
   onExecute = e => {
-    if (this.props.pushData) {
-      this.props.pushData(e);
+    if (this.props.onExecute) {
+      this.props.onExecute(e);
     }
   };
 
@@ -80,7 +80,7 @@ export default class extends Component {
     }
 
     const { className, options } = this.props;
-    const { modalType, data, children, title } = options;
+    const { modalType, children, title } = options;
 
     return (
       <Fragment>
@@ -90,7 +90,7 @@ export default class extends Component {
             {modalType === "crop-image" ? (
               <CropImageModal
                 title={title}
-                data={data}
+                data={options}
                 closeModal={this.closeModal}
                 onExecute={this.onExecute}
               >

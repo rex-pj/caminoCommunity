@@ -92,9 +92,9 @@ export default class extends Component {
         scale: 1
       }
     };
-  }
 
-  setEditorRef = editor => (this.editor = editor);
+    this.setEditorRef = editor => (this.editor = editor);
+  }
 
   onChangeImage = e => {
     this.setState({
@@ -104,7 +104,7 @@ export default class extends Component {
     });
   };
 
-  onExecute = e => {
+  onExecute = (e, eventExecute) => {
     this.setState({
       isDisabled: true
     });
@@ -114,7 +114,7 @@ export default class extends Component {
 
       if (this.props.onExecute) {
         this.props.onExecute({
-          event: e,
+          eventExecute: eventExecute,
           sourceImageUrl: src,
           xAxis: rect.x,
           yAxis: rect.y,
@@ -145,6 +145,7 @@ export default class extends Component {
 
   render() {
     const { crop, src, isDisabled, oldImage } = this.state;
+    const { data } = this.props;
     return (
       <Fragment>
         <PanelBody>
@@ -180,7 +181,11 @@ export default class extends Component {
           )}
         </PanelBody>
         <PanelFooter>
-          <Button disabled={isDisabled} size="sm" onClick={this.onExecute}>
+          <Button
+            disabled={isDisabled}
+            size="sm"
+            onClick={e => this.onExecute(e, data.eventExecute)}
+          >
             Đồng ý
           </Button>
           <ButtonSecondary size="sm" onClick={() => this.props.closeModal()}>

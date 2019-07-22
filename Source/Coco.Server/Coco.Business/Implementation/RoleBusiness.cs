@@ -10,10 +10,10 @@ namespace Coco.Business.Implementation
 {
     public class RoleBusiness : IRoleBusiness
     {
-        private readonly IIdentityDbContext _dbContext;
+        private readonly IdentityDbContext _dbContext;
         private readonly IRepository<Role> _roleRepository;
 
-        public RoleBusiness(IIdentityDbContext dbContext, IRepository<Role> roleRepository)
+        public RoleBusiness(IdentityDbContext dbContext, IRepository<Role> roleRepository)
         {
             _dbContext = dbContext;
             _roleRepository = roleRepository;

@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { ImageRound } from "../../atoms/Images";
 import { openModal, closeModal } from "../../../store/commands";
 import { Button } from "../../atoms/Buttons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UPDATE_USER_AVATAR } from "../../../utils/GraphQLQueries";
 import { Mutation } from "react-apollo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ProfileImage = styled(ImageRound)`
   display: block;
@@ -50,75 +50,20 @@ const AvatarLink = styled.a`
 `;
 
 class ProfileAvatar extends Component {
-  constructor(props) {
-    super(props);
-
-    const { userInfo } = props;
-    this.state = {
-      avatarUrl: userInfo.avatarUrl
-    };
-
-    this.updateAvatar = null;
-  }
-
   onOpenModalUpload = (e, updateAvatar) => {
-    const { avatarUrl } = this.state;
-    this.updateAvatar = updateAvatar;
-    this.props.openUploadModal(
-      { imageUrl: `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}` },
-      "Upload avatar",
-      "crop-image"
-    );
+    const { userInfo } = this.props;
+    const { avatarUrl } = userInfo;
+    this.props.openUploadModal({
+      imageUrl: `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`,
+      eventExecute: updateAvatar,
+      title: "Upload avatar",
+      modalType: "crop-image"
+    });
   };
-
-  async componentWillReceiveProps(nextProps) {
-    if (this.props.modalPayload !== nextProps.modalPayload) {
-      if (this.updateAvatar) {
-        const { modalPayload } = nextProps;
-        const { canEdit } = this.props;
-        const {
-          sourceImageUrl,
-          xAxis,
-          yAxis,
-          width,
-          height,
-          contentType,
-          fileName
-        } = modalPayload;
-
-        return await this.updateAvatar({
-          variables: {
-            criterias: {
-              photoUrl: sourceImageUrl,
-              canEdit,
-              xAxis,
-              yAxis,
-              width,
-              height,
-              contentType,
-              fileName
-            }
-          }
-        })
-          .then(response => {
-            const { data } = response;
-            const { updateAvatar } = data;
-            const { result } = updateAvatar;
-            this.setState({
-              avatarUrl: result.photoUrl
-            });
-
-            this.props.closeUploadModal();
-          })
-          .catch(error => {});
-      }
-    }
-  }
 
   render() {
     const { userInfo, canEdit, className } = this.props;
-
-    const { avatarUrl } = this.state;
+    const { avatarUrl } = userInfo;
     var random = Math.random();
     return (
       <Mutation mutation={UPDATE_USER_AVATAR}>
@@ -149,8 +94,8 @@ class ProfileAvatar extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openUploadModal: (data, title, modalType) => {
-      openModal(dispatch, data, title, modalType);
+    openUploadModal: e => {
+      openModal(dispatch, e);
     },
     closeUploadModal: () => {
       closeModal(dispatch);
@@ -158,13 +103,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const mapStateToProps = state => {
-  return {
-    modalPayload: state.modalReducer.payload
-  };
-};
-
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(ProfileAvatar);
