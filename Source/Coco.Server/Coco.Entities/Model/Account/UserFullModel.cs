@@ -6,7 +6,7 @@
         public string CountryCode { get; set; }
         public string GenderLabel { get; set; }
         public string StatusLabel { get; set; }
-        public string Photo { get; set; }
-        public string CoverPhoto { get; set; }
+        public string AvatarUrl { get; set; }
+        public string CoverPhotoUrl { get; set; }
     }
 }

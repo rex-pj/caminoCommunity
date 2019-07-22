@@ -27,7 +27,8 @@ namespace Coco.Api.Framework.Mapping
                 StatusId = user.StatusId,
                 CountryCode = user.CountryCode,
                 GenderLabel = user.GenderLabel,
-                CountryName = user.CountryName
+                CountryName = user.CountryName,
+                AvatarUrl = user.AvatarUrl
             };
         }
 
@@ -60,7 +61,8 @@ namespace Coco.Api.Framework.Mapping
                 UpdatedById = userModel.UpdatedById,
                 Expiration = userModel.Expiration,
                 AuthenticationToken = userModel.AuthenticationToken,
-                SecurityStamp = userModel.SecurityStamp
+                SecurityStamp = userModel.SecurityStamp,
+                AvatarUrl = userModel.AvatarUrl
             };
 
             return applicationUser;
@@ -126,14 +128,14 @@ namespace Coco.Api.Framework.Mapping
                 GenderLabel = userModel.GenderLabel,
                 CreatedDate = userModel.CreatedDate,
                 StatusLabel = userModel.StatusLabel,
-                Photo = userModel.Photo,
-                CoverPhoto = userModel.CoverPhoto
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
             };
 
             return applicationUser;
         }
 
-        public static UserInfoExt ApplicationUserToFullUserInfo(ApplicationUser user)
+        public static UserInfoExt FullUserModelToInfo(UserFullModel user)
         {
             var userInfo = new UserInfo()
             {
@@ -155,8 +157,8 @@ namespace Coco.Api.Framework.Mapping
                 CountryName = user.CountryName,
                 GenderLabel = user.GenderLabel,
                 StatusLabel = user.StatusLabel,
-                Photo = user.Photo,
-                CoverPhoto = user.CoverPhoto
+                AvatarUrl = user.AvatarUrl,
+                CoverPhotoUrl = user.CoverPhotoUrl
             };
 
             var result = new UserInfoExt(userInfo);

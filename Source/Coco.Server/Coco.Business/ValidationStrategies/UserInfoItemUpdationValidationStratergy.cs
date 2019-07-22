@@ -34,13 +34,10 @@ namespace Coco.Business.ValidationStrategies
             {
                 isValid = model.Value != null;
             }
-            else if (propertyName.Equals(nameof(userInfo.Photo), ignoreCase) ||
-                model.PropertyName.Equals(nameof(userInfo.CoverPhoto), ignoreCase))
-            {
-                isValid = false;
-            }
             else if (propertyName.Equals(nameof(userInfo.Id), ignoreCase)
-                || propertyName.Equals(nameof(userInfo.User), ignoreCase))
+                || propertyName.Equals(nameof(userInfo.User), ignoreCase)
+                || propertyName.Equals(nameof(userInfo.AvatarUrl), ignoreCase)
+                || propertyName.Equals(nameof(userInfo.CoverPhotoUrl), ignoreCase))
             {
                 isValid = false;
             }

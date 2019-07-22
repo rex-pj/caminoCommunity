@@ -16,6 +16,7 @@ namespace Coco.Api.Framework.AccountIdentity
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
+        private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
 
@@ -27,12 +28,14 @@ namespace Coco.Api.Framework.AccountIdentity
         private bool _isDisposed;
 
         public UserStore(IAccountBusiness accountBusiness,
+            IUserPhotoBusiness userPhotoBusiness,
             ITextCrypter textCrypter,
             IConfiguration configuration,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _accountBusiness = accountBusiness;
+            _userPhotoBusiness = userPhotoBusiness;
             _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
@@ -205,7 +208,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return GetApplicationUser(userEntity);
         }
 
-        public async Task<ApplicationUser> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
+        public async Task<UserFullModel> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
@@ -219,7 +222,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(user);
         }
 
-        public async Task<ApplicationUser> GetFullByIdAsync(long id, CancellationToken cancellationToken)
+        public async Task<UserFullModel> GetFullByIdAsync(long id, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
@@ -227,7 +230,8 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var userEntity = await _accountBusiness.GetFullByIdAsync(id);
-            return await Task.FromResult(GetFullApplicationUser(userEntity));
+
+            return await Task.FromResult(userEntity);
         }
 
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -258,35 +262,6 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             return Task.FromResult(user.UserName);
-        }
-
-        /// <summary>
-        /// Updates the specified <paramref name="user"/> in the user store.
-        /// </summary>
-        /// <param name="user">The user info to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateInfoAsync(ApplicationUser user, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            try
-            {
-                var userModel = GetUserEntity(user);
-
-                var result = await _accountBusiness.UpdateInfoAsync(userModel);
-
-                return new ApiResult(true);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
         }
 
         /// <summary>
@@ -343,7 +318,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="model">The photo to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdatePhotoAsync(UpdateAvatarModel model, long userId, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -354,9 +329,10 @@ namespace Coco.Api.Framework.AccountIdentity
 
             try
             {
-                var result = await _accountBusiness.UpdatePhotoAsync(model, userId);
+                model.AvatarCode = _textCrypter.Encrypt(userId.ToString(), model.FileName);
+                var result = await _userPhotoBusiness.UpdateAvatarAsync(model, userId);
 
-                return ApiResult<UpdateAvatarModel>.Success(model);
+                return ApiResult<UpdateAvatarModel>.Success(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -386,18 +362,6 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var result = UserInfoMapping.PopulateApplicationUser(entity);
-
-            return result;
-        }
-
-        private ApplicationUser GetFullApplicationUser(UserFullModel entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateFullApplicationUser(entity);
 
             return result;
         }

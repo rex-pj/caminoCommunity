@@ -14,6 +14,7 @@ namespace Api.Identity.GraphQLTypes.InputTypes
             Field(x => x.YAxis, false, typeof(FloatGraphType));
             Field(x => x.PhotoUrl, false, typeof(StringGraphType));
             Field(x => x.CanEdit, false, typeof(BooleanGraphType));
+            Field(x => x.FileName, false, typeof(StringGraphType));
         }
     }
 }

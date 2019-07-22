@@ -75,6 +75,7 @@ namespace Coco.Business.Mapping
                 userModel.CountryId = user.UserInfo.CountryId;
                 userModel.PhoneNumber = user.UserInfo.PhoneNumber;
                 userModel.Id = user.Id;
+                userModel.AvatarUrl = user.UserInfo.AvatarUrl;
             }
 
             return userModel;
@@ -120,8 +121,8 @@ namespace Coco.Business.Mapping
                 userModel.CountryId = user.UserInfo.CountryId;
                 userModel.Description = user.UserInfo.Description;
                 userModel.PhoneNumber = user.UserInfo.PhoneNumber;
-                userModel.Photo = user.UserInfo.Photo;
-                userModel.CoverPhoto = user.UserInfo.CoverPhoto;
+                userModel.AvatarUrl = user.UserInfo.AvatarUrl;
+                userModel.CoverPhotoUrl = user.UserInfo.CoverPhotoUrl;
             }
 
             if (user.UserInfo.Country != null)

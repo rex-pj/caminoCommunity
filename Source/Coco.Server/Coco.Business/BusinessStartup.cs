@@ -29,17 +29,19 @@ namespace Coco.Business
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddTransient<IAccountBusiness, AccountBusiness>();
-            services.AddTransient<ICountryBusiness, CountryBusiness>();
-            services.AddTransient<IRoleBusiness, RoleBusiness>();
+            services.AddTransient<IAccountBusiness, AccountBusiness>()
+                .AddTransient<ICountryBusiness, CountryBusiness>()
+                .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
+                .AddTransient<IRoleBusiness, RoleBusiness>();
 
-            services.AddTransient<IRepository<User>, EfUserRepository<User>>();
-            services.AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>();
-            services.AddTransient<IRepository<Country>, EfUserRepository<Country>>();
-            services.AddTransient<IRepository<Role>, EfUserRepository<Role>>();
+            services.AddTransient<IRepository<User>, EfUserRepository<User>>()
+                .AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>()
+                .AddTransient<IRepository<Country>, EfUserRepository<Country>>()
+                .AddTransient<IRepository<Role>, EfUserRepository<Role>>()
+                .AddTransient<IRepository<UserPhoto>, EfUserRepository<UserPhoto>>();
 
-            services.AddTransient<IRepository<Product>, EfRepository<Product>>();
-            services.AddTransient<ValidationStrategyContext>();
+            services.AddTransient<IRepository<Product>, EfRepository<Product>>()
+                .AddTransient<ValidationStrategyContext>();
             
             _dalStartup.RegiserTypes(services);
             _userDalStartup.RegiserTypes(services);

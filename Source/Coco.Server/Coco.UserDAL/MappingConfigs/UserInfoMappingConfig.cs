@@ -10,8 +10,13 @@ namespace Coco.IdentityDAL.MappingConfigs
         public void Configure(EntityTypeBuilder<UserInfo> builder)
         {
             builder.ToTable(nameof(UserInfo), TableSchemaConst.DBO);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.HasMany(c => c.UserPhotos)
+               .WithOne(x => x.UserInfo)
+               .HasForeignKey(c => c.UserId);
         }
     }
 }

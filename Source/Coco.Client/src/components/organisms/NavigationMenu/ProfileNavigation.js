@@ -75,10 +75,17 @@ export default function(props) {
     <Root>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
-          <ImageCircle
-            src={`${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`}
-            alt=""
-          />
+          {props.userInfo ? (
+            <ImageCircle
+              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${
+                props.userInfo.avatarUrl
+              }`}
+              alt=""
+            />
+          ) : (
+            ""
+          )}
+
           <UserName>
             {props.userInfo ? props.userInfo.displayName : ""}
           </UserName>

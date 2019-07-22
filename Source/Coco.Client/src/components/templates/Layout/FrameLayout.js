@@ -18,8 +18,7 @@ export default function({ component: Component, ...rest }) {
       authenticationToken: data.tokenkey,
       isLogin: data.isLogin,
       userInfo: {
-        displayName: data.displayName,
-        userIdentityId: data.userIdentityId
+        ...data
       }
     };
     return user;

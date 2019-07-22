@@ -23,7 +23,7 @@ namespace Coco.Api.Framework
                 .AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>()
                 .AddTransient<ILookupProtector, SillyEncryptor>()
                 .AddTransient<ITextCrypter, TextCrypter>()
-                .AddTransient<IWorkContext, WorkContext>();
+                .AddScoped<IWorkContext, WorkContext>();
         }
     }
 }
