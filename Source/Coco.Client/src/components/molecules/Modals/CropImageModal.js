@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
-import { Button, ButtonSecondary } from "../../atoms/Buttons";
+import { Button, ButtonSecondary, ButtonAlert } from "../../atoms/Buttons";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 
 const ImageWrap = styled.div`
@@ -36,11 +37,14 @@ const SliderWrap = styled.div`
 const Tools = styled.div`
   width: 250px;
   margin: 10px auto;
+  text-align: center;
 `;
 
 const AvatarUpload = styled(ImageUpload)`
   text-align: center;
   margin: auto;
+  display: inline-block;
+  vertical-align: middle;
 
   > span {
     color: ${p => p.theme.color.normal};
@@ -61,6 +65,14 @@ const AvatarUpload = styled(ImageUpload)`
       margin: 10px auto 0 auto;
     }
   }
+`;
+
+const ButtonRemove = styled(ButtonAlert)`
+  height: ${p => p.theme.size.medium};
+  padding-top: 0;
+  padding-bottom: 0;
+  vertical-align: middle;
+  margin-left: ${p => p.theme.size.exTiny};
 `;
 
 export default class extends Component {
@@ -140,6 +152,9 @@ export default class extends Component {
             <AvatarUpload onChange={e => this.onChangeImage(e)}>
               Đổi ảnh đại diện
             </AvatarUpload>
+            <ButtonRemove size="sm">
+              <FontAwesomeIcon icon="times" />
+            </ButtonRemove>
           </Tools>
 
           {src ? (
@@ -166,7 +181,7 @@ export default class extends Component {
         </PanelBody>
         <PanelFooter>
           <Button disabled={isDisabled} size="sm" onClick={this.onExecute}>
-            Upload
+            Đồng ý
           </Button>
           <ButtonSecondary size="sm" onClick={() => this.props.closeModal()}>
             Hủy

@@ -24,7 +24,7 @@ namespace Coco.Business
         {
             _config = config;
             _dalStartup = new DalStartup(_config);
-            _userDalStartup = new UserDalStartup(_config);
+            _userDalStartup = new IdentityDalStartup(_config);
         }
 
         public void RegiserTypes(IServiceCollection services)

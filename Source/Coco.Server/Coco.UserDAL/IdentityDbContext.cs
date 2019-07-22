@@ -5,10 +5,11 @@ using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Base;
 using System.Threading.Tasks;
+using Coco.Contract;
 
 namespace Coco.IdentityDAL
 {
-    public class CocoIdentityDbContext : DbContext, ICocoIdentityDbContext
+    public class IdentityDbContext : DbContext, IDbContext
     {
         /// <summary>
         /// Creates a DbSet that can be used to query and save instances of entity
@@ -32,7 +33,7 @@ namespace Coco.IdentityDAL
 
         #region Ctor
 
-        public CocoIdentityDbContext(DbContextOptions<CocoIdentityDbContext> options) : base(options) { }
+        public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
 
         #endregion
 

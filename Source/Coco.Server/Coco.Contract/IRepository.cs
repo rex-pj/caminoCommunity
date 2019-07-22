@@ -17,12 +17,31 @@ namespace Coco.Contract
         IQueryable<TEntity> Get();
 
         /// <summary>
+        /// Get entities with no tracking
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<TEntity> GetAsNoTracking();
+
+        /// <summary>
         /// Get entities by filter
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter);
-        
+
+        /// <summary>
+        /// Get entities by filter with no tracking
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IQueryable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter);
+
+        /// <summary>
+        /// Get entities with no tracking async
+        /// </summary>
+        /// <returns></returns>
+        Task<IList<TEntity>> GetAsNoTrackingAsync();
+
         /// <summary>
         /// Get entities async
         /// </summary>
@@ -35,6 +54,14 @@ namespace Coco.Contract
         /// <param name="filter"></param>
         /// <returns></returns>
         Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter);
+
+        /// <summary>
+        /// Get entities by filter with no tracking async
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<IList<TEntity>> GetAsNoTrackingAsync(Expression<Func<TEntity, bool>> filter);
+
         /// <summary>
         /// Get entity by identifier
         /// </summary>

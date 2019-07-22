@@ -15,11 +15,11 @@ namespace Coco.Business.Implementation
 {
     public class AccountBusiness : IAccountBusiness
     {
-        private readonly ICocoIdentityDbContext _identityContext;
+        private readonly IDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public AccountBusiness(ICocoIdentityDbContext identityContext, IRepository<User> userRepository,
+        public AccountBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserInfo> userInfoRepository)
         {
@@ -52,7 +52,7 @@ namespace Coco.Business.Implementation
             email = email.ToLower();
 
             var user = await _userRepository
-                .Get(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
+                .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
                 .Include(x => x.UserInfo)
                 .FirstOrDefaultAsync();
 
@@ -68,7 +68,7 @@ namespace Coco.Business.Implementation
                 username = username.ToLower();
 
                 var user = await _userRepository
-                    .Get(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
+                    .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
                     .Include(x => x.UserInfo)
                     .FirstOrDefaultAsync();
 
@@ -132,9 +132,8 @@ namespace Coco.Business.Implementation
         public async Task<UserModel> Find(long id)
         {
             var user = await _userRepository
-                .Get(x => x.Id == id && x.IsActived)
+                .GetAsNoTracking(x => x.Id == id && x.IsActived)
                 .Include(x => x.UserInfo)
-                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             var userModel = UserMapping.UserEntityToModel(user);
@@ -144,9 +143,8 @@ namespace Coco.Business.Implementation
         public UserModel FindByIdAsync(long id)
         {
             var existUser = _userRepository
-                .Get(x => x.Id.Equals(id))
+                .GetAsNoTracking(x => x.Id.Equals(id))
                 .Include(x => x.UserInfo)
-                .AsNoTracking()
                 .FirstOrDefault();
 
             if (existUser != null)
@@ -161,12 +159,11 @@ namespace Coco.Business.Implementation
 
         public async Task<UserFullModel> GetFullByIdAsync(long id)
         {
-            var existUser = await _userRepository.Get(x => x.Id.Equals(id))
+            var existUser = await _userRepository.GetAsNoTracking(x => x.Id.Equals(id))
                 .Include(x => x.Status)
                 .Include(x => x.UserInfo)
                 .Include(x => x.UserInfo.Country)
                 .Include(x => x.UserInfo.Gender)
-                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (existUser != null)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Common.Helper;
+using Coco.Common.Utils;
 using Coco.Entities.Model.General;
 
 namespace Coco.Business.ValidationStrategies
@@ -24,7 +24,7 @@ namespace Coco.Business.ValidationStrategies
                 return false;
             }
 
-            var image = ImageHelper.Base64ToImage(data.PhotoUrl);
+            var image = ImageUtils.Base64ToImage(data.PhotoUrl);
             if(image.Width < 100 || image.Height < 100)
             {
                 return false;

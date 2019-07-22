@@ -43,6 +43,26 @@ namespace Coco.DAL.Implementations
         #endregion
 
         #region Methods
+        public IQueryable<TEntity> GetAsNoTracking()
+        {
+            return DbSet.AsNoTracking();
+        }
+
+        public IQueryable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter)
+        {
+            return DbSet.Where(filter).AsNoTracking();
+        }
+
+        public async Task<IList<TEntity>> GetAsNoTrackingAsync()
+        {
+            return await DbSet.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IList<TEntity>> GetAsNoTrackingAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await DbSet.Where(filter).AsNoTracking().ToListAsync();
+        }
+
         /// <summary>
         /// Get entities
         /// </summary>

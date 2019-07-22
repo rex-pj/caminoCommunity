@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Threading.Tasks;
 
-namespace Coco.IdentityDAL
+namespace Coco.Contract
 {
-    public interface ICocoIdentityDbContext
+    public interface IDbContext
     {
         #region Methods
 

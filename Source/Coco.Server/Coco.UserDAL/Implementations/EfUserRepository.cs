@@ -15,7 +15,7 @@ namespace Coco.IdentityDAL.Implementations
     {
         #region Fields
 
-        private readonly ICocoIdentityDbContext _dbContext;
+        private readonly IdentityDbContext _dbContext;
 
         private DbSet<TEntity> _dbSet;
 
@@ -36,13 +36,32 @@ namespace Coco.IdentityDAL.Implementations
 
         #region Ctor
 
-        public EfUserRepository(ICocoIdentityDbContext context)
+        public EfUserRepository(IdentityDbContext context)
         {
             this._dbContext = context;
         }
         #endregion
 
         #region Methods
+        public IQueryable<TEntity> GetAsNoTracking()
+        {
+            return DbSet.AsNoTracking();
+        }
+
+        public IQueryable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter)
+        {
+            return DbSet.Where(filter).AsNoTracking();
+        }
+
+        public async Task<IList<TEntity>> GetAsNoTrackingAsync()
+        {
+            return await DbSet.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IList<TEntity>> GetAsNoTrackingAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await DbSet.Where(filter).AsNoTracking().ToListAsync();
+        }
         /// <summary>
         /// Get entities
         /// </summary>

@@ -1,13 +1,12 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.ValidationStrategies;
-using Coco.Common.Helper;
+using Coco.Common.Utils;
 using Coco.Contract;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Enums;
 using Coco.Entities.Model.General;
 using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,11 +15,11 @@ namespace Coco.Business.Implementation
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly ICocoIdentityDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(ICocoIdentityDbContext dbContext,
+        public UserPhotoBusiness(IdentityDbContext dbContext,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
@@ -55,8 +54,8 @@ namespace Coco.Business.Implementation
                 throw new ArgumentException("Avatar Url");
             }
 
-            var newImage = ImageHelper
-                .CropBase64Image(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height);
+            var newImage = ImageUtils
+                .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height);
 
             var avatarType = (byte)UserPhotoTypeEnum.Avatar;
             var userPhoto = _userPhotoRepository
@@ -109,7 +108,7 @@ namespace Coco.Business.Implementation
         {
             var avatarType = (byte)UserPhotoTypeEnum.Avatar;
             var userPhotos = await _userPhotoRepository
-                .GetAsync(x => x.Code == code && x.TypeId == avatarType);
+                .GetAsNoTrackingAsync(x => x.Code == code && x.TypeId == avatarType);
 
             if (userPhotos != null && userPhotos.Any())
             {

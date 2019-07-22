@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Common.Helper;
+using Coco.Common.Utils;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -23,7 +23,7 @@ namespace Coco.Business.ValidationStrategies
                 {
                     return false;
                 }
-                ImageHelper.Base64ToImage(value.ToString());
+                ImageUtils.Base64ToImage(value.ToString());
                 return true;
             }
             catch (Exception e)

@@ -47,6 +47,24 @@ const ButtonSecondary = styled(Button)`
   }
 `;
 
+const ButtonAlert = styled(Button)`
+  border: 1px solid ${p => p.theme.color.warning};
+  background-color: ${p => p.theme.color.warningLight};
+  color: ${p => p.theme.color.warning};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.warningLight};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.warningLight};
+  }
+`;
+
 const ButtonCircle = styled(Button)`
   border-radius: 100%;
 `;
@@ -135,5 +153,6 @@ export {
   ButtonOutlineSecondary,
   ButtonOutlineDark,
   ButtonOutlineNormal,
-  ButtonOutlinePrimary
+  ButtonOutlinePrimary,
+  ButtonAlert
 };
