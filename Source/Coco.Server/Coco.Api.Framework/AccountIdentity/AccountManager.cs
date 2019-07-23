@@ -303,12 +303,11 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(authenticationToken));
             }
 
-            var user = UserStore.FindByHashedIdAsync(userIdentityId, CancellationToken);
+            var user = UserStore.FindByIdentityId(userIdentityId, CancellationToken);
 
-            if (!user.AuthenticationToken.Equals(authenticationToken))
+            if (!user.AuthenticationToken.Equals(authenticationToken) && !user.IsActived)
             {
-                throw new SecurityTokenException();
-
+                throw new UnauthorizedAccessException();
             }
 
             return user;

@@ -24,7 +24,7 @@ namespace Coco.Common.Utils
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 string base64String = string.Empty;
-                bmp.Save(memoryStream, ImageFormat.Png);
+                bmp.Save(memoryStream, ImageFormat.Jpeg);
 
                 memoryStream.Position = 0;
                 byte[] byteBuffer = memoryStream.ToArray();

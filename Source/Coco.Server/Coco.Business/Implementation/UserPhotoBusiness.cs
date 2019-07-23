@@ -5,6 +5,7 @@ using Coco.Contract;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Enums;
+using Coco.Entities.Model;
 using Coco.Entities.Model.General;
 using Coco.IdentityDAL;
 using System;
@@ -15,16 +16,16 @@ namespace Coco.Business.Implementation
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly IDbContext _dbContext;
+        private readonly IDbContext _identityContext;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(IdentityDbContext dbContext,
+        public UserPhotoBusiness(IdentityDbContext identityContext,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
-            _dbContext = dbContext;
+            _identityContext = identityContext;
             _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -62,7 +63,7 @@ namespace Coco.Business.Implementation
                 .Get(x => x.UserId == userId && x.TypeId == avatarType)
                 .FirstOrDefault();
 
-            using(var transaction = _dbContext.Database.BeginTransaction())
+            using (var transaction = _identityContext.Database.BeginTransaction())
             {
                 if (userPhoto == null)
                 {
@@ -89,13 +90,13 @@ namespace Coco.Business.Implementation
 
                 userInfo.AvatarUrl = model.AvatarCode;
 
-                await _dbContext.SaveChangesAsync();
+                await _identityContext.SaveChangesAsync();
                 transaction.Commit();
 
                 model.PhotoUrl = userPhoto.Code;
                 return model;
             }
-            
+
         }
 
         public async Task<UserPhoto> GetAvatarByIdAsync(long id)
@@ -104,18 +105,25 @@ namespace Coco.Business.Implementation
             return userPhoto;
         }
 
-        public async Task<UserPhoto> GetAvatarByCodeAsync(string code)
+        public UserPhotoModel GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
         {
-            var avatarType = (byte)UserPhotoTypeEnum.Avatar;
-            var userPhotos = await _userPhotoRepository
-                .GetAsNoTrackingAsync(x => x.Code == code && x.TypeId == avatarType);
+            var avatarType = (byte)type;
+            var userPhoto = _userPhotoRepository
+                .GetAsNoTracking(x => x.Code.Equals(code) && x.TypeId.Equals(avatarType))
+                .Select(x => new UserPhotoModel()
+                {
+                    Code = x.Code,
+                    Description = x.Description,
+                    Id = x.Id,
+                    ImageData = x.ImageData,
+                    Name = x.Name,
+                    TypeId = x.TypeId,
+                    UserId = x.UserId,
+                    Url = x.Url
+                })
+                .FirstOrDefault();
 
-            if (userPhotos != null && userPhotos.Any())
-            {
-                return userPhotos.FirstOrDefault();
-            }
-
-            return null;
+            return userPhoto;
         }
     }
 }

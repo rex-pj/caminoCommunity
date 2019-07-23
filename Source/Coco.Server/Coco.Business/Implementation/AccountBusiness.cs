@@ -29,6 +29,7 @@ namespace Coco.Business.Implementation
             _validationStrategyContext = validationStrategyContext;
         }
 
+        #region CRUD
         public long Add(UserModel userModel)
         {
             if (userModel == null)
@@ -47,40 +48,6 @@ namespace Coco.Business.Implementation
             return userInfo.Id;
         }
 
-        public async Task<UserModel> FindUserByEmail(string email, bool includeInActived = false)
-        {
-            email = email.ToLower();
-
-            var user = await _userRepository
-                .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
-                .Include(x => x.UserInfo)
-                .FirstOrDefaultAsync();
-
-            UserModel userModel = UserMapping.UserEntityToModel(user);
-
-            return userModel;
-        }
-
-        public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
-        {
-            try
-            {
-                username = username.ToLower();
-
-                var user = await _userRepository
-                    .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                    .Include(x => x.UserInfo)
-                    .FirstOrDefaultAsync();
-
-                UserModel userModel = UserMapping.UserEntityToModel(user);
-
-                return userModel;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
 
         public void Delete(long id)
         {
@@ -98,7 +65,7 @@ namespace Coco.Business.Implementation
                 throw new ArgumentNullException("User Id");
             }
 
-            var user = _userRepository.Find(model.Id);
+            var user = await _userRepository.FindAsync(model.Id);
 
             user.IsActived = model.IsActived;
             user.StatusId = model.StatusId;
@@ -129,51 +96,6 @@ namespace Coco.Business.Implementation
             return model;
         }
 
-        public async Task<UserModel> Find(long id)
-        {
-            var user = await _userRepository
-                .GetAsNoTracking(x => x.Id == id && x.IsActived)
-                .Include(x => x.UserInfo)
-                .FirstOrDefaultAsync();
-
-            var userModel = UserMapping.UserEntityToModel(user);
-            return userModel;
-        }
-
-        public UserModel FindByIdAsync(long id)
-        {
-            var existUser = _userRepository
-                .GetAsNoTracking(x => x.Id.Equals(id))
-                .Include(x => x.UserInfo)
-                .FirstOrDefault();
-
-            if (existUser != null)
-            {
-                var userModel = UserMapping.UserEntityToModel(existUser);
-
-                return userModel;
-            }
-
-            return new UserModel();
-        }
-
-        public async Task<UserFullModel> GetFullByIdAsync(long id)
-        {
-            var existUser = await _userRepository.GetAsNoTracking(x => x.Id.Equals(id))
-                .Include(x => x.Status)
-                .Include(x => x.UserInfo)
-                .Include(x => x.UserInfo.Country)
-                .Include(x => x.UserInfo.Gender)
-                .FirstOrDefaultAsync();
-
-            if (existUser != null)
-            {
-                var userModel = UserMapping.FullUserEntityToModel(existUser);
-                return userModel;
-            }
-
-            return new UserFullModel();
-        }
 
         public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
         {
@@ -206,6 +128,68 @@ namespace Coco.Business.Implementation
             await _identityContext.SaveChangesAsync();
 
             return model;
+        }
+        #endregion
+
+        public async Task<UserModel> FindUserByEmail(string email, bool includeInActived = false)
+        {
+            email = email.ToLower();
+
+            var user = await _userRepository
+                .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
+                .Select(UserMapping.SelectorUserModel)
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
+        {
+            try
+            {
+                username = username.ToLower();
+
+                var user = await _userRepository
+                    .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
+                    .Select(UserMapping.SelectorUserModel)
+                    .FirstOrDefaultAsync();
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public UserModel Find(long id)
+        {
+            var user = _userRepository
+                .GetAsNoTracking(x => x.Id == id)
+                .Select(UserMapping.SelectorUserModel)
+                .FirstOrDefault();
+
+            return user;
+        }
+
+        public async Task<UserModel> FindByIdAsync(long id)
+        {
+            var existUser = await _userRepository
+                .GetAsNoTracking(x => x.Id.Equals(id))
+                .Select(UserMapping.SelectorUserModel)
+                .FirstOrDefaultAsync();
+
+            return existUser;
+        }
+
+        public async Task<UserFullModel> GetFullByIdAsync(long id)
+        {
+            var existUser = await _userRepository
+                .GetAsNoTracking(x => x.Id.Equals(id))
+                .Select(UserMapping.SelectorFullUserModel)
+                .FirstOrDefaultAsync();
+
+            return existUser;
         }
     }
 }

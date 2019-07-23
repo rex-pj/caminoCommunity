@@ -104,26 +104,24 @@ export default class extends Component {
     });
   };
 
-  onExecute = (e, eventExecute) => {
+  onExecute = e => {
     this.setState({
       isDisabled: true
     });
-    if (this.editor) {
-      const { src, fileName, contentType } = this.state;
-      const rect = this.editor.getCroppingRect();
 
-      if (this.props.onExecute) {
-        this.props.onExecute({
-          eventExecute: eventExecute,
-          sourceImageUrl: src,
-          xAxis: rect.x,
-          yAxis: rect.y,
-          width: rect.width,
-          height: rect.height,
-          fileName,
-          contentType
-        });
-      }
+    const { src } = this.state;
+    if (this.editor && this.props.onExecute && src) {
+      const { fileName, contentType } = this.state;
+      const rect = this.editor.getCroppingRect();
+      this.props.onExecute({
+        sourceImageUrl: src,
+        xAxis: rect.x,
+        yAxis: rect.y,
+        width: rect.width,
+        height: rect.height,
+        fileName,
+        contentType
+      });
     }
 
     this.setState({
@@ -145,7 +143,6 @@ export default class extends Component {
 
   render() {
     const { crop, src, isDisabled, oldImage } = this.state;
-    const { data } = this.props;
     return (
       <Fragment>
         <PanelBody>
@@ -181,11 +178,7 @@ export default class extends Component {
           )}
         </PanelBody>
         <PanelFooter>
-          <Button
-            disabled={isDisabled}
-            size="sm"
-            onClick={e => this.onExecute(e, data.eventExecute)}
-          >
+          <Button disabled={isDisabled} size="sm" onClick={this.onExecute}>
             Đồng ý
           </Button>
           <ButtonSecondary size="sm" onClick={() => this.props.closeModal()}>

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
 import CropImageModal from "./CropImageModal";
+import { modalPushData } from "../../../store/commands";
+import { connect } from "react-redux";
 
 const Root = styled(PanelDefault)`
   top: 45px;
@@ -44,20 +46,24 @@ const Backdrop = styled.div`
   z-index: 1;
 `;
 
-export default class extends Component {
+class Modal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shouldOpen: false,
       showBackdrop: true
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      shouldOpen: nextProps.options.isOpen
-    });
+    if (nextProps && nextProps.payload) {
+      const { payload } = nextProps;
+      this.setState(() => {
+        return {
+          shouldOpen: payload && !!payload.isOpen
+        };
+      });
+    }
   }
 
   closeModal = () => {
@@ -73,14 +79,14 @@ export default class extends Component {
   };
 
   render() {
-    const { shouldOpen, showBackdrop } = this.state;
+    const { showBackdrop, shouldOpen } = this.state;
+    const { className, payload } = this.props;
 
     if (!shouldOpen) {
       return null;
     }
 
-    const { className, options } = this.props;
-    const { modalType, children, title } = options;
+    const { modalType, children, title } = payload;
 
     return (
       <Fragment>
@@ -90,7 +96,7 @@ export default class extends Component {
             {modalType === "crop-image" ? (
               <CropImageModal
                 title={title}
-                data={options}
+                data={payload}
                 closeModal={this.closeModal}
                 onExecute={this.onExecute}
               >
@@ -108,3 +114,22 @@ export default class extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onExecute: data => {
+      modalPushData(dispatch, data);
+    }
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    payload: state.modalReducer.payload
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Modal);

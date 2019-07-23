@@ -1,26 +1,19 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { Switch, withRouter } from "react-router-dom";
-import { Query } from "react-apollo";
-import styled from "styled-components";
+import { withRouter } from "react-router-dom";
+import { Query, Mutation } from "react-apollo";
 import loadable from "@loadable/component";
-import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
-import Timeline from "./timeline";
-import { GET_USER_INFO } from "../../utils/GraphQLQueries";
-import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { defaultClient } from "../../utils/GraphQLClient";
 import { UPDATE_USER_AVATAR } from "../../utils/GraphQLQueries";
-import { Mutation } from "react-apollo";
-
-const AsyncTabContent = loadable(props => import(`${props.page}`));
+import ProfileBody from "./profile-body";
+import { GET_USER_INFO } from "../../utils/GraphQLQueries";
+import Loading from "../../components/atoms/Loading";
+import styled from "styled-components";
+import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
 
 const UserProfileCover = loadable(() =>
   import("../../components/organisms/User/UserProfileCover")
-);
-
-const UserProfileInfo = loadable(() =>
-  import("../../components/organisms/User/UserProfileInfo")
 );
 
 const CoverNav = styled.div`
@@ -35,8 +28,10 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
-
     this._canEdit = false;
+    this._uploadAvatar = null;
+    this._refetch = null;
+    this._baseUrl = "/profile";
   }
 
   async componentDidMount() {
@@ -44,46 +39,45 @@ class Profile extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (nextProps.modalPayload) {
-      const { eventExecute } = nextProps.modalPayload;
-      if (eventExecute) {
-        const { modalPayload } = nextProps;
-        const {
-          sourceImageUrl,
+    const { modalPayload } = nextProps;
+    if (
+      modalPayload &&
+      modalPayload.actionType === "PUSH_DATA" &&
+      this._uploadAvatar
+    ) {
+      const { modalPayload } = nextProps;
+      const {
+        sourceImageUrl,
+        xAxis,
+        yAxis,
+        width,
+        height,
+        contentType,
+        fileName
+      } = modalPayload;
+
+      const variables = {
+        criterias: {
+          photoUrl: sourceImageUrl,
+          canEdit: this._canEdit,
           xAxis,
           yAxis,
           width,
           height,
           contentType,
           fileName
-        } = modalPayload;
+        }
+      };
 
-        return await eventExecute({
-          variables: {
-            criterias: {
-              photoUrl: sourceImageUrl,
-              canEdit: this._canEdit,
-              xAxis,
-              yAxis,
-              width,
-              height,
-              contentType,
-              fileName
-            }
-          }
+      return await this._uploadAvatar({
+        variables: variables
+      })
+        .then(response => {
+          this._refetch();
+
+          this.props.closeUploadModal();
         })
-          .then(response => {
-            const { data } = response;
-            const { updateAvatar } = data;
-            const { result } = updateAvatar;
-            this.setState({
-              avatarUrl: result.photoUrl
-            });
-
-            this.props.closeUploadModal();
-          })
-          .catch(error => {});
-      }
+        .catch(error => {});
     }
   }
 
@@ -110,8 +104,6 @@ class Profile extends Component {
     const { params } = match;
     const { userId, pageNumber } = params;
 
-    const baseUrl = "/profile";
-
     return (
       <Query
         query={GET_USER_INFO}
@@ -122,7 +114,8 @@ class Profile extends Component {
         }}
         client={defaultClient}
       >
-        {({ loading, error, data }) => {
+        {({ loading, error, data, refetch }) => {
+          this._refetch = refetch;
           if (loading) {
             return <Loading>Loading</Loading>;
           }
@@ -131,116 +124,29 @@ class Profile extends Component {
           }
 
           const userInfo = this.parseUserInfo(data);
+
           return (
-            <Mutation mutation={UPDATE_USER_AVATAR}>
-              {updateAvatar => (
-                <Fragment>
-                  <CoverNav>
+            <Fragment>
+              <Mutation mutation={UPDATE_USER_AVATAR}>
+                {updateAvatar => {
+                  this._uploadAvatar = updateAvatar;
+                  return (
                     <UserProfileCover
                       userInfo={userInfo}
                       canEdit={userInfo.canEdit}
                     />
-                    <ProfileNavigation userId={userId} />
-                  </CoverNav>
-                  <div className="row">
-                    <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
-                      <Switch>
-                        <Timeline
-                          path={[`${baseUrl}/:userId/about`]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              userId={userId}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-about"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[
-                            `${baseUrl}/:userId/posts`,
-                            `${baseUrl}/:userId/posts/page/:pageNumber`
-                          ]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              pageNumber={pageNumber}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-posts"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[
-                            `${baseUrl}/:userId/products`,
-                            `${baseUrl}/:userId/products/page/:pageNumber`
-                          ]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              pageNumber={pageNumber}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-products"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[
-                            `${baseUrl}/:userId/farms`,
-                            `${baseUrl}/:userId/farms/page/:pageNumber`
-                          ]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              pageNumber={pageNumber}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-farms"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[
-                            `${baseUrl}/:userId/followings`,
-                            `${baseUrl}/:userId/followings/page/:pageNumber`
-                          ]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              pageNumber={pageNumber}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-followings"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[
-                            `${baseUrl}/:userId`,
-                            `${baseUrl}/:userId/feeds`,
-                            `${baseUrl}/:userId/feeds/page/:pageNumber`
-                          ]}
-                          component={props => (
-                            <AsyncTabContent
-                              {...props}
-                              pageNumber={pageNumber}
-                              userUrl={`${baseUrl}/${userId}`}
-                              page="./user-feeds"
-                            />
-                          )}
-                        />
-                        <Timeline
-                          path={[`${baseUrl}`]}
-                          exact={true}
-                          component={() => <div>NOT FOUND</div>}
-                        />
-                      </Switch>
-                    </div>
-                    <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
-                      <UserProfileInfo userInfo={userInfo} />
-                    </div>
-                  </div>
-                </Fragment>
-              )}
-            </Mutation>
+                  );
+                }}
+              </Mutation>
+              <CoverNav>
+                <ProfileNavigation userId={userId} />
+              </CoverNav>
+              <ProfileBody
+                userInfo={userInfo}
+                pageNumber={pageNumber}
+                baseUrl={this._baseUrl}
+              />
+            </Fragment>
           );
         }}
       </Query>

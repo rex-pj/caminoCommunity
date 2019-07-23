@@ -1,4 +1,5 @@
 ﻿using Coco.Business.Contracts;
+using Coco.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -19,12 +20,12 @@ namespace Api.Resources.Controllers
         // GET cdn/photo/avatar
         [HttpGet]
         [Route("avatar/{code}")]
-        public async Task<IActionResult> Avatar(string code)
+        public IActionResult Avatar(string code)
         {
-            var avatar = await _userPhotoBusiness.GetAvatarByCodeAsync(code);
+            var avatar = _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoTypeEnum.Avatar);
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
-            return File(bytes, "image/png");
+            return File(bytes, "image/jpeg");
         }
     }
 }

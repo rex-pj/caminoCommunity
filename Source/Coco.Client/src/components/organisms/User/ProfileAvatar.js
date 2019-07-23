@@ -5,8 +5,6 @@ import { ImageRound } from "../../atoms/Images";
 import { openModal, closeModal } from "../../../store/commands";
 import { Button } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UPDATE_USER_AVATAR } from "../../../utils/GraphQLQueries";
-import { Mutation } from "react-apollo";
 
 const ProfileImage = styled(ImageRound)`
   display: block;
@@ -50,12 +48,13 @@ const AvatarLink = styled.a`
 `;
 
 class ProfileAvatar extends Component {
-  onOpenModalUpload = (e, updateAvatar) => {
+  onOpenModalUpload = e => {
     const { userInfo } = this.props;
     const { avatarUrl } = userInfo;
     this.props.openUploadModal({
-      imageUrl: `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`,
-      eventExecute: updateAvatar,
+      imageUrl: avatarUrl
+        ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`
+        : null,
       title: "Upload avatar",
       modalType: "crop-image"
     });
@@ -64,30 +63,22 @@ class ProfileAvatar extends Component {
   render() {
     const { userInfo, canEdit, className } = this.props;
     const { avatarUrl } = userInfo;
-    var random = Math.random();
+
     return (
-      <Mutation mutation={UPDATE_USER_AVATAR}>
-        {updateAvatar => (
-          <Wrap className={className}>
-            <AvatarLink href={userInfo.url}>
-              {avatarUrl ? (
-                <ProfileImage
-                  src={`${
-                    process.env.REACT_APP_CDN_AVATAR_API_URL
-                  }${avatarUrl}?${random}`}
-                />
-              ) : null}
-            </AvatarLink>
-            {!!canEdit ? (
-              <AvatarUpload
-                onClick={e => this.onOpenModalUpload(e, updateAvatar)}
-              >
-                <FontAwesomeIcon icon="pencil-alt" />
-              </AvatarUpload>
-            ) : null}
-          </Wrap>
-        )}
-      </Mutation>
+      <Wrap className={className}>
+        <AvatarLink href={userInfo.url}>
+          {avatarUrl ? (
+            <ProfileImage
+              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
+            />
+          ) : null}
+        </AvatarLink>
+        {!!canEdit ? (
+          <AvatarUpload onClick={e => this.onOpenModalUpload(e)}>
+            <FontAwesomeIcon icon="pencil-alt" />
+          </AvatarUpload>
+        ) : null}
+      </Wrap>
     );
   }
 }

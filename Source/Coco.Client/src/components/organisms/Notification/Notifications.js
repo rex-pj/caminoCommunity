@@ -78,4 +78,10 @@ class Notifications extends Component {
   }
 }
 
-export default connect()(Notifications);
+const mapStateToProps = state => {
+  return {
+    notify: state.notifyRdc.notify
+  };
+};
+
+export default connect(mapStateToProps)(Notifications);

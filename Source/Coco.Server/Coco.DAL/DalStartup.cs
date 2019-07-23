@@ -20,7 +20,7 @@ namespace Coco.DAL
         {
             services.AddTransient<IConfigurationRoot, ConfigurationRoot>()
                 .AddDbContext<CocoDbContext>
-                (x => x.UseLazyLoadingProxies().UseSqlServer(_connectionString));
+                (x => x.UseSqlServer(_connectionString));
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.Account;
 using System;
-using System.Web;
+using System.Linq.Expressions;
 
 namespace Coco.Business.Mapping
 {
@@ -40,103 +40,56 @@ namespace Coco.Business.Mapping
             return user;
         }
 
-        public static UserModel UserEntityToModel(User user)
+        public static Expression<Func<User, UserModel>> SelectorUserModel = user => new UserFullModel
         {
-            if (user == null)
-            {
-                return null;
-            }
+            DisplayName = user.DisplayName,
+            Firstname = user.Firstname,
+            Lastname = user.Lastname,
+            UpdatedDate = user.UpdatedDate,
+            CreatedDate = user.CreatedDate,
+            UpdatedById = user.UpdatedById,
+            CreatedById = user.CreatedById,
+            IsActived = user.IsActived,
+            StatusId = user.StatusId,
+            Email = user.Email,
+            Password = user.Password,
+            PasswordSalt = user.PasswordSalt,
+            Expiration = user.Expiration,
+            AuthenticationToken = user.AuthenticatorToken,
+            SecurityStamp = user.SecurityStamp,
+            Id = user.Id,
 
-            UserModel userModel = new UserModel
-            {
-                DisplayName = user.DisplayName,
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                UpdatedDate = user.UpdatedDate,
-                CreatedDate = user.CreatedDate,
-                UpdatedById = user.UpdatedById,
-                CreatedById = user.CreatedById,
-                IsActived = user.IsActived,
-                StatusId = user.StatusId,
-                Email = user.Email,
-                Password = user.Password,
-                PasswordSalt = user.PasswordSalt,
-                Expiration = user.Expiration,
-                AuthenticationToken = user.AuthenticatorToken,
-                SecurityStamp = user.SecurityStamp,
-                Id = user.Id
-            };
+            GenderId = user.UserInfo.GenderId,
+            Address = user.UserInfo.Address,
+            BirthDate = user.UserInfo.BirthDate,
+            CountryId = user.UserInfo.CountryId,
+            PhoneNumber = user.UserInfo.PhoneNumber,
+            AvatarUrl = user.UserInfo.AvatarUrl,
+        };
 
-            if (user.UserInfo != null)
-            {
-                userModel.GenderId = user.UserInfo.GenderId;
-                userModel.Address = user.UserInfo.Address;
-                userModel.BirthDate = user.UserInfo.BirthDate;
-                userModel.CountryId = user.UserInfo.CountryId;
-                userModel.PhoneNumber = user.UserInfo.PhoneNumber;
-                userModel.Id = user.Id;
-                userModel.AvatarUrl = user.UserInfo.AvatarUrl;
-            }
-
-            return userModel;
-        }
-
-        public static UserFullModel FullUserEntityToModel(User user)
+        public static Expression<Func<User, UserFullModel>> SelectorFullUserModel = user => new UserFullModel
         {
-            if (user == null)
-            {
-                return null;
-            }
+            CreatedDate = user.CreatedDate,
+            DisplayName = user.DisplayName,
+            Firstname = user.Firstname,
+            Lastname = user.Lastname,
+            Email = user.Email,
+            PhoneNumber = user.UserInfo.PhoneNumber,
+            Description = user.UserInfo.Description,
+            Address = user.UserInfo.Address,
+            AvatarUrl = user.UserInfo.AvatarUrl,
+            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl,
+            BirthDate = user.UserInfo.BirthDate,
+            GenderId = user.UserInfo.GenderId,
+            GenderLabel = user.UserInfo.Gender.Name,
+            StatusId = user.StatusId,
+            IsActived = user.IsActived,
+            StatusLabel = user.Status.Name,
 
-            UserFullModel userModel = new UserFullModel
-            {
-                StatusId = user.StatusId,
-                UpdatedDate = user.UpdatedDate,
-                CreatedDate = user.CreatedDate,
-                UpdatedById = user.UpdatedById,
-                CreatedById = user.CreatedById,
-                IsActived = user.IsActived,
-                Email = user.Email,
-                Password = user.Password,
-                PasswordSalt = user.PasswordSalt,
-                Expiration = user.Expiration,
-                AuthenticationToken = user.AuthenticatorToken,
-                SecurityStamp = user.SecurityStamp,
-                Id = user.Id,
-                DisplayName = user.DisplayName,
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-            };
-
-            if (user.Status != null)
-            {
-                userModel.StatusLabel = user.Status.Name;
-            }
-
-            if (user.UserInfo != null)
-            {
-                userModel.GenderId = user.UserInfo.GenderId;
-                userModel.Address = user.UserInfo.Address;
-                userModel.BirthDate = user.UserInfo.BirthDate;
-                userModel.CountryId = user.UserInfo.CountryId;
-                userModel.Description = user.UserInfo.Description;
-                userModel.PhoneNumber = user.UserInfo.PhoneNumber;
-                userModel.AvatarUrl = user.UserInfo.AvatarUrl;
-                userModel.CoverPhotoUrl = user.UserInfo.CoverPhotoUrl;
-            }
-
-            if (user.UserInfo.Country != null)
-            {
-                userModel.CountryName = user.UserInfo.Country.Name;
-                userModel.CountryCode = user.UserInfo.Country.Code;
-            }
-
-            if (user.UserInfo.Gender != null)
-            {
-                userModel.GenderLabel = user.UserInfo.Gender.Name;
-            }
-
-            return userModel;
-        }
+            CountryId = user.UserInfo.CountryId,
+            CountryCode = user.UserInfo.Country.Code,
+            CountryName = user.UserInfo.Country.Name,
+            AuthenticationToken = user.AuthenticatorToken,
+        };
     }
 }

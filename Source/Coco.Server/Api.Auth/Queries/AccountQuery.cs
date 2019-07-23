@@ -1,7 +1,7 @@
 ﻿using Api.Identity.Resolvers;
 using Api.Identity.GraphQLTypes.ResultTypes;
 using GraphQL.Types;
-using Coco.Api.Framework.AccountIdentity;
+using Coco.Api.Framework.AccountIdentity.Contracts;
 
 namespace Api.Identity.Queries
 {
@@ -10,7 +10,7 @@ namespace Api.Identity.Queries
         public AccountQuery(AccountResolver accountResolver)
         {
             Field<UserInfoResultType>("loggedUser",
-                resolve: context => accountResolver.GetLoggedUser(context.UserContext as WorkContext));
+                resolve: context => accountResolver.GetLoggedUser(context.UserContext as IWorkContext));
         }
     }
 }

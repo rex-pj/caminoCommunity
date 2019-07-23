@@ -165,7 +165,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentOutOfRangeException(nameof(userId), $"{nameof(userId)} is not a valid GUID");
             }
 
-            var userEntity = await _accountBusiness.Find(id);
+            var userEntity = await _accountBusiness.FindByIdAsync(id);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
@@ -182,7 +182,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
 
-        public ApplicationUser FindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
+        public ApplicationUser FindByIdentityId(string userIdentityId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
@@ -192,18 +192,18 @@ namespace Coco.Api.Framework.AccountIdentity
             var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var user = FindByIdAsync(userId, cancellationToken);
+            var user = FindById(userId, cancellationToken);
             return user;
         }
 
-        private ApplicationUser FindByIdAsync(long id, CancellationToken cancellationToken)
+        private ApplicationUser FindById(long id, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = _accountBusiness.FindByIdAsync(id);
+            var userEntity = _accountBusiness.Find(id);
 
             return GetApplicationUser(userEntity);
         }
@@ -329,7 +329,10 @@ namespace Coco.Api.Framework.AccountIdentity
 
             try
             {
-                model.AvatarCode = _textCrypter.Encrypt(userId.ToString(), model.FileName);
+                Random random = new Random();
+                int randomNumber = random.Next(1, 1000);
+                long numberByUserId = (userId * randomNumber);
+                model.AvatarCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
                 var result = await _userPhotoBusiness.UpdateAvatarAsync(model, userId);
 
                 return ApiResult<UpdateAvatarModel>.Success(result);
