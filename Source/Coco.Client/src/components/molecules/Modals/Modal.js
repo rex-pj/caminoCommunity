@@ -2,9 +2,10 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
-import CropImageModal from "./CropImageModal";
-import { modalPushData } from "../../../store/commands";
+import ChangeAvatarModal from "./ChangeAvatarModal";
 import { connect } from "react-redux";
+import { ButtonTransparent } from "../../atoms/Buttons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled(PanelDefault)`
   top: 45px;
@@ -13,8 +14,8 @@ const Root = styled(PanelDefault)`
   bottom: auto;
   z-index: 100;
   margin: 0 auto;
-  max-width: 980px;
   position: absolute;
+  max-width: ${p => (p.size === "lg" ? "90%" : "720px")};
 `;
 
 const Scroll = styled.div`
@@ -23,6 +24,7 @@ const Scroll = styled.div`
   ${PanelHeading} {
     border-bottom: 1px solid ${p => p.theme.color.light};
     font-weight: 600;
+    position: relative;
   }
 
   ${PanelFooter} {
@@ -34,6 +36,14 @@ const Scroll = styled.div`
       border-radius: ${p => p.theme.borderRadius.large};
     }
   }
+`;
+
+const CloseButton = styled(ButtonTransparent)`
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 `;
 
 const Backdrop = styled.div`
@@ -72,12 +82,6 @@ class Modal extends Component {
     });
   };
 
-  onExecute = e => {
-    if (this.props.onExecute) {
-      this.props.onExecute(e);
-    }
-  };
-
   render() {
     const { showBackdrop, shouldOpen } = this.state;
     const { className, payload } = this.props;
@@ -92,16 +96,21 @@ class Modal extends Component {
       <Fragment>
         <Root className={className}>
           <Scroll>
-            <PanelHeading>{title}</PanelHeading>
-            {modalType === "crop-image" ? (
-              <CropImageModal
+            <PanelHeading>
+              {title}
+              <CloseButton onClick={this.closeModal}>
+                <FontAwesomeIcon icon="times" />
+              </CloseButton>
+            </PanelHeading>
+            {modalType === "change-avatar" ? (
+              <ChangeAvatarModal
                 title={title}
                 data={payload}
                 closeModal={this.closeModal}
                 onExecute={this.onExecute}
               >
                 {children}
-              </CropImageModal>
+              </ChangeAvatarModal>
             ) : (
               <DefaultModal closeModal={this.closeModal}>
                 {children}
@@ -115,21 +124,10 @@ class Modal extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onExecute: data => {
-      modalPushData(dispatch, data);
-    }
-  };
-};
-
 const mapStateToProps = state => {
   return {
     payload: state.modalReducer.payload
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Modal);
+export default connect(mapStateToProps)(Modal);

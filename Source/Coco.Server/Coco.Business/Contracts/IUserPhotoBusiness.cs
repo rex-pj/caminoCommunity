@@ -10,6 +10,7 @@ namespace Coco.Business.Contracts
     {
         Task<UpdateAvatarModel> UpdateAvatarAsync(UpdateAvatarModel model, long userId);
         Task<UserPhoto> GetAvatarByIdAsync(long id);
+        Task DeleteAvatarAsync(long userId);
         UserPhotoModel GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type);
     }
 }

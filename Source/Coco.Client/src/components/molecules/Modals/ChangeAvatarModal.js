@@ -1,12 +1,23 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
-import { Button, ButtonSecondary, ButtonAlert } from "../../atoms/Buttons";
+import {
+  Button,
+  ButtonSecondary,
+  ButtonAlert,
+  ButtonOutlineDanger
+} from "../../atoms/Buttons";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
+import { modalUploadAvatar, modalDeleteAvatar } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../../molecules/UploadControl/ImageUpload";
+import ImageUpload from "../UploadControl/ImageUpload";
+
+const Wrap = styled.div`
+  margin: auto;
+`;
 
 const ImageWrap = styled.div`
   text-align: center;
@@ -49,9 +60,9 @@ const AvatarUpload = styled(ImageUpload)`
   > span {
     color: ${p => p.theme.color.normal};
     height: ${p => p.theme.size.medium};
-    padding: 0 ${p => p.theme.size.exTiny};
+    padding: 0 ${p => p.theme.size.tiny};
     background-color: ${p => p.theme.color.exLight};
-    border-radius: ${p => p.theme.borderRadius.normal};
+    border-radius: ${p => p.theme.borderRadius.large};
     border: 1px solid ${p => p.theme.color.normal};
     cursor: pointer;
     font-weight: 600;
@@ -69,13 +80,25 @@ const AvatarUpload = styled(ImageUpload)`
 
 const ButtonRemove = styled(ButtonAlert)`
   height: ${p => p.theme.size.medium};
+  width: ${p => p.theme.size.medium};
   padding-top: 0;
   padding-bottom: 0;
   vertical-align: middle;
+  border-radius: ${p => p.theme.borderRadius.large};
   margin-left: ${p => p.theme.size.exTiny};
 `;
 
-export default class extends Component {
+const LeftButtonFooter = styled.div`
+  text-align: left;
+`;
+
+const FooterButtons = styled.div`
+  button > span {
+    margin-left: ${p => p.theme.size.tiny};
+  }
+`;
+
+class ChangeAvatarModal extends Component {
   constructor(props) {
     super(props);
 
@@ -104,16 +127,16 @@ export default class extends Component {
     });
   };
 
-  onExecute = e => {
+  onUpload = e => {
     this.setState({
       isDisabled: true
     });
 
     const { src } = this.state;
-    if (this.editor && this.props.onExecute && src) {
+    if (this.editor && this.props.onUpload && src) {
       const { fileName, contentType } = this.state;
       const rect = this.editor.getCroppingRect();
-      this.props.onExecute({
+      this.props.onUpload({
         sourceImageUrl: src,
         xAxis: rect.x,
         yAxis: rect.y,
@@ -141,16 +164,28 @@ export default class extends Component {
     });
   };
 
+  remove = () => {
+    this.setState({
+      contentType: null,
+      fileName: null,
+      src: null
+    });
+  };
+
+  onDelete = () => {
+    this.props.onDelete();
+  };
+
   render() {
     const { crop, src, isDisabled, oldImage } = this.state;
     return (
-      <Fragment>
+      <Wrap>
         <PanelBody>
           <Tools>
             <AvatarUpload onChange={e => this.onChangeImage(e)}>
               Đổi ảnh đại diện
             </AvatarUpload>
-            <ButtonRemove size="sm">
+            <ButtonRemove size="sm" onClick={this.remove}>
               <FontAwesomeIcon icon="times" />
             </ButtonRemove>
           </Tools>
@@ -164,7 +199,7 @@ export default class extends Component {
                   width={crop.width}
                   height={crop.height}
                   border={50}
-                  color={[255, 255, 255, 0.6]} // RGBA
+                  color={[0, 0, 0, 0.3]} // RGBA
                   scale={crop.scale}
                   rotate={0}
                 />
@@ -178,14 +213,46 @@ export default class extends Component {
           )}
         </PanelBody>
         <PanelFooter>
-          <Button disabled={isDisabled} size="sm" onClick={this.onExecute}>
-            Đồng ý
-          </Button>
-          <ButtonSecondary size="sm" onClick={() => this.props.closeModal()}>
-            Hủy
-          </ButtonSecondary>
+          <FooterButtons className="row justify-content-between">
+            <LeftButtonFooter className="col">
+              <ButtonOutlineDanger size="sm" onClick={this.onDelete}>
+                <FontAwesomeIcon icon="trash-alt" />
+                <span>Xóa Ảnh</span>
+              </ButtonOutlineDanger>
+            </LeftButtonFooter>
+
+            <div className="col">
+              <Button disabled={isDisabled} size="sm" onClick={this.onUpload}>
+                <FontAwesomeIcon icon="upload" />
+                <span>Tải Ảnh</span>
+              </Button>
+              <ButtonSecondary
+                size="sm"
+                onClick={() => this.props.closeModal()}
+              >
+                <FontAwesomeIcon icon="times" />
+                <span>Hủy</span>
+              </ButtonSecondary>
+            </div>
+          </FooterButtons>
         </PanelFooter>
-      </Fragment>
+      </Wrap>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onUpload: data => {
+      modalUploadAvatar(dispatch, data);
+    },
+    onDelete: () => {
+      modalDeleteAvatar(dispatch);
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ChangeAvatarModal);

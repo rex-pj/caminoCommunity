@@ -19,6 +19,10 @@ namespace Api.Identity.Mutations
             FieldAsync(typeof(ApiResultType<AvatarUpdatedResultType, UpdateAvatarModel>), "updateAvatar",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UpdateAvatarInputType>> { Name = "criterias" }),
                 resolve: async context => await accountResolver.UpdateAvatarAsync(context));
+
+            FieldAsync(typeof(ApiResultType<AvatarDeletedResultType, UpdateAvatarModel>), "deleteAvatar",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<DeleteAvatarInputType>> { Name = "criterias" }),
+                resolve: async context => await accountResolver.DeleteAvatarAsync(context));
         }
     }
 }

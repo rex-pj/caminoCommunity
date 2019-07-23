@@ -55,8 +55,8 @@ class ProfileAvatar extends Component {
       imageUrl: avatarUrl
         ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`
         : null,
-      title: "Upload avatar",
-      modalType: "crop-image"
+      title: "Đổi Ảnh Đại Diện",
+      modalType: "change-avatar"
     });
   };
 

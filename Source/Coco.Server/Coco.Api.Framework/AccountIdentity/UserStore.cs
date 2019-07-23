@@ -343,6 +343,32 @@ namespace Coco.Api.Framework.AccountIdentity
             }
         }
 
+        /// <summary>
+        /// Updates photo <paramref name="model"/> in the user store.
+        /// </summary>
+        /// <param name="model">The photo to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            try
+            {
+                await _userPhotoBusiness.DeleteAvatarAsync(userId);
+
+                return ApiResult<UpdateAvatarModel>.Success(new UpdateAvatarModel());
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
+            }
+        }
 
         #region Private Methods
         private UserModel GetUserEntity(ApplicationUser loggedUser)

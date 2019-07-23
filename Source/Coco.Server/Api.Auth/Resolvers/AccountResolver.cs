@@ -94,5 +94,33 @@ namespace Api.Identity.Resolvers
                 throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
+
+        public async Task<ApiResult> DeleteAvatarAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UpdateAvatarModel>("criterias");
+                var userContext = context.UserContext as IWorkContext;
+
+                if (!model.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                if (userContext == null || userContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var result = await _accountManager.DeleteAvatarAsync(userContext.CurrentUser.Id);
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
     }
 }

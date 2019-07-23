@@ -96,7 +96,23 @@ namespace Coco.Business.Implementation
                 model.PhotoUrl = userPhoto.Code;
                 return model;
             }
+        }
 
+        public async Task DeleteAvatarAsync(long userId)
+        {
+            var avatarType = (byte)UserPhotoTypeEnum.Avatar;
+            var userPhoto = _userPhotoRepository
+                .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(avatarType))
+                .FirstOrDefault();
+
+            if (userPhoto == null)
+            {
+                return;
+            }
+
+            userPhoto.UserInfo.AvatarUrl = null;
+            _userPhotoRepository.Delete(userPhoto);
+            await _identityContext.SaveChangesAsync();
         }
 
         public async Task<UserPhoto> GetAvatarByIdAsync(long id)

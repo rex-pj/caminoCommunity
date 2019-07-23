@@ -494,15 +494,6 @@ namespace Coco.Api.Framework.AccountIdentity
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
-        /// <summary>
-        /// Creates the specified <paramref name="model"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="model">The model to update user photo.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
         public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
         {
             ThrowIfDisposed();
@@ -513,6 +504,18 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
+        }
+
+        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId)
+        {
+            ThrowIfDisposed();
+
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            return await UserStore.DeleteAvatarAsync(userId, CancellationToken);
         }
 
         #endregion

@@ -1,3 +1,5 @@
+import * as modalActions from "../modalActions";
+
 const initialState = {
   payload: null,
   options: {
@@ -8,19 +10,27 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  if (action.type === "OPEN") {
+  if (action.type === modalActions.OPEN) {
     return {
       ...state,
       payload: action.payload
     };
-  } else if (action.type === "CLOSE") {
+  } else if (action.type === modalActions.CLOSE) {
     return {
       ...state,
       payload: action.payload
     };
-  } else if (action.type === "PUSH_DATA") {
+  } else if (action.type === modalActions.UPLOAD_AVTARA) {
     const payload = {
       ...action.payload,
+      actionType: action.type
+    };
+    return {
+      ...state,
+      payload: payload
+    };
+  } else if (action.type === modalActions.DELETE_AVTARA) {
+    const payload = {
       actionType: action.type
     };
     return {

@@ -134,3 +134,18 @@ export const UPDATE_USER_AVATAR = gpl`
     }
   }
 `;
+
+export const DELETE_USER_AVATAR = gpl`
+  mutation DeleteAvatar($criterias: DeleteAvatarInputType!){
+    deleteAvatar(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        canEdit
+      }
+    }
+  }
+`;

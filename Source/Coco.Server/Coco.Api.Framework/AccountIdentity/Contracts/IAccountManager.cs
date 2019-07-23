@@ -21,5 +21,6 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token);
         Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId);
+        Task<ApiResult> DeleteAvatarAsync(long userId);
     }
 }

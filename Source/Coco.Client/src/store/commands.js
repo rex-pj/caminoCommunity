@@ -32,13 +32,25 @@ function closeModal(dispatch) {
   });
 }
 
-function modalPushData(dispatch, data) {
+function modalUploadAvatar(dispatch, data) {
   dispatch({
-    type: modalActions.PUSH_DATA,
+    type: modalActions.UPLOAD_AVTARA,
     payload: {
       ...data
     }
   });
 }
 
-export { raiseError, openModal, closeModal, modalPushData };
+function modalDeleteAvatar(dispatch) {
+  dispatch({
+    type: modalActions.DELETE_AVTARA
+  });
+}
+
+export {
+  raiseError,
+  openModal,
+  closeModal,
+  modalUploadAvatar,
+  modalDeleteAvatar
+};

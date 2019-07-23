@@ -145,6 +145,22 @@ const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
   }
 `;
 
+const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
+  border: 1px solid ${p => p.theme.color.dangerLight};
+  color: ${p => p.theme.color.dangerLight};
+
+  :active,
+  :hover,
+  :focus-within {
+    color: ${p => p.theme.color.danger};
+    background-color: transparent;
+  }
+
+  :disabled {
+    color: ${p => p.theme.color.danger};
+  }
+`;
+
 export {
   Button,
   ButtonSecondary,
@@ -154,5 +170,6 @@ export {
   ButtonOutlineDark,
   ButtonOutlineNormal,
   ButtonOutlinePrimary,
-  ButtonAlert
+  ButtonAlert,
+  ButtonOutlineDanger
 };
