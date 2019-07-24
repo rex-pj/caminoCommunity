@@ -14,6 +14,7 @@ import Slider from "rc-slider";
 import { modalUploadAvatar, modalDeleteAvatar } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
+import AlertPopover from "../../molecules/Popovers/AlertPopover";
 
 const Wrap = styled.div`
   margin: auto;
@@ -113,7 +114,8 @@ class ChangeAvatarModal extends Component {
         width: 250,
         height: 250,
         scale: 1
-      }
+      },
+      showDeletePopover: false
     };
 
     this.setEditorRef = editor => (this.editor = editor);
@@ -177,7 +179,7 @@ class ChangeAvatarModal extends Component {
   };
 
   render() {
-    const { crop, src, isDisabled, oldImage } = this.state;
+    const { crop, src, isDisabled, oldImage, showDeletePopover } = this.state;
     return (
       <Wrap>
         <PanelBody>
@@ -185,9 +187,11 @@ class ChangeAvatarModal extends Component {
             <AvatarUpload onChange={e => this.onChangeImage(e)}>
               Đổi ảnh đại diện
             </AvatarUpload>
-            <ButtonRemove size="sm" onClick={this.remove}>
-              <FontAwesomeIcon icon="times" />
-            </ButtonRemove>
+            {src ? (
+              <ButtonRemove size="sm" onClick={this.remove}>
+                <FontAwesomeIcon icon="times" />
+              </ButtonRemove>
+            ) : null}
           </Tools>
 
           {src ? (
@@ -215,7 +219,13 @@ class ChangeAvatarModal extends Component {
         <PanelFooter>
           <FooterButtons className="row justify-content-between">
             <LeftButtonFooter className="col">
-              <ButtonOutlineDanger size="sm" onClick={this.onDelete}>
+              <AlertPopover
+                isShown={showDeletePopover}
+                target="DeleteAvatar"
+                title="Bạn có muốn xóa ảnh không?"
+                onExecute={this.onDelete}
+              />
+              <ButtonOutlineDanger size="sm" id="DeleteAvatar">
                 <FontAwesomeIcon icon="trash-alt" />
                 <span>Xóa Ảnh</span>
               </ButtonOutlineDanger>

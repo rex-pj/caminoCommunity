@@ -5,9 +5,20 @@ import { Button } from "../../atoms/Buttons";
 import { ImageCircle } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
 import DropdownButton from "../../molecules/DropdownButton";
+import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const Root = styled.div`
   float: right;
+`;
+
+const EmptyAvatar = styled(NoAvatar)`
+  border-radius: ${p => p.theme.borderRadius.normal};
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: ${p => p.theme.size.exTiny};
 `;
 
 const ProfileButton = styled(RouterLinkButton)`
@@ -83,7 +94,7 @@ export default function(props) {
               alt=""
             />
           ) : (
-            ""
+            <EmptyAvatar />
           )}
 
           <UserName>

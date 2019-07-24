@@ -14,11 +14,13 @@ import ProfileBody from "./profile-body";
 import Loading from "../../components/atoms/Loading";
 import styled from "styled-components";
 import * as modalActions from "../../store/modalActions";
-import ProfileNavigation from "../../components/organisms/User/ProfileNavigation";
 
 const UserProfileCover = loadable(() =>
-  import("../../components/organisms/User/UserProfileCover")
-);
+    import("../../components/organisms/User/UserProfileCover")
+  ),
+  ProfileNavigation = loadable(() =>
+    import("../../components/organisms/User/ProfileNavigation")
+  );
 
 const CoverNav = styled.div`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
@@ -123,6 +125,9 @@ class Profile extends Component {
   }
 
   componentWillUnmount() {
+    this._deleteAvatar = null;
+    this._refetch = null;
+    this._uploadAvatar = null;
     this._isMounted = false;
   }
 

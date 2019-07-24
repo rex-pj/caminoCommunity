@@ -21,7 +21,7 @@ const Root = styled(PanelDefault)`
 const Scroll = styled.div`
   position: relative;
 
-  ${PanelHeading} {
+  > ${PanelHeading} {
     border-bottom: 1px solid ${p => p.theme.color.light};
     font-weight: 600;
     position: relative;

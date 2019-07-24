@@ -30,20 +30,22 @@ class ImageUpload extends Component {
   handleImageChange = e => {
     e.preventDefault();
 
-    const reader = new FileReader();
-    const file = e.target.files[0];
+    if (e.target && e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
 
-    reader.onloadend = () => {
-      if (this.props.onChange) {
-        this.props.onChange({
-          event: e,
-          file,
-          preview: reader.result
-        });
-      }
-    };
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (this.props.onChange) {
+          this.props.onChange({
+            event: e,
+            file,
+            preview: reader.result
+          });
+        }
+      };
 
-    reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
+    }
   };
 
   openFileUpload = e => {

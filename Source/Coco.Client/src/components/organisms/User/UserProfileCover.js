@@ -1,15 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
-import ProfileAvatar from "./ProfileAvatar";
+import loadable from "@loadable/component";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
-import { Thumbnail } from "../../molecules/Thumbnails";
-import Overlay from "../../atoms/Overlay";
-
-const ThumbnailOverlay = styled(Overlay)`
-  height: 100px;
-  top: auto;
-  bottom: 0;
-`;
+const ProfileAvatar = loadable(() => import("./ProfileAvatar")),
+  UserCoverPhoto = loadable(() => import("./UserCoverPhoto"));
 
 const GroupThumbnail = styled.div`
   margin-top: 0;
@@ -31,12 +25,6 @@ const GroupThumbnail = styled.div`
     margin-bottom: 0;
     position: absolute;
   }
-
-  a.cover-link {
-    display: block;
-    height: 100%;
-    overflow: hidden;
-  }
 `;
 
 const AvatarBlock = styled(ProfileAvatar)`
@@ -57,23 +45,39 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
   z-index: 3;
 `;
 
-export default function(props) {
-  const { userInfo, canEdit } = props;
-  return (
-    <GroupThumbnail>
-      <a href={userInfo.url} className="cover-link">
-        <Thumbnail src={userInfo.coverImageUrl} alt="" />
-        <ThumbnailOverlay />
-      </a>
-      <AvatarBlock userInfo={userInfo} canEdit={canEdit} />
-      <h2>
-        <a href={userInfo.url} className="profile-name">
-          {userInfo.displayName}
-        </a>
-      </h2>
-      <ConnectButton icon="user-plus" size="sm">
-        Kết nối
-      </ConnectButton>
-    </GroupThumbnail>
-  );
+export default class extends Component {
+  onToggleEditMode = e => {
+    this.setState({
+      isEditCoverMode: e
+    });
+  };
+
+  render() {
+    const { userInfo, canEdit } = this.props;
+    const { isEditCoverMode } = this.state;
+
+    return (
+      <GroupThumbnail>
+        <UserCoverPhoto
+          userInfo={userInfo}
+          canEdit={canEdit}
+          onEditMode={this.onToggleEditMode}
+        />
+        <AvatarBlock
+          userInfo={userInfo}
+          canEdit={canEdit && !isEditCoverMode}
+        />
+        <h2>
+          <a href={userInfo.url} className="profile-name">
+            {userInfo.displayName}
+          </a>
+        </h2>
+        {!isEditCoverMode ? (
+          <ConnectButton icon="user-plus" size="sm">
+            Kết nối
+          </ConnectButton>
+        ) : null}
+      </GroupThumbnail>
+    );
+  }
 }

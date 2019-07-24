@@ -5,10 +5,17 @@ import { ImageRound } from "../../atoms/Images";
 import { openModal, closeModal } from "../../../store/commands";
 import { Button } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const ProfileImage = styled(ImageRound)`
   display: block;
   border-radius: ${p => p.theme.borderRadius.medium};
+`;
+
+const EmptyAvatar = styled(NoAvatar)`
+  border-radius: ${p => p.theme.borderRadius.medium};
+  width: 100px;
+  height: 100px;
 `;
 
 const Wrap = styled.div`
@@ -71,7 +78,9 @@ class ProfileAvatar extends Component {
             <ProfileImage
               src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
             />
-          ) : null}
+          ) : (
+            <EmptyAvatar />
+          )}
         </AvatarLink>
         {!!canEdit ? (
           <AvatarUpload onClick={e => this.onOpenModalUpload(e)}>
