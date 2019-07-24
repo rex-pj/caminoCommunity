@@ -4,6 +4,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { ButtonTransparent } from "../../atoms/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 
 const Wrap = styled.div`
   position: relative;
@@ -62,6 +63,35 @@ const Tools = styled.div`
   z-index: 3;
   height: ${p => p.theme.size.large};
   text-align: center;
+`;
+
+const CoverImageUpload = styled(ImageUpload)`
+  text-align: center;
+  display: inline-block;
+
+  > span {
+    border: 0;
+    background-color: ${p => p.theme.rgbaColor.exDark};
+    width: ${p => p.theme.size.large};
+    height: ${p => p.theme.size.large};
+    font-size: ${p => p.theme.fontSize.large};
+    color: ${p => p.theme.color.exLight};
+
+    :hover {
+      border: 1px solid ${p => p.theme.color.light};
+      background-color: ${p => p.theme.color.exLight};
+      color: ${p => p.theme.color.dark};
+    }
+
+    svg {
+      vertical-align: middle;
+    }
+
+    svg,
+    path {
+      color: inherit;
+    }
+  }
 `;
 
 const CancelEditButton = styled(ButtonTransparent)`
@@ -133,6 +163,7 @@ export default class extends Component {
             <Thumbnail src={userInfo.coverImageUrl} alt="" />
             <FullOverlay />
             <Tools>
+              <CoverImageUpload />
               <CancelEditButton onClick={this.turnOffUpdateMode}>
                 <FontAwesomeIcon icon="times" />
               </CancelEditButton>

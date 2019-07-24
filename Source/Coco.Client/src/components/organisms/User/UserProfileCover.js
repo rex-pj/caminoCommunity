@@ -46,6 +46,13 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
 `;
 
 export default class extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditCoverMode: false
+    };
+  }
   onToggleEditMode = e => {
     this.setState({
       isEditCoverMode: e
