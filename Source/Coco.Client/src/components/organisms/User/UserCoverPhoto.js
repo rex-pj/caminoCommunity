@@ -66,25 +66,23 @@ const Tools = styled.div`
 `;
 
 const CoverImageUpload = styled(ImageUpload)`
-  text-align: center;
   display: inline-block;
+  margin-right: ${p => p.theme.size.exTiny};
+  vertical-align: middle;
+  cursor: pointer;
 
   > span {
+    text-align: center;
     border: 0;
-    background-color: ${p => p.theme.rgbaColor.exDark};
     width: ${p => p.theme.size.large};
     height: ${p => p.theme.size.large};
     font-size: ${p => p.theme.fontSize.large};
     color: ${p => p.theme.color.exLight};
+    border-radius: ${p => p.theme.borderRadius.normal};
+    padding: ${p => p.theme.size.exSmall} 0;
 
     :hover {
-      border: 1px solid ${p => p.theme.color.light};
-      background-color: ${p => p.theme.color.exLight};
-      color: ${p => p.theme.color.dark};
-    }
-
-    svg {
-      vertical-align: middle;
+      background-color: ${p => p.theme.rgbaColor.exDark};
     }
 
     svg,
@@ -96,11 +94,12 @@ const CoverImageUpload = styled(ImageUpload)`
 
 const CancelEditButton = styled(ButtonTransparent)`
   border: 0;
-  background-color: ${p => p.theme.rgbaColor.exDark};
   width: ${p => p.theme.size.large};
   height: ${p => p.theme.size.large};
   font-size: ${p => p.theme.fontSize.large};
   color: ${p => p.theme.color.exLight};
+  margin-left: ${p => p.theme.size.exTiny};
+  vertical-align: middle;
 
   svg,
   path {
@@ -108,9 +107,7 @@ const CancelEditButton = styled(ButtonTransparent)`
   }
 
   :hover {
-    border: 1px solid ${p => p.theme.color.light};
-    background-color: ${p => p.theme.color.exLight};
-    color: ${p => p.theme.color.dark};
+    background-color: ${p => p.theme.rgbaColor.exDark};
   }
 `;
 
