@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import { Query } from "react-apollo";
 import MasterLayout from "./MasterLayout";
 import { Header } from "../../organisms/Containers";
@@ -9,8 +9,15 @@ import { getLocalStorageByKey } from "../../../services/StorageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
 import PageLoading from "../../molecules/Loading/PageLoading";
 
-export default function({ component: Component, ...rest }) {
-  function parseLoggedUser(response) {
+class FrameLayout extends Component {
+  constructor(props) {
+    super(props);
+    this._refetch = null;
+    this._isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+    this.userObj = {};
+  }
+
+  parseLoggedUser = response => {
     const data = AuthService.parseUserInfo(response);
 
     const user = {
@@ -21,49 +28,56 @@ export default function({ component: Component, ...rest }) {
         ...data
       }
     };
-    return user;
-  }
+    this.userObj = {
+      user: user,
+      relogin: this._refetch
+    };
+  };
 
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+  render() {
+    const { component: Component } = this.props;
+    if (this._isLogin) {
+      return (
+        <Query query={GET_LOGGED_USER}>
+          {({ loading, error, data, refetch }) => {
+            if (loading) {
+              return <PageLoading {...this.props} />;
+            }
 
-  if (isLogin) {
-    return (
-      <Query query={GET_LOGGED_USER}>
-        {({ loading, error, data }) => {
-          if (loading) {
-            return <PageLoading {...rest} />;
-          }
-
-          const user = parseLoggedUser(data);
-          return (
-            <UserContext.Provider value={user}>
-              <MasterLayout
-                {...rest}
-                component={matchProps => (
-                  <Fragment>
-                    <Header />
-                    <Component {...matchProps} />
-                  </Fragment>
-                )}
-              />
-            </UserContext.Provider>
-          );
-        }}
-      </Query>
-    );
-  } else {
-    return (
-      <UserContext.Provider value={{}}>
-        <MasterLayout
-          {...rest}
-          component={matchProps => (
-            <Fragment>
-              <Header />
-              <Component {...matchProps} />
-            </Fragment>
-          )}
-        />
-      </UserContext.Provider>
-    );
+            this._refetch = refetch;
+            this.parseLoggedUser(data);
+            return (
+              <UserContext.Provider value={this.userObj}>
+                <MasterLayout
+                  {...this.props}
+                  component={matchProps => (
+                    <Fragment>
+                      <Header />
+                      <Component {...matchProps} />
+                    </Fragment>
+                  )}
+                />
+              </UserContext.Provider>
+            );
+          }}
+        </Query>
+      );
+    } else {
+      return (
+        <UserContext.Provider value={{}}>
+          <MasterLayout
+            {...this.props}
+            component={matchProps => (
+              <Fragment>
+                <Header />
+                <Component {...matchProps} />
+              </Fragment>
+            )}
+          />
+        </UserContext.Provider>
+      );
+    }
   }
 }
+
+export default FrameLayout;

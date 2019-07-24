@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
-import { Button } from "../../../components/atoms/Buttons";
+import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import SigninModel from "../../../models/SigninModel";
@@ -11,10 +11,10 @@ import { checkValidity } from "../../../utils/Validity";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.secondary};
-  background-color: ${p => p.theme.rgbaColor.dark};
+  border: 1px solid ${p => p.theme.color.primaryLight};
+  background-color: ${p => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.exLight};
+  color: ${p => p.theme.color.lighter};
   padding: ${p => p.theme.size.tiny};
 
   ::placeholder {
@@ -46,17 +46,17 @@ const FormRow = styled.div`
   margin-bottom: ${p => p.theme.size.tiny};
 `;
 
-const SubmitButton = styled(Button)`
+const SubmitButton = styled(ButtonPrimary)`
   font-size: ${p => p.theme.fontSize.small};
-  border: 1px solid ${p => p.theme.color.secondary};
+  border: 1px solid ${p => p.theme.color.primaryLight};
 
   :hover {
     color: ${p => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.secondary};
-    color: ${p => p.theme.color.normal};
+    background-color: ${p => p.theme.color.primaryLight};
+    color: ${p => p.theme.color.neutral};
     cursor: auto;
   }
 `;

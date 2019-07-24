@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
-import { Button } from "../../atoms/Buttons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ImageCircle } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
 import DropdownButton from "../../molecules/DropdownButton";
@@ -30,9 +30,9 @@ const ProfileButton = styled(RouterLinkButton)`
 
 const PorfileButtonGroup = styled(ButtonGroup)`
   ${ProfileButton},
-  ${Button} {
-    border: 1px solid ${p => p.theme.color.secondary};
-    font-size: ${p => p.theme.fontSize.exSmall};
+  ${ButtonPrimary} {
+    border: 1px solid ${p => p.theme.color.primaryLight};
+    font-size: ${p => p.theme.rgbaColor.small};
     padding: 3px ${p => p.theme.size.exTiny};
     margin: 1px 0;
     font-weight: 600;
@@ -45,7 +45,7 @@ const PorfileButtonGroup = styled(ButtonGroup)`
   }
 
   .profile-dropdown {
-    ${Button} {
+    ${ButtonPrimary} {
       border-left: 0;
     }
 

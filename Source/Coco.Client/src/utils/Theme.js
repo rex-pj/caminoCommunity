@@ -1,33 +1,31 @@
 /** Color rules */
 export const color = {
-  primaryDark: "#00483f",
   primary: "#005047",
-  secondary: "#196159",
-  white: "#FFFFFF",
+  primaryLight: "#196159",
+  primaryDark: "#00483f",
+  neutral: "#7fa7a3",
   light: "#ccdcda",
-  exLight: "#e5edec",
-  normal: "#7fa7a3",
-  info: "#3277BB",
+  lighter: "#e5edec",
   link: "#0d5183",
-  dark: "#333333",
+  info: "#3277BB",
   warning: "#F0A013",
   warningLight: "#FFECCC",
   danger: "#9C3100",
   dangerLight: "#D65B44",
-  brown: "#926a23",
-  purple: "#6A5D95"
+  white: "#FFFFFF",
+  dark: "#333333"
 };
 
 export const rgbaColor = {
-  dark: "rgba(0, 0, 0, 0.1)",
-  moreDark: "rgba(0, 0, 0, 0.2)",
-  exDark: "rgba(0, 0, 0, 0.5)",
+  darkLigth: "rgba(0, 0, 0, 0.1)",
+  dark: "rgba(0, 0, 0, 0.2)",
+  darker: "rgba(0, 0, 0, 0.5)",
   light: "rgba(255, 255, 255, 0.1)",
-  moreLight: "rgba(255, 255, 255, 0.5)",
+  lighter: "rgba(255, 255, 255, 0.5)",
   exLight: "rgba(255, 255, 255, 0.7)",
   cyanLight: "rgba(203,226,221, 0.1)",
-  cyanMoreLight: "rgba(203,226,221, 0.5)",
-  exCyanLight: "rgba(203,226,221, 0.7)"
+  cyan: "rgba(203,226,221, 0.5)",
+  cyanLighter: "rgba(203,226,221, 0.7)"
 };
 
 export const size = {
@@ -42,14 +40,11 @@ export const size = {
 };
 
 export const fontSize = {
-  exTiny: "8px",
-  tiny: "12px",
-  exSmall: "13px",
+  tiny: "13px",
   small: "14px",
   normal: "16px",
   medium: "20px",
   large: "24px",
-  exLarge: "28px",
   giant: "40px"
 };
 

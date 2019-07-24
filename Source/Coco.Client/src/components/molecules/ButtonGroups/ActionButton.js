@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ButtonTransparent } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 
 const ButtonGroups = styled.div`
   position: relative;

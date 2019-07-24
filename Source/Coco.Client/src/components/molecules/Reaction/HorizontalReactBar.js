@@ -10,7 +10,7 @@ const ReactButton = styled.span`
   vertical-align: middle;
   cursor: pointer;
   margin-right: ${p => p.theme.size.exSmall};
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
 
   svg,
   path {
@@ -24,7 +24,7 @@ const ReactButton = styled.span`
 
   &.confused:hover,
   &.confused.actived {
-    color: ${p => p.theme.color.purple};
+    color: ${p => p.theme.color.dangerLight};
   }
 `;
 

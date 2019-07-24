@@ -15,7 +15,7 @@ const PriceNumber = styled.span`
 `;
 
 const CurrencyText = styled.span`
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
   font-size: 14px;
   vertical-align: super;
 `;

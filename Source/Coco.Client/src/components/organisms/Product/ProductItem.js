@@ -77,18 +77,18 @@ const FarmInfo = styled(RowItem)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${p => p.theme.fontSize.exSmall};
+  font-size: ${p => p.theme.rgbaColor.small};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   svg {
     margin-right: ${p => p.theme.size.exTiny};
     font-size: ${p => p.theme.fontSize.tiny};
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     vertical-align: middle;
   }
 

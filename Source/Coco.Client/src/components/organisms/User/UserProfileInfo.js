@@ -36,11 +36,11 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   a {
-    font-size: ${p => p.theme.fontSize.exSmall};
+    font-size: ${p => p.theme.rgbaColor.small};
     font-weight: 600;
   }
 `;

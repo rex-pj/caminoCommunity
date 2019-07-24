@@ -4,7 +4,7 @@ import {
   ButtonOutlineSecondary,
   ButtonOutlinePrimary,
   ButtonOutlineNormal
-} from "../../atoms/Buttons";
+} from "../../atoms/Buttons/OutlineButtons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Text = styled.span`
@@ -42,4 +42,8 @@ function ButtonIconOutlineNormal(props) {
   );
 }
 
-export { ButtonIconOutlineSecondary, ButtonIconOutlineNormal, ButtonIconOutline };
+export {
+  ButtonIconOutlineSecondary,
+  ButtonIconOutlineNormal,
+  ButtonIconOutline
+};

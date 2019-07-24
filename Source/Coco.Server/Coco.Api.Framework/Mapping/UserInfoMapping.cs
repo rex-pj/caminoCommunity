@@ -28,7 +28,8 @@ namespace Coco.Api.Framework.Mapping
                 CountryCode = user.CountryCode,
                 GenderLabel = user.GenderLabel,
                 CountryName = user.CountryName,
-                AvatarUrl = user.AvatarUrl
+                AvatarUrl = user.AvatarUrl,
+                CoverPhotoUrl = user.CoverPhotoUrl
             };
         }
 
@@ -62,7 +63,40 @@ namespace Coco.Api.Framework.Mapping
                 Expiration = userModel.Expiration,
                 AuthenticationToken = userModel.AuthenticationToken,
                 SecurityStamp = userModel.SecurityStamp,
-                AvatarUrl = userModel.AvatarUrl
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
+            };
+
+            return applicationUser;
+        }
+
+        public static ApplicationUser PopulateLoggedInUser(UserLoggedInModel userModel)
+        {
+            if (userModel == null)
+            {
+                return null;
+            }
+
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                Email = userModel.Email,
+                Id = userModel.Id,
+                UserName = userModel.Email,
+                Lastname = userModel.Lastname,
+                Firstname = userModel.Firstname,
+                Password = userModel.Password,
+                PasswordHash = userModel.Password,
+                PasswordSalt = userModel.PasswordSalt,
+                CountryId = userModel.CountryId,
+                Description = userModel.Description,
+                DisplayName = userModel.DisplayName,
+                GenderId = userModel.GenderId,
+                IsActived = userModel.IsActived,
+                StatusId = userModel.StatusId,
+                Expiration = userModel.Expiration,
+                AuthenticationToken = userModel.AuthenticationToken,
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
             };
 
             return applicationUser;

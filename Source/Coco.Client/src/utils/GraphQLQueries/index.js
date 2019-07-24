@@ -39,7 +39,8 @@ export const GET_LOGGED_USER = gpl`
       email,
       displayName,
       userIdentityId,
-      avatarUrl
+      avatarUrl,
+      coverPhotoUrl
     }
   }
 `;
@@ -85,6 +86,7 @@ export const GET_FULL_USER_INFO = gpl`
         countryId
         statusLabel
         userIdentityId
+        coverPhotoUrl
         genderSelections {
           id
           text
@@ -115,7 +117,7 @@ export const UPDATE_USER_INFO_PER_ITEM = gpl`
 `;
 
 export const UPDATE_USER_AVATAR = gpl`
-  mutation UpdateAvatar($criterias: UpdateAvatarInputType!){
+  mutation UpdateAvatar($criterias: UpdateUserPhotoInputType!){
     updateAvatar(criterias: $criterias){
       isSuccess,
       errors {
@@ -136,8 +138,44 @@ export const UPDATE_USER_AVATAR = gpl`
 `;
 
 export const DELETE_USER_AVATAR = gpl`
-  mutation DeleteAvatar($criterias: DeleteAvatarInputType!){
+  mutation DeleteAvatar($criterias: DeleteUserPhotoInputType!){
     deleteAvatar(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        canEdit
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER_COVER = gpl`
+  mutation UpdateUserCover($criterias: UpdateUserPhotoInputType!){
+    updateUserCover(criterias: $criterias){
+      isSuccess,
+      errors {
+        code
+        description
+      },
+      result {
+        photoUrl,
+        xAxis,
+        yAxis,
+        width,
+        height,
+        contentType,
+        canEdit
+      }
+    }
+  }
+`;
+
+export const DELETE_USER_COVER = gpl`
+  mutation DeleteCover($criterias: DeleteUserPhotoInputType!){
+    deleteCover(criterias: $criterias){
       isSuccess,
       errors {
         code

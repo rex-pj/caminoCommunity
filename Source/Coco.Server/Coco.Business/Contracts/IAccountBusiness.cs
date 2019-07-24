@@ -8,6 +8,7 @@ namespace Coco.Business.Contracts
     {
         long Add(UserModel user);
         UserModel Find(long id);
+        UserLoggedInModel GetLoggedIn(long id);
         Task<UserModel> FindUserByEmail(string email, bool includeInActived = false);
         Task<UserModel> FindUserByUsername(string username, bool includeInActived = false);
         void Delete(long id);

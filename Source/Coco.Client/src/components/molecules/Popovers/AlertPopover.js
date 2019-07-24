@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
-import { ButtonOutlineNormal, ButtonOutlineDanger } from "../../atoms/Buttons";
+import {
+  ButtonOutlineNormal,
+  ButtonOutlineDanger
+} from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled(PanelDefault)`
   position: absolute;
@@ -9,11 +12,10 @@ const Wrap = styled(PanelDefault)`
   left: ${p => (p.left ? p.left + "px" : "auto")};
   top: ${p => (p.top ? p.top + "px" : "auto")};
   right: ${p => (p.right ? p.right + "px" : "auto")};
-  bottom: ${p => (p.bottom ? p.bottom + "px" : "auto")};
   background-color: ${p => p.theme.color.warningLight};
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${p => p.theme.rgbaColor.dark};
+    border-bottom: 1px solid ${p => p.theme.rgbaColor.darkLight};
     color: ${p => p.theme.color.warning};
   }
 
@@ -93,13 +95,13 @@ class AlertPopover extends Component {
 
   render() {
     const { isShown, left } = this.state;
-    const { title } = this.props;
+    const { title, className } = this.props;
     if (!isShown) {
       return null;
     }
 
     return (
-      <Wrap left={left} bottom="100%">
+      <Wrap left={left} bottom="100%" className={className}>
         <PanelHeading>{title}</PanelHeading>
         <PanelBody>
           <ButtonOutlineNormal size="sm" onClick={this.onClose}>

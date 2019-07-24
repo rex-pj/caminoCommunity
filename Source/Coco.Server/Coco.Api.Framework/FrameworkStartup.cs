@@ -19,6 +19,7 @@ namespace Coco.Api.Framework
                 .AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
                 .AddTransient<IUserStore<ApplicationUser>, UserStore>()
+                .AddTransient<IUserPhotoStore<ApplicationUser>, UserPhotoStore>()
                 .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 .AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>()
                 .AddTransient<ILookupProtector, SillyEncryptor>()

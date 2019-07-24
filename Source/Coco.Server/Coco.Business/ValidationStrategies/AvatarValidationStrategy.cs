@@ -17,7 +17,7 @@ namespace Coco.Business.ValidationStrategies
 
         public bool IsValid<T>(T value)
         {
-            var data = value as UpdateAvatarModel;
+            var data = value as UpdateUserPhotoModel;
 
             if (string.IsNullOrEmpty(data.PhotoUrl))
             {

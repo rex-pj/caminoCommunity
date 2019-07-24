@@ -28,10 +28,10 @@ const ChildItem = styled.li`
   margin-bottom: ${p => p.theme.size.tiny};
   padding-bottom: ${p => p.theme.size.tiny};
   min-height: ${p => p.theme.size.normal};
-  border-bottom: 1px solid ${p => p.theme.color.exLight};
+  border-bottom: 1px solid ${p => p.theme.color.lighter};
 
   label {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   div {

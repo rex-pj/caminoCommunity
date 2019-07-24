@@ -38,14 +38,14 @@ namespace Coco.Common.Utils
             }
         }
 
-        public static string Crop(string base64String, double x, double y, double width, double height, int maxSize = 600)
+        public static string Crop(string base64String, double x, double y, double width, double height, double scale, int maxSize = 600)
         {
             var image = Base64ToImage(base64String);
 
-            return Crop(image, x, y, width, height, maxSize);
+            return Crop(image, x, y, width, height, scale, maxSize);
         }
 
-        public static string Crop(Image image, double x, double y, double width, double height, int maxSize = 600)
+        public static string Crop(Image image, double x, double y, double width, double height, double scale, int maxSize = 600)
         {
             if (image.Width > maxSize && image.Width >= image.Height)
             {

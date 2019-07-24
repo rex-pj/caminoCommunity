@@ -36,7 +36,7 @@ const TopBarInfo = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
 
   button {
     vertical-align: middle;
@@ -51,7 +51,7 @@ const RowItem = styled.div`
     display: inline-block;
     margin-right: ${p => p.theme.size.exTiny};
     font-size: ${p => p.theme.fontSize.small};
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     min-width: 60px;
     margin-bottom: 0;
   }
@@ -74,13 +74,13 @@ const FarmInfo = styled.div`
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   svg {
     margin-right: ${p => p.theme.size.exTiny};
     font-size: ${p => p.theme.fontSize.tiny};
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     vertical-align: middle;
   }
 

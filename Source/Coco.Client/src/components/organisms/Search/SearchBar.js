@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
-import { Button } from "../../atoms/Buttons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const SearchForm = styled.div`
   position: relative;
   border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.secondary};
+  border: 1px solid ${p => p.theme.color.primaryLight};
   background-color: ${p =>
-    p.isOnFocus ? p.theme.color.moreDark : p.theme.rgbaColor.dark};
+    p.isOnFocus ? p.theme.rgbaColor.dark : p.theme.rgbaColor.darkLight};
   height: ${p => p.theme.size.normal};
   margin: 1px 0;
 `;
@@ -23,7 +23,7 @@ const SearchInput = styled(Textbox)`
   width: 300px;
   height: calc(${p => p.theme.size.normal} - 2px);
   float: left;
-  color: ${p => p.theme.color.exLight};
+  color: ${p => p.theme.color.lighter};
   max-width: calc(100% - ${p => p.theme.size.normal});
 
   ::placeholder {
@@ -31,7 +31,7 @@ const SearchInput = styled(Textbox)`
   }
 `;
 
-const SearchButton = styled(Button)`
+const SearchButton = styled(ButtonPrimary)`
   border-radius: 100%;
   height: calc(${p => p.theme.size.normal} - 6px);
   width: calc(${p => p.theme.size.normal} - 6px);

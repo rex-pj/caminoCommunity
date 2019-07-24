@@ -4,7 +4,7 @@ import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
 import ChangeAvatarModal from "./ChangeAvatarModal";
 import { connect } from "react-redux";
-import { ButtonTransparent } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled(PanelDefault)`
@@ -52,7 +52,7 @@ const Backdrop = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: ${p => p.theme.rgbaColor.exDark};
+  background-color: ${p => p.theme.rgbaColor.darker};
   z-index: 1;
 `;
 
@@ -63,10 +63,20 @@ class Modal extends Component {
     this.state = {
       showBackdrop: true
     };
+
+    this._isMounted = false;
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.payload) {
+    if (nextProps && nextProps.payload && this._isMounted) {
       const { payload } = nextProps;
       this.setState(() => {
         return {
@@ -77,9 +87,11 @@ class Modal extends Component {
   }
 
   closeModal = () => {
-    this.setState({
-      shouldOpen: false
-    });
+    if (this._isMounted) {
+      this.setState({
+        shouldOpen: false
+      });
+    }
   };
 
   render() {

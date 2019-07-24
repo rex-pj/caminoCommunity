@@ -1,26 +1,47 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Query, Mutation } from "react-apollo";
+import { Query } from "react-apollo";
+import styled from "styled-components";
 import loadable from "@loadable/component";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { defaultClient } from "../../utils/GraphQLClient";
-import {
-  GET_USER_INFO,
-  UPDATE_USER_AVATAR,
-  DELETE_USER_AVATAR
-} from "../../utils/GraphQLQueries";
+import { GET_USER_INFO } from "../../utils/GraphQLQueries";
 import ProfileBody from "./profile-body";
 import Loading from "../../components/atoms/Loading";
-import styled from "styled-components";
-import * as modalActions from "../../store/modalActions";
+import UserContext from "../../utils/Context/UserContext";
 
-const UserProfileCover = loadable(() =>
-    import("../../components/organisms/User/UserProfileCover")
+import * as avatarActions from "../../store/actions/avatarActions";
+import { ButtonIconOutlineSecondary } from "../../components/molecules/ButtonIcons";
+const ProfileAvatar = loadable(() =>
+    import("../../components/organisms/User/ProfileAvatar")
+  ),
+  UserCoverPhoto = loadable(() =>
+    import("../../components/organisms/User/UserCoverPhoto")
   ),
   ProfileNavigation = loadable(() =>
     import("../../components/organisms/User/ProfileNavigation")
   );
+
+const CoverPageBlock = styled.div`
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+
+  .profile-name {
+    font-weight: 600;
+    color: ${p => p.theme.color.white};
+    font-size: ${p => p.theme.fontSize.large};
+  }
+
+  h2 {
+    left: 135px;
+    bottom: ${p => p.theme.size.small};
+    z-index: 3;
+    margin-bottom: 0;
+    position: absolute;
+  }
+`;
 
 const CoverNav = styled.div`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
@@ -30,104 +51,97 @@ const CoverNav = styled.div`
   margin-bottom: ${p => p.theme.size.distance};
 `;
 
+const AvatarBlock = styled(ProfileAvatar)`
+  position: absolute;
+  bottom: ${p => p.theme.size.distance};
+  left: ${p => p.theme.size.distance};
+  z-index: 3;
+`;
+
+const ConnectButton = styled(ButtonIconOutlineSecondary)`
+  padding: ${p => p.theme.size.tiny};
+  font-size: ${p => p.theme.rgbaColor.small};
+  line-height: 1;
+
+  position: absolute;
+  bottom: ${p => p.theme.size.distance};
+  right: ${p => p.theme.size.distance};
+  z-index: 3;
+`;
+
 class Profile extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
     this._canEdit = false;
-    this._uploadAvatar = null;
-    this._deleteAvatar = null;
     this._refetch = null;
     this._baseUrl = "/profile";
+    this._updateTimeout = null;
+
+    this.state = {
+      isEditCoverMode: false
+    };
   }
 
   async componentDidMount() {
     this._isMounted = true;
+    this._updateTimeout = null;
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const { modalPayload } = nextProps;
-    if (
-      modalPayload &&
-      modalPayload.actionType === modalActions.UPLOAD_AVTARA &&
-      this._uploadAvatar
-    ) {
-      await this.uploadAvatar(modalPayload);
-    } else if (
-      modalPayload &&
-      modalPayload.actionType === modalActions.DELETE_AVTARA &&
-      this._deleteAvatar
-    ) {
-      await this.deleteAvatar();
+  componentWillReceiveProps(nextProps) {
+    const { avatarPayload } = nextProps;
+    if (!avatarPayload) {
+      return;
+    }
+
+    if (avatarPayload.actionType === avatarActions.AVATAR_UPLOADED) {
+      if (this._isMounted) {
+        this._refetch();
+
+        this._updateTimeout = setTimeout(() => {
+          if (this.context.relogin) {
+            this.context.relogin();
+          }
+        }, 300);
+      }
     }
   }
 
-  uploadAvatar = async modalPayload => {
-    const {
-      sourceImageUrl,
-      xAxis,
-      yAxis,
-      width,
-      height,
-      contentType,
-      fileName
-    } = modalPayload;
-
-    const variables = {
-      criterias: {
-        photoUrl: sourceImageUrl,
-        canEdit: this._canEdit,
-        xAxis,
-        yAxis,
-        width,
-        height,
-        contentType,
-        fileName
-      }
-    };
-
-    return await this._uploadAvatar({ variables })
-      .then(response => {
-        this._refetch();
-
-        this.props.closeUploadModal();
-      })
-      .catch(error => {});
+  onToggleEditCoverMode = e => {
+    if (this._isMounted) {
+      this.setState({
+        isEditCoverMode: e
+      });
+    }
   };
 
-  deleteAvatar = async () => {
-    const variables = {
-      criterias: {
-        canEdit: this._canEdit
-      }
-    };
-    return await this._deleteAvatar({ variables })
-      .then(response => {
-        this._refetch();
+  userCoverUploaded = () => {
+    if (this._isMounted) {
+      this._refetch();
 
-        this.props.closeUploadModal();
-      })
-      .catch(error => {});
+      this._updateTimeout = setTimeout(() => {
+        if (this.context.relogin) {
+          this.context.relogin();
+        }
+      }, 300);
+    }
   };
 
   parseUserInfo(response) {
     const { fullUserInfo } = response;
     const { result, accessMode } = fullUserInfo;
-    this._canEdit = accessMode === "CAN_EDIT";
+    const canEdit = accessMode === "CAN_EDIT";
 
     return {
       ...result,
-      canEdit: this._canEdit,
+      canEdit: canEdit,
       avatarUrl: result.avatarUrl,
       url: result.userIdentityId ? `/profile/${result.userIdentityId}` : "",
-      coverImageUrl: `${process.env.PUBLIC_URL}/photos/profile-cover.jpg`
+      coverPhotoUrl: result.coverPhotoUrl
     };
   }
 
   componentWillUnmount() {
-    this._deleteAvatar = null;
-    this._refetch = null;
-    this._uploadAvatar = null;
     this._isMounted = false;
   }
 
@@ -135,7 +149,7 @@ class Profile extends Component {
     const { match } = this.props;
     const { params } = match;
     const { userId, pageNumber } = params;
-
+    const { isEditCoverMode } = this.state;
     return (
       <Query
         query={GET_USER_INFO}
@@ -159,23 +173,28 @@ class Profile extends Component {
 
           return (
             <Fragment>
-              <Mutation mutation={DELETE_USER_AVATAR}>
-                {deleteAvatar => {
-                  this._deleteAvatar = deleteAvatar;
-                  return <Fragment />;
-                }}
-              </Mutation>
-              <Mutation mutation={UPDATE_USER_AVATAR}>
-                {updateAvatar => {
-                  this._uploadAvatar = updateAvatar;
-                  return (
-                    <UserProfileCover
-                      userInfo={userInfo}
-                      canEdit={userInfo.canEdit}
-                    />
-                  );
-                }}
-              </Mutation>
+              <CoverPageBlock>
+                {!isEditCoverMode ? (
+                  <ConnectButton icon="user-plus" size="sm">
+                    Kết nối
+                  </ConnectButton>
+                ) : null}
+                <UserCoverPhoto
+                  userInfo={userInfo}
+                  canEdit={userInfo.canEdit}
+                  onUploaded={this.userCoverUploaded}
+                  onToggleEditMode={this.onToggleEditCoverMode}
+                />
+                <AvatarBlock
+                  userInfo={userInfo}
+                  canEdit={userInfo.canEdit && !isEditCoverMode}
+                />
+                <h2>
+                  <a href={userInfo.url} className="profile-name">
+                    {userInfo.displayName}
+                  </a>
+                </h2>
+              </CoverPageBlock>
               <CoverNav>
                 <ProfileNavigation userId={userId} />
               </CoverNav>
@@ -194,8 +213,10 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
   return {
-    modalPayload: state.modalReducer.payload
+    avatarPayload: state.avatarReducer.payload
   };
 };
+
+Profile.contextType = UserContext;
 
 export default connect(mapStateToProps)(withRouter(Profile));

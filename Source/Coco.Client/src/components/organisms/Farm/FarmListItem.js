@@ -62,7 +62,7 @@ const CoverImage = styled(ImageRound)`
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
   padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.fontSize.exSmall};
+  font-size: ${p => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
@@ -83,7 +83,7 @@ const ProfileBox = styled(ProfileAction)`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
   font-size: ${p => p.theme.fontSize.tiny};
 
   span {

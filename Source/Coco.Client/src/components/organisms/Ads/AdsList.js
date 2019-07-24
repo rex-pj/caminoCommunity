@@ -13,8 +13,8 @@ const Root = styled.div`
 
   ${QuaternaryHeading} {
     & * {
-      color: ${p => p.theme.color.normal};
-      font-size: ${p => p.theme.fontSize.exSmall};
+      color: ${p => p.theme.color.neutral};
+      font-size: ${p => p.theme.rgbaColor.small};
     }
 
     span {

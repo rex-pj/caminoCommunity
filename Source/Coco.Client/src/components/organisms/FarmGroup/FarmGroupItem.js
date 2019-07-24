@@ -62,7 +62,7 @@ const InteractItem = styled(InteractiveItem)`
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
   padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.fontSize.exSmall};
+  font-size: ${p => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;

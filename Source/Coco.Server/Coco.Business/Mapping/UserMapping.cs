@@ -40,7 +40,7 @@ namespace Coco.Business.Mapping
             return user;
         }
 
-        public static Expression<Func<User, UserModel>> SelectorUserModel = user => new UserFullModel
+        public static Expression<Func<User, UserModel>> SelectorUserModel = user => new UserModel
         {
             DisplayName = user.DisplayName,
             Firstname = user.Firstname,
@@ -65,6 +65,27 @@ namespace Coco.Business.Mapping
             CountryId = user.UserInfo.CountryId,
             PhoneNumber = user.UserInfo.PhoneNumber,
             AvatarUrl = user.UserInfo.AvatarUrl,
+            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl
+        };
+
+        public static Expression<Func<User, UserLoggedInModel>> SelectorUserLoggedIn = user => new UserLoggedInModel
+        {
+            DisplayName = user.DisplayName,
+            Firstname = user.Firstname,
+            Lastname = user.Lastname,
+            IsActived = user.IsActived,
+            StatusId = user.StatusId,
+            Email = user.Email,
+            Password = user.Password,
+            PasswordSalt = user.PasswordSalt,
+            Expiration = user.Expiration,
+            AuthenticationToken = user.AuthenticatorToken,
+            Id = user.Id,
+
+            GenderId = user.UserInfo.GenderId,
+            CountryId = user.UserInfo.CountryId,
+            AvatarUrl = user.UserInfo.AvatarUrl,
+            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl
         };
 
         public static Expression<Func<User, UserFullModel>> SelectorFullUserModel = user => new UserFullModel

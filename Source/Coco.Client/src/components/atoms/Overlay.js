@@ -9,6 +9,6 @@ export default styled.div`
   height: 100%;
   border-top-left-radius: ${p => p.theme.borderRadius.normal};
   border-top-right-radius: ${p => p.theme.borderRadius.normal};
-  background: linear-gradient(transparent, ${p => p.theme.rgbaColor.exDark});
+  background: linear-gradient(transparent, ${p => p.theme.rgbaColor.darker});
   z-index: 0;
 `;

@@ -2,7 +2,10 @@ import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TextArea } from "../../atoms/TextAreas";
-import { ButtonOutlinePrimary, ButtonOutlineNormal } from "../../atoms/Buttons";
+import {
+  ButtonOutlinePrimary,
+  ButtonOutlineNormal
+} from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled.div`
   ${TextArea} {
@@ -20,7 +23,7 @@ const TextLabel = styled.div`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.normal};
+    border-bottom: 1px dashed ${p => p.theme.color.neutral};
     line-height: ${p => p.theme.size.normal};
   }
 
@@ -32,7 +35,7 @@ const TextLabel = styled.div`
 
 const TextEditing = styled(TextArea)`
   border: 0;
-  border-bottom: 1px dashed ${p => p.theme.color.normal};
+  border-bottom: 1px dashed ${p => p.theme.color.neutral};
   border-radius: 0;
   max-width: 50%;
 `;

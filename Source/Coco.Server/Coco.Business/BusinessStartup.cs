@@ -12,6 +12,7 @@ using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
+using Coco.Business.Implementation.UserBusiness;
 
 namespace Coco.Business
 {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { ButtonTransparent } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
@@ -8,6 +8,7 @@ import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
 const DropdownGroup = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 2;
 `;
 
 const ButtonCaret = styled(ButtonTransparent)`
@@ -25,12 +26,12 @@ const DropdownList = styled(Dropdown)`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
   min-width: calc(${p => p.theme.size.large} * 3);
   border-radius: ${p => p.theme.borderRadius.normal};
-  border: 1px solid ${p => p.theme.color.exLight};
+  border: 1px solid ${p => p.theme.color.lighter};
   padding: ${p => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
     margin-bottom: 0;
-    border-bottom: 1px solid ${p => p.theme.color.exLight};
+    border-bottom: 1px solid ${p => p.theme.color.lighter};
 
     :last-child {
       border-bottom: 0;

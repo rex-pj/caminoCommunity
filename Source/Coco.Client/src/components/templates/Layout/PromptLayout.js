@@ -3,7 +3,7 @@ import styled from "styled-components";
 import MasterLayout from "./MasterLayout";
 
 const Root = styled.div`
-  background-color: ${p => p.theme.color.exLight};
+  background-color: ${p => p.theme.color.lighter};
   height: 100%;
 `;
 

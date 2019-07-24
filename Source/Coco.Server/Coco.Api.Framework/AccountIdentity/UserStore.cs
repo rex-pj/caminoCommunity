@@ -10,13 +10,13 @@ using Microsoft.EntityFrameworkCore;
 using Coco.Api.Framework.Mapping;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
+using Coco.Entities.Enums;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
 
@@ -28,14 +28,12 @@ namespace Coco.Api.Framework.AccountIdentity
         private bool _isDisposed;
 
         public UserStore(IAccountBusiness accountBusiness,
-            IUserPhotoBusiness userPhotoBusiness,
             ITextCrypter textCrypter,
             IConfiguration configuration,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _accountBusiness = accountBusiness;
-            _userPhotoBusiness = userPhotoBusiness;
             _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
@@ -192,20 +190,20 @@ namespace Coco.Api.Framework.AccountIdentity
             var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var user = FindById(userId, cancellationToken);
+            var user = GetLoggedInUser(userId, cancellationToken);
             return user;
         }
 
-        private ApplicationUser FindById(long id, CancellationToken cancellationToken)
+        private ApplicationUser GetLoggedInUser(long id, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = _accountBusiness.Find(id);
+            var userEntity = _accountBusiness.GetLoggedIn(id);
 
-            return GetApplicationUser(userEntity);
+            return GetLoggedInUser(userEntity);
         }
 
         public async Task<UserFullModel> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
@@ -312,64 +310,6 @@ namespace Coco.Api.Framework.AccountIdentity
             }
         }
 
-        /// <summary>
-        /// Updates photo <paramref name="model"/> in the user store.
-        /// </summary>
-        /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            try
-            {
-                Random random = new Random();
-                int randomNumber = random.Next(1, 1000);
-                long numberByUserId = (userId * randomNumber);
-                model.AvatarCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
-                var result = await _userPhotoBusiness.UpdateAvatarAsync(model, userId);
-
-                return ApiResult<UpdateAvatarModel>.Success(result);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
-        }
-
-        /// <summary>
-        /// Updates photo <paramref name="model"/> in the user store.
-        /// </summary>
-        /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (userId <= 0)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
-
-            try
-            {
-                await _userPhotoBusiness.DeleteAvatarAsync(userId);
-
-                return ApiResult<UpdateAvatarModel>.Success(new UpdateAvatarModel());
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
-        }
-
         #region Private Methods
         private UserModel GetUserEntity(ApplicationUser loggedUser)
         {
@@ -391,6 +331,18 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var result = UserInfoMapping.PopulateApplicationUser(entity);
+
+            return result;
+        }
+
+        private ApplicationUser GetLoggedInUser(UserLoggedInModel model)
+        {
+            if (model == null)
+            {
+                return null;
+            }
+
+            var result = UserInfoMapping.PopulateLoggedInUser(model);
 
             return result;
         }

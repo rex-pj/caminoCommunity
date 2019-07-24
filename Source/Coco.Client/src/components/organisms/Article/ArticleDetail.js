@@ -14,7 +14,7 @@ const Title = styled(PrimaryTitle)`
 
 const ContentTopBar = styled.div`
   font-size: ${p => p.theme.fontSize.tiny};
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
 
   span {
     color: inherit;

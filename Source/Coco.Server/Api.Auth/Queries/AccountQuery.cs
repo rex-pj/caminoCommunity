@@ -9,7 +9,7 @@ namespace Api.Identity.Queries
     {
         public AccountQuery(AccountResolver accountResolver)
         {
-            Field<UserInfoResultType>("loggedUser",
+            Field<LoggedInUserResultType>("loggedUser",
                 resolve: context => accountResolver.GetLoggedUser(context.UserContext as IWorkContext));
         }
     }

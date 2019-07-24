@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
-import UserCard from "./UserCard";
 import { PanelDefault } from "../../atoms/Panels";
 import UserContext from "../../../utils/Context/UserContext";
+const UserCard = loadable(() => import("./UserCard"));
 
 const Root = styled(PanelDefault)`
   position: relative;
@@ -39,8 +40,10 @@ export default class extends Component {
     return (
       <Root>
         <UserContext.Consumer>
-          {({ isLogin, userInfo }) =>
-            isLogin ? <Card userInfo={userInfo} menuList={menuList} /> : null
+          {({ user }) =>
+            user && user.isLogin ? (
+              <Card userInfo={user.userInfo} menuList={menuList} />
+            ) : null
           }
         </UserContext.Consumer>
       </Root>

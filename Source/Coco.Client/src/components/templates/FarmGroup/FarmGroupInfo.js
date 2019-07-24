@@ -14,7 +14,7 @@ const InfoList = styled(VerticalList)`
 `;
 
 const OtherInfo = styled.span`
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
 `;
 
 const ChildItem = styled.li`
@@ -28,7 +28,7 @@ const ChildItem = styled.li`
   }
 
   ${OtherInfo} {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   svg {
@@ -37,11 +37,11 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   a {
-    font-size: ${p => p.theme.fontSize.exSmall};
+    font-size: ${p => p.theme.rgbaColor.small};
     font-weight: 600;
   }
 `;

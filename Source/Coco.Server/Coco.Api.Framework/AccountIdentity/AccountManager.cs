@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
 using Coco.Entities.Model.Account;
+using Coco.Entities.Enums;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -27,6 +28,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// </summary>
         /// <value>The persistence store the manager operates over.</value>
         protected internal IUserStore<ApplicationUser> UserStore;
+        protected internal IUserPhotoStore<ApplicationUser> UserPhotoStore;
         protected internal IUserPasswordStore<ApplicationUser> UserPasswordStore;
         protected internal IUserEmailStore<ApplicationUser> UserEmailStore;
         internal readonly string _tokenEncryptKey;
@@ -49,6 +51,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
         #region Ctor
         public AccountManager(IUserStore<ApplicationUser> userStore,
+            IUserPhotoStore<ApplicationUser> userPhotoStore,
             IUserEmailStore<ApplicationUser> userEmailStore,
             IUserPasswordStore<ApplicationUser> userPasswordStore,
             IPasswordHasher<ApplicationUser> passwordHasher,
@@ -61,6 +64,7 @@ namespace Coco.Api.Framework.AccountIdentity
         {
             this.Options = optionsAccessor?.Value ?? new IdentityOptions();
             this.UserStore = userStore;
+            this.UserPhotoStore = userPhotoStore;
             this.UserEmailStore = userEmailStore;
             this.UserPasswordStore = userPasswordStore;
 
@@ -494,7 +498,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId)
         {
             ThrowIfDisposed();
 
@@ -503,10 +507,22 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
+            return await UserPhotoStore.UpdateAvatarAsync(model, userId, CancellationToken);
         }
 
-        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId)
+        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId)
+        {
+            ThrowIfDisposed();
+
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            return await UserPhotoStore.UpdateCoverAsync(model, userId, CancellationToken);
+        }
+
+        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
             ThrowIfDisposed();
 
@@ -515,7 +531,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            return await UserStore.DeleteAvatarAsync(userId, CancellationToken);
+            return await UserPhotoStore.DeleteUserPhotoAsync(userId, userPhotoType, CancellationToken);
         }
 
         #endregion

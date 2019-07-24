@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { ButtonTransparent } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const LinkTo = styled.a`
   display: block;
   width: 280px;
-  background-color: ${p => p.theme.color.exLight};
+  background-color: ${p => p.theme.color.lighter};
   border: 1px solid ${p => p.theme.color.light};
   padding: ${p => p.theme.size.tiny};
   border-radius: ${p => p.theme.borderRadius.normal};
@@ -20,7 +20,7 @@ const LinkTo = styled.a`
 const Title = styled.div`
   padding-right: ${p => p.theme.size.exTiny};
   margin-bottom: ${p => p.theme.size.exTiny};
-  color: ${p => p.theme.color.secondary};
+  color: ${p => p.theme.color.primaryLight};
 `;
 
 const Description = styled.p`

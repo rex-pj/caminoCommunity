@@ -2,10 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { ImageCircle } from "../../atoms/Images";
 import { Thumbnail } from "../../molecules/Thumbnails";
-import Menubar from "./Menubar";
+import Menubar from "./CardToolbar";
 import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoImage from "../../atoms/NoImages/no-image";
 
 const Root = styled.div`
   position: relative;
@@ -26,9 +27,10 @@ const Username = styled.h3`
   margin-bottom: 0;
   position: absolute;
   bottom: calc(${p => p.theme.size.normal} + 15px);
-  left: 15px;
+  left: ${p => p.theme.size.exSmall};
   z-index: 1;
   line-height: 1;
+  font-size: ${p => p.theme.fontSize.normal};
   text-shadow: ${p => p.theme.shadow.TextShadow};
   a {
     color: ${p => p.theme.color.white};
@@ -38,10 +40,10 @@ const Username = styled.h3`
 const ProfileImage = styled(ImageCircle)`
   position: absolute;
   top: -20px;
-  left: 15px;
-  width: 55px;
-  height: 55px;
-  border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
+  left: ${p => p.theme.size.exSmall};
+  width: calc(${p => p.theme.size.medium} + ${p => p.theme.size.exTiny});
+  height: calc(${p => p.theme.size.medium} + ${p => p.theme.size.exTiny});
+  border: 3px solid ${p => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 
@@ -53,8 +55,12 @@ const EmptyAvatar = styled(NoAvatar)`
   position: absolute;
   top: -20px;
   left: 15px;
-  border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
+  border: 5px solid ${p => p.theme.rgbaColor.cyan};
   z-index: 1;
+`;
+
+const EmptyCover = styled(NoImage)`
+  height: 60px;
 `;
 
 const BoxShadowBar = styled.div`
@@ -85,19 +91,25 @@ export default function(props) {
 
       <BoxShadowBar>
         <CoverWrapper>
-          <Thumbnail
-            src={`${process.env.PUBLIC_URL}/photos/profile-card.jpg`}
-          />
+          {userInfo && userInfo.coverPhotoUrl ? (
+            <Thumbnail
+              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${
+                userInfo.coverPhotoUrl
+              }`}
+            />
+          ) : (
+            <EmptyCover />
+          )}
           <Overlay />
         </CoverWrapper>
-        <StaticBar>
-          <Menubar menuList={menuList} />
-        </StaticBar>
         <Username>
           <AnchorLink to={userIdentityId ? `/profile/${userIdentityId}` : ""}>
             {props.userInfo ? props.userInfo.displayName : ""}
           </AnchorLink>
         </Username>
+        <StaticBar>
+          <Menubar menuList={menuList} />
+        </StaticBar>
       </BoxShadowBar>
     </Root>
   );

@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Coco.Business.Implementation
+namespace Coco.Business.Implementation.UserBusiness
 {
     public class AccountBusiness : IAccountBusiness
     {
@@ -96,7 +96,6 @@ namespace Coco.Business.Implementation
             return model;
         }
 
-
         public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
         {
             if (model.PropertyName == null)
@@ -124,6 +123,11 @@ namespace Coco.Business.Implementation
                 throw new ArgumentException(model.PropertyName);
             }
 
+            if (userInfo.User != null)
+            {
+                userInfo.User.UpdatedDate = DateTime.Now;
+                userInfo.User.UpdatedById = userInfo.Id;
+            }
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _identityContext.SaveChangesAsync();
 
@@ -160,6 +164,16 @@ namespace Coco.Business.Implementation
             {
                 throw e;
             }
+        }
+
+        public UserLoggedInModel GetLoggedIn(long id)
+        {
+            var user = _userRepository
+                .GetAsNoTracking(x => x.Id == id)
+                .Select(UserMapping.SelectorUserLoggedIn)
+                .FirstOrDefault();
+
+            return user;
         }
 
         public UserModel Find(long id)

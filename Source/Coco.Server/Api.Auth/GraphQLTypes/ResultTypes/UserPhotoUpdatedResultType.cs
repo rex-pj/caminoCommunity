@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class AvatarUpdatedResultType : ObjectGraphType<UpdateAvatarModel>
+    public class UserPhotoUpdatedResultType : ObjectGraphType<UpdateUserPhotoModel>
     {
-        public AvatarUpdatedResultType()
+        public UserPhotoUpdatedResultType()
         {
             Field(x => x.ContentType, false, typeof(StringGraphType));
             Field(x => x.Height, false, typeof(FloatGraphType));
