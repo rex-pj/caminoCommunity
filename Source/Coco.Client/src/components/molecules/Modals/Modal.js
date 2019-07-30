@@ -63,10 +63,20 @@ class Modal extends Component {
     this.state = {
       showBackdrop: true
     };
+
+    this._isMounted = false;
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.payload) {
+    if (nextProps && nextProps.payload && this._isMounted) {
       const { payload } = nextProps;
       this.setState(() => {
         return {
@@ -77,9 +87,11 @@ class Modal extends Component {
   }
 
   closeModal = () => {
-    this.setState({
-      shouldOpen: false
-    });
+    if (this._isMounted) {
+      this.setState({
+        shouldOpen: false
+      });
+    }
   };
 
   render() {

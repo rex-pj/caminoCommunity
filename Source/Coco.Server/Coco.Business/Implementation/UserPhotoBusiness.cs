@@ -31,7 +31,7 @@ namespace Coco.Business.Implementation
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public async Task<UpdateAvatarModel> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
+        public async Task<UpdateUserPhotoModel> UpdateUserPhotoAsync(UpdateUserPhotoModel model, long userId)
         {
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)
@@ -47,20 +47,29 @@ namespace Coco.Business.Implementation
                 throw new ArgumentException(model.PhotoUrl);
             }
 
-            _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
-            canUpdate = _validationStrategyContext.Validate(model);
+            if(model.UserPhotoType == UserPhotoTypeEnum.Avatar)
+            {
+                _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
+                canUpdate = _validationStrategyContext.Validate(model);
+            }
+            else if (model.UserPhotoType == UserPhotoTypeEnum.Cover)
+            {
+                _validationStrategyContext.SetStrategy(new UserCoverValidationStrategy());
+                canUpdate = _validationStrategyContext.Validate(model);
+            }
 
             if (!canUpdate)
             {
                 throw new ArgumentException("Avatar Url");
             }
 
+            int maxSize = model.UserPhotoType == UserPhotoTypeEnum.Avatar ? 600 : 1000;
             var newImage = ImageUtils
-                .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height);
+                .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height, maxSize);
 
-            var avatarType = (byte)UserPhotoTypeEnum.Avatar;
+            var userPhotoType = (byte)model.UserPhotoType;
             var userPhoto = _userPhotoRepository
-                .Get(x => x.UserId == userId && x.TypeId == avatarType)
+                .Get(x => x.UserId == userId && x.TypeId == userPhotoType)
                 .FirstOrDefault();
 
             using (var transaction = _identityContext.Database.BeginTransaction())
@@ -72,10 +81,10 @@ namespace Coco.Business.Implementation
                         CreatedById = userId,
                         CreatedDate = DateTime.Now,
                         ImageData = newImage,
-                        TypeId = (byte)UserPhotoTypeEnum.Avatar,
+                        TypeId = (byte)model.UserPhotoType,
                         UserId = userId,
                         Name = model.FileName,
-                        Code = model.AvatarCode,
+                        Code = model.UserPhotoCode,
                     };
 
                     _userPhotoRepository.Insert(userPhoto);
@@ -84,11 +93,18 @@ namespace Coco.Business.Implementation
                 {
                     userPhoto.ImageData = newImage;
                     userPhoto.Name = model.FileName;
-                    userPhoto.Code = model.AvatarCode;
+                    userPhoto.Code = model.UserPhotoCode;
                     _userPhotoRepository.Update(userPhoto);
                 }
 
-                userInfo.AvatarUrl = model.AvatarCode;
+                if(model.UserPhotoType== UserPhotoTypeEnum.Avatar)
+                {
+                    userInfo.AvatarUrl = model.UserPhotoCode;
+                }
+                else
+                {
+                    userInfo.CoverPhotoUrl = model.UserPhotoCode;
+                }
 
                 await _identityContext.SaveChangesAsync();
                 transaction.Commit();
@@ -98,11 +114,11 @@ namespace Coco.Business.Implementation
             }
         }
 
-        public async Task DeleteAvatarAsync(long userId)
+        public async Task DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
-            var avatarType = (byte)UserPhotoTypeEnum.Avatar;
+            var type = (byte)userPhotoType;
             var userPhoto = _userPhotoRepository
-                .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(avatarType))
+                .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
                 .FirstOrDefault();
 
             if (userPhoto == null)
@@ -110,7 +126,15 @@ namespace Coco.Business.Implementation
                 return;
             }
 
-            userPhoto.UserInfo.AvatarUrl = null;
+            if(userPhotoType == UserPhotoTypeEnum.Avatar)
+            {
+                userPhoto.UserInfo.AvatarUrl = null;
+            }
+            else
+            {
+                userPhoto.UserInfo.CoverPhotoUrl = null;
+            }
+
             _userPhotoRepository.Delete(userPhoto);
             await _identityContext.SaveChangesAsync();
         }

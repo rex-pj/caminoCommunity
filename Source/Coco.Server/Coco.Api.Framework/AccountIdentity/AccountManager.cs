@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
 using Coco.Entities.Model.Account;
+using Coco.Entities.Enums;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -494,7 +495,7 @@ namespace Coco.Api.Framework.AccountIdentity
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId)
         {
             ThrowIfDisposed();
 
@@ -506,7 +507,19 @@ namespace Coco.Api.Framework.AccountIdentity
             return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
         }
 
-        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId)
+        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId)
+        {
+            ThrowIfDisposed();
+
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            return await UserStore.UpdateCoverAsync(model, userId, CancellationToken);
+        }
+
+        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
             ThrowIfDisposed();
 
@@ -515,7 +528,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            return await UserStore.DeleteAvatarAsync(userId, CancellationToken);
+            return await UserStore.DeleteUserPhotoAsync(userId, userPhotoType, CancellationToken);
         }
 
         #endregion

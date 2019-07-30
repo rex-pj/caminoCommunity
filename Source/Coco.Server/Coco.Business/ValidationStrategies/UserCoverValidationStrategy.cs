@@ -6,9 +6,9 @@ using Coco.Entities.Model.General;
 
 namespace Coco.Business.ValidationStrategies
 {
-    public class AvatarValidationStrategy : IValidationStrategy
+    public class UserCoverValidationStrategy : IValidationStrategy
     {
-        public AvatarValidationStrategy()
+        public UserCoverValidationStrategy()
         {
             Errors = new List<ErrorObject>();
         }
@@ -25,7 +25,7 @@ namespace Coco.Business.ValidationStrategies
             }
 
             var image = ImageUtils.Base64ToImage(data.PhotoUrl);
-            if(image.Width < 100 || image.Height < 100)
+            if(image.Width < 1000 || image.Height < 300)
             {
                 return false;
             }

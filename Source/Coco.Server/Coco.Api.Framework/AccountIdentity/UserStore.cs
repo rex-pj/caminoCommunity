@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Coco.Api.Framework.Mapping;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
+using Coco.Entities.Enums;
 
 namespace Coco.Api.Framework.AccountIdentity
 {
@@ -318,7 +319,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="model">The photo to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -332,10 +333,10 @@ namespace Coco.Api.Framework.AccountIdentity
                 Random random = new Random();
                 int randomNumber = random.Next(1, 1000);
                 long numberByUserId = (userId * randomNumber);
-                model.AvatarCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
-                var result = await _userPhotoBusiness.UpdateAvatarAsync(model, userId);
+                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
-                return ApiResult<UpdateAvatarModel>.Success(result);
+                return ApiResult<UpdateUserPhotoModel>.Success(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -349,7 +350,38 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="model">The photo to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> DeleteAvatarAsync(long userId, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            try
+            {
+                Random random = new Random();
+                int randomNumber = random.Next(1, 1000);
+                long numberByUserId = (userId * randomNumber);
+                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
+
+                return ApiResult<UpdateUserPhotoModel>.Success(result);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
+            }
+        }
+
+        /// <summary>
+        /// Updates photo <paramref name="model"/> in the user store.
+        /// </summary>
+        /// <param name="model">The photo to update.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
+        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -360,9 +392,9 @@ namespace Coco.Api.Framework.AccountIdentity
 
             try
             {
-                await _userPhotoBusiness.DeleteAvatarAsync(userId);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(userId, userPhotoType);
 
-                return ApiResult<UpdateAvatarModel>.Success(new UpdateAvatarModel());
+                return ApiResult<UpdateUserPhotoModel>.Success(new UpdateUserPhotoModel());
             }
             catch (DbUpdateConcurrencyException)
             {

@@ -1,5 +1,6 @@
 ﻿using Coco.Api.Framework.AccountIdentity.Entities;
 using Coco.Api.Framework.Models;
+using Coco.Entities.Enums;
 using Coco.Entities.Model.Account;
 using Coco.Entities.Model.General;
 using System;
@@ -20,7 +21,8 @@ namespace Coco.Api.Framework.AccountIdentity.Contracts
         TUser GetLoggingUser(string userIdentityId, string authenticationToken);
         Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token);
-        Task<ApiResult> UpdateAvatarAsync(UpdateAvatarModel model, long userId);
-        Task<ApiResult> DeleteAvatarAsync(long userId);
+        Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId);
+        Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId);
+        Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
     }
 }

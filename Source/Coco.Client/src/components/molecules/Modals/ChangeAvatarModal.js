@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { Mutation } from "react-apollo";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
 import {
   Button,
@@ -15,6 +16,10 @@ import { modalUploadAvatar, modalDeleteAvatar } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
+import {
+  UPDATE_USER_AVATAR,
+  DELETE_USER_AVATAR
+} from "../../../utils/GraphQLQueries";
 
 const Wrap = styled.div`
   margin: auto;
@@ -118,64 +123,127 @@ class ChangeAvatarModal extends Component {
       showDeletePopover: false
     };
 
+    this._isMounted = false;
     this.setEditorRef = editor => (this.editor = editor);
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   onChangeImage = e => {
-    this.setState({
-      contentType: e.file.type,
-      fileName: e.file.name,
-      src: e.preview
-    });
-  };
-
-  onUpload = e => {
-    this.setState({
-      isDisabled: true
-    });
-
-    const { src } = this.state;
-    if (this.editor && this.props.onUpload && src) {
-      const { fileName, contentType } = this.state;
-      const rect = this.editor.getCroppingRect();
-      this.props.onUpload({
-        sourceImageUrl: src,
-        xAxis: rect.x,
-        yAxis: rect.y,
-        width: rect.width,
-        height: rect.height,
-        fileName,
-        contentType
+    if (this._isMounted) {
+      this.setState({
+        contentType: e.file.type,
+        fileName: e.file.name,
+        src: e.preview
       });
     }
-
-    this.setState({
-      isDisabled: false
-    });
   };
 
   onUpdateScale = e => {
-    let { crop } = this.state;
-    crop = {
-      ...crop,
-      scale: e
-    };
+    if (this._isMounted) {
+      let { crop } = this.state;
+      crop = {
+        ...crop,
+        scale: e
+      };
 
-    this.setState({
-      crop
-    });
+      this.setState({
+        crop
+      });
+    }
   };
 
   remove = () => {
-    this.setState({
-      contentType: null,
-      fileName: null,
-      src: null
-    });
+    if (this._isMounted) {
+      this.setState({
+        contentType: null,
+        fileName: null,
+        src: null
+      });
+    }
   };
 
-  onDelete = () => {
-    this.props.onDelete();
+  onUpload = async (e, uploadAvatar) => {
+    if (this._isMounted) {
+      this.setState({
+        isDisabled: true
+      });
+    }
+
+    const { src } = this.state;
+    if (this.editor && this.props.onUploaded && src) {
+      const { fileName, contentType } = this.state;
+      const { data } = this.props;
+      const { canEdit } = data;
+      const rect = this.editor.getCroppingRect();
+
+      if (!canEdit && this._isMounted) {
+        this.setState({
+          isDisabled: false
+        });
+        return;
+      }
+
+      const variables = {
+        criterias: {
+          photoUrl: src,
+          canEdit: canEdit,
+          xAxis: rect.x,
+          yAxis: rect.y,
+          width: rect.width,
+          height: rect.height,
+          fileName,
+          contentType
+        }
+      };
+
+      return await uploadAvatar({ variables })
+        .then(response => {
+          this.props.onUploaded({
+            avatarUrl: src
+          });
+          this.props.closeModal();
+          if (this._isMounted) {
+            this.setState({
+              isDisabled: false
+            });
+          }
+        })
+        .catch(error => {
+          if (this._isMounted) {
+            this.setState({
+              isDisabled: false
+            });
+          }
+        });
+    }
+  };
+
+  onDelete = async (e, deleteAvatar) => {
+    const { data } = this.props;
+    const { canEdit } = data;
+
+    if (!canEdit) {
+      return;
+    }
+
+    const variables = {
+      criterias: {
+        canEdit: canEdit
+      }
+    };
+    return await deleteAvatar({ variables })
+      .then(response => {
+        this.props.onDeleted();
+        this.props.closeUploadModal();
+      })
+      .catch(error => {});
   };
 
   render() {
@@ -209,7 +277,12 @@ class ChangeAvatarModal extends Component {
                 />
               </ImageWrap>
               <SliderWrap>
-                <Slider onChange={this.onUpdateScale} min={1} max={5} />
+                <Slider
+                  onChange={this.onUpdateScale}
+                  min={1}
+                  max={5}
+                  step={0.1}
+                />
               </SliderWrap>
             </Fragment>
           ) : (
@@ -219,12 +292,19 @@ class ChangeAvatarModal extends Component {
         <PanelFooter>
           <FooterButtons className="row justify-content-between">
             <LeftButtonFooter className="col">
-              <AlertPopover
-                isShown={showDeletePopover}
-                target="DeleteAvatar"
-                title="Bạn có muốn xóa ảnh không?"
-                onExecute={this.onDelete}
-              />
+              <Mutation mutation={DELETE_USER_AVATAR}>
+                {deleteAvatar => {
+                  return (
+                    <AlertPopover
+                      isShown={showDeletePopover}
+                      target="DeleteAvatar"
+                      title="Bạn có muốn xóa ảnh không?"
+                      onExecute={e => this.onDelete(e, deleteAvatar)}
+                    />
+                  );
+                }}
+              </Mutation>
+
               <ButtonOutlineDanger size="sm" id="DeleteAvatar">
                 <FontAwesomeIcon icon="trash-alt" />
                 <span>Xóa Ảnh</span>
@@ -232,10 +312,21 @@ class ChangeAvatarModal extends Component {
             </LeftButtonFooter>
 
             <div className="col">
-              <Button disabled={isDisabled} size="sm" onClick={this.onUpload}>
-                <FontAwesomeIcon icon="upload" />
-                <span>Tải Ảnh</span>
-              </Button>
+              <Mutation mutation={UPDATE_USER_AVATAR}>
+                {updateAvatar => {
+                  return (
+                    <Button
+                      disabled={isDisabled}
+                      size="sm"
+                      onClick={e => this.onUpload(e, updateAvatar)}
+                    >
+                      <FontAwesomeIcon icon="upload" />
+                      <span>Tải Ảnh</span>
+                    </Button>
+                  );
+                }}
+              </Mutation>
+
               <ButtonSecondary
                 size="sm"
                 onClick={() => this.props.closeModal()}
@@ -253,10 +344,10 @@ class ChangeAvatarModal extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onUpload: data => {
+    onUploaded: data => {
       modalUploadAvatar(dispatch, data);
     },
-    onDelete: () => {
+    onDeleted: () => {
       modalDeleteAvatar(dispatch);
     }
   };

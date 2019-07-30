@@ -1,6 +1,8 @@
-﻿namespace Coco.Entities.Model.General
+﻿using Coco.Entities.Enums;
+
+namespace Coco.Entities.Model.General
 {
-    public class UpdateAvatarModel
+    public class UpdateUserPhotoModel
     {
         public string PhotoUrl { get; set; }
         public double XAxis { get; set; }
@@ -10,7 +12,7 @@
         public string ContentType { get; set; }
         public bool CanEdit { get; set; }
         public string FileName { get; set; }
-        public long AvatarId { get; set; }
-        public string AvatarCode { get; set; }
+        public string UserPhotoCode { get; set; }
+        public UserPhotoTypeEnum UserPhotoType { get; set; }
     }
 }

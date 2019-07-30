@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class DeleteAvatarInputType : InputObjectGraphType<UpdateAvatarModel>
+    public class DeleteUserPhotoInputType : InputObjectGraphType<UpdateUserPhotoModel>
     {
-        public DeleteAvatarInputType()
+        public DeleteUserPhotoInputType()
         {
             Field(x => x.CanEdit, false, typeof(BooleanGraphType));
         }

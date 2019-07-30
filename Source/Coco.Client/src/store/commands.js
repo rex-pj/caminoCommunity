@@ -34,7 +34,7 @@ function closeModal(dispatch) {
 
 function modalUploadAvatar(dispatch, data) {
   dispatch({
-    type: modalActions.UPLOAD_AVTARA,
+    type: modalActions.AVATAR_UPLOADED,
     payload: {
       ...data
     }
@@ -43,7 +43,7 @@ function modalUploadAvatar(dispatch, data) {
 
 function modalDeleteAvatar(dispatch) {
   dispatch({
-    type: modalActions.DELETE_AVTARA
+    type: modalActions.AVATAR_DELETED
   });
 }
 

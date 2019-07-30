@@ -20,7 +20,7 @@ const reducer = (state = initialState, action) => {
       ...state,
       payload: action.payload
     };
-  } else if (action.type === modalActions.UPLOAD_AVTARA) {
+  } else if (action.type === modalActions.AVATAR_UPLOADED) {
     const payload = {
       ...action.payload,
       actionType: action.type
@@ -29,7 +29,7 @@ const reducer = (state = initialState, action) => {
       ...state,
       payload: payload
     };
-  } else if (action.type === modalActions.DELETE_AVTARA) {
+  } else if (action.type === modalActions.AVATAR_DELETED) {
     const payload = {
       actionType: action.type
     };

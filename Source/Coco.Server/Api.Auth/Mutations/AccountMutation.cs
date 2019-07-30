@@ -16,13 +16,21 @@ namespace Api.Identity.Mutations
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UpdatePerItemInputType>> { Name = "criterias" }),
                 resolve: async context => await accountResolver.UpdateUserInfoItemAsync(context));
 
-            FieldAsync(typeof(ApiResultType<AvatarUpdatedResultType, UpdateAvatarModel>), "updateAvatar",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UpdateAvatarInputType>> { Name = "criterias" }),
+            FieldAsync(typeof(ApiResultType<UserPhotoUpdatedResultType, UpdateUserPhotoModel>), "updateAvatar",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UpdateUserPhotoInputType>> { Name = "criterias" }),
                 resolve: async context => await accountResolver.UpdateAvatarAsync(context));
 
-            FieldAsync(typeof(ApiResultType<AvatarDeletedResultType, UpdateAvatarModel>), "deleteAvatar",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<DeleteAvatarInputType>> { Name = "criterias" }),
+            FieldAsync(typeof(ApiResultType<UserPhotoUpdatedResultType, UpdateUserPhotoModel>), "updateUserCover",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UpdateUserPhotoInputType>> { Name = "criterias" }),
+                resolve: async context => await accountResolver.UpdateCoverAsync(context));
+
+            FieldAsync(typeof(ApiResultType<UserPhotoDeletedResultType, UpdateUserPhotoModel>), "deleteAvatar",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<DeleteUserPhotoInputType>> { Name = "criterias" }),
                 resolve: async context => await accountResolver.DeleteAvatarAsync(context));
+
+            FieldAsync(typeof(ApiResultType<UserPhotoDeletedResultType, UpdateUserPhotoModel>), "deleteCover",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<DeleteUserPhotoInputType>> { Name = "criterias" }),
+                resolve: async context => await accountResolver.DeleteCoverAsync(context));
         }
     }
 }

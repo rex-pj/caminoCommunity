@@ -27,5 +27,16 @@ namespace Api.Resources.Controllers
 
             return File(bytes, "image/jpeg");
         }
+
+        // GET cdn/photo/coverphoto
+        [HttpGet]
+        [Route("cover/{code}")]
+        public IActionResult CoverPhoto(string code)
+        {
+            var avatar = _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoTypeEnum.Cover);
+            var bytes = Convert.FromBase64String(avatar.ImageData);
+
+            return File(bytes, "image/jpeg");
+        }
     }
 }

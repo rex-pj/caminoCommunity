@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class AvatarDeletedResultType : ObjectGraphType<UpdateAvatarModel>
+    public class UserPhotoDeletedResultType : ObjectGraphType<UpdateUserPhotoModel>
     {
-        public AvatarDeletedResultType()
+        public UserPhotoDeletedResultType()
         {
             Field(x => x.CanEdit, false, typeof(BooleanGraphType));
         }
