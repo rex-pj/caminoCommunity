@@ -28,6 +28,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// </summary>
         /// <value>The persistence store the manager operates over.</value>
         protected internal IUserStore<ApplicationUser> UserStore;
+        protected internal IUserPhotoStore<ApplicationUser> UserPhotoStore;
         protected internal IUserPasswordStore<ApplicationUser> UserPasswordStore;
         protected internal IUserEmailStore<ApplicationUser> UserEmailStore;
         internal readonly string _tokenEncryptKey;
@@ -50,6 +51,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
         #region Ctor
         public AccountManager(IUserStore<ApplicationUser> userStore,
+            IUserPhotoStore<ApplicationUser> userPhotoStore,
             IUserEmailStore<ApplicationUser> userEmailStore,
             IUserPasswordStore<ApplicationUser> userPasswordStore,
             IPasswordHasher<ApplicationUser> passwordHasher,
@@ -62,6 +64,7 @@ namespace Coco.Api.Framework.AccountIdentity
         {
             this.Options = optionsAccessor?.Value ?? new IdentityOptions();
             this.UserStore = userStore;
+            this.UserPhotoStore = userPhotoStore;
             this.UserEmailStore = userEmailStore;
             this.UserPasswordStore = userPasswordStore;
 
@@ -504,7 +507,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserStore.UpdateAvatarAsync(model, userId, CancellationToken);
+            return await UserPhotoStore.UpdateAvatarAsync(model, userId, CancellationToken);
         }
 
         public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId)
@@ -516,7 +519,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserStore.UpdateCoverAsync(model, userId, CancellationToken);
+            return await UserPhotoStore.UpdateCoverAsync(model, userId, CancellationToken);
         }
 
         public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
@@ -528,7 +531,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            return await UserStore.DeleteUserPhotoAsync(userId, userPhotoType, CancellationToken);
+            return await UserPhotoStore.DeleteUserPhotoAsync(userId, userPhotoType, CancellationToken);
         }
 
         #endregion

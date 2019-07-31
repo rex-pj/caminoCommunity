@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Coco.Business.Implementation
+namespace Coco.Business.Implementation.UserBusiness
 {
     public class AccountBusiness : IAccountBusiness
     {

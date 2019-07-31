@@ -1,17 +1,13 @@
-﻿using Api.Identity.Models;
-using Coco.Api.Framework.AccountIdentity.Contracts;
-using Coco.Api.Framework.Commons.Helpers;
+﻿using Coco.Api.Framework.AccountIdentity.Contracts;
 using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
-using Coco.Business.Contracts;
 using Coco.Common.Const;
 using Coco.Entities.Enums;
 using Coco.Entities.Model.General;
 using GraphQL;
 using GraphQL.Types;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Identity.Resolvers

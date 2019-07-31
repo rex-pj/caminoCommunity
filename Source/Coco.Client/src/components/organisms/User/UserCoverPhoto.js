@@ -37,6 +37,22 @@ const Wrap = styled.div`
       height: inherit;
     }
   `,
+  NoImageDisplayed = styled(NoImage)`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0;
+    font-size: calc(${p => p.theme.fontSize.giant} * 2);
+    color: ${p => p.theme.color.light};
+    svg,
+    path {
+      font-size: inherit;
+      color: inherit;
+    }
+  `,
   ThumbnailOverlay = styled(Overlay)`
     height: 100px;
     top: auto;
@@ -57,6 +73,7 @@ const Wrap = styled.div`
     background-color: ${p => p.theme.rgbaColor.exDark};
     left: ${p => p.theme.size.distance};
     top: ${p => p.theme.size.distance};
+    z-index: 2;
 
     :hover {
       border: 1px solid ${p => p.theme.color.light};
@@ -87,6 +104,7 @@ const Wrap = styled.div`
     vertical-align: middle;
     cursor: pointer;
     text-align: center;
+    position: relative;
 
     > span {
       border: 0;
@@ -100,11 +118,15 @@ const Wrap = styled.div`
       :hover {
         background-color: ${p => p.theme.rgbaColor.exDark};
       }
+    }
 
-      svg,
-      path {
-        color: inherit;
-      }
+    svg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
     }
   `,
   CancelEditButton = styled(ButtonTransparent)`
@@ -321,28 +343,8 @@ export default class extends Component {
 
     return (
       <Wrap>
-        {!isInUpdateMode ? (
+        {!!isInUpdateMode ? (
           <Fragment>
-            <EditButton size="sm" onClick={this.turnOnUpdateMode}>
-              <FontAwesomeIcon icon="pencil-alt" />
-            </EditButton>
-            <a href={userInfo.url} className="cover-link">
-              {coverPhotoUrl ? (
-                <Thumbnail
-                  className="cover-thumbnail"
-                  src={`${
-                    process.env.REACT_APP_CDN_COVER_PHOTO_API_URL
-                  }${coverPhotoUrl}`}
-                  alt=""
-                />
-              ) : (
-                <NoImage />
-              )}
-              <ThumbnailOverlay />
-            </a>
-          </Fragment>
-        ) : (
-          <Wrap>
             {coverPhotoUrl ? (
               <Thumbnail
                 className="cover-thumbnail"
@@ -352,7 +354,7 @@ export default class extends Component {
                 alt=""
               />
             ) : (
-              <NoImage />
+              <NoImageDisplayed />
             )}
 
             <FullOverlay />
@@ -371,7 +373,27 @@ export default class extends Component {
                 );
               }}
             </Mutation>
-          </Wrap>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <EditButton size="sm" onClick={this.turnOnUpdateMode}>
+              <FontAwesomeIcon icon="pencil-alt" />
+            </EditButton>
+            <a href={userInfo.url} className="cover-link">
+              {coverPhotoUrl ? (
+                <Thumbnail
+                  className="cover-thumbnail"
+                  src={`${
+                    process.env.REACT_APP_CDN_COVER_PHOTO_API_URL
+                  }${coverPhotoUrl}`}
+                  alt=""
+                />
+              ) : (
+                <NoImageDisplayed />
+              )}
+              <ThumbnailOverlay />
+            </a>
+          </Fragment>
         )}
       </Wrap>
     );

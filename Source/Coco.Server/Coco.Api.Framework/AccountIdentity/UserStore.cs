@@ -17,7 +17,6 @@ namespace Coco.Api.Framework.AccountIdentity
     public class UserStore : IUserStore<ApplicationUser>
     {
         private readonly IAccountBusiness _accountBusiness;
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
 
@@ -29,14 +28,12 @@ namespace Coco.Api.Framework.AccountIdentity
         private bool _isDisposed;
 
         public UserStore(IAccountBusiness accountBusiness,
-            IUserPhotoBusiness userPhotoBusiness,
             ITextCrypter textCrypter,
             IConfiguration configuration,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _accountBusiness = accountBusiness;
-            _userPhotoBusiness = userPhotoBusiness;
             _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
@@ -306,95 +303,6 @@ namespace Coco.Api.Framework.AccountIdentity
                 model.Value = result.Value;
 
                 return ApiResult<UpdatePerItemModel>.Success(model);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
-        }
-
-        /// <summary>
-        /// Updates photo <paramref name="model"/> in the user store.
-        /// </summary>
-        /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            try
-            {
-                Random random = new Random();
-                int randomNumber = random.Next(1, 1000);
-                long numberByUserId = (userId * randomNumber);
-                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
-
-                return ApiResult<UpdateUserPhotoModel>.Success(result);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
-        }
-
-        /// <summary>
-        /// Updates photo <paramref name="model"/> in the user store.
-        /// </summary>
-        /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            try
-            {
-                Random random = new Random();
-                int randomNumber = random.Next(1, 1000);
-                long numberByUserId = (userId * randomNumber);
-                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
-
-                return ApiResult<UpdateUserPhotoModel>.Success(result);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
-            }
-        }
-
-        /// <summary>
-        /// Updates photo <paramref name="model"/> in the user store.
-        /// </summary>
-        /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            if (userId <= 0)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
-
-            try
-            {
-                await _userPhotoBusiness.DeleteUserPhotoAsync(userId, userPhotoType);
-
-                return ApiResult<UpdateUserPhotoModel>.Success(new UpdateUserPhotoModel());
             }
             catch (DbUpdateConcurrencyException)
             {
