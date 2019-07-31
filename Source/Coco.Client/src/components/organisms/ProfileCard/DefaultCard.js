@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
-import UserCard from "./UserCard";
 import { PanelDefault } from "../../atoms/Panels";
 import UserContext from "../../../utils/Context/UserContext";
+const UserCard = loadable(() => import("./UserCard"));
 
 const Root = styled(PanelDefault)`
   position: relative;

@@ -39,7 +39,8 @@ export const GET_LOGGED_USER = gpl`
       email,
       displayName,
       userIdentityId,
-      avatarUrl
+      avatarUrl,
+      coverPhotoUrl
     }
   }
 `;

@@ -65,6 +65,7 @@ namespace Coco.Business.Mapping
             CountryId = user.UserInfo.CountryId,
             PhoneNumber = user.UserInfo.PhoneNumber,
             AvatarUrl = user.UserInfo.AvatarUrl,
+            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl
         };
 
         public static Expression<Func<User, UserFullModel>> SelectorFullUserModel = user => new UserFullModel

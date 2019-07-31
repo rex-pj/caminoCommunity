@@ -54,12 +54,12 @@ const ButtonOutlinePrimary = styled(Button)`
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
+    background-color: ${p => p.theme.rgbaColor.cyan};
     outline: none;
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
+    background-color: ${p => p.theme.rgbaColor.cyan};
   }
 `;
 
@@ -70,42 +70,42 @@ const ButtonOutlineSecondary = styled(ButtonOutlinePrimary)`
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.moreLight};
+    background-color: ${p => p.theme.rgbaColor.lighter};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.moreLight};
+    background-color: ${p => p.theme.rgbaColor.lighter};
   }
 `;
 
 const ButtonOutlineNormal = styled(ButtonOutlinePrimary)`
-  border: 1px solid ${p => p.theme.color.normal};
-  color: ${p => p.theme.color.normal};
+  border: 1px solid ${p => p.theme.color.neutral};
+  color: ${p => p.theme.color.neutral};
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
+    background-color: ${p => p.theme.rgbaColor.cyan};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.cyanMoreLight};
+    background-color: ${p => p.theme.rgbaColor.cyan};
   }
 `;
 
 const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
-  background: ${p => p.theme.rgbaColor.moreDark};
+  background: ${p => p.theme.rgbaColor.dark};
   border: 1px solid ${p => p.theme.color.light};
   color: ${p => p.theme.color.light};
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.exDark};
+    background-color: ${p => p.theme.rgbaColor.darker};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.exDark};
+    background-color: ${p => p.theme.rgbaColor.darker};
   }
 `;
 

@@ -6,7 +6,7 @@ import { TypographySecondary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
-  border-top: 1px solid ${p => p.theme.color.exLight};
+  border-top: 1px solid ${p => p.theme.color.lighter};
   padding-top: ${p => p.theme.size.exSmall};
 `;
 

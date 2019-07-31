@@ -32,7 +32,7 @@ const Instruction = styled.div`
 
   ${SecondaryHeading} {
     font-size: ${p => p.theme.fontSize.giant};
-    color: ${p => p.theme.color.exLight};
+    color: ${p => p.theme.color.lighter};
     text-transform: uppercase;
   }
 
@@ -41,7 +41,7 @@ const Instruction = styled.div`
     margin: auto auto ${p => p.theme.size.distance} auto;
     width: ${p => p.theme.size.large};
     height: ${p => p.theme.size.large};
-    background: ${p => p.theme.rgbaColor.cyanMoreLight};
+    background: ${p => p.theme.rgbaColor.cyan};
     padding: ${p => p.theme.size.tiny};
     border-radius: ${p => p.theme.borderRadius.medium};
   }
@@ -57,7 +57,7 @@ const Instruction = styled.div`
   }
 
   p {
-    color: ${p => p.theme.color.exLight};
+    color: ${p => p.theme.color.lighter};
     margin-bottom: 0;
     font-size: ${p => p.theme.fontSize.small};
     font-weight: 600;

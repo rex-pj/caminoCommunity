@@ -9,9 +9,7 @@ import {
   ConnectionSuggestions
 } from "../../organisms/Suggestions";
 
-import Shortcut from "../../organisms/Shortcut";
-
-// const Shortcut = loadable(() => import("../../organisms/Shortcut"));
+const Shortcut = loadable(() => import("../../organisms/Shortcut"));
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const DefaultCard = loadable(() =>
   import("../../organisms/ProfileCard/DefaultCard")

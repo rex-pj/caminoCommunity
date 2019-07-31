@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Root = styled.div`
-  background-color: ${p => p.theme.color.secondary};
+  background-color: ${p => p.theme.color.primaryLight};
 `;
 
 export default () => {

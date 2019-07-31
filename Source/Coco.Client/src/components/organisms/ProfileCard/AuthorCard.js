@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
-import UserCard from "./UserCard";
 import ProfileCardInfo from "./ProfileCardInfo";
 import { PanelDefault } from "../../atoms/Panels";
 import { UrlConstant } from "../../../utils/Constant";
+const UserCard = loadable(() => import("./UserCard"));
 
 const Root = styled(PanelDefault)`
   position: relative;
@@ -13,7 +14,7 @@ const Root = styled(PanelDefault)`
 const Card = styled(UserCard)`
   box-shadow: none;
   border-radius: 0;
-  border-bottom: 1px solid ${p => p.theme.rgbaColor.dark};
+  border-bottom: 1px solid ${p => p.theme.color.lighter};
 `;
 
 export default class extends Component {

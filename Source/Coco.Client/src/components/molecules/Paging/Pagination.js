@@ -14,7 +14,7 @@ const PageItem = styled.li`
 
   :hover a {
     text-decoration: none;
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
   }
 
   svg > path {

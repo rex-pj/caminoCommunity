@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { Mutation } from "react-apollo";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
+import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
 import {
-  Button,
+  ButtonPrimary,
   ButtonSecondary,
-  ButtonAlert,
-  ButtonOutlineDanger
-} from "../../atoms/Buttons";
+  ButtonAlert
+} from "../../atoms/Buttons/Buttons";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
@@ -64,12 +64,12 @@ const AvatarUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     height: ${p => p.theme.size.medium};
     padding: 0 ${p => p.theme.size.tiny};
-    background-color: ${p => p.theme.color.exLight};
+    background-color: ${p => p.theme.color.lighter};
     border-radius: ${p => p.theme.borderRadius.large};
-    border: 1px solid ${p => p.theme.color.normal};
+    border: 1px solid ${p => p.theme.color.neutral};
     cursor: pointer;
     font-weight: 600;
 
@@ -315,14 +315,14 @@ class ChangeAvatarModal extends Component {
               <Mutation mutation={UPDATE_USER_AVATAR}>
                 {updateAvatar => {
                   return (
-                    <Button
+                    <ButtonPrimary
                       disabled={isDisabled}
                       size="sm"
                       onClick={e => this.onUpload(e, updateAvatar)}
                     >
                       <FontAwesomeIcon icon="upload" />
                       <span>Tải Ảnh</span>
-                    </Button>
+                    </ButtonPrimary>
                   );
                 }}
               </Mutation>

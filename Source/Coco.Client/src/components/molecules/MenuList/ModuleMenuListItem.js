@@ -5,7 +5,7 @@ export default styled(ListItem)`
   margin-bottom: 3px;
 
   a {
-    color: ${p => p.theme.color.secondary};
+    color: ${p => p.theme.color.primaryLight};
     display: block;
     text-decoration: none;
     border-radius: ${p => p.theme.borderRadius.normal};
@@ -21,11 +21,11 @@ export default styled(ListItem)`
   &.actived a,
   & a.actived {
     font-weight: 600;
-    background-color: ${p => p.theme.color.exLight};
+    background-color: ${p => p.theme.color.lighter};
   }
 
   &:hover a {
-    background-color: ${p => p.theme.color.exLight};
+    background-color: ${p => p.theme.color.lighter};
   }
 
   a > span > svg {

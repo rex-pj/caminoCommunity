@@ -7,7 +7,7 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.normal};
+    border-bottom: 1px dashed ${p => p.theme.color.neutral};
     line-height: ${p => p.theme.size.normal};
     height: ${p => p.theme.size.normal};
     cursor: pointer;
@@ -20,7 +20,7 @@ const TextLabel = styled.span`
   }
 
   &.success {
-    border: 1px solid ${p => p.theme.color.secondary};
+    border: 1px solid ${p => p.theme.color.primaryLight};
   }
 
   &.fail {
@@ -32,12 +32,12 @@ const DateTimePicker = styled(DaySelector)`
   select {
     border: 0;
     border-radius: 0;
-    border-bottom: 1px dashed ${p => p.theme.color.secondary};
+    border-bottom: 1px dashed ${p => p.theme.color.primaryLight};
     cursor: pointer;
   }
 
   &.success select {
-    border-bottom: 2px solid ${p => p.theme.color.secondary};
+    border-bottom: 2px solid ${p => p.theme.color.primaryLight};
   }
 
   &.fail select {

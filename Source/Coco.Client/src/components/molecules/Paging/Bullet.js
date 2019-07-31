@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { ButtonOutlineSecondary } from "../../atoms/Buttons";
+import { ButtonOutlineSecondary } from "../../atoms/Buttons/OutlineButtons";
 import {
   RouterLinkButtonOutlineNormal,
   RouterLinkButtonOutlineSecondary

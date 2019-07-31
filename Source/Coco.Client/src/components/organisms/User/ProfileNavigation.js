@@ -23,7 +23,7 @@ const ListItem = styled.li`
   }
 
   a {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     font-weight: 500;
     font-size: ${p => p.theme.fontSize.small};
     border: 0;

@@ -6,12 +6,12 @@ import { HorizontalList } from "../../atoms/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  background-color: ${p => p.theme.color.secondary};
+  background-color: ${p => p.theme.color.primaryLight};
   position: relative;
 `;
 
 const NavButton = styled(RouterLinkButton)`
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
   font-weight: 500;
   font-size: ${p => p.theme.fontSize.small};
   border: 0;

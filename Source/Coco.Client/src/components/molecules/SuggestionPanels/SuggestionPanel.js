@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Thumbnail } from "../../molecules/Thumbnails";
-import { ButtonOutlineDark } from "../../atoms/Buttons";
+import { ButtonOutlineDark } from "../../atoms/Buttons/OutlineButtons";
 import { TertiaryTitle } from "../../atoms/Titles";
 import { TypographySecondary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
@@ -35,7 +35,7 @@ const InfoRow = styled.span`
   position: absolute;
   bottom: 8px;
   left: 15px;
-  color: ${p => p.theme.color.exLight};
+  color: ${p => p.theme.color.lighter};
   z-index: 2;
   font-size: 13px;
   right: 5px;

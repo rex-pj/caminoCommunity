@@ -16,7 +16,7 @@ const Root = styled.ol`
 const ListItem = styled.li`
   display: inline-block;
   font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.secondary};
+  color: ${p => p.theme.color.primaryLight};
 
   border-right: 1px solid ${p => p.theme.color.light};
   border-top-right-radius: ${p => p.theme.borderRadius.large};
@@ -27,7 +27,7 @@ const ListItem = styled.li`
   position: relative;
 
   &.actived {
-    color: ${p => p.theme.color.normal};
+    color: ${p => p.theme.color.neutral};
     border-right: 0;
   }
 
@@ -44,7 +44,7 @@ const ListItem = styled.li`
   svg,
   path {
     color: inherit;
-    font-size: ${p => p.theme.fontSize.exSmall};
+    font-size: ${p => p.theme.rgbaColor.small};
   }
 `;
 

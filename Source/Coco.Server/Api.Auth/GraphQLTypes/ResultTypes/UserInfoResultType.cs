@@ -22,6 +22,7 @@ namespace Api.Identity.GraphQLTypes.ResultTypes
             Field(x => x.CreatedDate, type: typeof(DateTimeGraphType));
             Field(x => x.PhoneNumber, type: typeof(StringGraphType));
             Field(x => x.AvatarUrl, type: typeof(StringGraphType));
+            Field(x => x.CoverPhotoUrl, type: typeof(StringGraphType));
         }
     }
 }

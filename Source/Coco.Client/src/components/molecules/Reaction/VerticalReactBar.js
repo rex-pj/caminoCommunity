@@ -8,7 +8,7 @@ const ReactBar = styled.div`
 
 const ReactButton = styled.span`
   display: block;
-  font-size: ${p => p.theme.fontSize.exLarge};
+  font-size: ${p => p.theme.rgbaColor.large};
   line-height: 1;
 
   &.smile > svg > path {
@@ -16,7 +16,7 @@ const ReactButton = styled.span`
   }
 
   &.confused > svg > path {
-    color: ${p => p.theme.color.purple};
+    color: ${p => p.theme.color.dangerLight};
   }
 `;
 
@@ -24,7 +24,7 @@ const ReactionNumber = styled.div`
   margin: ${p => p.theme.size.small} 0;
   font-weight: 700;
   color: ${p => p.theme.color.primary};
-  font-size: ${p => p.theme.fontSize.exSmall};
+  font-size: ${p => p.theme.rgbaColor.small};
 `;
 
 export default props => {

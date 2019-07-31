@@ -1,55 +1,20 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
-const Button = styled(Link)`
-  color: ${p => p.theme.color.white};
-  background-color: ${p => p.theme.color.primary};
+const ButtonOutlinePrimary = styled.button`
+  color: ${p => p.theme.color.light};
   padding: ${p => (p.size === "sm" ? ".5rem .75rem" : "10px 15px")};
   border-radius: ${p => p.theme.borderRadius.normal};
-  border: 0;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${p => p.theme.color.primary};
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   box-sizing: border-box;
   outline: none;
   text-align: center;
   display: inline-block;
 
-  :active,
-  :hover,
-  :focus-within {
-    background-color: ${p => p.theme.color.primaryDark};
-    outline: none;
-  }
-
-  :disabled {
-    background-color: ${p => p.theme.color.primaryDark};
-  }
-
-  svg,
-  path {
-    color: inherit;
-  }
-`;
-
-const ButtonCircle = styled(Button)`
-  border-radius: 100%;
-`;
-
-const ButtonTransparent = styled(Button)`
-  background-color: transparent;
-  border: 0;
-  box-shadow: none;
-
-  :active,
-  :hover,
-  :focus-within {
-    background-color: transparent;
-  }
-`;
-
-const ButtonOutlinePrimary = styled(Button)`
   background: transparent;
-  border: 1px solid ${p => p.theme.color.primary};
   color: ${p => p.theme.color.primary};
 
   :active,
@@ -62,10 +27,16 @@ const ButtonOutlinePrimary = styled(Button)`
   :disabled {
     background-color: ${p => p.theme.rgbaColor.cyan};
   }
+
+  svg,
+  path,
+  span {
+    color: inherit;
+  }
 `;
 
 const ButtonOutlineSecondary = styled(ButtonOutlinePrimary)`
-  border: 1px solid ${p => p.theme.color.light};
+  border-color: ${p => p.theme.color.light};
   color: ${p => p.theme.color.light};
 
   :active,
@@ -80,7 +51,7 @@ const ButtonOutlineSecondary = styled(ButtonOutlinePrimary)`
 `;
 
 const ButtonOutlineNormal = styled(ButtonOutlinePrimary)`
-  border: 1px solid ${p => p.theme.color.neutral};
+  border-color: ${p => p.theme.color.neutral};
   color: ${p => p.theme.color.neutral};
 
   :active,
@@ -96,7 +67,7 @@ const ButtonOutlineNormal = styled(ButtonOutlinePrimary)`
 
 const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
   background: ${p => p.theme.rgbaColor.dark};
-  border: 1px solid ${p => p.theme.color.light};
+  border-color: ${p => p.theme.color.light};
   color: ${p => p.theme.color.light};
 
   :active,
@@ -110,12 +81,26 @@ const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
   }
 `;
 
+const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
+  border-color: ${p => p.theme.color.dangerLight};
+  color: ${p => p.theme.color.dangerLight};
+
+  :active,
+  :hover,
+  :focus-within {
+    color: ${p => p.theme.color.danger};
+    background-color: transparent;
+  }
+
+  :disabled {
+    color: ${p => p.theme.color.danger};
+  }
+`;
+
 export {
-  Button as RouterLinkButton,
-  ButtonCircle as RouterLinkButtonCircle,
-  ButtonTransparent as RouterLinkButtonTransparent,
-  ButtonOutlineSecondary as RouterLinkButtonOutlineSecondary,
-  ButtonOutlineDark as RouterLinkButtonOutlineDark,
-  ButtonOutlineNormal as RouterLinkButtonOutlineNormal,
-  ButtonOutlinePrimary as RouterLinkButtonOutlinePrimary
+  ButtonOutlineSecondary,
+  ButtonOutlineDark,
+  ButtonOutlineNormal,
+  ButtonOutlinePrimary,
+  ButtonOutlineDanger
 };

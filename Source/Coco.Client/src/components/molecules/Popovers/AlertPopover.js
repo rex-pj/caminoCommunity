@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
-import { ButtonOutlineNormal, ButtonOutlineDanger } from "../../atoms/Buttons";
+import {
+  ButtonOutlineNormal,
+  ButtonOutlineDanger
+} from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled(PanelDefault)`
   position: absolute;
@@ -13,7 +16,7 @@ const Wrap = styled(PanelDefault)`
   background-color: ${p => p.theme.color.warningLight};
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${p => p.theme.rgbaColor.dark};
+    border-bottom: 1px solid ${p => p.theme.rgbaColor.darkLight};
     color: ${p => p.theme.color.warning};
   }
 

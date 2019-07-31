@@ -41,7 +41,7 @@ const ProfileImage = styled(ImageCircle)`
   left: 15px;
   width: 55px;
   height: 55px;
-  border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
+  border: 5px solid ${p => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 
@@ -53,7 +53,7 @@ const EmptyAvatar = styled(NoAvatar)`
   position: absolute;
   top: -20px;
   left: 15px;
-  border: 5px solid ${p => p.theme.rgbaColor.cyanMoreLight};
+  border: 5px solid ${p => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 

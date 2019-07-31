@@ -2,11 +2,8 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
-import {
-  ButtonTransparent,
-  Button,
-  ButtonOutlineNormal
-} from "../../atoms/Buttons";
+import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
+import { ButtonOutlineNormal } from "../../atoms/Buttons/OutlineButtons";
 import { Mutation } from "react-apollo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
@@ -64,20 +61,20 @@ const Wrap = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: ${p => p.theme.rgbaColor.exDark};
+    background-color: ${p => p.theme.rgbaColor.darker};
     z-index: 2;
   `,
   EditButton = styled(ButtonTransparent)`
     position: absolute;
     border: 0;
-    background-color: ${p => p.theme.rgbaColor.exDark};
+    background-color: ${p => p.theme.rgbaColor.darker};
     left: ${p => p.theme.size.distance};
     top: ${p => p.theme.size.distance};
     z-index: 2;
 
     :hover {
       border: 1px solid ${p => p.theme.color.light};
-      background-color: ${p => p.theme.color.exLight};
+      background-color: ${p => p.theme.color.lighter};
       color: ${p => p.theme.color.dark};
     }
   `,
@@ -111,12 +108,12 @@ const Wrap = styled.div`
       width: ${p => p.theme.size.large};
       height: ${p => p.theme.size.large};
       font-size: ${p => p.theme.fontSize.large};
-      color: ${p => p.theme.color.exLight};
+      color: ${p => p.theme.color.lighter};
       border-radius: ${p => p.theme.borderRadius.normal};
       padding: ${p => p.theme.size.exSmall} 0;
 
       :hover {
-        background-color: ${p => p.theme.rgbaColor.exDark};
+        background-color: ${p => p.theme.rgbaColor.darker};
       }
     }
 
@@ -134,7 +131,7 @@ const Wrap = styled.div`
     width: ${p => p.theme.size.large};
     height: ${p => p.theme.size.large};
     font-size: ${p => p.theme.fontSize.large};
-    color: ${p => p.theme.color.exLight};
+    color: ${p => p.theme.color.lighter};
     margin-left: ${p => p.theme.size.exTiny};
     vertical-align: middle;
 
@@ -144,7 +141,7 @@ const Wrap = styled.div`
     }
 
     :hover {
-      background-color: ${p => p.theme.rgbaColor.exDark};
+      background-color: ${p => p.theme.rgbaColor.darker};
     }
   `,
   UpdateTools = styled.div`
@@ -152,7 +149,7 @@ const Wrap = styled.div`
     right: ${p => p.theme.size.distance};
     bottom: ${p => p.theme.size.distance};
   `,
-  AcceptUpdateButton = styled(Button)`
+  AcceptUpdateButton = styled(ButtonPrimary)`
     span {
       margin-left: ${p => p.theme.size.distance};
     }
@@ -354,7 +351,7 @@ export default class extends Component {
                 alt=""
               />
             ) : (
-              <NoImageDisplayed />
+              <span />
             )}
 
             <FullOverlay />

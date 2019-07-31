@@ -6,7 +6,7 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.normal};
+    border-bottom: 1px dashed ${p => p.theme.color.neutral};
     line-height: ${p => p.theme.size.normal};
     height: ${p => p.theme.size.normal};
     cursor: pointer;
@@ -19,7 +19,7 @@ const TextLabel = styled.span`
   }
 
   &.success {
-    border: 1px solid ${p => p.theme.color.secondary};
+    border: 1px solid ${p => p.theme.color.primaryLight};
   }
 
   &.fail {
@@ -31,12 +31,12 @@ const SelectBox = styled(Selection)`
   min-width: calc(${p => p.theme.size.large} * 2);
   cursor: pointer;
   border: 0;
-  border-bottom: 1px dashed ${p => p.theme.color.normal};
+  border-bottom: 1px dashed ${p => p.theme.color.neutral};
   border-radius: 0;
   max-width: 100%;
 
   &.success {
-    border: 1px solid ${p => p.theme.color.secondary};
+    border: 1px solid ${p => p.theme.color.primaryLight};
   }
 
   &.fail {

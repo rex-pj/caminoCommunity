@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonOutlineNormal } from "../../atoms/Buttons";
+import { ButtonOutlineNormal } from "../../atoms/Buttons/OutlineButtons";
 import { ThumbnailCircle } from "../Thumbnails";
 import { TertiaryTitle } from "../../atoms/Titles";
 import { TypographySecondary } from "../../atoms/Typographies";
@@ -9,7 +9,7 @@ import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
   padding: ${p => p.theme.size.distance};
-  border-top: 1px solid ${p => p.theme.color.exLight};
+  border-top: 1px solid ${p => p.theme.color.lighter};
 
   &.first-item {
     border-top: 0;

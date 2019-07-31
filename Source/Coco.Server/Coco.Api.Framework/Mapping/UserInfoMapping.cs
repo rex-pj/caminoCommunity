@@ -28,7 +28,8 @@ namespace Coco.Api.Framework.Mapping
                 CountryCode = user.CountryCode,
                 GenderLabel = user.GenderLabel,
                 CountryName = user.CountryName,
-                AvatarUrl = user.AvatarUrl
+                AvatarUrl = user.AvatarUrl,
+                CoverPhotoUrl = user.CoverPhotoUrl
             };
         }
 
@@ -62,7 +63,8 @@ namespace Coco.Api.Framework.Mapping
                 Expiration = userModel.Expiration,
                 AuthenticationToken = userModel.AuthenticationToken,
                 SecurityStamp = userModel.SecurityStamp,
-                AvatarUrl = userModel.AvatarUrl
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
             };
 
             return applicationUser;

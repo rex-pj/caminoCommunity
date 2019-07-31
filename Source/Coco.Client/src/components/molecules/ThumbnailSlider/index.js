@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ListScroll from "../../molecules/ListScroll";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import styled from "styled-components";
-import { ButtonTransparent } from "../../atoms/Buttons";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const PostThumbnail = styled.div`
@@ -12,13 +12,13 @@ const PostThumbnail = styled.div`
 
 const MainThumbnail = styled.div`
   overflow: hidden;
-  background-color: ${p => p.theme.color.exLight};
+  background-color: ${p => p.theme.color.lighter};
   position: relative;
   outline: none;
 `;
 
 const HorizontalListScroll = styled(ListScroll)`
-  background-color: ${p => p.theme.color.exLight};
+  background-color: ${p => p.theme.color.lighter};
   border-top: 1px solid ${p => p.theme.color.light};
   border-bottom: 1px solid ${p => p.theme.color.light};
 

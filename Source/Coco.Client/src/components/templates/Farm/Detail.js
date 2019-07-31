@@ -53,7 +53,7 @@ const TopBarInfo = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
 
   button {
     vertical-align: middle;
@@ -62,14 +62,14 @@ const PostActions = styled.div`
 
 const BreadCrumbNav = styled(Breadcrumb)`
   border: 0;
-  border-bottom: 1px solid ${p => p.theme.color.exLight};
+  border-bottom: 1px solid ${p => p.theme.color.lighter};
   border-radius: 0;
   margin-bottom: 0;
 `;
 
 const FollowButton = styled(ButtonIconOutline)`
   padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.fontSize.exSmall};
+  font-size: ${p => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;

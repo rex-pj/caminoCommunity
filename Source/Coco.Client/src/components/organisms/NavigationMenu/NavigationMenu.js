@@ -25,20 +25,20 @@ const Devided = styled.li`
   width: 1px;
   height: 15px;
   margin-left: 0;
-  background: ${p => p.theme.rgbaColor.dark};
+  background: ${p => p.theme.rgbaColor.darkLight};
   vertical-align: middle;
   margin: 0 2px;
 `;
 
 const AuthButton = styled(RouterLinkButton)`
-  color: ${p => p.theme.color.normal};
+  color: ${p => p.theme.color.neutral};
   font-weight: 500;
   height: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: ${p => p.theme.fontSize.small};
 
-  border: 1px solid ${p => p.theme.color.secondary};
+  border: 1px solid ${p => p.theme.color.primaryLight};
 
   :hover {
     color: ${p => p.theme.color.light};
