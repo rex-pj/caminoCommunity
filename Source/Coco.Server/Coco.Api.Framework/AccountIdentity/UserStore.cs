@@ -190,20 +190,20 @@ namespace Coco.Api.Framework.AccountIdentity
             var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
             var userId = long.Parse(userIdDecrypted);
 
-            var user = FindById(userId, cancellationToken);
+            var user = GetLoggedInUser(userId, cancellationToken);
             return user;
         }
 
-        private ApplicationUser FindById(long id, CancellationToken cancellationToken)
+        private ApplicationUser GetLoggedInUser(long id, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = _accountBusiness.Find(id);
+            var userEntity = _accountBusiness.GetLoggedIn(id);
 
-            return GetApplicationUser(userEntity);
+            return GetLoggedInUser(userEntity);
         }
 
         public async Task<UserFullModel> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
@@ -331,6 +331,18 @@ namespace Coco.Api.Framework.AccountIdentity
             }
 
             var result = UserInfoMapping.PopulateApplicationUser(entity);
+
+            return result;
+        }
+
+        private ApplicationUser GetLoggedInUser(UserLoggedInModel model)
+        {
+            if (model == null)
+            {
+                return null;
+            }
+
+            var result = UserInfoMapping.PopulateLoggedInUser(model);
 
             return result;
         }

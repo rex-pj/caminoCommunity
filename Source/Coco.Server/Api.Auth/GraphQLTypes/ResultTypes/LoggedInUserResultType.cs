@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class UserInfoResultType : ObjectGraphType<UserInfo>
+    public class LoggedInUserResultType : ObjectGraphType<ApplicationUser>
     {
-        public UserInfoResultType()
+        public LoggedInUserResultType()
         {
             Field(x => x.Lastname, type: typeof(StringGraphType));
             Field(x => x.Firstname, type: typeof(StringGraphType));

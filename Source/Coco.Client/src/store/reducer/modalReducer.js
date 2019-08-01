@@ -1,4 +1,4 @@
-import * as modalActions from "../modalActions";
+import * as modalActions from "../actions/modalActions";
 
 const initialState = {
   payload: null,
@@ -19,23 +19,6 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       payload: action.payload
-    };
-  } else if (action.type === modalActions.AVATAR_UPLOADED) {
-    const payload = {
-      ...action.payload,
-      actionType: action.type
-    };
-    return {
-      ...state,
-      payload: payload
-    };
-  } else if (action.type === modalActions.AVATAR_DELETED) {
-    const payload = {
-      actionType: action.type
-    };
-    return {
-      ...state,
-      payload: payload
     };
   }
 

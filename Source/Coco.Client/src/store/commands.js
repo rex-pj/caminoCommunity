@@ -1,5 +1,6 @@
-import * as notifyActions from "./notifyActions";
-import * as modalActions from "./modalActions";
+import * as notifyActions from "./actions/notifyActions";
+import * as modalActions from "./actions/modalActions";
+import * as avatarActions from "./actions/avatarActions";
 
 function raiseError(dispatch, title, description, url) {
   dispatch({
@@ -32,18 +33,24 @@ function closeModal(dispatch) {
   });
 }
 
-function modalUploadAvatar(dispatch, data) {
+function avatarUploaded(dispatch, data) {
   dispatch({
-    type: modalActions.AVATAR_UPLOADED,
+    type: avatarActions.AVATAR_UPLOADED,
     payload: {
       ...data
     }
   });
 }
 
-function modalDeleteAvatar(dispatch) {
+function avatarDeleted(dispatch) {
   dispatch({
-    type: modalActions.AVATAR_DELETED
+    type: avatarActions.AVATAR_DELETED
+  });
+}
+
+function avatarReload(dispatch) {
+  dispatch({
+    type: avatarActions.AVATAR_RELOAD
   });
 }
 
@@ -51,6 +58,7 @@ export {
   raiseError,
   openModal,
   closeModal,
-  modalUploadAvatar,
-  modalDeleteAvatar
+  avatarUploaded,
+  avatarDeleted,
+  avatarReload
 };

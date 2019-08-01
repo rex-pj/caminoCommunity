@@ -47,7 +47,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(model.PhotoUrl);
             }
 
-            if(model.UserPhotoType == UserPhotoTypeEnum.Avatar)
+            if (model.UserPhotoType == UserPhotoTypeEnum.Avatar)
             {
                 _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(model);
@@ -58,14 +58,18 @@ namespace Coco.Business.Implementation.UserBusiness
                 canUpdate = _validationStrategyContext.Validate(model);
             }
 
-            if (!canUpdate)
+            if (!canUpdate && model.UserPhotoType == UserPhotoTypeEnum.Avatar)
             {
-                throw new ArgumentException("Avatar Url");
+                throw new ArgumentException($"{nameof(UserPhotoTypeEnum.Avatar)}Should larger than 100px X 100px");
+            }
+            else if (!canUpdate)
+            {
+                throw new ArgumentException($"{nameof(UserPhotoTypeEnum.Cover)}Should larger than 1000px X 300px");
             }
 
             int maxSize = model.UserPhotoType == UserPhotoTypeEnum.Avatar ? 600 : 1000;
             var newImage = ImageUtils
-                .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height, maxSize);
+                .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height, model.Scale, maxSize);
 
             var userPhotoType = (byte)model.UserPhotoType;
             var userPhoto = _userPhotoRepository
@@ -97,7 +101,7 @@ namespace Coco.Business.Implementation.UserBusiness
                     _userPhotoRepository.Update(userPhoto);
                 }
 
-                if(model.UserPhotoType== UserPhotoTypeEnum.Avatar)
+                if (model.UserPhotoType == UserPhotoTypeEnum.Avatar)
                 {
                     userInfo.AvatarUrl = model.UserPhotoCode;
                 }
@@ -126,7 +130,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 return;
             }
 
-            if(userPhotoType == UserPhotoTypeEnum.Avatar)
+            if (userPhotoType == UserPhotoTypeEnum.Avatar)
             {
                 userPhoto.UserInfo.AvatarUrl = null;
             }

@@ -16,7 +16,6 @@ namespace Coco.Api.Framework.AccountIdentity
     public class UserPhotoStore : IUserPhotoStore<ApplicationUser>
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
-        private readonly ITextCrypter _textCrypter;
 
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
@@ -26,11 +25,9 @@ namespace Coco.Api.Framework.AccountIdentity
         private bool _isDisposed;
 
         public UserPhotoStore(IUserPhotoBusiness userPhotoBusiness,
-            ITextCrypter textCrypter,
             IdentityErrorDescriber errors = null)
         {
             _userPhotoBusiness = userPhotoBusiness;
-            _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
 
@@ -52,10 +49,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
             try
             {
-                Random random = new Random();
-                int randomNumber = random.Next(1, 1000);
-                long numberByUserId = (userId * randomNumber);
-                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
+                model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
                 return ApiResult<UpdateUserPhotoModel>.Success(result);
@@ -83,10 +77,7 @@ namespace Coco.Api.Framework.AccountIdentity
 
             try
             {
-                Random random = new Random();
-                int randomNumber = random.Next(1, 1000);
-                long numberByUserId = (userId * randomNumber);
-                model.UserPhotoCode = _textCrypter.Encrypt(numberByUserId.ToString(), model.FileName);
+                model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
                 return ApiResult<UpdateUserPhotoModel>.Success(result);

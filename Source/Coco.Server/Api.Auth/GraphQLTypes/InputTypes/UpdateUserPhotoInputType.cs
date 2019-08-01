@@ -10,6 +10,7 @@ namespace Api.Identity.GraphQLTypes.InputTypes
             Field(x => x.ContentType, false, typeof(StringGraphType));
             Field(x => x.Height, false, typeof(FloatGraphType));
             Field(x => x.Width, false, typeof(FloatGraphType));
+            Field(x => x.Scale, false, typeof(FloatGraphType));
             Field(x => x.XAxis, false, typeof(FloatGraphType));
             Field(x => x.YAxis, false, typeof(FloatGraphType));
             Field(x => x.PhotoUrl, false, typeof(StringGraphType));

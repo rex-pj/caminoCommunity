@@ -9,6 +9,7 @@ namespace Coco.Entities.Model.General
         public double YAxis { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
+        public double Scale { get; set; }
         public string ContentType { get; set; }
         public bool CanEdit { get; set; }
         public string FileName { get; set; }

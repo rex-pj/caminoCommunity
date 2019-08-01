@@ -17,7 +17,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import notifyReducer from "./store/reducer/notifyReducer";
 import modalReducer from "./store/reducer/modalReducer";
-
+import avatarReducer from "./store/reducer/avatarReducer";
 import { ApolloProvider } from "react-apollo";
 import { identityClient } from "./utils/GraphQLClient";
 import SessionContext from "./utils/Context/SessionContext";
@@ -26,7 +26,8 @@ import AuthService from "./services/AuthService";
 // Redux
 const rootReducer = combineReducers({
   notifyRdc: notifyReducer,
-  modalReducer: modalReducer
+  modalReducer: modalReducer,
+  avatarReducer: avatarReducer
 });
 
 const store = createStore(rootReducer);

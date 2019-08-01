@@ -12,7 +12,7 @@ import {
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
-import { modalUploadAvatar, modalDeleteAvatar } from "../../../store/commands";
+import { avatarReload } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
@@ -112,7 +112,7 @@ class ChangeAvatarModal extends Component {
     this.state = {
       src: null,
       oldImage: imageUrl,
-      isDisabled: false,
+      isDisabled: true,
       contentType: null,
       fileName: null,
       crop: {
@@ -135,6 +135,25 @@ class ChangeAvatarModal extends Component {
     this._isMounted = false;
   }
 
+  canSubmit = () => {
+    const { data } = this.props;
+    const { canEdit } = data;
+    const image = this.editor.getImage();
+
+    const isValid = image.width > 100 && image.height > 100;
+
+    if (canEdit && isValid) {
+      this.setState({
+        isDisabled: false
+      });
+      return true;
+    }
+    this.setState({
+      isDisabled: true
+    });
+    return false;
+  };
+
   onChangeImage = e => {
     if (this._isMounted) {
       this.setState({
@@ -147,6 +166,7 @@ class ChangeAvatarModal extends Component {
 
   onUpdateScale = e => {
     if (this._isMounted) {
+      this.canSubmit();
       let { crop } = this.state;
       crop = {
         ...crop,
@@ -177,16 +197,13 @@ class ChangeAvatarModal extends Component {
     }
 
     const { src } = this.state;
-    if (this.editor && this.props.onUploaded && src) {
-      const { fileName, contentType } = this.state;
+    if (this.editor && this.props.onAvatarReload && src) {
+      const { fileName, contentType, crop } = this.state;
+      const { scale } = crop;
       const { data } = this.props;
       const { canEdit } = data;
       const rect = this.editor.getCroppingRect();
-
-      if (!canEdit && this._isMounted) {
-        this.setState({
-          isDisabled: false
-        });
+      if (!this.canSubmit()) {
         return;
       }
 
@@ -199,21 +216,20 @@ class ChangeAvatarModal extends Component {
           width: rect.width,
           height: rect.height,
           fileName,
-          contentType
+          contentType,
+          scale
         }
       };
 
       return await uploadAvatar({ variables })
         .then(response => {
-          this.props.onUploaded({
-            avatarUrl: src
-          });
           this.props.closeModal();
           if (this._isMounted) {
             this.setState({
               isDisabled: false
             });
           }
+          this.props.onAvatarReload();
         })
         .catch(error => {
           if (this._isMounted) {
@@ -240,10 +256,27 @@ class ChangeAvatarModal extends Component {
     };
     return await deleteAvatar({ variables })
       .then(response => {
-        this.props.onDeleted();
+        this.props.onAvatarReload();
         this.props.closeUploadModal();
       })
       .catch(error => {});
+  };
+
+  onLoadSuccess = e => {
+    const { data } = this.props;
+    const { canEdit } = data;
+
+    const isValid = e.width > 100 && e.height > 100;
+
+    if (canEdit && isValid) {
+      this.setState({
+        isDisabled: false
+      });
+      return;
+    }
+    this.setState({
+      isDisabled: true
+    });
   };
 
   render() {
@@ -274,6 +307,7 @@ class ChangeAvatarModal extends Component {
                   color={[0, 0, 0, 0.3]} // RGBA
                   scale={crop.scale}
                   rotate={0}
+                  onLoadSuccess={this.onLoadSuccess}
                 />
               </ImageWrap>
               <SliderWrap>
@@ -344,11 +378,8 @@ class ChangeAvatarModal extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onUploaded: data => {
-      modalUploadAvatar(dispatch, data);
-    },
-    onDeleted: () => {
-      modalDeleteAvatar(dispatch);
+    onAvatarReload: () => {
+      avatarReload(dispatch);
     }
   };
 };

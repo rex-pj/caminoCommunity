@@ -64,6 +64,7 @@ class ImageUpload extends Component {
         <InputFile
           ref={this.fileRef}
           type="file"
+          accept=".jpg,.jpeg,.png"
           onChange={e => this.handleImageChange(e)}
         />
       </div>

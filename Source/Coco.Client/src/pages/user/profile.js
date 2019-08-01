@@ -9,7 +9,7 @@ import { GET_USER_INFO } from "../../utils/GraphQLQueries";
 import ProfileBody from "./profile-body";
 import Loading from "../../components/atoms/Loading";
 import styled from "styled-components";
-import * as modalActions from "../../store/modalActions";
+import * as avatarActions from "../../store/actions/avatarActions";
 import { ButtonIconOutlineSecondary } from "../../components/molecules/ButtonIcons";
 const ProfileAvatar = loadable(() =>
     import("../../components/organisms/User/ProfileAvatar")
@@ -84,32 +84,18 @@ class Profile extends Component {
     this._isMounted = true;
   }
 
-  async componentWillReceiveProps(nextProps) {
-    const { modalPayload } = nextProps;
-    if (
-      modalPayload &&
-      modalPayload.actionType === modalActions.AVATAR_UPLOADED
-    ) {
-      await this.avatarUploaded(modalPayload);
-    } else if (
-      modalPayload &&
-      modalPayload.actionType === modalActions.AVATAR_DELETED
-    ) {
-      await this.avatarDeleted();
+  componentWillReceiveProps(nextProps) {
+    const { avatarPayload } = nextProps;
+    if (!avatarPayload) {
+      return;
+    }
+
+    if (avatarPayload.actionType === avatarActions.AVATAR_RELOAD) {
+      if (this._isMounted) {
+        this._refetch();
+      }
     }
   }
-
-  avatarUploaded = async modalPayload => {
-    if (this._isMounted) {
-      this._refetch();
-    }
-  };
-
-  avatarDeleted = async () => {
-    if (this._isMounted) {
-      this._refetch();
-    }
-  };
 
   onToggleEditCoverMode = e => {
     if (this._isMounted) {
@@ -211,7 +197,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
   return {
-    modalPayload: state.modalReducer.payload
+    avatarPayload: state.avatarReducer.payload
   };
 };
 

@@ -1,4 +1,4 @@
-import * as notifyActions from "../notifyActions";
+import * as notifyActions from "../actions/notifyActions";
 const initialState = {
   notify: null
 };

@@ -1,5 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import { Query } from "react-apollo";
+import { connect } from "react-redux";
 import MasterLayout from "./MasterLayout";
 import { Header } from "../../organisms/Containers";
 import { GET_LOGGED_USER } from "../../../utils/GraphQLQueries";
@@ -8,9 +9,16 @@ import AuthService from "../../../services/AuthService";
 import { getLocalStorageByKey } from "../../../services/StorageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
 import PageLoading from "../../molecules/Loading/PageLoading";
+import * as avatarActions from "../../../store/actions/avatarActions";
 
-export default function({ component: Component, ...rest }) {
-  function parseLoggedUser(response) {
+class FrameLayout extends Component {
+  constructor(props) {
+    super(props);
+    this._refetch = null;
+    this._isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+  }
+
+  parseLoggedUser = response => {
     const data = AuthService.parseUserInfo(response);
 
     const user = {
@@ -22,48 +30,69 @@ export default function({ component: Component, ...rest }) {
       }
     };
     return user;
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { avatarPayload } = nextProps;
+    if (!avatarPayload || !this._refetch) {
+      return;
+    }
+
+    if (avatarPayload.actionType === avatarActions.AVATAR_RELOAD) {
+      this._refetch();
+    }
   }
 
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+  render() {
+    const { component: Component } = this.props;
+    if (this._isLogin) {
+      return (
+        <Query query={GET_LOGGED_USER}>
+          {({ loading, error, data, refetch }) => {
+            if (loading) {
+              return <PageLoading {...this.props} />;
+            }
 
-  if (isLogin) {
-    return (
-      <Query query={GET_LOGGED_USER}>
-        {({ loading, error, data }) => {
-          if (loading) {
-            return <PageLoading {...rest} />;
-          }
-
-          const user = parseLoggedUser(data);
-          return (
-            <UserContext.Provider value={user}>
-              <MasterLayout
-                {...rest}
-                component={matchProps => (
-                  <Fragment>
-                    <Header />
-                    <Component {...matchProps} />
-                  </Fragment>
-                )}
-              />
-            </UserContext.Provider>
-          );
-        }}
-      </Query>
-    );
-  } else {
-    return (
-      <UserContext.Provider value={{}}>
-        <MasterLayout
-          {...rest}
-          component={matchProps => (
-            <Fragment>
-              <Header />
-              <Component {...matchProps} />
-            </Fragment>
-          )}
-        />
-      </UserContext.Provider>
-    );
+            this._refetch = refetch;
+            const user = this.parseLoggedUser(data);
+            return (
+              <UserContext.Provider value={user}>
+                <MasterLayout
+                  {...this.props}
+                  component={matchProps => (
+                    <Fragment>
+                      <Header />
+                      <Component {...matchProps} />
+                    </Fragment>
+                  )}
+                />
+              </UserContext.Provider>
+            );
+          }}
+        </Query>
+      );
+    } else {
+      return (
+        <UserContext.Provider value={{}}>
+          <MasterLayout
+            {...this.props}
+            component={matchProps => (
+              <Fragment>
+                <Header />
+                <Component {...matchProps} />
+              </Fragment>
+            )}
+          />
+        </UserContext.Provider>
+      );
+    }
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    avatarPayload: state.avatarReducer.payload
+  };
+};
+
+export default connect(mapStateToProps)(FrameLayout);

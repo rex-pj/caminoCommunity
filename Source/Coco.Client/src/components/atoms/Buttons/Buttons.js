@@ -23,7 +23,7 @@ const ButtonPrimary = styled.button`
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryDark};
+    background-color: ${p => p.theme.color.primaryLight};
   }
 
   svg,

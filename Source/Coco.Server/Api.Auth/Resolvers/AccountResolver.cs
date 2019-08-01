@@ -21,13 +21,12 @@ namespace Api.Identity.Resolvers
             _accountManager = accountManager;
         }
 
-        public UserInfo GetLoggedUser(IWorkContext workContext)
+        public ApplicationUser GetLoggedUser(IWorkContext workContext)
         {
             try
             {
                 var currentUser = workContext.CurrentUser;
-                return UserInfoMapping.ApplicationUserToUserInfo(currentUser,
-                    workContext.CurrentUser.UserIdentityId);
+                return currentUser;
             }
             catch (Exception ex)
             {

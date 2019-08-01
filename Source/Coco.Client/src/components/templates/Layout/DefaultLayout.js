@@ -11,8 +11,8 @@ import {
 
 const Shortcut = loadable(() => import("../../organisms/Shortcut"));
 const Interesting = loadable(() => import("../../organisms/Interesting"));
-const DefaultCard = loadable(() =>
-  import("../../organisms/ProfileCard/DefaultCard")
+const LoggedInCard = loadable(() =>
+  import("../../organisms/ProfileCard/LoggedInCard")
 );
 const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
@@ -38,7 +38,7 @@ export default ({ component: Component, ...rest }) => {
           <div className="row px-lg-3">
             <div className="col col-4 col-sm-4 col-md-2 col-lg-2">
               <PageColumnPanel>
-                <DefaultCard />
+                <LoggedInCard />
               </PageColumnPanel>
               <PageColumnPanel>
                 <Shortcut />

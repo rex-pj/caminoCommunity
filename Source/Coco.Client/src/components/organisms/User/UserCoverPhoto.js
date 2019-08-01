@@ -180,6 +180,7 @@ export default class extends Component {
       contentType: null,
       fileName: null,
       src: null,
+      isDisabled: true,
       crop: {
         width: 1044,
         height: 300,
@@ -189,6 +190,24 @@ export default class extends Component {
 
     this.setEditorRef = editor => (this.editor = editor);
   }
+
+  canSubmit = () => {
+    const { canEdit } = this.props;
+    const image = this.editor.getImage();
+
+    const isValid = image.width > 1000 && image.height > 300;
+
+    if (canEdit && isValid) {
+      this.setState({
+        isDisabled: false
+      });
+      return true;
+    }
+    this.setState({
+      isDisabled: true
+    });
+    return false;
+  };
 
   turnOnUpdateMode = () => {
     this.setState({
@@ -220,6 +239,7 @@ export default class extends Component {
   };
 
   onUpdateScale = e => {
+    this.canSubmit();
     let { crop } = this.state;
     crop = {
       ...crop,
@@ -234,14 +254,11 @@ export default class extends Component {
   onUpdate = async (e, updateUserCover) => {
     const { src } = this.state;
     if (this.editor && this.props.onUploaded && src) {
-      const { fileName, contentType } = this.state;
+      const { fileName, contentType, crop } = this.state;
+      const { scale } = crop;
       const { canEdit } = this.props;
       const rect = this.editor.getCroppingRect();
-
-      if (!canEdit && this._isMounted) {
-        this.setState({
-          isDisabled: false
-        });
+      if (!this.canSubmit()) {
         return;
       }
 
@@ -254,7 +271,8 @@ export default class extends Component {
           width: rect.width,
           height: rect.height,
           fileName,
-          contentType
+          contentType,
+          scale
         }
       };
 
@@ -296,10 +314,26 @@ export default class extends Component {
       .catch(error => {});
   };
 
+  onLoadSuccess = e => {
+    const { canEdit } = this.props;
+
+    const isValid = e.width > 1000 && e.height > 300;
+
+    if (canEdit && isValid) {
+      this.setState({
+        isDisabled: false
+      });
+      return;
+    }
+    this.setState({
+      isDisabled: true
+    });
+  };
+
   render() {
     const { userInfo } = this.props;
     const { coverPhotoUrl } = userInfo;
-    const { isInUpdateMode, src, crop } = this.state;
+    const { isInUpdateMode, src, crop, isDisabled } = this.state;
 
     if (src) {
       return (
@@ -312,6 +346,7 @@ export default class extends Component {
             border={0}
             scale={crop.scale}
             rotate={0}
+            onLoadSuccess={this.onLoadSuccess}
           />
 
           <UpdateTools>
@@ -321,6 +356,7 @@ export default class extends Component {
                   <AcceptUpdateButton
                     size="sm"
                     onClick={e => this.onUpdate(e, updateUserCover)}
+                    disabled={isDisabled}
                   >
                     <FontAwesomeIcon icon="check" />
                   </AcceptUpdateButton>

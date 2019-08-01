@@ -70,6 +70,38 @@ namespace Coco.Api.Framework.Mapping
             return applicationUser;
         }
 
+        public static ApplicationUser PopulateLoggedInUser(UserLoggedInModel userModel)
+        {
+            if (userModel == null)
+            {
+                return null;
+            }
+
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                Email = userModel.Email,
+                Id = userModel.Id,
+                UserName = userModel.Email,
+                Lastname = userModel.Lastname,
+                Firstname = userModel.Firstname,
+                Password = userModel.Password,
+                PasswordHash = userModel.Password,
+                PasswordSalt = userModel.PasswordSalt,
+                CountryId = userModel.CountryId,
+                Description = userModel.Description,
+                DisplayName = userModel.DisplayName,
+                GenderId = userModel.GenderId,
+                IsActived = userModel.IsActived,
+                StatusId = userModel.StatusId,
+                Expiration = userModel.Expiration,
+                AuthenticationToken = userModel.AuthenticationToken,
+                AvatarUrl = userModel.AvatarUrl,
+                CoverPhotoUrl = userModel.CoverPhotoUrl
+            };
+
+            return applicationUser;
+        }
+
         public static UserModel PopulateUserEntity(ApplicationUser loggedUser)
         {
             UserModel userModel = new UserModel()

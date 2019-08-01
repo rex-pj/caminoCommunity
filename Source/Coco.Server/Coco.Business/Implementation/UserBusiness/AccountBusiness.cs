@@ -96,7 +96,6 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-
         public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
         {
             if (model.PropertyName == null)
@@ -160,6 +159,16 @@ namespace Coco.Business.Implementation.UserBusiness
             {
                 throw e;
             }
+        }
+
+        public UserLoggedInModel GetLoggedIn(long id)
+        {
+            var user = _userRepository
+                .GetAsNoTracking(x => x.Id == id)
+                .Select(UserMapping.SelectorUserLoggedIn)
+                .FirstOrDefault();
+
+            return user;
         }
 
         public UserModel Find(long id)

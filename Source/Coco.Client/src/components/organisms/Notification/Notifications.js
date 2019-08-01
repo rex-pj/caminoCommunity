@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import NotifyItem from "./NotifyItem";
 import { connect } from "react-redux";
-import * as actionTypes from "../../../store/notifyActions";
+import * as actionTypes from "../../../store/actions/notifyActions";
 
 const Root = styled.div`
   position: absolute;
