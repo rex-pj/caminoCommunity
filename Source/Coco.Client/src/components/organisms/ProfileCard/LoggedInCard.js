@@ -40,8 +40,10 @@ export default class extends Component {
     return (
       <Root>
         <UserContext.Consumer>
-          {({ isLogin, userInfo }) =>
-            isLogin ? <Card userInfo={userInfo} menuList={menuList} /> : null
+          {({ user }) =>
+            user && user.isLogin ? (
+              <Card userInfo={user.userInfo} menuList={menuList} />
+            ) : null
           }
         </UserContext.Consumer>
       </Root>

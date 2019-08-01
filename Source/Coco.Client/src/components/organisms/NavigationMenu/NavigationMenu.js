@@ -48,9 +48,9 @@ const AuthButton = styled(RouterLinkButton)`
 export default props => {
   return (
     <UserContext.Consumer>
-      {({ isLogin, userInfo }) =>
-        isLogin ? (
-          <ProfileNavigationMenu userInfo={userInfo} />
+      {({ user }) =>
+        user && user.isLogin ? (
+          <ProfileNavigationMenu userInfo={user.userInfo} />
         ) : (
           <List className={props.className}>
             <ListItem>

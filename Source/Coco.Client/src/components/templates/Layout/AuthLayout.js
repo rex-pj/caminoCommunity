@@ -9,8 +9,8 @@ function AuthLayout({ component: Component, ...rest }) {
       {...rest}
       component={matchProps => (
         <UserContext.Consumer>
-          {({ isLogin }) =>
-            isLogin ? (
+          {({ user }) =>
+            user && user.isLogin ? (
               <AuthBanner
                 icon="exclamation-triangle"
                 title="Bạn đã đăng nhập rồi"

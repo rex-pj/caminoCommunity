@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import { Query } from "react-apollo";
-import { connect } from "react-redux";
 import MasterLayout from "./MasterLayout";
 import { Header } from "../../organisms/Containers";
 import { GET_LOGGED_USER } from "../../../utils/GraphQLQueries";
@@ -9,13 +8,13 @@ import AuthService from "../../../services/AuthService";
 import { getLocalStorageByKey } from "../../../services/StorageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
 import PageLoading from "../../molecules/Loading/PageLoading";
-import * as avatarActions from "../../../store/actions/avatarActions";
 
 class FrameLayout extends Component {
   constructor(props) {
     super(props);
     this._refetch = null;
     this._isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+    this.userObj = {};
   }
 
   parseLoggedUser = response => {
@@ -29,19 +28,11 @@ class FrameLayout extends Component {
         ...data
       }
     };
-    return user;
+    this.userObj = {
+      user: user,
+      relogin: this._refetch
+    };
   };
-
-  componentWillReceiveProps(nextProps) {
-    const { avatarPayload } = nextProps;
-    if (!avatarPayload || !this._refetch) {
-      return;
-    }
-
-    if (avatarPayload.actionType === avatarActions.AVATAR_RELOAD) {
-      this._refetch();
-    }
-  }
 
   render() {
     const { component: Component } = this.props;
@@ -54,9 +45,9 @@ class FrameLayout extends Component {
             }
 
             this._refetch = refetch;
-            const user = this.parseLoggedUser(data);
+            this.parseLoggedUser(data);
             return (
-              <UserContext.Provider value={user}>
+              <UserContext.Provider value={this.userObj}>
                 <MasterLayout
                   {...this.props}
                   component={matchProps => (
@@ -89,10 +80,4 @@ class FrameLayout extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    avatarPayload: state.avatarReducer.payload
-  };
-};
-
-export default connect(mapStateToProps)(FrameLayout);
+export default FrameLayout;

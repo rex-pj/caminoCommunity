@@ -14,6 +14,7 @@ import {
   DELETE_USER_COVER
 } from "../../../utils/GraphQLQueries";
 import NoImage from "../../atoms/NoImages/no-image";
+import AlertPopover from "../../molecules/Popovers/AlertPopover";
 
 const Wrap = styled.div`
     position: relative;
@@ -78,11 +79,24 @@ const Wrap = styled.div`
       color: ${p => p.theme.color.dark};
     }
   `,
-  DeleteButton = styled(ButtonOutlineNormal)`
+  DeleteConfirm = styled.div`
     position: absolute;
     bottom: ${p => p.theme.size.distance};
     right: ${p => p.theme.size.distance};
     z-index: 4;
+  `,
+  DeletePopoverConfirm = styled(AlertPopover)`
+    right: 0;
+    min-width: 200px;
+
+    ::after {
+      left: auto;
+      right: ${p => p.theme.size.distance};
+    }
+
+    button:first-child {
+      margin-right: ${p => p.theme.size.exTiny};
+    }
   `,
   Tools = styled.div`
     position: absolute;
@@ -185,7 +199,8 @@ export default class extends Component {
         width: 1044,
         height: 300,
         scale: 1
-      }
+      },
+      showDeletePopover: false
     };
 
     this.setEditorRef = editor => (this.editor = editor);
@@ -289,7 +304,7 @@ export default class extends Component {
     }
   };
 
-  delete = async (e, deleteCover) => {
+  delete = async deleteCover => {
     const { canEdit } = this.props;
 
     if (!canEdit) {
@@ -333,7 +348,13 @@ export default class extends Component {
   render() {
     const { userInfo } = this.props;
     const { coverPhotoUrl } = userInfo;
-    const { isInUpdateMode, src, crop, isDisabled } = this.state;
+    const {
+      isInUpdateMode,
+      src,
+      crop,
+      isDisabled,
+      showDeletePopover
+    } = this.state;
 
     if (src) {
       return (
@@ -397,15 +418,23 @@ export default class extends Component {
                 <FontAwesomeIcon icon="times" />
               </CancelEditButton>
             </Tools>
-            <Mutation mutation={DELETE_USER_COVER}>
-              {deleteCover => {
-                return (
-                  <DeleteButton onClick={e => this.delete(e, deleteCover)}>
-                    <FontAwesomeIcon icon="trash-alt" />
-                  </DeleteButton>
-                );
-              }}
-            </Mutation>
+            <DeleteConfirm>
+              <Mutation mutation={DELETE_USER_COVER}>
+                {deleteCover => {
+                  return (
+                    <DeletePopoverConfirm
+                      isShown={showDeletePopover}
+                      target="DeleteCover"
+                      title="Bạn có muốn xóa ảnh không?"
+                      onExecute={e => this.delete(deleteCover)}
+                    />
+                  );
+                }}
+              </Mutation>
+              <ButtonOutlineNormal id="DeleteCover" size="sm">
+                <FontAwesomeIcon icon="trash-alt" />
+              </ButtonOutlineNormal>
+            </DeleteConfirm>
           </Fragment>
         ) : (
           <Fragment>

@@ -12,7 +12,6 @@ const Wrap = styled(PanelDefault)`
   left: ${p => (p.left ? p.left + "px" : "auto")};
   top: ${p => (p.top ? p.top + "px" : "auto")};
   right: ${p => (p.right ? p.right + "px" : "auto")};
-  bottom: ${p => (p.bottom ? p.bottom + "px" : "auto")};
   background-color: ${p => p.theme.color.warningLight};
 
   > ${PanelHeading} {
@@ -96,13 +95,13 @@ class AlertPopover extends Component {
 
   render() {
     const { isShown, left } = this.state;
-    const { title } = this.props;
+    const { title, className } = this.props;
     if (!isShown) {
       return null;
     }
 
     return (
-      <Wrap left={left} bottom="100%">
+      <Wrap left={left} bottom="100%" className={className}>
         <PanelHeading>{title}</PanelHeading>
         <PanelBody>
           <ButtonOutlineNormal size="sm" onClick={this.onClose}>

@@ -33,7 +33,7 @@ function closeModal(dispatch) {
   });
 }
 
-function avatarUploaded(dispatch, data) {
+function avatarUpdated(dispatch, data) {
   dispatch({
     type: avatarActions.AVATAR_UPLOADED,
     payload: {
@@ -58,7 +58,7 @@ export {
   raiseError,
   openModal,
   closeModal,
-  avatarUploaded,
+  avatarUpdated,
   avatarDeleted,
   avatarReload
 };

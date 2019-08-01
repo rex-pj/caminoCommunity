@@ -8,6 +8,7 @@ import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
 const DropdownGroup = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 2;
 `;
 
 const ButtonCaret = styled(ButtonTransparent)`

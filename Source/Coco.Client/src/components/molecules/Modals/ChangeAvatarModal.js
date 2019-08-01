@@ -12,7 +12,7 @@ import {
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
-import { avatarReload } from "../../../store/commands";
+import { avatarUpdated } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
@@ -197,7 +197,7 @@ class ChangeAvatarModal extends Component {
     }
 
     const { src } = this.state;
-    if (this.editor && this.props.onAvatarReload && src) {
+    if (this.editor && this.props.onAvatarUpdated && src) {
       const { fileName, contentType, crop } = this.state;
       const { scale } = crop;
       const { data } = this.props;
@@ -229,7 +229,7 @@ class ChangeAvatarModal extends Component {
               isDisabled: false
             });
           }
-          this.props.onAvatarReload();
+          this.props.onAvatarUpdated();
         })
         .catch(error => {
           if (this._isMounted) {
@@ -256,8 +256,8 @@ class ChangeAvatarModal extends Component {
     };
     return await deleteAvatar({ variables })
       .then(response => {
-        this.props.onAvatarReload();
-        this.props.closeUploadModal();
+        this.props.onAvatarUpdated();
+        this.props.closeModal();
       })
       .catch(error => {});
   };
@@ -378,8 +378,8 @@ class ChangeAvatarModal extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAvatarReload: () => {
-      avatarReload(dispatch);
+    onAvatarUpdated: () => {
+      avatarUpdated(dispatch);
     }
   };
 };

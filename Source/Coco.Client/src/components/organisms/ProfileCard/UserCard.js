@@ -6,6 +6,7 @@ import Menubar from "./CardToolbar";
 import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoImage from "../../atoms/NoImages/no-image";
 
 const Root = styled.div`
   position: relative;
@@ -25,7 +26,7 @@ const CoverWrapper = styled.div`
 const Username = styled.h3`
   margin-bottom: 0;
   position: absolute;
-  bottom: calc(${p => p.theme.size.normal} + 10px);
+  bottom: calc(${p => p.theme.size.normal} + 15px);
   left: ${p => p.theme.size.exSmall};
   z-index: 1;
   line-height: 1;
@@ -56,6 +57,10 @@ const EmptyAvatar = styled(NoAvatar)`
   left: 15px;
   border: 5px solid ${p => p.theme.rgbaColor.cyan};
   z-index: 1;
+`;
+
+const EmptyCover = styled(NoImage)`
+  height: 60px;
 `;
 
 const BoxShadowBar = styled.div`
@@ -92,7 +97,9 @@ export default function(props) {
                 userInfo.coverPhotoUrl
               }`}
             />
-          ) : null}
+          ) : (
+            <EmptyCover />
+          )}
           <Overlay />
         </CoverWrapper>
         <Username>

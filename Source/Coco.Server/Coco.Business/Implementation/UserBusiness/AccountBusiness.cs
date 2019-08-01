@@ -123,6 +123,11 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(model.PropertyName);
             }
 
+            if (userInfo.User != null)
+            {
+                userInfo.User.UpdatedDate = DateTime.Now;
+                userInfo.User.UpdatedById = userInfo.Id;
+            }
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _identityContext.SaveChangesAsync();
 

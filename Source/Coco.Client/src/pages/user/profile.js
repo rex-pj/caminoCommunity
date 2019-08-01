@@ -2,13 +2,15 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Query } from "react-apollo";
+import styled from "styled-components";
 import loadable from "@loadable/component";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { defaultClient } from "../../utils/GraphQLClient";
 import { GET_USER_INFO } from "../../utils/GraphQLQueries";
 import ProfileBody from "./profile-body";
 import Loading from "../../components/atoms/Loading";
-import styled from "styled-components";
+import UserContext from "../../utils/Context/UserContext";
+
 import * as avatarActions from "../../store/actions/avatarActions";
 import { ButtonIconOutlineSecondary } from "../../components/molecules/ButtonIcons";
 const ProfileAvatar = loadable(() =>
@@ -74,6 +76,7 @@ class Profile extends Component {
     this._canEdit = false;
     this._refetch = null;
     this._baseUrl = "/profile";
+    this._updateTimeout = null;
 
     this.state = {
       isEditCoverMode: false
@@ -82,6 +85,7 @@ class Profile extends Component {
 
   async componentDidMount() {
     this._isMounted = true;
+    this._updateTimeout = null;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,9 +94,15 @@ class Profile extends Component {
       return;
     }
 
-    if (avatarPayload.actionType === avatarActions.AVATAR_RELOAD) {
+    if (avatarPayload.actionType === avatarActions.AVATAR_UPLOADED) {
       if (this._isMounted) {
         this._refetch();
+
+        this._updateTimeout = setTimeout(() => {
+          if (this.context.relogin) {
+            this.context.relogin();
+          }
+        }, 300);
       }
     }
   }
@@ -108,6 +118,12 @@ class Profile extends Component {
   userCoverUploaded = () => {
     if (this._isMounted) {
       this._refetch();
+
+      this._updateTimeout = setTimeout(() => {
+        if (this.context.relogin) {
+          this.context.relogin();
+        }
+      }, 300);
     }
   };
 
@@ -200,5 +216,7 @@ const mapStateToProps = state => {
     avatarPayload: state.avatarReducer.payload
   };
 };
+
+Profile.contextType = UserContext;
 
 export default connect(mapStateToProps)(withRouter(Profile));
