@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
-import { ButtonOutlineNormal } from "../../atoms/Buttons/OutlineButtons";
+import {
+  ButtonOutlineNormal,
+  ButtonOutlineSecondary
+} from "../../atoms/Buttons/OutlineButtons";
 import { Mutation } from "react-apollo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
@@ -67,16 +70,16 @@ const Wrap = styled.div`
   `,
   EditButton = styled(ButtonTransparent)`
     position: absolute;
-    border: 0;
-    background-color: ${p => p.theme.rgbaColor.darker};
-    left: ${p => p.theme.size.distance};
+    border-radius: ${p => p.theme.borderRadius.large};
+    border: 1px solid ${p => p.theme.rgbaColor.dark};
+    background-color: ${p => p.theme.rgbaColor.darkLigth};
+    color: ${p => p.theme.color.white};
+    right: ${p => p.theme.size.distance};
     top: ${p => p.theme.size.distance};
     z-index: 2;
 
     :hover {
-      border: 1px solid ${p => p.theme.color.light};
-      background-color: ${p => p.theme.color.lighter};
-      color: ${p => p.theme.color.dark};
+      background-color: ${p => p.theme.rgbaColor.darker};
     }
   `,
   DeleteConfirm = styled.div`
@@ -123,7 +126,7 @@ const Wrap = styled.div`
       height: ${p => p.theme.size.large};
       font-size: ${p => p.theme.fontSize.large};
       color: ${p => p.theme.color.lighter};
-      border-radius: ${p => p.theme.borderRadius.normal};
+      border-radius: ${p => p.theme.borderRadius.medium};
       padding: ${p => p.theme.size.exSmall} 0;
 
       :hover {
@@ -148,6 +151,7 @@ const Wrap = styled.div`
     color: ${p => p.theme.color.lighter};
     margin-left: ${p => p.theme.size.exTiny};
     vertical-align: middle;
+    border-radius: ${p => p.theme.borderRadius.medium};
 
     svg,
     path {
@@ -431,9 +435,9 @@ export default class extends Component {
                   );
                 }}
               </Mutation>
-              <ButtonOutlineNormal id="DeleteCover" size="sm">
+              <ButtonOutlineSecondary id="DeleteCover" size="sm">
                 <FontAwesomeIcon icon="trash-alt" />
-              </ButtonOutlineNormal>
+              </ButtonOutlineSecondary>
             </DeleteConfirm>
           </Fragment>
         ) : (

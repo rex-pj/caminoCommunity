@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
@@ -26,7 +27,6 @@ const DropdownList = styled(Dropdown)`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
   min-width: calc(${p => p.theme.size.large} * 3);
   border-radius: ${p => p.theme.borderRadius.normal};
-  border: 1px solid ${p => p.theme.color.lighter};
   padding: ${p => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
@@ -105,9 +105,15 @@ export default class extends Component {
           <DropdownList>
             {dropdown.map((item, index) => (
               <ModuleMenuListItem key={index}>
-                <a href={item.url}>
-                  <span>{item.name}</span>
-                </a>
+                {!!item.isNav ? (
+                  <Link to={item.url}>
+                    <span>{item.name}</span>
+                  </Link>
+                ) : (
+                  <a href={item.url}>
+                    <span>{item.name}</span>
+                  </a>
+                )}
               </ModuleMenuListItem>
             ))}
           </DropdownList>

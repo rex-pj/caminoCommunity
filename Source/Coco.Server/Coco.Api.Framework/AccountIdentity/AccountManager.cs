@@ -395,13 +395,13 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 await UpdatePasswordHash(user, password, validatePassword: false);
                 UpdateUserAuthenticate(user);
-                var result = await UpdateUserAsync(user);
+                var result = await UpdateAuthenticationAsync(user);
                 return result;
             }
             else if (verifyResult == PasswordVerificationResult.Success)
             {
                 UpdateUserAuthenticate(user);
-                var result = await UpdateUserAsync(user);
+                var result = await UpdateAuthenticationAsync(user);
                 return result;
             }
 
@@ -414,7 +414,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<ApiResult> UpdateUserAsync(ApplicationUser user)
+        protected virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
         {
             var result = await ValidateUserAsync(user);
             if (!result.IsSuccess)
@@ -422,7 +422,7 @@ namespace Coco.Api.Framework.AccountIdentity
                 return ApiResult.Failed(result.Errors.ToArray());
             }
 
-            return await UserStore.UpdateAsync(user, CancellationToken);
+            return await UserStore.UpdateAuthenticationAsync(user, CancellationToken);
         }
 
         private void UpdateUserAuthenticate(ApplicationUser user)

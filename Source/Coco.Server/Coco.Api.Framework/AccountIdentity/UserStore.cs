@@ -90,7 +90,7 @@ namespace Coco.Api.Framework.AccountIdentity
         /// <param name="user">The user to update.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -103,7 +103,7 @@ namespace Coco.Api.Framework.AccountIdentity
             {
                 var userModel = GetUserEntity(user);
 
-                var result = await _accountBusiness.UpdateAsync(userModel);
+                var result = await _accountBusiness.UpdateAuthenticationAsync(userModel);
                 string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
                 return new ApiResult<LoginResult>(true)

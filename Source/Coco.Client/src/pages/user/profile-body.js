@@ -47,6 +47,28 @@ class ProfileBody extends Component {
                 )}
               />
               <Timeline
+                path={[`${baseUrl}/:userId/update`]}
+                component={props => (
+                  <AsyncTabContent
+                    {...props}
+                    userId={userId}
+                    userUrl={`${baseUrl}/${userId}`}
+                    page="./user-update"
+                  />
+                )}
+              />
+              <Timeline
+                path={[`${baseUrl}/:userId/security`]}
+                component={props => (
+                  <AsyncTabContent
+                    {...props}
+                    userId={userId}
+                    userUrl={`${baseUrl}/${userId}`}
+                    page="./user-security"
+                  />
+                )}
+              />
+              <Timeline
                 path={[
                   `${baseUrl}/:userId/posts`,
                   `${baseUrl}/:userId/posts/page/:pageNumber`

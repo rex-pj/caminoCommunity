@@ -15,10 +15,14 @@ namespace Coco.Business.Implementation.UserBusiness
 {
     public class AccountBusiness : IAccountBusiness
     {
+        #region Fields/Properties
         private readonly IDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
+        #endregion
+
+        #region Ctor
         public AccountBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserInfo> userInfoRepository)
@@ -28,6 +32,7 @@ namespace Coco.Business.Implementation.UserBusiness
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
         }
+        #endregion
 
         #region CRUD
         public long Add(UserModel userModel)
@@ -58,7 +63,7 @@ namespace Coco.Business.Implementation.UserBusiness
             _identityContext.SaveChanges();
         }
 
-        public async Task<UserModel> UpdateAsync(UserModel model)
+        public async Task<UserModel> UpdateAuthenticationAsync(UserModel model)
         {
             if (model.Id <= 0)
             {
@@ -67,28 +72,11 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository.FindAsync(model.Id);
 
-            user.IsActived = model.IsActived;
-            user.StatusId = model.StatusId;
-            user.UpdatedById = model.UpdatedById;
+            user.UpdatedById = model.Id;
             user.UpdatedDate = DateTime.Now;
             user.AuthenticatorToken = model.AuthenticationToken;
             user.SecurityStamp = model.SecurityStamp;
             user.Expiration = model.Expiration;
-            user.DisplayName = model.DisplayName;
-            user.Firstname = model.Firstname;
-            user.Lastname = model.Lastname;
-
-            if (user.UserInfo == null)
-            {
-                throw new ArgumentNullException(nameof(user.UserInfo));
-            }
-
-            user.UserInfo.Address = model.Address;
-            user.UserInfo.BirthDate = model.BirthDate;
-            user.UserInfo.CountryId = model.CountryId;
-            user.UserInfo.Description = model.Description;
-            user.UserInfo.GenderId = model.GenderId;
-            user.UserInfo.PhoneNumber = model.PhoneNumber;
 
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
@@ -135,6 +123,7 @@ namespace Coco.Business.Implementation.UserBusiness
         }
         #endregion
 
+        #region GET
         public async Task<UserModel> FindUserByEmail(string email, bool includeInActived = false)
         {
             email = email.ToLower();
@@ -205,5 +194,6 @@ namespace Coco.Business.Implementation.UserBusiness
 
             return existUser;
         }
+        #endregion
     }
 }

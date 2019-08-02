@@ -77,19 +77,7 @@ const UnserInfoWWithLabel = props => {
 
 export default class extends Component {
   async onEditable(e, updateUserInfoItem) {
-    const { canEdit } = this.props;
-    if (updateUserInfoItem) {
-      return await updateUserInfoItem({
-        variables: {
-          criterias: {
-            key: e.primaryKey,
-            value: e.value,
-            propertyName: e.propertyName,
-            canEdit
-          }
-        }
-      });
-    }
+    return await this.props.onEdited(e, updateUserInfoItem);
   }
 
   render() {
