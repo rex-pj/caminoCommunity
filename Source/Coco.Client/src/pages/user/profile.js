@@ -196,7 +196,7 @@ class Profile extends Component {
                 </h2>
               </CoverPageBlock>
               <CoverNav>
-                <ProfileNavigation userId={userId} />
+                <ProfileNavigation userId={userId} baseUrl={this._baseUrl} />
               </CoverNav>
               <ProfileBody
                 userInfo={userInfo}

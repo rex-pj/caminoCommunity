@@ -38,19 +38,28 @@ const UserDropdown = styled(DropdownButton)`
 
 export default (class extends Component {
   render() {
-    const { className, userId } = this.props;
+    const { className, userId, baseUrl } = this.props;
     return (
       <Root>
         <div className="row">
           <div className="col-auto mr-auto">
             <HorizontalList className={className}>
               <ListItem>
-                <NavLinkActived {...this.props} userId={userId}>
+                <NavLinkActived
+                  {...this.props}
+                  userId={userId}
+                  baseUrl={baseUrl}
+                >
                   Tất cả
                 </NavLinkActived>
               </ListItem>
               <ListItem>
-                <NavLinkActived pageNav="posts" {...this.props} userId={userId}>
+                <NavLinkActived
+                  pageNav="posts"
+                  {...this.props}
+                  userId={userId}
+                  baseUrl={baseUrl}
+                >
                   Bài Viết
                 </NavLinkActived>
               </ListItem>
@@ -64,7 +73,12 @@ export default (class extends Component {
                 </NavLinkActived>
               </ListItem>
               <ListItem>
-                <NavLinkActived pageNav="farms" {...this.props} userId={userId}>
+                <NavLinkActived
+                  pageNav="farms"
+                  {...this.props}
+                  userId={userId}
+                  baseUrl={baseUrl}
+                >
                   Nông Trại
                 </NavLinkActived>
               </ListItem>
@@ -78,7 +92,12 @@ export default (class extends Component {
                 </NavLinkActived>
               </ListItem>
               <ListItem>
-                <NavLinkActived pageNav="about" {...this.props} userId={userId}>
+                <NavLinkActived
+                  pageNav="about"
+                  {...this.props}
+                  userId={userId}
+                  baseUrl={baseUrl}
+                >
                   Giới thiệu
                 </NavLinkActived>
               </ListItem>
@@ -88,9 +107,16 @@ export default (class extends Component {
             <UserDropdown
               icon="ellipsis-v"
               dropdown={[
-                { url: "", name: "Cập nhật thông tin cá nhân" },
-                { url: "", name: "Đổi email" },
-                { url: "", name: "Đổi mật khẩu" }
+                {
+                  url: `${baseUrl}/${userId}/update`,
+                  name: "Cập nhật thông tin cá nhân",
+                  isNav: true
+                },
+                {
+                  url: `${baseUrl}/${userId}/security`,
+                  name: "Bảo mật",
+                  isNav: true
+                }
               ]}
             />
           </div>

@@ -9,6 +9,21 @@ import { defaultClient } from "../../utils/GraphQLClient";
 
 export default withRouter(
   class extends Component {
+    async onEdited(e, updateUserInfoItem, canEdit) {
+      if (updateUserInfoItem) {
+        return await updateUserInfoItem({
+          variables: {
+            criterias: {
+              key: e.primaryKey,
+              value: e.value,
+              propertyName: e.propertyName,
+              canEdit
+            }
+          }
+        });
+      }
+    }
+
     render() {
       const { userId } = this.props;
       return (
@@ -33,7 +48,15 @@ export default withRouter(
             const { result, accessMode } = fullUserInfo;
             const canEdit = accessMode === "CAN_EDIT";
 
-            return <About userInfo={result} canEdit={canEdit} />;
+            return (
+              <About
+                onEdited={(e, updateUserInfoItem) =>
+                  this.onEdited(e, updateUserInfoItem, canEdit)
+                }
+                userInfo={result}
+                canEdit={canEdit}
+              />
+            );
           }}
         </Query>
       );
