@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Contracts;
+﻿using Coco.Api.Framework.UserIdentity.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -23,14 +23,14 @@ namespace Coco.Api.Framework.Attributes
             #region Fields
 
             private readonly bool _ignoreFilter;
-            private readonly IWorkContext _workContext;
+            private readonly ISessionContext _sessionContext;
 
             #endregion
 
-            public AuthenticationFilter(IWorkContext workContext, bool ignoreFilter = true)
+            public AuthenticationFilter(ISessionContext sessionContext, bool ignoreFilter = true)
             {
                 this._ignoreFilter = ignoreFilter;
-                _workContext = workContext;
+                _sessionContext = sessionContext;
             }
 
             public void OnAuthorization(AuthorizationFilterContext filterContext)
@@ -54,7 +54,7 @@ namespace Coco.Api.Framework.Attributes
                 //there is AuthorizeLoggedUserFilter, so check access
                 if (filterContext.Filters.Any(filter => filter is AuthenticationFilter))
                 {
-                    var user = _workContext.CurrentUser;
+                    var user = _sessionContext.CurrentUser;
                     if (user == null)
                     {
                         filterContext.Result = new ForbidResult();

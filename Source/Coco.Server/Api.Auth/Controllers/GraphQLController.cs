@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Contracts;
+﻿using Coco.Api.Framework.UserIdentity.Contracts;
 using Coco.Api.Framework.Attributes;
 using Coco.Api.Framework.Controllers;
 using GraphQL;
@@ -12,8 +12,8 @@ namespace Api.Identity.Controllers
     [AuthenticationUser]
     public class GraphQLController : GraphQLBaseController
     {
-        public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter, IWorkContext workContext) :
-            base(schema, documentExecuter, workContext)
+        public GraphQLController(ISchema schema, IDocumentExecuter documentExecuter, ISessionContext sessionContext) :
+            base(schema, documentExecuter, sessionContext)
         {
         }
     }

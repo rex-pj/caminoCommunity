@@ -5,7 +5,7 @@ using Api.Public.Mutations;
 using Api.Public.Queries;
 using Api.Public.Resolvers;
 using Coco.Api.Framework;
-using Coco.Api.Framework.AccountIdentity.Entities;
+using Coco.Api.Framework.UserIdentity.Entities;
 using Coco.Business;
 using Coco.Contract;
 using GraphiQl;
@@ -79,12 +79,12 @@ namespace Api.Public
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
-            services.AddSingleton<AccountResolver>()
+            services.AddSingleton<UserResolver>()
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
                 .AddSingleton<RegisterInputType>()
                 .AddSingleton<SigninInputType>()
-                .AddSingleton<AccountMutation>()
-                .AddSingleton<AccountQuery>()
+                .AddSingleton<UserMutation>()
+                .AddSingleton<UserQuery>()
                 .AddSingleton<ListGraphType>()
                 .AddSingleton<RegisterResultType>()
                 .AddSingleton<SigninResultType>()
@@ -93,7 +93,7 @@ namespace Api.Public
             var sp = services.BuildServiceProvider();
 
             services
-                .AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+                .AddSingleton<ISchema>(new UserSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
         }
 

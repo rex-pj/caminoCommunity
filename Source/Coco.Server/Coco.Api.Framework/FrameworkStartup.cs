@@ -1,8 +1,10 @@
-﻿using Coco.Api.Framework.AccountIdentity;
+﻿using Coco.Api.Framework.UserIdentity;
 using Coco.Api.Framework.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Coco.Api.Framework.AccountIdentity.Contracts;
+using Coco.Api.Framework.UserIdentity.Contracts;
 using Microsoft.AspNetCore.Http;
+using Coco.Api.Framework.UserIdentity.Validators;
+using Coco.Api.Framework.UserIdentity.Stores;
 
 namespace Coco.Api.Framework
 {
@@ -14,17 +16,15 @@ namespace Coco.Api.Framework
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>()
                 .AddTransient<IUserValidator<ApplicationUser>, UserValidator>()
-                .AddTransient<IAccountManager<ApplicationUser>, AccountManager>()
+                .AddTransient<IUserManager<ApplicationUser>, UserManager>()
                 .AddTransient<ILoginManager<ApplicationUser>, LoginManager>()
                 .AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
                 .AddTransient<IUserStore<ApplicationUser>, UserStore>()
                 .AddTransient<IUserPhotoStore<ApplicationUser>, UserPhotoStore>()
                 .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
-                .AddTransient<ILookupProtectorKeyRing, DefaultKeyRing>()
-                .AddTransient<ILookupProtector, SillyEncryptor>()
                 .AddTransient<ITextCrypter, TextCrypter>()
-                .AddScoped<IWorkContext, WorkContext>();
+                .AddScoped<ISessionContext, SessionContext>();
         }
     }
 }

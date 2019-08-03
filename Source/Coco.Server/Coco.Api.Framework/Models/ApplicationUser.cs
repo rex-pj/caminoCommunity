@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Entities;
+﻿using Coco.Api.Framework.UserIdentity.Entities;
 using System;
 
 namespace Coco.Api.Framework.Models

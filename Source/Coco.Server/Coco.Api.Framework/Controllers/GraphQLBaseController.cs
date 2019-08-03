@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.AccountIdentity.Contracts;
+﻿using Coco.Api.Framework.UserIdentity.Contracts;
 using Coco.Api.Framework.GraphQLQueries;
 using GraphQL;
 using GraphQL.Types;
@@ -15,14 +15,14 @@ namespace Coco.Api.Framework.Controllers
     {
         protected readonly ISchema _schema;
         protected readonly IDocumentExecuter _documentExecuter;
-        protected readonly IWorkContext _workContext;
+        protected readonly ISessionContext _sessionContext;
 
-        public GraphQLBaseController(ISchema schema, IDocumentExecuter documentExecuter, IWorkContext workContext) :
+        public GraphQLBaseController(ISchema schema, IDocumentExecuter documentExecuter, ISessionContext sessionContext) :
             base()
         {
             _schema = schema;
             _documentExecuter = documentExecuter;
-            _workContext = workContext;
+            _sessionContext = sessionContext;
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace Coco.Api.Framework.Controllers
                 Schema = _schema,
                 Query = query.Query,
                 Inputs = inputs,
-                UserContext = _workContext
+                UserContext = _sessionContext
             };
 
             var result = await _documentExecuter.ExecuteAsync(executionOptions);

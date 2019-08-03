@@ -1,5 +1,5 @@
 ﻿using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.Account;
+using Coco.Entities.Model.User;
 using System;
 using System.Linq.Expressions;
 

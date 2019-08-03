@@ -9,7 +9,7 @@ namespace Coco.Api.Framework.Commons.Helpers
 {
     public static class HttpHelper
     {
-        public static WorkContextHeaders GetAuthorizationHeaders(HttpContext context)
+        public static SessionContextHeaders GetAuthorizationHeaders(HttpContext context)
         {
             var httpContext = context as DefaultHttpContext;
             var httpHeaders = httpContext.Request.Headers as HttpRequestHeaders;
@@ -18,7 +18,7 @@ namespace Coco.Api.Framework.Commons.Helpers
             var userIdentityIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
             var userHashedId = userIdentityIds.FirstOrDefault();
 
-            var headerParams = new WorkContextHeaders()
+            var headerParams = new SessionContextHeaders()
             {
                 AuthenticationToken = authenticationToken,
                 UserIdentityId = userHashedId

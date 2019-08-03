@@ -12,7 +12,7 @@ import {
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
-import { avatarUpdated } from "../../../store/commands";
+import { avatarUpdated, raiseError } from "../../../store/commands";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
@@ -236,6 +236,9 @@ class ChangeAvatarModal extends Component {
             this.setState({
               isDisabled: false
             });
+            this.props.onRaiseError(
+              "Có lỗi xảy ra khi cập nhật, vui lòng thử lại!"
+            );
           }
         });
     }
@@ -259,7 +262,11 @@ class ChangeAvatarModal extends Component {
         this.props.onAvatarUpdated();
         this.props.closeModal();
       })
-      .catch(error => {});
+      .catch(error => {
+        this.props.onRaiseError(
+          "Có lỗi xảy ra khi xóa hình này, vui lòng thử lại!"
+        );
+      });
   };
 
   onLoadSuccess = e => {
@@ -380,6 +387,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onAvatarUpdated: () => {
       avatarUpdated(dispatch);
+    },
+    onRaiseError: (title, description, url) => {
+      raiseError(dispatch, title, description, url);
     }
   };
 };
