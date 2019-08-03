@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Model.Account;
+﻿using Coco.Entities.Model.User;
 using Coco.Entities.Model.General;
 using System.Threading.Tasks;
 

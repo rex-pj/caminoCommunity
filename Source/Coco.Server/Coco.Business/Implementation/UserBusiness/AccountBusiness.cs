@@ -3,7 +3,7 @@ using Coco.Business.Mapping;
 using Coco.Business.ValidationStrategies;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.Account;
+using Coco.Entities.Model.User;
 using Coco.Entities.Model.General;
 using Coco.IdentityDAL;
 using Microsoft.EntityFrameworkCore;

@@ -60,16 +60,16 @@ namespace Api.Identity
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
-            services.AddSingleton<AccountResolver>()
+            services.AddSingleton<UserResolver>()
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<AccountMutation>()
-                .AddSingleton<AccountQuery>()
+                .AddSingleton<UserMutation>()
+                .AddSingleton<UserQuery>()
                 .AddSingleton<ListGraphType>();
 
             var sp = services.BuildServiceProvider();
 
             services
-                .AddSingleton<ISchema>(new AccountSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+                .AddSingleton<ISchema>(new UserSchema(new FuncDependencyResolver(type => sp.GetService(type))));
             #endregion
         }
 

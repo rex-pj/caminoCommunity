@@ -1,5 +1,6 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.ValidationStrategies;
+using Coco.Common.Exceptions;
 using Coco.Common.Utils;
 using Coco.Contract;
 using Coco.Entities.Domain.Dbo;
@@ -60,11 +61,11 @@ namespace Coco.Business.Implementation.UserBusiness
 
             if (!canUpdate && model.UserPhotoType == UserPhotoTypeEnum.Avatar)
             {
-                throw new ArgumentException($"{nameof(UserPhotoTypeEnum.Avatar)}Should larger than 100px X 100px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoTypeEnum.Avatar)}Should larger than 100px X 100px");
             }
             else if (!canUpdate)
             {
-                throw new ArgumentException($"{nameof(UserPhotoTypeEnum.Cover)}Should larger than 1000px X 300px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoTypeEnum.Cover)}Should larger than 1000px X 300px");
             }
 
             int maxSize = model.UserPhotoType == UserPhotoTypeEnum.Avatar ? 600 : 1000;

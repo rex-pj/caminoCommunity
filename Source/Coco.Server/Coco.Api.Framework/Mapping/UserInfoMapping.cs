@@ -1,6 +1,5 @@
 ﻿using Coco.Api.Framework.Models;
-using Coco.Entities.Model.Account;
-using System.Collections.Generic;
+using Coco.Entities.Model.User;
 
 namespace Coco.Api.Framework.Mapping
 {
