@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
-    public class AccountBusiness : IAccountBusiness
+    public partial class UserBusiness : IUserBusiness
     {
         #region Fields/Properties
         private readonly IDbContext _identityContext;
@@ -23,7 +23,7 @@ namespace Coco.Business.Implementation.UserBusiness
         #endregion
 
         #region Ctor
-        public AccountBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
+        public UserBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IRepository<UserInfo> userInfoRepository)
         {
@@ -35,25 +35,6 @@ namespace Coco.Business.Implementation.UserBusiness
         #endregion
 
         #region CRUD
-        public long Add(UserModel userModel)
-        {
-            if (userModel == null)
-            {
-                throw new ArgumentNullException(nameof(userModel));
-            }
-
-            userModel.StatusId = 1;
-            userModel.IsActived = false;
-
-            UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
-
-            _userInfoRepository.Insert(userInfo);
-            _identityContext.SaveChanges();
-
-            return userInfo.Id;
-        }
-
-
         public void Delete(long id)
         {
             var user = _userRepository.Find(id);
@@ -61,27 +42,6 @@ namespace Coco.Business.Implementation.UserBusiness
 
             _userRepository.Update(user);
             _identityContext.SaveChanges();
-        }
-
-        public async Task<UserModel> UpdateAuthenticationAsync(UserModel model)
-        {
-            if (model.Id <= 0)
-            {
-                throw new ArgumentNullException("User Id");
-            }
-
-            var user = await _userRepository.FindAsync(model.Id);
-
-            user.UpdatedById = model.Id;
-            user.UpdatedDate = DateTime.Now;
-            user.AuthenticatorToken = model.AuthenticationToken;
-            user.SecurityStamp = model.SecurityStamp;
-            user.Expiration = model.Expiration;
-
-            _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
-
-            return model;
         }
 
         public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
@@ -153,16 +113,6 @@ namespace Coco.Business.Implementation.UserBusiness
             {
                 throw e;
             }
-        }
-
-        public UserLoggedInModel GetLoggedIn(long id)
-        {
-            var user = _userRepository
-                .GetAsNoTracking(x => x.Id == id)
-                .Select(UserMapping.SelectorUserLoggedIn)
-                .FirstOrDefault();
-
-            return user;
         }
 
         public UserModel Find(long id)

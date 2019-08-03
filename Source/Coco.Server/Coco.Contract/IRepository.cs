@@ -77,16 +77,16 @@ namespace Coco.Contract
         Task<TEntity> FindAsync(object id);
 
         /// <summary>
-        /// Insert entity
+        /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void Insert(TEntity entity);
+        void Add(TEntity entity);
 
         /// <summary>
-        /// Insert entities
+        /// Add entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        void Insert(IEnumerable<TEntity> entities);
+        void Add(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Update entity

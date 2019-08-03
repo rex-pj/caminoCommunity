@@ -30,7 +30,7 @@ namespace Coco.Business
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddTransient<IAccountBusiness, AccountBusiness>()
+            services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
                 .AddTransient<IRoleBusiness, RoleBusiness>();
