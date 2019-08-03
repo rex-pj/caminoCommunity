@@ -29,7 +29,7 @@ namespace Coco.Business.Implementation
 
             Role role = RoleModelToEntity(roleModel);
 
-            _roleRepository.Insert(role);
+            _roleRepository.Add(role);
             _dbContext.SaveChanges();
 
             return role.Id;

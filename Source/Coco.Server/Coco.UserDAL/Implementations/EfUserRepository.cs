@@ -171,10 +171,10 @@ namespace Coco.IdentityDAL.Implementations
         }
 
         /// <summary>
-        /// Insert entity
+        /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual void Insert(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
             if (entity == null)
             {
@@ -185,10 +185,10 @@ namespace Coco.IdentityDAL.Implementations
         }
 
         /// <summary>
-        /// Insert entities
+        /// Add entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual void Insert(IEnumerable<TEntity> entities)
+        public virtual void Add(IEnumerable<TEntity> entities)
         {
             if (entities == null)
             {

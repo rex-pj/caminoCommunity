@@ -79,9 +79,9 @@ namespace Coco.Api.Framework.UserIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating an external login is already associated with an account.
+        /// Returns an <see cref="ApiError"/> indicating an external login is already associated with an user.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating an external login is already associated with an account.</returns>
+        /// <returns>An <see cref="ApiError"/> indicating an external login is already associated with an user.</returns>
         public virtual ApiError LoginAlreadyAssociated()
         {
             return new ApiError
@@ -134,10 +134,10 @@ namespace Coco.Api.Framework.UserIdentity.Entities
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an account.
+        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an user.
         /// </summary>
-        /// <param name="email">The email that is already associated with an account.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an account.</returns>
+        /// <param name="email">The email that is already associated with an user.</param>
+        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an user.</returns>
         public virtual ApiError DuplicateEmail(string email)
         {
             return new ApiError

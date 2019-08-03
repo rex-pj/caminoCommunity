@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Business.Contracts
 {
-    public interface IAccountBusiness
+    public interface IUserBusiness
     {
         long Add(UserModel user);
         UserModel Find(long id);

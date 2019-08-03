@@ -16,7 +16,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 {
     public class UserStore : IUserStore<ApplicationUser>
     {
-        private readonly IAccountBusiness _accountBusiness;
+        private readonly IUserBusiness _userBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
 
@@ -27,13 +27,13 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         public IdentityErrorDescriber Describer { get; private set; }
         private bool _isDisposed;
 
-        public UserStore(IAccountBusiness accountBusiness,
+        public UserStore(IUserBusiness userBusiness,
             ITextCrypter textCrypter,
             IConfiguration configuration,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
-            _accountBusiness = accountBusiness;
+            _userBusiness = userBusiness;
             _textCrypter = textCrypter;
             Describer = errors ?? new IdentityErrorDescriber();
         }
@@ -55,7 +55,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
                 var userModel = GetUserEntity(user);
 
-                _accountBusiness.Add(userModel);
+                _userBusiness.Add(userModel);
 
                 return Task.FromResult(new ApiResult(true));
             }
@@ -79,7 +79,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
 
-            var entity = await _accountBusiness.FindUserByEmail(normalizedEmail);
+            var entity = await _userBusiness.FindUserByEmail(normalizedEmail);
             var result = GetApplicationUser(entity);
             return result;
         }
@@ -103,7 +103,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             {
                 var userModel = GetUserEntity(user);
 
-                var result = await _accountBusiness.UpdateAuthenticationAsync(userModel);
+                var result = await _userBusiness.UpdateAuthenticationAsync(userModel);
                 string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
                 return new ApiResult<LoginResult>(true)
@@ -136,7 +136,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                _accountBusiness.Delete(user.Id);
+                _userBusiness.Delete(user.Id);
 
                 return Task.FromResult(new ApiResult(true));
             }
@@ -163,7 +163,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 throw new ArgumentOutOfRangeException(nameof(userId), $"{nameof(userId)} is not a valid GUID");
             }
 
-            var userEntity = await _accountBusiness.FindByIdAsync(id);
+            var userEntity = await _userBusiness.FindByIdAsync(id);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
@@ -175,7 +175,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = await _accountBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
+            var userEntity = await _userBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
 
             return await Task.FromResult(GetApplicationUser(userEntity));
         }
@@ -201,7 +201,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = _accountBusiness.GetLoggedIn(id);
+            var userEntity = _userBusiness.GetLoggedIn(id);
 
             return GetLoggedInUser(userEntity);
         }
@@ -227,7 +227,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            var userEntity = await _accountBusiness.GetFullByIdAsync(id);
+            var userEntity = await _userBusiness.GetFullByIdAsync(id);
 
             return await Task.FromResult(userEntity);
         }
@@ -298,7 +298,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                     PropertyName = model.PropertyName
                 };
 
-                var result = await _accountBusiness.UpdateInfoItemAsync(userModel);
+                var result = await _userBusiness.UpdateInfoItemAsync(userModel);
 
                 model.Value = result.Value;
 

@@ -92,7 +92,7 @@ namespace Coco.Business.Implementation.UserBusiness
                         Code = model.UserPhotoCode,
                     };
 
-                    _userPhotoRepository.Insert(userPhoto);
+                    _userPhotoRepository.Add(userPhoto);
                 }
                 else
                 {
