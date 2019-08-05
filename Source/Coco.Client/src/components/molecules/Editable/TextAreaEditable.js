@@ -140,10 +140,10 @@ export default function(props) {
         )}
         {!props.enterByKey ? (
           <Fragment>
-            <ButtonOutlinePrimary size="sm" onClick={onClickUpdate}>
+            <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
               <FontAwesomeIcon icon="check" />
             </ButtonOutlinePrimary>
-            <ButtonOutlineNormal size="sm" onClick={cancelEdit}>
+            <ButtonOutlineNormal size="xs" onClick={cancelEdit}>
               <FontAwesomeIcon icon="times" />
             </ButtonOutlineNormal>
           </Fragment>

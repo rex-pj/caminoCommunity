@@ -130,44 +130,6 @@ namespace Coco.Api.Framework.Mapping
             return userModel;
         }
 
-        public static ApplicationUser PopulateFullApplicationUser(UserFullModel userModel)
-        {
-            ApplicationUser applicationUser = new ApplicationUser()
-            {
-                Email = userModel.Email,
-                Id = userModel.Id,
-                UserName = userModel.Email,
-                Lastname = userModel.Lastname,
-                Firstname = userModel.Firstname,
-                Password = userModel.Password,
-                PasswordHash = userModel.Password,
-                PasswordSalt = userModel.PasswordSalt,
-                PhoneNumber = userModel.PhoneNumber,
-                Address = userModel.Address,
-                BirthDate = userModel.BirthDate,
-                CountryId = userModel.CountryId,
-                CreatedById = userModel.CreatedById,
-                Description = userModel.Description,
-                DisplayName = userModel.DisplayName,
-                GenderId = userModel.GenderId,
-                IsActived = userModel.IsActived,
-                StatusId = userModel.StatusId,
-                UpdatedById = userModel.UpdatedById,
-                Expiration = userModel.Expiration,
-                AuthenticationToken = userModel.AuthenticationToken,
-                SecurityStamp = userModel.SecurityStamp,
-                CountryCode = userModel.CountryCode,
-                CountryName = userModel.CountryName,
-                GenderLabel = userModel.GenderLabel,
-                CreatedDate = userModel.CreatedDate,
-                StatusLabel = userModel.StatusLabel,
-                AvatarUrl = userModel.AvatarUrl,
-                CoverPhotoUrl = userModel.CoverPhotoUrl
-            };
-
-            return applicationUser;
-        }
-
         public static UserInfoExt FullUserModelToInfo(UserFullModel user)
         {
             var userInfo = new UserInfo()

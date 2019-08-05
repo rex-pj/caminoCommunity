@@ -2,7 +2,12 @@ import styled from "styled-components";
 
 const ButtonOutlinePrimary = styled.button`
   color: ${p => p.theme.color.light};
-  padding: ${p => (p.size === "sm" ? ".5rem .75rem" : "10px 15px")};
+  padding: ${p =>
+    p.size === "xs"
+      ? "5px 8px"
+      : p.size === "sm"
+      ? ".5rem .75rem"
+      : "10px 15px"};
   border-radius: ${p => p.theme.borderRadius.normal};
   border-width: 1px;
   border-style: solid;
