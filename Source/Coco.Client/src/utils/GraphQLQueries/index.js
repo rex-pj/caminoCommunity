@@ -32,7 +32,7 @@ export const SIGNIN = gpl`
 `;
 
 export const UPDATE_USER_PROFILE = gpl`
-  mutation UpdateUserProfile($user: RegisterInputType!){
+  mutation UpdateUserProfile($user: UserProfileUpdateInputType!){
     updateUserProfile(user: $user){
       isSuccess,
       errors {

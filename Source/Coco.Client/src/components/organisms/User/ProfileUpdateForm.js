@@ -133,8 +133,8 @@ export default class extends Component {
 
     return (
       <MainPanel>
-        <Root>
-          <form onSubmit={e => this.onUpdate(e)} method="POST">
+        <form onSubmit={e => this.onUpdate(e)} method="POST">
+          <Root>
             <h4>Cập nhật thông tin cá nhân</h4>
             {userInfo ? (
               <Fragment>
@@ -164,16 +164,16 @@ export default class extends Component {
                 </FormGroup>
               </Fragment>
             ) : null}
-          </form>
-        </Root>
-        <FormFooter>
-          <SubmitButton
-            type="submit"
-            disabled={!this.props.isFormEnabled || !isFormValid}
-          >
-            Cập Nhật
-          </SubmitButton>
-        </FormFooter>
+          </Root>
+          <FormFooter>
+            <SubmitButton
+              type="submit"
+              disabled={!this.props.isFormEnabled || !isFormValid}
+            >
+              Cập Nhật
+            </SubmitButton>
+          </FormFooter>
+        </form>
       </MainPanel>
     );
   }

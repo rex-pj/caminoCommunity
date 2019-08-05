@@ -32,7 +32,7 @@ const PorfileButtonGroup = styled(ButtonGroup)`
   ${ProfileButton},
   ${ButtonPrimary} {
     border: 1px solid ${p => p.theme.color.primaryLight};
-    font-size: ${p => p.theme.rgbaColor.small};
+    font-size: ${p => p.theme.fontSize.tiny};
     padding: 3px ${p => p.theme.size.exTiny};
     margin: 1px 0;
     font-weight: 600;
@@ -59,6 +59,7 @@ const PorfileButtonGroup = styled(ButtonGroup)`
 const UserName = styled.span`
   vertical-align: middle;
   color: inherit;
+  font-size: inherit;
 `;
 
 export default function(props) {

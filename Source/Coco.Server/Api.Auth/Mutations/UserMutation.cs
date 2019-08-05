@@ -5,6 +5,7 @@ using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 using Coco.Entities.Model.General;
+using Api.Identity.Models;
 
 namespace Api.Identity.Mutations
 {
@@ -31,6 +32,10 @@ namespace Api.Identity.Mutations
             FieldAsync(typeof(ApiResultType<UserPhotoDeletedResultType, UpdateUserPhotoModel>), "deleteCover",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<DeleteUserPhotoInputType>> { Name = "criterias" }),
                 resolve: async context => await userResolver.DeleteCoverAsync(context));
+
+            FieldAsync(typeof(ApiResultType<UserProfileUpdateResultType, UserProfileUpdateModel>), "updateUserProfile",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserProfileUpdateInputType>> { Name = "user" }),
+                resolve: async context => await userResolver.UpdateUserProfileAsync(context));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Coco.Api.Framework.UserIdentity.Contracts;
-using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
 using Coco.Common.Const;
@@ -9,6 +8,7 @@ using GraphQL;
 using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
+using Coco.Entities.Model.User;
 
 namespace Api.Identity.Resolvers
 {
@@ -135,6 +135,25 @@ namespace Api.Identity.Resolvers
                 throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
+
+        public async Task<ApiResult> UpdateUserProfileAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var user = context.GetArgument<ApplicationUser>("user");
+                var userContext = context.UserContext as ISessionContext;
+
+                var result = await _userManager.UpdateUserProfileAsync(user, userContext.AuthenticationToken);
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
 
         #region Privates
         private UpdateUserPhotoModel GenerateUserPhotoModel(ResolveFieldContext<object> context)

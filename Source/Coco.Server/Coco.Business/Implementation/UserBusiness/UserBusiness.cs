@@ -81,6 +81,27 @@ namespace Coco.Business.Implementation.UserBusiness
 
             return model;
         }
+
+        public async Task<UserModel> UpdateUserProfileAsync(UserModel model)
+        {
+            if (model.Id <= 0)
+            {
+                throw new ArgumentNullException("User Id");
+            }
+
+            var user = await _userRepository.FindAsync(model.Id);
+
+            user.UpdatedById = model.Id;
+            user.UpdatedDate = DateTime.Now;
+            user.Lastname = model.Lastname;
+            user.Firstname = model.Firstname;
+            user.DisplayName = model.DisplayName;
+
+            _userRepository.Update(user);
+            await _identityContext.SaveChangesAsync();
+
+            return model;
+        }
         #endregion
 
         #region GET

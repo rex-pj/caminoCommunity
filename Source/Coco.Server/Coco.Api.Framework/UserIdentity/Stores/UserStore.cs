@@ -122,6 +122,31 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             }
         }
 
+        public virtual async Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            try
+            {
+                var userModel = GetUserEntity(user);
+                var result = await _userBusiness.UpdateUserProfileAsync(userModel);
+
+                return new ApiResult<UserModel>(true)
+                {
+                    Result = result
+                };
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return ApiResult.Failed(Describer.ConcurrencyFailure());
+            }
+        }
+
         public Task<ApiResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             try

@@ -498,6 +498,25 @@ namespace Coco.Api.Framework.UserIdentity
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
+        public virtual async Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string token)
+        {
+            ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var dbUser = await GetFullByHashIdAsync(user.UserIdentityId);
+            if (dbUser == null || !dbUser.AuthenticationToken.Equals(token))
+            {
+                throw new UnauthorizedAccessException(nameof(user));
+            }
+
+            return await UserStore.UpdateUserProfileAsync(user, CancellationToken);
+        }
+
+
         public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId)
         {
             ThrowIfDisposed();
