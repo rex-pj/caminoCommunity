@@ -31,6 +31,23 @@ export const SIGNIN = gpl`
   }
 `;
 
+export const UPDATE_USER_PROFILE = gpl`
+  mutation UpdateUserProfile($user: UserProfileUpdateInputType!){
+    updateUserProfile(user: $user){
+      isSuccess,
+      errors {
+        code,
+        description
+      },
+      result {
+        lastname,
+        firstname,
+        displayName
+      }
+    }
+  }
+`;
+
 export const GET_LOGGED_USER = gpl`
   query{
     loggedUser{

@@ -20,9 +20,10 @@ namespace Coco.Api.Framework.UserIdentity.Contracts
         Task<ApiResult> CheckPasswordAsync(TUser user, string password);
         TUser GetLoggingUser(string userIdentityId, string authenticationToken);
         Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId);
-        Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token);
+        Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string userIdentityId, string token);
         Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId);
         Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId);
         Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
+        Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string userIdentityId, string token);
     }
 }

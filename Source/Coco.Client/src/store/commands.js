@@ -14,6 +14,18 @@ function raiseError(dispatch, title, description, url) {
   });
 }
 
+function raiseSuccess(dispatch, title, description, url) {
+  dispatch({
+    type: notifyActions.NOTIFICATION,
+    payload: {
+      type: "success",
+      title: title,
+      description: description,
+      url: url
+    }
+  });
+}
+
 function openModal(dispatch, e) {
   dispatch({
     type: modalActions.OPEN,
@@ -56,6 +68,7 @@ function avatarReload(dispatch) {
 
 export {
   raiseError,
+  raiseSuccess,
   openModal,
   closeModal,
   avatarUpdated,

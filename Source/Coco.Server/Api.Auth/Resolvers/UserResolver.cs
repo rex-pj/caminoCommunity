@@ -1,5 +1,4 @@
 ﻿using Coco.Api.Framework.UserIdentity.Contracts;
-using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
 using Coco.Common.Const;
@@ -51,7 +50,9 @@ namespace Api.Identity.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var result = await _userManager.UpdateInfoItemAsync(model, userContext.CurrentUser.AuthenticationToken);
+                var currentUser = userContext.CurrentUser;
+
+                var result = await _userManager.UpdateInfoItemAsync(model, currentUser.UserIdentityId, currentUser.AuthenticationToken);
                 HandleContextError(context, result.Errors);
 
                 return result;
@@ -135,6 +136,28 @@ namespace Api.Identity.Resolvers
                 throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
+
+        public async Task<ApiResult> UpdateUserProfileAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var user = context.GetArgument<ApplicationUser>("user");
+                var userContext = context.UserContext as ISessionContext;
+
+                var currentUser = userContext.CurrentUser;
+                user.Id = currentUser.Id;
+
+                var result = await _userManager.UpdateUserProfileAsync(user, currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
 
         #region Privates
         private UpdateUserPhotoModel GenerateUserPhotoModel(ResolveFieldContext<object> context)

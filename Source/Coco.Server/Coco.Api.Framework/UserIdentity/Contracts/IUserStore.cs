@@ -21,5 +21,6 @@ namespace Coco.Api.Framework.UserIdentity.Contracts
         Task<UserFullModel> GetFullByIdAsync(long id, CancellationToken cancellationToken);
         Task<UserFullModel> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken);
         Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel user, CancellationToken cancellationToken = default);
+        Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, CancellationToken cancellationToken = default);
     }
 }
