@@ -28,5 +28,13 @@
         /// The <see cref="StoreOptions"/> for the identity system.
         /// </value>
         public StoreOptions Stores { get; set; } = new StoreOptions();
+
+        /// <summary>
+        /// Gets or sets the <see cref="SignInOptions"/> for the identity system.
+        /// </summary>
+        /// <value>
+        /// The <see cref="SignInOptions"/> for the identity system.
+        /// </value>
+        public SignInOptions SignIn { get; set; } = new SignInOptions();
     }
 }
