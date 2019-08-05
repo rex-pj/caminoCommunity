@@ -1,12 +1,19 @@
 let model = {
-  username: {
+  displayName: {
     value: "",
     validation: {
       isRequired: true
     },
     isValid: false
   },
-  password: {
+  lastname: {
+    value: "",
+    validation: {
+      isRequired: true
+    },
+    isValid: false
+  },
+  firstname: {
     value: "",
     validation: {
       isRequired: true

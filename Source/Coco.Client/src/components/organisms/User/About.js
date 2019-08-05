@@ -8,6 +8,7 @@ import TextEditable from "../../molecules/Editable/TextEditable";
 import SelectEditable from "../../molecules/Editable/SelectEditable";
 import DateTimeEditable from "../../molecules/Editable/DateTimeEditable";
 import TextAreaEditable from "../../molecules/Editable/TextAreaEditable";
+import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
 import { UPDATE_USER_INFO_PER_ITEM } from "../../../utils/GraphQLQueries";
 
 const MainPanel = styled(PanelBody)`
@@ -22,58 +23,9 @@ const Root = styled.div`
   border-radius: ${p => p.theme.borderRadius.normal};
 `;
 
-const ChildItem = styled.li`
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.dark};
-  margin-bottom: ${p => p.theme.size.tiny};
-  padding-bottom: ${p => p.theme.size.tiny};
-  min-height: ${p => p.theme.size.normal};
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
-
-  label {
-    color: ${p => p.theme.color.neutral};
-  }
-
-  div {
-    font-weight: 600;
-    font-size: ${p => p.theme.fontSize.small};
-  }
-
-  p {
-    font-size: ${p => p.theme.fontSize.small};
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0;
-    color: ${p => p.theme.color.link};
-    text-decoration: underline;
-  }
-
-  :last-child {
-    border-bottom: 0;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-`;
-
 const InfoList = styled(VerticalList)`
   margin-bottom: 0;
 `;
-
-const UnserInfoWWithLabel = props => {
-  const { className, children, label, isEmail } = props;
-  return (
-    <ChildItem className={className}>
-      {label ? <label>{label}</label> : null}
-      {!!isEmail ? (
-        <p>{children}</p>
-      ) : children ? (
-        <div>{children}</div>
-      ) : (
-        <div>...</div>
-      )}
-    </ChildItem>
-  );
-};
 
 export default class extends Component {
   async onEditable(e, updateUserInfoItem) {
@@ -89,17 +41,17 @@ export default class extends Component {
             <Mutation mutation={UPDATE_USER_INFO_PER_ITEM}>
               {updateUserInfoItem => (
                 <InfoList>
-                  <UnserInfoWWithLabel label="Họ &amp; Tên">
+                  <LabelAndInfo label="Họ &amp; Tên">
                     <div className="row">
                       <div className="col-auto">{userInfo.lastname}</div>
                       <div className="col-auto">-</div>
                       <div className="col-auto">{userInfo.firstname}</div>
                     </div>
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Tên hiển thị">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Tên hiển thị">
                     {userInfo.displayName}
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Về bản thân">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Về bản thân">
                     <TextAreaEditable
                       rows={5}
                       cols={50}
@@ -109,8 +61,8 @@ export default class extends Component {
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Điện thoại">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Điện thoại">
                     <TextEditable
                       value={userInfo.phoneNumber}
                       primaryKey={userInfo.userIdentityId}
@@ -118,8 +70,8 @@ export default class extends Component {
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Giới tính">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Giới tính">
                     <SelectEditable
                       value={userInfo.genderId}
                       text={userInfo.genderLabel}
@@ -130,8 +82,8 @@ export default class extends Component {
                       disabled={!canEdit}
                       selections={userInfo.genderSelections}
                     />
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Địa chỉ">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Địa chỉ">
                     <TextEditable
                       value={userInfo.address}
                       primaryKey={userInfo.userIdentityId}
@@ -139,8 +91,8 @@ export default class extends Component {
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Quốc gia">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Quốc gia">
                     <SelectEditable
                       value={userInfo.countryId}
                       text={userInfo.countryName}
@@ -152,8 +104,8 @@ export default class extends Component {
                       selections={userInfo.countrySelections}
                     />
                     {userInfo.country}
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Sinh nhật">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Sinh nhật">
                     <DateTimeEditable
                       value={userInfo.birthDate}
                       primaryKey={userInfo.userIdentityId}
@@ -161,16 +113,16 @@ export default class extends Component {
                       onUpdated={e => this.onEditable(e, updateUserInfoItem)}
                       disabled={!canEdit}
                     />
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Email" isEmail={true}>
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Email" isEmail={true}>
                     {userInfo.email}
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Ngày tham gia">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Ngày tham gia">
                     {format(userInfo.createdDate, "MMMM, DD YYYY")}
-                  </UnserInfoWWithLabel>
-                  <UnserInfoWWithLabel label="Trạng thái">
+                  </LabelAndInfo>
+                  <LabelAndInfo label="Trạng thái">
                     {userInfo.statusLabel}
-                  </UnserInfoWWithLabel>
+                  </LabelAndInfo>
                 </InfoList>
               )}
             </Mutation>

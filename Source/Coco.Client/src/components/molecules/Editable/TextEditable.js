@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
+import {
+  ButtonOutlinePrimary,
+  ButtonOutlineNormal
+} from "../../atoms/Buttons/OutlineButtons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const Wrap = styled.div`
+  button {
+    margin-left: ${p => p.theme.size.exTiny};
+  }
+`;
 
 const TextLabel = styled.span`
   display: inline-block;
@@ -35,41 +46,46 @@ export default function(props) {
     setIsOpen(false);
   }
 
-  async function onDataUp(e) {
-    const currentValue = props.value ? props.value : "";
+  async function onClickUpdate() {
+    await pushData();
+  }
 
+  async function onEnterUpdate(e) {
     if (e.keyCode === 13 && props.onUpdated) {
-      if (
-        !!props.primaryKey &&
-        !!props.name &&
-        currentValue !== e.target.value
-      ) {
-        await props
-          .onUpdated({
-            primaryKey: props.primaryKey,
-            value: e.target.value,
-            propertyName: props.name
-          })
-          .then(function(response) {
-            const { data } = response;
-            const { updateUserInfoItem } = data;
-            const { result } = updateUserInfoItem;
-            setValue(result.value);
-          })
-          .catch(function(errors) {
-            setValue(currentValue);
-            console.log(errors);
-          });
-      }
-
-      closeTextBox();
+      await pushData();
     } else if (e.keyCode === 13) {
       closeTextBox();
       setValue(value);
     } else if (e.keyCode === 27) {
       closeTextBox();
+      const currentValue = props.value ? props.value : "";
       setValue(currentValue);
     }
+  }
+
+  async function pushData() {
+    const currentValue = props.value ? props.value : "";
+
+    if (!!props.primaryKey && !!props.name && currentValue !== value) {
+      await props
+        .onUpdated({
+          primaryKey: props.primaryKey,
+          value: value,
+          propertyName: props.name
+        })
+        .then(function(response) {
+          const { data } = response;
+          const { updateUserInfoItem } = data;
+          const { result } = updateUserInfoItem;
+          setValue(result.value);
+        })
+        .catch(function(errors) {
+          setValue(currentValue);
+          console.log(errors);
+        });
+    }
+
+    closeTextBox();
   }
 
   function onBlur() {
@@ -86,16 +102,33 @@ export default function(props) {
     emptyText = props.emptyText;
   }
 
-  if (!props.disabled && !!isOpen) {
+  if (!props.disabled && !!isOpen && props.enterByKey) {
     return (
       <TextEditing
         name={props.name}
         value={value ? value : ""}
         onBlur={onBlur}
         autoFocus={true}
-        onKeyUp={onDataUp}
+        onKeyUp={onEnterUpdate}
         onChange={onChange}
       />
+    );
+  } else if (!props.disabled && !!isOpen) {
+    return (
+      <Wrap>
+        <TextEditing
+          name={props.name}
+          value={value ? value : ""}
+          autoFocus={true}
+          onChange={onChange}
+        />{" "}
+        <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
+          <FontAwesomeIcon icon="check" />
+        </ButtonOutlinePrimary>
+        <ButtonOutlineNormal size="xs" onClick={closeTextBox}>
+          <FontAwesomeIcon icon="times" />
+        </ButtonOutlineNormal>
+      </Wrap>
     );
   }
 
