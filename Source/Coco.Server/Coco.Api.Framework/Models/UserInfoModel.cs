@@ -2,14 +2,14 @@
 
 namespace Coco.Api.Framework.Models
 {
-    public class UserInfo
+    public class UserInfoModel
     {
-        public UserInfo()
+        public UserInfoModel()
         {
 
         }
 
-        public UserInfo(UserInfo userInfo)
+        public UserInfoModel(UserInfoModel userInfo)
         {
             Address = userInfo.Address;
             UserIdentityId = userInfo.UserIdentityId;

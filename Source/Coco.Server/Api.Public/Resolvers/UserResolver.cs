@@ -2,7 +2,6 @@
 using Coco.Api.Framework.UserIdentity.Contracts;
 using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
-using Coco.Api.Framework.Mapping;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
 using Coco.Business.Contracts;
@@ -13,6 +12,7 @@ using GraphQL.Types;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Api.Public.Resolvers
 {
@@ -21,14 +21,17 @@ namespace Api.Public.Resolvers
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ICountryBusiness _countryBusiness;
+        private readonly IMapper _mapper;
 
         public UserResolver(ILoginManager<ApplicationUser> loginManager,
             IUserManager<ApplicationUser> userManager,
+            IMapper mapper,
             ICountryBusiness countryBusiness)
         {
             _loginManager = loginManager;
             _userManager = userManager;
             _countryBusiness = countryBusiness;
+            _mapper = mapper;
         }
 
         public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
@@ -88,7 +91,7 @@ namespace Api.Public.Resolvers
             try
             {
                 var model = context.GetArgument<FindUserModel>("criterias");
-                
+
                 var userIdentityId = model.UserId;
 
                 var userContext = context.UserContext as ISessionContext;
@@ -100,7 +103,7 @@ namespace Api.Public.Resolvers
 
                 var user = await _userManager.GetFullByHashIdAsync(userIdentityId);
 
-                var result = UserInfoMapping.FullUserModelToInfo(user);
+                var result = _mapper.Map<UserInfoExt>(user);
                 result.UserIdentityId = userIdentityId;
                 if (userContext.CurrentUser == null || !user.AuthenticationToken.Equals(userContext.AuthenticationToken))
                 {

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -20,14 +21,17 @@ namespace Coco.Business.Implementation.UserBusiness
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Ctor
         public UserBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
+            IMapper mapper,
             IRepository<UserInfo> userInfoRepository)
         {
             _identityContext = identityContext;
+            _mapper = mapper;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;

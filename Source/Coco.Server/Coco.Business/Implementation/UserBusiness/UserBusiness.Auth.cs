@@ -21,7 +21,7 @@ namespace Coco.Business.Implementation.UserBusiness
             userModel.StatusId = 1;
             userModel.IsActived = false;
 
-            UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
+            var userInfo = _mapper.Map<UserInfo>(userModel);
 
             _userInfoRepository.Add(userInfo);
             _identityContext.SaveChanges();

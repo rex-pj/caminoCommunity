@@ -7,6 +7,6 @@ namespace Coco.Api.Framework.Models
         public string AuthenticationToken { get; set; }
         public DateTime? Expiration { get; set; }
         public bool IsSuccess { get; set; }
-        public UserInfo UserInfo { get; internal set; }
+        public UserInfoModel UserInfo { get; internal set; }
     }
 }

@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="GraphiQL" Version="1.2.0" />
     <PackageReference Include="GraphQL" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -15,10 +17,6 @@
     <ProjectReference Include="..\Coco.Api.Framework\Coco.Api.Framework.csproj" />
     <ProjectReference Include="..\Coco.Business\Coco.Business.csproj" />
     <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

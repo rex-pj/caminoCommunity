@@ -2,14 +2,19 @@
 
 namespace Coco.Api.Framework.Models
 {
-    public class UserInfoExt : UserInfo
+    public class UserInfoExt : UserInfoModel
     {
-        public UserInfoExt(UserInfo userInfo) : base(userInfo)
+        public UserInfoExt()
+        {
+
+        }
+
+        public UserInfoExt(UserInfoModel userInfo) : base(userInfo)
         {
             GenderSelections = new List<SelectOption>();
         }
 
-        public UserInfoExt(UserInfo userInfo, IEnumerable<SelectOption> genderOptions,
+        public UserInfoExt(UserInfoModel userInfo, IEnumerable<SelectOption> genderOptions,
             IEnumerable<SelectOption> countrySelections) : base(userInfo)
         {
             GenderSelections = genderOptions;

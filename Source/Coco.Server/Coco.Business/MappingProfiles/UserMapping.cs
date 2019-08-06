@@ -7,39 +7,6 @@ namespace Coco.Business.Mapping
 {
     public static class UserMapping
     {
-        public static UserInfo UserModelToEntity(UserModel userModel)
-        {
-            UserInfo user = new UserInfo
-            {
-                GenderId = userModel.GenderId,
-                Address = userModel.Address,
-                BirthDate = userModel.BirthDate,
-                CountryId = userModel.CountryId,
-                Description = userModel.Description,
-                PhoneNumber = userModel.PhoneNumber,
-                User = new User()
-                {
-                    DisplayName = userModel.DisplayName,
-                    Firstname = userModel.Firstname,
-                    Lastname = userModel.Lastname,
-                    UpdatedDate = DateTime.Now,
-                    CreatedDate = DateTime.Now,
-                    UpdatedById = userModel.UpdatedById,
-                    CreatedById = userModel.CreatedById,
-                    Email = userModel.Email,
-                    Password = userModel.Password,
-                    PasswordSalt = userModel.PasswordSalt,
-                    AuthenticatorToken = userModel.AuthenticationToken,
-                    SecurityStamp = userModel.SecurityStamp,
-                    Expiration = userModel.Expiration,
-                    IsActived = userModel.IsActived,
-                    StatusId = userModel.StatusId,
-                }
-            };
-
-            return user;
-        }
-
         public static Expression<Func<User, UserModel>> SelectorUserModel = user => new UserModel
         {
             DisplayName = user.DisplayName,

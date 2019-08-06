@@ -5,9 +5,7 @@ using Coco.Api.Framework.UserIdentity.Entities;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using Coco.Entities.Model.User;
 using Microsoft.EntityFrameworkCore;
-using Coco.Api.Framework.Mapping;
 using Coco.Entities.Model.General;
 using Coco.Entities.Enums;
 using Coco.Common.Exceptions;
@@ -119,32 +117,6 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 return ApiResult.Failed(Describer.ConcurrencyFailure());
             }
         }
-
-        #region Private Methods
-        private UserModel GetUserEntity(ApplicationUser loggedUser)
-        {
-            if (loggedUser == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateUserEntity(loggedUser);
-
-            return result;
-        }
-
-        private ApplicationUser GetApplicationUser(UserModel entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateApplicationUser(entity);
-
-            return result;
-        }
-        #endregion
 
         /// <summary>
         /// Throws if this class has been disposed.

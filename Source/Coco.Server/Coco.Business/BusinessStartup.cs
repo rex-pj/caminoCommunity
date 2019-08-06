@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
+using AutoMapper;
+using Coco.Business.MappingProfiles;
 
 namespace Coco.Business
 {
@@ -43,7 +45,9 @@ namespace Coco.Business
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<ValidationStrategyContext>();
-            
+
+            services.AddAutoMapper(typeof(UserMappingProfile));
+
             _dalStartup.RegiserTypes(services);
             _userDalStartup.RegiserTypes(services);
         }
