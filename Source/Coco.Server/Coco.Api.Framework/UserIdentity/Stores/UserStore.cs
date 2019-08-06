@@ -7,10 +7,9 @@ using System.Threading;
 using System;
 using Coco.Entities.Model.User;
 using Microsoft.EntityFrameworkCore;
-using Coco.Api.Framework.Mapping;
 using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
-using Coco.Entities.Enums;
+using AutoMapper;
 
 namespace Coco.Api.Framework.UserIdentity.Stores
 {
@@ -19,6 +18,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         private readonly IUserBusiness _userBusiness;
         private readonly ITextCrypter _textCrypter;
         private readonly string _textCrypterSaltKey;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
@@ -30,11 +30,13 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         public UserStore(IUserBusiness userBusiness,
             ITextCrypter textCrypter,
             IConfiguration configuration,
+            IMapper mapper,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _userBusiness = userBusiness;
             _textCrypter = textCrypter;
+            _mapper = mapper;
             Describer = errors ?? new IdentityErrorDescriber();
         }
 
@@ -53,7 +55,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                var userModel = GetUserModel(user);
+                var userModel = _mapper.Map<UserModel>(user);
 
                 _userBusiness.Add(userModel);
 
@@ -80,7 +82,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             ThrowIfDisposed();
 
             var entity = await _userBusiness.FindUserByEmail(normalizedEmail);
-            var result = GetApplicationUser(entity);
+            var result = _mapper.Map<ApplicationUser>(entity);
             return result;
         }
 
@@ -101,18 +103,20 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             try
             {
-                var userModel = GetUserModel(user);
+                var userModel = _mapper.Map<UserModel>(user);
 
                 var result = await _userBusiness.UpdateAuthenticationAsync(userModel);
                 string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
+                var userInfo = _mapper.Map<UserInfo>(user);
+                userInfo.UserIdentityId = userIdentityId;
                 return new ApiResult<LoginResult>(true)
                 {
                     Result = new LoginResult()
                     {
                         AuthenticationToken = result.AuthenticationToken,
                         Expiration = result.Expiration,
-                        UserInfo = UserInfoMapping.ApplicationUserToUserInfo(user, userIdentityId)
+                        UserInfo = userInfo
                     }
                 };
             }
@@ -133,7 +137,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             try
             {
-                var userModel = GetUserProfileUpdateModel(user);
+                var userModel = _mapper.Map<UserProfileUpdateModel>(user);
                 var result = await _userBusiness.UpdateUserProfileAsync(userModel);
 
                 return new ApiResult<UserProfileUpdateModel>(true)
@@ -197,7 +201,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             var userEntity = await _userBusiness.FindByIdAsync(id);
 
-            return await Task.FromResult(GetApplicationUser(userEntity));
+            return await Task.FromResult(_mapper.Map<ApplicationUser>(userEntity));
         }
 
         public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -209,7 +213,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             var userEntity = await _userBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
 
-            return await Task.FromResult(GetApplicationUser(userEntity));
+            return await Task.FromResult(_mapper.Map<ApplicationUser>(userEntity));
         }
 
         public ApplicationUser FindByIdentityId(string userIdentityId, CancellationToken cancellationToken)
@@ -234,8 +238,8 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             }
 
             var userEntity = _userBusiness.GetLoggedIn(id);
-
-            return GetLoggedInUser(userEntity);
+        
+            return _mapper.Map<ApplicationUser>(userEntity);
         }
 
         public async Task<UserFullModel> GetFullByFindByHashedIdAsync(string userIdentityId, CancellationToken cancellationToken)
@@ -341,56 +345,6 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 return ApiResult.Failed(Describer.ConcurrencyFailure());
             }
         }
-
-        #region Private Methods
-        private UserModel GetUserModel(ApplicationUser user)
-        {
-            if (user == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateUserEntity(user);
-
-            return result;
-        }
-
-        private UserProfileUpdateModel GetUserProfileUpdateModel(ApplicationUser loggedUser)
-        {
-            if (loggedUser == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.UserProfileUpdateModel(loggedUser);
-
-            return result;
-        }
-
-        private ApplicationUser GetApplicationUser(UserModel entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateApplicationUser(entity);
-
-            return result;
-        }
-
-        private ApplicationUser GetLoggedInUser(UserLoggedInModel model)
-        {
-            if (model == null)
-            {
-                return null;
-            }
-
-            var result = UserInfoMapping.PopulateLoggedInUser(model);
-
-            return result;
-        }
-        #endregion
 
         /// <summary>
         /// Throws if this class has been disposed.

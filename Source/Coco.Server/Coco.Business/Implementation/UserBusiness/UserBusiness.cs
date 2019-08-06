@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -20,14 +22,17 @@ namespace Coco.Business.Implementation.UserBusiness
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Ctor
         public UserBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
+            IMapper mapper,
             IRepository<UserInfo> userInfoRepository)
         {
             _identityContext = identityContext;
+            _mapper = mapper;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -111,7 +116,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository
                 .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
-                .Select(UserMapping.SelectorUserModel)
+                .ProjectTo<UserModel>()
                 .FirstOrDefaultAsync();
 
             return user;
@@ -125,7 +130,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
                 var user = await _userRepository
                     .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                    .Select(UserMapping.SelectorUserModel)
+                    .ProjectTo<UserModel>()
                     .FirstOrDefaultAsync();
 
                 return user;
@@ -140,7 +145,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var user = _userRepository
                 .GetAsNoTracking(x => x.Id == id)
-                .Select(UserMapping.SelectorUserModel)
+                .ProjectTo<UserModel>()
                 .FirstOrDefault();
 
             return user;
@@ -150,7 +155,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var existUser = await _userRepository
                 .GetAsNoTracking(x => x.Id.Equals(id))
-                .Select(UserMapping.SelectorUserModel)
+                .ProjectTo<UserModel>()
                 .FirstOrDefaultAsync();
 
             return existUser;

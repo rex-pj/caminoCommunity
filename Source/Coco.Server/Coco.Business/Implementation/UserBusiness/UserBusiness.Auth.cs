@@ -1,4 +1,5 @@
-﻿using Coco.Business.Contracts;
+﻿using AutoMapper.QueryableExtensions;
+using Coco.Business.Contracts;
 using Coco.Business.Mapping;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.User;
@@ -21,7 +22,7 @@ namespace Coco.Business.Implementation.UserBusiness
             userModel.StatusId = 1;
             userModel.IsActived = false;
 
-            UserInfo userInfo = UserMapping.UserModelToEntity(userModel);
+            var userInfo = _mapper.Map<UserInfo>(userModel);
 
             _userInfoRepository.Add(userInfo);
             _identityContext.SaveChanges();
@@ -56,7 +57,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var user = _userRepository
                 .GetAsNoTracking(x => x.Id == id)
-                .Select(UserMapping.SelectorUserLoggedIn)
+                .ProjectTo<UserLoggedInModel>()
                 .FirstOrDefault();
 
             return user;

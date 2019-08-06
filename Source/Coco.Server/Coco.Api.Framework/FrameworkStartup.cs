@@ -5,6 +5,8 @@ using Coco.Api.Framework.UserIdentity.Contracts;
 using Microsoft.AspNetCore.Http;
 using Coco.Api.Framework.UserIdentity.Validators;
 using Coco.Api.Framework.UserIdentity.Stores;
+using AutoMapper;
+using Coco.Entities.Model.User;
 
 namespace Coco.Api.Framework
 {
@@ -25,6 +27,9 @@ namespace Coco.Api.Framework
                 .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 .AddTransient<ITextCrypter, TextCrypter>()
                 .AddScoped<ISessionContext, SessionContext>();
+
+            services.AddAutoMapper(typeof(ApplicationUser), typeof(UserInfo))
+                .AddAutoMapper(typeof(UserModel), typeof(ApplicationUser));
         }
     }
 }
