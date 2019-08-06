@@ -38,6 +38,11 @@ export const UPDATE_USER_PROFILE = gpl`
       errors {
         code,
         description
+      },
+      result {
+        lastname,
+        firstname,
+        displayName
       }
     }
   }

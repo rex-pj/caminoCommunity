@@ -5,7 +5,7 @@ using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 using Coco.Entities.Model.General;
-using Api.Identity.Models;
+using Coco.Entities.Model.User;
 
 namespace Api.Identity.Mutations
 {

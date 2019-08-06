@@ -1,4 +1,4 @@
-﻿namespace Api.Identity.Models
+﻿namespace Coco.Entities.Model.User
 {
     public class UserProfileUpdateModel
     {
@@ -7,5 +7,6 @@
         public string DisplayName { get; set; }
         public string UserIdentityId { get; set; }
         public string AuthenticationToken { get; set; }
+        public long Id { get; set; }
     }
 }

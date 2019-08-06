@@ -1,6 +1,5 @@
 ﻿using Coco.Api.Framework.UserIdentity.Contracts;
 using Coco.Api.Framework.UserIdentity.Entities;
-using Microsoft.Extensions.DependencyInjection;
 using Coco.Api.Framework.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -93,44 +92,6 @@ namespace Coco.Api.Framework.UserIdentity
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to create.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
-        public virtual async Task<ApiResult> CreateAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (user.Password == null)
-            {
-                throw new ArgumentNullException(nameof(user.Password));
-            }
-
-            var result = await ValidateUserAsync(user);
-            if (!result.IsSuccess)
-            {
-                return result;
-            }
-
-            var updatePasswordResult = await UpdatePasswordHash(user, user.Password);
-            if (!updatePasswordResult.IsSuccess)
-            {
-                return result;
-            }
-
-            return await UserStore.CreateAsync(user, CancellationToken);
-        }
-
         /// <summary>
         /// Updates a user's password hash.
         /// </summary>
@@ -394,13 +355,13 @@ namespace Coco.Api.Framework.UserIdentity
             if (verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 await UpdatePasswordHash(user, password, validatePassword: false);
-                UpdateUserAuthenticate(user);
+                ModifyUserAuthenticate(user);
                 var result = await UpdateAuthenticationAsync(user);
                 return result;
             }
             else if (verifyResult == PasswordVerificationResult.Success)
             {
-                UpdateUserAuthenticate(user);
+                ModifyUserAuthenticate(user);
                 var result = await UpdateAuthenticationAsync(user);
                 return result;
             }
@@ -409,23 +370,7 @@ namespace Coco.Api.Framework.UserIdentity
             return new ApiResult(success);
         }
 
-        /// <summary>
-        /// Called to update the user after validating and updating the normalized email/user name.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
-        {
-            var result = await ValidateUserAsync(user);
-            if (!result.IsSuccess)
-            {
-                return ApiResult.Failed(result.Errors.ToArray());
-            }
-
-            return await UserStore.UpdateAuthenticationAsync(user, CancellationToken);
-        }
-
-        private void UpdateUserAuthenticate(ApplicationUser user)
+        private void ModifyUserAuthenticate(ApplicationUser user)
         {
             var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes($"{_tokenEncryptKey}"));
             var expiration = DateTime.UtcNow.AddMinutes(_tokenExpiryMinutes);
@@ -466,6 +411,63 @@ namespace Coco.Api.Framework.UserIdentity
             return _passwordHasher.VerifyHashedPassword(user, hash, passwordSalted);
         }
 
+        #endregion
+
+        #region CRUD
+        /// <summary>
+        /// Creates the specified <paramref name="user"/> in the backing store with no password,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user to create.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<ApiResult> CreateAsync(ApplicationUser user)
+        {
+            ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (user.Password == null)
+            {
+                throw new ArgumentNullException(nameof(user.Password));
+            }
+
+            var result = await ValidateUserAsync(user);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
+            var updatePasswordResult = await UpdatePasswordHash(user, user.Password);
+            if (!updatePasswordResult.IsSuccess)
+            {
+                return result;
+            }
+
+            return await UserStore.CreateAsync(user, CancellationToken);
+        }
+
+        /// <summary>
+        /// Called to update the user after validating and updating the normalized email/user name.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>Whether the operation was successful.</returns>
+        protected virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
+        {
+            var result = await ValidateUserAsync(user);
+            if (!result.IsSuccess)
+            {
+                return ApiResult.Failed(result.Errors.ToArray());
+            }
+
+            return await UserStore.UpdateAuthenticationAsync(user, CancellationToken);
+        }
+
         /// <summary>
         /// Creates the specified <paramref name="model"/> in the backing store with no password,
         /// as an asynchronous operation.
@@ -475,7 +477,7 @@ namespace Coco.Api.Framework.UserIdentity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string token)
+        public virtual async Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string userIdentityId, string token)
         {
             ThrowIfDisposed();
 
@@ -484,12 +486,17 @@ namespace Coco.Api.Framework.UserIdentity
                 throw new ArgumentNullException(nameof(model));
             }
 
+            if (model.PropertyName == null)
+            {
+                throw new ArgumentNullException(nameof(model.PropertyName));
+            }
+
             if (model.Key == null || string.IsNullOrEmpty(model.Key.ToString()))
             {
                 throw new ArgumentNullException(nameof(model.Key));
             }
 
-            var user = await GetFullByHashIdAsync(model.Key.ToString());
+            var user = await GetFullByHashIdAsync(userIdentityId);
             if (user == null || !user.AuthenticationToken.Equals(token))
             {
                 throw new UnauthorizedAccessException(nameof(user));
@@ -498,7 +505,7 @@ namespace Coco.Api.Framework.UserIdentity
             return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
         }
 
-        public virtual async Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string token)
+        public virtual async Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string userIdentityId, string token)
         {
             ThrowIfDisposed();
 
@@ -507,15 +514,14 @@ namespace Coco.Api.Framework.UserIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var dbUser = await GetFullByHashIdAsync(user.UserIdentityId);
-            if (dbUser == null || !dbUser.AuthenticationToken.Equals(token))
+            var result = await GetFullByHashIdAsync(userIdentityId);
+            if (result == null || !result.AuthenticationToken.Equals(token))
             {
                 throw new UnauthorizedAccessException(nameof(user));
             }
 
             return await UserStore.UpdateUserProfileAsync(user, CancellationToken);
         }
-
 
         public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId)
         {

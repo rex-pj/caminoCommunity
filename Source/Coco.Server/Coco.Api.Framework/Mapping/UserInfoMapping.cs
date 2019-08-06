@@ -159,5 +159,18 @@ namespace Coco.Api.Framework.Mapping
             var result = new UserInfoExt(userInfo);
             return result;
         }
+
+        public static UserProfileUpdateModel UserProfileUpdateModel(ApplicationUser user)
+        {
+            UserProfileUpdateModel userModel = new UserProfileUpdateModel()
+            {
+                DisplayName = user.DisplayName,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                Id = user.Id
+            };
+
+            return userModel;
+        }
     }
 }

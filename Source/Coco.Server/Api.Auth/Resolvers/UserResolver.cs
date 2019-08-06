@@ -8,7 +8,6 @@ using GraphQL;
 using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
-using Coco.Entities.Model.User;
 
 namespace Api.Identity.Resolvers
 {
@@ -51,7 +50,9 @@ namespace Api.Identity.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var result = await _userManager.UpdateInfoItemAsync(model, userContext.CurrentUser.AuthenticationToken);
+                var currentUser = userContext.CurrentUser;
+
+                var result = await _userManager.UpdateInfoItemAsync(model, currentUser.UserIdentityId, currentUser.AuthenticationToken);
                 HandleContextError(context, result.Errors);
 
                 return result;
@@ -143,7 +144,10 @@ namespace Api.Identity.Resolvers
                 var user = context.GetArgument<ApplicationUser>("user");
                 var userContext = context.UserContext as ISessionContext;
 
-                var result = await _userManager.UpdateUserProfileAsync(user, userContext.AuthenticationToken);
+                var currentUser = userContext.CurrentUser;
+                user.Id = currentUser.Id;
+
+                var result = await _userManager.UpdateUserProfileAsync(user, currentUser.UserIdentityId, currentUser.AuthenticationToken);
                 HandleContextError(context, result.Errors);
 
                 return result;

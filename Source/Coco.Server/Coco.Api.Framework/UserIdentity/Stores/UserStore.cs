@@ -53,7 +53,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                var userModel = GetUserEntity(user);
+                var userModel = GetUserModel(user);
 
                 _userBusiness.Add(userModel);
 
@@ -101,7 +101,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             try
             {
-                var userModel = GetUserEntity(user);
+                var userModel = GetUserModel(user);
 
                 var result = await _userBusiness.UpdateAuthenticationAsync(userModel);
                 string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
@@ -133,12 +133,19 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
             try
             {
-                var userModel = GetUserEntity(user);
+                var userModel = GetUserProfileUpdateModel(user);
                 var result = await _userBusiness.UpdateUserProfileAsync(userModel);
 
-                return new ApiResult<UserModel>(true)
+                return new ApiResult<UserProfileUpdateModel>(true)
                 {
-                    Result = result
+                    Result = new UserProfileUpdateModel()
+                    {
+                        AuthenticationToken = user.AuthenticationToken,
+                        UserIdentityId = user.UserIdentityId,
+                        DisplayName = result.DisplayName,
+                        Firstname = result.Firstname,
+                        Lastname = result.Lastname
+                    }
                 };
             }
             catch (DbUpdateConcurrencyException)
@@ -336,14 +343,26 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         }
 
         #region Private Methods
-        private UserModel GetUserEntity(ApplicationUser loggedUser)
+        private UserModel GetUserModel(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = UserInfoMapping.PopulateUserEntity(user);
+
+            return result;
+        }
+
+        private UserProfileUpdateModel GetUserProfileUpdateModel(ApplicationUser loggedUser)
         {
             if (loggedUser == null)
             {
                 return null;
             }
 
-            var result = UserInfoMapping.PopulateUserEntity(loggedUser);
+            var result = UserInfoMapping.UserProfileUpdateModel(loggedUser);
 
             return result;
         }

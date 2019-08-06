@@ -4,7 +4,7 @@ import { Query, Mutation } from "react-apollo";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
 import { connect } from "react-redux";
 import UserContext from "../../utils/Context/UserContext";
-import { raiseError } from "../../store/commands";
+import { raiseError, raiseSuccess } from "../../store/commands";
 import {
   GET_FULL_USER_INFO,
   UPDATE_USER_PROFILE
@@ -50,7 +50,7 @@ class UserUpdate extends Component {
           if (this._isMounted) {
             this.setState({ isFormEnabled: true });
           }
-          console.log(result);
+          this.props.notifySuccess(this.context.user.lang);
         })
         .catch(error => {
           if (this._isMounted) {
@@ -116,6 +116,9 @@ const mapDispatchToProps = dispatch => {
           "/"
         );
       }
+    },
+    notifySuccess: lang => {
+      raiseSuccess(dispatch, "Thay đổi thành công", null, "/");
     },
     showValidationError: (title, message) => {
       raiseError(dispatch, title, message, "#");

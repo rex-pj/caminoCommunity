@@ -1,4 +1,4 @@
-﻿using Api.Identity.Models;
+﻿using Coco.Entities.Model.User;
 using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes

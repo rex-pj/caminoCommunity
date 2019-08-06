@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

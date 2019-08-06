@@ -82,7 +82,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task<UserModel> UpdateUserProfileAsync(UserModel model)
+        public async Task<UserProfileUpdateModel> UpdateUserProfileAsync(UserProfileUpdateModel model)
         {
             if (model.Id <= 0)
             {
