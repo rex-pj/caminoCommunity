@@ -26,6 +26,8 @@ const LabelAndTextbox = props => {
         onChange={props.onChange}
         name={name}
         autoComplete={props.autoComplete}
+        placeholder={props.placeholder}
+        type={props.type}
       />
     </ChildItem>
   );

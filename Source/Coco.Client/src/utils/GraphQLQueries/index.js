@@ -204,3 +204,15 @@ export const DELETE_USER_COVER = gpl`
     }
   }
 `;
+
+export const UPDATE_USER_PASSWORD = gpl`
+  mutation UpdateUserPassword($user: UserPasswordUpdateInputType!){
+    updateUserPassword(user: $user){
+      isSuccess,
+      errors {
+        code,
+        description
+      }
+    }
+  }
+`;

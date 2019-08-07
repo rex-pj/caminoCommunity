@@ -23,7 +23,8 @@ let model = {
   password: {
     value: "",
     validation: {
-      isRequired: true
+      isRequired: true,
+      minLength: 6
     },
     isValid: false
   },
@@ -31,6 +32,7 @@ let model = {
     value: "",
     validation: {
       isRequired: true,
+      minLength: 6,
       sameRefProperty: "password"
     },
     isValid: false

@@ -12,7 +12,6 @@ class ProfileBody extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
-    this._canEdit = false;
     this._uploadAvatar = null;
     this._refetch = null;
   }
@@ -29,6 +28,7 @@ class ProfileBody extends Component {
     const { match, userInfo, baseUrl, pageNumber } = this.props;
     const { params } = match;
     const { userId } = params;
+    const { canEdit } = userInfo;
 
     return (
       <Fragment>
@@ -63,6 +63,7 @@ class ProfileBody extends Component {
                   <AsyncTabContent
                     {...props}
                     userId={userId}
+                    canEdit={canEdit}
                     userUrl={`${baseUrl}/${userId}`}
                     page="./user-security"
                   />
