@@ -135,6 +135,21 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 throw new ArgumentNullException(nameof(user));
             }
 
+            if (string.IsNullOrWhiteSpace(user.Lastname))
+            {
+                throw new ArgumentNullException(nameof(user.Lastname));
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Firstname))
+            {
+                throw new ArgumentNullException(nameof(user.Firstname));
+            }
+
+            if (string.IsNullOrWhiteSpace(user.DisplayName))
+            {
+                throw new ArgumentNullException(nameof(user.DisplayName));
+            }
+
             try
             {
                 var userModel = _mapper.Map<UserProfileUpdateModel>(user);
