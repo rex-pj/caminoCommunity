@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-const Textbox = styled.input.attrs(p => ({ type: p.type ? "text" : p.type }))`
+const Textbox = styled.input.attrs(p => ({
+  type: p.type === "password" ? "password" : p.type
+}))`
   height: ${p => p.theme.size.normal};
   border: 1px solid ${p => p.theme.color.neutral};
   padding: 6px 5px;
