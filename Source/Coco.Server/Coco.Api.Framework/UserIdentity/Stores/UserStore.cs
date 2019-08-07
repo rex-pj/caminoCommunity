@@ -108,7 +108,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 var result = await _userBusiness.UpdateAuthenticationAsync(userModel);
                 string userIdentityId = _textCrypter.Encrypt(result.Id.ToString(), _textCrypterSaltKey);
 
-                var userInfo = _mapper.Map<UserInfo>(user);
+                var userInfo = _mapper.Map<UserInfoModel>(user);
                 userInfo.UserIdentityId = userIdentityId;
                 return new ApiResult<LoginResult>(true)
                 {

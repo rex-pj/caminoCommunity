@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import * as actionTypes from "../../../store/actions/notifyActions";
 
 const Root = styled.div`
-  position: absolute;
+  position: fixed;
   right: ${p => p.theme.size.distance};
-  top: ${p => p.theme.size.distance};
+  bottom: ${p => p.theme.size.distance};
   z-index: 100;
 `;
 

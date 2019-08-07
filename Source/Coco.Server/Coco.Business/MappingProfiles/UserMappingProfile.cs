@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.User;
 using System;
 
-namespace Coco.Business.Mapping
+namespace Coco.Business.MappingProfiles
 {
     public class UserMappingProfile : Profile
     {

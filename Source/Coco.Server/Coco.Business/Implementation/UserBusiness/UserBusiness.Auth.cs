@@ -1,5 +1,4 @@
-﻿using AutoMapper.QueryableExtensions;
-using Coco.Business.Contracts;
+﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.User;
@@ -57,7 +56,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var user = _userRepository
                 .GetAsNoTracking(x => x.Id == id)
-                .ProjectTo<UserLoggedInModel>()
+                .Select(UserMapping.SelectorUserLoggedIn)
                 .FirstOrDefault();
 
             return user;

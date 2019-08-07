@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import ProfileUpdateModel from "../../../models/ProfileUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/atoms/Panels";
+import { QuaternaryHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${p => p.theme.borderRadius.normal};
@@ -14,19 +16,19 @@ const MainPanel = styled(PanelBody)`
   background-color: ${p => p.theme.color.white};
 `;
 
-const Root = styled.div`
-  position: relative;
-  border-radius: ${p => p.theme.borderRadius.normal};
-`;
-
 const FormGroup = styled.div`
   margin-bottom: ${p => p.theme.size.exTiny};
+  border-bottom: 1px solid ${p => p.theme.color.lighter};
+`;
+
+const Heading = styled(QuaternaryHeading)`
+  margin-bottom: ${p => p.theme.size.distance};
+  margin-left: ${p => p.theme.size.exTiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
   font-size: ${p => p.theme.fontSize.small};
   cursor: pointer;
-  border: 1px solid ${p => p.theme.color.primaryLight};
 
   :hover {
     color: ${p => p.theme.color.light};
@@ -36,6 +38,10 @@ const SubmitButton = styled(ButtonPrimary)`
     background-color: ${p => p.theme.color.primaryLight};
     color: ${p => p.theme.color.neutral};
     cursor: auto;
+  }
+
+  svg {
+    margin-right: ${p => p.theme.size.exTiny};
   }
 `;
 
@@ -132,22 +138,15 @@ export default class extends Component {
     const isFormValid = this.checkIsFormValid();
 
     return (
-      <MainPanel>
-        <form onSubmit={e => this.onUpdate(e)} method="POST">
-          <Root>
-            <h4>Cập nhật thông tin cá nhân</h4>
+      <Fragment>
+        <Heading>Cập nhật thông tin cá nhân</Heading>
+        <MainPanel>
+          <form onSubmit={e => this.onUpdate(e)} method="POST">
             {userInfo ? (
               <Fragment>
                 <FormGroup>
                   <LabelAndTextbox
-                    label="Tên hiển thị"
-                    name="displayName"
-                    value={displayName.value}
-                    onChange={this.onTextboxChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <LabelAndTextbox
+                    autoComplete={false}
                     label="Họ"
                     name="lastname"
                     value={lastname.value}
@@ -156,25 +155,37 @@ export default class extends Component {
                 </FormGroup>
                 <FormGroup>
                   <LabelAndTextbox
+                    autoComplete={false}
                     label="Tên"
                     name="firstname"
                     value={firstname.value}
                     onChange={this.onTextboxChange}
                   />
                 </FormGroup>
+                <FormGroup>
+                  <LabelAndTextbox
+                    autoComplete={false}
+                    label="Tên hiển thị"
+                    name="displayName"
+                    value={displayName.value}
+                    onChange={this.onTextboxChange}
+                  />
+                </FormGroup>
               </Fragment>
             ) : null}
-          </Root>
-          <FormFooter>
-            <SubmitButton
-              type="submit"
-              disabled={!this.props.isFormEnabled || !isFormValid}
-            >
-              Cập Nhật
-            </SubmitButton>
-          </FormFooter>
-        </form>
-      </MainPanel>
+            <FormFooter>
+              <SubmitButton
+                type="submit"
+                size="sm"
+                disabled={!this.props.isFormEnabled || !isFormValid}
+              >
+                <FontAwesomeIcon icon="pencil-alt" />
+                Cập Nhật
+              </SubmitButton>
+            </FormFooter>
+          </form>
+        </MainPanel>
+      </Fragment>
     );
   }
 }

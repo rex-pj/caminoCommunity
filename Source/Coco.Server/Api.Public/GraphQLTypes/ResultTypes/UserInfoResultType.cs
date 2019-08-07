@@ -3,7 +3,7 @@ using GraphQL.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
-    public class UserInfoResultType : ObjectGraphType<UserInfo>
+    public class UserInfoResultType : ObjectGraphType<UserInfoModel>
     {
         public UserInfoResultType()
         {

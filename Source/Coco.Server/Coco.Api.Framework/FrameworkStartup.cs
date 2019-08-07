@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Coco.Api.Framework.UserIdentity.Validators;
 using Coco.Api.Framework.UserIdentity.Stores;
 using AutoMapper;
-using Coco.Entities.Model.User;
+using Coco.Api.Framework.MappingProfiles;
 
 namespace Coco.Api.Framework
 {
@@ -14,7 +14,10 @@ namespace Coco.Api.Framework
     {
         public static void AddCustomStores(IServiceCollection services)
         {
-            services.AddTransient<ILookupNormalizer, LookupNormalizer>()
+            services.AddAutoMapper(typeof(UserMappingProfile));
+
+            services
+                .AddTransient<ILookupNormalizer, LookupNormalizer>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>()
                 .AddTransient<IUserValidator<ApplicationUser>, UserValidator>()
@@ -27,9 +30,6 @@ namespace Coco.Api.Framework
                 .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 .AddTransient<ITextCrypter, TextCrypter>()
                 .AddScoped<ISessionContext, SessionContext>();
-
-            services.AddAutoMapper(typeof(ApplicationUser), typeof(UserInfo))
-                .AddAutoMapper(typeof(UserModel), typeof(ApplicationUser));
         }
     }
 }

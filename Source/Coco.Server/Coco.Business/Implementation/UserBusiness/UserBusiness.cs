@@ -11,7 +11,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -116,7 +115,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository
                 .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
-                .ProjectTo<UserModel>()
+                .Select(UserMapping.SelectorUserModel)
                 .FirstOrDefaultAsync();
 
             return user;
@@ -130,7 +129,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
                 var user = await _userRepository
                     .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                    .ProjectTo<UserModel>()
+                    .Select(UserMapping.SelectorUserModel)
                     .FirstOrDefaultAsync();
 
                 return user;
@@ -145,7 +144,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var user = _userRepository
                 .GetAsNoTracking(x => x.Id == id)
-                .ProjectTo<UserModel>()
+                .Select(UserMapping.SelectorUserModel)
                 .FirstOrDefault();
 
             return user;
@@ -155,7 +154,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var existUser = await _userRepository
                 .GetAsNoTracking(x => x.Id.Equals(id))
-                .ProjectTo<UserModel>()
+                .Select(UserMapping.SelectorUserModel)
                 .FirstOrDefaultAsync();
 
             return existUser;

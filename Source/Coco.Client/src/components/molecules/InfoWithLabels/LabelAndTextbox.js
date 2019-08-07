@@ -21,7 +21,12 @@ const LabelAndTextbox = props => {
   return (
     <ChildItem className={className}>
       {label ? <label>{label}</label> : null}
-      <Textbox value={value} onChange={props.onChange} name={name} />
+      <Textbox
+        value={value}
+        onChange={props.onChange}
+        name={name}
+        autoComplete={props.autoComplete}
+      />
     </ChildItem>
   );
 };
