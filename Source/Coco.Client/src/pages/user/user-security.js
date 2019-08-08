@@ -25,7 +25,7 @@ class UserUpdate extends Component {
   }
   // #endregion Life Cycle
 
-  onUpdate = async (data, updateUserProfile, canEdit) => {
+  onUpdatePassword = async (data, updateUserProfile, canEdit) => {
     if (!canEdit) {
       return;
     }
@@ -37,7 +37,7 @@ class UserUpdate extends Component {
     if (updateUserProfile) {
       await updateUserProfile({
         variables: {
-          user: data
+          criterias: data
         }
       })
         .then(result => {
@@ -62,7 +62,9 @@ class UserUpdate extends Component {
       <Mutation mutation={UPDATE_USER_PASSWORD}>
         {updateUserPassword => (
           <UpdatePasswordForm
-            onUpdate={e => this.onUpdate(e, updateUserPassword, canEdit)}
+            onUpdate={e =>
+              this.onUpdatePassword(e, updateUserPassword, canEdit)
+            }
             isFormEnabled={isFormEnabled}
             canEdit={canEdit}
             showValidationError={this.props.showValidationError}

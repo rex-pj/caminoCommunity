@@ -130,25 +130,6 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.Lastname))
-            {
-                throw new ArgumentNullException(nameof(user.Lastname));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.Firstname))
-            {
-                throw new ArgumentNullException(nameof(user.Firstname));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.DisplayName))
-            {
-                throw new ArgumentNullException(nameof(user.DisplayName));
-            }
 
             try
             {
@@ -197,26 +178,24 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             }
         }
 
-        public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> FindByIdAsync(long userId, CancellationToken cancellationToken)
         {
             if (cancellationToken != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            if (string.IsNullOrWhiteSpace(userId))
+            if (userId <= 0)
             {
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            if (!long.TryParse(userId, out long id))
-            {
-                throw new ArgumentOutOfRangeException(nameof(userId), $"{nameof(userId)} is not a valid GUID");
-            }
+            var user = await _userBusiness.FindByIdAsync(userId);
 
-            var userEntity = await _userBusiness.FindByIdAsync(id);
+            var result = _mapper.Map<ApplicationUser>(user);
+            result.PasswordHash = user.Password;
 
-            return await Task.FromResult(_mapper.Map<ApplicationUser>(userEntity));
+            return await Task.FromResult(result);
         }
 
         public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)

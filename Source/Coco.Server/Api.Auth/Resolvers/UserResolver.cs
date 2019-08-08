@@ -8,6 +8,7 @@ using GraphQL;
 using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
+using Coco.Entities.Model.User;
 
 namespace Api.Identity.Resolvers
 {
@@ -154,7 +155,33 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw new ExecutionError(ex.Message, ex);
+            }
+        }
+
+        public async Task<ApiResult> UpdatePasswordAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<UserPasswordUpdateModel>("criterias");
+                var userContext = context.UserContext as ISessionContext;
+
+                var currentUser = userContext.CurrentUser;
+                model.UserId = currentUser.Id;
+
+                if (!model.NewPassword.Equals(model.ConfirmPassword))
+                {
+                    throw new ArgumentException($"{nameof(model.NewPassword)} and {nameof(model.ConfirmPassword)} is not the same");
+                }
+
+                var result = await _userManager.ChangePasswordAsync(currentUser.Id, model.CurrentPassword, model.NewPassword);
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ex.Message, ex);
             }
         }
 

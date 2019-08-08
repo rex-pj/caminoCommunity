@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Coco.Business.Contracts;
+using Coco.Entities.Model.User;
 
 namespace Coco.Api.Framework.UserIdentity.Stores
 {
@@ -11,10 +13,12 @@ namespace Coco.Api.Framework.UserIdentity.Stores
     {
         private bool _isDisposed;
         internal readonly string _encryptKey;
+        private readonly IUserBusiness _userBusiness;
 
-        public UserPasswordStore(IConfiguration configuration)
+        public UserPasswordStore(IConfiguration configuration, IUserBusiness userBusiness)
         {
             _encryptKey = configuration.GetValue<string>("EncryptKey");
+            _userBusiness = userBusiness;
         }
 
         /// <summary>
@@ -72,6 +76,34 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 throw new ArgumentNullException(nameof(user));
             }
             return Task.FromResult(user.PasswordHash);
+        }
+
+        /// <summary>
+        /// Changes a user's password after confirming the specified <paramref name="currentPassword"/> is correct,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user to retrieve the password hash for.</param>
+        /// <param name="currentPassword">The current password of the user.</param>
+        /// <param name="newPassword">The password that I want to update to.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+        /// <returns>A <see cref="Task{TResult}"/> that contains the password hash for the user.</returns>
+        public virtual async Task<bool> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            var model = new UserPasswordUpdateModel()
+            {
+                UserId = userId,
+                NewPassword = newPassword,
+                CurrentPassword = currentPassword,
+            };
+
+            return await _userBusiness.UpdatePasswordAsync(model);
         }
 
         /// <summary>

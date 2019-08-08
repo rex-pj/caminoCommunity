@@ -36,6 +36,11 @@ namespace Coco.Api.Framework.UserIdentity
         public IList<IPasswordValidator<ApplicationUser>> PasswordValidators { get; } = new List<IPasswordValidator<ApplicationUser>>();
         public IdentityOptions Options { get; set; }
         /// <summary>
+        /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
+        /// </summary>
+        /// <value>The <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.</value>
+        public IdentityErrorDescriber Describer { get; private set; }
+        /// <summary>
         /// The cancellation token used to cancel operations.
         /// </summary>
         protected virtual CancellationToken CancellationToken => CancellationToken.None;
@@ -59,7 +64,8 @@ namespace Coco.Api.Framework.UserIdentity
             IEnumerable<IUserValidator<ApplicationUser>> userValidators,
             IServiceProvider services,
             IConfiguration configuration,
-            ILookupNormalizer lookupNormalizer)
+            ILookupNormalizer lookupNormalizer,
+            IdentityErrorDescriber errors = null)
         {
             this.Options = optionsAccessor?.Value ?? new IdentityOptions();
             this.UserStore = userStore;
@@ -72,6 +78,7 @@ namespace Coco.Api.Framework.UserIdentity
             _lookupNormalizer = lookupNormalizer;
             _tokenEncryptKey = configuration["Jwt:SecretKey"];
             _tokenExpiryMinutes = Convert.ToInt32(configuration["Jwt:ExpiryMinutes"]);
+            Describer = errors ?? new IdentityErrorDescriber();
 
             if (userValidators != null)
             {
@@ -466,6 +473,52 @@ namespace Coco.Api.Framework.UserIdentity
             }
 
             return await UserStore.UpdateAuthenticationAsync(user, CancellationToken);
+        }
+
+        /// <summary>
+        /// Changes a user's password after confirming the specified <paramref name="currentPassword"/> is correct,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="user">The user whose password should be set.</param>
+        /// <param name="currentPassword">The current password to validate before changing.</param>
+        /// <param name="newPassword">The new password to set for the specified <paramref name="user"/>.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<ApiResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword)
+        {
+            ThrowIfDisposed();
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            try
+            {
+                var user = await UserStore.FindByIdAsync(userId, CancellationToken);
+                if (user != null && await VerifyPasswordAsync(user, currentPassword) != PasswordVerificationResult.Failed)
+                {
+                    var result = await UpdatePasswordHash(user, newPassword);
+                    if (!result.IsSuccess)
+                    {
+                        return result;
+                    }
+
+                    bool isSuccess = await UserPasswordStore.ChangePasswordAsync(user.Id, currentPassword, user.PasswordHash);
+
+                    return ApiResult<bool>.Success(isSuccess);
+                }
+            }
+            catch (Exception e)
+            {
+                return ApiResult<bool>.Failed(new ApiError()
+                {
+                    Description = e.Message
+                });
+            }
+
+            return ApiResult.Failed(Describer.PasswordMismatch());
         }
 
         /// <summary>

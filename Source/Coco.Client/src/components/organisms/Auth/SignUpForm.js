@@ -16,7 +16,7 @@ const Textbox = styled(TextboxSecondary)`
   border: 1px solid ${p => p.theme.color.primaryLight};
   background-color: ${p => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.lighter};
+  color: ${p => p.theme.color.dark};
   padding: ${p => p.theme.size.tiny};
 
   ::placeholder {
@@ -38,7 +38,7 @@ const Selection = styled(SelectionSecondary)`
   border: 1px solid ${p => p.theme.color.primaryLight};
   background-color: ${p => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.lighter};
+  color: ${p => p.theme.color.dark};
   padding: 0 ${p => p.theme.size.tiny};
   font-size: ${p => p.theme.fontSize.small};
 
@@ -83,7 +83,7 @@ const BirthDateSelector = styled(DaySelector)`
     border-radius: ${p => p.theme.size.normal};
     border: 1px solid ${p => p.theme.color.primaryLight};
     background-color: ${p => p.theme.rgbaColor.darkLight};
-    color: ${p => p.theme.color.lighter};
+    color: ${p => p.theme.color.dark};
     font-size: ${p => p.theme.fontSize.small};
   }
 

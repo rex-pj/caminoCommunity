@@ -9,6 +9,7 @@ namespace Coco.Api.Framework.MappingProfiles
         public UserMappingProfile()
         {
             CreateMap<ApplicationUser, UserInfoModel>();
+            CreateMap<ApplicationUser, UserModel>();
             CreateMap<UserFullModel, UserInfoExt>();
             CreateMap<UserModel, ApplicationUser>();
             CreateMap<UserLoggedInModel, ApplicationUser>();

@@ -51,7 +51,7 @@ class SignUpPage extends Component {
           if (this._isMounted) {
             this.setState({ isFormEnabled: true });
           }
-          this.props.notifyError(error, this.context.user.lang);
+          this.props.notifyError(error, this.context.lang);
         });
     }
   };
