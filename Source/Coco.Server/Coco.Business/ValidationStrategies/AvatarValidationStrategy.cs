@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
+using Coco.Common.Exceptions;
 using Coco.Common.Utils;
 using Coco.Entities.Model.General;
 
@@ -8,11 +11,6 @@ namespace Coco.Business.ValidationStrategies
 {
     public class AvatarValidationStrategy : IValidationStrategy
     {
-        public AvatarValidationStrategy()
-        {
-            Errors = new List<ErrorObject>();
-        }
-
         public IEnumerable<ErrorObject> Errors { get; set; }
 
         public bool IsValid<T>(T value)
@@ -21,16 +19,24 @@ namespace Coco.Business.ValidationStrategies
 
             if (string.IsNullOrEmpty(data.PhotoUrl))
             {
-                return false;
+                Errors = GetErrors(new ArgumentNullException(data.PhotoUrl));
             }
 
             var image = ImageUtils.Base64ToImage(data.PhotoUrl);
-            if(image.Width < 100 || image.Height < 100)
+            if (image.Width < 100 || image.Height < 100)
             {
-                return false;
+                Errors = GetErrors(new PhotoSizeInvalidException(nameof(data.PhotoUrl)));
             }
 
-            return true;
+            return Errors == null || !Errors.Any();
+        }
+
+        public IEnumerable<ErrorObject> GetErrors(Exception e)
+        {
+            yield return new ErrorObject
+            {
+                Message = e.Message
+            };
         }
     }
 }

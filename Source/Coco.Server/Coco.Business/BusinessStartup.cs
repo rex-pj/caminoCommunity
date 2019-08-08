@@ -32,6 +32,8 @@ namespace Coco.Business
 
         public void RegiserTypes(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(UserMappingProfile));
+
             services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
@@ -45,8 +47,6 @@ namespace Coco.Business
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<ValidationStrategyContext>();
-
-            services.AddAutoMapper(typeof(UserMappingProfile));
 
             _dalStartup.RegiserTypes(services);
             _userDalStartup.RegiserTypes(services);

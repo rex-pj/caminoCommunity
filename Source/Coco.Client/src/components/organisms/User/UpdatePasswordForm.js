@@ -121,11 +121,17 @@ export default class extends Component {
       }
 
       this.props.onUpdate(profileData);
+
+      this.formData = PasswordUpdateModel;
+
+      this.setState({
+        shouldRender: true
+      });
     }
   };
 
   render() {
-    const { oldPassword, password, confirmPassword } = this.formData;
+    const { currentPassword, newPassword, confirmPassword } = this.formData;
     const isFormValid = this.checkIsFormValid();
 
     return (
@@ -136,29 +142,26 @@ export default class extends Component {
             <Fragment>
               <FormGroup>
                 <LabelAndTextbox
-                  autoComplete={false}
                   label="Mật khẩu hiện tại"
-                  name="oldPassword"
+                  name="currentPassword"
                   type="password"
                   placeholder="Nhập mật khẩu hiện tại"
-                  value={oldPassword.value}
+                  value={currentPassword.value}
                   onChange={this.onTextboxChange}
                 />
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
-                  autoComplete={false}
                   label="Mật khẩu mới"
-                  name="password"
+                  name="newPassword"
                   placeholder="Nhập mật khẩu mới"
-                  value={password.value}
+                  value={newPassword.value}
                   type="password"
                   onChange={this.onTextboxChange}
                 />
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
-                  autoComplete={false}
                   label="Tên hiển thị"
                   name="confirmPassword"
                   placeholder="Xác nhận lại mật khẩu mới"

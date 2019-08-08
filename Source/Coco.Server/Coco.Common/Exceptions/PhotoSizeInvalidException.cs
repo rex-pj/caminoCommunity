@@ -1,6 +1,5 @@
 ﻿using Coco.Common.Const;
 using System;
-using System.Runtime.Serialization;
 
 namespace Coco.Common.Exceptions
 {

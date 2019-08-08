@@ -88,9 +88,14 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public async Task<UserProfileUpdateModel> UpdateUserProfileAsync(UserProfileUpdateModel model)
         {
-            if (model.Id <= 0)
+            _validationStrategyContext.SetStrategy(new UserProfileUpdateValidationStratergy());
+            bool canUpdate = _validationStrategyContext.Validate(model);
+            if (!canUpdate)
             {
-                throw new ArgumentNullException("User Id");
+                foreach(var item in _validationStrategyContext.Errors)
+                {
+                    throw new ArgumentNullException(item.Message);
+                }
             }
 
             var user = await _userRepository.FindAsync(model.Id);
@@ -123,21 +128,14 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
         {
-            try
-            {
-                username = username.ToLower();
+            username = username.ToLower();
 
-                var user = await _userRepository
-                    .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                    .Select(UserMapping.SelectorUserModel)
-                    .FirstOrDefaultAsync();
+            var user = await _userRepository
+                .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
+                .Select(UserMapping.SelectorUserModel)
+                .FirstOrDefaultAsync();
 
-                return user;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return user;
         }
 
         public UserModel Find(long id)

@@ -14,7 +14,7 @@ namespace Coco.Api.Framework.UserIdentity.Contracts
         Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken);
         Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default);
         Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
-        Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken);
+        Task<TUser> FindByIdAsync(long userId, CancellationToken cancellationToken);
         Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
         Task<ApiResult> UpdateAuthenticationAsync(TUser user, CancellationToken cancellationToken = default);
         TUser FindByIdentityId(string userIdentityId, CancellationToken cancellationToken);

@@ -71,7 +71,8 @@ class App extends Component {
       <SessionContext.Provider
         value={{
           login: this.login,
-          isLogin: this.state.isLogin
+          isLogin: this.state.isLogin,
+          lang: this.state.lang
         }}
       >
         <ApolloProvider client={identityClient}>

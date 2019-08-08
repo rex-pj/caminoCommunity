@@ -17,5 +17,6 @@ namespace Coco.Business.Contracts
         Task<UserModel> FindByIdAsync(long id);
         Task<UserFullModel> GetFullByIdAsync(long id);
         Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model);
+        Task<bool> UpdatePasswordAsync(UserPasswordUpdateModel model);
     }
 }

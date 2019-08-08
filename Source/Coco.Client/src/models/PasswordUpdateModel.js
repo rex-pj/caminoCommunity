@@ -1,5 +1,5 @@
 let model = {
-  oldPassword: {
+  currentPassword: {
     value: "",
     validation: {
       isRequired: true,
@@ -7,7 +7,7 @@ let model = {
     },
     isValid: false
   },
-  password: {
+  newPassword: {
     value: "",
     validation: {
       isRequired: true,
@@ -20,7 +20,7 @@ let model = {
     validation: {
       isRequired: true,
       minLength: 6,
-      sameRefProperty: "password"
+      sameRefProperty: "newPassword"
     },
     isValid: false
   }

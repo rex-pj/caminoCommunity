@@ -25,5 +25,6 @@ namespace Coco.Api.Framework.UserIdentity.Contracts
         Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId);
         Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
         Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string userIdentityId, string token);
+        Task<ApiResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword);
     }
 }

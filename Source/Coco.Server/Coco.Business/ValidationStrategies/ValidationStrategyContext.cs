@@ -1,18 +1,24 @@
 ﻿using Coco.Business.ValidationStrategies.Interfaces;
+using Coco.Business.ValidationStrategies.Models;
+using System.Collections.Generic;
 
 namespace Coco.Business.ValidationStrategies
 {
     public class ValidationStrategyContext
     {
         private IValidationStrategy _validationStrategy;
+        public IEnumerable<ErrorObject> Errors { get; set; }
 
         public ValidationStrategyContext()
-        { }
+        {
+            Errors = new List<ErrorObject>();
+        }
 
         // Usually, the Context accepts a strategy through the constructor, but
         // also provides a setter to change it at runtime.
         public ValidationStrategyContext(IValidationStrategy validationStrategy)
         {
+            Errors = new List<ErrorObject>();
             _validationStrategy = validationStrategy;
         }
 
@@ -28,6 +34,7 @@ namespace Coco.Business.ValidationStrategies
         {
             var result = _validationStrategy.IsValid(value);
 
+            Errors = _validationStrategy.Errors;
             return result;
         }
     }

@@ -36,6 +36,10 @@ namespace Api.Identity.Mutations
             FieldAsync(typeof(ApiResultType<UserProfileUpdateResultType, UserProfileUpdateModel>), "updateUserProfile",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserProfileUpdateInputType>> { Name = "user" }),
                 resolve: async context => await userResolver.UpdateUserProfileAsync(context));
+
+            FieldAsync(typeof(ApiResultType), "updatePassword",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserPasswordUpdateInputType>> { Name = "criterias" }),
+                resolve: async context => await userResolver.UpdatePasswordAsync(context));
         }
     }
 }

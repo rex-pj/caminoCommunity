@@ -23,6 +23,7 @@ namespace Coco.Business.ValidationStrategies
 
             if (!(value is string valueAsString))
             {
+                Errors = GetErrors(new ArgumentNullException(nameof(valueAsString)));
                 return false;
             }
 
@@ -41,6 +42,7 @@ namespace Coco.Business.ValidationStrategies
 
             if (!digitFound)
             {
+                Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(digitFound)}"));
                 return false;
             }
 
@@ -50,6 +52,7 @@ namespace Coco.Business.ValidationStrategies
                     || char.IsWhiteSpace(c)
                     || AdditionalPhoneNumberCharacters.IndexOf(c) != -1))
                 {
+                    Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(valueAsString)}"));
                     return false;
                 }
             }
@@ -115,6 +118,14 @@ namespace Coco.Business.ValidationStrategies
             }
 
             return true;
+        }
+
+        public IEnumerable<ErrorObject> GetErrors(Exception exception)
+        {
+            yield return new ErrorObject()
+            {
+                Message = exception.Message
+            };
         }
     }
 }

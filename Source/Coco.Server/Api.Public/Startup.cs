@@ -58,6 +58,7 @@ namespace Api.Public
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
             FrameworkStartup.AddCustomStores(services);
+            _bootstrapper.RegiserTypes(services);
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -76,8 +77,6 @@ namespace Api.Public
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
             });
-
-            _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
             services.AddSingleton<UserResolver>()

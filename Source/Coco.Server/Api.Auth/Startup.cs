@@ -10,7 +10,6 @@ using GraphQL;
 using Api.Identity.Mutations;
 using GraphQL.Types;
 using Api.Identity.GraphQLSchemas;
-using Api.Identity.GraphQLTypes.ResultTypes;
 using Api.Identity.Queries;
 using Coco.Api.Framework;
 using Api.Identity.Resolvers;
@@ -56,7 +55,6 @@ namespace Api.Identity
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
             FrameworkStartup.AddCustomStores(services);
-
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI

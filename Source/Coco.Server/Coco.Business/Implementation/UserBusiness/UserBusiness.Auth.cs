@@ -1,5 +1,6 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Mapping;
+using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Model.User;
 using System;
@@ -48,6 +49,28 @@ namespace Coco.Business.Implementation.UserBusiness
             await _identityContext.SaveChangesAsync();
 
             return model;
+        }
+
+        public async Task<bool> UpdatePasswordAsync(UserPasswordUpdateModel model)
+        {
+            _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
+            bool canUpdate = _validationStrategyContext.Validate(model);
+            if (!canUpdate)
+            {
+                foreach (var item in _validationStrategyContext.Errors)
+                {
+                    throw new ArgumentException(item.Message);
+                }
+            }
+
+            var user = await _userRepository.FindAsync(model.UserId);
+
+            user.Password = model.NewPassword;
+
+            _userRepository.Update(user);
+            await _identityContext.SaveChangesAsync();
+
+            return true;
         }
         #endregion
 
