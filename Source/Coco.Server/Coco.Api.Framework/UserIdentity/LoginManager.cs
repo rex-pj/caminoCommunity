@@ -10,15 +10,22 @@ namespace Coco.Api.Framework.UserIdentity
     public class LoginManager : ILoginManager<ApplicationUser>
     {
         #region Fields/Properties
-        //private readonly IRoleBusiness _roleBusiness;
         public IdentityOptions Options { get; set; }
         private readonly IUserManager<ApplicationUser> _userManager;
+        /// <summary>
+        /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
+        /// </summary>
+        /// <value>The <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.</value>
+        public IdentityErrorDescriber Describer { get; private set; }
         #endregion
         #region Ctor
-        public LoginManager(IUserManager<ApplicationUser> userManager, IOptions<IdentityOptions> optionsAccessor)
+        public LoginManager(IUserManager<ApplicationUser> userManager, 
+            IOptions<IdentityOptions> optionsAccessor,
+            IdentityErrorDescriber errors = null)
         {
             this.Options = optionsAccessor?.Value ?? new IdentityOptions();
             _userManager = userManager;
+            Describer = errors ?? new IdentityErrorDescriber();
         }
         #endregion
 
@@ -40,7 +47,13 @@ namespace Coco.Api.Framework.UserIdentity
                 return new ApiResult();
             }
 
-            return await LoginAsync(user, password);
+            var result = await LoginAsync(user, password);
+
+            if (result.IsSuccess)
+            {
+                return ApiResult<LoginResult>.Success();
+            }
+            return ApiResult.Failed(Describer.PasswordMismatch());
         }
 
 
@@ -61,8 +74,7 @@ namespace Coco.Api.Framework.UserIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var attempt = await CheckPasswordSignInAsync(user, password);
-            return attempt;
+            return await CheckPasswordSignInAsync(user, password);
         }
 
 
@@ -82,9 +94,7 @@ namespace Coco.Api.Framework.UserIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var result = await _userManager.CheckPasswordAsync(user, password);
-
-            return result;
+            return await _userManager.CheckPasswordAsync(user, password);
         }
     }
 }

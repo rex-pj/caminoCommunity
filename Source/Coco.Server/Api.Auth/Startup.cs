@@ -13,6 +13,9 @@ using Api.Identity.GraphQLSchemas;
 using Api.Identity.Queries;
 using Coco.Api.Framework;
 using Api.Identity.Resolvers;
+using AutoMapper;
+using Coco.Api.Framework.MappingProfiles;
+using Coco.Business.MappingProfiles;
 
 namespace Api.Identity
 {
@@ -54,6 +57,7 @@ namespace Api.Identity
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 

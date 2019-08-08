@@ -7,6 +7,7 @@ using Coco.Api.Framework.UserIdentity.Validators;
 using Coco.Api.Framework.UserIdentity.Stores;
 using AutoMapper;
 using Coco.Api.Framework.MappingProfiles;
+using Coco.Business.MappingProfiles;
 
 namespace Coco.Api.Framework
 {
@@ -14,8 +15,6 @@ namespace Coco.Api.Framework
     {
         public static void AddCustomStores(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(UserMappingProfile));
-
             services
                 .AddTransient<ILookupNormalizer, LookupNormalizer>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
