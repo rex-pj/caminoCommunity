@@ -13,7 +13,9 @@ using Api.Identity.GraphQLSchemas;
 using Api.Identity.Queries;
 using Coco.Api.Framework;
 using Api.Identity.Resolvers;
-using Microsoft.Extensions.Hosting;
+using AutoMapper;
+using Coco.Api.Framework.MappingProfiles;
+using Coco.Business.MappingProfiles;
 
 namespace Api.Identity
 {
@@ -50,11 +52,12 @@ namespace Api.Identity
             });
 
             InvokeInitialStartup(services, _configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
@@ -73,7 +76,7 @@ namespace Api.Identity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -90,10 +93,7 @@ namespace Api.Identity
                 .UseAuthentication()
                 .UseHttpsRedirection()
                 .UseGraphiQl("/api/graphql")
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+                .UseMvc();
         }
     }
 }

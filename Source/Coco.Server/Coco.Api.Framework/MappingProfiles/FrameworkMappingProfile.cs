@@ -4,9 +4,9 @@ using Coco.Entities.Model.User;
 
 namespace Coco.Api.Framework.MappingProfiles
 {
-    public class UserMappingProfile : Profile
+    public class FrameworkMappingProfile : Profile
     {
-        public UserMappingProfile()
+        public FrameworkMappingProfile()
         {
             CreateMap<ApplicationUser, UserInfoModel>();
             CreateMap<ApplicationUser, UserModel>();

@@ -13,8 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
-using AutoMapper;
-using Coco.Business.MappingProfiles;
 
 namespace Coco.Business
 {
@@ -32,8 +30,6 @@ namespace Coco.Business
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(UserMappingProfile));
-
             services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()

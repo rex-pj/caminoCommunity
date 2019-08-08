@@ -56,6 +56,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 }
 
                 var userModel = _mapper.Map<UserModel>(user);
+                userModel.Password = user.PasswordHash;
 
                 _userBusiness.Add(userModel);
 

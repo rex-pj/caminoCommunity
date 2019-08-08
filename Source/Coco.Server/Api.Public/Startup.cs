@@ -4,9 +4,12 @@ using Api.Public.GraphQLTypes.ResultTypes;
 using Api.Public.Mutations;
 using Api.Public.Queries;
 using Api.Public.Resolvers;
+using AutoMapper;
 using Coco.Api.Framework;
+using Coco.Api.Framework.MappingProfiles;
 using Coco.Api.Framework.UserIdentity.Entities;
 using Coco.Business;
+using Coco.Business.MappingProfiles;
 using Coco.Contract;
 using GraphiQl;
 using GraphQL;
@@ -60,6 +63,7 @@ namespace Api.Public
         {
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
 
             services.Configure<IdentityOptions>(options =>
             {
