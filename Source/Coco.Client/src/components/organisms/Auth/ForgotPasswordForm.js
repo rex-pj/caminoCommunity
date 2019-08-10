@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import SigninModel from "../../../models/SigninModel";
+import ForgotPasswordModel from "../../../models/ForgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
 
 const Textbox = styled(TextboxSecondary)`
@@ -62,15 +61,6 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 `;
 
-const ForgotPasswordRow = styled(FormRow)`
-  margin-top: ${p => p.theme.size.exTiny};
-  font-size: ${p => p.theme.fontSize.small};
-  a {
-    color: ${p => p.theme.color.light};
-  }
-  text-align: center;
-`;
-
 export default class extends Component {
   constructor(props) {
     super(props);
@@ -81,7 +71,7 @@ export default class extends Component {
       shouldRender: false
     };
 
-    this.formData = SigninModel;
+    this.formData = ForgotPasswordModel;
   }
 
   // #region Life Cycle
@@ -130,7 +120,7 @@ export default class extends Component {
     return isFormValid;
   };
 
-  onSignin = e => {
+  onUpdate = e => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -146,12 +136,12 @@ export default class extends Component {
     }
 
     if (!!isFormValid) {
-      const signinData = {};
+      const requestUpdateData = {};
       for (const formIdentifier in this.formData) {
-        signinData[formIdentifier] = this.formData[formIdentifier].value;
+        requestUpdateData[formIdentifier] = this.formData[formIdentifier].value;
       }
 
-      this.props.onSignin(signinData);
+      this.props.onUpdate(requestUpdateData);
     }
   };
 
@@ -159,14 +149,10 @@ export default class extends Component {
     const isFormValid = this.checkIsFormValid();
 
     return (
-      <form onSubmit={e => this.onSignin(e)} method="POST">
+      <form onSubmit={e => this.onUpdate(e)} method="POST">
         <div className="row no-gutters">
           <div className="col col-12 col-sm-7">
-            <AuthBanner
-              imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-              title="Đăng Nhập"
-              instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
-            />
+            <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
           </div>
           <div className="col col-12 col-sm-5">
             <AuthNavigation />
@@ -177,16 +163,29 @@ export default class extends Component {
                   placeholder="Nhập e-mail"
                   type="email"
                   name="username"
+                  autoComplete="off"
                   onChange={e => this.handleInputChange(e)}
                   onBlur={e => this.handleInputBlur(e)}
                 />
               </FormRow>
               <FormRow>
-                <Label>Mật khẩu</Label>
+                <Label>Mật khẩu mới</Label>
                 <Textbox
-                  placeholder="Nhập mật khẩu"
+                  placeholder="Nhập mật khẩu mới"
                   type="password"
                   name="password"
+                  autoComplete="off"
+                  onChange={e => this.handleInputChange(e)}
+                  onBlur={e => this.handleInputBlur(e)}
+                />
+              </FormRow>
+              <FormRow>
+                <Label>Xác nhận mật khẩu mới</Label>
+                <Textbox
+                  placeholder="Nhập lại mật khẩu mới"
+                  type="password"
+                  name="confirmPassword"
+                  autoComplete="off"
                   onChange={e => this.handleInputChange(e)}
                   onBlur={e => this.handleInputBlur(e)}
                 />
@@ -196,12 +195,9 @@ export default class extends Component {
                   disabled={!this.props.isFormEnabled || !isFormValid}
                   type="submit"
                 >
-                  Đăng Nhập
+                  Phục Hồi
                 </SubmitButton>
               </FormFooter>
-              <ForgotPasswordRow>
-                <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
-              </ForgotPasswordRow>
             </PanelBody>
           </div>
         </div>

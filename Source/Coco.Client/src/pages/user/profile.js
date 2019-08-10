@@ -161,7 +161,6 @@ class Profile extends Component {
         client={defaultClient}
       >
         {({ loading, error, data, refetch }) => {
-          this._refetch = refetch;
           if (loading) {
             return <Loading>Loading</Loading>;
           }
@@ -171,6 +170,7 @@ class Profile extends Component {
 
           const userInfo = this.parseUserInfo(data);
 
+          this._refetch = refetch;
           return (
             <Fragment>
               <CoverPageBlock>

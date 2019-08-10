@@ -142,16 +142,14 @@ class ChangeAvatarModal extends Component {
 
     const isValid = image.width > 100 && image.height > 100;
 
+    let isSuccess = false;
     if (canEdit && isValid) {
-      this.setState({
-        isDisabled: false
-      });
-      return true;
+      isSuccess = true;
     }
     this.setState({
       isDisabled: true
     });
-    return false;
+    return isSuccess;
   };
 
   onChangeImage = e => {

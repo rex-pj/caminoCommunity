@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
+import ConfirmToRedirectModal from "./ConfirmToRedirectModal";
 import ChangeAvatarModal from "./ChangeAvatarModal";
 import { connect } from "react-redux";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
@@ -104,6 +105,35 @@ class Modal extends Component {
 
     const { modalType, children, title } = payload;
 
+    let modal = null;
+    if (modalType === "change-avatar") {
+      modal = (
+        <ChangeAvatarModal
+          title={title}
+          data={payload}
+          closeModal={this.closeModal}
+          onExecute={this.onExecute}
+        >
+          {children}
+        </ChangeAvatarModal>
+      );
+    } else if (modalType === "confirm-redirect") {
+      modal = (
+        <ConfirmToRedirectModal
+          title={title}
+          data={payload}
+          closeModal={this.closeModal}
+          onExecute={this.onExecute}
+        >
+          {children}
+        </ConfirmToRedirectModal>
+      );
+    } else {
+      modal = (
+        <DefaultModal closeModal={this.closeModal}>{children}</DefaultModal>
+      );
+    }
+
     return (
       <Fragment>
         <Root className={className}>
@@ -114,20 +144,7 @@ class Modal extends Component {
                 <FontAwesomeIcon icon="times" />
               </CloseButton>
             </PanelHeading>
-            {modalType === "change-avatar" ? (
-              <ChangeAvatarModal
-                title={title}
-                data={payload}
-                closeModal={this.closeModal}
-                onExecute={this.onExecute}
-              >
-                {children}
-              </ChangeAvatarModal>
-            ) : (
-              <DefaultModal closeModal={this.closeModal}>
-                {children}
-              </DefaultModal>
-            )}
+            {modal}
           </Scroll>
         </Root>
         {!!showBackdrop ? <Backdrop /> : null}

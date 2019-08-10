@@ -37,7 +37,7 @@ namespace Api.Identity.Mutations
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserProfileUpdateInputType>> { Name = "user" }),
                 resolve: async context => await userResolver.UpdateUserProfileAsync(context));
 
-            FieldAsync(typeof(ApiResultType), "updatePassword",
+            FieldAsync<ApiResultType<UserTokenResultType, UserTokenResult>>("updatePassword",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserPasswordUpdateInputType>> { Name = "criterias" }),
                 resolve: async context => await userResolver.UpdatePasswordAsync(context));
         }

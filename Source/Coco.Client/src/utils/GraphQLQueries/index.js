@@ -212,6 +212,21 @@ export const UPDATE_USER_PASSWORD = gpl`
       errors {
         code,
         description
+      },
+      result {
+        authenticationToken
+      },
+    }
+  }
+`;
+
+export const FORGOT_PASSWORD = gpl`
+  mutation ForgotPassword($criterias: ForgotPasswordInputType!){
+    forgotPassword(criterias: $criterias){
+      isSuccess,
+      errors {
+        code,
+        description
       }
     }
   }

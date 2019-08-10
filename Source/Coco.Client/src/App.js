@@ -135,6 +135,13 @@ class App extends Component {
                 />
                 <AuthLayout
                   exact={true}
+                  path="/auth/forgot-password"
+                  component={() => (
+                    <AsyncPage page="./pages/auth/forgot-password" />
+                  )}
+                />
+                <AuthLayout
+                  exact={true}
                   path="/auth/signin"
                   component={() => <AsyncPage page="./pages/auth/signin" />}
                 />

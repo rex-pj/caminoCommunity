@@ -6,6 +6,7 @@ using Api.Public.Queries;
 using Api.Public.Resolvers;
 using AutoMapper;
 using Coco.Api.Framework;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.MappingProfiles;
 using Coco.Api.Framework.UserIdentity.Entities;
 using Coco.Business;
@@ -91,7 +92,7 @@ namespace Api.Public
                 .AddSingleton<UserQuery>()
                 .AddSingleton<ListGraphType>()
                 .AddSingleton<RegisterResultType>()
-                .AddSingleton<SigninResultType>()
+                .AddSingleton<UserTokenResultType>()
                 .AddSingleton<FullUserInfoResultType>();
 
             var sp = services.BuildServiceProvider();
