@@ -111,12 +111,11 @@ namespace Coco.Api.Framework.UserIdentity.Stores
 
                 var userInfo = _mapper.Map<UserInfoModel>(user);
                 userInfo.UserIdentityId = userIdentityId;
-                return new ApiResult<LoginResult>(true)
+                return new ApiResult<UserTokenResult>(true)
                 {
-                    Result = new LoginResult()
+                    Result = new UserTokenResult()
                     {
                         AuthenticationToken = result.AuthenticationToken,
-                        Expiration = result.Expiration,
                         UserInfo = userInfo
                     }
                 };
@@ -207,8 +206,10 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             }
 
             var userEntity = await _userBusiness.FindUserByUsername(normalizedUserName.ToLower(), true);
+            var result = _mapper.Map<ApplicationUser>(userEntity);
+            result.UserName = result.Email;
 
-            return await Task.FromResult(_mapper.Map<ApplicationUser>(userEntity));
+            return await Task.FromResult(result);
         }
 
         public ApplicationUser FindByIdentityId(string userIdentityId, CancellationToken cancellationToken)

@@ -51,9 +51,9 @@ namespace Coco.Api.Framework.UserIdentity
 
             if (result.IsSuccess)
             {
-                return ApiResult<LoginResult>.Success();
+                return result;
             }
-            return ApiResult.Failed(Describer.PasswordMismatch());
+            return ApiResult<UserTokenResult>.Failed(Describer.PasswordMismatch(), new UserTokenResult());
         }
 
 
@@ -94,6 +94,7 @@ namespace Coco.Api.Framework.UserIdentity
                 throw new ArgumentNullException(nameof(user));
             }
 
+            user.PasswordHash = user.Password;
             return await _userManager.CheckPasswordAsync(user, password);
         }
     }

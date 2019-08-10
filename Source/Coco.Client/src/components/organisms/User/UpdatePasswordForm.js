@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
@@ -50,140 +51,136 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default withRouter(
+  class extends Component {
+    constructor(props) {
+      super(props);
 
-    this._isMounted = false;
-
-    this.formData = PasswordUpdateModel;
-    this.state = {
-      shouldRender: false
-    };
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  onTextboxChange = e => {
-    this.formData = this.formData || {};
-    const { name, value } = e.target;
-
-    // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
-    this.formData[name].value = value;
-
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
-    }
-  };
-
-  checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  onUpdate = e => {
-    e.preventDefault();
-
-    let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        this.props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
-        );
-      }
-    }
-
-    if (!!isFormValid) {
-      const profileData = {};
-      for (const formIdentifier in this.formData) {
-        profileData[formIdentifier] = this.formData[formIdentifier].value;
-      }
-
-      this.props.onUpdate(profileData);
+      this._isMounted = false;
 
       this.formData = PasswordUpdateModel;
-
-      this.setState({
-        shouldRender: true
-      });
+      this.state = {
+        shouldRender: false
+      };
     }
-  };
 
-  render() {
-    const { currentPassword, newPassword, confirmPassword } = this.formData;
-    const isFormValid = this.checkIsFormValid();
+    // #region Life Cycle
+    componentDidMount() {
+      this._isMounted = true;
+    }
 
-    return (
-      <Fragment>
-        <Heading>Thay đổi mật khẩu</Heading>
-        <MainPanel>
-          <form onSubmit={e => this.onUpdate(e)} method="POST">
-            <Fragment>
-              <FormGroup>
-                <LabelAndTextbox
-                  label="Mật khẩu hiện tại"
-                  name="currentPassword"
-                  type="password"
-                  placeholder="Nhập mật khẩu hiện tại"
-                  value={currentPassword.value}
-                  onChange={this.onTextboxChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <LabelAndTextbox
-                  label="Mật khẩu mới"
-                  name="newPassword"
-                  placeholder="Nhập mật khẩu mới"
-                  value={newPassword.value}
-                  type="password"
-                  onChange={this.onTextboxChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <LabelAndTextbox
-                  label="Tên hiển thị"
-                  name="confirmPassword"
-                  placeholder="Xác nhận lại mật khẩu mới"
-                  value={confirmPassword.value}
-                  type="password"
-                  onChange={this.onTextboxChange}
-                />
-              </FormGroup>
-            </Fragment>
-            <FormFooter>
-              <SubmitButton
-                type="submit"
-                size="sm"
-                disabled={!this.props.isFormEnabled || !isFormValid}
-              >
-                <FontAwesomeIcon icon="pencil-alt" />
-                Cập Nhật
-              </SubmitButton>
-            </FormFooter>
-          </form>
-        </MainPanel>
-      </Fragment>
-    );
+    componentWillUnmount() {
+      this._isMounted = false;
+    }
+    // #endregion Life Cycle
+
+    onTextboxChange = e => {
+      this.formData = this.formData || {};
+      const { name, value } = e.target;
+
+      // Validate when input
+      this.formData[name].isValid = checkValidity(this.formData, value, name);
+      this.formData[name].value = value;
+
+      if (!!this._isMounted) {
+        this.setState({
+          shouldRender: true
+        });
+      }
+    };
+
+    checkIsFormValid = () => {
+      let isFormValid = false;
+      for (let formIdentifier in this.formData) {
+        isFormValid = this.formData[formIdentifier].isValid;
+        if (!isFormValid) {
+          break;
+        }
+      }
+
+      return isFormValid;
+    };
+
+    onUpdate = e => {
+      e.preventDefault();
+
+      let isFormValid = true;
+      for (let formIdentifier in this.formData) {
+        isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+
+        if (!isFormValid) {
+          this.props.showValidationError(
+            "Thông tin bạn nhập có thể bị sai",
+            "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          );
+        }
+      }
+
+      if (!!isFormValid) {
+        const profileData = {};
+        for (const formIdentifier in this.formData) {
+          profileData[formIdentifier] = this.formData[formIdentifier].value;
+        }
+
+        this.props.onUpdate(profileData);
+      }
+    };
+
+    render() {
+      const { currentPassword, newPassword, confirmPassword } = this.formData;
+      const isFormValid = this.checkIsFormValid();
+
+      return (
+        <Fragment>
+          <Heading>Thay đổi mật khẩu</Heading>
+          <MainPanel>
+            <form onSubmit={e => this.onUpdate(e)} method="POST">
+              <Fragment>
+                <FormGroup>
+                  <LabelAndTextbox
+                    label="Mật khẩu hiện tại"
+                    name="currentPassword"
+                    type="password"
+                    placeholder="Nhập mật khẩu hiện tại"
+                    value={currentPassword.value}
+                    onChange={this.onTextboxChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <LabelAndTextbox
+                    label="Mật khẩu mới"
+                    name="newPassword"
+                    placeholder="Nhập mật khẩu mới"
+                    value={newPassword.value}
+                    type="password"
+                    onChange={this.onTextboxChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <LabelAndTextbox
+                    label="Tên hiển thị"
+                    name="confirmPassword"
+                    placeholder="Xác nhận lại mật khẩu mới"
+                    value={confirmPassword.value}
+                    type="password"
+                    onChange={this.onTextboxChange}
+                  />
+                </FormGroup>
+              </Fragment>
+              <FormFooter>
+                <SubmitButton
+                  type="submit"
+                  size="sm"
+                  disabled={!this.props.isFormEnabled || !isFormValid}
+                >
+                  <FontAwesomeIcon icon="pencil-alt" />
+                  Cập Nhật
+                </SubmitButton>
+              </FormFooter>
+            </form>
+          </MainPanel>
+        </Fragment>
+      );
+    }
   }
-}
+);

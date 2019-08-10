@@ -16,6 +16,7 @@ using Api.Identity.Resolvers;
 using AutoMapper;
 using Coco.Api.Framework.MappingProfiles;
 using Coco.Business.MappingProfiles;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 
 namespace Api.Identity
 {
@@ -66,6 +67,7 @@ namespace Api.Identity
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
                 .AddSingleton<UserMutation>()
                 .AddSingleton<UserQuery>()
+                .AddSingleton<UserTokenResultType>()
                 .AddSingleton<ListGraphType>();
 
             var sp = services.BuildServiceProvider();

@@ -75,6 +75,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
             return Task.FromResult(user.PasswordHash);
         }
 
@@ -87,7 +88,7 @@ namespace Coco.Api.Framework.UserIdentity.Stores
         /// <param name="newPassword">The password that I want to update to.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the password hash for the user.</returns>
-        public virtual async Task<bool> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -103,7 +104,12 @@ namespace Coco.Api.Framework.UserIdentity.Stores
                 CurrentPassword = currentPassword,
             };
 
-            return await _userBusiness.UpdatePasswordAsync(model);
+            var result = await _userBusiness.UpdatePasswordAsync(model);
+            return new UserTokenResult()
+            {
+                IsSuccess = true,
+                AuthenticationToken = result.AuthenticationToken
+            };
         }
 
         /// <summary>

@@ -5,9 +5,6 @@ using Coco.Api.Framework.UserIdentity.Contracts;
 using Microsoft.AspNetCore.Http;
 using Coco.Api.Framework.UserIdentity.Validators;
 using Coco.Api.Framework.UserIdentity.Stores;
-using AutoMapper;
-using Coco.Api.Framework.MappingProfiles;
-using Coco.Business.MappingProfiles;
 
 namespace Coco.Api.Framework
 {

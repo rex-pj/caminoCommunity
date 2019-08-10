@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using Coco.Api.Framework.Models;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Coco.Api.Framework.UserIdentity.Contracts
@@ -14,6 +15,6 @@ namespace Coco.Api.Framework.UserIdentity.Contracts
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, returning the password hash for the specified <paramref name="user"/>.</returns>
         Task<string> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken);
         string AddSaltToPassword(TUser user, string password);
-        Task<bool> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken));
+        Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
     }
 }

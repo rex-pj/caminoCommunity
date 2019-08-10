@@ -374,7 +374,7 @@ namespace Coco.Api.Framework.UserIdentity
             }
 
             var success = verifyResult != PasswordVerificationResult.Failed;
-            return new ApiResult(success);
+            return ApiResult.Success(success);
         }
 
         private void ModifyUserAuthenticate(ApplicationUser user)
@@ -499,26 +499,29 @@ namespace Coco.Api.Framework.UserIdentity
                 var user = await UserStore.FindByIdAsync(userId, CancellationToken);
                 if (user != null && await VerifyPasswordAsync(user, currentPassword) != PasswordVerificationResult.Failed)
                 {
-                    var result = await UpdatePasswordHash(user, newPassword);
-                    if (!result.IsSuccess)
+                    var data = await UpdatePasswordHash(user, newPassword);
+                    if (!data.IsSuccess)
                     {
-                        return result;
+                        return data;
                     }
 
-                    bool isSuccess = await UserPasswordStore.ChangePasswordAsync(user.Id, currentPassword, user.PasswordHash);
+                    var result = await UserPasswordStore.ChangePasswordAsync(user.Id, currentPassword, user.PasswordHash);
 
-                    return ApiResult<bool>.Success(isSuccess);
+                    return ApiResult<UserTokenResult>.Success(result);
                 }
+
+                return ApiResult.Failed(Describer.PasswordMismatch());
             }
             catch (Exception e)
             {
-                return ApiResult<bool>.Failed(new ApiError()
+                return ApiResult<UserTokenResult>.Failed(new ApiError()
                 {
                     Description = e.Message
+                }, new UserTokenResult()
+                {
+                    IsSuccess = false
                 });
             }
-
-            return ApiResult.Failed(Describer.PasswordMismatch());
         }
 
         /// <summary>

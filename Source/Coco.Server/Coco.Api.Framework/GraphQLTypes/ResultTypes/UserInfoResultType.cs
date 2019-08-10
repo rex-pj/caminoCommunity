@@ -1,7 +1,7 @@
 ﻿using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
-namespace Api.Public.GraphQLTypes.ResultTypes
+namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
     public class UserInfoResultType : ObjectGraphType<UserInfoModel>
     {

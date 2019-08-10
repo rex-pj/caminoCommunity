@@ -51,7 +51,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task<bool> UpdatePasswordAsync(UserPasswordUpdateModel model)
+        public async Task<UserLoggedInModel> UpdatePasswordAsync(UserPasswordUpdateModel model)
         {
             _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -70,7 +70,9 @@ namespace Coco.Business.Implementation.UserBusiness
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 
-            return true;
+            return new UserLoggedInModel() {
+                AuthenticationToken = user.AuthenticatorToken
+            };
         }
         #endregion
 

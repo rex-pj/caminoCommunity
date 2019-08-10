@@ -4,8 +4,9 @@ import { Mutation } from "react-apollo";
 import UpdatePasswordForm from "../../components/organisms/User/UpdatePasswordForm";
 import { connect } from "react-redux";
 import UserContext from "../../utils/Context/UserContext";
-import { raiseError, raiseSuccess } from "../../store/commands";
+import { raiseError, raiseSuccess, openModal } from "../../store/commands";
 import { UPDATE_USER_PASSWORD } from "../../utils/GraphQLQueries";
+import AuthService from "../../services/AuthService";
 
 class UserUpdate extends Component {
   constructor(props) {
@@ -25,6 +26,15 @@ class UserUpdate extends Component {
   }
   // #endregion Life Cycle
 
+  onUpdateConfirmation = () => {
+    this.props.openConfirmRedirectModal({
+      title: "Bạn sẽ cần phải thoát và đăng nhập lại",
+      executeButtonName: "Đồng ý",
+      modalType: "confirm-redirect",
+      executeUrl: "/auth/signout"
+    });
+  };
+
   onUpdatePassword = async (data, updateUserProfile, canEdit) => {
     if (!canEdit) {
       return;
@@ -40,11 +50,18 @@ class UserUpdate extends Component {
           criterias: data
         }
       })
-        .then(result => {
+        .then(response => {
           if (this._isMounted) {
             this.setState({ isFormEnabled: true });
           }
+
+          const { data } = response;
+          const { updatePassword } = data;
+          const { result } = updatePassword;
+
+          AuthService.setLogin(null, result.authenticationToken);
           this.props.notifySuccess(this.context.user.lang);
+          this.onUpdateConfirmation();
         })
         .catch(error => {
           if (this._isMounted) {
@@ -87,11 +104,19 @@ const mapDispatchToProps = dispatch => {
         );
       }
     },
-    notifySuccess: lang => {
-      raiseSuccess(dispatch, "Thay đổi thành công", null, "/");
+    notifySuccess: () => {
+      raiseSuccess(
+        dispatch,
+        "Thay đổi thành công, vui lòng đăng nhập lại",
+        null,
+        "/"
+      );
     },
     showValidationError: (title, message) => {
       raiseError(dispatch, title, message, "#");
+    },
+    openConfirmRedirectModal: data => {
+      openModal(dispatch, data);
     }
   };
 };

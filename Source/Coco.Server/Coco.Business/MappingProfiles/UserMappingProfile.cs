@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
+using Coco.Entities.Model;
 using Coco.Entities.Model.User;
 using System;
 
@@ -56,6 +58,8 @@ namespace Coco.Business.MappingProfiles
                 .ForMember(t => t.Address, opt => opt.MapFrom(s => s.UserInfo.Address))
                 .ForMember(t => t.BirthDate, opt => opt.MapFrom(s => s.UserInfo.BirthDate))
                 .ForMember(t => t.StatusLabel, opt => opt.MapFrom(s => s.Status.Name));
+
+            CreateMap<UserPhoto, UserPhotoModel>();
         }
     }
 }

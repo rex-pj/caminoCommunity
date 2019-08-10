@@ -146,7 +146,6 @@ export default class extends Component {
               <Fragment>
                 <FormGroup>
                   <LabelAndTextbox
-                    autoComplete={false}
                     label="Họ"
                     name="lastname"
                     value={lastname.value}
@@ -155,7 +154,6 @@ export default class extends Component {
                 </FormGroup>
                 <FormGroup>
                   <LabelAndTextbox
-                    autoComplete={false}
                     label="Tên"
                     name="firstname"
                     value={firstname.value}
@@ -164,7 +162,6 @@ export default class extends Component {
                 </FormGroup>
                 <FormGroup>
                   <LabelAndTextbox
-                    autoComplete={false}
                     label="Tên hiển thị"
                     name="displayName"
                     value={displayName.value}
