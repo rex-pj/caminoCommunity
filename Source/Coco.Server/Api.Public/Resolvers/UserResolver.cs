@@ -1,6 +1,4 @@
 ﻿using Api.Public.Models;
-using Coco.Api.Framework.UserIdentity.Contracts;
-using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
@@ -13,6 +11,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Coco.Api.Framework.Services.Contracts;
+using MimeKit.Text;
+using Coco.Api.Framework.SessionManager.Contracts;
+using Coco.Common.Resources;
+using Microsoft.Extensions.Configuration;
 
 namespace Api.Public.Resolvers
 {
@@ -22,16 +25,28 @@ namespace Api.Public.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ICountryBusiness _countryBusiness;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
+        private readonly string _appName;
+        private readonly string _registerConfirmUrl;
+        private readonly string _registerConfirmFromEmail;
+        private readonly string _registerConfirmFromName;
 
         public UserResolver(ILoginManager<ApplicationUser> loginManager,
             IUserManager<ApplicationUser> userManager,
             IMapper mapper,
+            IEmailSender emailSender,
+            IConfiguration configuration,
             ICountryBusiness countryBusiness)
         {
             _loginManager = loginManager;
             _userManager = userManager;
             _countryBusiness = countryBusiness;
             _mapper = mapper;
+            _emailSender = emailSender;
+            _appName = configuration["ApplicationName"];
+            _registerConfirmUrl = configuration["RegisterConfimation:Url"];
+            _registerConfirmFromEmail = configuration["RegisterConfimation:FromEmail"];
+            _registerConfirmFromName = configuration["RegisterConfimation:FromName"];
         }
 
         public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
@@ -58,7 +73,7 @@ namespace Api.Public.Resolvers
             {
                 var model = context.GetArgument<RegisterModel>("user");
 
-                var parameters = new ApplicationUser()
+                var user = new ApplicationUser()
                 {
                     BirthDate = model.BirthDate,
                     CreatedDate = DateTime.Now,
@@ -70,13 +85,26 @@ namespace Api.Public.Resolvers
                     StatusId = (byte)UserStatusEnum.New,
                     UpdatedDate = DateTime.Now,
                     UserName = model.Email,
-                    PasswordSalt = SaltGenerator.GetSalt(),
-                    SecurityStamp = SaltGenerator.GetSalt(),
                     Password = model.Password
                 };
 
-                var result = await _userManager.CreateAsync(parameters);
-                HandleContextError(context, result.Errors);
+                var result = await _userManager.CreateAsync(user);
+                if (result.IsSuccess)
+                {
+                    await _emailSender.SendEmailAsync(new MailMessageModel()
+                    {
+                        Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, _registerConfirmUrl),
+                        FromEmail = _registerConfirmFromEmail,
+                        FromName = _registerConfirmFromName,
+                        ToEmail = user.Email,
+                        ToName = user.DisplayName,
+                        Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
+                    }, TextFormat.Html);
+                }
+                else
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -128,6 +156,39 @@ namespace Api.Public.Resolvers
             catch (Exception ex)
             {
                 throw new ExecutionError(ex.ToString(), ex);
+            }
+        }
+
+        public async Task<ApiResult> ForgotPasswordAsync(ResolveFieldContext<object> context)
+        {
+            try
+            {
+                var model = context.GetArgument<ForgotPasswordModel>("criterias");
+
+                if (model == null)
+                {
+                    throw new NullReferenceException(nameof(model));
+                }
+
+                var user = await _userManager.FindByEmailAsync(model.Email, true);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    throw new ExecutionError("ForgotPasswordConfirmation");
+                }
+
+                var result = await _userManager.ForgotPasswordAsync(model.Email);
+                
+                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code });
+                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+                //   "Please reset your password by clicking here: <a href=\"" + callbackUrl + "\">link</a>");
+
+                HandleContextError(context, result.Errors);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
             }
         }
     }

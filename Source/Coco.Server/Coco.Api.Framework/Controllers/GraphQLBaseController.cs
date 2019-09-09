@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.UserIdentity.Contracts;
+﻿using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.GraphQLQueries;
 using GraphQL;
 using GraphQL.Types;

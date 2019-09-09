@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.UserIdentity.Contracts;
+﻿using Coco.Api.Framework.SessionManager.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;

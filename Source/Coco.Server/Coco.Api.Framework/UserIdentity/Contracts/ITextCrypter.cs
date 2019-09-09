@@ -1,8 +1,0 @@
-﻿namespace Coco.Api.Framework.UserIdentity.Contracts
-{
-    public interface ITextCrypter
-    {
-        string Encrypt(string plainText, string saltKey);
-        string Decrypt(string encryptedText, string saltKey);
-    }
-}

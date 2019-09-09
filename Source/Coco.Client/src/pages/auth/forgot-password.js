@@ -58,10 +58,8 @@ class SingnInPage extends Component {
             if (this._isMounted) {
               this.setState({ isFormEnabled: true });
             }
-            return;
+            return true;
           }
-
-          this.props.history.push("/");
         })
         .catch(error => {
           if (this._isMounted) {
@@ -70,6 +68,8 @@ class SingnInPage extends Component {
           this.props.notifyError(error, this.context.lang);
         });
     }
+
+    return false;
   };
 
   render() {
@@ -103,7 +103,7 @@ const mapDispatchToProps = dispatch => {
         errors.forEach(item => {
           raiseError(
             dispatch,
-            "Đăng nhập KHÔNG thành công",
+            "Có lỗi xảy ra",
             getError(item.extensions.code, lang),
             "/auth/signin"
           );
@@ -111,7 +111,7 @@ const mapDispatchToProps = dispatch => {
       } else {
         raiseError(
           dispatch,
-          "Đăng nhập KHÔNG thành công",
+          "Có lỗi xảy ra",
           getError("ErrorOccurredTryRefeshInputAgain", lang),
           "/auth/signin"
         );

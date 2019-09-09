@@ -11,12 +11,12 @@ using Api.Identity.Mutations;
 using GraphQL.Types;
 using Api.Identity.GraphQLSchemas;
 using Api.Identity.Queries;
-using Coco.Api.Framework;
 using Api.Identity.Resolvers;
 using AutoMapper;
 using Coco.Api.Framework.MappingProfiles;
 using Coco.Business.MappingProfiles;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Infrastructure;
 
 namespace Api.Identity
 {

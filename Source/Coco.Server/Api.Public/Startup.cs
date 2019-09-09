@@ -5,10 +5,10 @@ using Api.Public.Mutations;
 using Api.Public.Queries;
 using Api.Public.Resolvers;
 using AutoMapper;
-using Coco.Api.Framework;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.MappingProfiles;
-using Coco.Api.Framework.UserIdentity.Entities;
+using Coco.Api.Framework.SessionManager.Core;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
@@ -75,8 +75,6 @@ namespace Api.Public
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
-
-                options.Stores.ShouldProtectPersonalData = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
