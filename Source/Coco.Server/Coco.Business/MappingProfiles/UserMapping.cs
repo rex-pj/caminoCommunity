@@ -23,9 +23,10 @@ namespace Coco.Business.Mapping
             PasswordSalt = user.PasswordSalt,
             Expiration = user.Expiration,
             AuthenticationToken = user.AuthenticatorToken,
-            SecurityStamp = user.SecurityStamp,
+            IdentityStamp = user.IdentityStamp,
             Id = user.Id,
-
+            SecurityStamp = user.SecurityStamp,
+            IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
             Address = user.UserInfo.Address,
             BirthDate = user.UserInfo.BirthDate,
@@ -48,7 +49,8 @@ namespace Coco.Business.Mapping
             Expiration = user.Expiration,
             AuthenticationToken = user.AuthenticatorToken,
             Id = user.Id,
-
+            SecurityStamp = user.SecurityStamp,
+            IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
             CountryId = user.UserInfo.CountryId,
             AvatarUrl = user.UserInfo.AvatarUrl,

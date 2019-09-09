@@ -24,6 +24,7 @@ namespace Coco.Entities.Domain.Identity
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
         public string AuthenticatorToken { get; set; }
+        public string IdentityStamp { get; set; }
         public string SecurityStamp { get; set; }
         public DateTime? Expiration { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -32,6 +33,7 @@ namespace Coco.Entities.Domain.Identity
         public long? UpdatedById { get; set; }
         public bool IsActived { get; set; }
         public byte StatusId { get; set; }
+        public virtual bool IsEmailConfirmed { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }
         public virtual UserInfo UserInfo { get; set; }

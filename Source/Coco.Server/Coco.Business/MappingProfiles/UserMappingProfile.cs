@@ -25,10 +25,11 @@ namespace Coco.Business.MappingProfiles
                     Password = s.Password,
                     PasswordSalt = s.PasswordSalt,
                     AuthenticatorToken = s.AuthenticationToken,
-                    SecurityStamp = s.SecurityStamp,
+                    IdentityStamp = s.IdentityStamp,
                     Expiration = s.Expiration,
                     IsActived = s.IsActived,
                     StatusId = s.StatusId,
+                    SecurityStamp = s.SecurityStamp
                 }));
 
             CreateMap<User, UserModel>()

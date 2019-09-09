@@ -1,25 +1,9 @@
 let model = {
-  username: {
-    value: "",
-    validation: {
-      isRequired: true
-    },
-    isValid: false
-  },
-  password: {
+  email: {
     value: "",
     validation: {
       isRequired: true,
-      minLength: 6
-    },
-    isValid: false
-  },
-  confirmPassword: {
-    value: "",
-    validation: {
-      isRequired: true,
-      minLength: 6,
-      sameRefProperty: "password"
+      isEmail: true
     },
     isValid: false
   }

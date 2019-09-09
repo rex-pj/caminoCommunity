@@ -42,7 +42,7 @@ namespace Coco.Business.Implementation.UserBusiness
             user.UpdatedById = model.Id;
             user.UpdatedDate = DateTime.Now;
             user.AuthenticatorToken = model.AuthenticationToken;
-            user.SecurityStamp = model.SecurityStamp;
+            user.IdentityStamp = model.IdentityStamp;
             user.Expiration = model.Expiration;
 
             _userRepository.Update(user);

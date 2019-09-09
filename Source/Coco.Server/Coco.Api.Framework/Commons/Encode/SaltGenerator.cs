@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Coco.Api.Framework.Commons.Encode
 {
@@ -30,17 +29,6 @@ namespace Coco.Api.Framework.Commons.Encode
             }
 
             return salt;
-        }
-
-        private static string EncodeToBase64()
-        {
-            string textToEncode = GeneratePlainText();
-
-            byte[] toEncodeAsBytes = Encoding.ASCII.GetBytes(textToEncode);
-
-            string returnValue = Convert.ToBase64String(toEncodeAsBytes);
-
-            return returnValue;
         }
 
         private static string GeneratePlainText()

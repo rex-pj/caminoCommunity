@@ -1,7 +1,7 @@
 ﻿using Api.Identity.Resolvers;
 using Api.Identity.GraphQLTypes.ResultTypes;
 using GraphQL.Types;
-using Coco.Api.Framework.UserIdentity.Contracts;
+using Coco.Api.Framework.SessionManager.Contracts;
 
 namespace Api.Identity.Queries
 {

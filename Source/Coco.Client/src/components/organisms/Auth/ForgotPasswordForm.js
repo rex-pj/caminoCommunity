@@ -4,10 +4,11 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
+import ForgotAuthNavigation from "../../../components/organisms/NavigationMenu/ForgotAuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import ForgotPasswordModel from "../../../models/ForgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
+import { PrimaryNotice } from "../../atoms/Notices/AlertNotice";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${p => p.theme.size.normal};
@@ -68,7 +69,8 @@ export default class extends Component {
 
     this.state = {
       isFormValid: false,
-      shouldRender: false
+      shouldRender: false,
+      isSubmitted: false
     };
 
     this.formData = ForgotPasswordModel;
@@ -105,6 +107,9 @@ export default class extends Component {
       this.setState({
         shouldRender: true
       });
+      this.setState({
+        isSubmitted: false
+      });
     }
   };
 
@@ -136,16 +141,21 @@ export default class extends Component {
     }
 
     if (!!isFormValid) {
-      const requestUpdateData = {};
+      const requestData = {};
       for (const formIdentifier in this.formData) {
-        requestUpdateData[formIdentifier] = this.formData[formIdentifier].value;
+        requestData[formIdentifier] = this.formData[formIdentifier].value;
       }
 
-      this.props.onUpdate(requestUpdateData);
+      const isSendMail = this.props.onForgotPassword(requestData);
+
+      this.setState({
+        isSubmitted: isSendMail
+      });
     }
   };
 
   render() {
+    const { isSubmitted } = this.state;
     const isFormValid = this.checkIsFormValid();
 
     return (
@@ -155,36 +165,22 @@ export default class extends Component {
             <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
           </div>
           <div className="col col-12 col-sm-5">
-            <AuthNavigation />
+            <ForgotAuthNavigation />
             <PanelBody>
+              <FormRow>
+                {isSubmitted ? (
+                  <PrimaryNotice>
+                    Chúng tôi sẽ gửi một e-mail kích hoạt cho bạn, hãy vào email
+                    kiểm tra, nếu không tìm thấy hãy vào thư mục spam để xem thử
+                  </PrimaryNotice>
+                ) : null}
+              </FormRow>
               <FormRow>
                 <Label>E-mail</Label>
                 <Textbox
                   placeholder="Nhập e-mail"
                   type="email"
-                  name="username"
-                  autoComplete="off"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Mật khẩu mới</Label>
-                <Textbox
-                  placeholder="Nhập mật khẩu mới"
-                  type="password"
-                  name="password"
-                  autoComplete="off"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Xác nhận mật khẩu mới</Label>
-                <Textbox
-                  placeholder="Nhập lại mật khẩu mới"
-                  type="password"
-                  name="confirmPassword"
+                  name="email"
                   autoComplete="off"
                   onChange={e => this.handleInputChange(e)}
                   onBlur={e => this.handleInputBlur(e)}
@@ -195,7 +191,7 @@ export default class extends Component {
                   disabled={!this.props.isFormEnabled || !isFormValid}
                   type="submit"
                 >
-                  Phục Hồi
+                  Gửi Email
                 </SubmitButton>
               </FormFooter>
             </PanelBody>

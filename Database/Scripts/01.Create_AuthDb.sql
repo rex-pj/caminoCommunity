@@ -15,6 +15,7 @@ CREATE TABLE dbo.[User]
 	[Password] NVARCHAR(MAX) NOT NULL,
 	PasswordSalt NVARCHAR(MAX) NOT NULL,
 	SecurityStamp NVARCHAR(MAX) NULL,
+	IsEmailConfirmed BIT NOT NULL,
 	AuthenticatorToken NVARCHAR(MAX) NULL,
 	Expiration DATETIME2 NULL,
 	CreatedDate DATETIME2 NOT NULL,
@@ -22,6 +23,7 @@ CREATE TABLE dbo.[User]
 	UpdatedById BIGINT NULL,
 	CreatedById BIGINT NULL,
 	IsActived BIT NOT NULL,
+	IdentityStamp NVARCHAR(MAX) NULL,
 	StatusId TINYINT NOT NULL,
 )
 
