@@ -9,7 +9,7 @@ namespace Coco.Api.Framework.Models
 
         public TResult Result { get; set; }
 
-        public static ApiResult Success(TResult result)
+        public static ApiResult<TResult> Success(TResult result)
         {
             var updateResult = new ApiResult<TResult>(true);
             updateResult.Result = result;
@@ -39,7 +39,7 @@ namespace Coco.Api.Framework.Models
             return result;
         }
 
-        public static ApiResult Failed(ApiError error, TResult data)
+        public static ApiResult<TResult> Failed(ApiError error, TResult data)
         {
             var result = Failed(error) as ApiResult<TResult>;
 

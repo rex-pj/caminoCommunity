@@ -4,7 +4,6 @@ using Coco.Api.Framework.Services.Implementation;
 using Coco.Api.Framework.SessionManager;
 using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.SessionManager.Core;
-using Coco.Api.Framework.SessionManager.Providers;
 using Coco.Api.Framework.SessionManager.Stores;
 using Coco.Api.Framework.SessionManager.Validators;
 using Microsoft.AspNetCore.Http;
@@ -15,12 +14,12 @@ namespace Coco.Api.Framework.Infrastructure.Extensions
 {
     public static class IdentityServiceCollectionExtensions
     {
-        public static IdentityBuilder AddUserIdentity(this IServiceCollection services)
+        public static void AddUserIdentity(this IServiceCollection services)
         {
-            return services.AddUserIdentity(setupAction: null);
+            services.AddUserIdentity(setupAction: null);
         }
 
-        public static IdentityBuilder AddUserIdentity(
+        public static void AddUserIdentity(
             this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
             services
@@ -44,8 +43,6 @@ namespace Coco.Api.Framework.Infrastructure.Extensions
             {
                 services.Configure(setupAction);
             }
-
-            return new IdentityBuilder(typeof(ApplicationUser), services);
         }
     }
 }

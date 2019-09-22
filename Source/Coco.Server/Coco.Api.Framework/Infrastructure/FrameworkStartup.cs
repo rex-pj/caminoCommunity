@@ -7,8 +7,7 @@ namespace Coco.Api.Framework.Infrastructure
     {
         public static void AddCustomStores(IServiceCollection services)
         {
-            services.AddUserIdentity()
-                .AddDefaultTokenProviders();
+            services.AddUserIdentity();
         }
     }
 }

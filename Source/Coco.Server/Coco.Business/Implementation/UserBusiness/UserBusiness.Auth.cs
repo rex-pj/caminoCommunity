@@ -12,7 +12,7 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public long Add(UserModel userModel)
+        public long Create(UserModel userModel)
         {
             if (userModel == null)
             {

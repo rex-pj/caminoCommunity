@@ -15,10 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Coco.Entities.Model.General;
 using Coco.Entities.Model.User;
 using Coco.Entities.Enums;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
 using Coco.Api.Framework.Commons.Encode;
-using Coco.Api.Framework.Services.Contracts;
 using Coco.Api.Framework.SessionManager.Core;
 
 namespace Coco.Api.Framework.SessionManager
@@ -49,8 +47,6 @@ namespace Coco.Api.Framework.SessionManager
         private bool _isDisposed;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly ILookupNormalizer _lookupNormalizer;
-        private readonly Dictionary<string, IUserTokenProvider<ApplicationUser>> _tokenProviders =
-            new Dictionary<string, IUserTokenProvider<ApplicationUser>>();
         #endregion
 
         #region Ctor
@@ -64,7 +60,6 @@ namespace Coco.Api.Framework.SessionManager
             IEnumerable<IUserValidator<ApplicationUser>> userValidators,
             IConfiguration configuration,
             ILookupNormalizer lookupNormalizer,
-            IServiceProvider services,
             IUserSecurityStampStore<ApplicationUser> userSecurityStampStore,
             IdentityErrorDescriber errors = null)
         {
@@ -94,21 +89,6 @@ namespace Coco.Api.Framework.SessionManager
                 foreach (var v in passwordValidators)
                 {
                     this.PasswordValidators.Add(v);
-                }
-            }
-
-            if (services != null)
-            {
-                foreach (var providerName in Options.Tokens.ProviderMap.Keys)
-                {
-                    var description = Options.Tokens.ProviderMap[providerName];
-
-                    var provider = (description.ProviderInstance ?? services.GetRequiredService(description.ProviderType))
-                        as IUserTokenProvider<ApplicationUser>;
-                    if (provider != null)
-                    {
-                        RegisterTokenProvider(providerName, provider);
-                    }
                 }
             }
         }
@@ -491,11 +471,14 @@ namespace Coco.Api.Framework.SessionManager
                 return data;
             }
 
-            await UpdateSecurityStampInternal(user);
-            await UpdateIdentityStampInternal(user);
-            await UpdatePasswordSaltInternal(user);
-
             var result = await UserStore.CreateAsync(user, CancellationToken);
+            if (result.IsSuccess)
+            {
+                user.Id = result.Result;
+                await UpdateSecurityStampInternal(user);
+                await UpdateIdentityStampInternal(user);
+                await UpdatePasswordSaltInternal(user);
+            }
 
             return result;
         }
@@ -517,9 +500,7 @@ namespace Coco.Api.Framework.SessionManager
 
         private static string NewSecurityStamp()
         {
-            byte[] bytes = new byte[20];
-            _rng.GetBytes(bytes);
-            return Base32.ToBase32(bytes);
+            return Guid.NewGuid().ToString();
         }
 
         private static string NewIdentityStamp()
@@ -734,13 +715,10 @@ namespace Coco.Api.Framework.SessionManager
             {
                 throw new ArgumentNullException(nameof(tokenProvider));
             }
-            if (!_tokenProviders.ContainsKey(tokenProvider))
-            {
-                throw new NotSupportedException($"{nameof(ApplicationUser)}: {tokenProvider}");
-            }
 
             var securityToken = await CreateSecurityTokenAsync(user);
-            return await _tokenProviders[tokenProvider].GenerateAsync(purpose, this, user);
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -771,21 +749,6 @@ namespace Coco.Api.Framework.SessionManager
         public virtual async Task<byte[]> CreateSecurityTokenAsync(ApplicationUser user)
         {
             return Encoding.Unicode.GetBytes(await GetSecurityStampAsync(user));
-        }
-
-        /// <summary>
-        /// Registers a token provider.
-        /// </summary>
-        /// <param name="providerName">The name of the provider to register.</param>
-        /// <param name="provider">The provider to register.</param>
-        public virtual void RegisterTokenProvider(string providerName, IUserTokenProvider<ApplicationUser> provider)
-        {
-            ThrowIfDisposed();
-            if (provider == null)
-            {
-                throw new ArgumentNullException(nameof(provider));
-            }
-            _tokenProviders[providerName] = provider;
         }
         #endregion
 

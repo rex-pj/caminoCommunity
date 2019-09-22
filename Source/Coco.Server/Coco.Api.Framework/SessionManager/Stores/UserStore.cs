@@ -41,7 +41,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         }
 
         #region IUserStore<LoggedUser> Members
-        public Task<ApiResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public Task<ApiResult<long>> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             try
             {
@@ -58,13 +58,13 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 var userModel = _mapper.Map<UserModel>(user);
                 userModel.Password = user.PasswordHash;
 
-                _userBusiness.Add(userModel);
+                long id = _userBusiness.Create(userModel);
 
-                return Task.FromResult(new ApiResult(true));
+                return Task.FromResult(ApiResult<long>.Success(id));
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResult.Failed(new ApiError { Code = ex.Message, Description = ex.Message }));
+                return Task.FromResult(ApiResult<long>.Failed(new ApiError { Code = ex.Message, Description = ex.Message }, -1));
             }
         }
         #endregion

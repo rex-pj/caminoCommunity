@@ -6,7 +6,7 @@ namespace Coco.Business.Contracts
 {
     public interface IUserBusiness
     {
-        long Add(UserModel user);
+        long Create(UserModel user);
         UserModel Find(long id);
         UserLoggedInModel GetLoggedIn(long id);
         Task<UserModel> FindUserByEmail(string email, bool includeInActived = false);

@@ -240,3 +240,18 @@ GO
 ALTER TABLE dbo.[UserInfo]
 ADD CONSTRAINT FK_UserInfo_Country
 FOREIGN KEY (CountryId) REFERENCES dbo.Country(Id);
+
+/**USER ATTRIBUTE**/
+GO
+CREATE TABLE dbo.UserAttribute
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	UserId BIGINT NOT NULL,
+	[Key] NVARCHAR(400) NOT NULL,
+	[Value] NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.UserAttribute
+ADD CONSTRAINT PK_UserAttribute
+PRIMARY KEY (Id);

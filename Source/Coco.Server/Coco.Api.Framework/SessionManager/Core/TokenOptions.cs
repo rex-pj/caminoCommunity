@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Coco.Api.Framework.SessionManager.Core
 {
@@ -10,8 +12,5 @@ namespace Coco.Api.Framework.SessionManager.Core
 
         public string PasswordResetTokenProvider { get; set; } = DefaultProvider;
         public string EmailConfirmationTokenProvider { get; set; } = DefaultProvider;
-
-
-        public Dictionary<string, TokenProviderDescriptor> ProviderMap { get; set; } = new Dictionary<string, TokenProviderDescriptor>();
     }
 }

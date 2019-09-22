@@ -10,7 +10,7 @@ namespace Coco.Api.Framework.SessionManager.Contracts
 {
     public interface IUserStore<TUser> : IDisposable where TUser : class
     {
-        Task<ApiResult> CreateAsync(TUser user, CancellationToken cancellationToken);
+        Task<ApiResult<long>> CreateAsync(TUser user, CancellationToken cancellationToken);
         Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken);
         Task<TUser> FindByEmailAsync(string normalizedEmail, bool includeInActived = false, CancellationToken cancellationToken = default);
         Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);

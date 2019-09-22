@@ -45,14 +45,12 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new StatusMappingConfig())
                 .ApplyConfiguration(new UserPhotoMappingConfig())
                 .ApplyConfiguration(new UserInfoMappingConfig())
-                .ApplyConfiguration(new UserMappingConfig());
-
-            modelBuilder.ApplyConfiguration(new RoleMappingConfig())
-                .ApplyConfiguration(new UserRoleMappingConfig());
-
-            modelBuilder.ApplyConfiguration(new CountryMappingConfig());
-
-            modelBuilder.ApplyConfiguration(new CareerMappingConfig())
+                .ApplyConfiguration(new UserMappingConfig())
+                .ApplyConfiguration(new UserAttributeMappingConfig())
+                .ApplyConfiguration(new RoleMappingConfig())
+                .ApplyConfiguration(new UserRoleMappingConfig())
+                .ApplyConfiguration(new CountryMappingConfig())
+                .ApplyConfiguration(new CareerMappingConfig())
                 .ApplyConfiguration(new UserCareerMappingConfig());
         }
 
