@@ -1,5 +1,6 @@
 ﻿using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.SessionManager.Entities;
+using Coco.Business.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,27 +8,35 @@ namespace Coco.Api.Framework.SessionManager.Stores
 {
     public class UserSecurityStampStore<TUser> : IUserSecurityStampStore<TUser> where TUser : IdentityUser<long>
     {
-        public Task<string> GetSecurityStampAsync(TUser user, CancellationToken cancellationToken = default)
+        private readonly IUserAttributeBusiness _userAttributeBusiness;
+        public UserSecurityStampStore(IUserAttributeBusiness userAttributeBusiness)
         {
-            return Task.FromResult(user.SecurityStamp);
+            _userAttributeBusiness = userAttributeBusiness;
         }
 
-        public Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken = default)
+        public async Task<string> GetSecurityStampAsync(long userId, CancellationToken cancellationToken = default)
         {
-            user.SecurityStamp = stamp;
-            return Task.FromResult(0);
+            var data = await _userAttributeBusiness.GetAsync(userId, "");
+            if (data != null)
+            {
+                return data.Value;
+            }
+            return null;
         }
 
-        public Task SetIdentityStampAsync(TUser user, string stamp, CancellationToken cancellationToken = default)
+        public async Task SetSecurityStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
         {
-            user.IdentityStamp = stamp;
-            return Task.FromResult(0);
+           await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
         }
 
-        public Task SetPasswordSaltAsync(TUser user, string stamp, CancellationToken cancellationToken = default)
+        public async Task SetIdentityStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
         {
-            user.PasswordSalt = stamp;
-            return Task.FromResult(0);
+            await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
+        }
+
+        public async Task SetPasswordSaltAsync(long userId, string stamp, CancellationToken cancellationToken = default)
+        {
+            await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
         }
     }
 }

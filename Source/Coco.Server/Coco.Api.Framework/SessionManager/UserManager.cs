@@ -474,28 +474,27 @@ namespace Coco.Api.Framework.SessionManager
             var result = await UserStore.CreateAsync(user, CancellationToken);
             if (result.IsSuccess)
             {
-                user.Id = result.Result;
-                await UpdateSecurityStampInternal(user);
-                await UpdateIdentityStampInternal(user);
-                await UpdatePasswordSaltInternal(user);
+                await UpdateSecurityStampInternal(result.Result);
+                await UpdateIdentityStampInternal(result.Result);
+                await UpdatePasswordSaltInternal(result.Result);
             }
 
             return result;
         }
 
-        private async Task UpdateSecurityStampInternal(ApplicationUser user)
+        private async Task UpdateSecurityStampInternal(long userId)
         {
-            await SecurityStampStore.SetSecurityStampAsync(user, NewSecurityStamp(), CancellationToken);
+            await SecurityStampStore.SetSecurityStampAsync(userId, NewSecurityStamp(), CancellationToken);
         }
 
-        private async Task UpdateIdentityStampInternal(ApplicationUser user)
+        private async Task UpdateIdentityStampInternal(long userId)
         {
-            await SecurityStampStore.SetIdentityStampAsync(user, NewIdentityStamp(), CancellationToken);
+            await SecurityStampStore.SetIdentityStampAsync(userId, NewIdentityStamp(), CancellationToken);
         }
 
-        private async Task UpdatePasswordSaltInternal(ApplicationUser user)
+        private async Task UpdatePasswordSaltInternal(long userId)
         {
-            await SecurityStampStore.SetPasswordSaltAsync(user, NewIdentityStamp(), CancellationToken);
+            await SecurityStampStore.SetPasswordSaltAsync(userId, NewIdentityStamp(), CancellationToken);
         }
 
         private static string NewSecurityStamp()
@@ -733,7 +732,7 @@ namespace Coco.Api.Framework.SessionManager
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            var stamp = await SecurityStampStore.GetSecurityStampAsync(user, CancellationToken);
+            var stamp = await SecurityStampStore.GetSecurityStampAsync(user.Id, CancellationToken);
             if (stamp == null)
             {
                 throw new InvalidOperationException(nameof(stamp));

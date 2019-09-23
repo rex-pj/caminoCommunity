@@ -33,7 +33,8 @@ namespace Coco.Business
             services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
-                .AddTransient<IRoleBusiness, RoleBusiness>();
+                .AddTransient<IRoleBusiness, RoleBusiness>()
+                .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>();
 
             services.AddTransient<IRepository<User>, EfUserRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>()

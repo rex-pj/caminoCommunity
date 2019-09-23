@@ -1,6 +1,8 @@
-﻿namespace Coco.Entities.Domain.Identity
+﻿using Coco.Entities.Base;
+
+namespace Coco.Entities.Domain.Identity
 {
-    public class UserAttribute
+    public class UserAttribute : BaseEntity
     {
         public int Id { get; set; }
         public long UserId { get; set; }
