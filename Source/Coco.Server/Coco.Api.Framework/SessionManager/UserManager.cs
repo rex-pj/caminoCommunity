@@ -474,22 +474,22 @@ namespace Coco.Api.Framework.SessionManager
             var result = await UserStore.CreateAsync(user, CancellationToken);
             if (result.IsSuccess)
             {
-                await UpdateSecurityStampInternal(result.Result);
-                await UpdateIdentityStampInternal(result.Result);
+                await UpdateActiveUserStampInternal(result.Result);
+                await UpdateResetPasswordStampInternal(result.Result);
                 await UpdatePasswordSaltInternal(result.Result);
             }
 
             return result;
         }
 
-        private async Task UpdateSecurityStampInternal(long userId)
+        private async Task UpdateActiveUserStampInternal(long userId)
         {
-            await SecurityStampStore.SetSecurityStampAsync(userId, NewSecurityStamp(), CancellationToken);
+            await SecurityStampStore.SetActiveUserStampAsync(userId, NewSecurityStamp(), CancellationToken);
         }
 
-        private async Task UpdateIdentityStampInternal(long userId)
+        private async Task UpdateResetPasswordStampInternal(long userId)
         {
-            await SecurityStampStore.SetIdentityStampAsync(userId, NewIdentityStamp(), CancellationToken);
+            await SecurityStampStore.SetResetPasswordStampAsync(userId, NewIdentityStamp(), CancellationToken);
         }
 
         private async Task UpdatePasswordSaltInternal(long userId)
@@ -679,75 +679,6 @@ namespace Coco.Api.Framework.SessionManager
             }
 
             return await UserEmailStore.SendForgotPasswordAsync(email, CancellationToken);
-        }
-
-        public virtual async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-            return await GenerateUserTokenAsync(user, Options.Tokens.EmailConfirmationTokenProvider, ConfirmEmailTokenPurpose);
-        }
-
-        public virtual async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-            return await GenerateUserTokenAsync(user, Options.Tokens.PasswordResetTokenProvider, ResetPasswordTokenPurpose);
-        }
-
-        /// <summary>
-        /// Generates a token for the given <paramref name="user"/> and <paramref name="purpose"/>.
-        /// </summary>
-        /// <param name="purpose">The purpose the token will be for.</param>
-        /// <param name="user">The user the token will be for.</param>
-        /// <param name="tokenProvider">The provider which will generate the token.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents result of the asynchronous operation, a token for
-        /// the given user and purpose.
-        /// </returns>
-        public virtual async Task<string> GenerateUserTokenAsync(ApplicationUser user, string tokenProvider, string purpose)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (tokenProvider == null)
-            {
-                throw new ArgumentNullException(nameof(tokenProvider));
-            }
-
-            var securityToken = await CreateSecurityTokenAsync(user);
-
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Get the security stamp for the specified <paramref name="user" />.
-        /// </summary>
-        /// <param name="user">The user whose security stamp should be set.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the security stamp for the specified <paramref name="user"/>.</returns>
-        public virtual async Task<string> GetSecurityStampAsync(ApplicationUser user)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            var stamp = await SecurityStampStore.GetSecurityStampAsync(user.Id, CancellationToken);
-            if (stamp == null)
-            {
-                throw new InvalidOperationException(nameof(stamp));
-            }
-            return stamp;
-        }
-
-        /// <summary>
-        /// Creates bytes to use as a security token from the user's security stamp.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>The security token bytes.</returns>
-        public virtual async Task<byte[]> CreateSecurityTokenAsync(ApplicationUser user)
-        {
-            return Encoding.Unicode.GetBytes(await GetSecurityStampAsync(user));
         }
         #endregion
 

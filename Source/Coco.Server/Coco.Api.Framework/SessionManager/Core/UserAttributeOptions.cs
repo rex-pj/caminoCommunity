@@ -2,7 +2,9 @@
 {
     public class UserAttributeOptions
     {
-        public const string ACTIVE_USER_BY_EMAIL = "ActiveUserByEmail";
-        public const string RENEW_PASSWORD_BY_EMAIL = "RenewPasswordByEmail";
+        public const string ACTIVE_USER_BY_EMAIL_CONFIRM = "ActiveUserByEmail";
+        public const string RESET_PASSWORD_BY_EMAIL_CONFIRM = "ResetPasswordByEmail";
+        public const string SECURITY_SALT = "SecuritySalt";
+        public const string AUTHENTICATION_TOKEN = "AuthenticatorToken";
     }
 }

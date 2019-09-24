@@ -23,13 +23,13 @@ namespace Coco.Business.MappingProfiles
                     CreatedById = s.CreatedById,
                     Email = s.Email,
                     Password = s.Password,
-                    PasswordSalt = s.PasswordSalt,
-                    AuthenticatorToken = s.AuthenticationToken,
-                    IdentityStamp = s.IdentityStamp,
+                    //PasswordSalt = s.PasswordSalt,
+                    //AuthenticatorToken = s.AuthenticationToken,
+                    //IdentityStamp = s.IdentityStamp,
                     Expiration = s.Expiration,
                     IsActived = s.IsActived,
                     StatusId = s.StatusId,
-                    SecurityStamp = s.SecurityStamp
+                    //SecurityStamp = s.SecurityStamp
                 }));
 
             CreateMap<User, UserModel>()

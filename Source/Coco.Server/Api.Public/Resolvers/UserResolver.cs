@@ -91,7 +91,6 @@ namespace Api.Public.Resolvers
                 var result = await _userManager.CreateAsync(user);
                 if (result.IsSuccess)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     await _emailSender.SendEmailAsync(new MailMessageModel()
                     {
                         Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, _registerConfirmUrl),
@@ -176,8 +175,6 @@ namespace Api.Public.Resolvers
                 {
                     throw new ExecutionError("ForgotPasswordConfirmation");
                 }
-
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                 var result = await _userManager.ForgotPasswordAsync(model.Email);
                 

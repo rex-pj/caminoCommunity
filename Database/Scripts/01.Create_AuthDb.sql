@@ -13,17 +13,13 @@ CREATE TABLE dbo.[User]
 	FirstName NVARCHAR(255) NOT NULL,
 	DisplayName NVARCHAR(255) NOT NULL,
 	[Password] NVARCHAR(MAX) NOT NULL,
-	PasswordSalt NVARCHAR(MAX) NOT NULL,
-	SecurityStamp NVARCHAR(MAX) NULL,
 	IsEmailConfirmed BIT NOT NULL,
-	AuthenticatorToken NVARCHAR(MAX) NULL,
 	Expiration DATETIME2 NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NULL,
 	CreatedById BIGINT NULL,
 	IsActived BIT NOT NULL,
-	IdentityStamp NVARCHAR(MAX) NULL,
 	StatusId TINYINT NOT NULL,
 )
 

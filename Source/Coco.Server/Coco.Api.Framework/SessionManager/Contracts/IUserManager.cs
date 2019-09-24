@@ -27,10 +27,6 @@ namespace Coco.Api.Framework.SessionManager.Contracts
         Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string userIdentityId, string token);
         Task<ApiResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword);
         Task<ApiResult> ForgotPasswordAsync(string email);
-        Task<byte[]> CreateSecurityTokenAsync(ApplicationUser user);
-        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
-        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
         Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
-        Task<string> GetSecurityStampAsync(ApplicationUser user);
     }
 }

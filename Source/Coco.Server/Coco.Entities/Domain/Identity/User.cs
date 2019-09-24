@@ -22,10 +22,10 @@ namespace Coco.Entities.Domain.Identity
         public string Firstname { get; set; }
         public string DisplayName { get; set; }
         public string Password { get; set; }
-        public string PasswordSalt { get; set; }
-        public string AuthenticatorToken { get; set; }
-        public string IdentityStamp { get; set; }
-        public string SecurityStamp { get; set; }
+        //public string PasswordSalt { get; set; }
+        //public string AuthenticatorToken { get; set; }
+        //public string IdentityStamp { get; set; }
+        //public string SecurityStamp { get; set; }
         public DateTime? Expiration { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

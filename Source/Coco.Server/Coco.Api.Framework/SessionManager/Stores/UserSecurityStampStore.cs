@@ -1,4 +1,5 @@
 ﻿using Coco.Api.Framework.SessionManager.Contracts;
+using Coco.Api.Framework.SessionManager.Core;
 using Coco.Api.Framework.SessionManager.Entities;
 using Coco.Business.Contracts;
 using System.Threading;
@@ -24,19 +25,19 @@ namespace Coco.Api.Framework.SessionManager.Stores
             return null;
         }
 
-        public async Task SetSecurityStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
+        public async Task SetActiveUserStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
         {
            await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
         }
 
-        public async Task SetIdentityStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
+        public async Task SetResetPasswordStampAsync(long userId, string stamp, CancellationToken cancellationToken = default)
         {
             await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
         }
 
         public async Task SetPasswordSaltAsync(long userId, string stamp, CancellationToken cancellationToken = default)
         {
-            await _userAttributeBusiness.CreateOrUpdateAsync(userId, "", stamp);
+            await _userAttributeBusiness.CreateOrUpdateAsync(userId, UserAttributeOptions.SECURITY_SALT, stamp);
         }
     }
 }
