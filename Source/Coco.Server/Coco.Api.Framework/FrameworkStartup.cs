@@ -15,6 +15,7 @@ namespace Coco.Api.Framework
         public static void AddCustomStores(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(UserMappingProfile));
+            services.AddControllers();
 
             services
                 .AddTransient<ILookupNormalizer, LookupNormalizer>()

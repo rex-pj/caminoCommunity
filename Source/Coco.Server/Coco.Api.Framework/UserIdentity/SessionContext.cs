@@ -2,7 +2,6 @@
 using Coco.Api.Framework.Commons.Constants;
 using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using System.Linq;
 
 namespace Coco.Api.Framework.UserIdentity
@@ -76,14 +75,14 @@ namespace Coco.Api.Framework.UserIdentity
 
         public SessionContextHeaders GetAuthorizationHeaders()
         {
-            var httpHeaders = RequestHeaders as HttpRequestHeaders;
+            var httpHeaders = RequestHeaders;
 
             if (httpHeaders == null)
             {
                 return null;
             }
 
-            var authenticationToken = httpHeaders.HeaderAuthorization;
+            //var authenticationToken = httpHeaders.HeaderAuthorization;
 
             var userIdentityIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
             string userHashedId = null;
@@ -94,7 +93,7 @@ namespace Coco.Api.Framework.UserIdentity
 
             var contextHeaders = new SessionContextHeaders()
             {
-                AuthenticationToken = authenticationToken,
+                //AuthenticationToken = authenticationToken,
                 UserIdentityId = userHashedId
             };
 
