@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Api.Gateway
 {
@@ -36,12 +37,13 @@ namespace Api.Gateway
                 });
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddOcelot();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -56,7 +58,10 @@ namespace Api.Gateway
             // Config UseCors
             app.UseCors(MyAllowSpecificOrigins)
                 .UseHttpsRedirection()
-                .UseMvc()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                })
                 .UseOcelot()
                 .Wait();
         }
