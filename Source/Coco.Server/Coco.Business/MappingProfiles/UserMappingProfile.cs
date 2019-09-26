@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
+using Coco.Entities.Model;
 using Coco.Entities.Model.User;
 using System;
 
@@ -21,12 +23,13 @@ namespace Coco.Business.MappingProfiles
                     CreatedById = s.CreatedById,
                     Email = s.Email,
                     Password = s.Password,
-                    PasswordSalt = s.PasswordSalt,
-                    AuthenticatorToken = s.AuthenticationToken,
-                    SecurityStamp = s.SecurityStamp,
+                    //PasswordSalt = s.PasswordSalt,
+                    //AuthenticatorToken = s.AuthenticationToken,
+                    //IdentityStamp = s.IdentityStamp,
                     Expiration = s.Expiration,
                     IsActived = s.IsActived,
                     StatusId = s.StatusId,
+                    //SecurityStamp = s.SecurityStamp
                 }));
 
             CreateMap<User, UserModel>()
@@ -56,6 +59,8 @@ namespace Coco.Business.MappingProfiles
                 .ForMember(t => t.Address, opt => opt.MapFrom(s => s.UserInfo.Address))
                 .ForMember(t => t.BirthDate, opt => opt.MapFrom(s => s.UserInfo.BirthDate))
                 .ForMember(t => t.StatusLabel, opt => opt.MapFrom(s => s.Status.Name));
+
+            CreateMap<UserPhoto, UserPhotoModel>();
         }
     }
 }

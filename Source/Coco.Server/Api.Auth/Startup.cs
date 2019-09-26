@@ -11,9 +11,13 @@ using Api.Identity.Mutations;
 using GraphQL.Types;
 using Api.Identity.GraphQLSchemas;
 using Api.Identity.Queries;
-using Coco.Api.Framework;
 using Api.Identity.Resolvers;
 using Microsoft.Extensions.Hosting;
+using AutoMapper;
+using Coco.Api.Framework.MappingProfiles;
+using Coco.Business.MappingProfiles;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Infrastructure;
 
 namespace Api.Identity
 {
@@ -55,6 +59,7 @@ namespace Api.Identity
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
@@ -63,6 +68,7 @@ namespace Api.Identity
                 .AddSingleton<IDocumentExecuter, DocumentExecuter>()
                 .AddSingleton<UserMutation>()
                 .AddSingleton<UserQuery>()
+                .AddSingleton<UserTokenResultType>()
                 .AddSingleton<ListGraphType>();
 
             var sp = services.BuildServiceProvider();

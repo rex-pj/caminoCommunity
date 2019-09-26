@@ -9,13 +9,7 @@ namespace Coco.Api.Framework.Models
 
         public TResult Result { get; set; }
 
-        public static ApiResult Success()
-        {
-            var updateResult = new ApiResult(true);
-            return updateResult;
-        }
-
-        public static ApiResult Success(TResult result)
+        public static ApiResult<TResult> Success(TResult result)
         {
             var updateResult = new ApiResult<TResult>(true);
             updateResult.Result = result;
@@ -32,6 +26,30 @@ namespace Coco.Api.Framework.Models
             };
             return updateResult;
         }
+
+        public static ApiResult Failed(ApiError[] errors, TResult data)
+        {
+            var result = Failed(errors) as ApiResult<TResult>;
+
+            if (data != null)
+            {
+                result.Result = data;
+            }
+
+            return result;
+        }
+
+        public static ApiResult<TResult> Failed(ApiError error, TResult data)
+        {
+            var result = Failed(error) as ApiResult<TResult>;
+
+            if (data != null)
+            {
+                result.Result = data;
+            }
+
+            return result;
+        }
     }
 
     public class ApiResult
@@ -46,6 +64,16 @@ namespace Coco.Api.Framework.Models
 
         public bool IsSuccess { get; set; }
         public List<ApiError> Errors { get; protected set; }
+
+        public static ApiResult Success()
+        {
+            return new ApiResult(true);
+        }
+
+        public static ApiResult Success(bool isSuccess)
+        {
+            return new ApiResult(isSuccess);
+        }
 
         public static ApiResult Failed(ApiError[] errors)
         {

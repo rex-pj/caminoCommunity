@@ -15,9 +15,13 @@ namespace Api.Public.Mutations
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<RegisterInputType>> { Name = "user" }),
                 resolve: async context => await userResolver.SignupAsync(context));
 
-            FieldAsync<ApiResultType<SigninResultType, LoginResult>>("signin",
+            FieldAsync<ApiResultType<UserTokenResultType, UserTokenResult>>("signin",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<SigninInputType>> { Name = "signinModel" }),
                 resolve: async context => await userResolver.SigninAsync(context));
+
+            FieldAsync<ApiResultType>("forgotPassword",
+                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ForgotPasswordInputType>> { Name = "criterias" }),
+                resolve: async context => await userResolver.ForgotPasswordAsync(context));
         }
     }
 }

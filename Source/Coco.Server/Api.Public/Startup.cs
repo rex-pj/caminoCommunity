@@ -4,9 +4,13 @@ using Api.Public.GraphQLTypes.ResultTypes;
 using Api.Public.Mutations;
 using Api.Public.Queries;
 using Api.Public.Resolvers;
-using Coco.Api.Framework;
-using Coco.Api.Framework.UserIdentity.Entities;
+using AutoMapper;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Infrastructure;
+using Coco.Api.Framework.MappingProfiles;
+using Coco.Api.Framework.SessionManager.Core;
 using Coco.Business;
+using Coco.Business.MappingProfiles;
 using Coco.Contract;
 using GraphiQl;
 using GraphQL;
@@ -60,6 +64,7 @@ namespace Api.Public
         {
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -70,8 +75,6 @@ namespace Api.Public
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
-
-                options.Stores.ShouldProtectPersonalData = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
@@ -88,7 +91,7 @@ namespace Api.Public
                 .AddSingleton<UserQuery>()
                 .AddSingleton<ListGraphType>()
                 .AddSingleton<RegisterResultType>()
-                .AddSingleton<SigninResultType>()
+                .AddSingleton<UserTokenResultType>()
                 .AddSingleton<FullUserInfoResultType>();
 
             var sp = services.BuildServiceProvider();

@@ -216,16 +216,14 @@ export default class extends Component {
 
     const isValid = image.width > 1000 && image.height > 300;
 
+    let isSuccess = false;
     if (canEdit && isValid) {
-      this.setState({
-        isDisabled: false
-      });
-      return true;
+      isSuccess = true;
     }
     this.setState({
       isDisabled: true
     });
-    return false;
+    return isSuccess;
   };
 
   turnOnUpdateMode = () => {
@@ -302,7 +300,6 @@ export default class extends Component {
           });
 
           this.turnOffUpdateMode();
-          this.props.closeModal();
         })
         .catch(error => {});
     }
@@ -328,7 +325,6 @@ export default class extends Component {
         });
 
         this.turnOffUpdateMode();
-        this.props.closeModal();
       })
       .catch(error => {});
   };

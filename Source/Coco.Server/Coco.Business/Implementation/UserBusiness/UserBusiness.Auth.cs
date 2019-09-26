@@ -12,7 +12,7 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public long Add(UserModel userModel)
+        public long Create(UserModel userModel)
         {
             if (userModel == null)
             {
@@ -41,8 +41,8 @@ namespace Coco.Business.Implementation.UserBusiness
 
             user.UpdatedById = model.Id;
             user.UpdatedDate = DateTime.Now;
-            user.AuthenticatorToken = model.AuthenticationToken;
-            user.SecurityStamp = model.SecurityStamp;
+            //user.AuthenticatorToken = model.AuthenticationToken;
+            //user.IdentityStamp = model.IdentityStamp;
             user.Expiration = model.Expiration;
 
             _userRepository.Update(user);
@@ -51,7 +51,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task<bool> UpdatePasswordAsync(UserPasswordUpdateModel model)
+        public async Task<UserLoggedInModel> UpdatePasswordAsync(UserPasswordUpdateModel model)
         {
             _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -70,7 +70,9 @@ namespace Coco.Business.Implementation.UserBusiness
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 
-            return true;
+            return new UserLoggedInModel() {
+                Id = user.Id
+            };
         }
         #endregion
 

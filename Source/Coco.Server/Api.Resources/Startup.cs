@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework;
+﻿using Coco.Api.Framework.Infrastructure;
 using Coco.Business;
 using Coco.Contract;
 using Microsoft.AspNetCore.Builder;

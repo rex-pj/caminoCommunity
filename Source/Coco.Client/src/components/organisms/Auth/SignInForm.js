@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
@@ -14,7 +15,7 @@ const Textbox = styled(TextboxSecondary)`
   border: 1px solid ${p => p.theme.color.primaryLight};
   background-color: ${p => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.lighter};
+  color: ${p => p.theme.color.dark};
   padding: ${p => p.theme.size.tiny};
 
   ::placeholder {
@@ -59,6 +60,15 @@ const SubmitButton = styled(ButtonPrimary)`
     color: ${p => p.theme.color.neutral};
     cursor: auto;
   }
+`;
+
+const ForgotPasswordRow = styled(FormRow)`
+  margin-top: ${p => p.theme.size.exTiny};
+  font-size: ${p => p.theme.fontSize.small};
+  a {
+    color: ${p => p.theme.color.light};
+  }
+  text-align: center;
 `;
 
 export default class extends Component {
@@ -189,6 +199,9 @@ export default class extends Component {
                   Đăng Nhập
                 </SubmitButton>
               </FormFooter>
+              <ForgotPasswordRow>
+                <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
+              </ForgotPasswordRow>
             </PanelBody>
           </div>
         </div>

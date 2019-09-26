@@ -20,12 +20,9 @@ namespace Coco.Business.Mapping
             StatusId = user.StatusId,
             Email = user.Email,
             Password = user.Password,
-            PasswordSalt = user.PasswordSalt,
             Expiration = user.Expiration,
-            AuthenticationToken = user.AuthenticatorToken,
-            SecurityStamp = user.SecurityStamp,
             Id = user.Id,
-
+            IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
             Address = user.UserInfo.Address,
             BirthDate = user.UserInfo.BirthDate,
@@ -44,11 +41,9 @@ namespace Coco.Business.Mapping
             StatusId = user.StatusId,
             Email = user.Email,
             Password = user.Password,
-            PasswordSalt = user.PasswordSalt,
             Expiration = user.Expiration,
-            AuthenticationToken = user.AuthenticatorToken,
             Id = user.Id,
-
+            IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
             CountryId = user.UserInfo.CountryId,
             AvatarUrl = user.UserInfo.AvatarUrl,
@@ -76,8 +71,7 @@ namespace Coco.Business.Mapping
 
             CountryId = user.UserInfo.CountryId,
             CountryCode = user.UserInfo.Country.Code,
-            CountryName = user.UserInfo.Country.Name,
-            AuthenticationToken = user.AuthenticatorToken,
+            CountryName = user.UserInfo.Country.Name
         };
     }
 }

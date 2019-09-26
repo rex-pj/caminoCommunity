@@ -1,4 +1,5 @@
-﻿using Coco.Business.Contracts;
+﻿using AutoMapper.QueryableExtensions;
+using Coco.Business.Contracts;
 using Coco.Business.ValidationStrategies;
 using Coco.Common.Exceptions;
 using Coco.Common.Utils;
@@ -152,9 +153,9 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public UserPhotoModel GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
         {
-            var avatarType = (byte)type;
+            var photoType = (byte)type;
             var userPhoto = _userPhotoRepository
-                .GetAsNoTracking(x => x.Code.Equals(code) && x.TypeId.Equals(avatarType))
+                .GetAsNoTracking(x => x.Code.Equals(code) && x.TypeId.Equals(photoType))
                 .Select(x => new UserPhotoModel()
                 {
                     Code = x.Code,

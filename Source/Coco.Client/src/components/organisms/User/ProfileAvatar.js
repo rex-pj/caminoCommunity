@@ -52,7 +52,7 @@ const ProfileImage = styled(ImageRound)`
   `;
 
 class ProfileAvatar extends Component {
-  onOpenModalUpload = e => {
+  onOpenUploadModal = e => {
     const { userInfo } = this.props;
     const { avatarUrl } = userInfo;
     this.props.openUploadModal({
@@ -81,7 +81,7 @@ class ProfileAvatar extends Component {
           )}
         </AvatarLink>
         {!!canEdit ? (
-          <AvatarUpload onClick={e => this.onOpenModalUpload(e)}>
+          <AvatarUpload onClick={e => this.onOpenUploadModal(e)}>
             <FontAwesomeIcon icon="pencil-alt" />
           </AvatarUpload>
         ) : null}

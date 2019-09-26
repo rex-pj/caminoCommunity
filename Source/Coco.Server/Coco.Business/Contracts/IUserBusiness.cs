@@ -6,7 +6,7 @@ namespace Coco.Business.Contracts
 {
     public interface IUserBusiness
     {
-        long Add(UserModel user);
+        long Create(UserModel user);
         UserModel Find(long id);
         UserLoggedInModel GetLoggedIn(long id);
         Task<UserModel> FindUserByEmail(string email, bool includeInActived = false);
@@ -17,6 +17,6 @@ namespace Coco.Business.Contracts
         Task<UserModel> FindByIdAsync(long id);
         Task<UserFullModel> GetFullByIdAsync(long id);
         Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model);
-        Task<bool> UpdatePasswordAsync(UserPasswordUpdateModel model);
+        Task<UserLoggedInModel> UpdatePasswordAsync(UserPasswordUpdateModel model);
     }
 }

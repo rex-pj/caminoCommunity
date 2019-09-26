@@ -2,7 +2,6 @@
 using Coco.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
 
 namespace Api.Resources.Controllers
 {
