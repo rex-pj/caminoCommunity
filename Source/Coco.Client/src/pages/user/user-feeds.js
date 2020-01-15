@@ -4,6 +4,7 @@ import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { UrlConstant } from "../../utils/Constant";
 import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
+import CommonEditor from "../../components/molecules/Editors/CommonEditor";
 
 export default withRouter(
   class extends Component {
@@ -114,6 +115,7 @@ export default withRouter(
       const { feeds, totalPage, currentPage, baseUrl, pageQuery } = this.state;
       return (
         <Fragment>
+          <CommonEditor />
           {feeds
             ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
             : null}

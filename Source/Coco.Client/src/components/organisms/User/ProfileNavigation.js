@@ -50,7 +50,7 @@ export default (class extends Component {
                   userId={userId}
                   baseUrl={baseUrl}
                 >
-                  Tất cả
+                  Tổng hợp
                 </NavLinkActived>
               </ListItem>
               <ListItem>
