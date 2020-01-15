@@ -14,22 +14,16 @@ const httpLink = createHttpLink({
 
 const contextLink = setContext(async (_, { headers }) => {
   const token = localStorage.getItem(AUTH_KEY);
-  const authorization = token ? token : "";
   const userHash = localStorage.getItem(AUTH_USER_HASHED_ID);
 
-  if (authorization) {
+  if (token) {
     headers = {
       ...headers,
-      authorization
-    };
-  }
-
-  if (userHash) {
-    headers = {
-      ...headers,
+      authorization: token,
       "x-header-user-hash": userHash
     };
   }
+
   return {
     headers
   };

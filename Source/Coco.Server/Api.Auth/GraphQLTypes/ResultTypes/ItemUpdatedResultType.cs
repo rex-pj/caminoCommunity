@@ -1,9 +1,15 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.Redefines;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
+    public class ApiItemUpdatedResultType : ApiResultType<UpdatePerItemModel, ItemUpdatedResultType>
+    {
+
+    }
+
     public class ItemUpdatedResultType : ObjectGraphType<UpdatePerItemModel>
     {
         public ItemUpdatedResultType()

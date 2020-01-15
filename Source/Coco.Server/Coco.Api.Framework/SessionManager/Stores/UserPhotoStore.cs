@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Microsoft.EntityFrameworkCore;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos.General;
 using Coco.Entities.Enums;
 using Coco.Common.Exceptions;
 using Coco.Api.Framework.SessionManager.Core;
@@ -35,11 +35,9 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// Updates photo <paramref name="model"/> in the user store.
         /// </summary>
         /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoDto model, long userId)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (model == null)
             {
@@ -51,7 +49,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
-                return ApiResult<UpdateUserPhotoModel>.Success(result);
+                return ApiResult<UpdateUserPhotoDto>.Success(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -67,11 +65,9 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// Updates photo <paramref name="model"/> in the user store.
         /// </summary>
         /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoDto model, long userId)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (model == null)
             {
@@ -83,7 +79,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
-                return ApiResult<UpdateUserPhotoModel>.Success(result);
+                return ApiResult<UpdateUserPhotoDto>.Success(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -95,11 +91,9 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// Updates photo <paramref name="model"/> in the user store.
         /// </summary>
         /// <param name="model">The photo to update.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType, CancellationToken cancellationToken = default)
+        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (userId <= 0)
             {
@@ -110,7 +104,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
             {
                 await _userPhotoBusiness.DeleteUserPhotoAsync(userId, userPhotoType);
 
-                return ApiResult<UpdateUserPhotoModel>.Success(new UpdateUserPhotoModel());
+                return ApiResult<UpdateUserPhotoDto>.Success(new UpdateUserPhotoDto());
             }
             catch (DbUpdateConcurrencyException)
             {

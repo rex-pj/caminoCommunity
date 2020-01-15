@@ -1,21 +1,19 @@
-﻿using System;
-
-namespace Coco.Api.Framework.Models
+﻿namespace Coco.Api.Framework.Models
 {
     public class UserTokenResult
     {
         public UserTokenResult()
         {
-            IsSuccess = false;
+            IsSucceed = false;
         }
 
-        public UserTokenResult(bool isSuccess)
+        public UserTokenResult(bool isSucceed)
         {
-            IsSuccess = isSuccess;
+            IsSucceed = isSucceed;
         }
 
         public string AuthenticationToken { get; set; }
-        public bool IsSuccess { get; set; }
+        public bool IsSucceed { get; set; }
         public UserInfoModel UserInfo { get; internal set; }
     }
 }

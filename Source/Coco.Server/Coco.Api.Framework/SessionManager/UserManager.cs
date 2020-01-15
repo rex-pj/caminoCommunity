@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Coco.Api.Framework.Commons.Enums;
 using System.Security.Claims;
@@ -12,35 +11,32 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
-using Coco.Entities.Model.General;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.General;
+using Coco.Entities.Dtos.User;
 using Coco.Entities.Enums;
-using System.Security.Cryptography;
-using Coco.Api.Framework.Commons.Encode;
 using Coco.Api.Framework.SessionManager.Core;
+using AutoMapper;
 
 namespace Coco.Api.Framework.SessionManager
 {
     public class UserManager : IUserManager<ApplicationUser>
     {
-        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
-        
         #region Properties
         public const string ResetPasswordTokenPurpose = "ResetPassword";
         public const string ConfirmEmailTokenPurpose = "EmailConfirmation";
         internal readonly string _tokenEncryptKey;
         internal readonly int _tokenExpiryMinutes;
+        private readonly IMapper _mapper;
         protected internal IUserStore<ApplicationUser> UserStore;
         protected internal IUserPhotoStore<ApplicationUser> UserPhotoStore;
         protected internal IUserPasswordStore<ApplicationUser> UserPasswordStore;
         protected internal IUserEmailStore<ApplicationUser> UserEmailStore;
-        protected internal IUserSecurityStampStore<ApplicationUser> SecurityStampStore;
-        
+        protected internal IUserStampStore<ApplicationUser> UserStampStore;
+
         public IList<IUserValidator<ApplicationUser>> UserValidators { get; } = new List<IUserValidator<ApplicationUser>>();
         public IList<IPasswordValidator<ApplicationUser>> PasswordValidators { get; } = new List<IPasswordValidator<ApplicationUser>>();
         public IdentityOptions Options { get; set; }
         public IdentityErrorDescriber Describer { get; private set; }
-        protected virtual CancellationToken CancellationToken => CancellationToken.None;
         #endregion
 
         #region Fields
@@ -60,20 +56,22 @@ namespace Coco.Api.Framework.SessionManager
             IEnumerable<IUserValidator<ApplicationUser>> userValidators,
             IConfiguration configuration,
             ILookupNormalizer lookupNormalizer,
-            IUserSecurityStampStore<ApplicationUser> userSecurityStampStore,
+            IMapper mapper,
+            IUserStampStore<ApplicationUser> userStampStore,
             IdentityErrorDescriber errors = null)
         {
-            this.Options = optionsAccessor?.Value ?? new IdentityOptions();
-            this.UserStore = userStore;
-            this.UserPhotoStore = userPhotoStore;
-            this.UserEmailStore = userEmailStore;
-            this.UserPasswordStore = userPasswordStore;
-            this.SecurityStampStore = userSecurityStampStore;
+            Options = optionsAccessor?.Value ?? new IdentityOptions();
+            UserStore = userStore;
+            UserPhotoStore = userPhotoStore;
+            UserEmailStore = userEmailStore;
+            UserPasswordStore = userPasswordStore;
+            UserStampStore = userStampStore;
+            _mapper = mapper;
 
             _passwordHasher = passwordHasher;
             _lookupNormalizer = lookupNormalizer;
             _tokenEncryptKey = configuration["Jwt:SecretKey"];
-            _tokenExpiryMinutes = Convert.ToInt32(configuration["Jwt:ExpiryMinutes"]);
+            int.TryParse(configuration["Jwt:ExpiryMinutes"], out _tokenExpiryMinutes);
             Describer = errors ?? new IdentityErrorDescriber();
 
             if (userValidators != null)
@@ -107,7 +105,7 @@ namespace Coco.Api.Framework.SessionManager
             if (validatePassword)
             {
                 var validate = await ValidatePasswordAsync(user, newPassword);
-                if (!validate.IsSuccess)
+                if (!validate.IsSucceed)
                 {
                     return validate;
                 }
@@ -121,7 +119,8 @@ namespace Coco.Api.Framework.SessionManager
                 passwordHashed = _passwordHasher.HashPassword(user, passwordSalted);
             }
 
-            await UserPasswordStore.SetPasswordHashAsync(user, passwordHashed, CancellationToken);
+            await UserPasswordStore.SetPasswordHashAsync(user, passwordHashed);
+
             return new ApiResult(true);
         }
 
@@ -139,7 +138,7 @@ namespace Coco.Api.Framework.SessionManager
             foreach (var v in PasswordValidators)
             {
                 var result = await v.ValidateAsync(this, user, password);
-                if (!result.IsSuccess)
+                if (!result.IsSucceed)
                 {
                     if (result.Errors.Any())
                     {
@@ -153,7 +152,7 @@ namespace Coco.Api.Framework.SessionManager
             {
                 return ApiResult.Failed(errors.ToArray());
             }
-            return new ApiResult(true);
+            return ApiResult.Success();
         }
 
         /// <summary>
@@ -168,7 +167,7 @@ namespace Coco.Api.Framework.SessionManager
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            return await UserEmailStore.GetEmailAsync(user, CancellationToken);
+            return await UserEmailStore.GetEmailAsync(user);
         }
 
         /// <summary>
@@ -196,14 +195,14 @@ namespace Coco.Api.Framework.SessionManager
         /// </summary>
         /// <param name="user">The user whose name should be retrieved.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the name for the specified <paramref name="user"/>.</returns>
-        public virtual async Task<string> GetUserNameAsync(ApplicationUser user)
+        public virtual string GetUserNameAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            return await UserStore.GetUserNameAsync(user, CancellationToken);
+            return UserStore.GetUserNameAsync(user);
         }
 
         /// <summary>
@@ -215,7 +214,7 @@ namespace Coco.Api.Framework.SessionManager
         /// <returns>
         /// The task object containing the results of the asynchronous lookup operation, the user, if any, associated with a normalized value of the specified email address.
         /// </returns>
-        public virtual async Task<ApplicationUser> FindByEmailAsync(string email, bool includeInActived = false)
+        public virtual async Task<ApplicationUser> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
             if (email == null)
@@ -224,9 +223,8 @@ namespace Coco.Api.Framework.SessionManager
             }
 
             email = NormalizeEmail(email);
-            var user = await UserStore.FindByEmailAsync(email, includeInActived, CancellationToken);
+            var user = await UserStore.FindByEmailAsync(email);
             return user;
-
         }
 
         /// <summary>
@@ -246,7 +244,7 @@ namespace Coco.Api.Framework.SessionManager
 
             userName = NormalizeName(userName);
 
-            ApplicationUser user = await UserStore.FindByNameAsync(userName, CancellationToken);
+            var user = await UserStore.FindByNameAsync(userName);
             return user;
         }
 
@@ -266,7 +264,7 @@ namespace Coco.Api.Framework.SessionManager
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            return await UserEmailStore.GetEmailConfirmedAsync(user, CancellationToken);
+            return await UserEmailStore.GetEmailConfirmedAsync(user);
         }
 
         /// <summary>
@@ -290,13 +288,14 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(authenticationToken));
             }
 
-            var user = UserStore.FindByIdentityId(userIdentityId, CancellationToken);
-
-            if (!user.AuthenticationToken.Equals(authenticationToken) && !user.IsActived)
+            var user = UserStore.FindByIdentityId(userIdentityId);
+            var tokenValidity = ValidateToken(user.Id, authenticationToken);
+            if (!tokenValidity.IsSucceed)
             {
                 throw new UnauthorizedAccessException();
             }
 
+            user.AuthenticationToken = tokenValidity.Result;
             return user;
         }
 
@@ -308,7 +307,7 @@ namespace Coco.Api.Framework.SessionManager
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="authenticatorToken"/> and <paramref name="userIdentityId"/> if it exists.
         /// </returns>
-        public virtual async Task<UserFullModel> GetFullByHashIdAsync(string userIdentityId)
+        public virtual async Task<UserFullDto> FindUserByIdentityIdAsync(string userIdentityId, string authenticationToken = null)
         {
             ThrowIfDisposed();
             if (string.IsNullOrEmpty(userIdentityId))
@@ -316,7 +315,14 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(userIdentityId));
             }
 
-            var user = await UserStore.GetFullByFindByHashedIdAsync(userIdentityId, CancellationToken);
+            var user = await UserStore.FindByIdentityIdAsync(userIdentityId);
+
+            var tokenValidity = ValidateToken(user.Id, authenticationToken);
+            if (tokenValidity.IsSucceed)
+            {
+                user.AuthenticationToken = tokenValidity.Result;
+            }
+
             return user;
         }
 
@@ -332,11 +338,12 @@ namespace Coco.Api.Framework.SessionManager
             foreach (var v in UserValidators)
             {
                 var result = await v.ValidateAsync(this, user);
-                if (!result.IsSuccess)
+                if (!result.IsSucceed)
                 {
                     errors.AddRange(result.Errors);
                 }
             }
+
             if (errors.Count > 0)
             {
                 return ApiResult.Failed(errors.ToArray());
@@ -352,7 +359,7 @@ namespace Coco.Api.Framework.SessionManager
         public virtual async Task<string> GetUserIdAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
-            return await UserStore.GetUserIdAsync(user, CancellationToken);
+            return await UserStore.GetUserIdAsync(user);
         }
 
         /// <summary>
@@ -377,19 +384,16 @@ namespace Coco.Api.Framework.SessionManager
             if (verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 await UpdatePasswordHash(user, password, validatePassword: false);
-                ModifyUserAuthenticate(user);
-                var result = await UpdateAuthenticationAsync(user);
-                return result;
             }
-            else if (verifyResult == PasswordVerificationResult.Success)
+
+            if(verifyResult == PasswordVerificationResult.Success || verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 ModifyUserAuthenticate(user);
                 var result = await UpdateAuthenticationAsync(user);
                 return result;
             }
 
-            var success = verifyResult != PasswordVerificationResult.Failed;
-            return ApiResult.Success(success);
+            return ApiResult.Failed(new ApiError());
         }
 
         private void ModifyUserAuthenticate(ApplicationUser user)
@@ -411,6 +415,22 @@ namespace Coco.Api.Framework.SessionManager
         }
 
         /// <summary>
+        /// Called to update the user after validating and updating the normalized email/user name.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>Whether the operation was successful.</returns>
+        protected virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
+        {
+            var result = await ValidateUserAsync(user);
+            if (!result.IsSucceed)
+            {
+                return ApiResult.Failed(result.Errors.ToArray());
+            }
+
+            return await UserStore.UpdateAuthenticationAsync(user);
+        }
+
+        /// <summary>
         /// Returns a <see cref="PasswordVerificationResult"/> indicating the result of a password hash comparison.
         /// </summary>
         /// <param name="store">The store containing a user's password.</param>
@@ -422,14 +442,13 @@ namespace Coco.Api.Framework.SessionManager
         /// </returns>
         protected virtual async Task<PasswordVerificationResult> VerifyPasswordAsync(ApplicationUser user, string password)
         {
-            var hash = await UserPasswordStore.GetPasswordHashAsync(user, CancellationToken);
+            var hash = await UserPasswordStore.GetPasswordHashAsync(user);
             if (hash == null)
             {
                 return PasswordVerificationResult.Failed;
             }
 
             string passwordSalted = UserPasswordStore.AddSaltToPassword(user, password);
-
             return _passwordHasher.VerifyHashedPassword(user, hash, passwordSalted);
         }
 
@@ -460,67 +479,31 @@ namespace Coco.Api.Framework.SessionManager
             }
 
             var data = await ValidateUserAsync(user);
-            if (!data.IsSuccess)
+            if (!data.IsSucceed)
             {
                 return data;
             }
 
+            user.PasswordSalt = UserStampStore.NewSecuritySalt();
             var updatePasswordResult = await UpdatePasswordHash(user, user.Password);
-            if (!updatePasswordResult.IsSuccess)
+            if (!updatePasswordResult.IsSucceed)
             {
                 return data;
             }
 
-            var result = await UserStore.CreateAsync(user, CancellationToken);
-            if (result.IsSuccess)
+            user.ActiveUserStamp = UserStampStore.NewSecurityStamp();
+            var response = await UserStore.CreateAsync(user);
+            var result = response as ApiResult<ApplicationUser>;
+            if (result.IsSucceed)
             {
-                await UpdateActiveUserStampInternal(result.Result);
-                await UpdateResetPasswordStampInternal(result.Result);
-                await UpdatePasswordSaltInternal(result.Result);
+                result.Result.ActiveUserStamp = user.ActiveUserStamp;
+                result.Result.PasswordSalt = user.PasswordSalt;
+
+                var newUserAttributes = UserStampStore.NewUserRegisterAttributes(result.Result);
+                await UserStampStore.SetAttributesAsync(newUserAttributes);
             }
 
             return result;
-        }
-
-        private async Task UpdateActiveUserStampInternal(long userId)
-        {
-            await SecurityStampStore.SetActiveUserStampAsync(userId, NewSecurityStamp(), CancellationToken);
-        }
-
-        private async Task UpdateResetPasswordStampInternal(long userId)
-        {
-            await SecurityStampStore.SetResetPasswordStampAsync(userId, NewIdentityStamp(), CancellationToken);
-        }
-
-        private async Task UpdatePasswordSaltInternal(long userId)
-        {
-            await SecurityStampStore.SetPasswordSaltAsync(userId, NewIdentityStamp(), CancellationToken);
-        }
-
-        private static string NewSecurityStamp()
-        {
-            return Guid.NewGuid().ToString();
-        }
-
-        private static string NewIdentityStamp()
-        {
-            return SaltGenerator.GetSalt();
-        }
-
-        /// <summary>
-        /// Called to update the user after validating and updating the normalized email/user name.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
-        {
-            var result = await ValidateUserAsync(user);
-            if (!result.IsSuccess)
-            {
-                return ApiResult.Failed(result.Errors.ToArray());
-            }
-
-            return await UserStore.UpdateAuthenticationAsync(user, CancellationToken);
         }
 
         /// <summary>
@@ -544,11 +527,12 @@ namespace Coco.Api.Framework.SessionManager
 
             try
             {
-                var user = await UserStore.FindByIdAsync(userId, CancellationToken);
+                var user = await UserStore.FindByIdAsync(userId);
+                user.PasswordSalt = await UserStampStore.GetPasswordSaltAsync(user.Id);
                 if (user != null && await VerifyPasswordAsync(user, currentPassword) != PasswordVerificationResult.Failed)
                 {
                     var data = await UpdatePasswordHash(user, newPassword);
-                    if (!data.IsSuccess)
+                    if (!data.IsSucceed)
                     {
                         return data;
                     }
@@ -562,14 +546,80 @@ namespace Coco.Api.Framework.SessionManager
             }
             catch (Exception e)
             {
-                return ApiResult<UserTokenResult>.Failed(new ApiError()
+                return ApiResult.Failed(new ApiError()
                 {
                     Description = e.Message
-                }, new UserTokenResult()
-                {
-                    IsSuccess = false
                 });
             }
+        }
+
+        /// <summary>
+        /// Changes a user's password after confirming the specified <paramref name="currentPassword"/> is correct,
+        /// as an asynchronous operation.
+        /// </summary>
+        /// <param name="userId">The user id whose password should be set.</param>
+        /// <param name="currentPassword">The current password to validate before changing.</param>
+        /// <param name="newPassword">The new password to set for the specified</param>
+        /// <param name="key">The new password to set for the specified</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public virtual async Task<ApiResult> ResetPasswordAsync(ResetPasswordModel model, long userId)
+        {
+            ThrowIfDisposed();
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            try
+            {
+                var user = await UserStore.FindByIdAsync(userId);
+                if (user == null || !(await IsEmailConfirmedAsync(user)))
+                {
+                    throw new UnauthorizedAccessException("ResetPasswordFailed");
+                }
+
+                var isResetKeyValid = await IsResetPasswordKeyMatched(user.Id, model.Key);
+                if (!isResetKeyValid)
+                {
+                    throw new UnauthorizedAccessException("TheResetKeyIsMismatched");
+                }
+
+                user.PasswordSalt = await UserStampStore.GetPasswordSaltAsync(user.Id);
+                if (user != null && await VerifyPasswordAsync(user, model.CurrentPassword) != PasswordVerificationResult.Failed)
+                {
+                    var data = await UpdatePasswordHash(user, model.Password);
+                    if (!data.IsSucceed)
+                    {
+                        return data;
+                    }
+
+                    var result = await UserPasswordStore.ChangePasswordAsync(user.Id, model.CurrentPassword, user.PasswordHash);
+
+                    if (result.IsSucceed)
+                    {
+                        await UserStampStore.DeleteResetPasswordByEmailAttribute(user);
+                    }
+                    return ApiResult<UserTokenResult>.Success(result);
+                }
+
+                return ApiResult.Failed(Describer.PasswordMismatch());
+            }
+            catch (Exception e)
+            {
+                return ApiResult.Failed(new ApiError()
+                {
+                    Description = e.Message
+                });
+            }
+        }
+
+        private async Task<bool> IsResetPasswordKeyMatched(long userId, string key)
+        {
+            var result = await UserStampStore.GetResetPasswordKeyAsync(userId);
+            return result.Equals(key);
         }
 
         /// <summary>
@@ -600,16 +650,16 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(model.Key));
             }
 
-            var user = await GetFullByHashIdAsync(userIdentityId);
+            var user = await FindUserByIdentityIdAsync(userIdentityId, token);
             if (user == null || !user.AuthenticationToken.Equals(token))
             {
                 throw new UnauthorizedAccessException(nameof(user));
             }
 
-            return await UserStore.UpdateInfoItemAsync(model, CancellationToken);
+            return await UserStore.UpdateInfoItemAsync(model);
         }
 
-        public virtual async Task<ApiResult> UpdateUserProfileAsync(ApplicationUser user, string userIdentityId, string token)
+        public virtual async Task<ApiResult> UpdateIdentifierAsync(ApplicationUser user, string userIdentityId, string token)
         {
             ThrowIfDisposed();
 
@@ -618,16 +668,16 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var result = await GetFullByHashIdAsync(userIdentityId);
+            var result = await FindUserByIdentityIdAsync(userIdentityId, token);
             if (result == null || !result.AuthenticationToken.Equals(token))
             {
                 throw new UnauthorizedAccessException(nameof(user));
             }
 
-            return await UserStore.UpdateUserProfileAsync(user, CancellationToken);
+            return await UserStore.UpdateIdentifierAsync(user);
         }
 
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoModel model, long userId)
+        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoDto model, long userId)
         {
             ThrowIfDisposed();
 
@@ -636,10 +686,10 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserPhotoStore.UpdateAvatarAsync(model, userId, CancellationToken);
+            return await UserPhotoStore.UpdateAvatarAsync(model, userId);
         }
 
-        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoModel model, long userId)
+        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoDto model, long userId)
         {
             ThrowIfDisposed();
 
@@ -648,7 +698,7 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return await UserPhotoStore.UpdateCoverAsync(model, userId, CancellationToken);
+            return await UserPhotoStore.UpdateCoverAsync(model, userId);
         }
 
         public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
@@ -660,7 +710,7 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            return await UserPhotoStore.DeleteUserPhotoAsync(userId, userPhotoType, CancellationToken);
+            return await UserPhotoStore.DeleteUserPhotoAsync(userId, userPhotoType);
         }
 
         public virtual async Task<ApiResult> ForgotPasswordAsync(string email)
@@ -672,13 +722,107 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(email));
             }
 
-            var user = await FindByEmailAsync(email, true);
-            if(user == null)
+            var user = await FindByEmailAsync(email);
+            if (user == null)
             {
-                throw new NullReferenceException(nameof(user));
+                throw new ArgumentNullException(nameof(user));
             }
 
-            return await UserEmailStore.SendForgotPasswordAsync(email, CancellationToken);
+            var resetAttribute = await UserStampStore.SetResetPasswordStampAsync(user, UserStampStore.NewSecurityStamp());
+            user.ActiveUserStamp = resetAttribute.Value;
+
+            return await UserEmailStore.SendForgotPasswordAsync(user);
+        }
+
+
+        public virtual async Task<ApiResult> ClearUserLoginAsync(string userIdentityId, string authenticationToken)
+        {
+            ThrowIfDisposed();
+
+            var user = await FindUserByIdentityIdAsync(userIdentityId, authenticationToken);
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var applicationUser = _mapper.Map<ApplicationUser>(user);
+            return await ClearUserLoginAsync(applicationUser, authenticationToken);
+        }
+
+        private async Task<ApiResult> ClearUserLoginAsync(ApplicationUser user, string authenticationToken)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (string.IsNullOrEmpty(authenticationToken))
+            {
+                throw new ArgumentNullException(nameof(authenticationToken));
+            }
+
+            var applicationUser = _mapper.Map<ApplicationUser>(user);
+            var isDeleted = await UserStampStore.DeleteUserAuthenticationAttributes(applicationUser, authenticationToken);
+
+            if (isDeleted)
+            {
+                return ApiResult.Success();
+            }
+
+            return ApiResult.Failed(new ApiError());
+        }
+
+        public async Task<ApiResult> ActiveAsync(string email, string activeKey)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            if (string.IsNullOrEmpty(activeKey))
+            {
+                throw new ArgumentNullException(nameof(activeKey));
+            }
+
+            var user = await FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (user.IsActived)
+            {
+                return ApiResult.Failed(Describer.UserAlreadyActived());
+            }
+
+            var activationAttribute = await UserStampStore.GetActivationKeyAsync(user.Id);
+            if (string.IsNullOrEmpty(activationAttribute))
+            {
+                throw new ArgumentNullException(nameof(activationAttribute));
+            }
+
+            if (!activationAttribute.Equals(activeKey))
+            {
+                throw new UnauthorizedAccessException(nameof(activeKey));
+            }
+
+            var result = await UserStore.ActiveAsync(user);
+
+            if (result.IsSucceed)
+            {
+                await UserStampStore.DeleteUserActivationAttribute(user);
+            }
+
+            return result;
+        }
+
+        private ApiResult<string> ValidateToken(long userId, string token)
+        {
+            var tokenResult = UserStampStore.GetAuthenticationAttribute(userId, token);
+            bool hasToken = tokenResult != null && !string.IsNullOrEmpty(tokenResult.AuthenticationToken);
+            bool isValid = hasToken && tokenResult.AuthenticationToken.Equals(token);
+
+            return ApiResult<string>.Success(tokenResult.AuthenticationToken);
         }
         #endregion
 

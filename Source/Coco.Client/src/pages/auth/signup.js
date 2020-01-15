@@ -1,114 +1,53 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { raiseError } from "../../store/commands";
-import { defaultClient } from "../../utils/GraphQLClient";
+import { useMutation } from "@apollo/react-hooks";
+import { publicClient } from "../../utils/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
-import { ADD_USER } from "../../utils/GraphQLQueries";
-import { getError } from "../../utils/Helper";
-import UserContext from "../../utils/Context/UserContext";
-import { Mutation } from "react-apollo";
+import { SIGN_UP } from "../../utils/GraphQLQueries";
+import { useStore } from "../../store/hook-store";
 
-class SignUpPage extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default withRouter(props => {
+  const [isFormEnabled, setFormEnabled] = useState(true);
+  const dispatch = useStore(false)[1];
+  const [signup] = useMutation(SIGN_UP, {
+    client: publicClient
+  });
 
-    this.state = {
-      isFormEnabled: true
-    };
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  showValidationError = (title, message) => {
-    this.props.showValidationError(title, message);
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error"
+    });
   };
 
-  signUp = async (data, addUser) => {
-    if (this._isMounted) {
-      this.setState({ isFormEnabled: true });
-    }
+  const signUp = async data => {
+    setFormEnabled(true);
 
-    if (addUser) {
-      await addUser({
+    if (signup) {
+      await signup({
         variables: {
           user: data
         }
       })
         .then(result => {
-          this.props.history.push("/auth/signin");
+          props.history.push("/auth/signin");
         })
         .catch(error => {
-          if (this._isMounted) {
-            this.setState({ isFormEnabled: true });
-          }
-          this.props.notifyError(error, this.context.lang);
-        });
-    }
-  };
-
-  render() {
-    return (
-      <Mutation mutation={ADD_USER} client={defaultClient}>
-        {adduser => (
-          <SignUpForm
-            signUp={data => this.signUp(data, adduser)}
-            showValidationError={this.showValidationError}
-            isFormEnabled={this.state.isFormEnabled}
-          />
-        )}
-      </Mutation>
-    );
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    notifyError: (error, lang) => {
-      if (
-        error &&
-        error.networkError &&
-        error.networkError.result &&
-        error.networkError.result.errors
-      ) {
-        const errors = error.networkError.result.errors;
-
-        errors.forEach(item => {
-          raiseError(
-            dispatch,
+          setFormEnabled(true);
+          showValidationError(
             "Đăng ký KHÔNG thành công",
-            getError(item.extensions.code, lang),
-            "/auth/signup"
+            "Có lỗi xảy ra trong quá trình đăng ký"
           );
         });
-      } else {
-        raiseError(
-          dispatch,
-          "Đăng ký KHÔNG thành công",
-          getError("ErrorOccurredTryRefeshInputAgain", lang),
-          "/auth/signup"
-        );
-      }
-    },
-
-    showValidationError: (title, message) => {
-      raiseError(dispatch, title, message, "#");
     }
   };
-};
 
-SignUpPage.contextType = UserContext;
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(SignUpPage));
+  return (
+    <SignUpForm
+      signUp={data => signUp(data)}
+      showValidationError={showValidationError}
+      isFormEnabled={isFormEnabled}
+    />
+  );
+});

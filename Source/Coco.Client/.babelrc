@@ -1,15 +1,12 @@
 {
-  "plugins": ["@loadable/babel-plugin"],
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
-        "targets": {
-          "browser": ["> 1%", "last 2 versions"]
-        },
-        "useBuiltIns": "entry"
+        "debug": true,
+        "useBuiltIns": "usage",
+        "corejs": 3
       }
-    ],
-    "react"
+    ]
   ]
 }

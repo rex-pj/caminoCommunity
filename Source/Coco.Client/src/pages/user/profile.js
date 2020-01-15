@@ -1,133 +1,129 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import { Query } from "react-apollo";
-import styled from "styled-components";
-import loadable from "@loadable/component";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { defaultClient } from "../../utils/GraphQLClient";
+import Profile from "../../components/organisms/User/Profile";
+import { SessionContext } from "../../store/context/SessionContext";
+import { publicClient } from "../../utils/GraphQLClient";
 import { GET_USER_INFO } from "../../utils/GraphQLQueries";
-import ProfileBody from "./profile-body";
+import { useQuery } from "@apollo/react-hooks";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
-import UserContext from "../../utils/Context/UserContext";
+import { useStore } from "../../store/hook-store";
 
-import * as avatarActions from "../../store/actions/avatarActions";
-import { ButtonIconOutlineSecondary } from "../../components/molecules/ButtonIcons";
-const ProfileAvatar = loadable(() =>
-    import("../../components/organisms/User/ProfileAvatar")
-  ),
-  UserCoverPhoto = loadable(() =>
-    import("../../components/organisms/User/UserCoverPhoto")
-  ),
-  ProfileNavigation = loadable(() =>
-    import("../../components/organisms/User/ProfileNavigation")
-  );
-
-const CoverPageBlock = styled.div`
-  position: relative;
-  height: 300px;
-  overflow: hidden;
-
-  .profile-name {
-    font-weight: 600;
-    color: ${p => p.theme.color.white};
-    font-size: ${p => p.theme.fontSize.large};
-  }
-
-  h2 {
-    left: 135px;
-    bottom: ${p => p.theme.size.small};
-    z-index: 3;
-    margin-bottom: 0;
-    position: absolute;
-  }
-`;
-
-const CoverNav = styled.div`
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  background-color: ${p => p.theme.color.white};
-  border-bottom-left-radius: ${p => p.theme.borderRadius.normal};
-  border-bottom-right-radius: ${p => p.theme.borderRadius.normal};
-  margin-bottom: ${p => p.theme.size.distance};
-`;
-
-const AvatarBlock = styled(ProfileAvatar)`
-  position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  left: ${p => p.theme.size.distance};
-  z-index: 3;
-`;
-
-const ConnectButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
-  line-height: 1;
-
-  position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
-  z-index: 3;
-`;
-
-class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
-    this._canEdit = false;
-    this._refetch = null;
-    this._baseUrl = "/profile";
-    this._updateTimeout = null;
-
-    this.state = {
-      isEditCoverMode: false
-    };
-  }
-
-  async componentDidMount() {
-    this._isMounted = true;
-    this._updateTimeout = null;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { avatarPayload } = nextProps;
-    if (!avatarPayload) {
-      return;
-    }
-
-    if (avatarPayload.actionType === avatarActions.AVATAR_UPLOADED) {
-      if (this._isMounted) {
-        this._refetch();
-
-        this._updateTimeout = setTimeout(() => {
-          if (this.context.relogin) {
-            this.context.relogin();
-          }
-        }, 300);
+export default withRouter(props => {
+  const [isEditCoverMode, setEditCoverMode] = useState(false);
+  const _baseUrl = "/profile";
+  const sessionContext = useContext(SessionContext);
+  const { match } = props;
+  const { params } = match;
+  const { userId, pageNumber } = params;
+  const { loading, error, data, refetch } = useQuery(GET_USER_INFO, {
+    client: publicClient,
+    variables: {
+      criterias: {
+        userId
       }
     }
+  });
+
+  const pages = [
+    {
+      path: [`${_baseUrl}/:userId/about`],
+      dir: "user-about"
+    },
+    {
+      path: [`${_baseUrl}/:userId/update`],
+      dir: "user-update"
+    },
+    {
+      path: [`${_baseUrl}/:userId/security`],
+      dir: "user-security"
+    },
+    {
+      path: [
+        `${_baseUrl}/:userId/posts`,
+        `${_baseUrl}/:userId/posts/page/:pageNumber`
+      ],
+      dir: "user-posts"
+    },
+    {
+      path: [
+        `${_baseUrl}/:userId/products`,
+        `${_baseUrl}/:userId/products/page/:pageNumber`
+      ],
+      dir: "user-products"
+    },
+    {
+      path: [
+        `${_baseUrl}/:userId/farms`,
+        `${_baseUrl}/:userId/farms/page/:pageNumber`
+      ],
+      dir: "user-farms"
+    },
+    {
+      path: [
+        `${_baseUrl}/:userId/followings`,
+        `${_baseUrl}/:userId/followings/page/:pageNumber`
+      ],
+      dir: "user-followings"
+    },
+    {
+      path: [
+        `${_baseUrl}/:userId`,
+        `${_baseUrl}/:userId/feeds`,
+        `${_baseUrl}/:userId/feeds/page/:pageNumber`
+      ],
+      dir: "user-feeds"
+    }
+  ];
+
+  const onToggleEditCoverMode = e => {
+    setEditCoverMode(e);
+  };
+
+  const [state, dispatch] = useStore(false);
+  if (state.type === "AVATAR_UPDATED") {
+    refetch();
   }
 
-  onToggleEditCoverMode = e => {
-    if (this._isMounted) {
-      this.setState({
-        isEditCoverMode: e
-      });
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error"
+    });
+  };
+
+  const userCoverUpdated = async (action, data) => {
+    console.log(action);
+    console.log(data);
+    if (data && data.canEdit) {
+      return await action({ variables: { criterias: data } })
+        .then(async () => {
+          await refetch().then(() => {
+            if (sessionContext.relogin) {
+              sessionContext.relogin();
+            }
+          });
+        })
+        .catch(() => {
+          showValidationError(
+            "Có lỗi xảy ra",
+            "Có lỗi xảy ra khi cập nhật dữ liệu, bạn vui lòng thử lại"
+          );
+        });
     }
   };
 
-  userCoverUploaded = () => {
-    if (this._isMounted) {
-      this._refetch();
+  useEffect(() => {}, [refetch, sessionContext.relogin]);
 
-      this._updateTimeout = setTimeout(() => {
-        if (this.context.relogin) {
-          this.context.relogin();
-        }
-      }, 300);
-    }
-  };
+  if (loading) {
+    return <Loading>Loading</Loading>;
+  }
+  if (error) {
+    return <ErrorBlock>Error</ErrorBlock>;
+  }
 
-  parseUserInfo(response) {
+  const parseUserInfo = response => {
     const { fullUserInfo } = response;
     const { result, accessMode } = fullUserInfo;
     const canEdit = accessMode === "CAN_EDIT";
@@ -135,88 +131,23 @@ class Profile extends Component {
     return {
       ...result,
       canEdit: canEdit,
-      avatarUrl: result.avatarUrl,
-      url: result.userIdentityId ? `/profile/${result.userIdentityId}` : "",
-      coverPhotoUrl: result.coverPhotoUrl
+      url: result.userIdentityId ? `/profile/${result.userIdentityId}` : ""
     };
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  render() {
-    const { match } = this.props;
-    const { params } = match;
-    const { userId, pageNumber } = params;
-    const { isEditCoverMode } = this.state;
-    return (
-      <Query
-        query={GET_USER_INFO}
-        variables={{
-          criterias: {
-            userId
-          }
-        }}
-        client={defaultClient}
-      >
-        {({ loading, error, data, refetch }) => {
-          if (loading) {
-            return <Loading>Loading</Loading>;
-          }
-          if (error) {
-            return <ErrorBlock>Error</ErrorBlock>;
-          }
-
-          const userInfo = this.parseUserInfo(data);
-
-          this._refetch = refetch;
-          return (
-            <Fragment>
-              <CoverPageBlock>
-                {!isEditCoverMode ? (
-                  <ConnectButton icon="user-plus" size="sm">
-                    Kết nối
-                  </ConnectButton>
-                ) : null}
-                <UserCoverPhoto
-                  userInfo={userInfo}
-                  canEdit={userInfo.canEdit}
-                  onUploaded={this.userCoverUploaded}
-                  onToggleEditMode={this.onToggleEditCoverMode}
-                />
-                <AvatarBlock
-                  userInfo={userInfo}
-                  canEdit={userInfo.canEdit && !isEditCoverMode}
-                />
-                <h2>
-                  <a href={userInfo.url} className="profile-name">
-                    {userInfo.displayName}
-                  </a>
-                </h2>
-              </CoverPageBlock>
-              <CoverNav>
-                <ProfileNavigation userId={userId} baseUrl={this._baseUrl} />
-              </CoverNav>
-              <ProfileBody
-                userInfo={userInfo}
-                pageNumber={pageNumber}
-                baseUrl={this._baseUrl}
-              />
-            </Fragment>
-          );
-        }}
-      </Query>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    avatarPayload: state.avatarReducer.payload
   };
-};
 
-Profile.contextType = UserContext;
+  const userInfo = parseUserInfo(data);
 
-export default connect(mapStateToProps)(withRouter(Profile));
+  return (
+    <Profile
+      isEditCoverMode={isEditCoverMode}
+      userId={userId}
+      pageNumber={pageNumber}
+      baseUrl={_baseUrl}
+      onToggleEditCoverMode={onToggleEditCoverMode}
+      userCoverUpdated={userCoverUpdated}
+      showValidationError={showValidationError}
+      pages={pages}
+      userInfo={userInfo}
+    />
+  );
+});

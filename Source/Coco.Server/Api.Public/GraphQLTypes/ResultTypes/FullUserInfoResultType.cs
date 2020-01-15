@@ -1,9 +1,15 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Models;
 using GraphQL.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
-    public class FullUserInfoResultType : ObjectGraphType<UserInfoExt>
+    public class ApiFullUserInfoResultType : ApiResultType<UserInfoExtend, FullUserInfoResultType>
+    {
+
+    }
+
+    public class FullUserInfoResultType : ObjectGraphType<UserInfoExtend>
     {
         public FullUserInfoResultType()
         {
@@ -21,7 +27,7 @@ namespace Api.Public.GraphQLTypes.ResultTypes
             Field(x => x.UpdatedDate, type: typeof(DateTimeGraphType));
             Field(x => x.GenderId, type: typeof(IntGraphType));
             Field(x => x.GenderLabel, type: typeof(StringGraphType));
-            Field(x => x.CountryId, type: typeof(IntGraphType));
+            Field(x => x.CountryId, type: typeof(ShortGraphType));
             Field(x => x.CountryCode, type: typeof(StringGraphType));
             Field(x => x.CountryName, type: typeof(StringGraphType));
             Field(x => x.StatusId, type: typeof(IntGraphType));

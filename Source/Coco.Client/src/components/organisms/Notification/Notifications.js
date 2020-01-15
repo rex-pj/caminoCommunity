@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import NotifyItem from "./NotifyItem";
-import { connect } from "react-redux";
-import * as actionTypes from "../../../store/actions/notifyActions";
+import { useStore } from "../../../store/hook-store";
 
 const Root = styled.div`
   position: fixed;
@@ -11,77 +10,34 @@ const Root = styled.div`
   z-index: 100;
 `;
 
-class Notifications extends Component {
-  constructor(props) {
-    super(props);
+export default () => {
+  const [state, dispatch] = useStore(true);
 
-    this.state = {
-      notifications: []
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.notify) {
-      let notifications = [...this.state.notifications];
-      notifications.push(nextProps.notify);
-
-      this.setState({
-        notifications: notifications
-      });
-
-      this.props.dispatch({
-        type: actionTypes.UNNOTIFICATION
-      });
-    }
-  }
-
-  closePopup = notify => {
-    let notifications = [...this.state.notifications];
-    notifications = notifications.filter(item => item !== notify);
-
-    this.setState({
-      notifications: notifications
-    });
-
-    this.props.dispatch({
-      type: actionTypes.UNNOTIFICATION
-    });
+  const closePopup = notify => {
+    dispatch("UNNOTIFY", notify);
   };
 
-  closeLatestPopup = () => {
-    let notifications = [...this.state.notifications];
-    notifications.splice(0, 1);
-
-    this.setState({
-      notifications: notifications
-    });
+  const closeLatestPopup = () => {
+    dispatch("UNNOTIFY");
   };
 
-  render() {
-    const { notifications } = this.state;
-    return (
-      <Root>
-        {notifications
-          ? notifications.map((item, index) => {
-              return (
-                <NotifyItem
-                  key={index}
-                  closePopup={this.closePopup}
-                  closeLatestPopup={this.closeLatestPopup}
-                  notify={item}
-                />
-              );
-            })
-          : null}
-      </Root>
-    );
-  }
-}
+  useEffect(() => {}, []);
 
-const mapStateToProps = state => {
-  return {
-    notify: state.notifyRdc.notify
-  };
+  const { notifications } = state;
+  return (
+    <Root>
+      {notifications
+        ? notifications.map((item, index) => {
+            return (
+              <NotifyItem
+                key={index}
+                closePopup={closePopup}
+                closeLatestPopup={closeLatestPopup}
+                notify={item}
+              />
+            );
+          })
+        : null}
+    </Root>
+  );
 };
-
-export default connect(mapStateToProps)(Notifications);

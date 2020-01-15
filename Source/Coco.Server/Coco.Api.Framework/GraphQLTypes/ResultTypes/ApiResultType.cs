@@ -7,20 +7,20 @@ namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
     {
         public ApiResultType()
         {
-            Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
+            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
             Field(x => x.AccessMode, type: typeof(AccessModeEnumType));
             Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
         }
     }
 
-    public class ApiResultType<T, TResult> : ObjectGraphType<ApiResult<TResult>> where T : ObjectGraphType<TResult>
+    public class ApiResultType<T, TResult> : ObjectGraphType<ApiResult<T>> where T : class where TResult : class, IGraphType
     {
         public ApiResultType()
         {
-            Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
+            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
             Field(x => x.AccessMode, type: typeof(AccessModeEnumType));
             Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
-            Field(x => x.Result, type: typeof(T));
+            Field(x => x.Result, type: typeof(TResult));
         }
     }
 }

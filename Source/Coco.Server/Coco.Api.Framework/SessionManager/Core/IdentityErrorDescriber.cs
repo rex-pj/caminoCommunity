@@ -53,6 +53,19 @@ namespace Coco.Api.Framework.SessionManager.Core
         }
 
         /// <summary>
+        /// Returns an <see cref="ApiError"/> an unexpected error has occurred.
+        /// </summary>
+        /// <returns>An <see cref="ApiError"/> an unexpected error has occurred.</returns>
+        public virtual ApiError UnexpectedErrorOccurred()
+        {
+            return new ApiError
+            {
+                Code = nameof(UnexpectedErrorOccurred),
+                Description = ExceptionConstant.UnexpectedErrorOccurred
+            };
+        }
+
+        /// <summary>
         /// Returns an <see cref="ApiError"/> indicating an invalid token.
         /// </summary>
         /// <returns>An <see cref="ApiError"/> indicating an invalid token.</returns>
@@ -185,6 +198,19 @@ namespace Coco.Api.Framework.SessionManager.Core
             {
                 Code = nameof(UserAlreadyHasPassword),
                 Description = ExceptionConstant.UserAlreadyHasPassword
+            };
+        }
+
+        /// <summary>
+        /// Returns an <see cref="ApiError"/> indicating a user already actived.
+        /// </summary>
+        /// <returns>An <see cref="ApiError"/> indicating a user already actived.</returns>
+        public virtual ApiError UserAlreadyActived()
+        {
+            return new ApiError
+            {
+                Code = nameof(UserAlreadyActived),
+                Description = ExceptionConstant.UserAlreadyActived
             };
         }
 

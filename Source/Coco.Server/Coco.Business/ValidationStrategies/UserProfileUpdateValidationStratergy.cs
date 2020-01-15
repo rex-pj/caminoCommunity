@@ -1,6 +1,6 @@
 ﻿using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Coco.Business.ValidationStrategies
 
         public bool IsValid<T>(T data)
         {
-            var model = data as UserProfileUpdateModel;
+            var model = data as UserIdentifierUpdateDto;
             if (model == null)
             {
                 Errors = GetErrors(new ArgumentNullException(nameof(model)));

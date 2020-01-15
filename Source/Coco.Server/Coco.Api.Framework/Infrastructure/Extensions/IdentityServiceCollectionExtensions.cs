@@ -35,7 +35,7 @@ namespace Coco.Api.Framework.Infrastructure.Extensions
                 .AddTransient<IUserPhotoStore<ApplicationUser>, UserPhotoStore>()
                 .AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 .AddTransient<ITextCrypter, TextCrypter>()
-                .AddTransient(typeof(IUserSecurityStampStore<>), typeof(UserSecurityStampStore<>))
+                .AddTransient(typeof(IUserStampStore<>), typeof(UserStampStore<>))
                 .AddScoped<ISessionContext, SessionContext>()
                 .AddScoped<IEmailSender, EmailSender>();
 

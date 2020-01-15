@@ -10,57 +10,20 @@ import {
   setLocalStorage,
   getLocalStorageByKey
 } from "./StorageService";
-import { identityClient } from "../utils/GraphQLClient";
-import { GET_LOGGED_USER } from "../utils/GraphQLQueries";
 
-function removeUserToken() {
+const removeUserToken = () => {
   removeLocalStorage(AUTH_KEY);
-}
+};
 
-function setUserToken(token) {
+const setUserToken = token => {
   setLocalStorage(AUTH_KEY, token);
-}
+};
 
-function getUserToken() {
+const getUserToken = () => {
   return getLocalStorageByKey(AUTH_KEY);
-}
+};
 
-async function getLoggedUserInfo() {
-  const tokenkey = getLocalStorageByKey(AUTH_KEY);
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
-  const userIdentityId = getLocalStorageByKey(AUTH_USER_HASHED_ID);
-  let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
-
-  userLanguage = userLanguage ? userLanguage : "vn";
-
-  let currentUser = {
-    isLogin,
-    tokenkey,
-    userIdentityId,
-    userLanguage
-  };
-
-  await identityClient
-    .query({
-      query: GET_LOGGED_USER
-    })
-    .then(response => {
-      const { data } = response;
-      const { loggedUser } = data;
-
-      currentUser = {
-        ...currentUser,
-        ...loggedUser
-      };
-    })
-    .catch(error => {
-      console.log(error);
-    });
-
-  return currentUser;
-}
-
-function parseUserInfo(response) {
+const parseUserInfo = response => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
 
@@ -81,7 +44,7 @@ function parseUserInfo(response) {
   }
 
   return currentUser;
-}
+};
 
 const setLogin = (userInfo, token) => {
   if (userInfo) {
@@ -93,18 +56,17 @@ const setLogin = (userInfo, token) => {
   setLocalStorage(AUTH_LOGIN_KEY, true);
 };
 
-function logOut() {
+const logOut = () => {
   removeUserToken();
   removeLocalStorage(AUTH_LOGIN_KEY);
   removeLocalStorage(AUTH_DISPLAY_NAME);
   removeLocalStorage(AUTH_USER_HASHED_ID);
-}
+};
 
 export default {
   removeUserToken,
   setUserToken,
   getUserToken,
-  getLoggedUserInfo,
   setLogin,
   logOut,
   parseUserInfo

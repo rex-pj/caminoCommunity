@@ -2,7 +2,7 @@
 using Coco.Business.Mapping;
 using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public long Create(UserModel userModel)
+        public  async Task<UserDto> CreateAsync(UserDto userModel)
         {
             if (userModel == null)
             {
@@ -25,33 +25,13 @@ namespace Coco.Business.Implementation.UserBusiness
             var userInfo = _mapper.Map<UserInfo>(userModel);
 
             _userInfoRepository.Add(userInfo);
-            _identityContext.SaveChanges();
-
-            return userInfo.Id;
-        }
-
-        public async Task<UserModel> UpdateAuthenticationAsync(UserModel model)
-        {
-            if (model.Id <= 0)
-            {
-                throw new ArgumentNullException("User Id");
-            }
-
-            var user = await _userRepository.FindAsync(model.Id);
-
-            user.UpdatedById = model.Id;
-            user.UpdatedDate = DateTime.Now;
-            //user.AuthenticatorToken = model.AuthenticationToken;
-            //user.IdentityStamp = model.IdentityStamp;
-            user.Expiration = model.Expiration;
-
-            _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
+            userModel.Id = userInfo.Id;
 
-            return model;
+            return userModel;
         }
 
-        public async Task<UserLoggedInModel> UpdatePasswordAsync(UserPasswordUpdateModel model)
+        public async Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model)
         {
             _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -70,18 +50,18 @@ namespace Coco.Business.Implementation.UserBusiness
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 
-            return new UserLoggedInModel() {
+            return new UserDto() {
                 Id = user.Id
             };
         }
         #endregion
 
         #region GET
-        public UserLoggedInModel GetLoggedIn(long id)
+        public UserDto GetLoggedIn(long id)
         {
             var user = _userRepository
                 .GetAsNoTracking(x => x.Id == id)
-                .Select(UserMapping.SelectorUserLoggedIn)
+                .Select(UserMapping.UserModelSelector)
                 .FirstOrDefault();
 
             return user;

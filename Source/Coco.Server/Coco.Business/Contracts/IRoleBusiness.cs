@@ -1,13 +1,13 @@
-﻿using Coco.Entities.Model.Auth;
+﻿using Coco.Entities.Dtos.Auth;
 
 namespace Coco.Business.Contracts
 {
     public interface IRoleBusiness
     {
-        byte Add(RoleModel roleModel);
+        byte Add(RoleDto roleModel);
         bool Delete(byte id);
-        RoleModel Find(byte id);
-        RoleModel GetByName(string name);
-        bool Update(RoleModel roleModel);
+        RoleDto Find(byte id);
+        RoleDto GetByName(string name);
+        bool Update(RoleDto roleModel);
     }
 }

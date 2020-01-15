@@ -3,14 +3,15 @@ using Coco.Business.Mapping;
 using Coco.Business.ValidationStrategies;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.User;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos.User;
+using Coco.Entities.Dtos.General;
 using Coco.IdentityDAL;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Coco.Entities.Enums;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -48,7 +49,24 @@ namespace Coco.Business.Implementation.UserBusiness
             _identityContext.SaveChanges();
         }
 
-        public async Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model)
+        public async Task<bool> ActiveAsync(long id)
+        {
+            var user = _userRepository.Find(id);
+            if (user.IsActived)
+            {
+                throw new InvalidOperationException($"User with email: {user.Email} is already actived");
+            }
+
+            user.IsActived = true;
+            user.IsEmailConfirmed = true;
+            user.StatusId = (byte)UserStatusEnum.Actived;
+            _userRepository.Update(user);
+            await _identityContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<UpdatePerItemDto> UpdateInfoItemAsync(UpdatePerItemDto model)
         {
             if (model.PropertyName == null)
             {
@@ -77,7 +95,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             if (userInfo.User != null)
             {
-                userInfo.User.UpdatedDate = DateTime.Now;
+                userInfo.User.UpdatedDate = DateTime.UtcNow;
                 userInfo.User.UpdatedById = userInfo.Id;
             }
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
@@ -86,7 +104,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task<UserProfileUpdateModel> UpdateUserProfileAsync(UserProfileUpdateModel model)
+        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto model)
         {
             _validationStrategyContext.SetStrategy(new UserProfileUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -101,7 +119,7 @@ namespace Coco.Business.Implementation.UserBusiness
             var user = await _userRepository.FindAsync(model.Id);
 
             user.UpdatedById = model.Id;
-            user.UpdatedDate = DateTime.Now;
+            user.UpdatedDate = DateTime.UtcNow;
             user.Lastname = model.Lastname;
             user.Firstname = model.Firstname;
             user.DisplayName = model.DisplayName;
@@ -114,55 +132,45 @@ namespace Coco.Business.Implementation.UserBusiness
         #endregion
 
         #region GET
-        public async Task<UserModel> FindUserByEmail(string email, bool includeInActived = false)
+        public async Task<UserDto> FindUserByEmail(string email)
         {
             email = email.ToLower();
 
             var user = await _userRepository
-                .GetAsNoTracking(x => x.Email.Equals(email) && (includeInActived ? true : x.IsActived))
-                .Select(UserMapping.SelectorUserModel)
+                .GetAsNoTracking(x => x.Email.Equals(email))
+                .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return user;
         }
 
-        public async Task<UserModel> FindUserByUsername(string username, bool includeInActived = false)
+        public async Task<UserDto> FindUserByUsername(string username)
         {
             username = username.ToLower();
 
             var user = await _userRepository
-                .GetAsNoTracking(x => x.Email.Equals(username) && (includeInActived ? true : x.IsActived))
-                .Select(UserMapping.SelectorUserModel)
+                .GetAsNoTracking(x => x.Email.Equals(username))
+                .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return user;
         }
 
-        public UserModel Find(long id)
-        {
-            var user = _userRepository
-                .GetAsNoTracking(x => x.Id == id)
-                .Select(UserMapping.SelectorUserModel)
-                .FirstOrDefault();
-
-            return user;
-        }
-
-        public async Task<UserModel> FindByIdAsync(long id)
+        public async Task<UserDto> FindByIdAsync(long id)
         {
             var existUser = await _userRepository
                 .GetAsNoTracking(x => x.Id.Equals(id))
-                .Select(UserMapping.SelectorUserModel)
+                .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return existUser;
         }
 
-        public async Task<UserFullModel> GetFullByIdAsync(long id)
+        public async Task<UserFullDto> FindFullByIdAsync(long id)
         {
             var existUser = await _userRepository
                 .GetAsNoTracking(x => x.Id.Equals(id))
-                .Select(UserMapping.SelectorFullUserModel)
+                .Select(UserMapping.FullUserModelSelector)
                 .FirstOrDefaultAsync();
 
             return existUser;

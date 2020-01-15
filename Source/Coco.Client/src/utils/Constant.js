@@ -1,5 +1,5 @@
 const PageInfo = {
-  BrandName: "Boru",
+  BrandName: "Coco",
   BrandDescription: "Farm",
   Slogan: "Ta gặt những gì ta gieo"
 };
