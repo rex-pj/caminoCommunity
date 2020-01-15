@@ -1,9 +1,9 @@
-﻿using Coco.Entities.Model.User;
+﻿using Coco.Entities.Dtos.User;
 using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class UserPasswordUpdateInputType : InputObjectGraphType<UserPasswordUpdateModel>
+    public class UserPasswordUpdateInputType : InputObjectGraphType<UserPasswordUpdateDto>
     {
         public UserPasswordUpdateInputType()
         {

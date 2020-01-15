@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
 import DefaultModal from "./DefaultModal";
 import ConfirmToRedirectModal from "./ConfirmToRedirectModal";
-import ChangeAvatarModal from "./ChangeAvatarModal";
-import { connect } from "react-redux";
+import UpdateAvatarModal from "./UpdateAvatarModal";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useStore } from "../../../store/hook-store";
 
 const Root = styled(PanelDefault)`
   top: 45px;
@@ -21,6 +21,7 @@ const Root = styled(PanelDefault)`
 
 const Scroll = styled.div`
   position: relative;
+  z-index: 900;
 
   > ${PanelHeading} {
     border-bottom: 1px solid ${p => p.theme.color.light};
@@ -54,109 +55,99 @@ const Backdrop = styled.div`
   left: 0;
   right: 0;
   background-color: ${p => p.theme.rgbaColor.darker};
-  z-index: 1;
+  z-index: 99;
 `;
 
-class Modal extends Component {
-  constructor(props) {
-    super(props);
+export default ({ ...props }) => {
+  const [showBackdrop] = useState(true);
+  const [isDisabled, setDisabled] = useState(true);
+  const { className } = props;
+  let [state, dispatch] = useStore(true);
+  const { data, options } = state;
+  const { isOpen } = options;
 
-    this.state = {
-      showBackdrop: true
-    };
-
-    this._isMounted = false;
+  function closeModal() {
+    dispatch("CLOSE_MODAL");
   }
 
-  componentDidMount() {
-    this._isMounted = true;
-  }
+  function onExecute() {}
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.payload && this._isMounted) {
-      const { payload } = nextProps;
-      this.setState(() => {
-        return {
-          shouldOpen: payload && !!payload.isOpen
-        };
+  const onExecuteAsync = async (action, data, callbackName) => {
+    return await action(data)
+      .then(() => {
+        closeModal();
+        dispatch(callbackName);
+      })
+      .catch(error => {
+        dispatch("NOTIFY", {
+          title: "Có lỗi xảy ra trong quá trình xử lý",
+          mesage: "Có lỗi xảy ra khi cập nhật, vui lòng thử lại!",
+          type: "error"
+        });
       });
-    }
-  }
-
-  closeModal = () => {
-    if (this._isMounted) {
-      this.setState({
-        shouldOpen: false
-      });
-    }
   };
 
-  render() {
-    const { showBackdrop, shouldOpen } = this.state;
-    const { className, payload } = this.props;
+  if (!isOpen) {
+    return null;
+  }
 
-    if (!shouldOpen) {
-      return null;
-    }
+  const { children, title } = data;
+  const { type, unableClose } = options;
 
-    const { modalType, children, title } = payload;
+  let modal = null;
+  if (type === "AVATAR_MODAL") {
+    modal = (
+      <UpdateAvatarModal
+        title={title}
+        data={data}
+        closeModal={closeModal}
+        isDisabled={isDisabled}
+        setDisabled={setDisabled}
+        onExecute={(action, data, callbackName) =>
+          onExecuteAsync(action, data, callbackName)
+        }
+      >
+        {children}
+      </UpdateAvatarModal>
+    );
+  } else if (type === "CONFIRM_REDIRECT") {
+    modal = (
+      <ConfirmToRedirectModal
+        title={title}
+        data={data}
+        closeModal={closeModal}
+        onExecute={onExecute}
+      >
+        {data.message}
+      </ConfirmToRedirectModal>
+    );
+  } else {
+    modal = <DefaultModal closeModal={closeModal}>{children}</DefaultModal>;
+  }
 
-    let modal = null;
-    if (modalType === "change-avatar") {
-      modal = (
-        <ChangeAvatarModal
-          title={title}
-          data={payload}
-          closeModal={this.closeModal}
-          onExecute={this.onExecute}
-        >
-          {children}
-        </ChangeAvatarModal>
-      );
-    } else if (modalType === "confirm-redirect") {
-      modal = (
-        <ConfirmToRedirectModal
-          title={title}
-          data={payload}
-          closeModal={this.closeModal}
-          onExecute={this.onExecute}
-        >
-          {children}
-        </ConfirmToRedirectModal>
-      );
-    } else {
-      modal = (
-        <DefaultModal closeModal={this.closeModal}>{children}</DefaultModal>
-      );
-    }
+  let backdrop = null;
+  if (!!showBackdrop && !unableClose) {
+    backdrop = <Backdrop onClick={closeModal} />;
+  } else if (!!showBackdrop) {
+    backdrop = <Backdrop />;
+  }
 
-    return (
-      <Fragment>
-        <Root className={className}>
-          <Scroll>
-            <PanelHeading>
-              {title}
-              <CloseButton onClick={this.closeModal}>
+  return (
+    <Fragment>
+      {backdrop}
+      <Root className={className}>
+        <Scroll>
+          <PanelHeading>
+            {title}
+            {!unableClose ? (
+              <CloseButton onClick={closeModal}>
                 <FontAwesomeIcon icon="times" />
               </CloseButton>
-            </PanelHeading>
-            {modal}
-          </Scroll>
-        </Root>
-        {!!showBackdrop ? <Backdrop /> : null}
-      </Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    payload: state.modalReducer.payload
-  };
+            ) : null}
+          </PanelHeading>
+          {modal}
+        </Scroll>
+      </Root>
+    </Fragment>
+  );
 };
-
-export default connect(mapStateToProps)(Modal);

@@ -1,7 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Model.Auth;
+using Coco.Entities.Dtos.Auth;
 using Coco.IdentityDAL;
 using System;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Coco.Business.Implementation
         }
 
         #region CRUD
-        public byte Add(RoleModel roleModel)
+        public byte Add(RoleDto roleModel)
         {
             if (roleModel == null)
             {
@@ -45,16 +45,16 @@ namespace Coco.Business.Implementation
             return true;
         }
 
-        public RoleModel Find(byte id)
+        public RoleDto Find(byte id)
         {
             var role = _roleRepository.Find(id);
 
-            RoleModel roleModel = RoleEntityToModel(role);
+            RoleDto roleModel = RoleEntityToModel(role);
 
             return roleModel;
         }
 
-        public bool Update(RoleModel roleModel)
+        public bool Update(RoleDto roleModel)
         {
             if (roleModel.Id <= 0)
             {
@@ -71,19 +71,19 @@ namespace Coco.Business.Implementation
             return true;
         }
 
-        public RoleModel GetByName(string name)
+        public RoleDto GetByName(string name)
         {
             var role = _roleRepository.Get(x => x.Name.Equals(name))
                 .FirstOrDefault();
 
-            RoleModel roleModel = RoleEntityToModel(role);
+            RoleDto roleModel = RoleEntityToModel(role);
 
             return roleModel;
         }
         #endregion
 
         #region Privates
-        private Role RoleModelToEntity(RoleModel roleModel)
+        private Role RoleModelToEntity(RoleDto roleModel)
         {
             Role role = new Role() {
                 Description = roleModel.Description,
@@ -93,9 +93,9 @@ namespace Coco.Business.Implementation
             return role;
         }
 
-        private RoleModel RoleEntityToModel(Role role)
+        private RoleDto RoleEntityToModel(Role role)
         {
-            RoleModel roleModel = new RoleModel()
+            RoleDto roleModel = new RoleDto()
             {
                 Description = role.Description,
                 Name = role.Name,

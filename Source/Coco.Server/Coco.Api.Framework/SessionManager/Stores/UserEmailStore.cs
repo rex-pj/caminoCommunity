@@ -2,8 +2,6 @@
 using Coco.Api.Framework.SessionManager.Contracts;
 using System.Threading.Tasks;
 using System;
-using System.Threading;
-using System.Net.Mail;
 
 namespace Coco.Api.Framework.SessionManager.Stores
 {
@@ -11,13 +9,8 @@ namespace Coco.Api.Framework.SessionManager.Stores
     {
         private bool _isDisposed;
 
-        public async Task<string> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public async Task<string> GetEmailAsync(ApplicationUser user)
         {
-            if (cancellationToken != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -26,24 +19,18 @@ namespace Coco.Api.Framework.SessionManager.Stores
             return await Task.FromResult(user.Email);
         }
 
-        public async Task<ApiResult> SendForgotPasswordAsync(string email, CancellationToken cancellationToken)
+        public async Task<ApiResult<string>> SendForgotPasswordAsync(ApplicationUser user)
         {
-            if (cancellationToken != null)
+            if (user == null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                throw new ArgumentNullException(nameof(user));
             }
 
-            if (email == null)
-            {
-                throw new ArgumentNullException(nameof(email));
-            }
-
-            return await Task.FromResult(ApiResult.Success());
+            return await Task.FromResult(ApiResult<string>.Success(user.ActiveUserStamp));
         }
 
-        public virtual Task<bool> GetEmailConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public virtual Task<bool> GetEmailConfirmedAsync(ApplicationUser user)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (user == null)
             {

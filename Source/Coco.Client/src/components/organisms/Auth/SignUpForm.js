@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { SelectionSecondary } from "../../../components/atoms/Selections";
@@ -7,7 +7,7 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import DaySelector from "../../../components/molecules/DaySelector";
+import DateSelector from "../../../components/molecules/DateSelector";
 import { checkValidity } from "../../../utils/Validity";
 import SignupModel from "../../../models/SignupModel";
 
@@ -78,7 +78,7 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 `;
 
-const BirthDateSelector = styled(DaySelector)`
+const BirthDateSelector = styled(DateSelector)`
   select {
     border-radius: ${p => p.theme.size.normal};
     border: 1px solid ${p => p.theme.color.primaryLight};
@@ -93,99 +93,45 @@ const BirthDateSelector = styled(DaySelector)`
   }
 `;
 
-export default class SignUpForm extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default props => {
+  let formData = SignupModel;
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
-    this.state = {
-      birthDate: null,
-      isFormValid: false,
-      errors: {},
-      shouldRender: false
-    };
-
-    this.formData = SignupModel;
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  handleInputBlur = evt => {
-    const { name } = evt.target;
-    if (!this.formData[name].isValid) {
-      evt.target.classList.add("invalid");
-    } else {
-      evt.target.classList.remove("invalid");
-    }
+  const handleInputBlur = evt => {
+    alertInvalidForm(evt.target);
   };
 
-  handleInputChange = evt => {
-    this.formData = this.formData || {};
+  const handleInputChange = evt => {
+    formData = formData || {};
     const { name, value } = evt.target;
 
     // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
+    formData[name].isValid = checkValidity(formData, value, name);
+    formData[name].value = value;
 
-    this.formData[name].value = value;
+    alertInvalidForm(evt.target);
+    forceUpdate();
+  };
 
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
+  const alertInvalidForm = target => {
+    const { name } = target;
+    if (!formData[name].isValid) {
+      target.classList.add("invalid");
+    } else {
+      target.classList.remove("invalid");
     }
   };
 
-  handleBirthDateBlur = evt => {
-    let errors = {
-      birthDate: {
-        isValid: false
-      }
-    };
-
-    if (this.formData["birthDate"].isValid) {
-      errors["birthDate"].isValid = true;
-    }
-
-    if (!!this._isMounted) {
-      this.setState({
-        errors
-      });
-    }
-  };
-
-  handleBirthdateChange = value => {
-    this.formData = this.formData || {};
-    this.formData["birthDate"].value = value;
-
-    // Validate when input birthdate
-    this.formData["birthDate"].isValid = checkValidity(
-      this.formData,
-      value,
-      "birthDate"
-    );
-
-    if (this._isMounted) {
-      this.setState({ birthDate: value });
-    }
-  };
-
-  onSignUp = e => {
+  const onSignUp = e => {
     e.preventDefault();
 
     let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        this.props.showValidationError(
+        props.showValidationError(
           "Thông tin bạn nhập có thể bị sai",
           "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
         );
@@ -194,18 +140,18 @@ export default class SignUpForm extends Component {
 
     if (!!isFormValid) {
       const signUpData = {};
-      for (const formIdentifier in this.formData) {
-        signUpData[formIdentifier] = this.formData[formIdentifier].value;
+      for (const formIdentifier in formData) {
+        signUpData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      this.props.signUp(signUpData);
+      props.signUp(signUpData);
     }
   };
 
-  checkIsFormValid = () => {
+  const checkIsFormValid = () => {
     let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid;
       if (!isFormValid) {
         break;
       }
@@ -214,114 +160,105 @@ export default class SignUpForm extends Component {
     return isFormValid;
   };
 
-  render() {
-    const { errors } = this.state;
+  const isFormCheckValid = checkIsFormValid();
 
-    const isFormValid = this.checkIsFormValid();
-
-    const isBirthDateInvalid =
-      errors && errors["birthDate"] && !errors["birthDate"].isValid;
-
-    return (
-      <form onSubmit={e => this.onSignUp(e)} method="POST">
-        <div className="row no-gutters">
-          <div className="col col-12 col-sm-7">
-            <AuthBanner
-              icon="signature"
-              title="Ghi Danh"
-              instruction="Ghi danh tại đây, cùng tham gia với nhiều nhà nông khác"
-            />
-          </div>
-          <div className="col col-12 col-sm-5">
-            <AuthNavigation />
-            <PanelBody>
-              <FormRow>
-                <Label>Họ</Label>
-                <Textbox
-                  autoComplete="off"
-                  placeholder="Nhập họ của bạn vào đây"
-                  name="lastname"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Tên</Label>
-                <Textbox
-                  autoComplete="off"
-                  placeholder="Nhập tên của bạn vào đây"
-                  name="firstname"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>E-mail</Label>
-                <Textbox
-                  autoComplete="off"
-                  placeholder="Nhập e-mail"
-                  type="email"
-                  name="email"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Mật khẩu</Label>
-                <Textbox
-                  autoComplete="off"
-                  placeholder="Nhập mật khẩu"
-                  type="password"
-                  name="password"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Nhập lại mật khẩu</Label>
-                <Textbox
-                  autoComplete="off"
-                  placeholder="Nhập lại mật khẩu"
-                  type="password"
-                  name="confirmPassword"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Sinh nhật</Label>
-                <BirthDateSelector
-                  className={isBirthDateInvalid ? "invalid" : ""}
-                  name="birthDate"
-                  value={this.state.birthDate}
-                  onDateChanged={date => this.handleBirthdateChange(date)}
-                  onBlur={this.handleBirthDateBlur}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Giới tính</Label>
-                <Selection
-                  placeholder="Chọn giới tính Nam/Nữ"
-                  name="genderId"
-                  onChange={e => this.handleInputChange(e)}
-                  defaultValue={1}
-                >
-                  <option value={1}>Nam</option>
-                  <option value={2}>Nữ</option>
-                </Selection>
-              </FormRow>
-              <FormFooter>
-                <SubmitButton
-                  type="submit"
-                  disabled={!this.props.isFormEnabled || !isFormValid}
-                >
-                  Ghi danh
-                </SubmitButton>
-              </FormFooter>
-            </PanelBody>
-          </div>
+  return (
+    <form onSubmit={e => onSignUp(e)} method="POST">
+      <div className="row no-gutters">
+        <div className="col col-12 col-sm-7">
+          <AuthBanner
+            icon="signature"
+            title="Ghi Danh"
+            instruction="Ghi danh tại đây, cùng tham gia với nhiều nhà nông khác"
+          />
         </div>
-      </form>
-    );
-  }
-}
+        <div className="col col-12 col-sm-5">
+          <AuthNavigation />
+          <PanelBody>
+            <FormRow>
+              <Label>Họ</Label>
+              <Textbox
+                autoComplete="off"
+                placeholder="Nhập họ của bạn vào đây"
+                name="lastname"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Tên</Label>
+              <Textbox
+                autoComplete="off"
+                placeholder="Nhập tên của bạn vào đây"
+                name="firstname"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>E-mail</Label>
+              <Textbox
+                autoComplete="off"
+                placeholder="Nhập e-mail"
+                type="email"
+                name="email"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Mật khẩu</Label>
+              <Textbox
+                autoComplete="new-password"
+                placeholder="Nhập mật khẩu"
+                type="password"
+                name="password"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Nhập lại mật khẩu</Label>
+              <Textbox
+                autoComplete="off"
+                placeholder="Nhập lại mật khẩu"
+                type="password"
+                name="confirmPassword"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Sinh nhật</Label>
+              <BirthDateSelector
+                name="birthDate"
+                onDateChanged={e => handleInputChange(e)}
+                onBlur={handleInputBlur}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Giới tính</Label>
+              <Selection
+                placeholder="Chọn giới tính Nam/Nữ"
+                name="genderId"
+                onChange={e => handleInputChange(e)}
+                defaultValue={1}
+              >
+                <option value={1}>Nam</option>
+                <option value={2}>Nữ</option>
+              </Selection>
+            </FormRow>
+            <FormFooter>
+              <SubmitButton
+                type="submit"
+                disabled={!props.isFormEnabled || !isFormCheckValid}
+              >
+                Ghi danh
+              </SubmitButton>
+            </FormFooter>
+          </PanelBody>
+        </div>
+      </div>
+    </form>
+  );
+};

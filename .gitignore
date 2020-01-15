@@ -37,3 +37,5 @@ Source/Coco.Server/.vs/Coco.Server/DesignTimeBuild/.dtbcache
 Source/Coco.Server/.vs/Coco.Server/v16/.suo
 Source/Coco.Server/Api.Resources/bin/
 Source/Coco.Server/Api.Resources/obj/
+Source/Coco.Server/Coco.Web.Management/obj/
+Source/Coco.Server/Coco.Web.Management/bin/

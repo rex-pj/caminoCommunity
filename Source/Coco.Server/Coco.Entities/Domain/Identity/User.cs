@@ -26,7 +26,7 @@ namespace Coco.Entities.Domain.Identity
         //public string AuthenticatorToken { get; set; }
         //public string IdentityStamp { get; set; }
         //public string SecurityStamp { get; set; }
-        public DateTime? Expiration { get; set; }
+        //public DateTime? Expiration { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public long? CreatedById { get; set; }

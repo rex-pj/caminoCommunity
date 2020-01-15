@@ -2,7 +2,6 @@
 using Coco.Api.Framework.Commons.Constants;
 using Coco.Api.Framework.Models;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace Coco.Api.Framework.SessionManager
 {
@@ -14,6 +13,7 @@ namespace Coco.Api.Framework.SessionManager
         public readonly HttpRequest HttpRequest;
         public readonly IHeaderDictionary RequestHeaders;
         public string AuthenticationToken { get; protected set; }
+        protected SessionContextHeaders AuthorizationHeaders { get; set; }
 
         public SessionContext(IHttpContextAccessor httpContextAccessor, IUserManager<ApplicationUser> userManager)
         {
@@ -30,6 +30,14 @@ namespace Coco.Api.Framework.SessionManager
             {
                 RequestHeaders = HttpRequest.Headers;
             }
+
+            AuthorizationHeaders = GetAuthorizationHeaders();
+            if (AuthorizationHeaders != null)
+            {
+                AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            }
+
+            _currentUser = GetLoggedUser();
         }
 
         private ApplicationUser _currentUser;
@@ -41,11 +49,6 @@ namespace Coco.Api.Framework.SessionManager
         {
             get
             {
-                if (_currentUser == null)
-                {
-                    return GetLoggedUser();
-                }
-
                 return _currentUser;
             }
             set
@@ -56,48 +59,40 @@ namespace Coco.Api.Framework.SessionManager
 
         protected ApplicationUser GetLoggedUser()
         {
-            var headerParams = GetAuthorizationHeaders();
-
-            ApplicationUser user = null;
-            if (headerParams != null
-                && !string.IsNullOrEmpty(headerParams.AuthenticationToken)
-                && !string.IsNullOrEmpty(headerParams.UserIdentityId))
+            if (!IsAuthorizationHeadersValid())
             {
-                user = _userManager
-                    .GetLoggingUser(headerParams.UserIdentityId, headerParams.AuthenticationToken);
-
-                AuthenticationToken = headerParams.AuthenticationToken;
-                user.UserIdentityId = headerParams.UserIdentityId;
+                return new ApplicationUser();
             }
+
+            var user = _userManager
+                    .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
+            user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
 
             return user;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()
         {
-            var httpHeaders = RequestHeaders;
-
-            if (httpHeaders == null)
+            if (RequestHeaders == null)
             {
                 return null;
             }
 
-            //var authenticationToken = httpHeaders.HeaderAuthorization;
-
-            var userIdentityIds = httpHeaders.GetCommaSeparatedValues(HttpHeaderContants.HEADER_USER_ID_HASHED);
-            string userHashedId = null;
-            if (userIdentityIds != null && userIdentityIds.Any())
-            {
-                userHashedId = userIdentityIds.FirstOrDefault();
-            }
-
             var contextHeaders = new SessionContextHeaders()
             {
-                //AuthenticationToken = authenticationToken,
-                UserIdentityId = userHashedId
+                AuthenticationToken = RequestHeaders[HttpHeaderContants.HEADER_AUTHORIZATION],
+                UserIdentityId = RequestHeaders[HttpHeaderContants.HEADER_USER_ID_HASHED]
             };
 
             return contextHeaders;
+        }
+
+        private bool IsAuthorizationHeadersValid()
+        {
+            return AuthorizationHeaders != null
+                && !string.IsNullOrEmpty(AuthorizationHeaders.AuthenticationToken)
+                && !string.IsNullOrEmpty(AuthorizationHeaders.UserIdentityId);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos.General;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -19,7 +19,7 @@ namespace Coco.Business.ValidationStrategies
 
         public bool IsValid<T>(T data)
         {
-            var model = data as UpdatePerItem;
+            var model = data as UpdatePerItemDto;
             var propertyName = model.PropertyName;
             UserInfo userInfo = new UserInfo();
 

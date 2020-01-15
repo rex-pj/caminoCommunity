@@ -1,9 +1,15 @@
-﻿using Coco.Entities.Model.General;
+﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Entities.Dtos.General;
 using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class UserPhotoUpdatedResultType : ObjectGraphType<UpdateUserPhotoModel>
+    public class ApiUserPhotoUpdatedResultType: ApiResultType<UpdateUserPhotoDto, UserPhotoUpdatedResultType>
+    {
+
+    }
+
+    public class UserPhotoUpdatedResultType : ObjectGraphType<UpdateUserPhotoDto>
     {
         public UserPhotoUpdatedResultType()
         {

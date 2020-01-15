@@ -53,7 +53,7 @@ namespace Coco.Api.Framework.SessionManager.Validators
 
         private async Task ValidateUserName(IUserManager<ApplicationUser> manager, ApplicationUser user, ICollection<ApiError> errors)
         {
-            var userName = await manager.GetUserNameAsync(user);
+            var userName = manager.GetUserNameAsync(user);
             if (string.IsNullOrWhiteSpace(userName))
             {
                 errors.Add(Describer.InvalidUserName(userName));

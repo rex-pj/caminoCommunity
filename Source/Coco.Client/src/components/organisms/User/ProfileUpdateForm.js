@@ -1,10 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
-import ProfileUpdateModel from "../../../models/ProfileUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/atoms/Panels";
 import { QuaternaryHeading } from "../../atoms/Heading";
@@ -50,55 +49,52 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default props => {
+  const { userInfo } = props;
 
-    this._isMounted = false;
-    const { userInfo } = props;
-    const { displayName, firstname, lastname } = userInfo;
-
-    this.formData = ProfileUpdateModel;
-    this.formData.displayName.value = displayName;
-    this.formData.displayName.isValid = !!displayName;
-    this.formData.firstname.value = firstname;
-    this.formData.firstname.isValid = !!firstname;
-    this.formData.lastname.value = lastname;
-    this.formData.lastname.isValid = !!lastname;
-    this.state = {
-      shouldRender: false
-    };
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  onTextboxChange = e => {
-    this.formData = this.formData || {};
-    const { name, value } = e.target;
-
-    // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
-    this.formData[name].value = value;
-
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
+  let model = {
+    displayName: {
+      value: userInfo.displayName,
+      validation: {
+        isRequired: true
+      },
+      isValid: !!userInfo.displayName
+    },
+    lastname: {
+      value: userInfo.firstname,
+      validation: {
+        isRequired: true
+      },
+      isValid: !!userInfo.firstname
+    },
+    firstname: {
+      value: userInfo.lastname,
+      validation: {
+        isRequired: true
+      },
+      isValid: !!userInfo.lastname
     }
   };
 
-  checkIsFormValid = () => {
+  const [formData, setFromData] = useState(model);
+
+  const onTextboxChange = e => {
+    let userData = formData || {};
+    const { name, value } = e.target;
+
+    // Validate when input
+    userData[name].isValid = checkValidity(userData, value, name);
+    userData[name].value = value;
+
+    setFromData({
+      ...userData
+    });
+  };
+
+  const checkIsFormValid = () => {
     let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid;
       if (!isFormValid) {
         break;
       }
@@ -107,82 +103,80 @@ export default class extends Component {
     return isFormValid;
   };
 
-  onUpdate = e => {
+  const onUpdate = e => {
     e.preventDefault();
 
     let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        this.props.showValidationError(
+        props.showValidationError(
           "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại",
+          "error"
         );
       }
     }
 
     if (!!isFormValid) {
       const profileData = {};
-      for (const formIdentifier in this.formData) {
-        profileData[formIdentifier] = this.formData[formIdentifier].value;
+      for (const formIdentifier in formData) {
+        profileData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      this.props.onUpdate(profileData);
+      props.onUpdate(profileData);
     }
   };
 
-  render() {
-    const { userInfo } = this.props;
-    const { displayName, firstname, lastname } = this.formData;
-    const isFormValid = this.checkIsFormValid();
+  const { displayName, firstname, lastname } = formData;
+  const isFormValid = checkIsFormValid();
 
-    return (
-      <Fragment>
-        <Heading>Cập nhật thông tin cá nhân</Heading>
-        <MainPanel>
-          <form onSubmit={e => this.onUpdate(e)} method="POST">
-            {userInfo ? (
-              <Fragment>
-                <FormGroup>
-                  <LabelAndTextbox
-                    label="Họ"
-                    name="lastname"
-                    value={lastname.value}
-                    onChange={this.onTextboxChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <LabelAndTextbox
-                    label="Tên"
-                    name="firstname"
-                    value={firstname.value}
-                    onChange={this.onTextboxChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <LabelAndTextbox
-                    label="Tên hiển thị"
-                    name="displayName"
-                    value={displayName.value}
-                    onChange={this.onTextboxChange}
-                  />
-                </FormGroup>
-              </Fragment>
-            ) : null}
-            <FormFooter>
-              <SubmitButton
-                type="submit"
-                size="sm"
-                disabled={!this.props.isFormEnabled || !isFormValid}
-              >
-                <FontAwesomeIcon icon="pencil-alt" />
-                Cập Nhật
-              </SubmitButton>
-            </FormFooter>
-          </form>
-        </MainPanel>
-      </Fragment>
-    );
-  }
-}
+  return (
+    <Fragment>
+      <Heading>Cập nhật thông tin cá nhân</Heading>
+      <MainPanel>
+        <form onSubmit={e => onUpdate(e)} method="POST">
+          {userInfo ? (
+            <Fragment>
+              <FormGroup>
+                <LabelAndTextbox
+                  label="Họ"
+                  name="lastname"
+                  value={lastname.value}
+                  onChange={onTextboxChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <LabelAndTextbox
+                  label="Tên"
+                  name="firstname"
+                  value={firstname.value}
+                  onChange={onTextboxChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <LabelAndTextbox
+                  label="Tên hiển thị"
+                  name="displayName"
+                  value={displayName.value}
+                  onChange={onTextboxChange}
+                />
+              </FormGroup>
+            </Fragment>
+          ) : null}
+          <FormFooter>
+            <SubmitButton
+              type="submit"
+              size="sm"
+              disabled={!props.isFormEnabled || !isFormValid}
+            >
+              <FontAwesomeIcon icon="pencil-alt" />
+              Cập Nhật
+            </SubmitButton>
+          </FormFooter>
+        </form>
+      </MainPanel>
+    </Fragment>
+  );
+};

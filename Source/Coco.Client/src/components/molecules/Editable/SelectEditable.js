@@ -77,7 +77,7 @@ export default function(props) {
 
   useEffect(() => {
     return () => clearTimeout(statusTimer);
-  }, []);
+  });
 
   let current = null;
   if (value && selections && selections.count > 0) {

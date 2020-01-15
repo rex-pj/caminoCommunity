@@ -1,132 +1,76 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
-import { Mutation } from "react-apollo";
-import { defaultClient } from "../../utils/GraphQLClient";
+import { useMutation } from "@apollo/react-hooks";
+import { publicClient } from "../../utils/GraphQLClient";
 import { FORGOT_PASSWORD } from "../../utils/GraphQLQueries";
 import { getError } from "../../utils/Helper";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { raiseError } from "../../store/commands";
-import SessionContext from "../../utils/Context/SessionContext";
+import { SessionContext } from "../../store/context/SessionContext";
+import { useStore } from "../../store/hook-store";
 
-class SingnInPage extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default withRouter(props => {
+  const dispatch = useStore(false)[1];
+  const sessionContext = useContext(SessionContext);
+  const [forgotPassword] = useMutation(FORGOT_PASSWORD, {
+    client: publicClient
+  });
 
-    this.state = {
-      isFormEnabled: true,
-      shouldRedirect: false
-    };
-  }
+  const notifyError = (error, lang) => {
+    if (
+      error &&
+      error.networkError &&
+      error.networkError.result &&
+      error.networkError.result.errors
+    ) {
+      const errors = error.networkError.result.errors;
 
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-    clearTimeout();
-  }
-  // #endregion Life Cycle
-
-  showValidationError = (title, message) => {
-    this.props.showValidationError(title, message);
+      errors.forEach(item => {
+        dispatch("NOTIFY", {
+          title: "Có lỗi xảy ra khi thay đổi mật khẩu",
+          message: getError(item.extensions.code, lang),
+          type: "error"
+        });
+      });
+    } else {
+      dispatch("NOTIFY", {
+        title: "Có lỗi xảy ra khi thay đổi mật khẩu",
+        message: getError("ErrorOccurredTryRefeshInputAgain", lang),
+        type: "error"
+      });
+    }
   };
 
-  onForgotPassword = async (data, forgotPassword) => {
-    if (this._isMounted) {
-      this.setState({ isFormEnabled: false });
-    }
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error"
+    });
+  };
 
-    if (forgotPassword) {
-      await forgotPassword({
-        variables: {
-          criterias: data
+  const onForgotPassword = async data => {
+    return await forgotPassword({
+      variables: {
+        criterias: data
+      }
+    })
+      .then(response => {
+        const { data } = response;
+        const { forgotPassword: rs } = data;
+
+        if (!rs || !rs.isSucceed) {
+          notifyError(rs.errors, sessionContext.lang);
         }
       })
-        .then(response => {
-          const { data } = response;
-          const { forgotPassword } = data;
-
-          if (!forgotPassword || !forgotPassword.isSuccess) {
-            this.props.notifyError(
-              data.forgotPassword.errors,
-              this.context.lang
-            );
-            if (this._isMounted) {
-              this.setState({ isFormEnabled: true });
-            }
-            return true;
-          }
-        })
-        .catch(error => {
-          if (this._isMounted) {
-            this.setState({ isFormEnabled: true });
-          }
-          this.props.notifyError(error, this.context.lang);
-        });
-    }
-
-    return false;
+      .catch(error => {
+        notifyError(error, sessionContext.lang);
+      });
   };
 
-  render() {
-    return (
-      <Mutation mutation={FORGOT_PASSWORD} client={defaultClient}>
-        {forgotPassword => (
-          <ForgotPasswordForm
-            onForgotPassword={data =>
-              this.onForgotPassword(data, forgotPassword)
-            }
-            showValidationError={this.showValidationError}
-            isFormEnabled={this.state.isFormEnabled}
-          />
-        )}
-      </Mutation>
-    );
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    notifyError: (error, lang) => {
-      if (
-        error &&
-        error.networkError &&
-        error.networkError.result &&
-        error.networkError.result.errors
-      ) {
-        const errors = error.networkError.result.errors;
-
-        errors.forEach(item => {
-          raiseError(
-            dispatch,
-            "Có lỗi xảy ra",
-            getError(item.extensions.code, lang),
-            "/auth/signin"
-          );
-        });
-      } else {
-        raiseError(
-          dispatch,
-          "Có lỗi xảy ra",
-          getError("ErrorOccurredTryRefeshInputAgain", lang),
-          "/auth/signin"
-        );
-      }
-    },
-
-    showValidationError: (title, message) => {
-      raiseError(dispatch, title, message, "#");
-    }
-  };
-};
-
-SingnInPage.contextType = SessionContext;
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(SingnInPage));
+  return (
+    <ForgotPasswordForm
+      onForgotPassword={data => onForgotPassword(data, forgotPassword)}
+      showValidationError={showValidationError}
+    />
+  );
+});

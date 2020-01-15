@@ -1,9 +1,9 @@
 import gpl from "graphql-tag";
 
-export const ADD_USER = gpl`
-  mutation Adduser($user: RegisterInputType!){
-    adduser(user: $user){
-      isSuccess,
+export const SIGN_UP = gpl`
+  mutation Signup($user: RegisterInputType!){
+    signup(user: $user){
+      isSucceed,
       errors {
         code,
         description
@@ -13,8 +13,8 @@ export const ADD_USER = gpl`
 `;
 
 export const SIGNIN = gpl`
-  mutation signin($signinModel: SigninInputType!){
-    signin(signinModel: $signinModel){
+  mutation signin($args: SigninInputType!){
+    signin(args: $args){
       result {
         userInfo {
           displayName,
@@ -22,7 +22,7 @@ export const SIGNIN = gpl`
         },
         authenticationToken,
       },
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -31,10 +31,10 @@ export const SIGNIN = gpl`
   }
 `;
 
-export const UPDATE_USER_PROFILE = gpl`
-  mutation UpdateUserProfile($user: UserProfileUpdateInputType!){
-    updateUserProfile(user: $user){
-      isSuccess,
+export const UPDATE_USER_IDENTIFIER = gpl`
+  mutation UpdateUserIdentifier($user: UserIdentifierUpdateInputType!){
+    updateUserIdentifier(user: $user){
+      isSucceed,
       errors {
         code,
         description
@@ -120,7 +120,7 @@ export const GET_FULL_USER_INFO = gpl`
 export const UPDATE_USER_INFO_PER_ITEM = gpl`
   mutation UpdateUserInfoItem($criterias: UpdatePerItemInputType!){
     updateUserInfoItem(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -136,7 +136,7 @@ export const UPDATE_USER_INFO_PER_ITEM = gpl`
 export const UPDATE_USER_AVATAR = gpl`
   mutation UpdateAvatar($criterias: UpdateUserPhotoInputType!){
     updateAvatar(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -157,7 +157,7 @@ export const UPDATE_USER_AVATAR = gpl`
 export const DELETE_USER_AVATAR = gpl`
   mutation DeleteAvatar($criterias: DeleteUserPhotoInputType!){
     deleteAvatar(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -172,7 +172,7 @@ export const DELETE_USER_AVATAR = gpl`
 export const UPDATE_USER_COVER = gpl`
   mutation UpdateUserCover($criterias: UpdateUserPhotoInputType!){
     updateUserCover(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -193,7 +193,7 @@ export const UPDATE_USER_COVER = gpl`
 export const DELETE_USER_COVER = gpl`
   mutation DeleteCover($criterias: DeleteUserPhotoInputType!){
     deleteCover(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code
         description
@@ -208,7 +208,7 @@ export const DELETE_USER_COVER = gpl`
 export const UPDATE_USER_PASSWORD = gpl`
   mutation UpdatePassword($criterias: UserPasswordUpdateInputType!){
     updatePassword(criterias: $criterias){
-      isSuccess,
+      isSucceed,
       errors {
         code,
         description
@@ -223,7 +223,43 @@ export const UPDATE_USER_PASSWORD = gpl`
 export const FORGOT_PASSWORD = gpl`
   mutation ForgotPassword($criterias: ForgotPasswordInputType!){
     forgotPassword(criterias: $criterias){
-      isSuccess,
+      isSucceed,
+      errors {
+        code,
+        description
+      }
+    }
+  }
+`;
+
+export const SIGNOUT = gpl`
+query signout{
+    signout {
+      isSucceed,
+      errors {
+        code,
+        description
+      }
+    }
+  }
+`;
+
+export const ACTIVE = gpl`
+query ($criterias: ActiveUserInputType!){
+  active(criterias: $criterias) {
+      isSucceed,
+      errors {
+        code,
+        description
+      }
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gpl`
+mutation ($criterias: ResetPasswordInputType!){
+  resetPassword(criterias: $criterias) {
+      isSucceed,
       errors {
         code,
         description
