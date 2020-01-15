@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
@@ -71,57 +71,35 @@ const ForgotPasswordRow = styled(FormRow)`
   text-align: center;
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default props => {
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+  let formData = SigninModel;
 
-    this.state = {
-      isFormValid: false,
-      shouldRender: false
-    };
-
-    this.formData = SigninModel;
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  handleInputBlur = evt => {
+  const handleInputBlur = evt => {
     const { name } = evt.target;
-    if (!this.formData[name].isValid) {
+    if (!formData[name].isValid) {
       evt.target.classList.add("invalid");
     } else {
       evt.target.classList.remove("invalid");
     }
   };
 
-  handleInputChange = evt => {
-    this.formData = this.formData || {};
+  const handleInputChange = evt => {
+    formData = formData || {};
     const { name, value } = evt.target;
 
     // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
-    this.formData[name].value = value;
+    formData[name].isValid = checkValidity(formData, value, name);
+    formData[name].value = value;
 
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
-    }
+    forceUpdate();
   };
 
-  checkIsFormValid = () => {
+  const checkIsFormValid = () => {
     let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid;
       if (!isFormValid) {
         break;
       }
@@ -130,15 +108,15 @@ export default class extends Component {
     return isFormValid;
   };
 
-  onSignin = e => {
+  const onSignin = e => {
     e.preventDefault();
 
     let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        this.props.showValidationError(
+        props.showValidationError(
           "Thông tin bạn nhập có thể bị sai",
           "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
         );
@@ -147,65 +125,63 @@ export default class extends Component {
 
     if (!!isFormValid) {
       const signinData = {};
-      for (const formIdentifier in this.formData) {
-        signinData[formIdentifier] = this.formData[formIdentifier].value;
+      for (const formIdentifier in formData) {
+        signinData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      this.props.onSignin(signinData);
+      props.onSignin(signinData);
     }
   };
 
-  render() {
-    const isFormValid = this.checkIsFormValid();
+  const isFormValid = checkIsFormValid();
 
-    return (
-      <form onSubmit={e => this.onSignin(e)} method="POST">
-        <div className="row no-gutters">
-          <div className="col col-12 col-sm-7">
-            <AuthBanner
-              imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-              title="Đăng Nhập"
-              instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
-            />
-          </div>
-          <div className="col col-12 col-sm-5">
-            <AuthNavigation />
-            <PanelBody>
-              <FormRow>
-                <Label>E-mail</Label>
-                <Textbox
-                  placeholder="Nhập e-mail"
-                  type="email"
-                  name="username"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <Label>Mật khẩu</Label>
-                <Textbox
-                  placeholder="Nhập mật khẩu"
-                  type="password"
-                  name="password"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormFooter>
-                <SubmitButton
-                  disabled={!this.props.isFormEnabled || !isFormValid}
-                  type="submit"
-                >
-                  Đăng Nhập
-                </SubmitButton>
-              </FormFooter>
-              <ForgotPasswordRow>
-                <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
-              </ForgotPasswordRow>
-            </PanelBody>
-          </div>
+  return (
+    <form onSubmit={e => onSignin(e)} method="POST">
+      <div className="row no-gutters">
+        <div className="col col-12 col-sm-7">
+          <AuthBanner
+            imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
+            title="Đăng Nhập"
+            instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
+          />
         </div>
-      </form>
-    );
-  }
-}
+        <div className="col col-12 col-sm-5">
+          <AuthNavigation />
+          <PanelBody>
+            <FormRow>
+              <Label>E-mail</Label>
+              <Textbox
+                placeholder="Nhập e-mail"
+                type="email"
+                name="username"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormRow>
+              <Label>Mật khẩu</Label>
+              <Textbox
+                placeholder="Nhập mật khẩu"
+                type="password"
+                name="password"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormFooter>
+              <SubmitButton
+                disabled={!props.isFormEnabled || !isFormValid}
+                type="submit"
+              >
+                Đăng Nhập
+              </SubmitButton>
+            </FormFooter>
+            <ForgotPasswordRow>
+              <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
+            </ForgotPasswordRow>
+          </PanelBody>
+        </div>
+      </div>
+    </form>
+  );
+};

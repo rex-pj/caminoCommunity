@@ -6,5 +6,5 @@ namespace Coco.Api.Framework.SessionManager.Contracts
     {
         ApplicationUser CurrentUser { get; set; }
         string AuthenticationToken { get; }
-}
+    }
 }

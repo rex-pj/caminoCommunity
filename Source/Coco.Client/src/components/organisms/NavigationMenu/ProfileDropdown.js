@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
@@ -63,25 +63,18 @@ const UserName = styled.span`
 `;
 
 export default function(props) {
-  const [profileState, setProfileState] = useState({ dropdowns: null });
-
   const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
-  useEffect(() => {
-    if (profileState.dropdowns === null) {
-      setProfileState({
-        dropdowns: [
-          {
-            name: "Thông tin cá nhân",
-            url: userIdentityId ? `/profile/${userIdentityId}` : ""
-          },
-          {
-            name: "Thoát",
-            url: "/auth/signout"
-          }
-        ]
-      });
+  const profileDropdowns = [
+    {
+      name: "Thông tin cá nhân",
+      url: userIdentityId ? `/profile/${userIdentityId}` : ""
+    },
+    {
+      name: "Thoát",
+      url: "/auth/signout"
     }
-  });
+  ];
+  const [profileState] = useState({ dropdowns: profileDropdowns });
 
   return (
     <Root>
@@ -89,9 +82,7 @@ export default function(props) {
         <ProfileButton to={`/profile/${userIdentityId}`}>
           {props.userInfo && props.userInfo.avatarUrl ? (
             <ImageCircle
-              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${
-                props.userInfo.avatarUrl
-              }`}
+              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${props.userInfo.avatarUrl}`}
               alt=""
             />
           ) : (

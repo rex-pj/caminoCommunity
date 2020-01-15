@@ -51,7 +51,7 @@ namespace Coco.Api.Framework.SessionManager.Entities
         /// <summary>
         /// A random value that should change whenever a users credentials change (password changed, login removed)
         /// </summary>
-        public string SecurityStamp { get; set; }
+        public string ActiveUserStamp { get; set; }
 
         public string Password { get; set; }
         public string PasswordSalt { get; set; }

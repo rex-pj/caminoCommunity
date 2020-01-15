@@ -1,11 +1,5 @@
-﻿using Api.Public.GraphQLSchemas;
-using Api.Public.GraphQLTypes.InputTypes;
-using Api.Public.GraphQLTypes.ResultTypes;
-using Api.Public.Mutations;
-using Api.Public.Queries;
-using Api.Public.Resolvers;
+﻿using Api.Public.Infrastructure.Extensions;
 using AutoMapper;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.MappingProfiles;
 using Coco.Api.Framework.SessionManager.Core;
@@ -13,11 +7,8 @@ using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
 using GraphiQl;
-using GraphQL;
-using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,7 +39,7 @@ namespace Api.Public
                 {
                     builder.WithOrigins("http://localhost:3000",
                         "http://localhost:7000",
-                        "http://localhost:5000", 
+                        "http://localhost:5000",
                         "http://localhost:45678")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
@@ -56,14 +47,15 @@ namespace Api.Public
                 });
             });
 
-            InvokeInitialStartup(services, Configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            InvokeInitialStartup(services);
+            services.AddControllers()
+                .AddNewtonsoftJson();
         }
 
-        private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
+        private void InvokeInitialStartup(IServiceCollection services)
         {
-            FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
+            FrameworkStartup.AddCustomStores(services);
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
 
             services.Configure<IdentityOptions>(options =>
@@ -83,21 +75,7 @@ namespace Api.Public
             });
 
             #region GraphQL DI
-            services.AddSingleton<UserResolver>()
-                .AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<RegisterInputType>()
-                .AddSingleton<SigninInputType>()
-                .AddSingleton<UserMutation>()
-                .AddSingleton<UserQuery>()
-                .AddSingleton<ListGraphType>()
-                .AddSingleton<RegisterResultType>()
-                .AddSingleton<UserTokenResultType>()
-                .AddSingleton<FullUserInfoResultType>();
-
-            var sp = services.BuildServiceProvider();
-
-            services
-                .AddSingleton<ISchema>(new UserSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            services.AddGraphQlDependency();
             #endregion
         }
 
@@ -108,15 +86,12 @@ namespace Api.Public
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
-            app.UseCors(MyAllowSpecificOrigins)
+            app.UseHttpsRedirection()
+                .UseRouting()
+                .UseCors(MyAllowSpecificOrigins)
                 .UseAuthentication()
-                .UseHttpsRedirection()
+                .UseAuthorization()
                 .UseGraphiQl("/api/graphql")
                 .UseEndpoints(endpoints =>
                 {

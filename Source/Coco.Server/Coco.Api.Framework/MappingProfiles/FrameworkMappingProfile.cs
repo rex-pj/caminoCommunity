@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Api.Framework.Models;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 
 namespace Coco.Api.Framework.MappingProfiles
 {
@@ -9,11 +9,10 @@ namespace Coco.Api.Framework.MappingProfiles
         public FrameworkMappingProfile()
         {
             CreateMap<ApplicationUser, UserInfoModel>();
-            CreateMap<ApplicationUser, UserModel>();
-            CreateMap<UserFullModel, UserInfoExt>();
-            CreateMap<UserModel, ApplicationUser>();
-            CreateMap<UserLoggedInModel, ApplicationUser>();
-            CreateMap<ApplicationUser, UserProfileUpdateModel>();
+            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<UserFullDto, UserInfoExtend>();
+            CreateMap<UserDto, ApplicationUser>();
+            CreateMap<ApplicationUser, UserIdentifierUpdateDto>();
         }
     }
 }

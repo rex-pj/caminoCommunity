@@ -40,7 +40,8 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>()
                 .AddTransient<IRepository<Country>, EfUserRepository<Country>>()
                 .AddTransient<IRepository<Role>, EfUserRepository<Role>>()
-                .AddTransient<IRepository<UserPhoto>, EfUserRepository<UserPhoto>>();
+                .AddTransient<IRepository<UserPhoto>, EfUserRepository<UserPhoto>>()
+                .AddTransient<IRepository<UserAttribute>, EfUserRepository<UserAttribute>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<ValidationStrategyContext>();

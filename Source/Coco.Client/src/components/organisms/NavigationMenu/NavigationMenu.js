@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
-import UserContext from "../../../utils/Context/UserContext";
+import { SessionContext } from "../../../store/context/SessionContext";
 import ProfileDropdown from "./ProfileDropdown";
 
 const List = styled.ul`
@@ -46,24 +46,22 @@ const AuthButton = styled(RouterLinkButton)`
 `;
 
 export default props => {
-  return (
-    <UserContext.Consumer>
-      {({ user }) =>
-        user && user.isLogin ? (
-          <ProfileDropdown userInfo={user.userInfo} />
-        ) : (
-          <List className={props.className}>
-            <ListItem>
-              <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
-            </ListItem>
+  const { user } = useContext(SessionContext);
 
-            <Devided />
-            <ListItem>
-              <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
-            </ListItem>
-          </List>
-        )
-      }
-    </UserContext.Consumer>
+  if (user && user.isLogin) {
+    return <ProfileDropdown userInfo={user} />;
+  }
+
+  return (
+    <List className={props.className}>
+      <ListItem>
+        <AuthButton to="/auth/signup">Đăng Ký</AuthButton>
+      </ListItem>
+
+      <Devided />
+      <ListItem>
+        <AuthButton to="/auth/signin">Đăng Nhập</AuthButton>
+      </ListItem>
+    </List>
   );
 };

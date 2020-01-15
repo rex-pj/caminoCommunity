@@ -1,9 +1,9 @@
-﻿using Coco.Entities.Model.General;
+﻿using Coco.Entities.Dtos.General;
 using GraphQL.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class UpdateUserPhotoInputType : InputObjectGraphType<UpdateUserPhotoModel>
+    public class UpdateUserPhotoInputType : InputObjectGraphType<UpdateUserPhotoDto>
     {
         public UpdateUserPhotoInputType()
         {

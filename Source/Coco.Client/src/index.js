@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import React from "react";
 import { hydrate, render } from "react-dom";
 import { loadableReady } from "@loadable/component";

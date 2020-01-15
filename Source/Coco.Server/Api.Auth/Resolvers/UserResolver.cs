@@ -3,35 +3,26 @@ using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
 using Coco.Common.Const;
 using Coco.Entities.Enums;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos.General;
 using GraphQL;
 using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
+using System.Collections.Generic;
+using Api.Identity.Resolvers.Contracts;
 
 namespace Api.Identity.Resolvers
 {
-    public class UserResolver : BaseResolver
+    public class UserResolver : BaseResolver, IUserResolver
     {
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly ILoginManager<ApplicationUser> _loginManager;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager)
+        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager)
         {
             _userManager = userManager;
-        }
-
-        public ApplicationUser GetLoggedUser(ISessionContext sessionContext)
-        {
-            try
-            {
-                var currentUser = sessionContext.CurrentUser;
-                return currentUser;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            _loginManager = loginManager;
         }
 
         public async Task<ApiResult> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
@@ -39,7 +30,7 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = context.GetArgument<UpdatePerItemModel>("criterias");
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 if (!model.CanEdit)
                 {
@@ -54,7 +45,34 @@ namespace Api.Identity.Resolvers
                 var currentUser = userContext.CurrentUser;
 
                 var result = await _userManager.UpdateInfoItemAsync(model, currentUser.UserIdentityId, currentUser.AuthenticationToken);
-                HandleContextError(context, result.Errors);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+            }
+        }
+
+        public async Task<ApiResult> SignoutAsync(IDictionary<string, object> userContext)
+        {
+            try
+            {
+                var sessionContext = userContext["SessionContext"] as ISessionContext;
+
+                if (sessionContext == null || sessionContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var currentUser = sessionContext.CurrentUser;
+
+                var result = await _loginManager.LogoutAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
 
                 return result;
             }
@@ -69,11 +87,15 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Avatar;
                 var result = await _userManager.UpdateAvatarAsync(model, userContext.CurrentUser.Id);
-                HandleContextError(context, result.Errors);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -88,11 +110,15 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Cover;
                 var result = await _userManager.UpdateCoverAsync(model, userContext.CurrentUser.Id);
-                HandleContextError(context, result.Errors);
+                
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -107,10 +133,14 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Avatar);
-                HandleContextError(context, result.Errors);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -125,10 +155,14 @@ namespace Api.Identity.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
-                HandleContextError(context, result.Errors);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -138,18 +172,22 @@ namespace Api.Identity.Resolvers
             }
         }
 
-        public async Task<ApiResult> UpdateUserProfileAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateIdentifierAsync(ResolveFieldContext<object> context)
         {
             try
             {
                 var user = context.GetArgument<ApplicationUser>("user");
-                var userContext = context.UserContext as ISessionContext;
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
                 user.Id = currentUser.Id;
 
-                var result = await _userManager.UpdateUserProfileAsync(user, currentUser.UserIdentityId, currentUser.AuthenticationToken);
-                HandleContextError(context, result.Errors);
+                var result = await _userManager.UpdateIdentifierAsync(user, currentUser.UserIdentityId, currentUser.AuthenticationToken);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -163,8 +201,8 @@ namespace Api.Identity.Resolvers
         {
             try
             {
-                var model = context.GetArgument<UserPasswordUpdateModel>("criterias");
-                var userContext = context.UserContext as ISessionContext;
+                var model = context.GetArgument<UserPasswordUpdateDto>("criterias");
+                var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
                 model.UserId = currentUser.Id;
@@ -175,7 +213,11 @@ namespace Api.Identity.Resolvers
                 }
 
                 var result = await _userManager.ChangePasswordAsync(currentUser.Id, model.CurrentPassword, model.NewPassword);
-                HandleContextError(context, result.Errors);
+
+                if (!result.IsSucceed)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
                 return result;
             }
@@ -185,12 +227,11 @@ namespace Api.Identity.Resolvers
             }
         }
 
-
         #region Privates
-        private UpdateUserPhotoModel GenerateUserPhotoModel(ResolveFieldContext<object> context)
+        private UpdateUserPhotoDto GenerateUserPhotoModel(ResolveFieldContext<object> context)
         {
-            var model = context.GetArgument<UpdateUserPhotoModel>("criterias");
-            var userContext = context.UserContext as ISessionContext;
+            var model = context.GetArgument<UpdateUserPhotoDto>("criterias");
+            var userContext = context.UserContext["SessionContext"] as ISessionContext;
 
             if (!model.CanEdit)
             {

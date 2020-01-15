@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Coco.Business.Contracts;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 
 namespace Coco.Api.Framework.SessionManager.Stores
 {
@@ -26,11 +26,9 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="user">The user to set the password hash for.</param>
         /// <param name="passwordHash">The password hash to set.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public virtual Task SetPasswordHashAsync(ApplicationUser user, string passwordHash, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task SetPasswordHashAsync(ApplicationUser user, string passwordHash)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (user == null)
             {
@@ -65,11 +63,9 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// Gets the password hash for a user.
         /// </summary>
         /// <param name="user">The user to retrieve the password hash for.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the password hash for the user.</returns>
-        public virtual Task<string> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<string> GetPasswordHashAsync(ApplicationUser user)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (user == null)
             {
@@ -86,18 +82,16 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// <param name="user">The user to retrieve the password hash for.</param>
         /// <param name="currentPassword">The current password of the user.</param>
         /// <param name="newPassword">The password that I want to update to.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the password hash for the user.</returns>
-        public virtual async Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
+        public virtual async Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             if (userId <= 0)
             {
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            var model = new UserPasswordUpdateModel()
+            var model = new UserPasswordUpdateDto()
             {
                 UserId = userId,
                 NewPassword = newPassword,
@@ -107,7 +101,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
             var result = await _userBusiness.UpdatePasswordAsync(model);
             return new UserTokenResult()
             {
-                IsSuccess = true,
+                IsSucceed = true,
                 AuthenticationToken = result.AuthenticationToken
             };
         }

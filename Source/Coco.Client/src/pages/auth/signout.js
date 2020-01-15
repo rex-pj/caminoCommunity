@@ -1,40 +1,38 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
 import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
+import { SIGNOUT } from "../../utils/GraphQLQueries";
+import { SessionContext } from "../../store/context/SessionContext";
 
-class SingnOutPage extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default withRouter(props => {
+  const { data, loading, error } = useQuery(SIGNOUT);
+  const { history } = props;
+  const sessionContext = useContext(SessionContext);
 
-    this.state = {
-      isFormEnabled: false,
-      shoudRedirect: false
-    };
-  }
-
-  // #region Life Cycle
-  async componentDidMount() {
-    this._isMounted = true;
-
-    AuthService.logOut();
-
-    const { history } = this.props;
-    setTimeout(function() {
-      history.push("/");
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-    clearTimeout();
-  }
-  // #endregion Life Cycle
-
-  render() {
+  if (loading) {
     return <SignOutPanel />;
   }
-}
 
-export default withRouter(SingnOutPage);
+  if (error) {
+    history.push("/error");
+  }
+
+  async function logout() {
+    AuthService.logOut();
+    await sessionContext.relogin();
+    history.push("/");
+  }
+
+  if (data) {
+    const { signout } = data;
+    if (signout && !!signout.isSucceed) {
+      logout();
+    } else {
+      history.push("/error");
+    }
+  }
+
+  return <SignOutPanel />;
+});

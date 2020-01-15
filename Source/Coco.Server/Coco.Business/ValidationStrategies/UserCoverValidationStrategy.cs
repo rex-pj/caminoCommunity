@@ -5,7 +5,7 @@ using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
 using Coco.Common.Exceptions;
 using Coco.Common.Utils;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos.General;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -15,7 +15,7 @@ namespace Coco.Business.ValidationStrategies
 
         public bool IsValid<T>(T value)
         {
-            var data = value as UpdateUserPhotoModel;
+            var data = value as UpdateUserPhotoDto;
 
             if (string.IsNullOrEmpty(data.PhotoUrl))
             {

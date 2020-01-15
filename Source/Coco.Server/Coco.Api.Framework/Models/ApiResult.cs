@@ -5,7 +5,7 @@ namespace Coco.Api.Framework.Models
 {
     public class ApiResult<TResult> : ApiResult
     {
-        public ApiResult(bool isSuccess = false) : base(isSuccess) { }
+        public ApiResult(bool isSucceed = false) : base(isSucceed) { }
 
         public TResult Result { get; set; }
 
@@ -26,53 +26,24 @@ namespace Coco.Api.Framework.Models
             };
             return updateResult;
         }
-
-        public static ApiResult Failed(ApiError[] errors, TResult data)
-        {
-            var result = Failed(errors) as ApiResult<TResult>;
-
-            if (data != null)
-            {
-                result.Result = data;
-            }
-
-            return result;
-        }
-
-        public static ApiResult<TResult> Failed(ApiError error, TResult data)
-        {
-            var result = Failed(error) as ApiResult<TResult>;
-
-            if (data != null)
-            {
-                result.Result = data;
-            }
-
-            return result;
-        }
     }
 
     public class ApiResult
     {
-        public ApiResult(bool isSuccess = false)
+        public ApiResult(bool isSucceed = false)
         {
-            IsSuccess = isSuccess;
+            IsSucceed = isSucceed;
             Errors = new List<ApiError>();
         }
 
         public AccessModeEnum AccessMode { get; set; }
 
-        public bool IsSuccess { get; set; }
+        public bool IsSucceed { get; set; }
         public List<ApiError> Errors { get; protected set; }
 
         public static ApiResult Success()
         {
             return new ApiResult(true);
-        }
-
-        public static ApiResult Success(bool isSuccess)
-        {
-            return new ApiResult(isSuccess);
         }
 
         public static ApiResult Failed(ApiError[] errors)

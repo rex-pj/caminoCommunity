@@ -1,6 +1,5 @@
 ﻿using Coco.Api.Framework.Models;
 using System;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.Commons.Enums;
@@ -83,39 +82,18 @@ namespace Coco.Api.Framework.SessionManager
             {
                 return PasswordVerificationResult.Failed;
             }
-            switch (decodedHashedPassword[0])
+
+            int embeddedIterCount;
+            if (VerifyHashedPasswordV3(decodedHashedPassword, providedPassword, out embeddedIterCount))
             {
-                case 0x00:
-                    if (VerifyHashedPasswordV2(decodedHashedPassword, providedPassword))
-                    {
-                        // This is an old password hash format - the caller needs to rehash if we're not running in an older compat mode.
-                        //return (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV3)
-                        //    ? PasswordVerificationResult.SuccessRehashNeeded
-                        //    : PasswordVerificationResult.Success;
-
-                        return PasswordVerificationResult.SuccessRehashNeeded;
-                    }
-                    else
-                    {
-                        return PasswordVerificationResult.Failed;
-                    }
-
-                case 0x01:
-                    int embeddedIterCount;
-                    if (VerifyHashedPasswordV3(decodedHashedPassword, providedPassword, out embeddedIterCount))
-                    {
-                        // If this hasher was configured with a higher iteration count, change the entry now.
-                        return (embeddedIterCount < _iterCount)
-                            ? PasswordVerificationResult.SuccessRehashNeeded
-                            : PasswordVerificationResult.Success;
-                    }
-                    else
-                    {
-                        return PasswordVerificationResult.Failed;
-                    }
-
-                default:
-                    return PasswordVerificationResult.Failed; // unknown format marker
+                // If this hasher was configured with a higher iteration count, change the entry now.
+                return (embeddedIterCount < _iterCount)
+                    ? PasswordVerificationResult.SuccessRehashNeeded
+                    : PasswordVerificationResult.Success;
+            }
+            else
+            {
+                return PasswordVerificationResult.Failed;
             }
         }
 
@@ -149,49 +127,6 @@ namespace Coco.Api.Framework.SessionManager
             return outputBytes;
         }
 
-        private static byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
-        {
-            const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
-            const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-            const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-            const int SaltSize = 128 / 8; // 128 bits
-
-            // Produce a version 2 (see comment above) text hash.
-            byte[] salt = new byte[SaltSize];
-            rng.GetBytes(salt);
-            byte[] subkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
-
-            var outputBytes = new byte[1 + SaltSize + Pbkdf2SubkeyLength];
-            outputBytes[0] = 0x00; // format marker
-            Buffer.BlockCopy(salt, 0, outputBytes, 1, SaltSize);
-            Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
-            return outputBytes;
-        }
-
-        private static bool VerifyHashedPasswordV2(byte[] hashedPassword, string password)
-        {
-            const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
-            const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-            const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-            const int SaltSize = 128 / 8; // 128 bits
-
-            // We know ahead of time the exact length of a valid hashed password payload.
-            if (hashedPassword.Length != 1 + SaltSize + Pbkdf2SubkeyLength)
-            {
-                return false; // bad size
-            }
-
-            byte[] salt = new byte[SaltSize];
-            Buffer.BlockCopy(hashedPassword, 1, salt, 0, salt.Length);
-
-            byte[] expectedSubkey = new byte[Pbkdf2SubkeyLength];
-            Buffer.BlockCopy(hashedPassword, 1 + salt.Length, expectedSubkey, 0, expectedSubkey.Length);
-
-            // Hash the incoming password and verify it
-            byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
-            return ByteArraysEqual(actualSubkey, expectedSubkey);
-        }
-
         private static bool VerifyHashedPasswordV3(byte[] hashedPassword, string password, out int iterCount)
         {
             iterCount = default;
@@ -222,7 +157,7 @@ namespace Coco.Api.Framework.SessionManager
 
                 // Hash the incoming password and verify it
                 byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, prf, iterCount, subkeyLength);
-                return ByteArraysEqual(actualSubkey, expectedSubkey);
+                return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
             }
             catch
             {
@@ -248,25 +183,6 @@ namespace Coco.Api.Framework.SessionManager
                 | ((uint)(buffer[offset + 1]) << 16)
                 | ((uint)(buffer[offset + 2]) << 8)
                 | ((uint)(buffer[offset + 3]));
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static bool ByteArraysEqual(byte[] a, byte[] b)
-        {
-            if (a == null && b == null)
-            {
-                return true;
-            }
-            if (a == null || b == null || a.Length != b.Length)
-            {
-                return false;
-            }
-            var areSame = true;
-            for (var i = 0; i < a.Length; i++)
-            {
-                areSame &= (a[i] == b[i]);
-            }
-            return areSame;
         }
         #endregion
     }

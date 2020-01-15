@@ -1,65 +1,58 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter } from "react-router-dom";
-import { Query } from "react-apollo";
-import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import {
+  GET_FULL_USER_INFO,
+  UPDATE_USER_INFO_PER_ITEM
+} from "../../utils/GraphQLQueries";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { defaultClient } from "../../utils/GraphQLClient";
+import { publicClient } from "../../utils/GraphQLClient";
 
-export default withRouter(
-  class extends Component {
-    async onEdited(e, updateUserInfoItem, canEdit) {
-      if (updateUserInfoItem) {
-        return await updateUserInfoItem({
-          variables: {
-            criterias: {
-              key: e.primaryKey,
-              value: e.value,
-              propertyName: e.propertyName,
-              canEdit
-            }
-          }
-        });
+export default withRouter(props => {
+  const { userId } = props;
+
+  const [updateUserInfoItem] = useMutation(UPDATE_USER_INFO_PER_ITEM);
+
+  const { loading, error, data, refetch } = useQuery(GET_FULL_USER_INFO, {
+    client: publicClient,
+    variables: {
+      criterias: {
+        userId
       }
     }
+  });
 
-    render() {
-      const { userId } = this.props;
-      return (
-        <Query
-          query={GET_FULL_USER_INFO}
-          variables={{
-            criterias: {
-              userId
-            }
-          }}
-          client={defaultClient}
-        >
-          {({ loading, error, data }) => {
-            if (loading) {
-              return <Loading>Loading</Loading>;
-            }
-            if (error) {
-              return <ErrorBlock>Error</ErrorBlock>;
-            }
-
-            const { fullUserInfo } = data;
-            const { result, accessMode } = fullUserInfo;
-            const canEdit = accessMode === "CAN_EDIT";
-
-            return (
-              <About
-                onEdited={(e, updateUserInfoItem) =>
-                  this.onEdited(e, updateUserInfoItem, canEdit)
-                }
-                userInfo={result}
-                canEdit={canEdit}
-              />
-            );
-          }}
-        </Query>
-      );
-    }
+  if (loading) {
+    return <Loading>Loading</Loading>;
   }
-);
+  if (error) {
+    return <ErrorBlock>Error</ErrorBlock>;
+  }
+
+  const { fullUserInfo } = data;
+  const { accessMode, result } = fullUserInfo;
+  const canEdit = accessMode === "CAN_EDIT";
+
+  const onEdited = async e => {
+    if (updateUserInfoItem) {
+      return await updateUserInfoItem({
+        variables: {
+          criterias: {
+            key: e.primaryKey,
+            value: e.value,
+            propertyName: e.propertyName,
+            canEdit
+          }
+        }
+      }).then(() => {
+        refetch();
+      });
+    }
+  };
+
+  return (
+    <About onEdited={e => onEdited(e)} userInfo={result} canEdit={canEdit} />
+  );
+});

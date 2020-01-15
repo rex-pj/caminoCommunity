@@ -1,16 +1,17 @@
-﻿using Api.Identity.Resolvers;
-using Api.Identity.GraphQLTypes.ResultTypes;
-using GraphQL.Types;
-using Coco.Api.Framework.SessionManager.Contracts;
+﻿using GraphQL.Types;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Api.Identity.Resolvers.Contracts;
 
 namespace Api.Identity.Queries
 {
     public class UserQuery : ObjectGraphType
     {
-        public UserQuery(UserResolver userResolver)
+        public UserQuery(IUserResolver userResolver)
         {
-            Field<LoggedInUserResultType>("loggedUser",
-                resolve: context => userResolver.GetLoggedUser(context.UserContext as ISessionContext));
+            FieldAsync<SignoutResultType>("signout",
+                resolve: async context => { 
+                    return await userResolver.SignoutAsync(context.UserContext); 
+                });
         }
     }
 }

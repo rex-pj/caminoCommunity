@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
 
 namespace Api.Gateway
 {
@@ -37,8 +37,10 @@ namespace Api.Gateway
                 });
             });
 
-            services.AddControllers();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddOcelot();
         }
 
@@ -56,14 +58,16 @@ namespace Api.Gateway
             }
 
             // Config UseCors
-            app.UseCors(MyAllowSpecificOrigins)
-                .UseHttpsRedirection()
-                .UseEndpoints(endpoints =>
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                })
-                .UseOcelot()
-                .Wait();
+                });
+
+            app.UseOcelot().Wait();
         }
     }
 }

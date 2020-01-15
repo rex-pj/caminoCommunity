@@ -13,6 +13,7 @@
         internal static readonly string LoginAlreadyAssociated = "Login Already Associated";
         internal static readonly string InvalidToken = "Invalid Token";
         internal static readonly string UserAlreadyHasPassword = "User Already Has Password";
+        internal static readonly string UserAlreadyActived = "User Already Actived";
         internal static readonly string UserLockoutNotEnabled = "User Lockout Not Enabled";
         public static readonly string PasswordMismatch = "Password Mismatch";
         public static readonly string RecoveryCodeRedemptionFailed = "Recovery Code Redemption Failed";
@@ -20,5 +21,6 @@
         internal static readonly string PasswordRequiresDigit = "Password Requires Digit";
         internal static readonly string PasswordRequiresLower = "Password Requires Lower";
         internal static readonly string PasswordRequiresUpper = "Password Requires Upper";
+        public static readonly string UnexpectedErrorOccurred = "An unexpected error has occurred";
     }
 }
