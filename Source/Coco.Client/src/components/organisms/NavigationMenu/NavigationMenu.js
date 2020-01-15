@@ -46,7 +46,11 @@ const AuthButton = styled(RouterLinkButton)`
 `;
 
 export default props => {
-  const { user } = useContext(SessionContext);
+  const { user, isLoading } = useContext(SessionContext);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (user && user.isLogin) {
     return <ProfileDropdown userInfo={user} />;

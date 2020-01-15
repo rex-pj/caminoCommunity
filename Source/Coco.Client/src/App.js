@@ -36,7 +36,7 @@ library.add(fas);
 
 export default () => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
-  const { loading, data, refetch } = useQuery(GET_LOGGED_USER, {
+  const { loading, data, refetch, error } = useQuery(GET_LOGGED_USER, {
     client: publicClient
   });
 
@@ -46,6 +46,10 @@ export default () => {
 
   const parseLoggedUser = response => {
     const userInfo = AuthService.parseUserInfo(response);
+
+    if (error) {
+      return {};
+    }
 
     return {
       lang: "vn",
