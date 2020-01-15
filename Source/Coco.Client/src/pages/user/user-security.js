@@ -1,129 +1,86 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import { Mutation } from "react-apollo";
+import { useMutation } from "@apollo/react-hooks";
 import UpdatePasswordForm from "../../components/organisms/User/UpdatePasswordForm";
-import { connect } from "react-redux";
-import UserContext from "../../utils/Context/UserContext";
-import { raiseError, raiseSuccess, openModal } from "../../store/commands";
 import { UPDATE_USER_PASSWORD } from "../../utils/GraphQLQueries";
 import AuthService from "../../services/AuthService";
+import { useStore } from "../../store/hook-store";
 
-class UserUpdate extends Component {
-  constructor(props) {
-    super(props);
+export default withRouter(props => {
+  const [isFormEnabled, setFormEnabled] = useState(true);
+  const dispatch = useStore(false)[1];
+  const [updateUserPassword] = useMutation(UPDATE_USER_PASSWORD);
+  const { canEdit } = props;
 
-    this._isMounted = false;
-    this.state = { isFormEnabled: true };
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  onUpdateConfirmation = () => {
-    this.props.openConfirmRedirectModal({
-      title: "Bạn sẽ cần phải thoát và đăng nhập lại",
-      executeButtonName: "Đồng ý",
-      modalType: "confirm-redirect",
-      executeUrl: "/auth/signout"
+  const onUpdateConfirmation = () => {
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: "Bạn sẽ cần phải thoát và đăng nhập lại",
+        message:
+          "Để đảm bảo các chức năng được hoạt động tốt bạn cần thoát ra và đăng nhập lại",
+        executeButtonName: "Đồng ý",
+        executeUrl: "/auth/signout"
+      },
+      options: {
+        isOpen: true,
+        type: "CONFIRM_REDIRECT",
+        unableClose: true
+      }
     });
   };
 
-  onUpdatePassword = async (data, updateUserProfile, canEdit) => {
+  const showNotification = (title, message, type) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: type
+    });
+  };
+
+  const onUpdatePassword = async data => {
     if (!canEdit) {
       return;
     }
 
-    if (this._isMounted) {
-      this.setState({ isFormEnabled: true });
-    }
+    setFormEnabled(true);
 
-    if (updateUserProfile) {
-      await updateUserProfile({
+    if (updateUserPassword) {
+      await updateUserPassword({
         variables: {
           criterias: data
         }
       })
         .then(response => {
-          if (this._isMounted) {
-            this.setState({ isFormEnabled: true });
-          }
-
           const { data } = response;
           const { updatePassword } = data;
           const { result } = updatePassword;
 
           AuthService.setLogin(null, result.authenticationToken);
-          this.props.notifySuccess(this.context.user.lang);
-          this.onUpdateConfirmation();
+          showNotification(
+            "Thay đổi mật khẩu thành công",
+            "Bạn đã cập nhật mật khẩu thành công",
+            "info"
+          );
+          onUpdateConfirmation();
+          setFormEnabled(true);
         })
         .catch(error => {
-          if (this._isMounted) {
-            this.setState({ isFormEnabled: true });
-          }
-          this.props.notifyError(error, this.context.user.lang);
+          setFormEnabled(true);
+          showNotification(
+            "Có lỗi khi cập nhật mật khẩu",
+            "Kiểm tra lại thông tin và thử lại",
+            "error"
+          );
         });
     }
   };
 
-  render() {
-    const { canEdit } = this.props;
-    const { isFormEnabled } = this.state;
-    return (
-      <Mutation mutation={UPDATE_USER_PASSWORD}>
-        {updateUserPassword => (
-          <UpdatePasswordForm
-            onUpdate={e =>
-              this.onUpdatePassword(e, updateUserPassword, canEdit)
-            }
-            isFormEnabled={isFormEnabled}
-            canEdit={canEdit}
-            showValidationError={this.props.showValidationError}
-          />
-        )}
-      </Mutation>
-    );
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    notifyError: (error, lang) => {
-      if (error) {
-        raiseError(
-          dispatch,
-          "Có lỗi xảy ra trong quá trình cập nhật",
-          "Kiểm tra lại thông tin và thử lại",
-          "/"
-        );
-      }
-    },
-    notifySuccess: () => {
-      raiseSuccess(
-        dispatch,
-        "Thay đổi thành công, vui lòng đăng nhập lại",
-        null,
-        "/"
-      );
-    },
-    showValidationError: (title, message) => {
-      raiseError(dispatch, title, message, "#");
-    },
-    openConfirmRedirectModal: data => {
-      openModal(dispatch, data);
-    }
-  };
-};
-
-UserUpdate.contextType = UserContext;
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(UserUpdate));
+  return (
+    <UpdatePasswordForm
+      onUpdate={e => onUpdatePassword(e, canEdit)}
+      isFormEnabled={isFormEnabled}
+      canEdit={canEdit}
+      showValidationError={props.showValidationError}
+    />
+  );
+});

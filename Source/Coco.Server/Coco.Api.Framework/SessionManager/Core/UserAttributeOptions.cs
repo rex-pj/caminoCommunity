@@ -6,5 +6,6 @@
         public const string RESET_PASSWORD_BY_EMAIL_CONFIRM = "ResetPasswordByEmail";
         public const string SECURITY_SALT = "SecuritySalt";
         public const string AUTHENTICATION_TOKEN = "AuthenticatorToken";
+        public const string AUTHENTICATION_EXPIRATION = "AuthenticatorExpire";
     }
 }

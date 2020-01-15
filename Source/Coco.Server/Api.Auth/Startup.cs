@@ -2,7 +2,6 @@
 using Coco.Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GraphiQl;
@@ -18,6 +17,8 @@ using Coco.Api.Framework.MappingProfiles;
 using Coco.Business.MappingProfiles;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Infrastructure;
+using Coco.Api.Framework.Infrastructure.Extensions;
+using Api.Identity.Infrastructure.Extensions;
 
 namespace Api.Identity
 {
@@ -53,28 +54,19 @@ namespace Api.Identity
                 });
             });
 
-            InvokeInitialStartup(services, _configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            InvokeInitialStartup(services);
+            services.AddControllers()
+                .AddNewtonsoftJson();
         }
 
-        private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
+        private void InvokeInitialStartup(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
             #region GraphQL DI
-            services.AddSingleton<UserResolver>()
-                .AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<UserMutation>()
-                .AddSingleton<UserQuery>()
-                .AddSingleton<UserTokenResultType>()
-                .AddSingleton<ListGraphType>();
-
-            var sp = services.BuildServiceProvider();
-
-            services
-                .AddSingleton<ISchema>(new UserSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            services.AddGraphQlDependency();
             #endregion
         }
 
@@ -85,21 +77,13 @@ namespace Api.Identity
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
             // Config UseCors
-            app.UseCors(MyAllowSpecificOrigins)
-                .UseAuthentication()
-                .UseHttpsRedirection()
+            app.UseHttpsRedirection()
+                .UseRouting()
+                .UseCors(MyAllowSpecificOrigins)
                 .UseGraphiQl("/api/graphql")
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+                .UseBasicApiMiddleware();
         }
     }
 }

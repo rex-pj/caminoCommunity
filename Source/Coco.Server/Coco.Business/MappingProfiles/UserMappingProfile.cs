@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos;
+using Coco.Entities.Dtos.User;
 using System;
 
 namespace Coco.Business.MappingProfiles
@@ -11,28 +11,23 @@ namespace Coco.Business.MappingProfiles
     {
         public UserMappingProfile()
         {
-            CreateMap<UserModel, UserInfo>()
+            CreateMap<UserDto, UserInfo>()
                 .ForMember(t => t.User, opt => opt.MapFrom(s => new User()
                 {
                     DisplayName = s.DisplayName,
                     Firstname = s.Firstname,
                     Lastname = s.Lastname,
-                    UpdatedDate = DateTime.Now,
-                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.UtcNow,
                     UpdatedById = s.UpdatedById,
                     CreatedById = s.CreatedById,
                     Email = s.Email,
                     Password = s.Password,
-                    //PasswordSalt = s.PasswordSalt,
-                    //AuthenticatorToken = s.AuthenticationToken,
-                    //IdentityStamp = s.IdentityStamp,
-                    Expiration = s.Expiration,
                     IsActived = s.IsActived,
-                    StatusId = s.StatusId,
-                    //SecurityStamp = s.SecurityStamp
+                    StatusId = s.StatusId
                 }));
 
-            CreateMap<User, UserModel>()
+            CreateMap<User, UserDto>()
                 .ForMember(t => t.GenderId, opt => opt.MapFrom(s => s.UserInfo.GenderId))
                 .ForMember(t => t.Address, opt => opt.MapFrom(s => s.UserInfo.Address))
                 .ForMember(t => t.BirthDate, opt => opt.MapFrom(s => s.UserInfo.BirthDate))
@@ -41,13 +36,7 @@ namespace Coco.Business.MappingProfiles
                 .ForMember(t => t.AvatarUrl, opt => opt.MapFrom(s => s.UserInfo.AvatarUrl))
                 .ForMember(t => t.CoverPhotoUrl, opt => opt.MapFrom(s => s.UserInfo.CoverPhotoUrl));
 
-            CreateMap<User, UserLoggedInModel>()
-                .ForMember(t => t.GenderId, opt => opt.MapFrom(s => s.UserInfo.GenderId))
-                .ForMember(t => t.CountryId, opt => opt.MapFrom(s => s.UserInfo.CountryId))
-                .ForMember(t => t.AvatarUrl, opt => opt.MapFrom(s => s.UserInfo.AvatarUrl))
-                .ForMember(t => t.CoverPhotoUrl, opt => opt.MapFrom(s => s.UserInfo.CoverPhotoUrl));
-
-            CreateMap<User, UserFullModel>()
+            CreateMap<User, UserFullDto>()
                 .ForMember(t => t.GenderId, opt => opt.MapFrom(s => s.UserInfo.GenderId))
                 .ForMember(t => t.GenderLabel, opt => opt.MapFrom(s => s.UserInfo.Gender.Name))
                 .ForMember(t => t.CountryId, opt => opt.MapFrom(s => s.UserInfo.CountryId))
@@ -60,7 +49,8 @@ namespace Coco.Business.MappingProfiles
                 .ForMember(t => t.BirthDate, opt => opt.MapFrom(s => s.UserInfo.BirthDate))
                 .ForMember(t => t.StatusLabel, opt => opt.MapFrom(s => s.Status.Name));
 
-            CreateMap<UserPhoto, UserPhotoModel>();
+            CreateMap<UserPhoto, UserPhotoDto>();
+            CreateMap<UserAttribute, UserAttributeDto>();
         }
     }
 }

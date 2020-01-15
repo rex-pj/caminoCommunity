@@ -1,23 +1,23 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
+import { useMutation } from "@apollo/react-hooks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ImageUpload from "../../molecules/UploadControl/ImageUpload";
+import AvatarEditor from "react-avatar-editor";
+import Slider from "rc-slider";
+import NoImage from "../../atoms/NoImages/no-image";
+import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import {
   ButtonOutlineNormal,
   ButtonOutlineSecondary
 } from "../../atoms/Buttons/OutlineButtons";
-import { Mutation } from "react-apollo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../../molecules/UploadControl/ImageUpload";
-import AvatarEditor from "react-avatar-editor";
-import Slider from "rc-slider";
 import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER
 } from "../../../utils/GraphQLQueries";
-import NoImage from "../../atoms/NoImages/no-image";
-import AlertPopover from "../../molecules/Popovers/AlertPopover";
 
 const Wrap = styled.div`
     position: relative;
@@ -189,275 +189,250 @@ const Wrap = styled.div`
     right: 0;
   `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default props => {
+  const [isInUpdateMode, setInUpdateMode] = useState(false);
+  const [showDeletePopover] = useState(false);
+  const [isDisabled, setDisabled] = useState(true);
+  const [coverState, setCoverState] = useState({
+    contentType: null,
+    fileName: null,
+    src: null
+  });
 
-    this.state = {
-      isInUpdateMode: false,
-      contentType: null,
-      fileName: null,
-      src: null,
-      isDisabled: true,
-      crop: {
-        width: 1044,
-        height: 300,
-        scale: 1
-      },
-      showDeletePopover: false
-    };
+  const [coverCrop, setCoverCrop] = useState({
+    width: 1044,
+    height: 300,
+    scale: 1
+  });
 
-    this.setEditorRef = editor => (this.editor = editor);
-  }
+  let photoEditor = null;
+  const setEditorRef = editor => (photoEditor = editor);
 
-  canSubmit = () => {
-    const { canEdit } = this.props;
-    const image = this.editor.getImage();
+  const validateForSubmit = () => {
+    const { canEdit } = props;
+    const image = photoEditor.getImage();
 
     const isValid = image.width > 1000 && image.height > 300;
 
-    let isSuccess = false;
+    let isSucceed = false;
+    let message = null;
     if (canEdit && isValid) {
-      isSuccess = true;
+      isSucceed = true;
     }
-    this.setState({
-      isDisabled: true
-    });
-    return isSuccess;
+
+    if (!canEdit) {
+      message = "Bạn không được quyền sửa chữa thông tin này";
+    }
+
+    if (!isValid) {
+      message = "Hình ảnh phải lớn hơn 1000px x 300px";
+    }
+
+    setDisabled(!isValid);
+
+    return {
+      isSucceed,
+      message
+    };
   };
 
-  turnOnUpdateMode = () => {
-    this.setState({
-      isInUpdateMode: true
-    });
+  const turnOnUpdateMode = () => {
+    setInUpdateMode(true);
 
-    if (this.props.onToggleEditMode) {
-      this.props.onToggleEditMode(true);
+    if (props.onToggleEditMode) {
+      props.onToggleEditMode(true);
     }
   };
 
-  turnOffUpdateMode = () => {
-    this.setState({
-      isInUpdateMode: false,
+  const turnOffUpdateMode = () => {
+    setInUpdateMode(false);
+    setCoverState({
+      ...coverState,
       src: null
     });
 
-    if (this.props.onToggleEditMode) {
-      this.props.onToggleEditMode(false);
+    if (props.onToggleEditMode) {
+      props.onToggleEditMode(false);
     }
   };
 
-  onChangeImage = e => {
-    this.setState({
+  const onChangeImage = e => {
+    setCoverState({
       contentType: e.file.type,
       fileName: e.file.name,
       src: e.preview
     });
   };
 
-  onUpdateScale = e => {
-    this.canSubmit();
-    let { crop } = this.state;
-    crop = {
-      ...crop,
+  const onUpdateScale = e => {
+    validateForSubmit();
+    setCoverCrop({
+      ...coverCrop,
       scale: e
-    };
-
-    this.setState({
-      crop
     });
   };
 
-  onUpdate = async (e, updateUserCover) => {
-    const { src } = this.state;
-    if (this.editor && this.props.onUploaded && src) {
-      const { fileName, contentType, crop } = this.state;
-      const { scale } = crop;
-      const { canEdit } = this.props;
-      const rect = this.editor.getCroppingRect();
-      if (!this.canSubmit()) {
+  const showValidationError = (title, message) => {
+    props.showValidationError(title, message);
+  };
+
+  const [updateUserCover] = useMutation(UPDATE_USER_COVER);
+  const onUpdate = async () => {
+    const { src } = coverState;
+    if (photoEditor && props.onUpdated && src) {
+      const { fileName, contentType } = coverState;
+      const { scale } = coverCrop;
+      const { canEdit } = props;
+      const rect = photoEditor.getCroppingRect();
+
+      const validateResult = validateForSubmit();
+      if (!validateResult.isSucceed) {
+        showValidationError(
+          "Bạn không thể thay đổi ảnh cover",
+          validateResult.message
+        );
         return;
       }
 
       const variables = {
-        criterias: {
-          photoUrl: src,
-          canEdit: canEdit,
-          xAxis: rect.x,
-          yAxis: rect.y,
-          width: rect.width,
-          height: rect.height,
-          fileName,
-          contentType,
-          scale
-        }
+        photoUrl: src,
+        xAxis: rect.x,
+        yAxis: rect.y,
+        width: rect.width,
+        height: rect.height,
+        fileName,
+        contentType,
+        scale,
+        canEdit: canEdit
       };
 
-      return await updateUserCover({ variables })
-        .then(response => {
-          this.props.onUploaded({
-            avatarUrl: src
-          });
-
-          this.turnOffUpdateMode();
+      await props
+        .onUpdated(updateUserCover, variables)
+        .then(() => {
+          turnOffUpdateMode();
         })
-        .catch(error => {});
+        .catch(() => {});
     }
   };
 
-  delete = async deleteCover => {
-    const { canEdit } = this.props;
+  const [deleteCover] = useMutation(DELETE_USER_COVER);
+  const onDelete = async () => {
+    const { canEdit } = props;
 
     if (!canEdit) {
       return;
     }
 
-    const variables = {
-      criterias: {
+    await props
+      .onUpdated(deleteCover, {
         canEdit: canEdit
-      }
-    };
-
-    return await deleteCover({ variables })
-      .then(response => {
-        this.props.onUploaded({
-          avatarUrl: null
-        });
-
-        this.turnOffUpdateMode();
       })
-      .catch(error => {});
+      .then(() => {
+        turnOffUpdateMode();
+      });
   };
 
-  onLoadSuccess = e => {
-    const { canEdit } = this.props;
+  const onLoadSuccess = e => {
+    const { canEdit } = props;
 
     const isValid = e.width > 1000 && e.height > 300;
 
     if (canEdit && isValid) {
-      this.setState({
-        isDisabled: false
-      });
+      setDisabled(false);
       return;
     }
-    this.setState({
-      isDisabled: true
-    });
+    setDisabled(true);
   };
 
-  render() {
-    const { userInfo } = this.props;
-    const { coverPhotoUrl } = userInfo;
-    const {
-      isInUpdateMode,
-      src,
-      crop,
-      isDisabled,
-      showDeletePopover
-    } = this.state;
+  const { userInfo } = props;
+  const { coverPhotoUrl } = userInfo;
+  const { src } = coverState;
 
-    if (src) {
-      return (
-        <Wrap>
-          <AvatarEditor
-            ref={this.setEditorRef}
-            image={src}
-            width={crop.width}
-            height={crop.height}
-            border={0}
-            scale={crop.scale}
-            rotate={0}
-            onLoadSuccess={this.onLoadSuccess}
-          />
-
-          <UpdateTools>
-            <Mutation mutation={UPDATE_USER_COVER}>
-              {updateUserCover => {
-                return (
-                  <AcceptUpdateButton
-                    size="sm"
-                    onClick={e => this.onUpdate(e, updateUserCover)}
-                    disabled={isDisabled}
-                  >
-                    <FontAwesomeIcon icon="check" />
-                  </AcceptUpdateButton>
-                );
-              }}
-            </Mutation>
-            <CancelUpdateButton size="sm" onClick={this.turnOffUpdateMode}>
-              <FontAwesomeIcon icon="times" />
-            </CancelUpdateButton>
-          </UpdateTools>
-          <SliderWrap>
-            <Slider onChange={this.onUpdateScale} min={1} max={5} step={0.1} />
-          </SliderWrap>
-        </Wrap>
-      );
-    }
-
+  if (src) {
     return (
       <Wrap>
-        {!!isInUpdateMode ? (
-          <Fragment>
-            {coverPhotoUrl ? (
-              <Thumbnail
-                className="cover-thumbnail"
-                src={`${
-                  process.env.REACT_APP_CDN_COVER_PHOTO_API_URL
-                }${coverPhotoUrl}`}
-                alt=""
-              />
-            ) : (
-              <span />
-            )}
+        <AvatarEditor
+          ref={setEditorRef}
+          image={src}
+          width={coverCrop.width}
+          height={coverCrop.height}
+          border={0}
+          scale={coverCrop.scale}
+          rotate={0}
+          onLoadSuccess={onLoadSuccess}
+        />
 
-            <FullOverlay />
-            <Tools>
-              <CoverImageUpload onChange={e => this.onChangeImage(e)} />
-              <CancelEditButton onClick={this.turnOffUpdateMode}>
-                <FontAwesomeIcon icon="times" />
-              </CancelEditButton>
-            </Tools>
-            <DeleteConfirm>
-              <Mutation mutation={DELETE_USER_COVER}>
-                {deleteCover => {
-                  return (
-                    <DeletePopoverConfirm
-                      isShown={showDeletePopover}
-                      target="DeleteCover"
-                      title="Bạn có muốn xóa ảnh không?"
-                      onExecute={e => this.delete(deleteCover)}
-                    />
-                  );
-                }}
-              </Mutation>
-              <ButtonOutlineSecondary id="DeleteCover" size="sm">
-                <FontAwesomeIcon icon="trash-alt" />
-              </ButtonOutlineSecondary>
-            </DeleteConfirm>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <EditButton size="sm" onClick={this.turnOnUpdateMode}>
-              <FontAwesomeIcon icon="pencil-alt" />
-            </EditButton>
-            <a href={userInfo.url} className="cover-link">
-              {coverPhotoUrl ? (
-                <Thumbnail
-                  className="cover-thumbnail"
-                  src={`${
-                    process.env.REACT_APP_CDN_COVER_PHOTO_API_URL
-                  }${coverPhotoUrl}`}
-                  alt=""
-                />
-              ) : (
-                <NoImageDisplayed />
-              )}
-              <ThumbnailOverlay />
-            </a>
-          </Fragment>
-        )}
+        <UpdateTools>
+          <AcceptUpdateButton
+            size="sm"
+            onClick={e => onUpdate(e)}
+            disabled={isDisabled}
+          >
+            <FontAwesomeIcon icon="check" />
+          </AcceptUpdateButton>
+          <CancelUpdateButton size="sm" onClick={turnOffUpdateMode}>
+            <FontAwesomeIcon icon="times" />
+          </CancelUpdateButton>
+        </UpdateTools>
+        <SliderWrap>
+          <Slider onChange={onUpdateScale} min={1} max={5} step={0.1} />
+        </SliderWrap>
       </Wrap>
     );
   }
-}
+
+  return (
+    <Wrap>
+      {!!isInUpdateMode ? (
+        <Fragment>
+          {coverPhotoUrl ? (
+            <Thumbnail
+              className="cover-thumbnail"
+              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${coverPhotoUrl}`}
+              alt=""
+            />
+          ) : (
+            <span />
+          )}
+
+          <FullOverlay />
+          <Tools>
+            <CoverImageUpload onChange={e => onChangeImage(e)} />
+            <CancelEditButton onClick={turnOffUpdateMode}>
+              <FontAwesomeIcon icon="times" />
+            </CancelEditButton>
+          </Tools>
+          <DeleteConfirm>
+            <DeletePopoverConfirm
+              isShown={showDeletePopover}
+              target="DeleteCover"
+              title="Bạn có muốn xóa ảnh không?"
+              onExecute={e => onDelete()}
+            />
+            <ButtonOutlineSecondary id="DeleteCover" size="sm">
+              <FontAwesomeIcon icon="trash-alt" />
+            </ButtonOutlineSecondary>
+          </DeleteConfirm>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <EditButton size="sm" onClick={turnOnUpdateMode}>
+            <FontAwesomeIcon icon="pencil-alt" />
+          </EditButton>
+          <a href={userInfo.url} className="cover-link">
+            {coverPhotoUrl ? (
+              <Thumbnail
+                className="cover-thumbnail"
+                src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${coverPhotoUrl}`}
+                alt=""
+              />
+            ) : (
+              <NoImageDisplayed />
+            )}
+            <ThumbnailOverlay />
+          </a>
+        </Fragment>
+      )}
+    </Wrap>
+  );
+};

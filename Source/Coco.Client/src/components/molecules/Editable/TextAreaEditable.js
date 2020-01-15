@@ -40,7 +40,7 @@ const TextEditing = styled(TextArea)`
   max-width: 50%;
 `;
 
-export default function(props) {
+export default props => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(props.value ? props.value : "");
 
@@ -82,10 +82,14 @@ export default function(props) {
           propertyName: props.name
         })
         .then(function(response) {
-          const { data } = response;
-          const { updateUserInfoItem } = data;
-          const { result } = updateUserInfoItem;
-          setValue(result.value);
+          if (response) {
+            const { data } = response;
+            const { updateUserInfoItem } = data;
+            const { result } = updateUserInfoItem;
+            setValue(result.value);
+          } else {
+            setValue(currentValue);
+          }
         })
         .catch(function(errors) {
           setValue(currentValue);
@@ -175,4 +179,4 @@ export default function(props) {
       dangerouslySetInnerHTML={{ __html: data }}
     />
   );
-}
+};

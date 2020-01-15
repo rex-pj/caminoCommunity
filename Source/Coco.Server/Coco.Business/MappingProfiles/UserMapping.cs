@@ -1,5 +1,5 @@
 ﻿using Coco.Entities.Domain.Identity;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 using System;
 using System.Linq.Expressions;
 
@@ -7,7 +7,7 @@ namespace Coco.Business.Mapping
 {
     public static class UserMapping
     {
-        public static Expression<Func<User, UserModel>> SelectorUserModel = user => new UserModel
+        public static Expression<Func<User, UserDto>> UserModelSelector = user => new UserDto
         {
             DisplayName = user.DisplayName,
             Firstname = user.Firstname,
@@ -20,7 +20,6 @@ namespace Coco.Business.Mapping
             StatusId = user.StatusId,
             Email = user.Email,
             Password = user.Password,
-            Expiration = user.Expiration,
             Id = user.Id,
             IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
@@ -29,28 +28,10 @@ namespace Coco.Business.Mapping
             CountryId = user.UserInfo.CountryId,
             PhoneNumber = user.UserInfo.PhoneNumber,
             AvatarUrl = user.UserInfo.AvatarUrl,
-            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl
+            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl,
         };
 
-        public static Expression<Func<User, UserLoggedInModel>> SelectorUserLoggedIn = user => new UserLoggedInModel
-        {
-            DisplayName = user.DisplayName,
-            Firstname = user.Firstname,
-            Lastname = user.Lastname,
-            IsActived = user.IsActived,
-            StatusId = user.StatusId,
-            Email = user.Email,
-            Password = user.Password,
-            Expiration = user.Expiration,
-            Id = user.Id,
-            IsEmailConfirmed = user.IsEmailConfirmed,
-            GenderId = user.UserInfo.GenderId,
-            CountryId = user.UserInfo.CountryId,
-            AvatarUrl = user.UserInfo.AvatarUrl,
-            CoverPhotoUrl = user.UserInfo.CoverPhotoUrl
-        };
-
-        public static Expression<Func<User, UserFullModel>> SelectorFullUserModel = user => new UserFullModel
+        public static Expression<Func<User, UserFullDto>> FullUserModelSelector = user => new UserFullDto
         {
             CreatedDate = user.CreatedDate,
             DisplayName = user.DisplayName,
@@ -68,7 +49,7 @@ namespace Coco.Business.Mapping
             StatusId = user.StatusId,
             IsActived = user.IsActived,
             StatusLabel = user.Status.Name,
-
+            Id = user.Id,
             CountryId = user.UserInfo.CountryId,
             CountryCode = user.UserInfo.Country.Code,
             CountryName = user.UserInfo.Country.Name

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Coco.Api.Framework.Models
+﻿namespace Coco.Api.Framework.Models
 {
     public class MailMessageModel
     {

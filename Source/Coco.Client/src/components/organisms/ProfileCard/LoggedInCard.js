@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import { PanelDefault } from "../../atoms/Panels";
-import UserContext from "../../../utils/Context/UserContext";
+import { SessionContext } from "../../../store/context/SessionContext";
 const UserCard = loadable(() => import("./UserCard"));
 
 const Root = styled(PanelDefault)`
@@ -15,38 +15,30 @@ const Card = styled(UserCard)`
   border-radius: 0;
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default props => {
+  var sessionContext = useContext(SessionContext);
+  const menu = {
+    menuList: [
+      {
+        icon: faUserCheck,
+        text: "800",
+        description: "Được theo Dõi"
+      },
+      {
+        icon: faComments,
+        text: "350",
+        description: "Chủ Đề"
+      }
+    ]
+  };
 
-    this.state = {
-      menuList: [
-        {
-          icon: faUserCheck,
-          text: "800",
-          description: "Được theo Dõi"
-        },
-        {
-          icon: faComments,
-          text: "350",
-          description: "Chủ Đề"
-        }
-      ]
-    };
-  }
-
-  render() {
-    const { menuList } = this.state;
-    return (
-      <Root>
-        <UserContext.Consumer>
-          {({ user }) =>
-            user && user.isLogin ? (
-              <Card userInfo={user.userInfo} menuList={menuList} />
-            ) : null
-          }
-        </UserContext.Consumer>
-      </Root>
-    );
-  }
-}
+  const { menuList } = menu;
+  const { user } = sessionContext;
+  return (
+    <Root>
+      {user && user.isLogin ? (
+        <Card userInfo={user} menuList={menuList} />
+      ) : null}
+    </Root>
+  );
+};

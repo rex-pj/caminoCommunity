@@ -11,8 +11,7 @@ namespace Coco.IdentityDAL.MappingConfigs
         {
             builder.ToTable(nameof(UserInfo), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id)
-                .ValueGeneratedOnAdd();
+            builder.Property(x => x.Id);
 
             builder.HasMany(c => c.UserPhotos)
                .WithOne(x => x.UserInfo)

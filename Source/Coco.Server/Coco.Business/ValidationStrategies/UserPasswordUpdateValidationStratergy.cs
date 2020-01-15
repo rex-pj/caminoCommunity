@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Entities.Model.User;
+using Coco.Entities.Dtos.User;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -21,7 +21,7 @@ namespace Coco.Business.ValidationStrategies
 
         public bool IsValid<T>(T value)
         {
-            var data = value as UserPasswordUpdateModel;
+            var data = value as UserPasswordUpdateDto;
 
             if (data == null)
             {

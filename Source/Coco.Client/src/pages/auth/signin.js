@@ -1,132 +1,101 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
-import { Mutation } from "react-apollo";
-import { defaultClient } from "../../utils/GraphQLClient";
+import { useMutation } from "@apollo/react-hooks";
+import { publicClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQLQueries";
-import { getError } from "../../utils/Helper";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { raiseError } from "../../store/commands";
-import SessionContext from "../../utils/Context/SessionContext";
+import { SessionContext } from "../../store/context/SessionContext";
 import AuthService from "../../services/AuthService";
+import { useStore } from "../../store/hook-store";
+import { getError } from "../../utils/Helper";
 
-class SingnInPage extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default withRouter(props => {
+  const [isFormEnabled, setFormEnabled] = useState(true);
+  const dispatch = useStore(false)[1];
+  const sessionContext = useContext(SessionContext);
+  const [signin] = useMutation(SIGNIN, {
+    client: publicClient
+  });
 
-    this.state = {
-      isFormEnabled: true,
-      shouldRedirect: false
+  useEffect(() => {
+    return () => {
+      clearTimeout();
     };
-  }
+  });
 
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
+  const notifyError = (error, lang) => {
+    if (
+      error &&
+      error.networkError &&
+      error.networkError.result &&
+      error.networkError.result.errors
+    ) {
+      const errors = error.networkError.result.errors;
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    clearTimeout();
-  }
-  // #endregion Life Cycle
-
-  showValidationError = (title, message) => {
-    this.props.showValidationError(title, message);
+      errors.forEach(item => {
+        dispatch("NOTIFY", {
+          title: "Đăng nhập KHÔNG thành công",
+          message:
+            item.extensions && item.extensions.code
+              ? getError(item.extensions.code, lang)
+              : null,
+          type: "error"
+        });
+      });
+    } else {
+      dispatch("NOTIFY", {
+        title: "Đăng nhập KHÔNG thành công",
+        message: getError("ErrorOccurredTryRefeshInputAgain", lang),
+        type: "error"
+      });
+    }
   };
 
-  signIn = async (data, signin) => {
-    if (this._isMounted) {
-      this.setState({ isFormEnabled: false });
-    }
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error"
+    });
+  };
+
+  const signIn = async data => {
+    setFormEnabled(false);
 
     if (signin) {
       await signin({
         variables: {
-          signinModel: data
+          args: data
         }
       })
-        .then(response => {
+        .then(async response => {
           const { data } = response;
           const { signin } = data;
           const { result } = signin;
 
-          if (!signin || !signin.isSuccess) {
-            this.props.notifyError(data.signin.errors, this.context.lang);
-            if (this._isMounted) {
-              this.setState({ isFormEnabled: true });
-            }
+          if (!signin || !signin.isSucceed) {
+            notifyError(data.signin.errors, sessionContext.lang);
+            setFormEnabled(true);
             return;
           }
 
           AuthService.setLogin(result.userInfo, result.authenticationToken);
 
-          this.context.login();
-          this.props.history.push("/");
+          await sessionContext.relogin();
+          props.history.push("/");
         })
         .catch(error => {
-          if (this._isMounted) {
-            this.setState({ isFormEnabled: true });
-          }
-          this.props.notifyError(error, this.context.lang);
+          setFormEnabled(true);
+          notifyError(error, sessionContext.lang);
         });
     }
   };
 
-  render() {
-    return (
-      <Mutation mutation={SIGNIN} client={defaultClient}>
-        {signin => (
-          <SignInForm
-            onSignin={data => this.signIn(data, signin)}
-            showValidationError={this.showValidationError}
-            isFormEnabled={this.state.isFormEnabled}
-          />
-        )}
-      </Mutation>
-    );
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    notifyError: (error, lang) => {
-      if (
-        error &&
-        error.networkError &&
-        error.networkError.result &&
-        error.networkError.result.errors
-      ) {
-        const errors = error.networkError.result.errors;
-
-        errors.forEach(item => {
-          raiseError(
-            dispatch,
-            "Đăng nhập KHÔNG thành công",
-            getError(item.extensions.code, lang),
-            "/auth/signin"
-          );
-        });
-      } else {
-        raiseError(
-          dispatch,
-          "Đăng nhập KHÔNG thành công",
-          getError("ErrorOccurredTryRefeshInputAgain", lang),
-          "/auth/signin"
-        );
-      }
-    },
-
-    showValidationError: (title, message) => {
-      raiseError(dispatch, title, message, "#");
-    }
-  };
-};
-
-SingnInPage.contextType = SessionContext;
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(withRouter(SingnInPage));
+  return (
+    <SignInForm
+      onSignin={data => signIn(data)}
+      showValidationError={showValidationError}
+      isFormEnabled={isFormEnabled}
+    />
+  );
+});

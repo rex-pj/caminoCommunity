@@ -1,5 +1,5 @@
 ﻿using Coco.Api.Framework.SessionManager.Contracts;
-using Coco.Api.Framework.GraphQLQueries;
+using Coco.Api.Framework.GraphQLRequests;
 using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Cors;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Coco.Api.Framework.Controllers
 {
@@ -27,7 +28,7 @@ namespace Coco.Api.Framework.Controllers
 
         [HttpPost]
         [EnableCors("AllowOrigin")]
-        public virtual async Task<IActionResult> Post([FromBody]GraphQLQuery query)
+        public virtual async Task<IActionResult> Post([FromBody]GraphQLRequest query)
         {
             if (query == null)
             {
@@ -40,7 +41,10 @@ namespace Coco.Api.Framework.Controllers
                 Schema = _schema,
                 Query = query.Query,
                 Inputs = inputs,
-                UserContext = _sessionContext
+                UserContext = new Dictionary<string, object>
+                {
+                    { "SessionContext", _sessionContext }
+                }
             };
 
             var result = await _documentExecuter.ExecuteAsync(executionOptions);

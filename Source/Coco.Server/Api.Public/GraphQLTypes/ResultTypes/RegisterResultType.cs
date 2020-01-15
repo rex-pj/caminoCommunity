@@ -8,7 +8,7 @@ namespace Api.Public.GraphQLTypes.ResultTypes
     {
         public RegisterResultType()
         {
-            Field(x => x.IsSuccess, type: typeof(BooleanGraphType));
+            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
             Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
         }
     }

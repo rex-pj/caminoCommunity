@@ -1,11 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import styled from "styled-components";
 import { ImageRound } from "../../atoms/Images";
-import { openModal, closeModal } from "../../../store/commands";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
+import { useStore } from "../../../store/hook-store";
 
 const ProfileImage = styled(ImageRound)`
     display: block;
@@ -51,57 +50,48 @@ const ProfileImage = styled(ImageRound)`
     border-radius: 20px;
   `;
 
-class ProfileAvatar extends Component {
-  onOpenUploadModal = e => {
-    const { userInfo } = this.props;
+function ProfileAvatar({ ...props }) {
+  const { userInfo, canEdit, className } = props;
+  const { avatarUrl } = userInfo;
+  const dispatch = useStore(true)[1];
+
+  function onOpenUploadModal(e) {
+    const { userInfo } = props;
     const { avatarUrl } = userInfo;
-    this.props.openUploadModal({
-      imageUrl: avatarUrl
-        ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`
-        : null,
-      title: "Đổi Ảnh Đại Diện",
-      modalType: "change-avatar",
-      canEdit: userInfo.canEdit
+
+    dispatch("OPEN_MODAL", {
+      data: {
+        imageUrl: avatarUrl
+          ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`
+          : null,
+        title: "Đổi Ảnh Đại Diện",
+        canEdit: userInfo.canEdit
+      },
+      options: {
+        isOpen: true,
+        type: "AVATAR_MODAL"
+      }
     });
-  };
-
-  render() {
-    const { userInfo, canEdit, className } = this.props;
-    const { avatarUrl } = userInfo;
-
-    return (
-      <Wrap className={className}>
-        <AvatarLink href={userInfo.url}>
-          {avatarUrl ? (
-            <ProfileImage
-              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
-            />
-          ) : (
-            <EmptyAvatar />
-          )}
-        </AvatarLink>
-        {!!canEdit ? (
-          <AvatarUpload onClick={e => this.onOpenUploadModal(e)}>
-            <FontAwesomeIcon icon="pencil-alt" />
-          </AvatarUpload>
-        ) : null}
-      </Wrap>
-    );
   }
+
+  return (
+    <Wrap className={className}>
+      <AvatarLink href={userInfo.url}>
+        {avatarUrl ? (
+          <ProfileImage
+            src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${avatarUrl}`}
+          />
+        ) : (
+          <EmptyAvatar />
+        )}
+      </AvatarLink>
+      {!!canEdit ? (
+        <AvatarUpload onClick={e => onOpenUploadModal(e)}>
+          <FontAwesomeIcon icon="pencil-alt" />
+        </AvatarUpload>
+      ) : null}
+    </Wrap>
+  );
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openUploadModal: e => {
-      openModal(dispatch, e);
-    },
-    closeUploadModal: () => {
-      closeModal(dispatch);
-    }
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(ProfileAvatar);
+export default ProfileAvatar;

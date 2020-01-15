@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
@@ -9,6 +9,7 @@ import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import ForgotPasswordModel from "../../../models/ForgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PrimaryNotice } from "../../atoms/Notices/AlertNotice";
+import { withRouter } from "react-router-dom";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${p => p.theme.size.normal};
@@ -62,78 +63,61 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+export default withRouter(props => {
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+  const [isFormEnabled, setFormEnabled] = useState(false);
+  const [isSubmitted, setSubmitted] = useState(false);
+  let formData = ForgotPasswordModel;
 
-    this.state = {
-      isFormValid: false,
-      shouldRender: false,
-      isSubmitted: false
-    };
-
-    this.formData = ForgotPasswordModel;
-  }
-
-  // #region Life Cycle
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // #endregion Life Cycle
-
-  handleInputBlur = evt => {
+  const handleInputBlur = evt => {
     const { name } = evt.target;
-    if (!this.formData[name].isValid) {
+    if (!formData[name].isValid) {
       evt.target.classList.add("invalid");
     } else {
       evt.target.classList.remove("invalid");
     }
   };
 
-  handleInputChange = evt => {
-    this.formData = this.formData || {};
+  const handleInputChange = evt => {
+    if (isSubmitted) {
+      setSubmitted(false);
+    }
+
+    formData = formData || {};
     const { name, value } = evt.target;
 
+    const prevValid = formData[name].isValid;
     // Validate when input
-    this.formData[name].isValid = checkValidity(this.formData, value, name);
-    this.formData[name].value = value;
+    formData[name].isValid = checkValidity(formData, value, name);
+    formData[name].value = value;
 
-    if (!!this._isMounted) {
-      this.setState({
-        shouldRender: true
-      });
-      this.setState({
-        isSubmitted: false
-      });
+    if (prevValid !== formData[name].isValid) {
+      forceUpdate();
+    }
+
+    if (formData[name].isValid && !isFormEnabled) {
+      setFormEnabled(true);
     }
   };
 
-  checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  onUpdate = e => {
+  const onUpdate = async e => {
     e.preventDefault();
 
+    if (isFormEnabled) {
+      setFormEnabled(false);
+    }
+
+    if (!isSubmitted) {
+      setSubmitted(true);
+    }
+
     let isFormValid = true;
-    for (let formIdentifier in this.formData) {
-      isFormValid = this.formData[formIdentifier].isValid && isFormValid;
+    for (let formIdentifier in formData) {
+      isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        this.props.showValidationError(
+        props.showValidationError(
           "Thông tin bạn nhập có thể bị sai",
           "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
         );
@@ -142,62 +126,57 @@ export default class extends Component {
 
     if (!!isFormValid) {
       const requestData = {};
-      for (const formIdentifier in this.formData) {
-        requestData[formIdentifier] = this.formData[formIdentifier].value;
+      for (const formIdentifier in formData) {
+        requestData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      const isSendMail = this.props.onForgotPassword(requestData);
-
-      this.setState({
-        isSubmitted: isSendMail
-      });
+      await props
+        .onForgotPassword(requestData)
+        .then(() => {
+          setFormEnabled(true);
+        })
+        .catch(() => {
+          setFormEnabled(true);
+        });
     }
   };
 
-  render() {
-    const { isSubmitted } = this.state;
-    const isFormValid = this.checkIsFormValid();
-
-    return (
-      <form onSubmit={e => this.onUpdate(e)} method="POST">
-        <div className="row no-gutters">
-          <div className="col col-12 col-sm-7">
-            <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
-          </div>
-          <div className="col col-12 col-sm-5">
-            <ForgotAuthNavigation />
-            <PanelBody>
-              <FormRow>
-                {isSubmitted ? (
-                  <PrimaryNotice>
-                    Chúng tôi sẽ gửi một e-mail kích hoạt cho bạn, hãy vào email
-                    kiểm tra, nếu không tìm thấy hãy vào thư mục spam để xem thử
-                  </PrimaryNotice>
-                ) : null}
-              </FormRow>
-              <FormRow>
-                <Label>E-mail</Label>
-                <Textbox
-                  placeholder="Nhập e-mail"
-                  type="email"
-                  name="email"
-                  autoComplete="off"
-                  onChange={e => this.handleInputChange(e)}
-                  onBlur={e => this.handleInputBlur(e)}
-                />
-              </FormRow>
-              <FormFooter>
-                <SubmitButton
-                  disabled={!this.props.isFormEnabled || !isFormValid}
-                  type="submit"
-                >
-                  Gửi Email
-                </SubmitButton>
-              </FormFooter>
-            </PanelBody>
-          </div>
+  return (
+    <form onSubmit={e => onUpdate(e)} method="POST">
+      <div className="row no-gutters">
+        <div className="col col-12 col-sm-7">
+          <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
         </div>
-      </form>
-    );
-  }
-}
+        <div className="col col-12 col-sm-5">
+          <ForgotAuthNavigation />
+          <PanelBody>
+            <FormRow>
+              {isSubmitted ? (
+                <PrimaryNotice>
+                  Chúng tôi sẽ gửi một e-mail kích hoạt cho bạn, hãy vào email
+                  kiểm tra, nếu không tìm thấy hãy vào thư mục spam để xem thử
+                </PrimaryNotice>
+              ) : null}
+            </FormRow>
+            <FormRow>
+              <Label>E-mail</Label>
+              <Textbox
+                placeholder="Nhập e-mail"
+                type="email"
+                name="email"
+                autoComplete="off"
+                onChange={e => handleInputChange(e)}
+                onBlur={e => handleInputBlur(e)}
+              />
+            </FormRow>
+            <FormFooter>
+              <SubmitButton disabled={!isFormEnabled} type="submit">
+                Gửi Email
+              </SubmitButton>
+            </FormFooter>
+          </PanelBody>
+        </div>
+      </div>
+    </form>
+  );
+});

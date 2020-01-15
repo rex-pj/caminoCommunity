@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import DaySelector from "../DaySelector";
+import DateSelector from "../DateSelector";
 import { format } from "date-fns";
 
 const TextLabel = styled.span`
@@ -28,7 +28,7 @@ const TextLabel = styled.span`
   }
 `;
 
-const DateTimePicker = styled(DaySelector)`
+const DateTimePicker = styled(DateSelector)`
   select {
     border: 0;
     border-radius: 0;
@@ -50,7 +50,7 @@ const updateStatus = {
   fail: "fail"
 };
 
-export default function(props) {
+export default props => {
   const { value, name, disabled } = props;
   const [status, setStatus] = useState("");
   const [currentDate, updateCurrentDate] = useState(value);
@@ -58,11 +58,11 @@ export default function(props) {
 
   useEffect(() => {
     return () => clearTimeout(statusTimer);
-  }, []);
+  }, [statusTimer]);
 
-  function onChanged(date) {
+  const onChanged = e => {
     const { name, primaryKey } = props;
-
+    const { value: date } = e.target;
     if (date) {
       const dateTime = format(date, "MM/DD/YYYY");
       if (props.onUpdated) {
@@ -82,21 +82,21 @@ export default function(props) {
     } else {
       updateCurrentDate(value);
     }
-  }
+  };
 
-  function showError() {
+  const showError = () => {
     setStatus(updateStatus.fail);
     statusTimer = setTimeout(() => {
       setStatus("");
     }, 1000);
-  }
+  };
 
-  function showSuccess() {
+  const showSuccess = () => {
     setStatus(updateStatus.success);
     statusTimer = setTimeout(() => {
       setStatus("");
     }, 1000);
-  }
+  };
 
   if (!props.disabled && !!currentDate) {
     return (
@@ -105,7 +105,7 @@ export default function(props) {
         name={name}
         disabled={disabled}
         value={currentDate}
-        onDateChanged={date => onChanged(date)}
+        onDateChanged={e => onChanged(e)}
       />
     );
   } else if (!props.disabled && value) {
@@ -114,7 +114,7 @@ export default function(props) {
         className={`${status}`}
         name={name}
         disabled={disabled}
-        onDateChanged={date => onChanged(date)}
+        onDateChanged={e => onChanged(e)}
         value={value}
       />
     );
@@ -124,7 +124,7 @@ export default function(props) {
         className={`${status}`}
         name={name}
         disabled={disabled}
-        onDateChanged={date => onChanged(date)}
+        onDateChanged={e => onChanged(e)}
       />
     );
   } else {
@@ -134,4 +134,4 @@ export default function(props) {
       </TextLabel>
     );
   }
-}
+};

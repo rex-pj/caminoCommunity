@@ -7,8 +7,8 @@ using Coco.Contract;
 using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Enums;
-using Coco.Entities.Model;
-using Coco.Entities.Model.General;
+using Coco.Entities.Dtos;
+using Coco.Entities.Dtos.General;
 using Coco.IdentityDAL;
 using System;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Coco.Business.Implementation.UserBusiness
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public async Task<UpdateUserPhotoModel> UpdateUserPhotoAsync(UpdateUserPhotoModel model, long userId)
+        public async Task<UpdateUserPhotoDto> UpdateUserPhotoAsync(UpdateUserPhotoDto model, long userId)
         {
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)
@@ -85,7 +85,7 @@ namespace Coco.Business.Implementation.UserBusiness
                     userPhoto = new UserPhoto()
                     {
                         CreatedById = userId,
-                        CreatedDate = DateTime.Now,
+                        CreatedDate = DateTime.UtcNow,
                         ImageData = newImage,
                         TypeId = (byte)model.UserPhotoType,
                         UserId = userId,
@@ -145,18 +145,12 @@ namespace Coco.Business.Implementation.UserBusiness
             await _identityContext.SaveChangesAsync();
         }
 
-        public async Task<UserPhoto> GetAvatarByIdAsync(long id)
-        {
-            var userPhoto = await _userPhotoRepository.FindAsync(id);
-            return userPhoto;
-        }
-
-        public UserPhotoModel GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
+        public UserPhotoDto GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
             var userPhoto = _userPhotoRepository
                 .GetAsNoTracking(x => x.Code.Equals(code) && x.TypeId.Equals(photoType))
-                .Select(x => new UserPhotoModel()
+                .Select(x => new UserPhotoDto()
                 {
                     Code = x.Code,
                     Description = x.Description,
