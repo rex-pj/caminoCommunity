@@ -56,5 +56,6 @@ export const borderRadius = {
 
 export const shadow = {
   BoxShadow: `rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px`,
-  TextShadow: `0 0 3px rgba(0, 0, 0, 0.8)`
+  TextShadow: `0 0 3px rgba(0, 0, 0, 0.8)`,
+  BoxShadowInside: `rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px`
 };

@@ -55,6 +55,21 @@ const ButtonOutlineSecondary = styled(ButtonOutlinePrimary)`
   }
 `;
 
+const ButtonOutlineNeutral = styled(ButtonOutlinePrimary)`
+  border-color: ${p => p.theme.color.neutral};
+  color: ${p => p.theme.color.neutral};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.rgbaColor.light};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.rgbaColor.light};
+  }
+`;
+
 const ButtonOutlineNormal = styled(ButtonOutlinePrimary)`
   border-color: ${p => p.theme.color.neutral};
   color: ${p => p.theme.color.neutral};
@@ -107,5 +122,6 @@ export {
   ButtonOutlineDark,
   ButtonOutlineNormal,
   ButtonOutlinePrimary,
-  ButtonOutlineDanger
+  ButtonOutlineDanger,
+  ButtonOutlineNeutral
 };
