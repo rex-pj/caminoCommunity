@@ -1,28 +1,117 @@
-import React from "react";
-import { Editor } from "@tinymce/tinymce-react";
-require.context(
-  "file-loader?name=lib/cjs/main/ts/TinyMCE.js&context=node_modules/@tinymce/tinymce-react",
-  true,
-  /.*/
-);
+import React, { useEffect } from "react";
+import { Editor, EditorState, RichUtils } from "draft-js";
+import styled from "styled-components";
+import EditorToolbar from "./EditorToolbar";
+
+const Root = styled.div`
+  margin-bottom: 15px;
+  background: ${p => p.theme.color.white};
+  border-radius: ${p => p.theme.borderRadius.normal};
+  box-shadow: ${p => p.theme.shadow.BoxShadow};
+`;
+
+const ConttentBox = styled.div`
+  padding: ${p => p.theme.size.distance};
+`;
 
 export default props => {
+  const { placeholder, className } = props;
+  const [editorState, setEditorState] = React.useState(
+    EditorState.createEmpty()
+  );
+
+  const styleMap = {
+    CODE: {
+      backgroundColor: "rgba(0, 0, 0, 0.05)",
+      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+      fontSize: 16,
+      padding: 2
+    },
+    HIGHLIGHT: {
+      background: "#fffe0d"
+    }
+  };
+
+  var INLINE_STYLES = [
+    { icon: "bold", style: "BOLD" },
+    { icon: "italic", style: "ITALIC" },
+    { icon: "underline", style: "UNDERLINE" },
+    { icon: "strikethrough", style: "STRIKETHROUGH" },
+    { label: "Monospace", style: "CODE" },
+    { icon: "highlighter", style: "HIGHLIGHT" }
+  ];
+
+  const BLOCK_TYPES = [
+    { icon: "quote-left", style: "blockquote" },
+    { icon: "list-ul", style: "unordered-list-item" },
+    { icon: "list-ol", style: "ordered-list-item" }
+  ];
+
+  const HEADING_TYPES = [
+    { label: "Heading Normal", style: "unstyled" },
+    { label: "Heading 1", style: "header-one" },
+    { label: "Heading 2", style: "header-two" },
+    { label: "Heading 3", style: "header-three" },
+    { label: "Heading 4", style: "header-four" },
+    { label: "Heading 5", style: "header-five" },
+    { label: "Heading 6", style: "header-six" }
+  ];
+
+  const editor = React.useRef(null);
+
+  const onChange = editorState => {
+    return setEditorState(editorState);
+  };
+
+  const focusEditor = () => {
+    editor.current.focus();
+  };
+
+  useEffect(() => {
+    focusEditor();
+  }, []);
+
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      onChange(newState);
+    }
+  };
+
+  const toggleInlineStyle = style => {
+    const newState = RichUtils.toggleInlineStyle(editorState, style);
+    if (newState) {
+      onChange(newState);
+    }
+  };
+
+  const toggleBlockType = style => {
+    const newState = RichUtils.toggleBlockType(editorState, style);
+    if (newState) {
+      onChange(newState);
+    }
+  };
+
   return (
-    <Editor
-      {...props}
-      init={{
-        height: 500,
-        menubar: false,
-        plugins: [
-          "advlist autolink lists link image charmap print preview anchor",
-          "searchreplace visualblocks code fullscreen",
-          "insertdatetime media table paste code help wordcount"
-        ],
-        toolbar: `$undo redo | formatselect | bold italic backcolor | 
-              alignleft aligncenter alignright alignjustify | \
-              bullist numlist outdent indent | removeformat | help`
-      }}
-      onChange={props.onChanged}
-    />
+    <Root onClick={focusEditor} className={className}>
+      <EditorToolbar
+        editorState={editorState}
+        toggleBlockType={toggleBlockType}
+        toggleInlineStyle={toggleInlineStyle}
+        inlineTyles={INLINE_STYLES}
+        blockTyles={BLOCK_TYPES}
+        headingTypes={HEADING_TYPES}
+      />
+      <ConttentBox>
+        <Editor
+          customStyleMap={styleMap}
+          ref={editor}
+          editorState={editorState}
+          onChange={onChange}
+          handleKeyCommand={handleKeyCommand}
+          placeholder={placeholder ? placeholder : "Enter some text..."}
+        />
+      </ConttentBox>
+    </Root>
   );
 };
