@@ -64,12 +64,11 @@ export default props => {
   const { className, options, placeholder } = props;
   const [isShown, setShown] = useState(false);
   const currentRef = React.createRef();
+
   const onToggle = (e, value) => {
     if (props.actived !== value) {
       const event = {
-        ...e,
         target: {
-          ...e.target,
           value
         }
       };
@@ -79,7 +78,7 @@ export default props => {
   };
 
   const toggleDropdown = e => {
-    e.stopPropagation();
+    stopPropagation(e);
     setShown(() => {
       return !isShown;
     });
