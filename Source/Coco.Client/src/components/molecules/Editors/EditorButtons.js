@@ -18,7 +18,6 @@ const BaseButton = styled.span`
   cursor: pointer;
 
   &.actived {
-    border-color: ${p => p.theme.color.neutral};
     color: ${p => p.theme.color.neutral};
   }
 
@@ -44,9 +43,7 @@ export const DefaultButton = props => {
   let { className } = props;
   const onToggle = e => {
     const event = {
-      ...e,
       target: {
-        ...e.target,
         value: props.style
       }
     };

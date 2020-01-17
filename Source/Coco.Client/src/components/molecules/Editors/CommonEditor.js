@@ -22,7 +22,7 @@ export default props => {
 
   const styleMap = {
     CODE: {
-      backgroundColor: "rgba(0, 0, 0, 0.05)",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
       fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
       fontSize: 16,
       padding: 2
@@ -37,7 +37,6 @@ export default props => {
     { icon: "italic", style: "ITALIC" },
     { icon: "underline", style: "UNDERLINE" },
     { icon: "strikethrough", style: "STRIKETHROUGH" },
-    { label: "Monospace", style: "CODE" },
     { icon: "highlighter", style: "HIGHLIGHT" }
   ];
 
@@ -48,7 +47,7 @@ export default props => {
   ];
 
   const HEADING_TYPES = [
-    { label: "Heading Normal", style: "unstyled" },
+    { label: "Normal Heading", style: "unstyled" },
     { label: "Heading 1", style: "header-one" },
     { label: "Heading 2", style: "header-two" },
     { label: "Heading 3", style: "header-three" },
@@ -92,6 +91,10 @@ export default props => {
     }
   };
 
+  const focus = () => {
+    focusEditor();
+  };
+
   return (
     <Root onClick={focusEditor} className={className}>
       <EditorToolbar
@@ -101,6 +104,7 @@ export default props => {
         inlineTyles={INLINE_STYLES}
         blockTyles={BLOCK_TYPES}
         headingTypes={HEADING_TYPES}
+        focusEditor={focus}
       />
       <ConttentBox>
         <Editor
