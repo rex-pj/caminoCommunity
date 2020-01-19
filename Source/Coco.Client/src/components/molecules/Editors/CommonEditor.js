@@ -95,6 +95,10 @@ export default props => {
     focusEditor();
   };
 
+  const clearFormat = newEditorState => {
+    onChange(newEditorState);
+  };
+
   return (
     <Root onClick={focusEditor} className={className}>
       <EditorToolbar
@@ -105,6 +109,7 @@ export default props => {
         blockTyles={BLOCK_TYPES}
         headingTypes={HEADING_TYPES}
         focusEditor={focus}
+        clearFormat={clearFormat}
       />
       <ConttentBox>
         <Editor
