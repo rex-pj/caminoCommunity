@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { EditorState, Modifier, SelectionState } from "draft-js";
-import { getEntityRange, getSelectionEntity } from "draftjs-utils";
+import { EditorState, Modifier } from "draft-js";
 import { DefaultButton } from "./EditorButtons";
 import EditorDropdown from "./EditorDropdown";
 
@@ -93,43 +92,25 @@ export default props => {
     const contentState = currentState.getCurrentContent();
     let newEditorState = currentState;
     let contentWithoutStyles = contentState;
-    const blocksMap = contentState.getBlockMap();
+    contentWithoutStyles = Modifier.setBlockType(
+      contentWithoutStyles,
+      currentState.getSelection(),
+      "unstyled"
+    );
 
-    blocksMap.forEach(block => {
-      const selectionState = SelectionState.createEmpty(block.getKey());
-      const updatedSelection = selectionState.merge({
-        focusOffset: 0,
-        anchorOffset: block.getText().length
-      });
-
-      contentWithoutStyles = Modifier.setBlockType(
-        contentWithoutStyles,
-        updatedSelection,
-        "unstyled"
-      );
-    });
-
-    newEditorState = EditorState.push(
+    return EditorState.push(
       newEditorState,
       contentWithoutStyles,
       "change-block-type"
     );
-
-    return newEditorState;
   }
 
-  const makeHelpersArray = () => {
+  const clearFormat = () => {
     const helpers = [];
 
     helpers.push(removeInlineStyles);
 
     helpers.push(removeBlockStyles);
-
-    return helpers;
-  };
-
-  const clearFormat = () => {
-    const helpers = makeHelpersArray();
 
     const newEditorState = helpers.reduce(
       (state, helper) => helper(state),
@@ -137,99 +118,6 @@ export default props => {
     );
 
     props.clearFormat(newEditorState);
-  };
-
-  const addLink = (linkTitle, linkTarget, linkTargetOption) => {
-    const currentEntity = editorState
-      ? getSelectionEntity(editorState)
-      : undefined;
-    let selection = editorState.getSelection();
-
-    if (currentEntity) {
-      const entityRange = getEntityRange(editorState, currentEntity);
-      const isBackward = selection.getIsBackward();
-      if (isBackward) {
-        selection = selection.merge({
-          anchorOffset: entityRange.end,
-          focusOffset: entityRange.start
-        });
-      } else {
-        selection = selection.merge({
-          anchorOffset: entityRange.start,
-          focusOffset: entityRange.end
-        });
-      }
-    }
-
-    const entityKey = editorState
-      .getCurrentContent()
-      .createEntity("LINK", "MUTABLE", {
-        url: linkTarget,
-        targetOption: linkTargetOption
-      })
-      .getLastCreatedEntityKey();
-
-    let contentState = Modifier.replaceText(
-      editorState.getCurrentContent(),
-      selection,
-      `${linkTitle}`,
-      editorState.getCurrentInlineStyle(),
-      entityKey
-    );
-
-    let newEditorState = EditorState.push(
-      editorState,
-      contentState,
-      "insert-characters"
-    );
-
-    // insert a blank space after link
-    selection = newEditorState.getSelection().merge({
-      anchorOffset: selection.get("anchorOffset") + linkTitle.length,
-      focusOffset: selection.get("anchorOffset") + linkTitle.length
-    });
-    newEditorState = EditorState.acceptSelection(newEditorState, selection);
-    contentState = Modifier.insertText(
-      newEditorState.getCurrentContent(),
-      selection,
-      " ",
-      newEditorState.getCurrentInlineStyle(),
-      undefined
-    );
-
-    props.onAddLink({
-      newEditorState,
-      entityKey: "insert-characters"
-    });
-    // onChange(
-    //   EditorState.push(newEditorState, contentState, 'insert-characters')
-    // );
-    // this.doCollapse();
-  };
-
-  const onAddLink = () => {
-    const link = window.prompt("Paste the link -");
-    addLink("link title", link, {});
-
-    // const contentState = editorState.getCurrentContent();
-    // const contentStateWithEntity = contentState.createEntity(
-    //   "LINK",
-    //   "MUTABLE",
-    //   { url: link }
-    // );
-    // const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    // const newEditorState = EditorState.set(editorState, {
-    //   currentContent: contentStateWithEntity
-    // });
-
-    // props.onAddLink({
-    //   newEditorState,
-    //   entityKey
-    // });
-  };
-
-  const onRemoveLink = e => {
-    props.onRemoveLink(e);
   };
 
   useEffect(() => {
@@ -262,8 +150,6 @@ export default props => {
         />
       ))}
       <Divide />
-      <EditorButton icon="link" onToggle={onAddLink} />
-      <EditorButton icon="unlink" onToggle={onRemoveLink} />
       <SelectHeading
         options={headingTypes}
         actived={blockType}
