@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { EditorState, Modifier, SelectionState } from "draft-js";
+import { EditorState, Modifier } from "draft-js";
 import { DefaultButton } from "./EditorButtons";
 import EditorDropdown from "./EditorDropdown";
 
@@ -92,43 +92,25 @@ export default props => {
     const contentState = currentState.getCurrentContent();
     let newEditorState = currentState;
     let contentWithoutStyles = contentState;
-    const blocksMap = contentState.getBlockMap();
+    contentWithoutStyles = Modifier.setBlockType(
+      contentWithoutStyles,
+      currentState.getSelection(),
+      "unstyled"
+    );
 
-    blocksMap.forEach(block => {
-      const selectionState = SelectionState.createEmpty(block.getKey());
-      const updatedSelection = selectionState.merge({
-        focusOffset: 0,
-        anchorOffset: block.getText().length
-      });
-
-      contentWithoutStyles = Modifier.setBlockType(
-        contentWithoutStyles,
-        updatedSelection,
-        "unstyled"
-      );
-    });
-
-    newEditorState = EditorState.push(
+    return EditorState.push(
       newEditorState,
       contentWithoutStyles,
       "change-block-type"
     );
-
-    return newEditorState;
   }
 
-  const makeHelpersArray = () => {
+  const clearFormat = () => {
     const helpers = [];
 
     helpers.push(removeInlineStyles);
 
     helpers.push(removeBlockStyles);
-
-    return helpers;
-  };
-
-  const clearFormat = () => {
-    const helpers = makeHelpersArray();
 
     const newEditorState = helpers.reduce(
       (state, helper) => helper(state),
