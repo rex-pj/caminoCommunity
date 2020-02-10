@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Editor, EditorState, RichUtils } from "draft-js";
+import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
 import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
 
@@ -14,10 +14,42 @@ const ConttentBox = styled.div`
   padding: ${p => p.theme.size.distance};
 `;
 
+const styles = {
+  link: {
+    textDecoration: "underline"
+  }
+};
+
 export default props => {
+  const findLinkEntities = (contentBlock, callback, contentState) => {
+    contentBlock.findEntityRanges(character => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === "LINK"
+      );
+    }, callback);
+  };
+
+  const Link = props => {
+    const { url } = props.contentState.getEntity(props.entityKey).getData();
+    return (
+      <a href={url} style={styles.link}>
+        {props.children}
+      </a>
+    );
+  };
+
+  const decorator = new CompositeDecorator([
+    {
+      strategy: findLinkEntities,
+      component: Link
+    }
+  ]);
+
   const { placeholder, className } = props;
   const [editorState, setEditorState] = React.useState(
-    EditorState.createEmpty()
+    EditorState.createEmpty(decorator)
   );
 
   const styleMap = {
@@ -68,6 +100,10 @@ export default props => {
 
   useEffect(() => {
     focusEditor();
+
+    return () => {
+      clearTimeout();
+    };
   }, []);
 
   const handleKeyCommand = (command, editorState) => {
@@ -91,6 +127,29 @@ export default props => {
     }
   };
 
+  const onAddLink = e => {
+    const { newEditorState, entityKey } = e;
+    onChange(
+      RichUtils.toggleLink(
+        newEditorState,
+        newEditorState.getSelection(),
+        entityKey
+      )
+    );
+
+    setTimeout(() => {
+      focus();
+    }, 0);
+  };
+
+  const removeLink = e => {
+    e.preventDefault();
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      setEditorState(RichUtils.toggleLink(editorState, selection, null));
+    }
+  };
+
   const focus = () => {
     focusEditor();
   };
@@ -110,6 +169,8 @@ export default props => {
         headingTypes={HEADING_TYPES}
         focusEditor={focus}
         clearFormat={clearFormat}
+        onAddLink={onAddLink}
+        onRemoveLink={removeLink}
       />
       <ConttentBox>
         <Editor

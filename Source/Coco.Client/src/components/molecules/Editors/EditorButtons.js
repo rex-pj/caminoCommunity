@@ -45,7 +45,8 @@ export const DefaultButton = props => {
     const event = {
       target: {
         value: props.style
-      }
+      },
+      preventDefault: e.preventDefault
     };
     props.onToggle(event);
   };
