@@ -115,7 +115,7 @@ export default withRouter(
       const { feeds, totalPage, currentPage, baseUrl, pageQuery } = this.state;
       return (
         <Fragment>
-          <CommonEditor />
+          <CommonEditor height={230} />
           {feeds
             ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
             : null}

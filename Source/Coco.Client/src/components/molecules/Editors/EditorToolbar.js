@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { EditorState, Modifier } from "draft-js";
 import { DefaultButton } from "./EditorButtons";
-import EditorDropdown from "./EditorDropdown";
+import EditorDropdown from "./EditorSelection";
 
 const Toolbar = styled.div`
   padding: ${p => p.theme.size.tiny};
@@ -120,6 +120,16 @@ export default props => {
     props.clearFormat(newEditorState);
   };
 
+  const onLinkModalOpen = () => {
+    if (props.onLinkModalOpen) {
+      props.onLinkModalOpen(true);
+    }
+  };
+
+  const onRemoveLink = e => {
+    props.onRemoveLink(e);
+  };
+
   useEffect(() => {
     return () => {
       return clearTimeout();
@@ -150,6 +160,8 @@ export default props => {
         />
       ))}
       <Divide />
+      <EditorButton icon="link" onToggle={onLinkModalOpen} />
+      <EditorButton icon="unlink" onToggle={onRemoveLink} />
       <SelectHeading
         options={headingTypes}
         actived={blockType}

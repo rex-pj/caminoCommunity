@@ -8,6 +8,16 @@ function validateEmail(email) {
   return isValid;
 }
 
+function validateLink(link) {
+  let isValid = !!link;
+
+  if (isValid) {
+    const expression = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
+    isValid = expression.test(link);
+  }
+  return isValid;
+}
+
 function checkValidity(formData, value, formName) {
   let isValid = true;
 
@@ -19,6 +29,10 @@ function checkValidity(formData, value, formName) {
 
   if (rule.isEmail) {
     isValid = validateEmail(value) && isValid;
+  }
+
+  if (rule.isLink) {
+    isValid = validateLink(value) && isValid;
   }
 
   if (rule.sameRefProperty) {

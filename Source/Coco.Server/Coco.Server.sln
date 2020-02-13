@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Identity", "Api.Auth\Api.Identity.csproj", "{8825C9F0-3AFC-40DC-B824-DA8351CC1CCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Identity", "Api.Identity\Api.Identity.csproj", "{8825C9F0-3AFC-40DC-B824-DA8351CC1CCE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Content", "Api.Content\Api.Content.csproj", "{07451B52-2E44-4C62-975D-8DE4721E043F}"
 EndProject
@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.DAL", "Coco.DAL\Coco.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.Entities", "Coco.Entities\Coco.Entities.csproj", "{B4D28B8C-F60E-44BA-9D87-7430FFE59D5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.IdentityDAL", "Coco.UserDAL\Coco.IdentityDAL.csproj", "{F9AABEF5-2997-48EB-B4EC-B45C9A6E0D4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.IdentityDAL", "Coco.IdentityDAL\Coco.IdentityDAL.csproj", "{F9AABEF5-2997-48EB-B4EC-B45C9A6E0D4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coco.Api.Framework", "Coco.Api.Framework\Coco.Api.Framework.csproj", "{043AF4A0-F538-4BDE-977A-EFFA195D4B66}"
 EndProject
