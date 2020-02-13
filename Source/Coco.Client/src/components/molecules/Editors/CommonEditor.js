@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
 import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
+import EditorModal from "./EditorModal";
 
 const Root = styled.div`
   margin-bottom: 15px;
@@ -51,6 +52,8 @@ export default props => {
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
   );
+
+  const [shouldOpenModal, setModalOpen] = useState(false);
 
   const styleMap = {
     CODE: {
@@ -158,6 +161,10 @@ export default props => {
     onChange(newEditorState);
   };
 
+  const onLinkModalOpen = isOpen => {
+    setModalOpen(!!isOpen);
+  };
+
   return (
     <Root onClick={focusEditor} className={className}>
       <EditorToolbar
@@ -171,6 +178,7 @@ export default props => {
         clearFormat={clearFormat}
         onAddLink={onAddLink}
         onRemoveLink={removeLink}
+        onLinkModalOpen={onLinkModalOpen}
       />
       <ConttentBox>
         <Editor
@@ -182,6 +190,11 @@ export default props => {
           placeholder={placeholder ? placeholder : "Enter some text..."}
         />
       </ConttentBox>
+      <EditorModal
+        className="modal"
+        isOpen={shouldOpenModal}
+        onClose={onLinkModalOpen}
+      />
     </Root>
   );
 };
