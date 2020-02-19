@@ -39,3 +39,7 @@ Source/Coco.Server/Api.Resources/bin/
 Source/Coco.Server/Api.Resources/obj/
 Source/Coco.Server/Coco.Web.Management/obj/
 Source/Coco.Server/Coco.Web.Management/bin/
+Source/Coco.Server/Api.Identity/bin/
+Source/Coco.Server/Api.Identity/obj/
+Source/Coco.Server/Coco.IdentityDAL/bin/
+Source/Coco.Server/Coco.IdentityDAL/obj/

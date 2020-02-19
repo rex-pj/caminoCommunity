@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { EditorState, Modifier } from "draft-js";
-// import { getEntityRange, getSelectionEntity } from "draftjs-utils";
 import { DefaultButton } from "./EditorButtons";
 import EditorDropdown from "./EditorSelection";
 
@@ -121,73 +120,7 @@ export default props => {
     props.clearFormat(newEditorState);
   };
 
-  // const addLink = (linkTitle, linkTarget, linkTargetOption) => {
-  //   const currentEntity = editorState
-  //     ? getSelectionEntity(editorState)
-  //     : undefined;
-  //   let selection = editorState.getSelection();
-
-  //   if (currentEntity) {
-  //     const entityRange = getEntityRange(editorState, currentEntity);
-  //     const isBackward = selection.getIsBackward();
-  //     if (isBackward) {
-  //       selection = selection.merge({
-  //         anchorOffset: entityRange.end,
-  //         focusOffset: entityRange.start
-  //       });
-  //     } else {
-  //       selection = selection.merge({
-  //         anchorOffset: entityRange.start,
-  //         focusOffset: entityRange.end
-  //       });
-  //     }
-  //   }
-
-  //   const entityKey = editorState
-  //     .getCurrentContent()
-  //     .createEntity("LINK", "MUTABLE", {
-  //       url: linkTarget,
-  //       targetOption: linkTargetOption
-  //     })
-  //     .getLastCreatedEntityKey();
-
-  //   let contentState = Modifier.replaceText(
-  //     editorState.getCurrentContent(),
-  //     selection,
-  //     `${linkTitle}`,
-  //     editorState.getCurrentInlineStyle(),
-  //     entityKey
-  //   );
-
-  //   let newEditorState = EditorState.push(
-  //     editorState,
-  //     contentState,
-  //     "insert-characters"
-  //   );
-
-  //   // insert a blank space after link
-  //   selection = newEditorState.getSelection().merge({
-  //     anchorOffset: selection.get("anchorOffset") + linkTitle.length,
-  //     focusOffset: selection.get("anchorOffset") + linkTitle.length
-  //   });
-  //   newEditorState = EditorState.acceptSelection(newEditorState, selection);
-  //   contentState = Modifier.insertText(
-  //     newEditorState.getCurrentContent(),
-  //     selection,
-  //     " ",
-  //     newEditorState.getCurrentInlineStyle(),
-  //     undefined
-  //   );
-
-  //   props.onAddLink({
-  //     newEditorState,
-  //     entityKey: "insert-characters"
-  //   });
-  // };
-
   const onLinkModalOpen = () => {
-    // const link = window.prompt("Paste the link -");
-    // addLink("link title", link, {});
     if (props.onLinkModalOpen) {
       props.onLinkModalOpen(true);
     }

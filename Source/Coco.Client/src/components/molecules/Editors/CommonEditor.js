@@ -5,6 +5,10 @@ import EditorToolbar from "./EditorToolbar";
 import EditorModal from "./EditorModal";
 
 const Root = styled.div`
+  position: relative;
+`;
+
+const Container = styled.div`
   margin-bottom: 15px;
   background: ${p => p.theme.color.white};
   border-radius: ${p => p.theme.borderRadius.normal};
@@ -166,34 +170,37 @@ export default props => {
   };
 
   return (
-    <Root onClick={focusEditor} className={className}>
-      <EditorToolbar
-        editorState={editorState}
-        toggleBlockType={toggleBlockType}
-        toggleInlineStyle={toggleInlineStyle}
-        inlineTyles={INLINE_STYLES}
-        blockTyles={BLOCK_TYPES}
-        headingTypes={HEADING_TYPES}
-        focusEditor={focus}
-        clearFormat={clearFormat}
-        onAddLink={onAddLink}
-        onRemoveLink={removeLink}
-        onLinkModalOpen={onLinkModalOpen}
-      />
-      <ConttentBox>
-        <Editor
-          customStyleMap={styleMap}
-          ref={editor}
+    <Root className={className}>
+      <Container onClick={focusEditor}>
+        <EditorToolbar
           editorState={editorState}
-          onChange={onChange}
-          handleKeyCommand={handleKeyCommand}
-          placeholder={placeholder ? placeholder : "Enter some text..."}
+          toggleBlockType={toggleBlockType}
+          toggleInlineStyle={toggleInlineStyle}
+          inlineTyles={INLINE_STYLES}
+          blockTyles={BLOCK_TYPES}
+          headingTypes={HEADING_TYPES}
+          focusEditor={focus}
+          clearFormat={clearFormat}
+          onRemoveLink={removeLink}
+          onLinkModalOpen={onLinkModalOpen}
         />
-      </ConttentBox>
+        <ConttentBox>
+          <Editor
+            customStyleMap={styleMap}
+            ref={editor}
+            editorState={editorState}
+            onChange={onChange}
+            handleKeyCommand={handleKeyCommand}
+            placeholder={placeholder ? placeholder : "Enter some text..."}
+          />
+        </ConttentBox>
+      </Container>
       <EditorModal
         className="modal"
         isOpen={shouldOpenModal}
         onClose={onLinkModalOpen}
+        onAddLink={onAddLink}
+        editorState={editorState}
       />
     </Root>
   );

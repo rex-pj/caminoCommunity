@@ -14,7 +14,7 @@
     <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
     <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
     <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
-    <ProjectReference Include="..\Coco.UserDAL\Coco.IdentityDAL.csproj" />
+    <ProjectReference Include="..\Coco.IdentityDAL\Coco.IdentityDAL.csproj" />
   </ItemGroup>
 
 </Project>
