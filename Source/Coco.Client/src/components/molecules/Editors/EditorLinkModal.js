@@ -3,14 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { Textbox } from "../../atoms/Textboxes";
-import { LabelNormal } from "../../../components/atoms/Labels";
+import { LabelNormal } from "../../atoms/Labels";
 import { checkValidity } from "../../../utils/Validity";
 import { EditorState, Modifier } from "draft-js";
-import {
-  getEntityRange,
-  getSelectionEntity,
-  getSelectionText
-} from "draftjs-utils";
+import { getEntityRange, getSelectionEntity } from "draftjs-utils";
 
 const Root = styled.div`
   position: absolute;
@@ -35,14 +31,14 @@ const Container = styled.div`
 
 const Body = styled.div`
   height: auto;
-  padding: ${p => p.theme.size.distance} ${p => p.theme.size.tiny};
+  padding: ${p => p.theme.size.tiny} ${p => p.theme.size.distance};
 `;
 
 const Footer = styled.div`
   min-height: 20px;
   text-align: right;
   border-top: 1px solid ${p => p.theme.color.light};
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
+  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.distance};
 
   button {
     margin-left: ${p => p.theme.size.exTiny};
@@ -68,41 +64,13 @@ const FormRow = styled.div`
 `;
 
 export default props => {
-  const { className, isOpen, editorState } = props;
+  const { className, isOpen, editorState, currentValue } = props;
   const currentRef = React.createRef();
-
-  const getCurrentValues = () => {
-    const currentEntity = editorState
-      ? getSelectionEntity(editorState)
-      : undefined;
-
-    const contentState = editorState.getCurrentContent();
-    const currentValues = {};
-    if (
-      currentEntity &&
-      contentState.getEntity(currentEntity).get("type") === "LINK"
-    ) {
-      currentValues.link = {};
-      const entityRange =
-        currentEntity && getEntityRange(editorState, currentEntity);
-      const contentStateData = contentState
-        .getEntity(currentEntity)
-        .get("data");
-
-      currentValues.link.target = currentEntity && contentStateData.url;
-      currentValues.link.targetOption =
-        currentEntity && contentStateData.targetOption;
-      currentValues.link.title = entityRange && entityRange.text;
-    }
-    currentValues.selectionText = getSelectionText(editorState);
-    return currentValues;
-  };
-
-  const { link, selectionText } = getCurrentValues();
+  const { link, selectionText } = currentValue;
 
   let formData = {
     url: {
-      value: selectionText,
+      value: link && link.target ? link.target : "",
       validation: {
         isRequired: true,
         isLink: true
@@ -110,7 +78,7 @@ export default props => {
       isValid: false
     },
     title: {
-      value: link && link.target ? link.target : "",
+      value: selectionText,
       validation: {
         isRequired: false
       },
@@ -134,6 +102,7 @@ export default props => {
 
   const onClose = () => {
     if (props.onClose) {
+      clear();
       props.onClose(false);
     }
   };
@@ -221,7 +190,8 @@ export default props => {
     const { url, title } = linkData;
     const isFormValid = url.isValid && url.value;
     if (props.onAddLink && isFormValid) {
-      addLink(title.value, url.value, {});
+      var linkTitle = title.value ? title.value : url.value;
+      addLink(linkTitle, url.value, {});
       clear();
       onClose();
     }
@@ -241,6 +211,7 @@ export default props => {
                   name="title"
                   onKeyUp={handleKeyUp}
                   value={title.value}
+                  autoComplete="off"
                   onChange={e => handleInputChange(e)}
                 />
               </FormRow>
@@ -250,6 +221,7 @@ export default props => {
                   name="url"
                   onKeyUp={handleKeyUp}
                   value={url.value}
+                  autoComplete="off"
                   onChange={e => handleInputChange(e)}
                 />
               </FormRow>

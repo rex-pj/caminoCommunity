@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
 import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
-import EditorModal from "./EditorModal";
+import EditorModal from "./EditorLinkModal";
+import {
+  getEntityRange,
+  getSelectionEntity,
+  getSelectionText
+} from "draftjs-utils";
+import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
 
 const Root = styled.div`
   position: relative;
@@ -13,6 +18,7 @@ const Container = styled.div`
   background: ${p => p.theme.color.white};
   border-radius: ${p => p.theme.borderRadius.normal};
   box-shadow: ${p => p.theme.shadow.BoxShadow};
+  height: ${p => (p.height ? `${p.height}px` : "100px")};
 `;
 
 const ConttentBox = styled.div`
@@ -25,26 +31,62 @@ const styles = {
   }
 };
 
-export default props => {
-  const findLinkEntities = (contentBlock, callback, contentState) => {
-    contentBlock.findEntityRanges(character => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === "LINK"
-      );
-    }, callback);
-  };
+const Link = props => {
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
+  return (
+    <a href={url} style={styles.link}>
+      {props.children}
+    </a>
+  );
+};
 
-  const Link = props => {
-    const { url } = props.contentState.getEntity(props.entityKey).getData();
+const findLinkEntities = (contentBlock, callback, contentState) => {
+  contentBlock.findEntityRanges(character => {
+    const entityKey = character.getEntity();
     return (
-      <a href={url} style={styles.link}>
-        {props.children}
-      </a>
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() === "LINK"
     );
-  };
+  }, callback);
+};
 
+const styleMap = {
+  CODE: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+    fontSize: 16,
+    padding: 2
+  },
+  HIGHLIGHT: {
+    background: "#fffe0d"
+  }
+};
+
+var INLINE_STYLES = [
+  { icon: "bold", style: "BOLD" },
+  { icon: "italic", style: "ITALIC" },
+  { icon: "underline", style: "UNDERLINE" },
+  { icon: "strikethrough", style: "STRIKETHROUGH" },
+  { icon: "highlighter", style: "HIGHLIGHT" }
+];
+
+const BLOCK_TYPES = [
+  { icon: "quote-left", style: "blockquote" },
+  { icon: "list-ul", style: "unordered-list-item" },
+  { icon: "list-ol", style: "ordered-list-item" }
+];
+
+const HEADING_TYPES = [
+  { label: "Normal Heading", style: "unstyled" },
+  { label: "Heading 1", style: "header-one" },
+  { label: "Heading 2", style: "header-two" },
+  { label: "Heading 3", style: "header-three" },
+  { label: "Heading 4", style: "header-four" },
+  { label: "Heading 5", style: "header-five" },
+  { label: "Heading 6", style: "header-six" }
+];
+
+export default props => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
@@ -52,50 +94,41 @@ export default props => {
     }
   ]);
 
-  const { placeholder, className } = props;
+  const { placeholder, className, height } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
   );
 
   const [shouldOpenModal, setModalOpen] = useState(false);
 
-  const styleMap = {
-    CODE: {
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: 16,
-      padding: 2
-    },
-    HIGHLIGHT: {
-      background: "#fffe0d"
-    }
-  };
-
-  var INLINE_STYLES = [
-    { icon: "bold", style: "BOLD" },
-    { icon: "italic", style: "ITALIC" },
-    { icon: "underline", style: "UNDERLINE" },
-    { icon: "strikethrough", style: "STRIKETHROUGH" },
-    { icon: "highlighter", style: "HIGHLIGHT" }
-  ];
-
-  const BLOCK_TYPES = [
-    { icon: "quote-left", style: "blockquote" },
-    { icon: "list-ul", style: "unordered-list-item" },
-    { icon: "list-ol", style: "ordered-list-item" }
-  ];
-
-  const HEADING_TYPES = [
-    { label: "Normal Heading", style: "unstyled" },
-    { label: "Heading 1", style: "header-one" },
-    { label: "Heading 2", style: "header-two" },
-    { label: "Heading 3", style: "header-three" },
-    { label: "Heading 4", style: "header-four" },
-    { label: "Heading 5", style: "header-five" },
-    { label: "Heading 6", style: "header-six" }
-  ];
-
   const editor = React.useRef(null);
+
+  const getCurrentValues = () => {
+    const currentEntity = editorState
+      ? getSelectionEntity(editorState)
+      : undefined;
+
+    const contentState = editorState.getCurrentContent();
+    const currentValues = {};
+    if (
+      currentEntity &&
+      contentState.getEntity(currentEntity).get("type") === "LINK"
+    ) {
+      currentValues.link = {};
+      const entityRange =
+        currentEntity && getEntityRange(editorState, currentEntity);
+      const contentStateData = contentState
+        .getEntity(currentEntity)
+        .get("data");
+
+      currentValues.link.target = currentEntity && contentStateData.url;
+      currentValues.link.targetOption =
+        currentEntity && contentStateData.targetOption;
+      currentValues.link.title = entityRange && entityRange.text;
+    }
+    currentValues.selectionText = getSelectionText(editorState);
+    return currentValues;
+  };
 
   const onChange = editorState => {
     return setEditorState(editorState);
@@ -165,13 +198,32 @@ export default props => {
     onChange(newEditorState);
   };
 
-  const onLinkModalOpen = isOpen => {
+  const toggleLinkModal = isOpen => {
+    if (!isOpen) {
+      setTimeout(() => {
+        focus();
+      }, 0);
+    }
     setModalOpen(!!isOpen);
+  };
+
+  const RenderModal = props => {
+    const { link, selectionText } = getCurrentValues();
+    return (
+      <EditorModal
+        className="modal"
+        isOpen={shouldOpenModal}
+        onClose={toggleLinkModal}
+        onAddLink={props.onAddLink}
+        editorState={editorState}
+        currentValue={{ link, selectionText }}
+      />
+    );
   };
 
   return (
     <Root className={className}>
-      <Container onClick={focusEditor}>
+      <Container onClick={focusEditor} height={height}>
         <EditorToolbar
           editorState={editorState}
           toggleBlockType={toggleBlockType}
@@ -182,7 +234,7 @@ export default props => {
           focusEditor={focus}
           clearFormat={clearFormat}
           onRemoveLink={removeLink}
-          onLinkModalOpen={onLinkModalOpen}
+          onLinkModalOpen={toggleLinkModal}
         />
         <ConttentBox>
           <Editor
@@ -195,13 +247,7 @@ export default props => {
           />
         </ConttentBox>
       </Container>
-      <EditorModal
-        className="modal"
-        isOpen={shouldOpenModal}
-        onClose={onLinkModalOpen}
-        onAddLink={onAddLink}
-        editorState={editorState}
-      />
+      <RenderModal onAddLink={onAddLink} />
     </Root>
   );
 };
