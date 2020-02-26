@@ -7,6 +7,7 @@ const Root = styled.div`
   display: inline-block;
   min-width: 125px;
   z-index: 2;
+  background-color: ${p => (p.isShown ? p.theme.color.light : "transparent")};
 `;
 
 const Dropdown = styled.div`
@@ -108,7 +109,7 @@ export default props => {
     : {};
 
   return (
-    <Root>
+    <Root isShown={isShown}>
       <Dropdown className={className} onClick={toggleDropdown} ref={currentRef}>
         <span>{current ? current.label : placeholder}</span>
         <ButtonCaret>

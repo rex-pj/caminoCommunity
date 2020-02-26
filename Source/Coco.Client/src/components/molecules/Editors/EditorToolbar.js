@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { EditorState, Modifier } from "draft-js";
 import { DefaultButton } from "./EditorButtons";
-import EditorDropdown from "./EditorSelection";
+import EditorSelection from "./EditorSelection";
 
 const Toolbar = styled.div`
   padding: ${p => p.theme.size.tiny};
@@ -31,7 +31,7 @@ const Divide = styled.span`
   vertical-align: middle;
 `;
 
-const SelectHeading = styled(EditorDropdown)`
+const SelectHeading = styled(EditorSelection)`
   background-color: ${p => p.theme.rgbaColor.light};
   color: ${p => p.theme.color.primaryLight};
   font-weight: 600;
@@ -43,7 +43,7 @@ const SelectHeading = styled(EditorDropdown)`
 `;
 
 export default props => {
-  const { editorState, inlineTyles, blockTyles, headingTypes } = props;
+  const { editorState, styles, headingTypes } = props;
 
   const toggleBlockType = e => {
     const value = e.target.value;
@@ -71,7 +71,8 @@ export default props => {
 
   function removeInlineStyles(currentState) {
     const contentState = currentState.getCurrentContent();
-    const contentWithoutStyles = inlineTyles.reduce(
+    var inlineStyles = styles.filter(type => type.type === "inline");
+    const contentWithoutStyles = inlineStyles.reduce(
       (state, item) =>
         Modifier.removeInlineStyle(
           state,
@@ -130,6 +131,8 @@ export default props => {
     props.onRemoveLink(e);
   };
 
+  const onImageModalOpen = () => {};
+
   useEffect(() => {
     return () => {
       return clearTimeout();
@@ -138,28 +141,29 @@ export default props => {
 
   return (
     <Toolbar>
-      {blockTyles.map(type => (
-        <EditorButton
-          key={type.style}
-          actived={type.style === blockType}
-          label={type.label}
-          icon={type.icon}
-          onToggle={toggleBlockType}
-          style={type.style}
-        />
-      ))}
+      {styles.map(type =>
+        type.type && type.type === "inline" ? (
+          <EditorButton
+            key={type.style}
+            actived={type.style === blockType}
+            label={type.label}
+            icon={type.icon}
+            onToggle={toggleBlockType}
+            style={type.style}
+          />
+        ) : (
+          <EditorButton
+            key={type.style}
+            actived={currentStyle.has(type.style)}
+            label={type.label}
+            icon={type.icon}
+            onToggle={toggleInlineStyle}
+            style={type.style}
+          />
+        )
+      )}
       <Divide />
-      {inlineTyles.map(type => (
-        <EditorButton
-          key={type.style}
-          actived={currentStyle.has(type.style)}
-          label={type.label}
-          icon={type.icon}
-          onToggle={toggleInlineStyle}
-          style={type.style}
-        />
-      ))}
-      <Divide />
+      <EditorButton icon="image" onToggle={onImageModalOpen} />
       <EditorButton icon="link" onToggle={onLinkModalOpen} />
       <EditorButton icon="unlink" onToggle={onRemoveLink} />
       <SelectHeading
