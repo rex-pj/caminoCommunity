@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
@@ -7,27 +7,6 @@ import { LabelNormal } from "../../atoms/Labels";
 import { checkValidity } from "../../../utils/Validity";
 import { EditorState, Modifier } from "draft-js";
 import { getEntityRange, getSelectionEntity } from "draftjs-utils";
-
-const Root = styled.div`
-  position: absolute;
-  display: block;
-  z-index: 2;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  min-width: 100px;
-`;
-
-const Container = styled.div`
-  max-width: 80%;
-  min-width: 400px;
-  background: ${p => p.theme.color.white};
-  margin: auto;
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-`;
 
 const Body = styled.div`
   height: auto;
@@ -64,11 +43,11 @@ const FormRow = styled.div`
 `;
 
 export default props => {
-  const { className, isOpen, editorState, currentValue } = props;
-  const currentRef = React.createRef();
+  const { isOpen, editorState, currentValue } = props;
+  const linkRef = useRef();
   const { link, selectionText } = currentValue;
 
-  let formData = {
+  const formData = {
     url: {
       value: link && link.target ? link.target : "",
       validation: {
@@ -101,19 +80,16 @@ export default props => {
   };
 
   const onClose = () => {
-    if (props.onClose) {
-      clear();
-      props.onClose(false);
-    }
+    props.onClose();
   };
 
   const handleKeyUp = e => {
     if (e.key === "Enter") {
-      onAccept();
+      onAddLink();
     }
   };
 
-  const addLink = (linkTitle, linkTarget, linkTargetOption) => {
+  const onAccept = (linkTitle, linkTarget, linkTargetOption) => {
     const currentEntity = editorState
       ? getSelectionEntity(editorState)
       : undefined;
@@ -172,7 +148,7 @@ export default props => {
       undefined
     );
 
-    props.onAddLink({
+    props.onAccept({
       newEditorState,
       entityKey: "insert-characters"
     });
@@ -186,12 +162,20 @@ export default props => {
     });
   };
 
-  const onAccept = () => {
+  useEffect(() => {
+    if (isOpen) {
+      focusLinkInput();
+    }
+  });
+
+  const focusLinkInput = () => {
+    linkRef.current.focus();
+  };
+
+  const onAddLink = () => {
     const { url, title } = linkData;
-    const isFormValid = url.isValid && url.value;
-    if (props.onAddLink && isFormValid) {
-      var linkTitle = title.value ? title.value : url.value;
-      addLink(linkTitle, url.value, {});
+    if (props.onAddLink && url.isValid) {
+      onAccept(title.value ? title.value : url.value, url.value, {});
       clear();
       onClose();
     }
@@ -201,43 +185,38 @@ export default props => {
   const isValid = url.isValid;
   return (
     <Fragment>
-      {isOpen ? (
-        <Root className={className} ref={currentRef}>
-          <Container>
-            <Body>
-              <FormRow>
-                <LabelNormal>Tiêu đề</LabelNormal>
-                <Textbox
-                  name="title"
-                  onKeyUp={handleKeyUp}
-                  value={title.value}
-                  autoComplete="off"
-                  onChange={e => handleInputChange(e)}
-                />
-              </FormRow>
-              <FormRow>
-                <LabelNormal>Đường dẫn</LabelNormal>
-                <Textbox
-                  name="url"
-                  onKeyUp={handleKeyUp}
-                  value={url.value}
-                  autoComplete="off"
-                  onChange={e => handleInputChange(e)}
-                />
-              </FormRow>
-            </Body>
-            <Footer>
-              <ButtonSecondary size="sm" onClick={onClose}>
-                Đóng
-              </ButtonSecondary>
-              <ButtonPrimary size="sm" onClick={onAccept} disabled={!isValid}>
-                <FontAwesomeIcon icon="check" />
-                Lưu
-              </ButtonPrimary>
-            </Footer>
-          </Container>
-        </Root>
-      ) : null}
+      <Body>
+        <FormRow>
+          <LabelNormal>Tiêu đề</LabelNormal>
+          <Textbox
+            name="title"
+            onKeyUp={handleKeyUp}
+            value={title.value}
+            autoComplete="off"
+            onChange={e => handleInputChange(e)}
+          />
+        </FormRow>
+        <FormRow>
+          <LabelNormal>Đường dẫn</LabelNormal>
+          <Textbox
+            name="url"
+            onKeyUp={handleKeyUp}
+            value={url.value}
+            autoComplete="off"
+            ref={linkRef}
+            onChange={e => handleInputChange(e)}
+          />
+        </FormRow>
+      </Body>
+      <Footer>
+        <ButtonSecondary size="sm" onClick={onClose}>
+          Đóng
+        </ButtonSecondary>
+        <ButtonPrimary size="sm" onClick={onAddLink} disabled={!isValid}>
+          <FontAwesomeIcon icon="check" />
+          Lưu
+        </ButtonPrimary>
+      </Footer>
     </Fragment>
   );
 };

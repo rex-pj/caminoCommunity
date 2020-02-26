@@ -12,7 +12,7 @@ function validateLink(link) {
   let isValid = !!link;
 
   if (isValid) {
-    const expression = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
+    const expression = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
     isValid = expression.test(link);
   }
   return isValid;

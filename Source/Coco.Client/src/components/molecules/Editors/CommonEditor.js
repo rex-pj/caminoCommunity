@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
-import EditorModal from "./EditorLinkModal";
+import EditorModal from "./EditorModal";
+import EditorLinkModal from "./EditorLinkModal";
 import {
   getEntityRange,
   getSelectionEntity,
@@ -18,7 +19,7 @@ const Container = styled.div`
   background: ${p => p.theme.color.white};
   border-radius: ${p => p.theme.borderRadius.normal};
   box-shadow: ${p => p.theme.shadow.BoxShadow};
-  height: ${p => (p.height ? `${p.height}px` : "100px")};
+  min-height: ${p => (p.height ? `${p.height}px` : "100px")};
 `;
 
 const ConttentBox = styled.div`
@@ -62,18 +63,15 @@ const styleMap = {
   }
 };
 
-var INLINE_STYLES = [
-  { icon: "bold", style: "BOLD" },
-  { icon: "italic", style: "ITALIC" },
-  { icon: "underline", style: "UNDERLINE" },
-  { icon: "strikethrough", style: "STRIKETHROUGH" },
-  { icon: "highlighter", style: "HIGHLIGHT" }
-];
-
-const BLOCK_TYPES = [
-  { icon: "quote-left", style: "blockquote" },
-  { icon: "list-ul", style: "unordered-list-item" },
-  { icon: "list-ol", style: "ordered-list-item" }
+var STYLES = [
+  { icon: "bold", style: "BOLD", type: "inline" },
+  { icon: "italic", style: "ITALIC", type: "inline" },
+  { icon: "underline", style: "UNDERLINE", type: "inline" },
+  { icon: "strikethrough", style: "STRIKETHROUGH", type: "inline" },
+  { icon: "highlighter", style: "HIGHLIGHT", type: "inline" },
+  { icon: "quote-left", style: "blockquote", type: "block" },
+  { icon: "list-ul", style: "unordered-list-item", type: "block" },
+  { icon: "list-ol", style: "ordered-list-item", type: "block" }
 ];
 
 const HEADING_TYPES = [
@@ -101,7 +99,7 @@ export default props => {
 
   const [shouldOpenModal, setModalOpen] = useState(false);
 
-  const editor = React.useRef(null);
+  const editorRef = useRef(null);
 
   const getCurrentValues = () => {
     const currentEntity = editorState
@@ -135,7 +133,11 @@ export default props => {
   };
 
   const focusEditor = () => {
-    editor.current.focus();
+    editorRef.current.focus();
+  };
+
+  const focus = () => {
+    focusEditor();
   };
 
   useEffect(() => {
@@ -190,10 +192,6 @@ export default props => {
     }
   };
 
-  const focus = () => {
-    focusEditor();
-  };
-
   const clearFormat = newEditorState => {
     onChange(newEditorState);
   };
@@ -216,6 +214,7 @@ export default props => {
         onClose={toggleLinkModal}
         onAddLink={props.onAddLink}
         editorState={editorState}
+        modalBodyComponent={EditorLinkModal}
         currentValue={{ link, selectionText }}
       />
     );
@@ -228,8 +227,7 @@ export default props => {
           editorState={editorState}
           toggleBlockType={toggleBlockType}
           toggleInlineStyle={toggleInlineStyle}
-          inlineTyles={INLINE_STYLES}
-          blockTyles={BLOCK_TYPES}
+          styles={STYLES}
           headingTypes={HEADING_TYPES}
           focusEditor={focus}
           clearFormat={clearFormat}
@@ -239,7 +237,7 @@ export default props => {
         <ConttentBox>
           <Editor
             customStyleMap={styleMap}
-            ref={editor}
+            ref={editorRef}
             editorState={editorState}
             onChange={onChange}
             handleKeyCommand={handleKeyCommand}

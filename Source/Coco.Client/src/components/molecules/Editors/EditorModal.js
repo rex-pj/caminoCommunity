@@ -1,0 +1,59 @@
+import React, { Fragment, useRef } from "react";
+import styled from "styled-components";
+
+const Root = styled.div`
+  position: absolute;
+  display: block;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  padding-top: ${p => p.theme.size.tiny};
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  min-width: 100px;
+  border-radius: ${p => p.theme.borderRadius.normal};
+  background-color: ${p => p.theme.rgbaColor.darker};
+`;
+
+const Container = styled.div`
+  max-width: 80%;
+  min-width: 400px;
+  background: ${p => p.theme.color.white};
+  margin: auto;
+  border-radius: ${p => p.theme.borderRadius.normal};
+  box-shadow: ${p => p.theme.shadow.BoxShadow};
+  position: relative;
+  z-index: 10;
+`;
+
+export default props => {
+  const { className, isOpen, modalBodyComponent: ModalBodyComponent } = props;
+  const currentRef = useRef();
+
+  const onClose = () => {
+    if (props.onClose) {
+      props.onClose(false);
+    }
+  };
+
+  const onAccept = e => {
+    props.onAccept(e);
+  };
+
+  return (
+    <Fragment>
+      {isOpen ? (
+        <Root className={className} ref={currentRef}>
+          <Container>
+            <ModalBodyComponent
+              {...props}
+              onAccept={onAccept}
+              onClose={onClose}
+            />
+          </Container>
+        </Root>
+      ) : null}
+    </Fragment>
+  );
+};
