@@ -127,11 +127,15 @@ export default props => {
     }
   };
 
+  const onImageModalOpen = () => {
+    if (props.onImageModalOpen) {
+      props.onImageModalOpen(true);
+    }
+  };
+
   const onRemoveLink = e => {
     props.onRemoveLink(e);
   };
-
-  const onImageModalOpen = () => {};
 
   useEffect(() => {
     return () => {

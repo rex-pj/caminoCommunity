@@ -54,4 +54,4 @@ function checkValidity(formData, value, formName) {
   return isValid;
 }
 
-export { validateEmail, checkValidity };
+export { validateEmail, validateLink, checkValidity };

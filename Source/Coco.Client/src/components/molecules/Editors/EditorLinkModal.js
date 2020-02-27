@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { Textbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
-import { checkValidity } from "../../../utils/Validity";
+import { checkValidity, validateLink } from "../../../utils/Validity";
 import { EditorState, Modifier } from "draft-js";
 import { getEntityRange, getSelectionEntity } from "draftjs-utils";
 
@@ -46,6 +46,8 @@ export default props => {
   const { isOpen, editorState, currentValue } = props;
   const linkRef = useRef();
   const { link, selectionText } = currentValue;
+  const linkText = link && link.title ? link.title : "";
+  const isLinkValid = validateLink(link ? link.target : "");
 
   const formData = {
     url: {
@@ -54,10 +56,10 @@ export default props => {
         isRequired: true,
         isLink: true
       },
-      isValid: false
+      isValid: isLinkValid
     },
     title: {
-      value: selectionText,
+      value: selectionText ? selectionText : linkText,
       validation: {
         isRequired: false
       },
@@ -166,7 +168,7 @@ export default props => {
     if (isOpen) {
       focusLinkInput();
     }
-  });
+  }, [isOpen]);
 
   const focusLinkInput = () => {
     linkRef.current.focus();
@@ -174,7 +176,7 @@ export default props => {
 
   const onAddLink = () => {
     const { url, title } = linkData;
-    if (props.onAddLink && url.isValid) {
+    if (props.onAccept && url.isValid) {
       onAccept(title.value ? title.value : url.value, url.value, {});
       clear();
       onClose();
