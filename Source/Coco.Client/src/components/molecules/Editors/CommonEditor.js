@@ -3,12 +3,14 @@ import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
 import EditorModal from "./EditorModal";
 import EditorLinkModal from "./EditorLinkModal";
+import EditorImageModal from "./EditorImageModal";
 import {
   getEntityRange,
   getSelectionEntity,
   getSelectionText
 } from "draftjs-utils";
 import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
+import { styleMap, STYLES, HEADING_TYPES, findLinkEntities } from "./Utils";
 
 const Root = styled.div`
   position: relative;
@@ -32,7 +34,7 @@ const styles = {
   }
 };
 
-const Link = props => {
+const LinkComponent = props => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
   return (
     <a href={url} style={styles.link}>
@@ -41,54 +43,11 @@ const Link = props => {
   );
 };
 
-const findLinkEntities = (contentBlock, callback, contentState) => {
-  contentBlock.findEntityRanges(character => {
-    const entityKey = character.getEntity();
-    return (
-      entityKey !== null &&
-      contentState.getEntity(entityKey).getType() === "LINK"
-    );
-  }, callback);
-};
-
-const styleMap = {
-  CODE: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-    fontSize: 16,
-    padding: 2
-  },
-  HIGHLIGHT: {
-    background: "#fffe0d"
-  }
-};
-
-var STYLES = [
-  { icon: "bold", style: "BOLD", type: "inline" },
-  { icon: "italic", style: "ITALIC", type: "inline" },
-  { icon: "underline", style: "UNDERLINE", type: "inline" },
-  { icon: "strikethrough", style: "STRIKETHROUGH", type: "inline" },
-  { icon: "highlighter", style: "HIGHLIGHT", type: "inline" },
-  { icon: "quote-left", style: "blockquote", type: "block" },
-  { icon: "list-ul", style: "unordered-list-item", type: "block" },
-  { icon: "list-ol", style: "ordered-list-item", type: "block" }
-];
-
-const HEADING_TYPES = [
-  { label: "Normal Heading", style: "unstyled" },
-  { label: "Heading 1", style: "header-one" },
-  { label: "Heading 2", style: "header-two" },
-  { label: "Heading 3", style: "header-three" },
-  { label: "Heading 4", style: "header-four" },
-  { label: "Heading 5", style: "header-five" },
-  { label: "Heading 6", style: "header-six" }
-];
-
 export default props => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
-      component: Link
+      component: LinkComponent
     }
   ]);
 
@@ -97,7 +56,8 @@ export default props => {
     EditorState.createEmpty(decorator)
   );
 
-  const [shouldOpenModal, setModalOpen] = useState(false);
+  const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
+  const [isImagePopupOpen, setImagePopupOpen] = useState(false);
 
   const editorRef = useRef(null);
 
@@ -124,6 +84,7 @@ export default props => {
         currentEntity && contentStateData.targetOption;
       currentValues.link.title = entityRange && entityRange.text;
     }
+
     currentValues.selectionText = getSelectionText(editorState);
     return currentValues;
   };
@@ -202,23 +163,19 @@ export default props => {
         focus();
       }, 0);
     }
-    setModalOpen(!!isOpen);
+    setLinkPopupOpen(!!isOpen);
   };
 
-  const RenderModal = props => {
-    const { link, selectionText } = getCurrentValues();
-    return (
-      <EditorModal
-        className="modal"
-        isOpen={shouldOpenModal}
-        onClose={toggleLinkModal}
-        onAddLink={props.onAddLink}
-        editorState={editorState}
-        modalBodyComponent={EditorLinkModal}
-        currentValue={{ link, selectionText }}
-      />
-    );
+  const toggleImageModal = isOpen => {
+    if (!isOpen) {
+      setTimeout(() => {
+        focus();
+      }, 0);
+    }
+    setImagePopupOpen(!!isOpen);
   };
+
+  const onAddImage = e => {};
 
   return (
     <Root className={className}>
@@ -233,6 +190,7 @@ export default props => {
           clearFormat={clearFormat}
           onRemoveLink={removeLink}
           onLinkModalOpen={toggleLinkModal}
+          onImageModalOpen={toggleImageModal}
         />
         <ConttentBox>
           <Editor
@@ -245,7 +203,21 @@ export default props => {
           />
         </ConttentBox>
       </Container>
-      <RenderModal onAddLink={onAddLink} />
+      <EditorModal
+        onAccept={onAddLink}
+        isOpen={isLinkPopupOpen}
+        onClose={toggleLinkModal}
+        editorState={editorState}
+        modalBodyComponent={EditorLinkModal}
+        currentValue={getCurrentValues()}
+      />
+      <EditorModal
+        onAccept={onAddImage}
+        isOpen={isImagePopupOpen}
+        onClose={toggleImageModal}
+        editorState={editorState}
+        modalBodyComponent={EditorImageModal}
+      />
     </Root>
   );
 };
