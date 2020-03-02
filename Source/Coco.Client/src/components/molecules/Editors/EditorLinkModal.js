@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
@@ -7,6 +7,15 @@ import { LabelNormal } from "../../atoms/Labels";
 import { checkValidity, validateLink } from "../../../utils/Validity";
 import { EditorState, Modifier } from "draft-js";
 import { getEntityRange, getSelectionEntity } from "draftjs-utils";
+
+const Root = styled.div`
+  max-width: 80%;
+  width: 400px;
+  background: ${p => p.theme.color.white};
+  margin: ${p => p.theme.size.exTiny} auto 0 auto;
+  border-radius: ${p => p.theme.borderRadius.normal};
+  box-shadow: ${p => p.theme.shadow.BoxShadow};
+`;
 
 const Body = styled.div`
   height: auto;
@@ -184,12 +193,12 @@ export default props => {
   };
 
   const { title, url } = linkData;
-  const isValid = url.isValid;
+  const { isValid } = url;
   return (
-    <Fragment>
+    <Root>
       <Body>
         <FormRow>
-          <LabelNormal>Tiêu đề</LabelNormal>
+          <LabelNormal>Đường dẫn</LabelNormal>
           <Textbox
             name="title"
             onKeyUp={handleKeyUp}
@@ -219,6 +228,6 @@ export default props => {
           Lưu
         </ButtonPrimary>
       </Footer>
-    </Fragment>
+    </Root>
   );
 };

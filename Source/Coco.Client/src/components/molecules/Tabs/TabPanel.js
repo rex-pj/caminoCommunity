@@ -1,11 +1,6 @@
-import React, { Fragment } from "react";
-import styled from "styled-components";
-import Tab from "./Tab";
+import React from "react";
 
 export default props => {
-  return (
-    <Fragment>
-      <Tab />
-    </Fragment>
-  );
+  const { tabComponent: TabComponent } = props;
+  return <TabComponent {...props} />;
 };

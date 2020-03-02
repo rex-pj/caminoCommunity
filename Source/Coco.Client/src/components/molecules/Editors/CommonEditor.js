@@ -10,7 +10,13 @@ import {
   getSelectionText
 } from "draftjs-utils";
 import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
-import { styleMap, STYLES, HEADING_TYPES, findLinkEntities } from "./Utils";
+import {
+  styleMap,
+  STYLES,
+  HEADING_TYPES,
+  findLinkEntities,
+  findImageEntities
+} from "./Utils";
 
 const Root = styled.div`
   position: relative;
@@ -31,7 +37,8 @@ const ConttentBox = styled.div`
 const styles = {
   link: {
     textDecoration: "underline"
-  }
+  },
+  image: {}
 };
 
 const LinkComponent = props => {
@@ -43,15 +50,34 @@ const LinkComponent = props => {
   );
 };
 
+const ImageComponent = props => {
+  const { src, width, height, alt } = props.contentState
+    .getEntity(props.entityKey)
+    .getData();
+  return (
+    <img
+      src={src}
+      width={width}
+      height={height}
+      alt={alt}
+      style={styles.image}
+    />
+  );
+};
+
 export default props => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
       component: LinkComponent
+    },
+    {
+      strategy: findImageEntities,
+      component: ImageComponent
     }
   ]);
 
-  const { placeholder, className, height } = props;
+  const { placeholder, className, height, convertImageCallback } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
   );
@@ -66,26 +92,28 @@ export default props => {
       ? getSelectionEntity(editorState)
       : undefined;
 
+    if (!currentEntity) {
+      return {};
+    }
+
     const contentState = editorState.getCurrentContent();
-    const currentValues = {};
-    if (
-      currentEntity &&
-      contentState.getEntity(currentEntity).get("type") === "LINK"
-    ) {
-      currentValues.link = {};
-      const entityRange =
-        currentEntity && getEntityRange(editorState, currentEntity);
+    const entityType = contentState.getEntity(currentEntity).get("type");
+
+    const currentValues = {
+      selectionText: getSelectionText(editorState)
+    };
+    if (entityType === "LINK") {
+      const entityRange = getEntityRange(editorState, currentEntity);
       const contentStateData = contentState
         .getEntity(currentEntity)
         .get("data");
 
-      currentValues.link.target = currentEntity && contentStateData.url;
-      currentValues.link.targetOption =
-        currentEntity && contentStateData.targetOption;
-      currentValues.link.title = entityRange && entityRange.text;
+      currentValues.link = {
+        target: contentStateData.url,
+        targetOption: contentStateData.targetOption,
+        title: entityRange && entityRange.text
+      };
     }
-
-    currentValues.selectionText = getSelectionText(editorState);
     return currentValues;
   };
 
@@ -113,7 +141,9 @@ export default props => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       onChange(newState);
+      return "handled";
     }
+    return "not-handled";
   };
 
   const toggleInlineStyle = style => {
@@ -175,7 +205,9 @@ export default props => {
     setImagePopupOpen(!!isOpen);
   };
 
-  const onAddImage = e => {};
+  const onAddImage = newEditorState => {
+    onChange(newEditorState);
+  };
 
   return (
     <Root className={className}>
@@ -216,6 +248,7 @@ export default props => {
         isOpen={isImagePopupOpen}
         onClose={toggleImageModal}
         editorState={editorState}
+        convertImageCallback={convertImageCallback}
         modalBodyComponent={EditorImageModal}
       />
     </Root>

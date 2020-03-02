@@ -7,7 +7,6 @@ const Root = styled.div`
   z-index: 2;
   left: 0;
   top: 0;
-  padding-top: ${p => p.theme.size.tiny};
   bottom: 0;
   right: 0;
   margin: auto;
@@ -17,18 +16,14 @@ const Root = styled.div`
 `;
 
 const Container = styled.div`
-  max-width: 80%;
-  min-width: 400px;
-  background: ${p => p.theme.color.white};
   margin: auto;
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
   position: relative;
   z-index: 10;
 `;
 
 export default props => {
   const { className, isOpen, modalBodyComponent: ModalBodyComponent } = props;
+
   const currentRef = useRef();
 
   const onClose = () => {

@@ -1,52 +1,72 @@
-import React, { Fragment } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import Tabs from "../Tabs/Tabs";
+import EditorImageUploader from "./EditorImageUploader";
+import EditorImageLink from "./EditorImageLink";
 import styled from "styled-components";
-import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
-import TabPanel from "../Tabs/TabPanel";
 
-const Body = styled.div`
-  height: auto;
-  padding: ${p => p.theme.size.tiny} ${p => p.theme.size.distance};
+const Root = styled.div`
+  min-width: 400px;
+  margin: ${p => p.theme.size.tiny} ${p => p.theme.size.tiny} 0
+    ${p => p.theme.size.tiny};
+  min-height: 200px;
+  background: ${p => p.theme.color.dark};
+  border-radius: ${p => p.theme.borderRadius.normal};
 `;
 
-const Footer = styled.div`
-  min-height: 20px;
-  text-align: right;
-  border-top: 1px solid ${p => p.theme.color.light};
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.distance};
+const ImageEditorTabs = styled(Tabs)`
+  ul.tabs-bar {
+    border-bottom: 1px solid ${p => p.theme.rgbaColor.darker};
+  }
+  ul.tabs-bar li button {
+    background: transparent;
+    color: ${p => p.theme.color.light};
+  }
 
-  button {
-    margin-left: ${p => p.theme.size.exTiny};
-    font-weight: normal;
-    padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
-
-    svg {
-      margin-right: ${p => p.theme.size.exTiny};
-    }
+  ul.tabs-bar li.actived button {
+    background: ${p => p.theme.rgbaColor.darker};
+    color: ${p => p.theme.color.white};
   }
 `;
 
 export default props => {
+  const { editorState, convertImageCallback } = props;
   const onClose = () => {
     props.onClose();
   };
 
-  const onAddImage = () => {};
+  const onUploadImage = e => {
+    props.onAccept(e);
+  };
+
+  const onAddImageLink = () => {};
 
   return (
-    <Fragment>
-      <Body>
-        <TabPanel />
-      </Body>
-      <Footer>
-        <ButtonSecondary size="sm" onClick={onClose}>
-          Đóng
-        </ButtonSecondary>
-        <ButtonPrimary size="sm" onClick={onAddImage}>
-          <FontAwesomeIcon icon="check" />
-          Lưu
-        </ButtonPrimary>
-      </Footer>
-    </Fragment>
+    <Root>
+      <ImageEditorTabs
+        tabs={[
+          {
+            title: "Upload",
+            tabComponent: () => (
+              <EditorImageUploader
+                onAddImage={onUploadImage}
+                onClose={onClose}
+                convertImageCallback={convertImageCallback}
+                editorState={editorState}
+              />
+            )
+          },
+          {
+            title: "Đường dẫn",
+            tabComponent: () => (
+              <EditorImageLink
+                onAddImage={onAddImageLink}
+                onClose={onClose}
+                editorState={editorState}
+              />
+            )
+          }
+        ]}
+      />
+    </Root>
   );
 };
