@@ -7,7 +7,7 @@ const Root = styled.div`
   z-index: 2;
   left: 0;
   top: 0;
-  padding-top: ${p => p.theme.size.tiny};
+  padding-top: ${p => p.theme.size.exTiny};
   bottom: 0;
   right: 0;
   margin: auto;
