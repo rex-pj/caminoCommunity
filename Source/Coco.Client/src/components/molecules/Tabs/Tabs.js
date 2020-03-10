@@ -22,7 +22,7 @@ export default props => {
 
   return (
     <Root className={className}>
-      <List>
+      <List className="tabs-bar">
         {tabs
           ? tabs.map((tab, index) => (
               <Tab

@@ -5,7 +5,9 @@ import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Resizer from "react-image-file-resizer";
+import { Image } from "../../atoms/Images";
 import Slider from "rc-slider";
+import NoImage from "../../atoms/NoImages/no-image";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -14,7 +16,7 @@ const Body = styled(PanelBody)`
 const Footer = styled.div`
   min-height: 20px;
   text-align: right;
-  border-top: 1px solid ${p => p.theme.color.light};
+  border-top: 1px solid ${p => p.theme.rgbaColor.darker};
   padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
 
   button {
@@ -55,23 +57,30 @@ const PhotoUpload = styled(ImageUpload)`
   }
 `;
 
+const ImageWrap = styled.div`
+  text-align: center;
+`;
+
 const SliderWrap = styled.div`
   max-width: 300px;
-  margin: 0 auto;
+  margin: ${p => p.theme.size.tiny} auto;
+`;
+
+const EmptyImage = styled(NoImage)`
+  border-radius: ${p => p.theme.borderRadius.medium};
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  font-size: ${p => p.theme.size.large};
 `;
 
 export default props => {
   const [photoData, setPhotoData] = useState({
     src: null,
     oldImage: null,
-    contentType: null,
-    fileName: null,
-    file: null
-  });
-
-  const [cropData, setCropData] = useState({
-    width: 100,
-    height: 100
+    file: null,
+    width: 700,
+    height: 700
   });
 
   const onClose = () => {
@@ -84,62 +93,69 @@ export default props => {
 
   const onChangeImage = e => {
     var fileData = e.file ? e.file : e;
-    const { width, height } = cropData;
-    if (fileData) {
+    onImageResizeing(fileData, 700, 700);
+  };
+
+  const onScaleChanged = e => {
+    const { width, height } = photoData;
+    const ratio = e / width;
+    const newHeight = height * ratio;
+
+    onImageResizeing(null, e, newHeight);
+  };
+
+  const onImageResizeing = (file, width, height) => {
+    if (!file) {
+      file = photoData.file;
+    }
+
+    if (file && width >= 50) {
       Resizer.imageFileResizer(
-        fileData,
+        file,
         width,
         height,
         "JPEG",
         100,
         0,
         uri => {
-          onImageResizsed(fileData, uri);
+          onImageResizsed(file, uri, width, height);
         },
         "base64"
       );
     }
   };
 
-  const onImageResizsed = (file, uri) => {
+  const onImageResizsed = (file, uri, width, height) => {
     setPhotoData({
       ...photoData,
-      contentType: file.type,
-      fileName: file.name,
       src: uri,
-      file
+      file: file,
+      width,
+      height
     });
   };
 
-  function onUpdateScale(e) {
-    var { width, height } = cropData;
-    var ratio = e / width;
-    var newHeight = height * ratio;
-    let crop = {
-      ...cropData,
-      width: e,
-      height: newHeight
-    };
-
-    setCropData({
-      ...crop
-    });
-
-    const { file } = photoData;
-    onChangeImage(file);
-  }
-
-  const { src, fileName } = photoData;
+  const { src, fileName, width } = photoData;
   return (
     <Fragment>
       <Body>
         <PhotoUpload onChange={e => onChangeImage(e)}>
           Chọn ảnh để upload
         </PhotoUpload>
-        <img src={src} alt={fileName} />
         <SliderWrap>
-          <Slider onChange={onUpdateScale} min={100} max={700} step={1} />
+          {src ? (
+            <Slider
+              onChange={onScaleChanged}
+              min={50}
+              max={700}
+              step={0.5}
+              value={width}
+            />
+          ) : null}
         </SliderWrap>
+        <ImageWrap>
+          {src ? <Image src={src} alt={fileName} /> : <EmptyImage />}
+        </ImageWrap>
       </Body>
       <Footer>
         <ButtonSecondary size="sm" onClick={onClose}>
@@ -147,7 +163,7 @@ export default props => {
         </ButtonSecondary>
         <ButtonPrimary size="sm" onClick={onAddImage}>
           <FontAwesomeIcon icon="check" />
-          Lưu
+          Thêm ảnh
         </ButtonPrimary>
       </Footer>
     </Fragment>
