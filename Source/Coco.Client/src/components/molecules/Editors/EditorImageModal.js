@@ -29,11 +29,14 @@ const ImageEditorTabs = styled(Tabs)`
 `;
 
 export default props => {
+  const { editorState } = props;
   const onClose = () => {
     props.onClose();
   };
 
-  const onUploadImage = () => {};
+  const onUploadImage = () => {
+    props.onAccept();
+  };
 
   const onAddImageLink = () => {};
 
@@ -47,13 +50,18 @@ export default props => {
               <EditorImageUploader
                 onAddImage={onUploadImage}
                 onClose={onClose}
+                editorState={editorState}
               />
             )
           },
           {
             title: "Đường dẫn",
             tabComponent: () => (
-              <EditorImageLink onAddImage={onAddImageLink} onClose={onClose} />
+              <EditorImageLink
+                onAddImage={onAddImageLink}
+                onClose={onClose}
+                editorState={editorState}
+              />
             )
           }
         ]}

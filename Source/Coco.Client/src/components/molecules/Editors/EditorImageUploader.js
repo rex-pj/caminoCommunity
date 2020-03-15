@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Resizer from "react-image-file-resizer";
 import { Image } from "../../atoms/Images";
-import Slider from "rc-slider";
+import { Textbox } from "../../atoms/Textboxes";
 import NoImage from "../../atoms/NoImages/no-image";
+import { AtomicBlockUtils } from "draft-js";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -62,7 +62,8 @@ const ImageWrap = styled.div`
 `;
 
 const SliderWrap = styled.div`
-  max-width: 300px;
+  text-align: center;
+  max-width: 450px;
   margin: ${p => p.theme.size.tiny} auto;
 `;
 
@@ -87,55 +88,70 @@ export default props => {
     props.onClose();
   };
 
-  const onAddImage = () => {
-    props.onAddImage();
-  };
-
   const onChangeImage = e => {
-    var fileData = e.file ? e.file : e;
-    onImageResizeing(fileData, 700, 700);
+    const { uploadCallback } = props;
+    var file = e.file ? e.file : e;
+    uploadCallback(file).then(({ data }) => {
+      this.setState({
+        src: data.link || data.url
+      });
+    });
   };
 
-  const onScaleChanged = e => {
-    const { width, height } = photoData;
-    const ratio = e / width;
-    const newHeight = height * ratio;
+  const onAddImage = () => {
+    const { src, width, height } = photoData;
+    const { editorState, onAddImage } = props;
+    const entityData = { src, height, width };
 
-    onImageResizeing(null, e, newHeight);
+    const entityKey = editorState
+      .getCurrentContent()
+      .createEntity("IMAGE", "MUTABLE", entityData)
+      .getLastCreatedEntityKey();
+    const newEditorState = AtomicBlockUtils.insertAtomicBlock(
+      editorState,
+      entityKey,
+      " "
+    );
+
+    onAddImage(newEditorState);
+    onClose();
   };
 
-  const onImageResizeing = (file, width, height) => {
+  const onImageResizeing = file => {
     if (!file) {
       file = photoData.file;
     }
 
     if (file && width >= 50) {
-      Resizer.imageFileResizer(
-        file,
-        width,
-        height,
-        "JPEG",
-        100,
-        0,
-        uri => {
-          onImageResizsed(file, uri, width, height);
-        },
-        "base64"
-      );
+      onImageResizsed(file);
     }
   };
 
-  const onImageResizsed = (file, uri, width, height) => {
+  const onImageResizsed = src => {
     setPhotoData({
       ...photoData,
-      src: uri,
-      file: file,
-      width,
-      height
+      src
     });
   };
 
-  const { src, fileName, width } = photoData;
+  const onWithScaleChanged = e => {
+    var value = e.target.value;
+    const formData = photoData;
+    if ("auto".indexOf(value) >= 0) {
+      formData[e.target.name] = value;
+    } else if (!value || isNaN(value)) {
+      formData[e.target.name] = "auto";
+    } else {
+      const newSize = parseFloat(value);
+      formData[e.target.name] = newSize;
+    }
+
+    setPhotoData({
+      ...formData
+    });
+  };
+
+  const { src, fileName, width, height } = photoData;
   return (
     <Fragment>
       <Body>
@@ -143,15 +159,24 @@ export default props => {
           Chọn ảnh để upload
         </PhotoUpload>
         <SliderWrap>
-          {src ? (
-            <Slider
-              onChange={onScaleChanged}
-              min={50}
-              max={700}
-              step={0.5}
-              value={width}
-            />
-          ) : null}
+          <div className="row">
+            <div className="col-md-6">
+              <Textbox
+                name="width"
+                value={width}
+                autoComplete="off"
+                onChange={e => onWithScaleChanged(e)}
+              />
+            </div>
+            <div className="col-md-6">
+              <Textbox
+                name="height"
+                value={height}
+                autoComplete="off"
+                onChange={e => onWithScaleChanged(e)}
+              />
+            </div>
+          </div>
         </SliderWrap>
         <ImageWrap>
           {src ? <Image src={src} alt={fileName} /> : <EmptyImage />}

@@ -57,6 +57,10 @@ function checkValidity(formData, value, formName) {
     isValid = value && isValid;
   }
 
+  if (rule.isNumber) {
+    isValid = isNaN(value) && isValid;
+  }
+
   if (rule.minLength) {
     isValid = value.length >= rule.minLength && isValid;
   }
