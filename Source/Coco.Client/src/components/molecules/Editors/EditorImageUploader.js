@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Image } from "../../atoms/Images";
 import { Textbox } from "../../atoms/Textboxes";
 import NoImage from "../../atoms/NoImages/no-image";
+import { LabelNormal } from "../../../components/atoms/Labels";
 import { AtomicBlockUtils } from "draft-js";
 
 const Body = styled(PanelBody)`
@@ -32,7 +33,7 @@ const Footer = styled.div`
 
 const PhotoUpload = styled(ImageUpload)`
   text-align: center;
-  margin: auto;
+  margin: 0 auto ${p => p.theme.size.tiny} auto;
   display: block;
   width: 200px;
 
@@ -61,10 +62,29 @@ const ImageWrap = styled.div`
   text-align: center;
 `;
 
-const SliderWrap = styled.div`
+const FormInput = styled.div`
   text-align: center;
-  max-width: 450px;
   margin: ${p => p.theme.size.tiny} auto;
+
+  svg {
+    color: ${p => p.theme.color.light};
+    margin-right: ${p => p.theme.size.exTiny};
+    font-size: ${p => p.theme.size.small};
+    path {
+      color: inherit;
+    }
+  }
+
+  ${LabelNormal} {
+    color: ${p => p.theme.color.light};
+    margin-right: ${p => p.theme.size.exTiny};
+    font-weight: bold;
+    font-size: ${p => p.theme.size.distance};
+  }
+
+  .image-title {
+    width: 300px;
+  }
 `;
 
 const EmptyImage = styled(NoImage)`
@@ -77,36 +97,38 @@ const EmptyImage = styled(NoImage)`
 
 export default props => {
   const [photoData, setPhotoData] = useState({
-    src: null,
-    oldImage: null,
-    file: null,
+    src: "",
     width: 700,
-    height: 700
+    alt: "",
+    height: "auto"
   });
 
   const onClose = () => {
     props.onClose();
   };
 
-  const onChangeImage = e => {
-    const { uploadCallback } = props;
-    var file = e.file ? e.file : e;
-    uploadCallback(file).then(({ data }) => {
-      this.setState({
-        src: data.link || data.url
+  const onChangeImage = async e => {
+    const { convertImageCallback } = props;
+    var file = e.file;
+    await convertImageCallback(file).then(data => {
+      setPhotoData({
+        ...photoData,
+        src: data.url,
+        alt: data.fileName
       });
     });
   };
 
-  const onAddImage = () => {
-    const { src, width, height } = photoData;
+  const onUploadImage = () => {
+    const { src, width, height, alt } = photoData;
     const { editorState, onAddImage } = props;
-    const entityData = { src, height, width };
+    const entityData = { src, height, width, alt };
 
     const entityKey = editorState
       .getCurrentContent()
       .createEntity("IMAGE", "MUTABLE", entityData)
       .getLastCreatedEntityKey();
+
     const newEditorState = AtomicBlockUtils.insertAtomicBlock(
       editorState,
       entityKey,
@@ -117,25 +139,8 @@ export default props => {
     onClose();
   };
 
-  const onImageResizeing = file => {
-    if (!file) {
-      file = photoData.file;
-    }
-
-    if (file && width >= 50) {
-      onImageResizsed(file);
-    }
-  };
-
-  const onImageResizsed = src => {
-    setPhotoData({
-      ...photoData,
-      src
-    });
-  };
-
   const onWithScaleChanged = e => {
-    var value = e.target.value;
+    const value = e.target.value;
     const formData = photoData;
     if ("auto".indexOf(value) >= 0) {
       formData[e.target.name] = value;
@@ -151,42 +156,77 @@ export default props => {
     });
   };
 
-  const { src, fileName, width, height } = photoData;
+  const handleInputChange = evt => {
+    const formData = photoData || {};
+    const { name, value } = evt.target;
+
+    formData[name] = value;
+    setPhotoData({
+      ...formData
+    });
+  };
+
+  const { src, alt, width, height } = photoData;
   return (
     <Fragment>
       <Body>
         <PhotoUpload onChange={e => onChangeImage(e)}>
           Chọn ảnh để upload
         </PhotoUpload>
-        <SliderWrap>
-          <div className="row">
-            <div className="col-md-6">
-              <Textbox
-                name="width"
-                value={width}
-                autoComplete="off"
-                onChange={e => onWithScaleChanged(e)}
-              />
-            </div>
-            <div className="col-md-6">
-              <Textbox
-                name="height"
-                value={height}
-                autoComplete="off"
-                onChange={e => onWithScaleChanged(e)}
-              />
-            </div>
-          </div>
-        </SliderWrap>
+        {src ? (
+          <Fragment>
+            <FormInput>
+              <div className="row">
+                <div className="col-md-12">
+                  <LabelNormal>Title</LabelNormal>
+                  <Textbox
+                    className="image-title"
+                    name="alt"
+                    value={alt}
+                    autoComplete="off"
+                    onChange={e => handleInputChange(e)}
+                  />
+                </div>
+              </div>
+            </FormInput>
+            <FormInput>
+              <div className="row">
+                <div className="col-md-6">
+                  <FontAwesomeIcon icon="arrows-alt-h" />
+                  <Textbox
+                    name="width"
+                    value={width}
+                    autoComplete="off"
+                    onChange={e => onWithScaleChanged(e)}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FontAwesomeIcon icon="arrows-alt-v" />
+                  <Textbox
+                    name="height"
+                    value={height}
+                    autoComplete="off"
+                    onChange={e => onWithScaleChanged(e)}
+                  />
+                </div>
+              </div>
+            </FormInput>
+          </Fragment>
+        ) : null}
+
         <ImageWrap>
-          {src ? <Image src={src} alt={fileName} /> : <EmptyImage />}
+          {src ? (
+            <Image src={src} alt={alt} width={width} height={height} />
+          ) : (
+            <EmptyImage />
+          )}
         </ImageWrap>
       </Body>
       <Footer>
         <ButtonSecondary size="sm" onClick={onClose}>
           Đóng
         </ButtonSecondary>
-        <ButtonPrimary size="sm" onClick={onAddImage}>
+        <ButtonPrimary size="sm" onClick={onUploadImage}>
           <FontAwesomeIcon icon="check" />
           Thêm ảnh
         </ButtonPrimary>

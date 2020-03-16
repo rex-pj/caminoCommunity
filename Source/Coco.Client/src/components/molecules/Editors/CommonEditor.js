@@ -9,7 +9,13 @@ import {
   getSelectionEntity,
   getSelectionText
 } from "draftjs-utils";
-import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  CompositeDecorator,
+  AtomicBlockUtils
+} from "draft-js";
 import { styleMap, STYLES, HEADING_TYPES, findLinkEntities } from "./Utils";
 
 const Root = styled.div`
@@ -51,7 +57,7 @@ export default props => {
     }
   ]);
 
-  const { placeholder, className, height } = props;
+  const { placeholder, className, height, convertImageCallback } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
   );
@@ -175,7 +181,9 @@ export default props => {
     setImagePopupOpen(!!isOpen);
   };
 
-  const onAddImage = e => {};
+  const onAddImage = newEditorState => {
+    onChange(newEditorState);
+  };
 
   return (
     <Root className={className}>
@@ -216,6 +224,7 @@ export default props => {
         isOpen={isImagePopupOpen}
         onClose={toggleImageModal}
         editorState={editorState}
+        convertImageCallback={convertImageCallback}
         modalBodyComponent={EditorImageModal}
       />
     </Root>

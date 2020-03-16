@@ -5,6 +5,7 @@ import { UrlConstant } from "../../utils/Constant";
 import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
 import CommonEditor from "../../components/molecules/Editors/CommonEditor";
+import { fileToBase64 } from "../../utils/Helper";
 
 export default withRouter(
   class extends Component {
@@ -111,11 +112,22 @@ export default withRouter(
       };
     }
 
+    convertImagefile = async file => {
+      const url = await fileToBase64(file);
+      return {
+        url,
+        fileName: file.name
+      };
+    };
+
     render() {
       const { feeds, totalPage, currentPage, baseUrl, pageQuery } = this.state;
       return (
         <Fragment>
-          <CommonEditor height={230} />
+          <CommonEditor
+            height={230}
+            convertImageCallback={this.convertImagefile}
+          />
           {feeds
             ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
             : null}

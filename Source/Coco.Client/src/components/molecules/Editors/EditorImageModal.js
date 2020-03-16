@@ -29,13 +29,13 @@ const ImageEditorTabs = styled(Tabs)`
 `;
 
 export default props => {
-  const { editorState } = props;
+  const { editorState, convertImageCallback } = props;
   const onClose = () => {
     props.onClose();
   };
 
-  const onUploadImage = () => {
-    props.onAccept();
+  const onUploadImage = e => {
+    props.onAccept(e);
   };
 
   const onAddImageLink = () => {};
@@ -50,6 +50,7 @@ export default props => {
               <EditorImageUploader
                 onAddImage={onUploadImage}
                 onClose={onClose}
+                convertImageCallback={convertImageCallback}
                 editorState={editorState}
               />
             )

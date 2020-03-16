@@ -23,6 +23,7 @@ const Container = styled.div`
 
 export default props => {
   const { className, isOpen, modalBodyComponent: ModalBodyComponent } = props;
+
   const currentRef = useRef();
 
   const onClose = () => {
