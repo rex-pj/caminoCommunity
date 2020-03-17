@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
 import { VerticalList } from "../../atoms/List";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { FifthDarkHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
@@ -11,18 +11,14 @@ const Root = styled.div`
   border-radius: ${p => p.theme.borderRadius.normal};
   padding: ${p => p.theme.size.exSmall};
 
-  ${QuaternaryHeading} {
-    & * {
-      color: ${p => p.theme.color.neutral};
-      font-size: ${p => p.theme.rgbaColor.small};
-    }
-
+  ${FifthDarkHeading} {
     span {
       float: left;
     }
 
     svg {
       float: right;
+      color: ${p => p.theme.color.neutral};
     }
 
     :after {
@@ -58,10 +54,10 @@ export default class AdsList extends Component {
     const { listAds } = this.state;
     return (
       <Root>
-        <QuaternaryHeading>
+        <FifthDarkHeading>
           <span>Gợi Ý</span>
           <FontAwesomeIcon icon="bullhorn" />
-        </QuaternaryHeading>
+        </FifthDarkHeading>
         <div>
           <VerticalList>
             {listAds &&

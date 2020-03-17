@@ -6,25 +6,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Root = styled.ol`
   padding: 0;
   margin-bottom: 1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   border: 1px solid ${p => p.theme.color.light};
   border-radius: ${p => p.theme.borderRadius.normal};
+  line-height: 1;
 `;
 
 const ListItem = styled.li`
   display: inline-block;
   font-size: ${p => p.theme.fontSize.small};
   color: ${p => p.theme.color.primaryLight};
-
   border-right: 1px solid ${p => p.theme.color.light};
   border-top-right-radius: ${p => p.theme.borderRadius.large};
   border-bottom-right-radius: ${p => p.theme.borderRadius.large};
   padding: ${p => p.theme.size.tiny};
   min-width: ${p => p.theme.size.normal};
-  line-height: 1;
   position: relative;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
 
   &.actived {
     color: ${p => p.theme.color.neutral};

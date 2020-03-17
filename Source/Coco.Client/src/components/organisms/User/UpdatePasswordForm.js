@@ -7,7 +7,7 @@ import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import PasswordUpdateModel from "../../../models/PasswordUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/atoms/Panels";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { QuaternaryDarkHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${p => p.theme.borderRadius.normal};
@@ -21,7 +21,7 @@ const FormGroup = styled.div`
   border-bottom: 1px solid ${p => p.theme.color.lighter};
 `;
 
-const Heading = styled(QuaternaryHeading)`
+const Heading = styled(QuaternaryDarkHeading)`
   margin-bottom: ${p => p.theme.size.distance};
   margin-left: ${p => p.theme.size.exTiny};
 `;

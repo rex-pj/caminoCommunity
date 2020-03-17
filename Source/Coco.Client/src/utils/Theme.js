@@ -1,32 +1,38 @@
 /** Color rules */
 export const color = {
-  primary: "#005047",
-  primaryLight: "#196159",
-  primaryDark: "#00483f",
-  neutral: "#7fa7a3",
-  light: "#ccdcda",
-  lighter: "#e5edec",
-  link: "#0d5183",
-  info: "#3277BB",
-  warning: "#F0A013",
-  warningLight: "#FFECCC",
-  danger: "#9C3100",
-  dangerLight: "#D65B44",
+  primary: "#2E420E",
+  primaryLight: "#194625",
+  primaryDark: "#304410",
+  neutral: "#778B53",
+  light: "#9EB378",
+  lighter: "#C7DC9F",
+  link: "#2F4858",
+  info: "#004A4B",
+  warning: "#C1AB36",
+  warningLight: "#FFCD93",
+  danger: "#8D372A",
+  dangerLight: "#A25723",
   white: "#FFFFFF",
-  dark: "#333333",
+  dark: "#000F00",
   highlight: "#fffe0d"
 };
 
 export const rgbaColor = {
-  darkLigth: "rgba(0, 0, 0, 0.1)",
-  dark: "rgba(0, 0, 0, 0.2)",
-  darker: "rgba(0, 0, 0, 0.5)",
+  darkLigth: "rgba(0, 15, 0, 0.1)",
+  dark: "rgba(0, 15, 0, 0.2)",
+  darker: "rgba(0, 15, 0, 0.5)",
   light: "rgba(255, 255, 255, 0.1)",
   lighter: "rgba(255, 255, 255, 0.5)",
   exLight: "rgba(255, 255, 255, 0.7)",
   cyanLight: "rgba(203,226,221, 0.1)",
   cyan: "rgba(203,226,221, 0.5)",
   cyanLighter: "rgba(203,226,221, 0.7)"
+};
+
+export const gradientColor = {
+  primary:
+    "linear-gradient(to bottom, #2e420e, #294314, #24441a, #1f451f, #194625);",
+  light: "linear-gradient(to bottom, #9eb378 0%, #c7dc9f 100%);"
 };
 
 export const size = {

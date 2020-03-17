@@ -5,7 +5,7 @@ import SearchBar from "../../Search/SearchBar";
 import NavigationMenu from "../../NavigationMenu/NavigationMenu";
 
 const NavRoot = styled.nav`
-  background-color: ${p => p.theme.color.primary};
+  background-image: ${p => p.theme.gradientColor.primary};
   padding: 2px 16px;
   box-shadow: ${p => p.theme.shadow.BoxShadow};
   position: relative;

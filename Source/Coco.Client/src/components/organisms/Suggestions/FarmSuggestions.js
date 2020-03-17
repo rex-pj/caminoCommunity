@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import FarmSuggestionItem from "./FarmSuggestionItem";
 import { VerticalList } from "../../atoms/List";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { FifthDarkHeading } from "../../atoms/Heading";
 
 const Root = styled.div`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
@@ -43,7 +43,7 @@ export default class FarmSuggestions extends Component {
     const { farms } = this.state;
     return (
       <div>
-        <QuaternaryHeading>Thăm Quan Nông Trại Khác?</QuaternaryHeading>
+        <FifthDarkHeading>Thăm Quan Nông Trại Khác?</FifthDarkHeading>
         <Root>
           <List>
             {farms &&

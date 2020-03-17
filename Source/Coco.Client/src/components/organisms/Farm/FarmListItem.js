@@ -6,7 +6,7 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ImageRound } from "../../atoms/Images";
-import { SecondaryTitle } from "../../atoms/Titles";
+import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -26,7 +26,7 @@ const ContentTopbar = styled.div`
   margin-bottom: 0;
 `;
 
-const Title = styled(SecondaryTitle)`
+const Title = styled(SecondaryTitleLink)`
   margin-bottom: 0;
 `;
 

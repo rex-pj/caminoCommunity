@@ -13,12 +13,13 @@ const ListItem = styled.li`
   margin: 0 ${p => p.theme.size.distance};
 
   a.actived {
-    color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.primaryDark};
     text-decoration: none;
+    font-weight: 600;
   }
 
   :hover a {
-    color: ${p => p.theme.color.warning};
+    color: ${p => p.theme.color.primaryDark};
     text-decoration: none;
   }
 

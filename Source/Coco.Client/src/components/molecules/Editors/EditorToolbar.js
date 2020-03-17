@@ -8,9 +8,12 @@ const Toolbar = styled.div`
   padding: ${p => p.theme.size.tiny};
   border-bottom: 1px solid ${p => p.theme.color.light};
   background-color: ${p => p.theme.color.lighter};
+  border-top-left-radius: ${p => p.theme.borderRadius.normal};
+  border-top-right-radius: ${p => p.theme.borderRadius.normal};
 `;
 
 const EditorButton = styled(DefaultButton)`
+  color: ${p => p.theme.color.primaryDark};
   border: 0;
   margin-right: 4px;
   :hover {

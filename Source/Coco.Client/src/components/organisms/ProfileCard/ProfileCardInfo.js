@@ -12,8 +12,8 @@ const Root = styled.div`
 `;
 
 const Label = styled(LabelDark)`
+  font-size: ${p => p.theme.fontSize.tiny};
   font-weight: 600;
-  font-size: ${p => p.theme.fontSize.small};
 `;
 
 const InfoList = styled(VerticalList)`
@@ -37,11 +37,12 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${p => p.theme.color.neutral};
+    color: ${p => p.theme.color.primary};
+    font-size: ${p => p.theme.fontSize.tiny};
   }
 
   a {
-    font-size: ${p => p.theme.rgbaColor.small};
+    font-size: ${p => p.theme.fontSize.tiny};
     font-weight: 600;
   }
 `;

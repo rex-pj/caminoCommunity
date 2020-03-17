@@ -5,7 +5,7 @@ import { ThumbnailRound } from "../../molecules/Thumbnails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitle } from "../../atoms/Titles";
+import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
@@ -26,7 +26,7 @@ const PostActions = styled.div`
   text-align: right;
 `;
 
-const PostTitle = styled(SecondaryTitle)`
+const PostTitle = styled(SecondaryTitleLink)`
   margin-bottom: 0;
   text-overflow: ellipsis;
   overflow: hidden;
