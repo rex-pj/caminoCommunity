@@ -8,7 +8,7 @@ import { Image } from "../../atoms/Images";
 import { Textbox } from "../../atoms/Textboxes";
 import NoImage from "../../atoms/NoImages/no-image";
 import { LabelNormal } from "../../../components/atoms/Labels";
-import { AtomicBlockUtils } from "draft-js";
+import { AtomicBlockUtils, EditorState } from "draft-js";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -122,20 +122,25 @@ export default props => {
   const onUploadImage = () => {
     const { src, width, height, alt } = photoData;
     const { editorState, onAddImage } = props;
-    const entityData = { src, height, width, alt };
 
-    const entityKey = editorState
-      .getCurrentContent()
-      .createEntity("IMAGE", "MUTABLE", entityData)
-      .getLastCreatedEntityKey();
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      "IMAGE",
+      "IMMUTABLE",
+      { src, height, width, alt }
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity
+    });
 
-    const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-      editorState,
+    const imageEditorState = AtomicBlockUtils.insertAtomicBlock(
+      newEditorState,
       entityKey,
       " "
     );
 
-    onAddImage(newEditorState);
+    onAddImage(imageEditorState);
     onClose();
   };
 

@@ -211,7 +211,6 @@ export default props => {
   const validateForSubmit = () => {
     const { canEdit } = props;
     const image = photoEditor.getImage();
-
     const isValid = image.width > 1000 && image.height > 300;
 
     let isSucceed = false;
