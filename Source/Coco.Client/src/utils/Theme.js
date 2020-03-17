@@ -29,6 +29,11 @@ export const rgbaColor = {
   cyanLighter: "rgba(203,226,221, 0.7)"
 };
 
+export const gradientColor = {
+  primary:
+    "linear-gradient(to bottom, #00483f, #004a41, #004c43, #004e45, #005047)"
+};
+
 export const size = {
   exTiny: "5px",
   tiny: "8px",

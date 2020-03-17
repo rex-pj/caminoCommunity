@@ -26,6 +26,10 @@ const PostActions = styled.div`
 const PostTitle = styled(SecondaryTitle)`
   margin-bottom: 0;
   font-size: ${p => p.theme.fontSize.small};
+
+  a {
+    color: ${p => p.theme.color.dark};
+  }
 `;
 
 const ContentBody = styled.div`

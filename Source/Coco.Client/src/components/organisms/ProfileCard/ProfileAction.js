@@ -24,6 +24,7 @@ const CreatorName = styled(AnchorLink)`
   display: inline-block;
   margin-bottom: 5px;
   margin-top: 1px;
+  color: ${p => p.theme.color.dark};
 `;
 
 const MoreInfo = styled.p`

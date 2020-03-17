@@ -5,7 +5,7 @@ export default styled(ListItem)`
   margin-bottom: 3px;
 
   a {
-    color: ${p => p.theme.color.primaryLight};
+    color: ${p => p.theme.color.dark};
     display: block;
     text-decoration: none;
     border-radius: ${p => p.theme.borderRadius.normal};
@@ -33,6 +33,11 @@ export default styled(ListItem)`
     width: auto !important;
     font-size: ${p => p.theme.fontSize.normal};
     text-align: left;
+    color: ${p => p.theme.color.primary};
+  }
+
+  span {
+    font-weight: bold;
   }
 
   span,
