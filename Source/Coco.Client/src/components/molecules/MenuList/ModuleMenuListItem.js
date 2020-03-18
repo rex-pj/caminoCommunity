@@ -9,7 +9,7 @@ export default styled(ListItem)`
     display: block;
     text-decoration: none;
     border-radius: ${p => p.theme.borderRadius.normal};
-    padding: 8px 3px 8px 3px;
+    padding: 11px 3px 10px 5px;
     font-size: ${p => p.theme.fontSize.small};
     line-height: 1;
     width: 100%;
@@ -20,8 +20,8 @@ export default styled(ListItem)`
 
   &.actived a,
   & a.actived {
-    font-weight: 600;
     background-color: ${p => p.theme.color.lighter};
+    font-weight: 600;
   }
 
   &:hover a {
@@ -31,13 +31,9 @@ export default styled(ListItem)`
   a > span > svg {
     margin-right: 3px;
     width: auto !important;
-    font-size: ${p => p.theme.fontSize.normal};
+    font-size: ${p => p.theme.fontSize.tiny};
     text-align: left;
     color: ${p => p.theme.color.primary};
-  }
-
-  span {
-    font-weight: bold;
   }
 
   span,

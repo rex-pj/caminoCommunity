@@ -15,12 +15,12 @@ const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
-    margin-left: -8px;
-    margin-right: -8px;
+    margin-left: -10px;
+    margin-right: -10px;
   }
 
   > .row > .col {
-    padding: 0 8px;
+    padding: 0 10px;
   }
 `;
 

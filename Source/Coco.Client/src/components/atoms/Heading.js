@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const SecondaryHeading = styled.h2`
+export const SecondaryHeading = styled.h2`
   font-size: ${p => p.theme.fontSize.normal};
   color: ${p => p.theme.color.neutral};
   line-height: 1;
@@ -11,7 +11,7 @@ const SecondaryHeading = styled.h2`
   }
 `;
 
-const TertiaryHeading = styled.h3`
+export const TertiaryHeading = styled.h3`
   font-size: ${p => p.theme.fontSize.small};
   color: ${p => p.theme.color.neutral};
   line-height: 1;
@@ -22,7 +22,7 @@ const TertiaryHeading = styled.h3`
   }
 `;
 
-const TertiaryDarkHeading = styled.h3`
+export const TertiaryDarkHeading = styled.h3`
   font-size: ${p => p.theme.fontSize.small};
   color: ${p => p.theme.color.dark};
   line-height: 1;
@@ -33,7 +33,7 @@ const TertiaryDarkHeading = styled.h3`
   }
 `;
 
-const QuaternaryHeading = styled.h4`
+export const QuaternaryHeading = styled.h4`
   font-size: ${p => p.theme.rgbaColor.small};
   color: ${p => p.theme.color.neutral};
   line-height: 1;
@@ -44,7 +44,7 @@ const QuaternaryHeading = styled.h4`
   }
 `;
 
-const QuaternaryDarkHeading = styled.h4`
+export const QuaternaryDarkHeading = styled.h4`
   font-size: ${p => p.theme.rgbaColor.small};
   color: ${p => p.theme.color.dark};
   line-height: 1;
@@ -55,10 +55,24 @@ const QuaternaryDarkHeading = styled.h4`
   }
 `;
 
-export {
-  SecondaryHeading,
-  TertiaryHeading,
-  TertiaryDarkHeading,
-  QuaternaryHeading,
-  QuaternaryDarkHeading
-};
+export const FifthHeading = styled.h5`
+  font-size: ${p => p.theme.rgbaColor.small};
+  color: ${p => p.theme.color.neutral};
+  line-height: 1;
+
+  svg,
+  path {
+    color: inherit;
+  }
+`;
+
+export const FifthDarkHeading = styled.h5`
+  font-size: ${p => p.theme.rgbaColor.small};
+  color: ${p => p.theme.color.dark};
+  line-height: 1;
+
+  svg,
+  path {
+    color: inherit;
+  }
+`;

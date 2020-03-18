@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { ButtonOutlineDark } from "../../atoms/Buttons/OutlineButtons";
-import { TertiaryTitle } from "../../atoms/Titles";
+import { FifthDarkHeading } from "../../atoms/Heading";
 import { TypographySecondary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 import Overlay from "../../atoms/Overlay";
@@ -60,8 +60,11 @@ const ActionButton = styled(ButtonOutlineDark)`
   }
 `;
 
-const Title = styled(TertiaryTitle)`
-  margin-bottom: 3px;
+const Title = styled(FifthDarkHeading)`
+  color: ${p => p.theme.color.dark};
+  a {
+    color: inherit;
+  }
 `;
 
 const Description = styled(TypographySecondary)`

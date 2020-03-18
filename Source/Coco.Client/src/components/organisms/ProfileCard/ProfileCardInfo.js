@@ -12,8 +12,7 @@ const Root = styled.div`
 `;
 
 const Label = styled(LabelDark)`
-  font-weight: 600;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${p => p.theme.fontSize.exSmall};
 `;
 
 const InfoList = styled(VerticalList)`

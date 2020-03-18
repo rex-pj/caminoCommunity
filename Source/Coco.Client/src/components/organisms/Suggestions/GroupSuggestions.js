@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import GroupSuggestionItem from "./GroupSuggestionItem";
 import { VerticalList } from "../../atoms/List";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { FifthDarkHeading } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constant";
 
 const Root = styled.div`
@@ -43,9 +43,9 @@ export default class GroupSuggestions extends Component {
     const { groups } = this.state;
     return (
       <div>
-        <QuaternaryHeading>
+        <FifthDarkHeading>
           Tham Gia Nông Hội Để Kết Nối Tốt Hơn!
-        </QuaternaryHeading>
+        </FifthDarkHeading>
         <Root>
           <List>
             {groups &&

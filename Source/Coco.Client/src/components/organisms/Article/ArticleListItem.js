@@ -5,7 +5,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitle } from "../../atoms/Titles";
+import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -24,12 +24,8 @@ const PostActions = styled.div`
   text-align: right;
 `;
 
-const PostTitle = styled(SecondaryTitle)`
+const PostTitle = styled(SecondaryTitleLink)`
   margin-bottom: 0;
-
-  a {
-    color: ${p => p.theme.color.dark};
-  }
 `;
 
 const ContentBody = styled.div`

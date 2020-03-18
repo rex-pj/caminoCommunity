@@ -33,13 +33,13 @@ const LogoTitle = styled.h2`
 `;
 
 const TitleHead = styled.span`
-  color: ${p => p.theme.color.light};
+  color: ${p => p.theme.color.lighter};
   margin-right: 3px;
   height: ${p => p.theme.size.normal};
 `;
 
 const TitleTail = styled.span`
-  color: ${p => p.theme.color.warning};
+  color: ${p => p.theme.color.lighter};
   height: ${p => p.theme.size.normal};
 `;
 

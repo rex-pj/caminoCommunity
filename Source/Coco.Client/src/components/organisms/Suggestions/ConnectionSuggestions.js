@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../atoms/List";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { FifthDarkHeading } from "../../atoms/Heading";
 
 const Root = styled.div`
   box-shadow: ${p => p.theme.shadow.BoxShadow};
@@ -36,7 +36,7 @@ export default class ConnectionSuggestions extends Component {
     const { connections } = this.state;
     return (
       <div>
-        <QuaternaryHeading>Kết Nối Nhà Nông</QuaternaryHeading>
+        <FifthDarkHeading>Kết Nối Nhà Nông</FifthDarkHeading>
         <Root>
           <VerticalList>
             {connections &&

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { ThumbnailRound } from "../../molecules/Thumbnails";
-import { SecondaryTitle } from "../../atoms/Titles";
+import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -14,7 +14,7 @@ const Panel = styled(PanelDefault)`
   margin-bottom: ${p => p.theme.size.distance};
 `;
 
-const PostTitle = styled(SecondaryTitle)`
+const PostTitle = styled(SecondaryTitleLink)`
   margin-bottom: 0;
   text-overflow: ellipsis;
   overflow: hidden;

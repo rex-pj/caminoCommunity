@@ -6,14 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const MenubarItem = styled.li`
   height: ${p => p.theme.size.medium};
   text-align: center;
-  padding: 2px 0 0 0;
+  padding: ${p => p.theme.size.exTiny} 0 0 0;
   line-height: 1;
 `;
 
 const Content = styled.div`
   margin-top: 3px;
-  font-size: ${p => p.theme.fontSize.small};
-  font-weight: 600;
+  font-size: ${p => p.theme.fontSize.tiny};
   color: inherit;
 `;
 
@@ -24,7 +23,7 @@ const ListBar = styled(HorizontalList)`
     width: ${p => `${p.percent}%`};
     text-align: center;
     border-left: 1px solid ${p => p.theme.color.lighter};
-    color: ${p => p.theme.color.primaryLight};
+    color: ${p => p.theme.color.primaryDark};
   }
 
   ${MenubarItem}.first {

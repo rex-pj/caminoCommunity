@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { VerticalList } from "../../atoms/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
-import { QuaternaryHeading } from "../../atoms/Heading";
+import { FifthHeading } from "../../atoms/Heading";
 import { NavLink } from "react-router-dom";
 
 const Root = styled.div`
@@ -14,13 +14,13 @@ const ListControl = styled(VerticalList)`
   margin: 0;
 `;
 
-const Heading = styled(QuaternaryHeading)`
-  margin-left: 10px;
+const Heading = styled(FifthHeading)`
+  color: ${p => p.theme.color.dark};
 `;
 
 const IconBlock = styled.span`
   display: inline-block;
-  width: 28px;
+  width: 25px;
 `;
 
 export default class extends Component {
