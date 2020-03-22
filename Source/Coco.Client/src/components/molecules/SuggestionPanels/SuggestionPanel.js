@@ -47,7 +47,7 @@ const InfoRow = styled.span`
 `;
 
 const ActionButton = styled(ButtonOutlineDark)`
-  font-weight: 500;
+  font-weight: 400;
   font-size: ${p => p.theme.fontSize.small};
   position: absolute;
   top: ${p => p.theme.size.distance};
@@ -69,6 +69,7 @@ const Title = styled(FifthDarkHeading)`
 
 const Description = styled(TypographySecondary)`
   margin-bottom: 0;
+  font-size: ${p => p.theme.fontSize.tiny};
 `;
 
 const Body = styled.div`

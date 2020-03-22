@@ -33,7 +33,7 @@ const Username = styled.h3`
   font-size: ${p => p.theme.fontSize.normal};
   text-shadow: ${p => p.theme.shadow.TextShadow};
   a {
-    color: ${p => p.theme.color.white};
+    color: ${p => p.theme.color.lighter};
   }
 `;
 
@@ -81,9 +81,7 @@ export default function(props) {
     <Root className={className}>
       {userInfo && userInfo.avatarUrl ? (
         <ProfileImage
-          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${
-            userInfo.avatarUrl
-          }`}
+          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.avatarUrl}`}
         />
       ) : (
         <EmptyAvatar />
@@ -93,9 +91,7 @@ export default function(props) {
         <CoverWrapper>
           {userInfo && userInfo.coverPhotoUrl ? (
             <Thumbnail
-              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${
-                userInfo.coverPhotoUrl
-              }`}
+              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userInfo.coverPhotoUrl}`}
             />
           ) : (
             <EmptyCover />

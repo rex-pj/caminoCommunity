@@ -12,15 +12,15 @@ const PostThumbnail = styled.div`
 
 const MainThumbnail = styled.div`
   overflow: hidden;
-  background-color: ${p => p.theme.color.lighter};
+  background-color: ${p => p.theme.color.primary};
   position: relative;
   outline: none;
 `;
 
 const HorizontalListScroll = styled(ListScroll)`
-  background-color: ${p => p.theme.color.lighter};
-  border-top: 1px solid ${p => p.theme.color.light};
-  border-bottom: 1px solid ${p => p.theme.color.light};
+  background-color: ${p => p.theme.color.primaryLight};
+  border-top: 1px solid ${p => p.theme.color.primary};
+  border-bottom: 1px solid ${p => p.theme.color.primary};
 
   li {
     height: 140px;
@@ -55,7 +55,7 @@ const ThumbnailItem = styled(Thumbnail)`
 
   &.actived,
   :hover {
-    background-color: ${p => p.theme.color.light};
+    background-color: ${p => p.theme.color.primaryDark};
   }
 `;
 

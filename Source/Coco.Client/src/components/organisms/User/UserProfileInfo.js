@@ -36,7 +36,7 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${p => p.theme.color.neutral};
+    color: ${p => p.theme.color.primary};
   }
 
   a {

@@ -84,10 +84,27 @@ const ButtonTransparent = styled(ButtonPrimary)`
   }
 `;
 
+const ButtonPrimaryDark = styled(ButtonPrimary)`
+  border-color: ${p => p.theme.color.primaryDark};
+  background-color: ${p => p.theme.color.primaryDark};
+  color: ${p => p.theme.color.neutral};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.color.primary};
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.color.primary};
+  }
+`;
+
 export {
   ButtonPrimary,
   ButtonSecondary,
   ButtonCircle,
   ButtonTransparent,
-  ButtonAlert
+  ButtonAlert,
+  ButtonPrimaryDark
 };

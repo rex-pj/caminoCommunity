@@ -3,7 +3,7 @@ import { PanelDefault } from "../../atoms/Panels";
 import ArticleDetail from "../../organisms/Article/ArticleDetail";
 import ArticleItem from "../../organisms/Article/ArticleItem";
 import styled from "styled-components";
-import { TertiaryHeading } from "../../atoms/Heading";
+import { TertiaryDarkHeading } from "../../atoms/Heading";
 
 const RelationBox = styled.div`
   margin-top: ${p => p.theme.size.distance};
@@ -22,7 +22,7 @@ export default class extends Component {
           <ArticleDetail article={article} />
         </PanelDefault>
         <RelationBox>
-          <TertiaryHeading>Chủ đề khác</TertiaryHeading>
+          <TertiaryDarkHeading>Chủ đề khác</TertiaryDarkHeading>
           <div className="row">
             {relationArticles
               ? relationArticles.map((item, index) => {
