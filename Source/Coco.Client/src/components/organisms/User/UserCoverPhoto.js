@@ -72,7 +72,7 @@ const Wrap = styled.div`
     position: absolute;
     border-radius: ${p => p.theme.borderRadius.large};
     border: 1px solid ${p => p.theme.rgbaColor.dark};
-    background-color: ${p => p.theme.rgbaColor.darkLigth};
+    background-color: ${p => p.theme.rgbaColor.darkLight};
     color: ${p => p.theme.color.white};
     right: ${p => p.theme.size.distance};
     top: ${p => p.theme.size.distance};
