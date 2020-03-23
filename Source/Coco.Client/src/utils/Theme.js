@@ -18,15 +18,16 @@ export const color = {
 };
 
 export const rgbaColor = {
-  darkLigth: "rgba(0, 15, 0, 0.1)",
+  darkLight: "rgba(0, 15, 0, 0.1)",
   dark: "rgba(0, 15, 0, 0.2)",
   darker: "rgba(0, 15, 0, 0.5)",
+  exDark: "rgba(0, 15, 0, 0.9)",
   light: "rgba(255, 255, 255, 0.1)",
   lighter: "rgba(255, 255, 255, 0.5)",
   exLight: "rgba(255, 255, 255, 0.7)",
-  cyanLight: "rgba(203,226,221, 0.1)",
-  cyan: "rgba(203,226,221, 0.5)",
-  cyanLighter: "rgba(203,226,221, 0.7)"
+  cyanLight: "rgba(199, 220, 159, 0.1)",
+  cyan: "rgba(199, 220, 159, 0.5)",
+  cyanLighter: "rgba(199, 220, 159, 0.7)"
 };
 
 export const gradientColor = {

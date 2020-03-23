@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Textbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
 import { checkValidity } from "../../../utils/Validity";
+import EditorImageScalePreview from "./EditorImageScalePreview";
+import { AtomicBlockUtils, EditorState } from "draft-js";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -42,13 +44,34 @@ const FormRow = styled.div`
 
 export default props => {
   const formData = {
-    link: {
+    src: {
       value: "",
       validation: {
         isRequired: true,
         isImageLink: true
       },
       isValid: false
+    },
+    width: {
+      value: 700,
+      validation: {
+        isRequired: false
+      },
+      isValid: true
+    },
+    height: {
+      value: "auto",
+      validation: {
+        isRequired: false
+      },
+      isValid: true
+    },
+    alt: {
+      value: "",
+      validation: {
+        isRequired: false
+      },
+      isValid: true
     }
   };
 
@@ -60,6 +83,7 @@ export default props => {
 
   const handleKeyUp = e => {
     if (e.key === "Enter") {
+      onAddImage();
     }
   };
 
@@ -76,24 +100,75 @@ export default props => {
   };
 
   const onAddImage = () => {
-    props.onAddImage();
+    const { src, width, height, alt } = imageData;
+    const { editorState, onAddImage } = props;
+
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      "IMAGE",
+      "IMMUTABLE",
+      {
+        src: src.value,
+        height: height.value,
+        width: width.value,
+        alt: alt.value
+      }
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity
+    });
+
+    const imageEditorState = AtomicBlockUtils.insertAtomicBlock(
+      newEditorState,
+      entityKey,
+      " "
+    );
+
+    onAddImage(imageEditorState);
+    onClose();
   };
 
-  const { link } = imageData;
-  const { isValid } = link;
+  const onWithScaleChanged = e => {
+    const value = e.target.value;
+    const formData = imageData;
+    if ("auto".indexOf(value) >= 0) {
+      formData[e.target.name].value = value;
+    } else if (!value || isNaN(value)) {
+      formData[e.target.name].value = "auto";
+    } else {
+      const newSize = parseFloat(value);
+      formData[e.target.name].value = newSize;
+    }
+
+    setImageData({
+      ...formData
+    });
+  };
+
+  const { src, width, height, alt } = imageData;
+  const { isValid } = src;
   return (
     <Fragment>
       <Body>
         <FormRow>
           <LabelNormal>Đường dẫn tới hình ảnh</LabelNormal>
           <Textbox
-            name="link"
+            name="src"
             onKeyUp={handleKeyUp}
-            value={link.value}
+            value={src.value}
             autoComplete="off"
             onChange={e => handleInputChange(e)}
           />
         </FormRow>
+        <EditorImageScalePreview
+          src={src.value}
+          width={width.value}
+          height={height.value}
+          alt={alt.value}
+          handleInputChange={handleInputChange}
+          onWithScaleChanged={onWithScaleChanged}
+        />
       </Body>
       <Footer>
         <ButtonSecondary size="sm" onClick={onClose}>

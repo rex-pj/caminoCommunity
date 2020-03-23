@@ -9,21 +9,21 @@ const Root = styled.div`
   margin: ${p => p.theme.size.tiny} ${p => p.theme.size.tiny} 0
     ${p => p.theme.size.tiny};
   min-height: 200px;
-  background: ${p => p.theme.color.dark};
+  background-color: ${p => p.theme.rgbaColor.exDark};
   border-radius: ${p => p.theme.borderRadius.normal};
 `;
 
 const ImageEditorTabs = styled(Tabs)`
   ul.tabs-bar {
-    border-bottom: 1px solid ${p => p.theme.rgbaColor.darker};
+    border-bottom: 1px solid ${p => p.theme.rgbaColor.cyanLight};
   }
   ul.tabs-bar li button {
-    background: transparent;
+    background-color: transparent;
     color: ${p => p.theme.color.light};
   }
 
   ul.tabs-bar li.actived button {
-    background: ${p => p.theme.rgbaColor.darker};
+    background-color: ${p => p.theme.rgbaColor.cyanLight};
     color: ${p => p.theme.color.white};
   }
 `;
@@ -34,11 +34,9 @@ export default props => {
     props.onClose();
   };
 
-  const onUploadImage = e => {
+  const onAddImage = e => {
     props.onAccept(e);
   };
-
-  const onAddImageLink = () => {};
 
   return (
     <Root>
@@ -48,7 +46,7 @@ export default props => {
             title: "Upload",
             tabComponent: () => (
               <EditorImageUploader
-                onAddImage={onUploadImage}
+                onAddImage={onAddImage}
                 onClose={onClose}
                 convertImageCallback={convertImageCallback}
                 editorState={editorState}
@@ -59,7 +57,7 @@ export default props => {
             title: "Đường dẫn",
             tabComponent: () => (
               <EditorImageLink
-                onAddImage={onAddImageLink}
+                onAddImage={onAddImage}
                 onClose={onClose}
                 editorState={editorState}
               />

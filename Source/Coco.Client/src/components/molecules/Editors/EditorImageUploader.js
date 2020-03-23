@@ -4,11 +4,8 @@ import styled from "styled-components";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Image } from "../../atoms/Images";
-import { Textbox } from "../../atoms/Textboxes";
-import NoImage from "../../atoms/NoImages/no-image";
-import { LabelNormal } from "../../../components/atoms/Labels";
 import { AtomicBlockUtils, EditorState } from "draft-js";
+import EditorImageScalePreview from "./EditorImageScalePreview";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -58,49 +55,12 @@ const PhotoUpload = styled(ImageUpload)`
   }
 `;
 
-const ImageWrap = styled.div`
-  text-align: center;
-`;
-
-const FormInput = styled.div`
-  text-align: center;
-  margin: ${p => p.theme.size.tiny} auto;
-
-  svg {
-    color: ${p => p.theme.color.light};
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.size.small};
-    path {
-      color: inherit;
-    }
-  }
-
-  ${LabelNormal} {
-    color: ${p => p.theme.color.light};
-    margin-right: ${p => p.theme.size.exTiny};
-    font-weight: bold;
-    font-size: ${p => p.theme.size.distance};
-  }
-
-  .image-title {
-    width: 300px;
-  }
-`;
-
-const EmptyImage = styled(NoImage)`
-  border-radius: ${p => p.theme.borderRadius.medium};
-  width: 200px;
-  height: 200px;
-  display: inline-block;
-  font-size: ${p => p.theme.size.large};
-`;
-
 export default props => {
   const [photoData, setPhotoData] = useState({
     src: "",
     width: 700,
-    alt: "",
-    height: "auto"
+    height: "auto",
+    alt: ""
   });
 
   const onClose = () => {
@@ -171,61 +131,17 @@ export default props => {
     });
   };
 
-  const { src, alt, width, height } = photoData;
   return (
     <Fragment>
       <Body>
         <PhotoUpload onChange={e => onChangeImage(e)}>
           Chọn ảnh để upload
         </PhotoUpload>
-        {src ? (
-          <Fragment>
-            <FormInput>
-              <div className="row">
-                <div className="col-md-12">
-                  <LabelNormal>Title</LabelNormal>
-                  <Textbox
-                    className="image-title"
-                    name="alt"
-                    value={alt}
-                    autoComplete="off"
-                    onChange={e => handleInputChange(e)}
-                  />
-                </div>
-              </div>
-            </FormInput>
-            <FormInput>
-              <div className="row">
-                <div className="col-md-6">
-                  <FontAwesomeIcon icon="arrows-alt-h" />
-                  <Textbox
-                    name="width"
-                    value={width}
-                    autoComplete="off"
-                    onChange={e => onWithScaleChanged(e)}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <FontAwesomeIcon icon="arrows-alt-v" />
-                  <Textbox
-                    name="height"
-                    value={height}
-                    autoComplete="off"
-                    onChange={e => onWithScaleChanged(e)}
-                  />
-                </div>
-              </div>
-            </FormInput>
-          </Fragment>
-        ) : null}
-
-        <ImageWrap>
-          {src ? (
-            <Image src={src} alt={alt} width={width} height={height} />
-          ) : (
-            <EmptyImage />
-          )}
-        </ImageWrap>
+        <EditorImageScalePreview
+          {...photoData}
+          handleInputChange={handleInputChange}
+          onWithScaleChanged={onWithScaleChanged}
+        />
       </Body>
       <Footer>
         <ButtonSecondary size="sm" onClick={onClose}>
