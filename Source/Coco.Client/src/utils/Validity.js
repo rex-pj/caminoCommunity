@@ -1,4 +1,4 @@
-function validateEmail(email) {
+export function validateEmail(email) {
   let isValid = !!email;
 
   if (isValid) {
@@ -8,7 +8,7 @@ function validateEmail(email) {
   return isValid;
 }
 
-function validateLink(link) {
+export function validateLink(link) {
   let isValid = !!link;
 
   if (isValid) {
@@ -18,17 +18,23 @@ function validateLink(link) {
   return isValid;
 }
 
-function validateImageLink(link) {
+export function validateImageLink(link) {
   let isValid = !!link;
 
   if (isValid) {
     const expression = /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/g;
     isValid = expression.test(link);
   }
+
+  if (!isValid) {
+    const expression = /data:image\/([a-zA-Z]*);base64,([^"]*)/g;
+    isValid = expression.test(link);
+  }
+
   return isValid;
 }
 
-function checkValidity(formData, value, formName) {
+export function checkValidity(formData, value, formName) {
   let isValid = true;
 
   const rule = formData[formName].validation;
@@ -71,5 +77,3 @@ function checkValidity(formData, value, formName) {
 
   return isValid;
 }
-
-export { validateEmail, validateLink, checkValidity };

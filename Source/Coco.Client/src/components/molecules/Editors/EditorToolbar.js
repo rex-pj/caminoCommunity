@@ -8,12 +8,13 @@ const Toolbar = styled.div`
   padding: ${p => p.theme.size.tiny};
   border-bottom: 1px solid ${p => p.theme.color.light};
   background-color: ${p => p.theme.color.lighter};
+  background-image: ${p => p.theme.gradientColor.primary};
   border-top-left-radius: ${p => p.theme.borderRadius.normal};
   border-top-right-radius: ${p => p.theme.borderRadius.normal};
 `;
 
 const EditorButton = styled(DefaultButton)`
-  color: ${p => p.theme.color.primaryDark};
+  color: ${p => p.theme.color.lighter};
   border: 0;
   margin-right: 4px;
   :hover {
@@ -36,7 +37,7 @@ const Divide = styled.span`
 
 const SelectHeading = styled(EditorSelection)`
   background-color: ${p => p.theme.rgbaColor.light};
-  color: ${p => p.theme.color.primaryLight};
+  color: ${p => p.theme.color.lighter};
   font-weight: 600;
   border: 0;
 

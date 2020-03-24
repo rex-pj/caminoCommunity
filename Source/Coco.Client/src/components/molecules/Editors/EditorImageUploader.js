@@ -6,6 +6,7 @@ import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AtomicBlockUtils, EditorState } from "draft-js";
 import EditorImageScalePreview from "./EditorImageScalePreview";
+import { validateImageLink } from "../../../utils/Validity";
 
 const Body = styled(PanelBody)`
   padding: ${p => p.theme.size.tiny};
@@ -58,9 +59,10 @@ const PhotoUpload = styled(ImageUpload)`
 export default props => {
   const [photoData, setPhotoData] = useState({
     src: "",
-    width: 700,
+    width: "auto",
     height: "auto",
-    alt: ""
+    alt: "",
+    isValid: false
   });
 
   const onClose = () => {
@@ -124,6 +126,7 @@ export default props => {
   const handleInputChange = evt => {
     const formData = photoData || {};
     const { name, value } = evt.target;
+    formData.isValid = validateImageLink(value);
 
     formData[name] = value;
     setPhotoData({
@@ -131,6 +134,7 @@ export default props => {
     });
   };
 
+  const { isValid } = photoData;
   return (
     <Fragment>
       <Body>
@@ -147,7 +151,7 @@ export default props => {
         <ButtonSecondary size="sm" onClick={onClose}>
           Đóng
         </ButtonSecondary>
-        <ButtonPrimary size="sm" onClick={onUploadImage}>
+        <ButtonPrimary size="sm" onClick={onUploadImage} disabled={!isValid}>
           <FontAwesomeIcon icon="check" />
           Thêm ảnh
         </ButtonPrimary>
