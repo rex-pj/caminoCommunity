@@ -53,7 +53,7 @@ export default props => {
       isValid: false
     },
     width: {
-      value: 700,
+      value: "auto",
       validation: {
         isRequired: false
       },
