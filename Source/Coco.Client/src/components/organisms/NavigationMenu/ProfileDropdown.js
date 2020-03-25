@@ -23,8 +23,8 @@ const EmptyAvatar = styled(NoAvatar)`
 
 const ProfileButton = styled(RouterLinkButton)`
   color: ${p => p.theme.color.lighter};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.dark};
+  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border: 1px solid ${p => p.theme.rgbaColor.light};
   ${ImageCircle} {
     height: 100%;
     margin-right: ${p => p.theme.size.exTiny};
@@ -34,8 +34,8 @@ const ProfileButton = styled(RouterLinkButton)`
 const PorfileButtonGroup = styled(ButtonGroup)`
   ${ProfileButton},
   ${ButtonPrimary} {
-    border: 1px solid ${p => p.theme.color.primaryLight};
-    background-color: ${p => p.theme.rgbaColor.dark};
+    border: 1px solid ${p => p.theme.rgbaColor.light};
+    background-color: ${p => p.theme.rgbaColor.darkLight};
     font-size: ${p => p.theme.fontSize.tiny};
     padding: 3px ${p => p.theme.size.exTiny};
     margin: 1px 0;

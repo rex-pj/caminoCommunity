@@ -27,31 +27,11 @@ export function validateImageLink(link) {
   }
 
   if (!isValid) {
-    const expression = /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/g;
+    const expression = /data:image\/([a-zA-Z]*);base64,([^"]*)/g;
     isValid = expression.test(link);
   }
-  return isValid;
 
-  // return new Promise(function(resolve, reject) {
-  //   var timeout = 5000;
-  //   var timer,
-  //     img = new Image();
-  //   img.onerror = img.onabort = function() {
-  //     clearTimeout(timer);
-  //     reject("error");
-  //   };
-  //   img.onload = function() {
-  //     clearTimeout(timer);
-  //     resolve("success");
-  //   };
-  //   timer = setTimeout(function() {
-  //     // reset .src to invalid URL so it stops previous
-  //     // loading, but doesn't trigger new load
-  //     img.src = "//!!!!/test.jpg";
-  //     reject("timeout");
-  //   }, timeout);
-  //   img.src = link;
-  // });
+  return isValid;
 }
 
 export function checkValidity(formData, value, formName) {
