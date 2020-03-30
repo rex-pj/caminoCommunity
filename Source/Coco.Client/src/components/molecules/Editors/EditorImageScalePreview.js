@@ -50,12 +50,13 @@ export default props => {
     width,
     height,
     handleInputChange,
-    onWithScaleChanged
+    onWithScaleChanged,
+    isValid
   } = props;
 
   return (
     <Fragment>
-      {src ? (
+      {src && isValid ? (
         <Fragment>
           <FormInput>
             <div className="row">
@@ -96,7 +97,7 @@ export default props => {
         </Fragment>
       ) : null}
       <ImageWrap>
-        {src ? (
+        {src && isValid ? (
           <Image src={src} alt={alt} width={width} height={height} />
         ) : (
           <EmptyImage />

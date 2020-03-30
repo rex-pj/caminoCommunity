@@ -94,8 +94,6 @@ export default withRouter(props => {
   };
 
   const userCoverUpdated = async (action, data) => {
-    console.log(action);
-    console.log(data);
     if (data && data.canEdit) {
       return await action({ variables: { criterias: data } })
         .then(async () => {
