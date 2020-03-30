@@ -126,6 +126,7 @@ export default props => {
   const handleInputChange = evt => {
     const formData = photoData || {};
     const { name, value } = evt.target;
+
     formData.isValid = validateImageLink(value);
 
     formData[name] = value;

@@ -92,6 +92,7 @@ export default props => {
     const { name, value } = evt.target;
 
     data[name].isValid = checkValidity(data, value, name);
+
     data[name].value = value;
 
     setImageData({
@@ -166,6 +167,7 @@ export default props => {
           width={width.value}
           height={height.value}
           alt={alt.value}
+          isValid={isValid}
           handleInputChange={handleInputChange}
           onWithScaleChanged={onWithScaleChanged}
         />
