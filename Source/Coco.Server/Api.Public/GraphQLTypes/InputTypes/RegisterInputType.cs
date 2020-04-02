@@ -1,19 +1,19 @@
 ﻿using Api.Public.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class RegisterInputType : InputObjectGraphType<RegisterModel>
+    public class RegisterInputType : InputObjectType<RegisterModel>
     {
-        public RegisterInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<RegisterModel> descriptor)
         {
-            Field(x => x.Lastname, false, typeof(StringGraphType));
-            Field(x => x.Firstname, false, typeof(StringGraphType));
-            Field(x => x.Email, false, typeof(StringGraphType));
-            Field(x => x.Password, false, typeof(StringGraphType));
-            Field(x => x.ConfirmPassword, false, typeof(StringGraphType));
-            Field(x => x.GenderId, type: typeof(IntGraphType));
-            Field(x => x.BirthDate, false, type: typeof(DateTimeGraphType));
+            descriptor.Field(x => x.Lastname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Firstname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Email).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Password).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.ConfirmPassword).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.GenderId).Type<IntType>();
+            descriptor.Field(x => x.BirthDate).Type<DateTimeType>();
         }
     }
 }

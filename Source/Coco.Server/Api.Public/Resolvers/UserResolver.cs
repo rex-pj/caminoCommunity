@@ -3,10 +3,7 @@ using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
 using Coco.Business.Contracts;
-using Coco.Common.Const;
 using Coco.Entities.Enums;
-using GraphQL;
-using GraphQL.Types;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +15,7 @@ using Coco.Common.Resources;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Api.Public.Resolvers.Contracts;
+using HotChocolate.Resolvers;
 
 namespace Api.Public.Resolvers
 {
@@ -67,11 +65,11 @@ namespace Api.Public.Resolvers
             }
         }
 
-        public async Task<ApiResult> SigninAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> SigninAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<SigninModel>("args");
+                var model = context.Argument<SigninModel>("args");
 
                 var result = await _loginManager.LoginAsync(model.Username, model.Password);
 
@@ -84,15 +82,16 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                //context.ReportError(ErrorMessageConst.EXCEPTION);
+                 throw;
             }
         }
 
-        public async Task<ApiResult> SignupAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> SignupAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<RegisterModel>("user");
+                var model = context.Argument<RegisterModel>("user");
 
                 var user = new ApplicationUser()
                 {
@@ -133,18 +132,18 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> GetFullUserInfoAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> GetFullUserInfoAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<FindUserModel>("criterias");
+                var model = context.Argument<FindUserModel>("criterias");
                 var userIdentityId = model.UserId;
 
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
                 if (string.IsNullOrEmpty(model.UserId) && userContext != null
                     && userContext.CurrentUser != null)
                 {
@@ -178,15 +177,15 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ex.ToString(), ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> ForgotPasswordAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> ForgotPasswordAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<ForgotPasswordModel>("criterias");
+                var model = context.Argument<ForgotPasswordModel>("criterias");
 
                 if (model == null)
                 {
@@ -196,7 +195,7 @@ namespace Api.Public.Resolvers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    throw new ExecutionError("ForgotPasswordConfirmation");
+                    throw new ApplicationException("ForgotPasswordConfirmation");
                 }
 
                 var result = await _userManager.ForgotPasswordAsync(model.Email);
@@ -222,15 +221,15 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> ActiveAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> ActiveAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<ActiveUserModel>("criterias");
+                var model = context.Argument<ActiveUserModel>("criterias");
 
                 var result = await _userManager.ActiveAsync(model.Email, model.ActiveKey);
 
@@ -238,15 +237,15 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> ResetPasswordAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> ResetPasswordAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<ResetPasswordModel>("criterias");
+                var model = context.Argument<ResetPasswordModel>("criterias");
 
                 if (model == null)
                 {
@@ -275,7 +274,7 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
     }

@@ -1,14 +1,14 @@
 ﻿using Api.Public.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class ActiveUserInputType : InputObjectGraphType<ActiveUserModel>
+    public class ActiveUserInputType : InputObjectType<ActiveUserModel>
     {
-        public ActiveUserInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<ActiveUserModel> descriptor)
         {
-            Field(x => x.Email, false, typeof(StringGraphType));
-            Field(x => x.ActiveKey, false, typeof(StringGraphType));
+            descriptor.Field(t => t.Email).Type<NonNullType<StringType>>();
+            descriptor.Field(t => t.ActiveKey).Type<NonNullType<IdType>>();
         }
     }
 }

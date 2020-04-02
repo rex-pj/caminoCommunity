@@ -1,25 +1,25 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Entities.Dtos.General;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class ApiUserPhotoUpdatedResultType: ApiResultType<UpdateUserPhotoDto, UserPhotoUpdatedResultType>
+    public class ApiUserPhotoUpdatedResultType : ApiResultType<UpdateUserPhotoDto, UserPhotoUpdatedResultType>
     {
 
     }
 
-    public class UserPhotoUpdatedResultType : ObjectGraphType<UpdateUserPhotoDto>
+    public class UserPhotoUpdatedResultType : ObjectType<UpdateUserPhotoDto>
     {
-        public UserPhotoUpdatedResultType()
+        protected override void Configure(IObjectTypeDescriptor<UpdateUserPhotoDto> descriptor)
         {
-            Field(x => x.ContentType, false, typeof(StringGraphType));
-            Field(x => x.Height, false, typeof(FloatGraphType));
-            Field(x => x.Width, false, typeof(FloatGraphType));
-            Field(x => x.XAxis, false, typeof(FloatGraphType));
-            Field(x => x.YAxis, false, typeof(FloatGraphType));
-            Field(x => x.PhotoUrl, false, typeof(StringGraphType));
-            Field(x => x.CanEdit, false, typeof(BooleanGraphType));
+            descriptor.Field(x => x.ContentType).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Height).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.Width).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.XAxis).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.YAxis).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.PhotoUrl).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.CanEdit).Type<NonNullType<BooleanType>>();
         }
     }
 }

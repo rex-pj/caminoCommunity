@@ -1,6 +1,6 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
@@ -9,33 +9,35 @@ namespace Api.Public.GraphQLTypes.ResultTypes
 
     }
 
-    public class FullUserInfoResultType : ObjectGraphType<UserInfoExtend>
+    public class FullUserInfoResultType : ObjectType<UserInfoExtend>
     {
-        public FullUserInfoResultType()
+        protected override void Configure(IObjectTypeDescriptor<UserInfoExtend> descriptor)
         {
-            Field(x => x.Lastname, type: typeof(StringGraphType));
-            Field(x => x.Firstname, type: typeof(StringGraphType));
-            Field(x => x.Email, type: typeof(StringGraphType));
-            Field(x => x.DisplayName, type: typeof(StringGraphType));
-            Field(x => x.IsActived, type: typeof(BooleanGraphType));
-            Field(x => x.UserIdentityId, type: typeof(StringGraphType));
-            Field(x => x.Address, type: typeof(StringGraphType));
-            Field(x => x.PhoneNumber, type: typeof(StringGraphType));
-            Field(x => x.Description, type: typeof(StringGraphType));
-            Field(x => x.BirthDate, type: typeof(DateTimeGraphType));
-            Field(x => x.CreatedDate, type: typeof(DateTimeGraphType));
-            Field(x => x.UpdatedDate, type: typeof(DateTimeGraphType));
-            Field(x => x.GenderId, type: typeof(IntGraphType));
-            Field(x => x.GenderLabel, type: typeof(StringGraphType));
-            Field(x => x.CountryId, type: typeof(ShortGraphType));
-            Field(x => x.CountryCode, type: typeof(StringGraphType));
-            Field(x => x.CountryName, type: typeof(StringGraphType));
-            Field(x => x.StatusId, type: typeof(IntGraphType));
-            Field(x => x.StatusLabel, type: typeof(StringGraphType));
-            Field(x => x.AvatarUrl, type: typeof(StringGraphType));
-            Field(x => x.CoverPhotoUrl, type: typeof(StringGraphType));
-            Field(x => x.GenderSelections, type: typeof(ListGraphType<GenderSelectOptionType>));
-            Field(x => x.CountrySelections, type: typeof(ListGraphType<CountrySelectOptionType>));
+            descriptor.Field(x => x.Lastname).Type<StringType>();
+            descriptor.Field(x => x.Firstname).Type<StringType>();
+            descriptor.Field(x => x.Email).Type<StringType>();
+            descriptor.Field(x => x.DisplayName).Type<StringType>();
+            descriptor.Field(x => x.IsActived).Type<BooleanType>();
+            descriptor.Field(x => x.UserIdentityId).Type<StringType>();
+            descriptor.Field(x => x.Address).Type<StringType>();
+            descriptor.Field(x => x.PhoneNumber).Type<StringType>();
+            descriptor.Field(x => x.Description).Type<StringType>();
+            descriptor.Field(x => x.BirthDate).Type<DateTimeType>();
+            descriptor.Field(x => x.CreatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.UpdatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.GenderId).Type<IntType>();
+            descriptor.Field(x => x.GenderLabel).Type<StringType>();
+            descriptor.Field(x => x.CountryId).Type<ShortType>();
+            descriptor.Field(x => x.CountryCode).Type<StringType>();
+            descriptor.Field(x => x.CountryName).Type<StringType>();
+            descriptor.Field(x => x.StatusId).Type<IntType>();
+            descriptor.Field(x => x.StatusLabel).Type<StringType>();
+            descriptor.Field(x => x.AvatarUrl).Type<StringType>();
+            descriptor.Field(x => x.CoverPhotoUrl).Type<StringType>();
+            descriptor.Field(x => x.GenderSelections)
+                .Type<ListType<GenderSelectOptionType>>();
+            descriptor.Field(x => x.CountrySelections)
+                .Type<ListType<CountrySelectOptionType>>();
         }
     }
 }

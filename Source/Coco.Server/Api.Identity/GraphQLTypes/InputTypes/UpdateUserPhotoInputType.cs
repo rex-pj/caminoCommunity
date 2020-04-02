@@ -1,21 +1,21 @@
 ﻿using Coco.Entities.Dtos.General;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class UpdateUserPhotoInputType : InputObjectGraphType<UpdateUserPhotoDto>
+    public class UpdateUserPhotoInputType : InputObjectType<UpdateUserPhotoDto>
     {
-        public UpdateUserPhotoInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<UpdateUserPhotoDto> descriptor)
         {
-            Field(x => x.ContentType, false, typeof(StringGraphType));
-            Field(x => x.Height, false, typeof(FloatGraphType));
-            Field(x => x.Width, false, typeof(FloatGraphType));
-            Field(x => x.Scale, false, typeof(FloatGraphType));
-            Field(x => x.XAxis, false, typeof(FloatGraphType));
-            Field(x => x.YAxis, false, typeof(FloatGraphType));
-            Field(x => x.PhotoUrl, false, typeof(StringGraphType));
-            Field(x => x.CanEdit, false, typeof(BooleanGraphType));
-            Field(x => x.FileName, false, typeof(StringGraphType));
+            descriptor.Field(x => x.ContentType).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Height).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.Width).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.Scale).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.XAxis).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.YAxis).Type<NonNullType<FloatType>>();
+            descriptor.Field(x => x.PhotoUrl).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.CanEdit).Type<NonNullType<BooleanType>>();
+            descriptor.Field(x => x.FileName).Type<NonNullType<StringType>>();
         }
     }
 }

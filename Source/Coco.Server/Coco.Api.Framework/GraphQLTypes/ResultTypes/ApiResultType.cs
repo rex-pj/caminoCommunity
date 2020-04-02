@@ -1,26 +1,26 @@
 ﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class ApiResultType : ObjectGraphType<ApiResult>
+    public class ApiResultType : ObjectType<ApiResult>
     {
-        public ApiResultType()
+        protected override void Configure(IObjectTypeDescriptor<ApiResult> descriptor)
         {
-            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
-            Field(x => x.AccessMode, type: typeof(AccessModeEnumType));
-            Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
+            descriptor.Field(x => x.IsSucceed).Type<BooleanType>();
+            descriptor.Field(x => x.AccessMode).Type<AccessModeEnumType>();
+            descriptor.Field(x => x.Errors).Type<ListType<ApiErrorType>>();
         }
     }
 
-    public class ApiResultType<T, TResult> : ObjectGraphType<ApiResult<T>> where T : class where TResult : class, IGraphType
+    public class ApiResultType<T, TResult> : ObjectType<ApiResult<T>> where T : class where TResult : class, IOutputType
     {
-        public ApiResultType()
+        protected override void Configure(IObjectTypeDescriptor<ApiResult<T>> descriptor)
         {
-            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
-            Field(x => x.AccessMode, type: typeof(AccessModeEnumType));
-            Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
-            Field(x => x.Result, type: typeof(TResult));
+            descriptor.Field(x => x.IsSucceed).Type<BooleanType>();
+            descriptor.Field(x => x.AccessMode).Type<AccessModeEnumType>();
+            descriptor.Field(x => x.Errors).Type<ListType<ApiErrorType>>();
+            descriptor.Field(x => x.Result).Type<TResult>();
         }
     }
 }

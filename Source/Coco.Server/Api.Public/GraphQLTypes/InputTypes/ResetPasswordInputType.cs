@@ -1,17 +1,17 @@
 ﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class ResetPasswordInputType : InputObjectGraphType<ResetPasswordModel>
+    public class ResetPasswordInputType : InputObjectType<ResetPasswordModel>
     {
-        public ResetPasswordInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<ResetPasswordModel> descriptor)
         {
-            Field(x => x.Email, false, typeof(StringGraphType));
-            Field(x => x.ConfirmPassword, false, typeof(StringGraphType));
-            Field(x => x.CurrentPassword, false, typeof(StringGraphType));
-            Field(x => x.Password, false, typeof(StringGraphType));
-            Field(x => x.Key, false, typeof(StringGraphType));
+            descriptor.Field(x => x.Email).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.ConfirmPassword).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.CurrentPassword).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Password).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Key).Type<NonNullType<StringType>>();
         }
     }
 }

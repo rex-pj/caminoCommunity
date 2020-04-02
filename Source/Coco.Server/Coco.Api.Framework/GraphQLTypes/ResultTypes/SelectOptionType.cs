@@ -1,15 +1,15 @@
 ﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class SelectOptionType<T> : ObjectGraphType<T> where T : SelectOption
+    public class SelectOptionType<T> : ObjectType<T> where T : SelectOption
     {
-        public SelectOptionType()
+        protected override void Configure(IObjectTypeDescriptor<T> descriptor)
         {
-            Field(x => x.Id, type: (typeof(StringGraphType)));
-            Field(x => x.Text, type: (typeof(StringGraphType)));
-            Field(x => x.IsSelected, type: (typeof(BooleanGraphType)));
+            descriptor.Field(x => x.Id).Type<StringType>();
+            descriptor.Field(x => x.Text).Type<StringType>();
+            descriptor.Field(x => x.IsSelected).Type<BooleanType>();
         }
     }
 

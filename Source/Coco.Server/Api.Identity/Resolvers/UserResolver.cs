@@ -1,16 +1,14 @@
 ﻿using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
-using Coco.Common.Const;
 using Coco.Entities.Enums;
 using Coco.Entities.Dtos.General;
-using GraphQL;
-using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
 using Coco.Entities.Dtos.User;
 using System.Collections.Generic;
 using Api.Identity.Resolvers.Contracts;
+using HotChocolate.Resolvers;
 
 namespace Api.Identity.Resolvers
 {
@@ -25,12 +23,12 @@ namespace Api.Identity.Resolvers
             _loginManager = loginManager;
         }
 
-        public async Task<ApiResult> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateUserInfoItemAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<UpdatePerItemModel>("criterias");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var model = context.Argument<UpdatePerItemModel>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 if (!model.CanEdit)
                 {
@@ -55,7 +53,7 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
@@ -78,16 +76,16 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> UpdateAvatarAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateAvatarAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Avatar;
                 var result = await _userManager.UpdateAvatarAsync(model, userContext.CurrentUser.Id);
@@ -105,12 +103,12 @@ namespace Api.Identity.Resolvers
             }
         }
 
-        public async Task<ApiResult> UpdateCoverAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateCoverAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Cover;
                 var result = await _userManager.UpdateCoverAsync(model, userContext.CurrentUser.Id);
@@ -124,16 +122,16 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> DeleteAvatarAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> DeleteAvatarAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Avatar);
 
@@ -146,16 +144,16 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> DeleteCoverAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> DeleteCoverAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
 
@@ -168,16 +166,16 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> UpdateIdentifierAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdateIdentifierAsync(IResolverContext context)
         {
             try
             {
-                var user = context.GetArgument<ApplicationUser>("user");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var user = context.Argument<ApplicationUser>("user");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
                 user.Id = currentUser.Id;
@@ -193,16 +191,16 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ex.Message, ex);
+                throw;
             }
         }
 
-        public async Task<ApiResult> UpdatePasswordAsync(ResolveFieldContext<object> context)
+        public async Task<ApiResult> UpdatePasswordAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<UserPasswordUpdateDto>("criterias");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var model = context.Argument<UserPasswordUpdateDto>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
                 model.UserId = currentUser.Id;
@@ -223,15 +221,15 @@ namespace Api.Identity.Resolvers
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ex.Message, ex);
+                throw;
             }
         }
 
         #region Privates
-        private UpdateUserPhotoDto GenerateUserPhotoModel(ResolveFieldContext<object> context)
+        private UpdateUserPhotoDto GenerateUserPhotoModel(IResolverContext context)
         {
-            var model = context.GetArgument<UpdateUserPhotoDto>("criterias");
-            var userContext = context.UserContext["SessionContext"] as ISessionContext;
+            var model = context.Argument<UpdateUserPhotoDto>("criterias");
+            var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
             if (!model.CanEdit)
             {

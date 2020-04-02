@@ -1,6 +1,6 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Entities.Dtos.User;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
@@ -9,13 +9,13 @@ namespace Api.Identity.GraphQLTypes.ResultTypes
 
     }
 
-    public class UserIdentifierUpdateResultType : ObjectGraphType<UserIdentifierUpdateDto>
+    public class UserIdentifierUpdateResultType : ObjectType<UserIdentifierUpdateDto>
     {
-        public UserIdentifierUpdateResultType()
+        protected override void Configure(IObjectTypeDescriptor<UserIdentifierUpdateDto> descriptor)
         {
-            Field(x => x.Lastname, false, typeof(StringGraphType));
-            Field(x => x.Firstname, false, typeof(StringGraphType));
-            Field(x => x.DisplayName, false, typeof(StringGraphType));
+            descriptor.Field(x => x.Lastname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Firstname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.DisplayName).Type<NonNullType<StringType>>();
         }
     }
 }

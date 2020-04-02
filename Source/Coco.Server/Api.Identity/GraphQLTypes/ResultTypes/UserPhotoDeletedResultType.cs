@@ -1,6 +1,6 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Entities.Dtos.General;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
@@ -9,11 +9,11 @@ namespace Api.Identity.GraphQLTypes.ResultTypes
 
     }
 
-    public class UserPhotoDeletedResultType : ObjectGraphType<UpdateUserPhotoDto>
+    public class UserPhotoDeletedResultType : ObjectType<UpdateUserPhotoDto>
     {
-        public UserPhotoDeletedResultType()
+        protected override void Configure(IObjectTypeDescriptor<UpdateUserPhotoDto> descriptor)
         {
-            Field(x => x.CanEdit, false, typeof(BooleanGraphType));
+            descriptor.Field(x => x.CanEdit).Type<BooleanType>();
         }
     }
 }

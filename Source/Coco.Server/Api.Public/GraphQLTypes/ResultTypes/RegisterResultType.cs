@@ -1,15 +1,15 @@
 ﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
-    public class RegisterResultType: ObjectGraphType<ApiResult>
+    public class RegisterResultType: ObjectType<ApiResult>
     {
-        public RegisterResultType()
+        protected override void Configure(IObjectTypeDescriptor<ApiResult> descriptor)
         {
-            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
-            Field(x => x.Errors, type: typeof(ListGraphType<ApiErrorType>));
+            descriptor.Field(x => x.IsSucceed).Type<BooleanType>();
+            descriptor.Field(x => x.Errors).Type<ListType<ApiErrorType>>();
         }
     }
 }

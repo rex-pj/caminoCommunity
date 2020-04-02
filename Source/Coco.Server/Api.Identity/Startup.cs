@@ -12,6 +12,7 @@ using Coco.Business.MappingProfiles;
 using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.Infrastructure.Extensions;
 using Api.Identity.Infrastructure.Extensions;
+using HotChocolate.AspNetCore;
 
 namespace Api.Identity
 {
@@ -75,7 +76,8 @@ namespace Api.Identity
             app.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors(MyAllowSpecificOrigins)
-                .UseGraphiQl("/api/graphql")
+                .UseWebSockets()
+                .UseGraphQL("/api/graphql")
                 .UseBasicApiMiddleware();
         }
     }

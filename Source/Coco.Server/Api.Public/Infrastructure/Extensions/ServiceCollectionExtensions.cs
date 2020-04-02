@@ -1,15 +1,12 @@
-﻿using Api.Public.GraphQLSchemas;
-using Api.Public.GraphQLTypes.InputTypes;
+﻿using Api.Public.GraphQLTypes.InputTypes;
 using Api.Public.GraphQLTypes.ResultTypes;
-using Api.Public.Mutations;
-using Api.Public.Queries;
+using Api.Public.MutationTypes;
+using Api.Public.QueryTypes;
 using Api.Public.Resolvers;
 using Api.Public.Resolvers.Contracts;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
-using Coco.Api.Framework.Models;
-using GraphQL;
-using GraphQL.Http;
-using GraphQL.Types;
+using HotChocolate;
+using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Public.Infrastructure.Extensions
@@ -18,33 +15,28 @@ namespace Api.Public.Infrastructure.Extensions
     {
         public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
         {
-            return services.AddSingleton<IDocumentExecuter, DocumentExecuter>()
-                .AddSingleton<IDocumentWriter, DocumentWriter>()
+            return services
                 .AddTransient<IUserResolver, UserResolver>()
-                .AddSingleton<RegisterInputType>()
-                .AddSingleton<SigninInputType>()
-                .AddTransient<UserMutation>()
-                .AddTransient<UserQuery>()
-                .AddSingleton(typeof(ListGraphType<>))
-                .AddSingleton<ResetPasswordInputType>()
-                .AddSingleton<AccessModeEnumType>()
-                .AddSingleton<ApiErrorType>()
-                .AddSingleton<GenderSelectOptionType>()
-                .AddSingleton<CountrySelectOptionType>()
-                .AddSingleton<FindUserInputType>()
-                .AddSingleton<ActiveUserInputType>()
-                .AddSingleton<ForgotPasswordInputType>()
-                .AddSingleton<ApiResultType>()
-                .AddSingleton<RegisterResultType>()
-                .AddSingleton<UserInfoResultType>()
-                .AddSingleton<UserTokenResultType>()
-                .AddSingleton<FullUserInfoResultType>()
-                .AddSingleton<ActiveUserResultType>()
-                .AddSingleton<ResetPasswordResultType>()
-                .AddSingleton<ApiResultType<UserInfoExtend, FullUserInfoResultType>, ApiFullUserInfoResultType>()
-                .AddSingleton<ApiResultType<UserTokenResult, UserTokenResultType>, ApiUserTokenResultType>()
-                .AddSingleton<LoggedInUserResultType>()
-                .AddScoped<ISchema, UserSchema>();
+                .AddGraphQL(sp => SchemaBuilder.New()
+                .AddServices(sp)
+                .AddQueryType<UserQueryType>()
+                .AddMutationType<UserMutationType>()
+                .AddType<RegisterInputType>()
+                .AddType<SigninInputType>()
+                .AddType<RegisterInputType>()
+                .AddType<SigninInputType>()
+                .AddType<UserMutationType>()
+                .AddType<UserQueryType>()
+                .AddType(typeof(ListType<>))
+                .AddType<ResetPasswordInputType>()
+                .AddType<AccessModeEnumType>()
+                .AddType<ApiErrorType>()
+                .AddType<GenderSelectOptionType>()
+                .AddType<CountrySelectOptionType>()
+                .AddType<FindUserInputType>()
+                .AddType<ActiveUserInputType>()
+                .AddType<ForgotPasswordInputType>()
+                .Create());
         }
     }
 }

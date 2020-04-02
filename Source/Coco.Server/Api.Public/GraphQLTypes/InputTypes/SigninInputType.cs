@@ -1,14 +1,14 @@
 ﻿using Api.Public.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class SigninInputType : InputObjectGraphType<SigninModel>
+    public class SigninInputType : InputObjectType<SigninModel>
     {
-        public SigninInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<SigninModel> descriptor)
         {
-            Field(x => x.Password, type: typeof(StringGraphType));
-            Field(x => x.Username, type: typeof(StringGraphType));
+            descriptor.Field(x => x.Password).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Username).Type<NonNullType<StringType>>();
         }
     }
 }
