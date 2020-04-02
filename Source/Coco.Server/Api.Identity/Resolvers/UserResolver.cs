@@ -1,16 +1,18 @@
 ﻿using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
-using Coco.Common.Const;
 using Coco.Entities.Enums;
 using Coco.Entities.Dtos.General;
-using GraphQL;
-using GraphQL.Types;
 using System;
 using System.Threading.Tasks;
 using Coco.Entities.Dtos.User;
 using System.Collections.Generic;
 using Api.Identity.Resolvers.Contracts;
+using HotChocolate.Resolvers;
+using Coco.Common.Exceptions;
+using Coco.Commons.Models;
+using Coco.Common.Const;
+using Api.Identity.Models;
 
 namespace Api.Identity.Resolvers
 {
@@ -25,12 +27,12 @@ namespace Api.Identity.Resolvers
             _loginManager = loginManager;
         }
 
-        public async Task<ApiResult> UpdateUserInfoItemAsync(ResolveFieldContext<object> context)
+        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<UpdatePerItemModel>("criterias");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var model = context.Argument<UpdatePerItemModel>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 if (!model.CanEdit)
                 {
@@ -46,25 +48,20 @@ namespace Api.Identity.Resolvers
 
                 var result = await _userManager.UpdateInfoItemAsync(model, currentUser.UserIdentityId, currentUser.AuthenticationToken);
 
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
                 return result;
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> SignoutAsync(IDictionary<string, object> userContext)
+        public async Task<IApiResult> SignoutAsync(IResolverContext context)
         {
             try
             {
-                var sessionContext = userContext["SessionContext"] as ISessionContext;
-
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
                 if (sessionContext == null || sessionContext.CurrentUser == null)
                 {
                     throw new UnauthorizedAccessException();
@@ -72,137 +69,145 @@ namespace Api.Identity.Resolvers
 
                 var currentUser = sessionContext.CurrentUser;
 
-                var result = await _loginManager.LogoutAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                var isLoggedout = await _loginManager.LogoutAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
 
-                return result;
+                if (!isLoggedout)
+                {
+                    return ApiResult.Failed(new CommonError()
+                    {
+                        Code = ErrorMessageConst.EXCEPTION,
+                        Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
+                    });
+                }
+                return ApiResult.Success();
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> UpdateAvatarAsync(ResolveFieldContext<object> context)
+        public async Task<IApiResult> UpdateAvatarAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Avatar;
-                var result = await _userManager.UpdateAvatarAsync(model, userContext.CurrentUser.Id);
+                var result = await _userManager.UpdateAvatarAsync(model, userContext.CurrentUser);
 
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
-                return result;
+                return ApiResult.Success(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> UpdateCoverAsync(ResolveFieldContext<object> context)
+        public async Task<IApiResult> UpdateCoverAsync(IResolverContext context)
         {
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 model.UserPhotoType = UserPhotoTypeEnum.Cover;
-                var result = await _userManager.UpdateCoverAsync(model, userContext.CurrentUser.Id);
-                
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
+                var result = await _userManager.UpdateCoverAsync(model, userContext.CurrentUser);
 
-                return result;
+                return ApiResult.Success(result);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> DeleteAvatarAsync(ResolveFieldContext<object> context)
+        public async Task<IApiResult> DeleteAvatarAsync(IResolverContext context)
         {
             try
             {
-                var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var criterias = context.Argument<PhotoDeleteModel>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
+
+                if (!criterias.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                if (userContext == null || userContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Avatar);
-
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
-                return result;
+                return ApiResult.Success(result);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> DeleteCoverAsync(ResolveFieldContext<object> context)
+        public async Task<IApiResult> DeleteCoverAsync(IResolverContext context)
         {
             try
             {
-                var model = GenerateUserPhotoModel(context);
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var criterias = context.Argument<PhotoDeleteModel>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
+
+                if (!criterias.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                if (userContext == null || userContext.CurrentUser == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
                 var result = await _userManager.DeleteUserPhotoAsync(userContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
 
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
-                return result;
+                return ApiResult.Success(result);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ErrorMessageConst.EXCEPTION, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> UpdateIdentifierAsync(ResolveFieldContext<object> context)
+        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context)
         {
             try
             {
-                var user = context.GetArgument<ApplicationUser>("user");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var criterias = context.Argument<UserIdentifierUpdateDto>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
-                user.Id = currentUser.Id;
+                currentUser.Lastname = criterias.Lastname;
+                currentUser.Firstname = criterias.Firstname;
+                currentUser.DisplayName = criterias.DisplayName;
 
-                var result = await _userManager.UpdateIdentifierAsync(user, currentUser.UserIdentityId, currentUser.AuthenticationToken);
-
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
-                return result;
+                return await _userManager.UpdateIdentifierAsync(currentUser, currentUser.UserIdentityId, currentUser.AuthenticationToken);
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ex.Message, ex);
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> UpdatePasswordAsync(ResolveFieldContext<object> context)
+        public async Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context)
         {
             try
             {
-                var model = context.GetArgument<UserPasswordUpdateDto>("criterias");
-                var userContext = context.UserContext["SessionContext"] as ISessionContext;
+                var model = context.Argument<UserPasswordUpdateDto>("criterias");
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
                 var currentUser = userContext.CurrentUser;
                 model.UserId = currentUser.Id;
@@ -214,24 +219,20 @@ namespace Api.Identity.Resolvers
 
                 var result = await _userManager.ChangePasswordAsync(currentUser.Id, model.CurrentPassword, model.NewPassword);
 
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
                 return result;
             }
             catch (Exception ex)
             {
-                throw new ExecutionError(ex.Message, ex);
+                HandleContextError(context, ex);
+                return new UserTokenResult(false);
             }
         }
 
         #region Privates
-        private UpdateUserPhotoDto GenerateUserPhotoModel(ResolveFieldContext<object> context)
+        private UserPhotoUpdateDto GenerateUserPhotoModel(IResolverContext context)
         {
-            var model = context.GetArgument<UpdateUserPhotoDto>("criterias");
-            var userContext = context.UserContext["SessionContext"] as ISessionContext;
+            var model = context.Argument<UserPhotoUpdateDto>("criterias");
+            var userContext = context.ContextData["SessionContext"] as ISessionContext;
 
             if (!model.CanEdit)
             {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coco.Api.Framework.SessionManager.Core;
+using Coco.Commons.Models;
 
 namespace Coco.Api.Framework.SessionManager.Validators
 {
@@ -32,7 +33,7 @@ namespace Coco.Api.Framework.SessionManager.Validators
         /// <param name="user">The user whose password should be validated.</param>
         /// <param name="password">The password supplied for validation</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public virtual Task<ApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user, string password)
+        public virtual Task<IApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user, string password)
         {
             if (password == null)
             {
@@ -42,7 +43,7 @@ namespace Coco.Api.Framework.SessionManager.Validators
             {
                 throw new ArgumentNullException(nameof(manager));
             }
-            var errors = new List<ApiError>();
+            var errors = new List<CommonError>();
             var options = manager.Options.Password;
             if (string.IsNullOrWhiteSpace(password) || password.Length < options.RequiredLength)
             {

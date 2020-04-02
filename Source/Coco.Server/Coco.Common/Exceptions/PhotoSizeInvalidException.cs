@@ -3,7 +3,7 @@ using System;
 
 namespace Coco.Common.Exceptions
 {
-    public class PhotoSizeInvalidException: Exception
+    public class PhotoSizeInvalidException : Exception
     {
         public string Code { get; private set; }
         /// <summary>

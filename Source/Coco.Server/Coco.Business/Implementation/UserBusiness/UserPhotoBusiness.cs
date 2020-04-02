@@ -33,7 +33,7 @@ namespace Coco.Business.Implementation.UserBusiness
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public async Task<UpdateUserPhotoDto> UpdateUserPhotoAsync(UpdateUserPhotoDto model, long userId)
+        public async Task<UserPhotoUpdateDto> UpdateUserPhotoAsync(UserPhotoUpdateDto model, long userId)
         {
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)

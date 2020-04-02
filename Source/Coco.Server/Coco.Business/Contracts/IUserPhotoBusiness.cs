@@ -8,7 +8,7 @@ namespace Coco.Business.Contracts
 {
     public interface IUserPhotoBusiness
     {
-        Task<UpdateUserPhotoDto> UpdateUserPhotoAsync(UpdateUserPhotoDto model, long userId);
+        Task<UserPhotoUpdateDto> UpdateUserPhotoAsync(UserPhotoUpdateDto model, long userId);
         Task DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
         UserPhotoDto GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type);
     }

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
+import { RouterLinkButtonSecondary } from "../../atoms/RouterLinkButtons";
 import { SessionContext } from "../../../store/context/SessionContext";
 import ProfileDropdown from "./ProfileDropdown";
 
@@ -30,15 +30,13 @@ const Devided = styled.li`
   margin: 0 2px;
 `;
 
-const AuthButton = styled(RouterLinkButton)`
-  color: ${p => p.theme.color.neutral};
+const AuthButton = styled(RouterLinkButtonSecondary)`
+  color: ${p => p.theme.color.lighter};
   font-weight: 500;
   height: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: ${p => p.theme.fontSize.small};
-
-  border: 1px solid ${p => p.theme.color.primaryLight};
 
   :hover {
     color: ${p => p.theme.color.light};

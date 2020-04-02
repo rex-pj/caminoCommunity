@@ -1,54 +1,65 @@
 ﻿using Coco.Api.Framework.Commons.Enums;
+using Coco.Commons.Models;
 using System.Collections.Generic;
 
 namespace Coco.Api.Framework.Models
 {
-    public class ApiResult<TResult> : ApiResult
+    public interface IApiResult<TResult>
     {
-        public ApiResult(bool isSucceed = false) : base(isSucceed) { }
-
-        public TResult Result { get; set; }
-
-        public static ApiResult<TResult> Success(TResult result)
-        {
-            var updateResult = new ApiResult<TResult>(true);
-            updateResult.Result = result;
-            return updateResult;
-        }
-
-        public static ApiResult Success(TResult result, bool canEdit)
-        {
-            var accessMode = canEdit ? AccessModeEnum.CanEdit : AccessModeEnum.ReadOnly;
-            var updateResult = new ApiResult<TResult>(true)
-            {
-                Result = result,
-                AccessMode = accessMode
-            };
-            return updateResult;
-        }
+        AccessModeEnum AccessMode { get; set; }
+        bool IsSucceed { get; set; }
+        TResult Result { get; set; }
+        List<CommonError> Errors { get; set; }
     }
 
-    public class ApiResult
+    public interface IApiResult : IApiResult<object>
     {
+    }
+
+    public class ApiResult : ApiResult<object>, IApiResult
+    {
+        public ApiResult() : this(false)
+        {
+
+        }
+
         public ApiResult(bool isSucceed = false)
         {
             IsSucceed = isSucceed;
-            Errors = new List<ApiError>();
+            Errors = new List<CommonError>();
         }
+    }
 
+    public class ApiResult<TResult> : IApiResult<TResult>
+    {
         public AccessModeEnum AccessMode { get; set; }
-
         public bool IsSucceed { get; set; }
-        public List<ApiError> Errors { get; protected set; }
+        public List<CommonError> Errors { get; set; }
+        public TResult Result { get; set; }
 
-        public static ApiResult Success()
+        public static IApiResult Success()
         {
             return new ApiResult(true);
         }
 
-        public static ApiResult Failed(ApiError[] errors)
+        public static IApiResult Success(TResult result)
         {
-            var result = new ApiResult(false);
+            var updateResult = Success();
+            updateResult.Result = result;
+            return updateResult;
+        }
+
+        public static IApiResult Success(TResult result, bool canEdit)
+        {
+            var accessMode = canEdit ? AccessModeEnum.CanEdit : AccessModeEnum.ReadOnly;
+            var updateResult = Success(result);
+            updateResult.AccessMode = accessMode;
+            return updateResult;
+        }
+
+        public static IApiResult Failed(CommonError[] errors)
+        {
+            var result = new ApiResult();
             if (errors != null)
             {
                 result.Errors.AddRange(errors);
@@ -56,14 +67,9 @@ namespace Coco.Api.Framework.Models
             return result;
         }
 
-        public static ApiResult Failed(ApiError error)
+        public static IApiResult Failed(CommonError error)
         {
-            var result = new ApiResult(false);
-            if (error != null)
-            {
-                result.Errors.Add(error);
-            }
-            return result;
+            return Failed(new CommonError[] { error });
         }
     }
 }

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TextArea } from "../../atoms/TextAreas";
 import {
   ButtonOutlinePrimary,
-  ButtonOutlineNormal
+  ButtonOutlineNormal,
 } from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled.div`
@@ -15,7 +15,7 @@ const Wrap = styled.div`
 
   button {
     vertical-align: bottom;
-    margin-left: ${p => p.theme.size.tiny};
+    margin-left: ${(p) => p.theme.size.tiny};
   }
 `;
 
@@ -23,24 +23,24 @@ const TextLabel = styled.div`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.neutral};
-    line-height: ${p => p.theme.size.normal};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    line-height: ${(p) => p.theme.size.normal};
   }
 
   &.empty {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.danger};
     font-weight: 400;
   }
 `;
 
 const TextEditing = styled(TextArea)`
   border: 0;
-  border-bottom: 1px dashed ${p => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
   border-radius: 0;
   max-width: 50%;
 `;
 
-export default props => {
+export default (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(props.value ? props.value : "");
 
@@ -79,9 +79,9 @@ export default props => {
         .onUpdated({
           primaryKey: props.primaryKey,
           value: newValue,
-          propertyName: props.name
+          propertyName: props.name,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response) {
             const { data } = response;
             const { updateUserInfoItem } = data;
@@ -91,9 +91,8 @@ export default props => {
             setValue(currentValue);
           }
         })
-        .catch(function(errors) {
+        .catch(function (errors) {
           setValue(currentValue);
-          console.log(errors);
         });
     }
 

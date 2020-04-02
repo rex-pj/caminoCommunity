@@ -1,9 +1,9 @@
 ﻿using Coco.Api.Framework.Commons.Enums;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class AccessModeEnumType : EnumerationGraphType<AccessModeEnum>
+    public class AccessModeEnumType : EnumType<AccessModeEnum>
     {
     }
 }

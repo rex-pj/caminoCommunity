@@ -1,20 +1,19 @@
 ﻿using Coco.Api.Framework.Models;
-using Coco.Entities.Dtos.General;
-using GraphQL.Types;
-using System.Collections.Generic;
+using Coco.Entities.Dtos.User;
+using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 
 namespace Api.Identity.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        Task<ApiResult> UpdateUserInfoItemAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> SignoutAsync(IDictionary<string, object> userContext);
-        Task<ApiResult> UpdateAvatarAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> UpdateCoverAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> DeleteAvatarAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> DeleteCoverAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> UpdateIdentifierAsync(ResolveFieldContext<object> context);
-        Task<ApiResult> UpdatePasswordAsync(ResolveFieldContext<object> context);
+        Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context);
+        Task<IApiResult> SignoutAsync(IResolverContext context);
+        Task<IApiResult> UpdateAvatarAsync(IResolverContext context);
+        Task<IApiResult> UpdateCoverAsync(IResolverContext context);
+        Task<IApiResult> DeleteAvatarAsync(IResolverContext context);
+        Task<IApiResult> DeleteCoverAsync(IResolverContext context);
+        Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context);
+        Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context);
     }
 }

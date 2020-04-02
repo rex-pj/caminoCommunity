@@ -2,6 +2,7 @@
 using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Models;
 using Coco.Common.Const;
+using Coco.Commons.Models;
 
 namespace Coco.Api.Framework.SessionManager.Core
 {
@@ -14,347 +15,347 @@ namespace Coco.Api.Framework.SessionManager.Core
     public class IdentityErrorDescriber
     {
         /// <summary>
-        /// Returns the default <see cref="ApiError"/>.
+        /// Returns the default <see cref="CommonError"/>.
         /// </summary>
-        /// <returns>The default <see cref="ApiError"/>.</returns>
-        public virtual ApiError DefaultError()
+        /// <returns>The default <see cref="CommonError"/>.</returns>
+        public virtual CommonError DefaultError()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(DefaultError),
-                Description = ExceptionConstant.DefaultError
+                Message = ExceptionConstant.DefaultError
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a concurrency failure.
+        /// Returns an <see cref="CommonError"/> indicating a concurrency failure.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a concurrency failure.</returns>
-        public virtual ApiError ConcurrencyFailure()
+        /// <returns>An <see cref="CommonError"/> indicating a concurrency failure.</returns>
+        public virtual CommonError ConcurrencyFailure()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(ConcurrencyFailure),
-                Description = ExceptionConstant.ConcurrencyFailure
+                Message = ExceptionConstant.ConcurrencyFailure
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password mismatch.
+        /// Returns an <see cref="CommonError"/> indicating a password mismatch.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a password mismatch.</returns>
-        public virtual ApiError PasswordMismatch()
+        /// <returns>An <see cref="CommonError"/> indicating a password mismatch.</returns>
+        public virtual CommonError PasswordMismatch()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordMismatch),
-                Description = ExceptionConstant.PasswordMismatch
+                Message = ExceptionConstant.PasswordMismatch
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> an unexpected error has occurred.
+        /// Returns an <see cref="CommonError"/> an unexpected error has occurred.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> an unexpected error has occurred.</returns>
-        public virtual ApiError UnexpectedErrorOccurred()
+        /// <returns>An <see cref="CommonError"/> an unexpected error has occurred.</returns>
+        public virtual CommonError UnexpectedErrorOccurred()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UnexpectedErrorOccurred),
-                Description = ExceptionConstant.UnexpectedErrorOccurred
+                Message = ExceptionConstant.UnexpectedErrorOccurred
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating an invalid token.
+        /// Returns an <see cref="CommonError"/> indicating an invalid token.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating an invalid token.</returns>
-        public virtual ApiError InvalidToken()
+        /// <returns>An <see cref="CommonError"/> indicating an invalid token.</returns>
+        public virtual CommonError InvalidToken()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(InvalidToken),
-                Description = ExceptionConstant.InvalidToken
+                Message = ExceptionConstant.InvalidToken
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a recovery code was not redeemed.
+        /// Returns an <see cref="CommonError"/> indicating a recovery code was not redeemed.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a recovery code was not redeemed.</returns>
-        public virtual ApiError RecoveryCodeRedemptionFailed()
+        /// <returns>An <see cref="CommonError"/> indicating a recovery code was not redeemed.</returns>
+        public virtual CommonError RecoveryCodeRedemptionFailed()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(RecoveryCodeRedemptionFailed),
-                Description = ExceptionConstant.RecoveryCodeRedemptionFailed
+                Message = ExceptionConstant.RecoveryCodeRedemptionFailed
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating an external login is already associated with an user.
+        /// Returns an <see cref="CommonError"/> indicating an external login is already associated with an user.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating an external login is already associated with an user.</returns>
-        public virtual ApiError LoginAlreadyAssociated()
+        /// <returns>An <see cref="CommonError"/> indicating an external login is already associated with an user.</returns>
+        public virtual CommonError LoginAlreadyAssociated()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(LoginAlreadyAssociated),
-                Description = ExceptionConstant.LoginAlreadyAssociated
+                Message = ExceptionConstant.LoginAlreadyAssociated
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified user <paramref name="userName"/> is invalid.
+        /// Returns an <see cref="CommonError"/> indicating the specified user <paramref name="userName"/> is invalid.
         /// </summary>
         /// <param name="userName">The user name that is invalid.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specified user <paramref name="userName"/> is invalid.</returns>
-        public virtual ApiError InvalidUserName(string userName)
+        /// <returns>An <see cref="CommonError"/> indicating the specified user <paramref name="userName"/> is invalid.</returns>
+        public virtual CommonError InvalidUserName(string userName)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(InvalidUserName),
-                Description = MessageResources.FormatInvalidUserName(userName)
+                Message = MessageResources.FormatInvalidUserName(userName)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is invalid.
+        /// Returns an <see cref="CommonError"/> indicating the specified <paramref name="email"/> is invalid.
         /// </summary>
         /// <param name="email">The email that is invalid.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is invalid.</returns>
-        public virtual ApiError InvalidEmail(string email)
+        /// <returns>An <see cref="CommonError"/> indicating the specified <paramref name="email"/> is invalid.</returns>
+        public virtual CommonError InvalidEmail(string email)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(InvalidEmail),
-                Description = MessageResources.FormatInvalidEmail(email)
+                Message = MessageResources.FormatInvalidEmail(email)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="userName"/> already exists.
+        /// Returns an <see cref="CommonError"/> indicating the specified <paramref name="userName"/> already exists.
         /// </summary>
         /// <param name="userName">The user name that already exists.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="userName"/> already exists.</returns>
-        public virtual ApiError DuplicateUserName(string userName)
+        /// <returns>An <see cref="CommonError"/> indicating the specified <paramref name="userName"/> already exists.</returns>
+        public virtual CommonError DuplicateUserName(string userName)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(DuplicateUserName),
-                Description = MessageResources.FormatDuplicateUserName(userName)
+                Message = MessageResources.FormatDuplicateUserName(userName)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an user.
+        /// Returns an <see cref="CommonError"/> indicating the specified <paramref name="email"/> is already associated with an user.
         /// </summary>
         /// <param name="email">The email that is already associated with an user.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specified <paramref name="email"/> is already associated with an user.</returns>
-        public virtual ApiError DuplicateEmail(string email)
+        /// <returns>An <see cref="CommonError"/> indicating the specified <paramref name="email"/> is already associated with an user.</returns>
+        public virtual CommonError DuplicateEmail(string email)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(DuplicateEmail),
-                Description = MessageResources.FormatDuplicateEmail(email)
+                Message = MessageResources.FormatDuplicateEmail(email)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="role"/> name is invalid.
+        /// Returns an <see cref="CommonError"/> indicating the specified <paramref name="role"/> name is invalid.
         /// </summary>
         /// <param name="role">The invalid role.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specific role <paramref name="role"/> name is invalid.</returns>
-        public virtual ApiError InvalidRoleName(string role)
+        /// <returns>An <see cref="CommonError"/> indicating the specific role <paramref name="role"/> name is invalid.</returns>
+        public virtual CommonError InvalidRoleName(string role)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(InvalidRoleName),
-                Description = MessageResources.FormatInvalidRoleName(role)
+                Message = MessageResources.FormatInvalidRoleName(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating the specified <paramref name="role"/> name already exists.
+        /// Returns an <see cref="CommonError"/> indicating the specified <paramref name="role"/> name already exists.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="ApiError"/> indicating the specific role <paramref name="role"/> name already exists.</returns>
-        public virtual ApiError DuplicateRoleName(string role)
+        /// <returns>An <see cref="CommonError"/> indicating the specific role <paramref name="role"/> name already exists.</returns>
+        public virtual CommonError DuplicateRoleName(string role)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(DuplicateRoleName),
-                Description = MessageResources.FormatDuplicateRoleName(role)
+                Message = MessageResources.FormatDuplicateRoleName(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a user already has a password.
+        /// Returns an <see cref="CommonError"/> indicating a user already has a password.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a user already has a password.</returns>
-        public virtual ApiError UserAlreadyHasPassword()
+        /// <returns>An <see cref="CommonError"/> indicating a user already has a password.</returns>
+        public virtual CommonError UserAlreadyHasPassword()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UserAlreadyHasPassword),
-                Description = ExceptionConstant.UserAlreadyHasPassword
+                Message = ExceptionConstant.UserAlreadyHasPassword
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a user already actived.
+        /// Returns an <see cref="CommonError"/> indicating a user already actived.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a user already actived.</returns>
-        public virtual ApiError UserAlreadyActived()
+        /// <returns>An <see cref="CommonError"/> indicating a user already actived.</returns>
+        public virtual CommonError UserAlreadyActived()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UserAlreadyActived),
-                Description = ExceptionConstant.UserAlreadyActived
+                Message = ExceptionConstant.UserAlreadyActived
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating user lockout is not enabled.
+        /// Returns an <see cref="CommonError"/> indicating user lockout is not enabled.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating user lockout is not enabled.</returns>
-        public virtual ApiError UserLockoutNotEnabled()
+        /// <returns>An <see cref="CommonError"/> indicating user lockout is not enabled.</returns>
+        public virtual CommonError UserLockoutNotEnabled()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UserLockoutNotEnabled),
-                Description = ExceptionConstant.UserLockoutNotEnabled
+                Message = ExceptionConstant.UserLockoutNotEnabled
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a user is already in the specified <paramref name="role"/>.
+        /// Returns an <see cref="CommonError"/> indicating a user is already in the specified <paramref name="role"/>.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="ApiError"/> indicating a user is already in the specified <paramref name="role"/>.</returns>
-        public virtual ApiError UserAlreadyInRole(string role)
+        /// <returns>An <see cref="CommonError"/> indicating a user is already in the specified <paramref name="role"/>.</returns>
+        public virtual CommonError UserAlreadyInRole(string role)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UserAlreadyInRole),
-                Description = MessageResources.FormatUserAlreadyInRole(role)
+                Message = MessageResources.FormatUserAlreadyInRole(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a user is not in the specified <paramref name="role"/>.
+        /// Returns an <see cref="CommonError"/> indicating a user is not in the specified <paramref name="role"/>.
         /// </summary>
         /// <param name="role">The duplicate role.</param>
-        /// <returns>An <see cref="ApiError"/> indicating a user is not in the specified <paramref name="role"/>.</returns>
-        public virtual ApiError UserNotInRole(string role)
+        /// <returns>An <see cref="CommonError"/> indicating a user is not in the specified <paramref name="role"/>.</returns>
+        public virtual CommonError UserNotInRole(string role)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(UserNotInRole),
-                Description = MessageResources.FormatUserNotInRole(role)
+                Message = MessageResources.FormatUserNotInRole(role)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
+        /// Returns an <see cref="CommonError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
         /// </summary>
         /// <param name="length">The length that is not long enough.</param>
-        /// <returns>An <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.</returns>
-        public virtual ApiError PasswordTooShort(int length)
+        /// <returns>An <see cref="CommonError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.</returns>
+        public virtual CommonError PasswordTooShort(int length)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordTooShort),
-                Description = MessageResources.FormatPasswordTooShort(length)
+                Message = MessageResources.FormatPasswordTooShort(length)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
+        /// Returns an <see cref="CommonError"/> indicating a password of the specified <paramref name="length"/> does not meet the minimum length requirements.
         /// </summary>
         /// <param name="length">The length that is too long.</param>
-        /// <returns>An <see cref="ApiError"/> indicating a password of the specified <paramref name="length"/> does not meet the maximum length requirements.</returns>
-        public virtual ApiError PasswordTooLong(int length)
+        /// <returns>An <see cref="CommonError"/> indicating a password of the specified <paramref name="length"/> does not meet the maximum length requirements.</returns>
+        public virtual CommonError PasswordTooLong(int length)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordTooLong),
-                Description = MessageResources.FormatPasswordTooLong(length)
+                Message = MessageResources.FormatPasswordTooLong(length)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.
+        /// Returns an <see cref="CommonError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.
         /// </summary>
         /// <param name="uniqueChars">The number of different chars that must be used.</param>
-        /// <returns>An <see cref="ApiError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.</returns>
-        public virtual ApiError PasswordRequiresUniqueChars(int uniqueChars)
+        /// <returns>An <see cref="CommonError"/> indicating a password does not meet the minimum number <paramref name="uniqueChars"/> of unique chars.</returns>
+        public virtual CommonError PasswordRequiresUniqueChars(int uniqueChars)
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordRequiresUniqueChars),
-                Description = MessageResources.FormatPasswordRequiresUniqueChars(uniqueChars)
+                Message = MessageResources.FormatPasswordRequiresUniqueChars(uniqueChars)
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a non-alphanumeric character, which is required by the password policy.
+        /// Returns an <see cref="CommonError"/> indicating a password entered does not contain a non-alphanumeric character, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a non-alphanumeric character.</returns>
-        public virtual ApiError PasswordRequiresNonAlphanumeric()
+        /// <returns>An <see cref="CommonError"/> indicating a password entered does not contain a non-alphanumeric character.</returns>
+        public virtual CommonError PasswordRequiresNonAlphanumeric()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordRequiresNonAlphanumeric),
-                Description = ExceptionConstant.PasswordRequiresNonAlphanumeric
+                Message = ExceptionConstant.PasswordRequiresNonAlphanumeric
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a numeric character, which is required by the password policy.
+        /// Returns an <see cref="CommonError"/> indicating a password entered does not contain a numeric character, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a numeric character.</returns>
-        public virtual ApiError PasswordRequiresDigit()
+        /// <returns>An <see cref="CommonError"/> indicating a password entered does not contain a numeric character.</returns>
+        public virtual CommonError PasswordRequiresDigit()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordRequiresDigit),
-                Description = ExceptionConstant.PasswordRequiresDigit
+                Message = ExceptionConstant.PasswordRequiresDigit
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain a lower case letter, which is required by the password policy.
+        /// Returns an <see cref="CommonError"/> indicating a password entered does not contain a lower case letter, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain a lower case letter.</returns>
-        public virtual ApiError PasswordRequiresLower()
+        /// <returns>An <see cref="CommonError"/> indicating a password entered does not contain a lower case letter.</returns>
+        public virtual CommonError PasswordRequiresLower()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordRequiresLower),
-                Description = ExceptionConstant.PasswordRequiresLower
+                Message = ExceptionConstant.PasswordRequiresLower
             };
         }
 
         /// <summary>
-        /// Returns an <see cref="ApiError"/> indicating a password entered does not contain an upper case letter, which is required by the password policy.
+        /// Returns an <see cref="CommonError"/> indicating a password entered does not contain an upper case letter, which is required by the password policy.
         /// </summary>
-        /// <returns>An <see cref="ApiError"/> indicating a password entered does not contain an upper case letter.</returns>
-        public virtual ApiError PasswordRequiresUpper()
+        /// <returns>An <see cref="CommonError"/> indicating a password entered does not contain an upper case letter.</returns>
+        public virtual CommonError PasswordRequiresUpper()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PasswordRequiresUpper),
-                Description = ExceptionConstant.PasswordRequiresUpper
+                Message = ExceptionConstant.PasswordRequiresUpper
             };
         }
 
-        public virtual ApiError PhotoSizeInvalid()
+        public virtual CommonError PhotoSizeInvalid()
         {
-            return new ApiError
+            return new CommonError
             {
                 Code = nameof(PhotoSizeInvalid),
-                Description = ErrorMessageConst.PhotoSizeInvalidException
+                Message = ErrorMessageConst.PhotoSizeInvalidException
             };
         }
     }

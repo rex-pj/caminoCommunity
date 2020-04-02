@@ -6,36 +6,45 @@ import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { SIGN_UP } from "../../utils/GraphQLQueries";
 import { useStore } from "../../store/hook-store";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const [signup] = useMutation(SIGN_UP, {
-    client: publicClient
+    client: publicClient,
   });
 
-  const showValidationError = (title, message) => {
+  const showError = (title, message) => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: "error"
+      type: "error",
     });
   };
 
-  const signUp = async data => {
+  const signUp = async (data) => {
     setFormEnabled(true);
 
     if (signup) {
       await signup({
         variables: {
-          user: data
-        }
+          criterias: data,
+        },
       })
-        .then(result => {
-          props.history.push("/auth/signin");
+        .then((response) => {
+          console.log(response);
+          const { errors } = response;
+          if (errors) {
+            showError(
+              "Đăng ký KHÔNG thành công",
+              "Có lỗi xảy ra trong quá trình đăng ký"
+            );
+          } else {
+            props.history.push("/auth/signin");
+          }
         })
-        .catch(error => {
+        .catch((error) => {
           setFormEnabled(true);
-          showValidationError(
+          showError(
             "Đăng ký KHÔNG thành công",
             "Có lỗi xảy ra trong quá trình đăng ký"
           );
@@ -45,8 +54,8 @@ export default withRouter(props => {
 
   return (
     <SignUpForm
-      signUp={data => signUp(data)}
-      showValidationError={showValidationError}
+      signUp={(data) => signUp(data)}
+      showValidationError={showError}
       isFormEnabled={isFormEnabled}
     />
   );

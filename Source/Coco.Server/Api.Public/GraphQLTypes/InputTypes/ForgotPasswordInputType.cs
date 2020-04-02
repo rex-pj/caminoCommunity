@@ -1,13 +1,13 @@
 ﻿using Api.Public.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class ForgotPasswordInputType: InputObjectGraphType<ForgotPasswordModel>
+    public class ForgotPasswordInputType : InputObjectType<ForgotPasswordModel>
     {
-        public ForgotPasswordInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<ForgotPasswordModel> descriptor)
         {
-            Field(x => x.Email, false, typeof(StringGraphType));
+            descriptor.Field(x => x.Email).Type<NonNullType<StringType>>();
         }
     }
 }

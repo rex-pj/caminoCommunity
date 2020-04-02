@@ -6,7 +6,7 @@ using Coco.Api.Framework.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
-using GraphiQl;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -74,7 +74,8 @@ namespace Api.Content
             app.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors(MyAllowSpecificOrigins)
-                .UseGraphiQl("/api/graphql")
+                .UseWebSockets()
+                .UseGraphQL("/api/graphql")
                 .UseBasicApiMiddleware();
         }
     }

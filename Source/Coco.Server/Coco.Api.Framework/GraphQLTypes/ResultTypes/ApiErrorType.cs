@@ -1,14 +1,14 @@
-﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+﻿using Coco.Commons.Models;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class ApiErrorType : ObjectGraphType<ApiError>
+    public class ApiErrorType : ObjectType<CommonError>
     {
-        public ApiErrorType()
+        protected override void Configure(IObjectTypeDescriptor<CommonError> descriptor)
         {
-            Field(x => x.Code, type: typeof(StringGraphType));
-            Field(x => x.Description, type: typeof(StringGraphType));
+            descriptor.Field(x => x.Code).Type<StringType>();
+            descriptor.Field(x => x.Message).Type<StringType>();
         }
     }
 }

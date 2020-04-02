@@ -9,12 +9,12 @@ import AuthService from "../../services/AuthService";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const sessionContext = useContext(SessionContext);
   const [signin] = useMutation(SIGNIN, {
-    client: publicClient
+    client: publicClient,
   });
 
   useEffect(() => {
@@ -23,78 +23,64 @@ export default withRouter(props => {
     };
   });
 
-  const notifyError = (error, lang) => {
-    if (
-      error &&
-      error.networkError &&
-      error.networkError.result &&
-      error.networkError.result.errors
-    ) {
-      const errors = error.networkError.result.errors;
-
-      errors.forEach(item => {
-        dispatch("NOTIFY", {
-          title: "Đăng nhập KHÔNG thành công",
-          message:
-            item.extensions && item.extensions.code
-              ? getError(item.extensions.code, lang)
-              : null,
-          type: "error"
-        });
-      });
-    } else {
-      dispatch("NOTIFY", {
-        title: "Đăng nhập KHÔNG thành công",
-        message: getError("ErrorOccurredTryRefeshInputAgain", lang),
-        type: "error"
+  const notifyError = (errors) => {
+    if (errors) {
+      errors.forEach((item) => {
+        const errorCode =
+          item.extensions && item.extensions.code
+            ? getError(item.extensions.code, sessionContext.lang)
+            : null;
+        showError("Đăng nhập KHÔNG thành công", errorCode);
       });
     }
   };
 
-  const showValidationError = (title, message) => {
+  const showError = (title, message) => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: "error"
+      type: "error",
     });
   };
 
-  const signIn = async data => {
+  const signIn = async (data) => {
     setFormEnabled(false);
 
     if (signin) {
       await signin({
         variables: {
-          args: data
-        }
+          criterias: data,
+        },
       })
-        .then(async response => {
-          const { data } = response;
+        .then(async (response) => {
+          const { data, errors } = response;
           const { signin } = data;
-          const { result } = signin;
 
-          if (!signin || !signin.isSucceed) {
-            notifyError(data.signin.errors, sessionContext.lang);
+          if (errors || !signin || !signin.authenticationToken) {
+            notifyError(errors);
             setFormEnabled(true);
-            return;
+          } else {
+            const { userInfo, authenticationToken } = signin;
+            AuthService.setLogin(userInfo, authenticationToken);
+
+            await sessionContext.relogin();
+            props.history.push("/");
           }
-
-          AuthService.setLogin(result.userInfo, result.authenticationToken);
-
-          await sessionContext.relogin();
-          props.history.push("/");
         })
-        .catch(error => {
+        .catch((error) => {
           setFormEnabled(true);
-          notifyError(error, sessionContext.lang);
+          showError(
+            "Đăng nhập KHÔNG thành công",
+            getError("ErrorOccurredTryRefeshInputAgain", sessionContext.lang)
+          );
         });
     }
   };
 
   return (
     <SignInForm
-      onSignin={data => signIn(data)}
-      showValidationError={showValidationError}
+      onSignin={(data) => signIn(data)}
+      showValidationError={showError}
       isFormEnabled={isFormEnabled}
     />
   );

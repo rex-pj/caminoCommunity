@@ -1,4 +1,6 @@
 ﻿using Api.Public.Infrastructure.Extensions;
+using Api.Public.Resolvers;
+using Api.Public.Resolvers.Contracts;
 using AutoMapper;
 using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.MappingProfiles;
@@ -6,7 +8,7 @@ using Coco.Api.Framework.SessionManager.Core;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
-using GraphiQl;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -74,6 +76,10 @@ namespace Api.Public
                 options.SignIn.RequireConfirmedEmail = true;
             });
 
+            services.AddTransient<IUserResolver, UserResolver>();
+            services.AddTransient<ICountryResolver, CountryResolver>();
+            services.AddTransient<IGenderResolver, GenderResolver>();
+
             #region GraphQL DI
             services.AddGraphQlDependency();
             #endregion
@@ -92,7 +98,8 @@ namespace Api.Public
                 .UseCors(MyAllowSpecificOrigins)
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseGraphiQl("/api/graphql")
+                .UseWebSockets()
+                .UseGraphQL("/api/graphql")
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

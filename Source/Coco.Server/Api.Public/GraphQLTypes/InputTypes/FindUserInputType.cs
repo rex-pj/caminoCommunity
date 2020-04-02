@@ -1,13 +1,13 @@
 ﻿using Api.Public.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.InputTypes
 {
-    public class FindUserInputType : InputObjectGraphType<FindUserModel>
+    public class FindUserInputType : InputObjectType<FindUserModel>
     {
-        public FindUserInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<FindUserModel> descriptor)
         {
-            Field(x => x.UserId, false, typeof(StringGraphType));
+            descriptor.Field(x => x.UserId).Type<NonNullType<StringType>>();
         }
     }
 }

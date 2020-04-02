@@ -11,24 +11,24 @@ import SigninModel from "../../../models/SigninModel";
 import { checkValidity } from "../../../utils/Validity";
 
 const Textbox = styled(TextboxSecondary)`
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.lighter};
   width: 100%;
-  color: ${p => p.theme.color.dark};
-  padding: ${p => p.theme.size.tiny};
+  color: ${(p) => p.theme.color.dark};
+  padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${p => p.theme.color.light};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.light};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
-    background-color: ${p => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.moreDark};
   }
 
   &.invalid {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
@@ -37,46 +37,46 @@ const FormFooter = styled(PanelFooter)`
 `;
 
 const Label = styled(LabelNormal)`
-  margin-left: ${p => p.theme.size.tiny};
+  margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   font-weight: 600;
 `;
 
 const FormRow = styled.div`
-  margin-bottom: ${p => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
-  border: 1px solid ${p => p.theme.color.primaryLight};
+  font-size: ${(p) => p.theme.fontSize.small};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 `;
 
 const ForgotPasswordRow = styled(FormRow)`
-  margin-top: ${p => p.theme.size.exTiny};
-  font-size: ${p => p.theme.fontSize.small};
+  margin-top: ${(p) => p.theme.size.exTiny};
+  font-size: ${(p) => p.theme.fontSize.small};
   a {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
   text-align: center;
 `;
 
-export default props => {
+export default (props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   let formData = SigninModel;
 
-  const handleInputBlur = evt => {
+  const handleInputBlur = (evt) => {
     const { name } = evt.target;
     if (!formData[name].isValid) {
       evt.target.classList.add("invalid");
@@ -85,7 +85,7 @@ export default props => {
     }
   };
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     formData = formData || {};
     const { name, value } = evt.target;
 
@@ -108,7 +108,7 @@ export default props => {
     return isFormValid;
   };
 
-  const onSignin = e => {
+  const onSignin = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -136,7 +136,7 @@ export default props => {
   const isFormValid = checkIsFormValid();
 
   return (
-    <form onSubmit={e => onSignin(e)} method="POST">
+    <form onSubmit={(e) => onSignin(e)} method="POST">
       <div className="row no-gutters">
         <div className="col col-12 col-sm-7">
           <AuthBanner
@@ -154,8 +154,8 @@ export default props => {
                 placeholder="Nhập e-mail"
                 type="email"
                 name="username"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
@@ -164,8 +164,8 @@ export default props => {
                 placeholder="Nhập mật khẩu"
                 type="password"
                 name="password"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormFooter>

@@ -46,7 +46,6 @@ namespace Coco.Business.Implementation.UserBusiness
             var user = await _userRepository.FindAsync(model.UserId);
 
             user.Password = model.NewPassword;
-
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 

@@ -19,14 +19,14 @@ namespace Coco.Api.Framework.SessionManager.Stores
             return await Task.FromResult(user.Email);
         }
 
-        public async Task<ApiResult<string>> SendForgotPasswordAsync(ApplicationUser user)
+        public async Task<IApiResult> SendForgotPasswordAsync(ApplicationUser user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return await Task.FromResult(ApiResult<string>.Success(user.ActiveUserStamp));
+            return await Task.FromResult(ApiResult.Success(user.ActiveUserStamp));
         }
 
         public virtual Task<bool> GetEmailConfirmedAsync(ApplicationUser user)

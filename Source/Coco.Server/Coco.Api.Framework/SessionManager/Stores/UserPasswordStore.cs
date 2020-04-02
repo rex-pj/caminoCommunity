@@ -2,7 +2,6 @@
 using Coco.Api.Framework.SessionManager.Contracts;
 using System.Threading.Tasks;
 using System;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Coco.Business.Contracts;
 using Coco.Entities.Dtos.User;
@@ -101,8 +100,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
             var result = await _userBusiness.UpdatePasswordAsync(model);
             return new UserTokenResult()
             {
-                IsSucceed = true,
-                AuthenticationToken = result.AuthenticationToken
+                IsSucceed = true
             };
         }
 

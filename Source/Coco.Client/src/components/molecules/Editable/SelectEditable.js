@@ -6,47 +6,47 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.neutral};
-    line-height: ${p => p.theme.size.normal};
-    height: ${p => p.theme.size.normal};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    line-height: ${(p) => p.theme.size.normal};
+    height: ${(p) => p.theme.size.normal};
     cursor: pointer;
-    min-width: calc(${p => p.theme.size.large} * 2);
+    min-width: calc(${(p) => p.theme.size.large} * 2);
   }
 
   &.empty {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.danger};
     font-weight: 400;
   }
 
   &.success {
-    border: 1px solid ${p => p.theme.color.primaryLight};
+    border: 1px solid ${(p) => p.theme.color.primaryLight};
   }
 
   &.fail {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
 const SelectBox = styled(Selection)`
-  min-width: calc(${p => p.theme.size.large} * 2);
+  min-width: calc(${(p) => p.theme.size.large} * 2);
   cursor: pointer;
   border: 0;
-  border-bottom: 1px dashed ${p => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
   border-radius: 0;
   max-width: 100%;
 
   &.success {
-    border: 1px solid ${p => p.theme.color.primaryLight};
+    border: 1px solid ${(p) => p.theme.color.primaryLight};
   }
 
   &.fail {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
 const updateStatus = {
   success: "success",
-  fail: "fail"
+  fail: "fail",
 };
 
 function Options(props) {
@@ -56,7 +56,7 @@ function Options(props) {
       <option value={0} disabled={true}>
         {emptyText}
       </option>
-      {selections.map(item => (
+      {selections.map((item) => (
         <option key={item.id} value={item.id}>
           {item.text}
         </option>
@@ -65,7 +65,7 @@ function Options(props) {
   ) : null;
 }
 
-export default function(props) {
+export default function (props) {
   const { selections, value, name, disabled, text } = props;
   const [status, setStatus] = useState("");
   let statusTimer = null;
@@ -81,7 +81,9 @@ export default function(props) {
 
   let current = null;
   if (value && selections && selections.count > 0) {
-    current = selections.find(item => item.id.toString() === value.toString());
+    current = selections.find(
+      (item) => item.id.toString() === value.toString()
+    );
   } else if (value && text) {
     current = { id: value, text: text };
   } else {
@@ -90,13 +92,13 @@ export default function(props) {
 
   const [selectedValue, updateSelectedValue] = useState({
     id: current ? current.id : null,
-    text: current ? current.text : null
+    text: current ? current.text : null,
   });
 
   function onChanged(e) {
     const { name, primaryKey } = props;
     const currentValue = selections
-      ? selections.find(element => {
+      ? selections.find((element) => {
           return element.id.toString() === e.target.value;
         })
       : { id: 0, text: emptyText };
@@ -108,21 +110,21 @@ export default function(props) {
           .onUpdated({
             primaryKey,
             value: currentValue.id,
-            propertyName: name
+            propertyName: name,
           })
-          .then(response => {
+          .then((response) => {
             showSuccess();
           })
-          .catch(errors => {
+          .catch((errors) => {
             const oldValue = selections
-              ? selections.find(element => {
+              ? selections.find((element) => {
                   return element.id.toString() === value.toString();
                 })
               : { id: 0, text: emptyText };
 
             updateSelectedValue({
               id: value,
-              text: oldValue.text
+              text: oldValue.text,
             });
 
             showError();

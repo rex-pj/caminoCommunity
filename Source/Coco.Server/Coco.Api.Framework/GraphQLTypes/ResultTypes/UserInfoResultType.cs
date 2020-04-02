@@ -1,26 +1,25 @@
 ﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class UserInfoResultType : ObjectGraphType<UserInfoModel>
+    public class UserInfoResultType : ObjectType<UserInfoModel>
     {
-        public UserInfoResultType()
+        protected override void Configure(IObjectTypeDescriptor<UserInfoModel> descriptor)
         {
-            Field(x => x.Lastname, type: typeof(StringGraphType));
-            Field(x => x.Firstname, type: typeof(StringGraphType));
-            Field(x => x.Email, type: typeof(StringGraphType));
-            Field(x => x.DisplayName, type: typeof(StringGraphType));
-            Field(x => x.IsActived, type: typeof(BooleanGraphType));
-            Field(x => x.UserIdentityId, type: typeof(StringGraphType));
-
-            Field(x => x.Address, type: typeof(StringGraphType));
-            Field(x => x.BirthDate, type: typeof(DateTimeGraphType));
-            Field(x => x.CountryId, type: typeof(IntGraphType));
-            Field(x => x.CountryName, type: typeof(StringGraphType));
-            Field(x => x.Description, type: typeof(StringGraphType));
-            Field(x => x.CreatedDate, type: typeof(DateTimeGraphType));
-            Field(x => x.PhoneNumber, type: typeof(StringGraphType));
+            descriptor.Field(x => x.Lastname).Type<StringType>();
+            descriptor.Field(x => x.Firstname).Type<StringType>();
+            descriptor.Field(x => x.Email).Type<StringType>();
+            descriptor.Field(x => x.DisplayName).Type<StringType>();
+            descriptor.Field(x => x.IsActived).Type<BooleanType>();
+            descriptor.Field(x => x.UserIdentityId).Type<StringType>();
+            descriptor.Field(x => x.Address).Type<StringType>();
+            descriptor.Field(x => x.BirthDate).Type<DateTimeType>();
+            descriptor.Field(x => x.CountryId).Type<IntType>();
+            descriptor.Field(x => x.CountryName).Type<StringType>();
+            descriptor.Field(x => x.Description).Type<StringType>();
+            descriptor.Field(x => x.CreatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.PhoneNumber).Type<StringType>();
         }
     }
 }

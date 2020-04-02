@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
 import {
-  GET_FULL_USER_INFO,
-  UPDATE_USER_IDENTIFIER
+  GET_USER_IDENTIFY,
+  UPDATE_USER_IDENTIFIER,
 } from "../../utils/GraphQLQueries";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -11,18 +11,18 @@ import { publicClient } from "../../utils/GraphQLClient";
 import { useStore } from "../../store/hook-store";
 import { SessionContext } from "../../store/context/SessionContext";
 
-export default props => {
+export default (props) => {
   const { userId } = props;
   const [isFormEnabled] = useState(true);
   const [updateUserIdentifier] = useMutation(UPDATE_USER_IDENTIFIER);
   const sessionContext = useContext(SessionContext);
-  const { loading, error, data, refetch } = useQuery(GET_FULL_USER_INFO, {
+  const { loading, error, data, refetch } = useQuery(GET_USER_IDENTIFY, {
     client: publicClient,
     variables: {
       criterias: {
-        userId
-      }
-    }
+        userId,
+      },
+    },
   });
 
   useEffect(() => {
@@ -31,27 +31,36 @@ export default props => {
     };
   });
 
-  const onUpdate = async data => {
+  const onUpdate = async (data) => {
     if (!canEdit) {
       return;
     }
 
     await updateUserIdentifier({
       variables: {
-        user: data
-      }
+        criterias: data,
+      },
     })
-      .then(() => {
-        showNotification(
-          "Thay đổi thành công",
-          "Bạn đã cập nhật thông tin cá nhân thành công",
-          "info"
-        );
-        refetch();
+      .then((response) => {
+        const { errors } = response;
+        if (errors) {
+          showNotification(
+            "Có lỗi xảy ra trong quá trình cập nhật",
+            "Kiểm tra lại thông tin và thử lại",
+            "error"
+          );
+        } else {
+          showNotification(
+            "Thay đổi thành công",
+            "Bạn đã cập nhật thông tin cá nhân thành công",
+            "info"
+          );
+          refetch();
 
-        setTimeout(() => {
-          sessionContext.relogin();
-        }, 300);
+          setTimeout(() => {
+            sessionContext.relogin();
+          }, 300);
+        }
       })
       .catch(() => {
         showNotification(
@@ -67,7 +76,7 @@ export default props => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: type
+      type: type,
     });
   };
 
@@ -79,13 +88,12 @@ export default props => {
   }
 
   const { fullUserInfo } = data;
-  const { result, accessMode } = fullUserInfo;
-  const canEdit = accessMode === "CAN_EDIT";
+  const { canEdit } = fullUserInfo;
   return (
     <ProfileUpdateFrom
-      onUpdate={e => onUpdate(e)}
+      onUpdate={(e) => onUpdate(e)}
       isFormEnabled={isFormEnabled}
-      userInfo={result}
+      userInfo={fullUserInfo}
       canEdit={canEdit}
       showValidationError={showNotification}
     />

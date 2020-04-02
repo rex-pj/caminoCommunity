@@ -12,11 +12,11 @@ import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import {
   ButtonOutlineNormal,
-  ButtonOutlineSecondary
+  ButtonOutlineSecondary,
 } from "../../atoms/Buttons/OutlineButtons";
 import {
   UPDATE_USER_COVER,
-  DELETE_USER_COVER
+  DELETE_USER_COVER,
 } from "../../../utils/GraphQLQueries";
 
 const Wrap = styled.div`
@@ -46,8 +46,8 @@ const Wrap = styled.div`
     right: 0;
     margin: auto;
     z-index: 0;
-    font-size: calc(${p => p.theme.fontSize.giant} * 2);
-    color: ${p => p.theme.color.light};
+    font-size: calc(${(p) => p.theme.fontSize.giant} * 2);
+    color: ${(p) => p.theme.color.light};
     svg,
     path {
       font-size: inherit;
@@ -65,27 +65,27 @@ const Wrap = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: ${p => p.theme.rgbaColor.darker};
+    background-color: ${(p) => p.theme.rgbaColor.darker};
     z-index: 2;
   `,
   EditButton = styled(ButtonTransparent)`
     position: absolute;
-    border-radius: ${p => p.theme.borderRadius.large};
-    border: 1px solid ${p => p.theme.rgbaColor.dark};
-    background-color: ${p => p.theme.rgbaColor.darkLight};
-    color: ${p => p.theme.color.white};
-    right: ${p => p.theme.size.distance};
-    top: ${p => p.theme.size.distance};
+    border-radius: ${(p) => p.theme.borderRadius.large};
+    border: 1px solid ${(p) => p.theme.rgbaColor.dark};
+    background-color: ${(p) => p.theme.rgbaColor.darkLight};
+    color: ${(p) => p.theme.color.white};
+    right: ${(p) => p.theme.size.distance};
+    top: ${(p) => p.theme.size.distance};
     z-index: 2;
 
     :hover {
-      background-color: ${p => p.theme.rgbaColor.darker};
+      background-color: ${(p) => p.theme.rgbaColor.darker};
     }
   `,
   DeleteConfirm = styled.div`
     position: absolute;
-    bottom: ${p => p.theme.size.distance};
-    right: ${p => p.theme.size.distance};
+    bottom: ${(p) => p.theme.size.distance};
+    right: ${(p) => p.theme.size.distance};
     z-index: 4;
   `,
   DeletePopoverConfirm = styled(AlertPopover)`
@@ -94,11 +94,11 @@ const Wrap = styled.div`
 
     ::after {
       left: auto;
-      right: ${p => p.theme.size.distance};
+      right: ${(p) => p.theme.size.distance};
     }
 
     button:first-child {
-      margin-right: ${p => p.theme.size.exTiny};
+      margin-right: ${(p) => p.theme.size.exTiny};
     }
   `,
   Tools = styled.div`
@@ -109,12 +109,12 @@ const Wrap = styled.div`
     right: 0;
     margin: auto;
     z-index: 3;
-    height: ${p => p.theme.size.large};
+    height: ${(p) => p.theme.size.large};
     text-align: center;
   `,
   CoverImageUpload = styled(ImageUpload)`
     display: inline-block;
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     vertical-align: middle;
     cursor: pointer;
     text-align: center;
@@ -122,15 +122,15 @@ const Wrap = styled.div`
 
     > span {
       border: 0;
-      width: ${p => p.theme.size.large};
-      height: ${p => p.theme.size.large};
-      font-size: ${p => p.theme.fontSize.large};
-      color: ${p => p.theme.color.lighter};
-      border-radius: ${p => p.theme.borderRadius.medium};
-      padding: ${p => p.theme.size.exSmall} 0;
+      width: ${(p) => p.theme.size.large};
+      height: ${(p) => p.theme.size.large};
+      font-size: ${(p) => p.theme.fontSize.large};
+      color: ${(p) => p.theme.color.lighter};
+      border-radius: ${(p) => p.theme.borderRadius.medium};
+      padding: ${(p) => p.theme.size.exSmall} 0;
 
       :hover {
-        background-color: ${p => p.theme.rgbaColor.darker};
+        background-color: ${(p) => p.theme.rgbaColor.darker};
       }
     }
 
@@ -145,13 +145,13 @@ const Wrap = styled.div`
   `,
   CancelEditButton = styled(ButtonTransparent)`
     border: 0;
-    width: ${p => p.theme.size.large};
-    height: ${p => p.theme.size.large};
-    font-size: ${p => p.theme.fontSize.large};
-    color: ${p => p.theme.color.lighter};
-    margin-left: ${p => p.theme.size.exTiny};
+    width: ${(p) => p.theme.size.large};
+    height: ${(p) => p.theme.size.large};
+    font-size: ${(p) => p.theme.fontSize.large};
+    color: ${(p) => p.theme.color.lighter};
+    margin-left: ${(p) => p.theme.size.exTiny};
     vertical-align: middle;
-    border-radius: ${p => p.theme.borderRadius.medium};
+    border-radius: ${(p) => p.theme.borderRadius.medium};
 
     svg,
     path {
@@ -159,54 +159,54 @@ const Wrap = styled.div`
     }
 
     :hover {
-      background-color: ${p => p.theme.rgbaColor.darker};
+      background-color: ${(p) => p.theme.rgbaColor.darker};
     }
   `,
   UpdateTools = styled.div`
     position: absolute;
-    right: ${p => p.theme.size.distance};
-    bottom: ${p => p.theme.size.distance};
+    right: ${(p) => p.theme.size.distance};
+    bottom: ${(p) => p.theme.size.distance};
   `,
   AcceptUpdateButton = styled(ButtonPrimary)`
     span {
-      margin-left: ${p => p.theme.size.distance};
+      margin-left: ${(p) => p.theme.size.distance};
     }
-    border: 1px solid ${p => p.theme.color.primary};
+    border: 1px solid ${(p) => p.theme.color.primary};
   `,
   CancelUpdateButton = styled(ButtonOutlineNormal)`
     span {
-      margin-left: ${p => p.theme.size.distance};
+      margin-left: ${(p) => p.theme.size.distance};
     }
-    margin-left: ${p => p.theme.size.exTiny};
+    margin-left: ${(p) => p.theme.size.exTiny};
   `,
   SliderWrap = styled.div`
     max-width: 300px;
     margin: 0 auto;
     position: absolute;
-    bottom: ${p => p.theme.size.distance};
+    bottom: ${(p) => p.theme.size.distance};
     z-index: 4;
     left: 0;
     right: 0;
   `;
 
-export default props => {
+export default (props) => {
   const [isInUpdateMode, setInUpdateMode] = useState(false);
   const [showDeletePopover] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const [coverState, setCoverState] = useState({
     contentType: null,
     fileName: null,
-    src: null
+    src: null,
   });
 
   const [coverCrop, setCoverCrop] = useState({
     width: 1044,
     height: 300,
-    scale: 1
+    scale: 1,
   });
 
   let photoEditor = null;
-  const setEditorRef = editor => (photoEditor = editor);
+  const setEditorRef = (editor) => (photoEditor = editor);
 
   const validateForSubmit = () => {
     const { canEdit } = props;
@@ -231,7 +231,7 @@ export default props => {
 
     return {
       isSucceed,
-      message
+      message,
     };
   };
 
@@ -247,7 +247,7 @@ export default props => {
     setInUpdateMode(false);
     setCoverState({
       ...coverState,
-      src: null
+      src: null,
     });
 
     if (props.onToggleEditMode) {
@@ -255,19 +255,19 @@ export default props => {
     }
   };
 
-  const onChangeImage = e => {
+  const onChangeImage = (e) => {
     setCoverState({
       contentType: e.file.type,
       fileName: e.file.name,
-      src: e.preview
+      src: e.preview,
     });
   };
 
-  const onUpdateScale = e => {
+  const onUpdateScale = (e) => {
     validateForSubmit();
     setCoverCrop({
       ...coverCrop,
-      scale: e
+      scale: e,
     });
   };
 
@@ -275,7 +275,7 @@ export default props => {
     props.showValidationError(title, message);
   };
 
-  const [updateUserCover] = useMutation(UPDATE_USER_COVER);
+  const [updateCover] = useMutation(UPDATE_USER_COVER);
   const onUpdate = async () => {
     const { src } = coverState;
     if (photoEditor && props.onUpdated && src) {
@@ -302,11 +302,11 @@ export default props => {
         fileName,
         contentType,
         scale,
-        canEdit: canEdit
+        canEdit: canEdit,
       };
 
       await props
-        .onUpdated(updateUserCover, variables)
+        .onUpdated(updateCover, variables)
         .then(() => {
           turnOffUpdateMode();
         })
@@ -324,14 +324,14 @@ export default props => {
 
     await props
       .onUpdated(deleteCover, {
-        canEdit: canEdit
+        canEdit: canEdit,
       })
       .then(() => {
         turnOffUpdateMode();
       });
   };
 
-  const onLoadSuccess = e => {
+  const onLoadSuccess = (e) => {
     const { canEdit } = props;
 
     const isValid = e.width > 1000 && e.height > 300;
@@ -364,7 +364,7 @@ export default props => {
         <UpdateTools>
           <AcceptUpdateButton
             size="sm"
-            onClick={e => onUpdate(e)}
+            onClick={(e) => onUpdate(e)}
             disabled={isDisabled}
           >
             <FontAwesomeIcon icon="check" />
@@ -396,7 +396,7 @@ export default props => {
 
           <FullOverlay />
           <Tools>
-            <CoverImageUpload onChange={e => onChangeImage(e)} />
+            <CoverImageUpload onChange={(e) => onChangeImage(e)} />
             <CancelEditButton onClick={turnOffUpdateMode}>
               <FontAwesomeIcon icon="times" />
             </CancelEditButton>
@@ -406,7 +406,7 @@ export default props => {
               isShown={showDeletePopover}
               target="DeleteCover"
               title="Bạn có muốn xóa ảnh không?"
-              onExecute={e => onDelete()}
+              onExecute={(e) => onDelete()}
             />
             <ButtonOutlineSecondary id="DeleteCover" size="sm">
               <FontAwesomeIcon icon="trash-alt" />

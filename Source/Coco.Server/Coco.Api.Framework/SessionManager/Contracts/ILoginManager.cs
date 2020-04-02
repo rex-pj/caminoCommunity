@@ -5,7 +5,7 @@ namespace Coco.Api.Framework.SessionManager.Contracts
 {
     public interface ILoginManager<TUser> where TUser : class
     {
-        Task<ApiResult> LoginAsync(string userName, string password);
-        Task<ApiResult> LogoutAsync(string userIdentityId, string authenticationToken);
+        Task<IApiResult> LoginAsync(string userName, string password);
+        Task<bool> LogoutAsync(string userIdentityId, string authenticationToken);
     }
 }

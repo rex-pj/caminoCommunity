@@ -2,7 +2,22 @@
 
 namespace Coco.Entities.Dtos.General
 {
-    public class UpdateUserPhotoDto
+    public interface IUserPhotoUpdateDto
+    {
+        string PhotoUrl { get; set; }
+        double XAxis { get; set; }
+        double YAxis { get; set; }
+        double Width { get; set; }
+        double Height { get; set; }
+        double Scale { get; set; }
+        string ContentType { get; set; }
+        bool CanEdit { get; set; }
+        string FileName { get; set; }
+        string UserPhotoCode { get; set; }
+        UserPhotoTypeEnum UserPhotoType { get; set; }
+    }
+
+    public class UserPhotoUpdateDto : IUserPhotoUpdateDto
     {
         public string PhotoUrl { get; set; }
         public double XAxis { get; set; }

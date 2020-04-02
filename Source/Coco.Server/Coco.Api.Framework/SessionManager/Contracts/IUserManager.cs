@@ -11,25 +11,25 @@ namespace Coco.Api.Framework.SessionManager.Contracts
     public interface IUserManager<TUser> : IDisposable where TUser : class
     {
         IdentityOptions Options { get; set; }
-        Task<ApiResult> CreateAsync(TUser user);
+        Task<IApiResult> CreateAsync(TUser user);
         string GetUserNameAsync(TUser user);
         Task<string> GetEmailAsync(TUser user);
         Task<TUser> FindByEmailAsync(string email);
         Task<TUser> FindByNameAsync(string userName);
         Task<string> GetUserIdAsync(TUser user);
-        Task<ApiResult> CheckPasswordAsync(TUser user, string password);
+        Task<IApiResult> CheckPasswordAsync(TUser user, string password);
         TUser GetLoggingUser(string userIdentityId, string authenticationToken);
         Task<UserFullDto> FindUserByIdentityIdAsync(string userIdentityId, string authenticationToken = null);
-        Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model, string userIdentityId, string token);
-        Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoDto model, long userId);
-        Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoDto model, long userId);
-        Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
-        Task<ApiResult> UpdateIdentifierAsync(ApplicationUser user, string userIdentityId, string token);
-        Task<ApiResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword);
-        Task<ApiResult> ResetPasswordAsync(ResetPasswordModel model, long userId);
-        Task<ApiResult> ForgotPasswordAsync(string email);
+        Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel model, string userIdentityId, string token);
+        Task<UserPhotoUpdateDto> UpdateAvatarAsync(UserPhotoUpdateDto model, ApplicationUser user);
+        Task<UserPhotoUpdateDto> UpdateCoverAsync(UserPhotoUpdateDto model, ApplicationUser user);
+        Task<UserPhotoUpdateDto> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType);
+        Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user, string userIdentityId, string token);
+        Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword);
+        Task<UserTokenResult> ResetPasswordAsync(ResetPasswordModel model, long userId);
+        Task<IApiResult> ForgotPasswordAsync(string email);
         Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
-        Task<ApiResult> ClearUserLoginAsync(string userIdentityId, string authenticationToken);
-        Task<ApiResult> ActiveAsync(string email, string activeKey);
+        Task<bool> ClearUserLoginAsync(string userIdentityId, string authenticationToken);
+        Task<IApiResult> ActiveAsync(string email, string activeKey);
     }
 }

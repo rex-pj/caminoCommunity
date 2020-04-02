@@ -1,17 +1,16 @@
 ﻿using Coco.Entities.Dtos.User;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class UserIdentifierUpdateInputType : InputObjectGraphType<UserIdentifierUpdateDto>
+    public class UserIdentifierUpdateInputType : InputObjectType<UserIdentifierUpdateDto>
     {
-        public UserIdentifierUpdateInputType()
+        protected override void Configure(IInputObjectTypeDescriptor<UserIdentifierUpdateDto> descriptor)
         {
-            Field(x => x.Lastname, false, typeof(StringGraphType));
-            Field(x => x.Firstname, false, typeof(StringGraphType));
-            Field(x => x.DisplayName, false, typeof(StringGraphType));
-            Field(x => x.UserIdentityId, type: typeof(StringGraphType));
-            Field(x => x.AuthenticationToken, false, type: typeof(StringGraphType));
+            descriptor.Field(x => x.Lastname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Firstname).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.DisplayName).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Id).Ignore();
         }
     }
 }

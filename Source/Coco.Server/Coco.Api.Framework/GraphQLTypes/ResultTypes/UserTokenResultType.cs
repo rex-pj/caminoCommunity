@@ -1,20 +1,15 @@
 ﻿using Coco.Api.Framework.Models;
-using GraphQL.Types;
+using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class ApiUserTokenResultType : ApiResultType<UserTokenResult, UserTokenResultType>
+    public class UserTokenResultType : ObjectType<UserTokenResult>
     {
-
-    }
-
-    public class UserTokenResultType : ObjectGraphType<UserTokenResult>
-    {
-        public UserTokenResultType()
+        protected override void Configure(IObjectTypeDescriptor<UserTokenResult> descriptor)
         {
-            Field(x => x.AuthenticationToken, type: typeof(StringGraphType));
-            Field(x => x.IsSucceed, type: typeof(BooleanGraphType));
-            Field(x => x.UserInfo, type: typeof(UserInfoResultType));
+            descriptor.Field(x => x.AuthenticationToken).Type<StringType>();
+            descriptor.Field(x => x.IsSucceed).Type<BooleanType>();
+            descriptor.Field(x => x.UserInfo).Type<UserInfoResultType>();
         }
     }
 }

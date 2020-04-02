@@ -7,50 +7,49 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.neutral};
-    line-height: ${p => p.theme.size.normal};
-    height: ${p => p.theme.size.normal};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    line-height: ${(p) => p.theme.size.normal};
+    height: ${(p) => p.theme.size.normal};
     cursor: pointer;
-    min-width: calc(${p => p.theme.size.large} * 2);
+    min-width: calc(${(p) => p.theme.size.large} * 2);
   }
 
   &.empty {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.danger};
     font-weight: 400;
   }
 
   &.success {
-    border: 1px solid ${p => p.theme.color.primaryLight};
+    border: 1px solid ${(p) => p.theme.color.primaryLight};
   }
 
   &.fail {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
 const DateTimePicker = styled(DateSelector)`
   select {
     border: 0;
-    border-radius: 0;
-    border-bottom: 1px dashed ${p => p.theme.color.primaryLight};
+    border-bottom: 1px dashed ${(p) => p.theme.color.primaryLight};
     cursor: pointer;
   }
 
   &.success select {
-    border-bottom: 2px solid ${p => p.theme.color.primaryLight};
+    border-bottom: 2px solid ${(p) => p.theme.color.primaryLight};
   }
 
   &.fail select {
-    border-bottom: 2px solid ${p => p.theme.color.dangerLight};
+    border-bottom: 2px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
 const updateStatus = {
   success: "success",
-  fail: "fail"
+  fail: "fail",
 };
 
-export default props => {
+export default (props) => {
   const { value, name, disabled } = props;
   const [status, setStatus] = useState("");
   const [currentDate, updateCurrentDate] = useState(value);
@@ -60,7 +59,7 @@ export default props => {
     return () => clearTimeout(statusTimer);
   }, [statusTimer]);
 
-  const onChanged = e => {
+  const onChanged = (e) => {
     const { name, primaryKey } = props;
     const { value: date } = e.target;
     if (date) {
@@ -70,12 +69,12 @@ export default props => {
           .onUpdated({
             primaryKey,
             value: dateTime,
-            propertyName: name
+            propertyName: name,
           })
-          .then(response => {
+          .then((response) => {
             showSuccess();
           })
-          .catch(errors => {
+          .catch((errors) => {
             showError();
           });
       }
@@ -105,7 +104,7 @@ export default props => {
         name={name}
         disabled={disabled}
         value={currentDate}
-        onDateChanged={e => onChanged(e)}
+        onDateChanged={(e) => onChanged(e)}
       />
     );
   } else if (!props.disabled && value) {
@@ -114,7 +113,7 @@ export default props => {
         className={`${status}`}
         name={name}
         disabled={disabled}
-        onDateChanged={e => onChanged(e)}
+        onDateChanged={(e) => onChanged(e)}
         value={value}
       />
     );
@@ -124,7 +123,7 @@ export default props => {
         className={`${status}`}
         name={name}
         disabled={disabled}
-        onDateChanged={e => onChanged(e)}
+        onDateChanged={(e) => onChanged(e)}
       />
     );
   } else {
