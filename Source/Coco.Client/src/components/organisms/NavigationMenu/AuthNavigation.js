@@ -6,23 +6,23 @@ import { HorizontalList } from "../../atoms/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  background-color: ${p => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.neutral};
   position: relative;
 `;
 
 const NavButton = styled(RouterLinkButton)`
-  color: ${p => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.lighter};
   font-weight: 500;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   border: 0;
-  border-top-right-radius: ${p => p.theme.borderRadius.medium};
-  border-top-left-radius: ${p => p.theme.borderRadius.medium};
+  border-top-right-radius: ${(p) => p.theme.borderRadius.medium};
+  border-top-left-radius: ${(p) => p.theme.borderRadius.medium};
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   background-color: transparent;
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
     background-color: transparent;
   }
 `;
@@ -31,7 +31,7 @@ const ListItem = styled.li`
   display: inline-block;
 
   &.actived ${NavButton} {
-    background-color: ${p => p.theme.color.primary};
+    background-color: ${(p) => p.theme.color.primaryLight};
   }
 
   :first-child ${NavButton} {

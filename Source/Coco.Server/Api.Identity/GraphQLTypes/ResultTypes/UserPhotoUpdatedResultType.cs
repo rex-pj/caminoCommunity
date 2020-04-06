@@ -1,17 +1,11 @@
-﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
-using Coco.Entities.Dtos.General;
+﻿using Coco.Entities.Dtos.General;
 using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes
 {
-    public class ApiUserPhotoUpdatedResultType : ApiResultType<UpdateUserPhotoDto, UserPhotoUpdatedResultType>
+    public class UserPhotoUpdatedResultType : ObjectType<UserPhotoUpdateDto>
     {
-
-    }
-
-    public class UserPhotoUpdatedResultType : ObjectType<UpdateUserPhotoDto>
-    {
-        protected override void Configure(IObjectTypeDescriptor<UpdateUserPhotoDto> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<UserPhotoUpdateDto> descriptor)
         {
             descriptor.Field(x => x.ContentType).Type<NonNullType<StringType>>();
             descriptor.Field(x => x.Height).Type<NonNullType<FloatType>>();

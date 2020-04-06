@@ -12,38 +12,38 @@ import { checkValidity } from "../../../utils/Validity";
 import SignupModel from "../../../models/SignupModel";
 
 const Textbox = styled(TextboxSecondary)`
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.lighter};
   width: 100%;
-  color: ${p => p.theme.color.dark};
-  padding: ${p => p.theme.size.tiny};
+  color: ${(p) => p.theme.color.dark};
+  padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${p => p.theme.color.light};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.light};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
-    background-color: ${p => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.moreDark};
   }
 
   &.invalid {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
 const Selection = styled(SelectionSecondary)`
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.lighter};
   width: 100%;
-  color: ${p => p.theme.color.dark};
-  padding: 0 ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.dark};
+  padding: 0 ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.fontSize.small};
 
   :focus {
-    background-color: ${p => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.moreDark};
   }
 `;
 
@@ -52,57 +52,57 @@ const FormFooter = styled(PanelFooter)`
 `;
 
 const Label = styled(LabelNormal)`
-  margin-left: ${p => p.theme.size.tiny};
+  margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   font-weight: 600;
 `;
 
 const FormRow = styled.div`
-  margin-bottom: ${p => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
-  border: 1px solid ${p => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 `;
 
 const BirthDateSelector = styled(DateSelector)`
   select {
-    border-radius: ${p => p.theme.size.normal};
-    border: 1px solid ${p => p.theme.color.primaryLight};
-    background-color: ${p => p.theme.rgbaColor.darkLight};
-    color: ${p => p.theme.color.dark};
-    font-size: ${p => p.theme.fontSize.small};
+    border-radius: ${(p) => p.theme.size.normal};
+    border: 1px solid ${(p) => p.theme.color.primaryLight};
+    background-color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.dark};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   &.invalid select {
-    border: 1px solid ${p => p.theme.color.dangerLight};
-    color: ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    color: ${(p) => p.theme.color.dangerLight};
   }
 `;
 
-export default props => {
+export default (props) => {
   let formData = SignupModel;
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const handleInputBlur = evt => {
+  const handleInputBlur = (evt) => {
     alertInvalidForm(evt.target);
   };
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     formData = formData || {};
     const { name, value } = evt.target;
 
@@ -114,7 +114,7 @@ export default props => {
     forceUpdate();
   };
 
-  const alertInvalidForm = target => {
+  const alertInvalidForm = (target) => {
     const { name } = target;
     if (!formData[name].isValid) {
       target.classList.add("invalid");
@@ -123,7 +123,7 @@ export default props => {
     }
   };
 
-  const onSignUp = e => {
+  const onSignUp = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -163,7 +163,7 @@ export default props => {
   const isFormCheckValid = checkIsFormValid();
 
   return (
-    <form onSubmit={e => onSignUp(e)} method="POST">
+    <form onSubmit={(e) => onSignUp(e)} method="POST">
       <div className="row no-gutters">
         <div className="col col-12 col-sm-7">
           <AuthBanner
@@ -181,8 +181,8 @@ export default props => {
                 autoComplete="off"
                 placeholder="Nhập họ của bạn vào đây"
                 name="lastname"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
@@ -191,8 +191,8 @@ export default props => {
                 autoComplete="off"
                 placeholder="Nhập tên của bạn vào đây"
                 name="firstname"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
@@ -202,8 +202,8 @@ export default props => {
                 placeholder="Nhập e-mail"
                 type="email"
                 name="email"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
@@ -213,8 +213,8 @@ export default props => {
                 placeholder="Nhập mật khẩu"
                 type="password"
                 name="password"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
@@ -224,15 +224,15 @@ export default props => {
                 placeholder="Nhập lại mật khẩu"
                 type="password"
                 name="confirmPassword"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
               <Label>Sinh nhật</Label>
               <BirthDateSelector
                 name="birthDate"
-                onDateChanged={e => handleInputChange(e)}
+                onDateChanged={(e) => handleInputChange(e)}
                 onBlur={handleInputBlur}
               />
             </FormRow>
@@ -241,7 +241,7 @@ export default props => {
               <Selection
                 placeholder="Chọn giới tính Nam/Nữ"
                 name="genderId"
-                onChange={e => handleInputChange(e)}
+                onChange={(e) => handleInputChange(e)}
                 defaultValue={1}
               >
                 <option value={1}>Nam</option>

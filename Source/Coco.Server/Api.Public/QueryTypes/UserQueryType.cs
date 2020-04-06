@@ -1,5 +1,7 @@
 ﻿using Api.Public.GraphQLTypes.InputTypes;
+using Api.Public.GraphQLTypes.ResultTypes;
 using Api.Public.Resolvers.Contracts;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
 
 namespace Api.Public.QueryTypes
@@ -8,39 +10,19 @@ namespace Api.Public.QueryTypes
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field("loggedUser")
-                .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUser(ctx.ContextData));
+            descriptor.Field<IUserResolver>(x => x.GetLoggedUser(default))
+                .Type<LoggedInResultType>()
+                .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUser(ctx));
 
-            descriptor.Field("fullUserInfo")
+            descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
+                .Type<FullUserInfoResultType>()
                 .Argument("criterias", a => a.Type<FindUserInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().GetFullUserInfoAsync(ctx));
 
-            descriptor.Field("active")
+            descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
+                .Type<ApiResultType>()
                 .Argument("criterias", a => a.Type<ActiveUserInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
         }
-
-        //public UserQuery(IUserResolver userResolver)
-        //{
-        //    //Field<LoggedInUserResultType>("loggedUser",
-        //    //    resolve: context =>
-        //    //    {
-        //    //        return userResolver.GetLoggedUser(context.UserContext);
-        //    //    });
-
-        //    //FieldAsync<ApiResultType<UserInfoExtend, FullUserInfoResultType>>("fullUserInfo",
-        //    //    arguments: new QueryArguments(new QueryArgument<FindUserInputType> { Name = "criterias" }),
-        //    //    resolve: async context =>
-        //    //    {
-        //    //        return await userResolver.GetFullUserInfoAsync(context);
-        //    //    });
-
-        //    //FieldAsync<ActiveUserResultType>("active",
-        //    //    arguments: new QueryArguments(new QueryArgument<ActiveUserInputType> { Name = "criterias" }),
-        //    //    resolve: async context =>
-        //    //    {
-        //    //        return await userResolver.ActiveAsync(context);
-        //    //    });
-        //}
     }
 }

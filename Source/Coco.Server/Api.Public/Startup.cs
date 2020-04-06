@@ -1,4 +1,6 @@
 ﻿using Api.Public.Infrastructure.Extensions;
+using Api.Public.Resolvers;
+using Api.Public.Resolvers.Contracts;
 using AutoMapper;
 using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.MappingProfiles;
@@ -73,6 +75,10 @@ namespace Api.Public
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
             });
+
+            services.AddTransient<IUserResolver, UserResolver>();
+            services.AddTransient<ICountryResolver, CountryResolver>();
+            services.AddTransient<IGenderResolver, GenderResolver>();
 
             #region GraphQL DI
             services.AddGraphQlDependency();

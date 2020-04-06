@@ -1,11 +1,11 @@
-﻿using Coco.Entities.Dtos.General;
+﻿using Api.Identity.Models;
 using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.InputTypes
 {
-    public class DeleteUserPhotoInputType : InputObjectType<UpdateUserPhotoDto>
+    public class DeleteUserPhotoInputType : InputObjectType<PhotoDeleteModel>
     {
-        protected override void Configure(IInputObjectTypeDescriptor<UpdateUserPhotoDto> descriptor)
+        protected override void Configure(IInputObjectTypeDescriptor<PhotoDeleteModel> descriptor)
         {
             descriptor.Field(x => x.CanEdit).Type<NonNullType<BooleanType>>();
         }

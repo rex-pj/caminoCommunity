@@ -10,8 +10,7 @@ namespace Api.Identity.GraphQLTypes.InputTypes
             descriptor.Field(x => x.Lastname).Type<NonNullType<StringType>>();
             descriptor.Field(x => x.Firstname).Type<NonNullType<StringType>>();
             descriptor.Field(x => x.DisplayName).Type<NonNullType<StringType>>();
-            descriptor.Field(x => x.UserIdentityId).Type<NonNullType<StringType>>();
-            descriptor.Field(x => x.AuthenticationToken).Type<NonNullType<StringType>>();
+            descriptor.Field(x => x.Id).Ignore();
         }
     }
 }

@@ -3,7 +3,7 @@ using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
-    public class LoggedInUserResultType : ObjectType<ApplicationUser>
+    public class LoggedInResultType : ObjectType<ApplicationUser>
     {
         protected override void Configure(IObjectTypeDescriptor<ApplicationUser> descriptor)
         {

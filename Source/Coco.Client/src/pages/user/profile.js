@@ -9,7 +9,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
   const _baseUrl = "/profile";
   const sessionContext = useContext(SessionContext);
@@ -20,63 +20,63 @@ export default withRouter(props => {
     client: publicClient,
     variables: {
       criterias: {
-        userId
-      }
-    }
+        userId,
+      },
+    },
   });
 
   const pages = [
     {
       path: [`${_baseUrl}/:userId/about`],
-      dir: "user-about"
+      dir: "user-about",
     },
     {
       path: [`${_baseUrl}/:userId/update`],
-      dir: "user-update"
+      dir: "user-update",
     },
     {
       path: [`${_baseUrl}/:userId/security`],
-      dir: "user-security"
+      dir: "user-security",
     },
     {
       path: [
         `${_baseUrl}/:userId/posts`,
-        `${_baseUrl}/:userId/posts/page/:pageNumber`
+        `${_baseUrl}/:userId/posts/page/:pageNumber`,
       ],
-      dir: "user-posts"
+      dir: "user-posts",
     },
     {
       path: [
         `${_baseUrl}/:userId/products`,
-        `${_baseUrl}/:userId/products/page/:pageNumber`
+        `${_baseUrl}/:userId/products/page/:pageNumber`,
       ],
-      dir: "user-products"
+      dir: "user-products",
     },
     {
       path: [
         `${_baseUrl}/:userId/farms`,
-        `${_baseUrl}/:userId/farms/page/:pageNumber`
+        `${_baseUrl}/:userId/farms/page/:pageNumber`,
       ],
-      dir: "user-farms"
+      dir: "user-farms",
     },
     {
       path: [
         `${_baseUrl}/:userId/followings`,
-        `${_baseUrl}/:userId/followings/page/:pageNumber`
+        `${_baseUrl}/:userId/followings/page/:pageNumber`,
       ],
-      dir: "user-followings"
+      dir: "user-followings",
     },
     {
       path: [
         `${_baseUrl}/:userId`,
         `${_baseUrl}/:userId/feeds`,
-        `${_baseUrl}/:userId/feeds/page/:pageNumber`
+        `${_baseUrl}/:userId/feeds/page/:pageNumber`,
       ],
-      dir: "user-feeds"
-    }
+      dir: "user-feeds",
+    },
   ];
 
-  const onToggleEditCoverMode = e => {
+  const onToggleEditCoverMode = (e) => {
     setEditCoverMode(e);
   };
 
@@ -89,7 +89,7 @@ export default withRouter(props => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: "error"
+      type: "error",
     });
   };
 
@@ -121,19 +121,11 @@ export default withRouter(props => {
     return <ErrorBlock>Error</ErrorBlock>;
   }
 
-  const parseUserInfo = response => {
-    const { fullUserInfo } = response;
-    const { result, accessMode } = fullUserInfo;
-    const canEdit = accessMode === "CAN_EDIT";
+  if (!data) {
+    return <ErrorBlock>Not Found</ErrorBlock>;
+  }
 
-    return {
-      ...result,
-      canEdit: canEdit,
-      url: result.userIdentityId ? `/profile/${result.userIdentityId}` : ""
-    };
-  };
-
-  const userInfo = parseUserInfo(data);
+  const { fullUserInfo } = data;
 
   return (
     <Profile
@@ -145,7 +137,7 @@ export default withRouter(props => {
       userCoverUpdated={userCoverUpdated}
       showValidationError={showValidationError}
       pages={pages}
-      userInfo={userInfo}
+      userInfo={fullUserInfo}
     />
   );
 });

@@ -1,13 +1,10 @@
 ﻿using Api.Identity.GraphQLTypes.InputTypes;
-using Api.Identity.GraphQLTypes.ResultTypes;
 using Api.Identity.MutationTypes;
 using Api.Identity.QueryTypes;
-using Api.Identity.Resolvers;
-using Api.Identity.Resolvers.Contracts;
-using Coco.Api.Framework.GraphQLTypes.Redefines;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Api.Framework.Models;
+using Coco.Api.Framework.SessionManager.Contracts;
 using HotChocolate;
-using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Identity.Infrastructure.Extensions
@@ -17,24 +14,23 @@ namespace Api.Identity.Infrastructure.Extensions
         public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
         {
             return services
-                .AddTransient<IUserResolver, UserResolver>()
                 .AddGraphQL(sp => SchemaBuilder.New()
+                .Use(next => context =>
+                {
+                    context.ContextData["SessionContext"] = context.Service<ISessionContext>();
+                    return next.Invoke(context);
+                })
                 .AddServices(sp)
                 .AddQueryType<UserQueryType>()
                 .AddMutationType<UserMutationType>()
-                .AddType(typeof(ListType<>))
-                .AddType<AccessModeEnumType>()
                 .AddType<ApiErrorType>()
-                .AddType<DynamicType>()
-                .AddType<ItemUpdatedResultType>()
-                .AddType<UserPhotoUpdatedResultType>()
-                .AddType<UserPhotoDeletedResultType>()
-                .AddType<UserIdentifierUpdateResultType>()
                 .AddType<UpdatePerItemInputType>()
-                .AddType<DeleteUserPhotoInputType>()
-                .AddType<UpdateUserPhotoInputType>()
+                .AddType<SelectOptionType>()
                 .AddType<UserPasswordUpdateInputType>()
                 .AddType<UserIdentifierUpdateInputType>()
+                .AddType<UserPhotoUpdateInputType>()
+                .AddType<DeleteUserPhotoInputType>()
+                .AddType<IApiResult>()
                 .Create());
         }
     }

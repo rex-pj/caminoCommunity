@@ -3,14 +3,14 @@ import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import {
   GET_FULL_USER_INFO,
-  UPDATE_USER_INFO_PER_ITEM
+  UPDATE_USER_INFO_PER_ITEM,
 } from "../../utils/GraphQLQueries";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { publicClient } from "../../utils/GraphQLClient";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const { userId } = props;
 
   const [updateUserInfoItem] = useMutation(UPDATE_USER_INFO_PER_ITEM);
@@ -19,9 +19,9 @@ export default withRouter(props => {
     client: publicClient,
     variables: {
       criterias: {
-        userId
-      }
-    }
+        userId,
+      },
+    },
   });
 
   if (loading) {
@@ -32,10 +32,9 @@ export default withRouter(props => {
   }
 
   const { fullUserInfo } = data;
-  const { accessMode, result } = fullUserInfo;
-  const canEdit = accessMode === "CAN_EDIT";
+  const { canEdit } = fullUserInfo;
 
-  const onEdited = async e => {
+  const onEdited = async (e) => {
     if (updateUserInfoItem) {
       return await updateUserInfoItem({
         variables: {
@@ -43,16 +42,23 @@ export default withRouter(props => {
             key: e.primaryKey,
             value: e.value,
             propertyName: e.propertyName,
-            canEdit
-          }
+            canEdit,
+          },
+        },
+      }).then((response) => {
+        const { errors } = response;
+        if (!errors) {
+          refetch();
         }
-      }).then(() => {
-        refetch();
       });
     }
   };
 
   return (
-    <About onEdited={e => onEdited(e)} userInfo={result} canEdit={canEdit} />
+    <About
+      onEdited={(e) => onEdited(e)}
+      userInfo={fullUserInfo}
+      canEdit={canEdit}
+    />
   );
 });

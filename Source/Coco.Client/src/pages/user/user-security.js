@@ -3,10 +3,9 @@ import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import UpdatePasswordForm from "../../components/organisms/User/UpdatePasswordForm";
 import { UPDATE_USER_PASSWORD } from "../../utils/GraphQLQueries";
-import AuthService from "../../services/AuthService";
 import { useStore } from "../../store/hook-store";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const [updateUserPassword] = useMutation(UPDATE_USER_PASSWORD);
@@ -19,13 +18,13 @@ export default withRouter(props => {
         message:
           "Để đảm bảo các chức năng được hoạt động tốt bạn cần thoát ra và đăng nhập lại",
         executeButtonName: "Đồng ý",
-        executeUrl: "/auth/signout"
+        executeUrl: "/auth/signout",
       },
       options: {
         isOpen: true,
         type: "CONFIRM_REDIRECT",
-        unableClose: true
-      }
+        unableClose: true,
+      },
     });
   };
 
@@ -33,11 +32,11 @@ export default withRouter(props => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: type
+      type: type,
     });
   };
 
-  const onUpdatePassword = async data => {
+  const onUpdatePassword = async (data) => {
     if (!canEdit) {
       return;
     }
@@ -47,15 +46,20 @@ export default withRouter(props => {
     if (updateUserPassword) {
       await updateUserPassword({
         variables: {
-          criterias: data
-        }
+          criterias: data,
+        },
       })
-        .then(response => {
-          const { data } = response;
-          const { updatePassword } = data;
-          const { result } = updatePassword;
+        .then((response) => {
+          const { errors } = response;
+          if (errors) {
+            setFormEnabled(true);
+            showNotification(
+              "Có lỗi khi cập nhật mật khẩu",
+              "Kiểm tra lại thông tin và thử lại",
+              "error"
+            );
+          }
 
-          AuthService.setLogin(null, result.authenticationToken);
           showNotification(
             "Thay đổi mật khẩu thành công",
             "Bạn đã cập nhật mật khẩu thành công",
@@ -64,7 +68,7 @@ export default withRouter(props => {
           onUpdateConfirmation();
           setFormEnabled(true);
         })
-        .catch(error => {
+        .catch((error) => {
           setFormEnabled(true);
           showNotification(
             "Có lỗi khi cập nhật mật khẩu",
@@ -77,7 +81,7 @@ export default withRouter(props => {
 
   return (
     <UpdatePasswordForm
-      onUpdate={e => onUpdatePassword(e, canEdit)}
+      onUpdate={(e) => onUpdatePassword(e, canEdit)}
       isFormEnabled={isFormEnabled}
       canEdit={canEdit}
       showValidationError={props.showValidationError}

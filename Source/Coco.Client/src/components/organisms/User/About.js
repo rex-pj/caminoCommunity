@@ -10,27 +10,37 @@ import TextAreaEditable from "../../molecules/Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
 
 const MainPanel = styled(PanelBody)`
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  margin-bottom: ${p => p.theme.size.normal};
-  background-color: ${p => p.theme.color.white};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  margin-bottom: ${(p) => p.theme.size.normal};
+  background-color: ${(p) => p.theme.color.white};
 `;
 
 const Root = styled.div`
   position: relative;
-  border-radius: ${p => p.theme.borderRadius.normal};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
 const InfoList = styled(VerticalList)`
   margin-bottom: 0;
 `;
 
-export default props => {
-  const onEditable = async e => {
+export default (props) => {
+  const onEdited = async (e) => {
     return await props.onEdited(e);
   };
 
   const { userInfo, canEdit } = props;
+  const { countrySelections } = userInfo;
+  let countries = [];
+  if (countrySelections) {
+    countries = countrySelections.map((country) => {
+      return {
+        id: country.id,
+        text: country.name,
+      };
+    });
+  }
   return (
     <MainPanel>
       <Root>
@@ -53,7 +63,7 @@ export default props => {
                 value={userInfo.description}
                 primaryKey={userInfo.userIdentityId}
                 name="description"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
               />
             </LabelAndInfo>
@@ -62,7 +72,7 @@ export default props => {
                 value={userInfo.phoneNumber}
                 primaryKey={userInfo.userIdentityId}
                 name="phoneNumber"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
               />
             </LabelAndInfo>
@@ -73,7 +83,7 @@ export default props => {
                 primaryKey={userInfo.userIdentityId}
                 name="genderId"
                 emptyText="Chọn giới tính"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
                 selections={userInfo.genderSelections}
               />
@@ -83,7 +93,7 @@ export default props => {
                 value={userInfo.address}
                 primaryKey={userInfo.userIdentityId}
                 name="address"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
               />
             </LabelAndInfo>
@@ -94,9 +104,9 @@ export default props => {
                 primaryKey={userInfo.userIdentityId}
                 name="countryId"
                 emptyText="Chọn quốc gia của bạn"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
-                selections={userInfo.countrySelections}
+                selections={countries}
               />
               {userInfo.country}
             </LabelAndInfo>
@@ -105,7 +115,7 @@ export default props => {
                 value={userInfo.birthDate}
                 primaryKey={userInfo.userIdentityId}
                 name="birthDate"
-                onUpdated={e => onEditable(e)}
+                onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
               />
             </LabelAndInfo>

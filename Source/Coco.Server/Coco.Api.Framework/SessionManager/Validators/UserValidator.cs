@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Coco.Api.Framework.SessionManager.Core;
+using Coco.Commons.Models;
 
 namespace Coco.Api.Framework.SessionManager.Validators
 {
@@ -32,7 +33,7 @@ namespace Coco.Api.Framework.SessionManager.Validators
         /// <param name="manager">The <see cref="UserManager{TUser}"/> that can be used to retrieve user properties.</param>
         /// <param name="user">The user to validate.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the validation operation.</returns>
-        public virtual async Task<ApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user)
+        public virtual async Task<IApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user)
         {
             if (manager == null)
             {
@@ -42,16 +43,22 @@ namespace Coco.Api.Framework.SessionManager.Validators
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            var errors = new List<ApiError>();
+            var errors = new List<CommonError>();
             await ValidateUserName(manager, user, errors);
             if (manager.Options.User.RequireUniqueEmail)
             {
                 await ValidateEmail(manager, user, errors);
             }
-            return errors.Count > 0 ? ApiResult.Failed(errors.ToArray()) : new ApiResult(true);
+
+            if(errors.Count > 0)
+            {
+                return ApiResult.Failed(errors.ToArray());
+            }
+
+            return new ApiResult(true);
         }
 
-        private async Task ValidateUserName(IUserManager<ApplicationUser> manager, ApplicationUser user, ICollection<ApiError> errors)
+        private async Task ValidateUserName(IUserManager<ApplicationUser> manager, ApplicationUser user, ICollection<CommonError> errors)
         {
             var userName = manager.GetUserNameAsync(user);
             if (string.IsNullOrWhiteSpace(userName))
@@ -75,7 +82,7 @@ namespace Coco.Api.Framework.SessionManager.Validators
         }
 
         // make sure email is not empty, valid, and unique
-        private async Task ValidateEmail(IUserManager<ApplicationUser> manager, ApplicationUser user, List<ApiError> errors)
+        private async Task ValidateEmail(IUserManager<ApplicationUser> manager, ApplicationUser user, List<CommonError> errors)
         {
             var email = await manager.GetEmailAsync(user);
             if (string.IsNullOrWhiteSpace(email))

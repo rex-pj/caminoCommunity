@@ -3,10 +3,11 @@ using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class SelectOptionType<T> : ObjectType<T> where T : SelectOption
+    public class SelectOptionType<T> : ObjectType<T> where T : ISelectOption
     {
         protected override void Configure(IObjectTypeDescriptor<T> descriptor)
         {
+            base.Configure(descriptor);
             descriptor.Field(x => x.Id).Type<StringType>();
             descriptor.Field(x => x.Text).Type<StringType>();
             descriptor.Field(x => x.IsSelected).Type<BooleanType>();

@@ -10,6 +10,8 @@ using Coco.Entities.Dtos.General;
 using AutoMapper;
 using Coco.Api.Framework.SessionManager.Core;
 using System.Linq;
+using Coco.Common.Exceptions;
+using Coco.Commons.Models;
 
 namespace Coco.Api.Framework.SessionManager.Stores
 {
@@ -47,7 +49,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         }
 
         #region IUserStore<LoggedUser> Members
-        public async Task<ApiResult> CreateAsync(ApplicationUser user)
+        public async Task<IApiResult> CreateAsync(ApplicationUser user)
         {
             try
             {
@@ -62,11 +64,11 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 var userData = await _userBusiness.CreateAsync(userModel);
                 var userResult = _mapper.Map<ApplicationUser>(userData);
 
-                return ApiResult<ApplicationUser>.Success(userResult);
+                return ApiResult.Success(userResult);
             }
             catch (Exception ex)
             {
-                return ApiResult.Failed(new ApiError { Code = ex.Message, Description = ex.Message });
+                return ApiResult.Failed(new CommonError { Code = ex.Message, Message = ex.Message });
             }
         }
         #endregion
@@ -92,7 +94,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="user">The user to update.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAuthenticationAsync(ApplicationUser user)
+        public virtual async Task<IApiResult> UpdateAuthenticationAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -103,34 +105,28 @@ namespace Coco.Api.Framework.SessionManager.Stores
             try
             {
                 var userModel = _mapper.Map<UserDto>(user);
-
                 var authenticationAttributes = _userStampStore.NewUserAuthenticationAttributes(user);
-                var result = await _userAttributeBusiness.CreateAsync(authenticationAttributes);
+                var userAttribute = await _userAttributeBusiness.CreateAsync(authenticationAttributes);
 
-                if (result == null || !result.Any())
+                if (userAttribute == null || !userAttribute.Any())
                 {
                     return ApiResult.Failed(Describer.InvalidToken());
                 }
 
-                var authTokenResult = result.FirstOrDefault(x => x.Key == UserAttributeOptions.AUTHENTICATION_TOKEN);
-
-                if(authTokenResult == null || string.IsNullOrEmpty(authTokenResult.Value))
+                var authTokenResult = userAttribute.FirstOrDefault(x => x.Key == UserAttributeOptions.AUTHENTICATION_TOKEN);
+                if (authTokenResult == null || string.IsNullOrEmpty(authTokenResult.Value))
                 {
                     throw new UnauthorizedAccessException();
                 }
 
                 string userIdentityId = _textCrypter.Encrypt(authTokenResult.UserId.ToString(), _textCrypterSaltKey);
-
                 var userInfo = _mapper.Map<UserInfoModel>(user);
                 userInfo.UserIdentityId = userIdentityId;
-                return new ApiResult<UserTokenResult>(true)
+                return ApiResult.Success(new UserTokenResult()
                 {
-                    Result = new UserTokenResult()
-                    {
-                        AuthenticationToken = authTokenResult.Value,
-                        UserInfo = userInfo
-                    }
-                };
+                    AuthenticationToken = authTokenResult.Value,
+                    UserInfo = userInfo
+                });
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -138,7 +134,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
             }
         }
 
-        public virtual async Task<ApiResult> UpdateIdentifierAsync(ApplicationUser user)
+        public virtual async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
 
@@ -147,21 +143,16 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 var userModel = _mapper.Map<UserIdentifierUpdateDto>(user);
                 var result = await _userBusiness.UpdateIdentifierAsync(userModel);
 
-                return new ApiResult<UserIdentifierUpdateDto>(true)
+                return new UserIdentifierUpdateDto()
                 {
-                    Result = new UserIdentifierUpdateDto()
-                    {
-                        AuthenticationToken = user.AuthenticationToken,
-                        UserIdentityId = user.UserIdentityId,
-                        DisplayName = result.DisplayName,
-                        Firstname = result.Firstname,
-                        Lastname = result.Lastname
-                    }
+                    DisplayName = result.DisplayName,
+                    Firstname = result.Firstname,
+                    Lastname = result.Lastname
                 };
             }
             catch (DbUpdateConcurrencyException)
             {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
+                throw new CocoApplicationException(Describer.ConcurrencyFailure());
             }
         }
 
@@ -249,7 +240,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="model">The user info to update.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateInfoItemAsync(UpdatePerItemModel model)
+        public virtual async Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel model)
         {
             ThrowIfDisposed();
             if (model == null)
@@ -282,15 +273,15 @@ namespace Coco.Api.Framework.SessionManager.Stores
 
                 model.Value = result.Value;
 
-                return ApiResult<UpdatePerItemModel>.Success(model);
+                return model;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
+                throw new CocoApplicationException(ex);
             }
         }
 
-        public async Task<ApiResult> ActiveAsync(ApplicationUser user)
+        public async Task<IApiResult> ActiveAsync(ApplicationUser user)
         {
             try
             {
@@ -300,7 +291,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
             }
             catch (Exception ex)
             {
-                return ApiResult.Failed(new ApiError { Code = ex.Message, Description = ex.Message });
+                return ApiResult.Failed(new CommonError { Code = ex.Message, Message = ex.Message });
             }
         }
 

@@ -1,18 +1,17 @@
 ﻿using Coco.Api.Framework.Models;
 using HotChocolate.Resolvers;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Public.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        ApplicationUser GetLoggedUser(IDictionary<string, object> userContext);
-        Task<ApiResult> SigninAsync(IResolverContext context);
-        Task<ApiResult> SignupAsync(IResolverContext context);
-        Task<ApiResult> GetFullUserInfoAsync(IResolverContext context);
-        Task<ApiResult> ForgotPasswordAsync(IResolverContext context);
-        Task<ApiResult> ActiveAsync(IResolverContext context);
-        Task<ApiResult> ResetPasswordAsync(IResolverContext context);
+        ApplicationUser GetLoggedUser(IResolverContext context);
+        Task<UserTokenResult> SigninAsync(IResolverContext context);
+        Task<IApiResult> SignupAsync(IResolverContext context);
+        Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context);
+        Task<IApiResult> ForgotPasswordAsync(IResolverContext context);
+        Task<IApiResult> ActiveAsync(IResolverContext context);
+        Task<UserTokenResult> ResetPasswordAsync(IResolverContext context);
     }
 }

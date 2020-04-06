@@ -44,7 +44,7 @@ namespace Coco.Api.Framework.SessionManager
         /// <param name="lockoutOnFailure">Flag indicating if the user user should be locked if the sign in fails.</param>
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
-        public virtual async Task<ApiResult> LoginAsync(string userName, string password)
+        public virtual async Task<IApiResult> LoginAsync(string userName, string password)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -53,7 +53,6 @@ namespace Coco.Api.Framework.SessionManager
             }
 
             var result = await CheckPasswordSignInAsync(user, password);
-
             if (result.IsSucceed)
             {
                 return result;
@@ -70,7 +69,7 @@ namespace Coco.Api.Framework.SessionManager
         /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
         /// for the sign-in attempt.</returns>
         /// <returns></returns>
-        public virtual async Task<ApiResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
+        public virtual async Task<IApiResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
         {
             if (user == null)
             {
@@ -88,7 +87,7 @@ namespace Coco.Api.Framework.SessionManager
         /// <param name="userIdentity">The user id is encrypted</param>
         /// <param name="authenticationToken">Jwt token</param>
         /// <returns></returns>
-        public virtual async Task<ApiResult> LogoutAsync(string userIdentityId, string authenticationToken)
+        public virtual async Task<bool> LogoutAsync(string userIdentityId, string authenticationToken)
         {
             if (string.IsNullOrEmpty(userIdentityId))
             {
@@ -100,14 +99,7 @@ namespace Coco.Api.Framework.SessionManager
                 throw new ArgumentNullException(nameof(authenticationToken));
             }
 
-            var result = await _userManager.ClearUserLoginAsync(userIdentityId, authenticationToken);
-
-            if (result.IsSucceed)
-            {
-                return result;
-            }
-
-            return ApiResult.Failed(Describer.UnexpectedErrorOccurred());
+            return await _userManager.ClearUserLoginAsync(userIdentityId, authenticationToken);
         }
     }
 }

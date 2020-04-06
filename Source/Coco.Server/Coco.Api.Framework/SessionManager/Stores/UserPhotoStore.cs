@@ -36,7 +36,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="model">The photo to update.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateAvatarAsync(UpdateUserPhotoDto model, long userId)
+        public virtual async Task<UserPhotoUpdateDto> UpdateAvatarAsync(UserPhotoUpdateDto model, long userId)
         {
             ThrowIfDisposed();
             if (model == null)
@@ -49,15 +49,15 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
-                return ApiResult<UpdateUserPhotoDto>.Success(result);
+                return result;
             }
             catch (DbUpdateConcurrencyException)
             {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
+                throw new CocoApplicationException(Describer.ConcurrencyFailure());
             }
             catch(PhotoSizeInvalidException)
             {
-                return ApiResult.Failed(Describer.PhotoSizeInvalid());
+                throw new CocoApplicationException(Describer.PhotoSizeInvalid());
             }
         }
 
@@ -66,7 +66,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="model">The photo to update.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> UpdateCoverAsync(UpdateUserPhotoDto model, long userId)
+        public virtual async Task<UserPhotoUpdateDto> UpdateCoverAsync(UserPhotoUpdateDto model, long userId)
         {
             ThrowIfDisposed();
             if (model == null)
@@ -79,11 +79,11 @@ namespace Coco.Api.Framework.SessionManager.Stores
                 model.UserPhotoCode = Guid.NewGuid().ToString();
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, userId);
 
-                return ApiResult<UpdateUserPhotoDto>.Success(result);
+                return result;
             }
             catch (DbUpdateConcurrencyException)
             {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
+                throw new CocoApplicationException(Describer.ConcurrencyFailure());
             }
         }
 
@@ -92,7 +92,7 @@ namespace Coco.Api.Framework.SessionManager.Stores
         /// </summary>
         /// <param name="model">The photo to update.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-        public virtual async Task<ApiResult> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
+        public virtual async Task<UserPhotoUpdateDto> DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
             ThrowIfDisposed();
             if (userId <= 0)
@@ -104,11 +104,11 @@ namespace Coco.Api.Framework.SessionManager.Stores
             {
                 await _userPhotoBusiness.DeleteUserPhotoAsync(userId, userPhotoType);
 
-                return ApiResult<UpdateUserPhotoDto>.Success(new UpdateUserPhotoDto());
+                return new UserPhotoUpdateDto();
             }
             catch (DbUpdateConcurrencyException)
             {
-                return ApiResult.Failed(Describer.ConcurrencyFailure());
+                throw new CocoApplicationException(Describer.ConcurrencyFailure());
             }
         }
 

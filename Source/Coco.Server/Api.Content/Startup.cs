@@ -6,7 +6,6 @@ using Coco.Api.Framework.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
-using GraphiQl;
 using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

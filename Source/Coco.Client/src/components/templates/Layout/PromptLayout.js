@@ -17,7 +17,7 @@ const Container = styled.div`
 const Wrap = styled.div`
   width: 750px;
   max-width: 100%;
-  background-color: ${p => p.theme.color.primary};
+  background-color: ${p => p.theme.color.primaryLight};
   min-height: 500px;
   border-radius: ${p => p.theme.borderRadius.medium};
   box-shadow: ${p => p.theme.shadow.BoxShadow};

@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Api.Public.Models
 {
-    public class RegisterModel
+    public class SignupModel
     {
-        public long Id { get; set; }
         [Required]
         public string Lastname { get; set; }
         [Required]
@@ -17,10 +16,6 @@ namespace Api.Public.Models
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
-        [Required]
-        public bool IsActived { get; set; }
-        [Required]
-        public byte StatusId { get; set; }
         [Required]
         public DateTime? BirthDate { get; set; }
         public int? GenderId { get; set; }

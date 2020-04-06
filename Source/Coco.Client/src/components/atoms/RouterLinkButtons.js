@@ -35,6 +35,22 @@ const ButtonCircle = styled(Button)`
   border-radius: 100%;
 `;
 
+const ButtonSecondary = styled(Button)`
+  color: ${p => p.theme.color.white};
+  background-color: ${p => p.theme.color.primaryLight};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${p => p.theme.color.primaryDark};
+    outline: none;
+  }
+
+  :disabled {
+    background-color: ${p => p.theme.color.primaryDark};
+  }
+`;
+
 const ButtonTransparent = styled(Button)`
   background-color: transparent;
   border: 0;
@@ -112,6 +128,7 @@ const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
 
 export {
   Button as RouterLinkButton,
+  ButtonSecondary as RouterLinkButtonSecondary,
   ButtonCircle as RouterLinkButtonCircle,
   ButtonTransparent as RouterLinkButtonTransparent,
   ButtonOutlineSecondary as RouterLinkButtonOutlineSecondary,

@@ -1,7 +1,14 @@
-﻿namespace Coco.Api.Framework.Models
+﻿using Coco.Api.Framework.Commons.Enums;
+
+namespace Coco.Api.Framework.Models
 {
     public class UserTokenResult
     {
+        public string AuthenticationToken { get; set; }
+        public bool IsSucceed { get; set; }
+        public UserInfoModel UserInfo { get; internal set; }
+        public AccessModeEnum AccessMode { get; set; }
+
         public UserTokenResult()
         {
             IsSucceed = false;
@@ -11,9 +18,5 @@
         {
             IsSucceed = isSucceed;
         }
-
-        public string AuthenticationToken { get; set; }
-        public bool IsSucceed { get; set; }
-        public UserInfoModel UserInfo { get; internal set; }
     }
 }

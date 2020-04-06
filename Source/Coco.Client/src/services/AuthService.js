@@ -3,19 +3,19 @@ import {
   AUTH_LOGIN_KEY,
   AUTH_DISPLAY_NAME,
   AUTH_USER_HASHED_ID,
-  AUTH_USER_LANGUAGE
+  AUTH_USER_LANGUAGE,
 } from "../utils/AppSettings";
 import {
   removeLocalStorage,
   setLocalStorage,
-  getLocalStorageByKey
+  getLocalStorageByKey,
 } from "./StorageService";
 
 const removeUserToken = () => {
   removeLocalStorage(AUTH_KEY);
 };
 
-const setUserToken = token => {
+const setUserToken = (token) => {
   setLocalStorage(AUTH_KEY, token);
 };
 
@@ -23,7 +23,7 @@ const getUserToken = () => {
   return getLocalStorageByKey(AUTH_KEY);
 };
 
-const parseUserInfo = response => {
+const parseUserInfo = (response) => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
 
@@ -31,7 +31,7 @@ const parseUserInfo = response => {
 
   let currentUser = {
     isLogin,
-    userLanguage
+    userLanguage,
   };
 
   if (response) {
@@ -39,7 +39,7 @@ const parseUserInfo = response => {
 
     currentUser = {
       ...currentUser,
-      ...loggedUser
+      ...loggedUser,
     };
   }
 
@@ -61,6 +61,7 @@ const logOut = () => {
   removeLocalStorage(AUTH_LOGIN_KEY);
   removeLocalStorage(AUTH_DISPLAY_NAME);
   removeLocalStorage(AUTH_USER_HASHED_ID);
+  return true;
 };
 
 export default {
@@ -69,5 +70,5 @@ export default {
   getUserToken,
   setLogin,
   logOut,
-  parseUserInfo
+  parseUserInfo,
 };

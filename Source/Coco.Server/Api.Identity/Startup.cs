@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using GraphiQl;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using Coco.Api.Framework.MappingProfiles;
@@ -13,6 +12,8 @@ using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.Infrastructure.Extensions;
 using Api.Identity.Infrastructure.Extensions;
 using HotChocolate.AspNetCore;
+using Api.Identity.Resolvers.Contracts;
+using Api.Identity.Resolvers;
 
 namespace Api.Identity
 {
@@ -58,6 +59,8 @@ namespace Api.Identity
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
+
+            services.AddTransient<IUserResolver, UserResolver>();
 
             #region GraphQL DI
             services.AddGraphQlDependency();

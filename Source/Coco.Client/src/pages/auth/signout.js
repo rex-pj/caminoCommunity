@@ -6,7 +6,7 @@ import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
 import { SIGNOUT } from "../../utils/GraphQLQueries";
 import { SessionContext } from "../../store/context/SessionContext";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const { data, loading, error } = useQuery(SIGNOUT);
   const { history } = props;
   const sessionContext = useContext(SessionContext);
@@ -20,9 +20,11 @@ export default withRouter(props => {
   }
 
   async function logout() {
-    AuthService.logOut();
-    await sessionContext.relogin();
-    history.push("/");
+    const isCleared = AuthService.logOut();
+    if (isCleared) {
+      await sessionContext.relogin();
+      history.push("/");
+    }
   }
 
   if (data) {

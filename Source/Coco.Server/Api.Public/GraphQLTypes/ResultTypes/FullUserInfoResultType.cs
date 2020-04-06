@@ -1,17 +1,15 @@
-﻿using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+﻿using Api.Public.Resolvers.Contracts;
+using Coco.Api.Framework.Commons.Helpers;
+using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
+using Coco.Entities.Enums;
 using HotChocolate.Types;
 
 namespace Api.Public.GraphQLTypes.ResultTypes
 {
-    public class ApiFullUserInfoResultType : ApiResultType<UserInfoExtend, FullUserInfoResultType>
+    public class FullUserInfoResultType : ObjectType<FullUserInfoModel>
     {
-
-    }
-
-    public class FullUserInfoResultType : ObjectType<UserInfoExtend>
-    {
-        protected override void Configure(IObjectTypeDescriptor<UserInfoExtend> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<FullUserInfoModel> descriptor)
         {
             descriptor.Field(x => x.Lastname).Type<StringType>();
             descriptor.Field(x => x.Firstname).Type<StringType>();
@@ -34,10 +32,13 @@ namespace Api.Public.GraphQLTypes.ResultTypes
             descriptor.Field(x => x.StatusLabel).Type<StringType>();
             descriptor.Field(x => x.AvatarUrl).Type<StringType>();
             descriptor.Field(x => x.CoverPhotoUrl).Type<StringType>();
+            descriptor.Field(x => x.CanEdit).Type<BooleanType>();
             descriptor.Field(x => x.GenderSelections)
-                .Type<ListType<GenderSelectOptionType>>();
+                .Resolver(ctx => ctx.Service<IGenderResolver>().GetSelections())
+                .Type<ListType<SelectOptionType>>();
             descriptor.Field(x => x.CountrySelections)
-                .Type<ListType<CountrySelectOptionType>>();
+                .Type<ListType<CountryResultType>>()
+                .Resolver(ctx => ctx.Service<ICountryResolver>().GetAll());
         }
     }
 }

@@ -3,11 +3,6 @@ using HotChocolate.Types;
 
 namespace Coco.Api.Framework.GraphQLTypes.ResultTypes
 {
-    public class ApiUserTokenResultType : ApiResultType<UserTokenResult, UserTokenResultType>
-    {
-
-    }
-
     public class UserTokenResultType : ObjectType<UserTokenResult>
     {
         protected override void Configure(IObjectTypeDescriptor<UserTokenResult> descriptor)

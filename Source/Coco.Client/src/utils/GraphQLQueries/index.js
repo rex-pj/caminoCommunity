@@ -1,49 +1,35 @@
 import gpl from "graphql-tag";
 
 export const SIGN_UP = gpl`
-  mutation Signup($user: RegisterInputType!){
-    signup(user: $user){
+  mutation Signup($criterias: SignupModelInput){
+    signup(criterias: $criterias){
       isSucceed,
       errors {
         code,
-        description
+        message
       }
     }
   }
 `;
 
 export const SIGNIN = gpl`
-  mutation signin($args: SigninInputType!){
-    signin(args: $args){
-      result {
-        userInfo {
-          displayName,
-          userIdentityId
-        },
-        authenticationToken,
+  mutation Signin($criterias: SigninModelInput!){
+    signin(criterias: $criterias){
+      userInfo {
+        displayName,
+        userIdentityId
       },
-      isSucceed,
-      errors {
-        code
-        description
-      }
+      authenticationToken
     }
   }
 `;
 
 export const UPDATE_USER_IDENTIFIER = gpl`
-  mutation UpdateUserIdentifier($user: UserIdentifierUpdateInputType!){
-    updateUserIdentifier(user: $user){
-      isSucceed,
-      errors {
-        code,
-        description
-      },
-      result {
-        lastname,
-        firstname,
-        displayName
-      }
+  mutation UpdateIdentifier($criterias: UserIdentifierUpdateDtoInput){
+    updateIdentifier(criterias: $criterias){
+      lastname
+      firstname
+      displayName
     }
   }
 `;
@@ -63,170 +49,143 @@ export const GET_LOGGED_USER = gpl`
 `;
 
 export const GET_USER_INFO = gpl`
-  query($criterias: FindUserInputType!){
+  query($criterias: FindUserModelInput!){
     fullUserInfo(criterias: $criterias){
-      accessMode
-      result{
-        email
-        displayName
-        userIdentityId
-        address
-        birthDate
-        countryName
-        description
-        createdDate
-        phoneNumber,
-        avatarUrl,
-        coverPhotoUrl
-      }
+      canEdit
+      email
+      displayName
+      userIdentityId
+      address
+      birthDate
+      countryName
+      description
+      createdDate
+      phoneNumber
+      avatarUrl
+      coverPhotoUrl
+    }
+  }
+`;
+
+export const GET_USER_IDENTIFY = gpl`
+  query($criterias: FindUserModelInput!){
+    fullUserInfo(criterias: $criterias){
+      canEdit
+      birthDate
+      displayName
+      email
+      firstname
+      lastname
+      userIdentityId
     }
   }
 `;
 
 export const GET_FULL_USER_INFO = gpl`
-  query($criterias: FindUserInputType!){
+  query($criterias: FindUserModelInput!){
     fullUserInfo(criterias: $criterias){
-      accessMode
-      result {
-        birthDate
-        displayName
-        email
-        firstname
-        lastname
-        createdDate
-        description
-        address
-        phoneNumber
-        genderLabel
-        genderId
-        countryName
-        countryId
-        statusLabel
-        userIdentityId
-        coverPhotoUrl
-        genderSelections {
-          id
-          text
-        }
-        countrySelections {
-          id
-          text
-        }
+      canEdit
+      birthDate
+      displayName
+      email
+      firstname
+      lastname
+      createdDate
+      description
+      address
+      phoneNumber
+      genderLabel
+      genderId
+      countryName
+      countryId
+      statusLabel
+      userIdentityId
+      coverPhotoUrl
+      genderSelections {
+        id
+        text
+      }
+      countrySelections {
+        id
+        name
       }
     }
   }
 `;
 
 export const UPDATE_USER_INFO_PER_ITEM = gpl`
-  mutation UpdateUserInfoItem($criterias: UpdatePerItemInputType!){
+  mutation UpdateUserInfoItem($criterias: UpdatePerItemModelInput!){
     updateUserInfoItem(criterias: $criterias){
-      isSucceed,
-      errors {
-        code
-        description
-      },
-      result {
-        value,
-        propertyName
-      }
+      value
+      propertyName
     }
   }
 `;
 
 export const UPDATE_USER_AVATAR = gpl`
-  mutation UpdateAvatar($criterias: UpdateUserPhotoInputType!){
+  mutation UpdateAvatar($criterias: UserPhotoUpdateDtoInput!){
     updateAvatar(criterias: $criterias){
       isSucceed,
       errors {
         code
-        description
-      },
-      result {
-        photoUrl,
-        xAxis,
-        yAxis,
-        width,
-        height,
-        contentType,
-        canEdit
+        message
       }
     }
   }
 `;
 
 export const DELETE_USER_AVATAR = gpl`
-  mutation DeleteAvatar($criterias: DeleteUserPhotoInputType!){
+  mutation DeleteAvatar($criterias: PhotoDeleteModelInput!){
     deleteAvatar(criterias: $criterias){
       isSucceed,
       errors {
         code
-        description
-      },
-      result {
-        canEdit
+        message
       }
     }
   }
 `;
 
 export const UPDATE_USER_COVER = gpl`
-  mutation UpdateUserCover($criterias: UpdateUserPhotoInputType!){
-    updateUserCover(criterias: $criterias){
+  mutation UpdateCover($criterias: UserPhotoUpdateDtoInput!){
+    updateCover(criterias: $criterias){
       isSucceed,
       errors {
         code
-        description
-      },
-      result {
-        photoUrl,
-        xAxis,
-        yAxis,
-        width,
-        height,
-        contentType,
-        canEdit
+        message
       }
     }
   }
 `;
 
 export const DELETE_USER_COVER = gpl`
-  mutation DeleteCover($criterias: DeleteUserPhotoInputType!){
+  mutation DeleteCover($criterias: PhotoDeleteModelInput!){
     deleteCover(criterias: $criterias){
       isSucceed,
       errors {
         code
-        description
+        message
       },
-      result {
-        canEdit
-      }
+      result
     }
   }
 `;
 
 export const UPDATE_USER_PASSWORD = gpl`
-  mutation UpdatePassword($criterias: UserPasswordUpdateInputType!){
+  mutation UpdatePassword($criterias: UserPasswordUpdateDtoInput!){
     updatePassword(criterias: $criterias){
-      isSucceed,
-      errors {
-        code,
-        description
-      },
-      result {
-        authenticationToken
-      },
+      authenticationToken
     }
   }
 `;
 
 export const FORGOT_PASSWORD = gpl`
-  mutation ForgotPassword($criterias: ForgotPasswordInputType!){
+  mutation ForgotPassword($criterias: ForgotPasswordModelInput!){
     forgotPassword(criterias: $criterias){
       isSucceed,
       errors {
         code,
-        description
+        message
       }
     }
   }
@@ -238,31 +197,31 @@ query signout{
       isSucceed,
       errors {
         code,
-        description
+        message
       }
     }
   }
 `;
 
 export const ACTIVE = gpl`
-query ($criterias: ActiveUserInputType!){
+query ($criterias: ActiveUserModelInput!){
   active(criterias: $criterias) {
       isSucceed,
       errors {
         code,
-        description
+        message
       }
     }
   }
 `;
 
 export const RESET_PASSWORD = gpl`
-mutation ($criterias: ResetPasswordInputType!){
+mutation ($criterias: ResetPasswordModelInput!){
   resetPassword(criterias: $criterias) {
       isSucceed,
       errors {
         code,
-        description
+        message
       }
     }
   }

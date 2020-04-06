@@ -13,9 +13,9 @@ using MimeKit.Text;
 using Coco.Api.Framework.SessionManager.Contracts;
 using Coco.Common.Resources;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using Api.Public.Resolvers.Contracts;
 using HotChocolate.Resolvers;
+using HotChocolate;
 
 namespace Api.Public.Resolvers
 {
@@ -51,11 +51,11 @@ namespace Api.Public.Resolvers
             _resetPasswordUrl = configuration["ResetPassword:Url"];
         }
 
-        public ApplicationUser GetLoggedUser(IDictionary<string, object> userContext)
+        public ApplicationUser GetLoggedUser(IResolverContext context)
         {
             try
             {
-                var sessionContext = userContext["SessionContext"] as ISessionContext;
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
                 var currentUser = sessionContext.CurrentUser;
                 return currentUser;
             }
@@ -65,34 +65,31 @@ namespace Api.Public.Resolvers
             }
         }
 
-        public async Task<ApiResult> SigninAsync(IResolverContext context)
+        public async Task<UserTokenResult> SigninAsync(IResolverContext context)
         {
             try
             {
-                var model = context.Argument<SigninModel>("args");
-
+                var model = context.Argument<SigninModel>("criterias");
                 var result = await _loginManager.LoginAsync(model.Username, model.Password);
-
                 if (!result.IsSucceed)
                 {
                     HandleContextError(context, result.Errors);
                 }
 
-                return result;
+                return result.Result as UserTokenResult;
             }
             catch (Exception ex)
             {
-                //context.ReportError(ErrorMessageConst.EXCEPTION);
-                 throw;
+                HandleContextError(context, ex);
+                return null;
             }
         }
 
-        public async Task<ApiResult> SignupAsync(IResolverContext context)
+        public async Task<IApiResult> SignupAsync(IResolverContext context)
         {
             try
             {
-                var model = context.Argument<RegisterModel>("user");
-
+                var model = context.Argument<SignupModel>("criterias");
                 var user = new ApplicationUser()
                 {
                     BirthDate = model.BirthDate,
@@ -111,8 +108,9 @@ namespace Api.Public.Resolvers
                 var result = await _userManager.CreateAsync(user);
                 if (result.IsSucceed)
                 {
-                    var response = result as ApiResult<ApplicationUser>;
-                    var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{response.Result.ActiveUserStamp}";
+                    var response = result as ApiResult;
+                    var userResponse = response.Result as ApplicationUser;
+                    var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{userResponse.ActiveUserStamp}";
                     await _emailSender.SendEmailAsync(new MailMessageModel()
                     {
                         Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
@@ -132,11 +130,11 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<ApiResult> GetFullUserInfoAsync(IResolverContext context)
+        public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
         {
             try
             {
@@ -152,56 +150,43 @@ namespace Api.Public.Resolvers
 
                 var user = await _userManager.FindUserByIdentityIdAsync(userIdentityId, userContext.AuthenticationToken);
 
-                var result = _mapper.Map<UserInfoExtend>(user);
+                var result = _mapper.Map<FullUserInfoModel>(user);
                 result.UserIdentityId = userIdentityId;
-                if (userContext.CurrentUser == null || string.IsNullOrEmpty(user.AuthenticationToken) 
-                    || !user.AuthenticationToken.Equals(userContext.AuthenticationToken))
+                if (userContext.CurrentUser != null && !string.IsNullOrEmpty(user.AuthenticationToken)
+                    || user.AuthenticationToken.Equals(userContext.AuthenticationToken))
                 {
-                    return ApiResult<UserInfoExtend>.Success(result);
+                    result.CanEdit = true;
                 }
 
-                var genderOptions = EnumHelper.EnumToSelectList<GenderEnum>();
-
-                result.GenderSelections = genderOptions;
-                var countries = _countryBusiness.GetAll();
-                if (countries != null && countries.Any())
-                {
-                    result.CountrySelections = countries.Select(x => new SelectOption()
-                    {
-                        Id = x.Id.ToString(),
-                        Text = x.Name
-                    });
-                }
-
-                return ApiResult<UserInfoExtend>.Success(result, true);
+                return result;
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<ApiResult> ForgotPasswordAsync(IResolverContext context)
+        public async Task<IApiResult> ForgotPasswordAsync(IResolverContext context)
         {
             try
             {
-                var model = context.Argument<ForgotPasswordModel>("criterias");
-
-                if (model == null)
+                var criterias = context.Argument<ForgotPasswordModel>("criterias");
+                if (criterias == null)
                 {
-                    throw new NullReferenceException(nameof(model));
+                    throw new NullReferenceException(nameof(criterias));
                 }
 
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(criterias.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     throw new ApplicationException("ForgotPasswordConfirmation");
                 }
 
-                var result = await _userManager.ForgotPasswordAsync(model.Email);
+                var result = await _userManager.ForgotPasswordAsync(criterias.Email);
 
-                var response = result as ApiResult<string>;
-                var activeUserUrl = $"{_resetPasswordUrl}/{model.Email}/{response.Result}";
+                var response = result as ApiResult;
+                var userResponse = response.Result.ToString();
+                var activeUserUrl = $"{_resetPasswordUrl}/{criterias.Email}/{userResponse}";
                 await _emailSender.SendEmailAsync(new MailMessageModel()
                 {
                     Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
@@ -221,11 +206,11 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<ApiResult> ActiveAsync(IResolverContext context)
+        public async Task<IApiResult> ActiveAsync(IResolverContext context)
         {
             try
             {
@@ -237,11 +222,11 @@ namespace Api.Public.Resolvers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<ApiResult> ResetPasswordAsync(IResolverContext context)
+        public async Task<UserTokenResult> ResetPasswordAsync(IResolverContext context)
         {
             try
             {
@@ -265,16 +250,11 @@ namespace Api.Public.Resolvers
 
                 var result = await _userManager.ResetPasswordAsync(model, user.Id);
 
-                if (!result.IsSucceed)
-                {
-                    HandleContextError(context, result.Errors);
-                }
-
                 return result;
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

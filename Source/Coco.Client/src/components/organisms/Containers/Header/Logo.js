@@ -6,7 +6,7 @@ import { Image } from "../../../atoms/Images";
 
 const LogoImageLink = styled.a`
   float: left;
-  height: calc(${p => p.theme.size.normal} - 2px);
+  height: calc(${(p) => p.theme.size.normal} - 2px);
   margin-right: 5px;
   margin: 2px 5px 2px 0;
 
@@ -17,7 +17,7 @@ const LogoImageLink = styled.a`
 
 const TitleLink = styled(AnchorLink)`
   float: left;
-  height: ${p => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
   :hover {
     text-decoration: none;
   }
@@ -25,12 +25,12 @@ const TitleLink = styled(AnchorLink)`
 
 const LogoTitle = styled.h2`
   display: inline-block;
-  color: ${p => p.theme.color.light};
+  color: ${(p) => p.theme.color.light};
   font-family: "Poppins", sans-serif;
   font-size: 24px;
   margin: 1px 0;
-  height: ${p => p.theme.size.normal};
-  background: ${p => p.theme.gradientColor.light};
+  height: ${(p) => p.theme.size.normal};
+  background: ${(p) => p.theme.gradientColor.light};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -38,12 +38,12 @@ const LogoTitle = styled.h2`
 const TitleHead = styled.span`
   margin-right: 3px;
   color: inherit;
-  height: ${p => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
 `;
 
 const TitleTail = styled.span`
   color: inherit;
-  height: ${p => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
 `;
 
 export default () => {
