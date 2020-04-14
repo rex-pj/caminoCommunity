@@ -61,6 +61,8 @@ namespace Api.Identity
             _bootstrapper.RegiserTypes(services);
 
             services.AddTransient<IUserResolver, UserResolver>();
+            services.AddTransient<ICountryResolver, CountryResolver>();
+            services.AddTransient<IGenderResolver, GenderResolver>();
 
             #region GraphQL DI
             services.AddGraphQlDependency();
@@ -80,8 +82,13 @@ namespace Api.Identity
                 .UseRouting()
                 .UseCors(MyAllowSpecificOrigins)
                 .UseWebSockets()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseGraphQL("/api/graphql")
-                .UseBasicApiMiddleware();
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
         }
     }
 }

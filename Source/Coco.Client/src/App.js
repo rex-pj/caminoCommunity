@@ -8,7 +8,7 @@ import {
   FrameLayout,
   AuthLayout,
   ProfileLayout,
-  PromptLayout
+  PromptLayout,
 } from "./components/templates/Layout";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -19,32 +19,31 @@ import configureModalStore from "./store/hook-store/modal-store";
 import configureAvatarStore from "./store/hook-store/avatar-store";
 import configureNotifyStore from "./store/hook-store/notify-store";
 import { useQuery } from "@apollo/react-hooks";
-import { GET_LOGGED_USER } from "./utils/GraphQLQueries";
+import { GET_LOGGED_USER } from "./utils/GraphQlQueries/queries";
 import { SessionContext } from "./store/context/SessionContext";
 import AuthService from "./services/AuthService";
 import { getLocalStorageByKey } from "./services/StorageService";
 import { AUTH_LOGIN_KEY } from "./utils/AppSettings";
-import { publicClient } from "./utils/GraphQLClient";
 
 configureModalStore();
 configureAvatarStore();
 configureNotifyStore();
 
 // Font Awesome
-const AsyncPage = loadable(props => import(`${props.page}`));
+const AsyncPage = loadable((props) => import(`${props.page}`));
 library.add(fas);
 
 export default () => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const { loading, data, refetch, error } = useQuery(GET_LOGGED_USER, {
-    client: publicClient
+    client: identityClient,
   });
 
   const relogin = async () => {
     return refetch();
   };
 
-  const parseLoggedUser = response => {
+  const parseLoggedUser = (response) => {
     const userInfo = AuthService.parseUserInfo(response);
 
     if (error) {
@@ -55,7 +54,7 @@ export default () => {
       lang: "vn",
       authenticationToken: userInfo.tokenkey,
       isLogin: userInfo.isLogin,
-      user: userInfo
+      user: userInfo,
     };
   };
 
@@ -146,7 +145,7 @@ export default () => {
               path={[
                 "/profile/:userId",
                 "/profile/:userId/:pageName",
-                "/profile/:userId/:pageName/page/:pageNumber"
+                "/profile/:userId/:pageName/page/:pageNumber",
               ]}
               component={() => <AsyncPage page="./pages/user/profile" />}
             />
@@ -156,7 +155,7 @@ export default () => {
                 "/",
                 "/page/:pageNumber",
                 "/feeds",
-                "/feeds/page/:pageNumber"
+                "/feeds/page/:pageNumber",
               ]}
               component={() => <AsyncPage page="./pages/feeds" />}
             />

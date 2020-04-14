@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { publicClient } from "../../utils/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
-import { SIGN_UP } from "../../utils/GraphQLQueries";
+import { SIGN_UP } from "../../utils/GraphQlQueries/mutations";
 import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {

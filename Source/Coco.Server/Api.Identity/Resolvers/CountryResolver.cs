@@ -1,11 +1,10 @@
-﻿using Api.Public.Models;
-using Api.Public.Resolvers.Contracts;
-using Coco.Api.Framework.Models;
+﻿using Api.Identity.Models;
+using Api.Identity.Resolvers.Contracts;
 using Coco.Business.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Api.Public.Resolvers
+namespace Api.Identity.Resolvers
 {
     public class CountryResolver : ICountryResolver
     {

@@ -1,7 +1,7 @@
-﻿using Api.Public.Models;
+﻿using Api.Identity.Models;
 using HotChocolate.Types;
 
-namespace Api.Public.GraphQLTypes.ResultTypes
+namespace Api.Identity.GraphQLTypes.ResultTypes
 {
     public class CountryResultType : ObjectType<CountryModel>
     {

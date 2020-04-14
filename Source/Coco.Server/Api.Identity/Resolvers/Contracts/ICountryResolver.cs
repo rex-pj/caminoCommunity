@@ -1,7 +1,7 @@
-﻿using Api.Public.Models;
+﻿using Api.Identity.Models;
 using System.Collections.Generic;
 
-namespace Api.Public.Resolvers.Contracts
+namespace Api.Identity.Resolvers.Contracts
 {
     public interface ICountryResolver
     {

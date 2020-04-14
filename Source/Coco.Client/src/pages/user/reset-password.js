@@ -2,16 +2,16 @@ import React from "react";
 import ResetPasswordForm from "../../components/organisms/Auth/ResetPasswordForm";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
-import { RESET_PASSWORD } from "../../utils/GraphQLQueries";
+import { RESET_PASSWORD } from "../../utils/GraphQlQueries/mutations";
 import { useStore } from "../../store/hook-store";
 import { publicClient } from "../../utils/GraphQLClient";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const { match, history } = props;
   const { params } = match;
   const { email, key } = params;
   const [resetPassword] = useMutation(RESET_PASSWORD, {
-    client: publicClient
+    client: publicClient,
   });
   const dispatch = useStore(false)[1];
 
@@ -19,7 +19,7 @@ export default withRouter(props => {
     dispatch("NOTIFY", {
       title,
       message,
-      type: "error"
+      type: "error",
     });
   };
 
@@ -28,7 +28,7 @@ export default withRouter(props => {
       title: "Có lỗi xảy ra khi thay đổi mật khẩu",
       message:
         "Có lỗi xảy ra khi thay đổi mật khẩu, hãy thử lại hoặc quay lại sau",
-      type: "error"
+      type: "error",
     });
   };
 
@@ -36,17 +36,17 @@ export default withRouter(props => {
     dispatch("NOTIFY", {
       title: "Đổi mật khẩu thành công",
       message: "Bạn đã đổi mật khẩu thành công, thử đăng nhập lại",
-      type: "info"
+      type: "info",
     });
   };
 
-  const onResetPassword = async resetPasswordData => {
+  const onResetPassword = async (resetPasswordData) => {
     await resetPassword({
       variables: {
-        criterias: resetPasswordData
-      }
+        criterias: resetPasswordData,
+      },
     })
-      .then(response => {
+      .then((response) => {
         const { data } = response;
         const { resetPassword: rs } = data;
 

@@ -1,14 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import {
-  GET_FULL_USER_INFO,
-  UPDATE_USER_INFO_PER_ITEM,
-} from "../../utils/GraphQLQueries";
+import { GET_FULL_USER_INFO } from "../../utils/GraphQlQueries/queries";
+import { UPDATE_USER_INFO_PER_ITEM } from "../../utils/GraphQlQueries/mutations";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { publicClient } from "../../utils/GraphQLClient";
 
 export default withRouter((props) => {
   const { userId } = props;
@@ -16,7 +13,6 @@ export default withRouter((props) => {
   const [updateUserInfoItem] = useMutation(UPDATE_USER_INFO_PER_ITEM);
 
   const { loading, error, data, refetch } = useQuery(GET_FULL_USER_INFO, {
-    client: publicClient,
     variables: {
       criterias: {
         userId,

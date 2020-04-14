@@ -6,7 +6,7 @@ import FarmGroupInfo from "../FarmGroup/FarmGroupInfo";
 import {
   FarmSuggestions,
   GroupSuggestions,
-  ConnectionSuggestions
+  ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
 import Shortcut from "../../organisms/Shortcut";
@@ -15,20 +15,20 @@ const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -12px;
+    margin-right: -12px;
   }
 
   > .row > .col {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 `;
 
 const Column = styled.div`
-  margin-top: ${p => p.theme.size.normal};
+  margin-top: ${(p) => p.theme.size.normal};
 `;
 
-export default function(props) {
+export default function (props) {
   const { info, children } = props;
 
   return (

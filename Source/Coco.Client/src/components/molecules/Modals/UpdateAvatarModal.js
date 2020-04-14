@@ -6,12 +6,12 @@ import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
 import {
   ButtonPrimary,
   ButtonSecondary,
-  ButtonAlert
+  ButtonAlert,
 } from "../../atoms/Buttons/Buttons";
 import {
   UPDATE_USER_AVATAR,
-  DELETE_USER_AVATAR
-} from "../../../utils/GraphQLQueries";
+  DELETE_USER_AVATAR,
+} from "../../../utils/GraphQlQueries/mutations";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
@@ -42,7 +42,7 @@ const DefaultImage = styled(Image)`
   max-width: 250px;
   max-height: 250px;
   display: block;
-  margin: ${p => p.theme.size.medium} auto;
+  margin: ${(p) => p.theme.size.medium} auto;
 `;
 
 const SliderWrap = styled.div`
@@ -63,17 +63,17 @@ const AvatarUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${p => p.theme.color.neutral};
-    height: ${p => p.theme.size.medium};
-    padding: 0 ${p => p.theme.size.tiny};
-    background-color: ${p => p.theme.color.lighter};
-    border-radius: ${p => p.theme.borderRadius.large};
-    border: 1px solid ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
+    height: ${(p) => p.theme.size.medium};
+    padding: 0 ${(p) => p.theme.size.tiny};
+    background-color: ${(p) => p.theme.color.lighter};
+    border-radius: ${(p) => p.theme.borderRadius.large};
+    border: 1px solid ${(p) => p.theme.color.neutral};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${p => p.theme.color.light};
+      background-color: ${(p) => p.theme.color.light};
     }
 
     svg {
@@ -84,13 +84,13 @@ const AvatarUpload = styled(ImageUpload)`
 `;
 
 const ButtonRemove = styled(ButtonAlert)`
-  height: ${p => p.theme.size.medium};
-  width: ${p => p.theme.size.medium};
+  height: ${(p) => p.theme.size.medium};
+  width: ${(p) => p.theme.size.medium};
   padding-top: 0;
   padding-bottom: 0;
   vertical-align: middle;
-  border-radius: ${p => p.theme.borderRadius.large};
-  margin-left: ${p => p.theme.size.exTiny};
+  border-radius: ${(p) => p.theme.borderRadius.large};
+  margin-left: ${(p) => p.theme.size.exTiny};
 `;
 
 const LeftButtonFooter = styled.div`
@@ -99,20 +99,20 @@ const LeftButtonFooter = styled.div`
 
 const FooterButtons = styled.div`
   button > span {
-    margin-left: ${p => p.theme.size.tiny};
+    margin-left: ${(p) => p.theme.size.tiny};
   }
 `;
 
 const EmptyAvatar = styled(NoAvatar)`
-  border-radius: ${p => p.theme.borderRadius.medium};
+  border-radius: ${(p) => p.theme.borderRadius.medium};
   width: 255px;
   height: 255px;
-  font-size: ${p => p.theme.size.large};
+  font-size: ${(p) => p.theme.size.large};
   vertical-align: middle;
   margin: auto;
 `;
 
-const UpdateAvatarModal = props => {
+const UpdateAvatarModal = (props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
@@ -123,18 +123,18 @@ const UpdateAvatarModal = props => {
   const [cropData, setCropData] = useState({
     width: 255,
     height: 255,
-    scale: 1
+    scale: 1,
   });
 
   const [avatarData, setAvatarData] = useState({
     src: null,
     oldImage: imageUrl,
     contentType: null,
-    fileName: null
+    fileName: null,
   });
 
   let avatarEditor = null;
-  const setEditorRef = editor => (avatarEditor = editor);
+  const setEditorRef = (editor) => (avatarEditor = editor);
 
   function canSubmit() {
     const { data } = props;
@@ -157,13 +157,13 @@ const UpdateAvatarModal = props => {
     setCropData({
       width: 250,
       height: 250,
-      scale: 1
+      scale: 1,
     });
     setAvatarData({
       ...avatarData,
       contentType: e.file.type,
       fileName: e.file.name,
-      src: e.preview
+      src: e.preview,
     });
   }
 
@@ -171,11 +171,11 @@ const UpdateAvatarModal = props => {
     canSubmit();
     let crop = {
       ...cropData,
-      scale: e
+      scale: e,
     };
 
     setCropData({
-      ...crop
+      ...crop,
     });
   }
 
@@ -184,11 +184,11 @@ const UpdateAvatarModal = props => {
       ...avatarData,
       contentType: null,
       fileName: null,
-      src: null
+      src: null,
     });
   }
 
-  const onUpload = async e => {
+  const onUpload = async (e) => {
     props.setDisabled(true);
 
     const { src } = avatarData;
@@ -213,8 +213,8 @@ const UpdateAvatarModal = props => {
           height: rect.height,
           fileName,
           contentType,
-          scale
-        }
+          scale,
+        },
       };
 
       await props
@@ -226,7 +226,7 @@ const UpdateAvatarModal = props => {
     }
   };
 
-  const onDelete = async e => {
+  const onDelete = async (e) => {
     const { data } = props;
     const { canEdit } = data;
 
@@ -236,8 +236,8 @@ const UpdateAvatarModal = props => {
 
     const variables = {
       criterias: {
-        canEdit: canEdit
-      }
+        canEdit: canEdit,
+      },
     };
 
     await props
@@ -257,7 +257,7 @@ const UpdateAvatarModal = props => {
     <Wrap>
       <PanelBody>
         <Tools>
-          <AvatarUpload onChange={e => onChangeImage(e)}>
+          <AvatarUpload onChange={(e) => onChangeImage(e)}>
             Đổi ảnh đại diện
           </AvatarUpload>
           {src ? (
@@ -301,7 +301,7 @@ const UpdateAvatarModal = props => {
               isShown={showDeletePopover}
               target="DeleteAvatar"
               title="Bạn có muốn xóa ảnh không?"
-              onExecute={e => onDelete(e)}
+              onExecute={(e) => onDelete(e)}
             />
             <ButtonOutlineDanger size="sm" id="DeleteAvatar">
               <FontAwesomeIcon icon="trash-alt" />
@@ -313,7 +313,7 @@ const UpdateAvatarModal = props => {
             <ButtonPrimary
               disabled={isDisabled}
               size="sm"
-              onClick={e => onUpload(e)}
+              onClick={(e) => onUpload(e)}
             >
               <FontAwesomeIcon icon="upload" />
               <span>Tải Ảnh</span>

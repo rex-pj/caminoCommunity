@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+﻿using Api.Resources.Infrastructure.Extensions;
+using AutoMapper;
 using Coco.Api.Framework.Infrastructure;
-using Coco.Api.Framework.Infrastructure.Extensions;
 using Coco.Api.Framework.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +56,8 @@ namespace Api.Resources
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
+
+            services.AddGraphQlDependency();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,7 +71,14 @@ namespace Api.Resources
             app.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors(MyAllowSpecificOrigins)
-                .UseBasicApiMiddleware();
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseWebSockets()
+                .UseGraphQL("/api/graphql")
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
         }
     }
 }

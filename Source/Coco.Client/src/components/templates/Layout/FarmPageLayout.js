@@ -7,29 +7,29 @@ import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
   FarmSuggestions,
   GroupSuggestions,
-  ConnectionSuggestions
+  ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
 const Wrapper = styled.div`
   > .row {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -12px;
+    margin-right: -12px;
   }
 
   > .row > .col {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 `;
 
 const Column = styled.div`
-  margin-top: ${p => p.theme.size.normal};
+  margin-top: ${(p) => p.theme.size.normal};
 `;
 
 export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout
       {...rest}
-      component={matchProps => (
+      component={(matchProps) => (
         <Wrapper className="container-fluid px-lg-5">
           <div className="row px-lg-3">
             <div className="col col-4 col-sm-4 col-md-2 col-lg-2">

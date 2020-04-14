@@ -17,7 +17,7 @@ import {
 import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER,
-} from "../../../utils/GraphQLQueries";
+} from "../../../utils/GraphQlQueries/mutations";
 
 const Wrap = styled.div`
     position: relative;

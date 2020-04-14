@@ -2,10 +2,10 @@ import React from "react";
 import Active from "../../components/organisms/User/Active";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
-import { ACTIVE } from "../../utils/GraphQLQueries";
+import { ACTIVE } from "../../utils/GraphQlQueries/queries";
 import { publicClient } from "../../utils/GraphQLClient";
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
   const { email, key } = params;
@@ -15,9 +15,9 @@ export default withRouter(props => {
     variables: {
       criterias: {
         email,
-        activeKey: key
-      }
-    }
+        activeKey: key,
+      },
+    },
   });
   const { history } = props;
 

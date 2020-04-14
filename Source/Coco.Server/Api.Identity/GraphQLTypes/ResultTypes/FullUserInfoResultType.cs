@@ -1,11 +1,9 @@
-﻿using Api.Public.Resolvers.Contracts;
-using Coco.Api.Framework.Commons.Helpers;
+﻿using Api.Identity.Resolvers.Contracts;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
-using Coco.Entities.Enums;
 using HotChocolate.Types;
 
-namespace Api.Public.GraphQLTypes.ResultTypes
+namespace Api.Identity.GraphQLTypes.ResultTypes
 {
     public class FullUserInfoResultType : ObjectType<FullUserInfoModel>
     {

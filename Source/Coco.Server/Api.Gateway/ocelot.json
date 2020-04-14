@@ -30,6 +30,22 @@
       "UpstreamHttpMethod": [ "GET" ],
       "UpstreamPathTemplate": "/cdn/{catchAll}"
     },
+
+    {
+      "DelegatingHandlers": [
+        "GraphQlDelegatingHandler"
+      ],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "DownstreamPathTemplate": "/api/graphql",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "UpstreamPathTemplate": "/cdn-api/graphql"
+    },
     {
       "DelegatingHandlers": [
         "GraphQlDelegatingHandler"

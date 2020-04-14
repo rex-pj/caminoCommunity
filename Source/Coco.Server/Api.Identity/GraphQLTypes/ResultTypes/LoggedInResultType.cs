@@ -1,7 +1,7 @@
 ﻿using Coco.Api.Framework.Models;
 using HotChocolate.Types;
 
-namespace Api.Public.GraphQLTypes.ResultTypes
+namespace Api.Identity.GraphQLTypes.ResultTypes
 {
     public class LoggedInResultType : ObjectType<ApplicationUser>
     {

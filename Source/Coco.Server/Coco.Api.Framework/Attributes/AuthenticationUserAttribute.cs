@@ -54,8 +54,7 @@ namespace Coco.Api.Framework.Attributes
                 //there is AuthorizeLoggedUserFilter, so check access
                 if (filterContext.Filters.Any(filter => filter is AuthenticationFilter))
                 {
-                    var user = _sessionContext.CurrentUser;
-                    if (user == null)
+                    if (_sessionContext.CurrentUser == null)
                     {
                         filterContext.Result = new ForbidResult();
                     }

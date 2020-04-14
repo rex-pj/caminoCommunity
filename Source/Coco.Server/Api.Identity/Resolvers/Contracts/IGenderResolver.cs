@@ -1,7 +1,7 @@
 ﻿using Coco.Api.Framework.Models;
 using System.Collections.Generic;
 
-namespace Api.Public.Resolvers.Contracts
+namespace Api.Identity.Resolvers.Contracts
 {
     public interface IGenderResolver
     {

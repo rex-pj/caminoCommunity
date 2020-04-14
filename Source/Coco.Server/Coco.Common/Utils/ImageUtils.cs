@@ -3,11 +3,23 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 
 namespace Coco.Common.Utils
 {
     public static class ImageUtils
     {
+        public static bool IsImageUrl(string url)
+        {
+            var req = WebRequest.Create(url) as HttpWebRequest;
+            req.Method = "HEAD";
+            using (var response = req.GetResponse())
+            {
+                var contentType = response.ContentType.ToLower();
+                return contentType.StartsWith("image/");
+            }
+        }
+
         public static Image Base64ToImage(string base64String)
         {
             string base64 = base64String.Substring(base64String.IndexOf(',') + 1);
