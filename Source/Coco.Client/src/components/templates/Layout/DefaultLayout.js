@@ -6,7 +6,7 @@ import { PageColumnPanel } from "../../atoms/Panels";
 import {
   FarmSuggestions,
   GroupSuggestions,
-  ConnectionSuggestions
+  ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
 const Shortcut = loadable(() => import("../../organisms/Shortcut"));
@@ -19,12 +19,12 @@ const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
 const Wrapper = styled.div`
   margin-top: 30px;
   > .row {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -12px;
+    margin-right: -12px;
   }
 
   > .row > .col {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 `;
 
@@ -32,7 +32,7 @@ function DefaultLayout({ component: Component, ...rest }) {
   return (
     <FrameLayout
       {...rest}
-      component={matchProps => (
+      component={(matchProps) => (
         <Wrapper className="container-fluid px-lg-5">
           <div className="row px-lg-3">
             <div className="col col-4 col-sm-4 col-md-2 col-lg-2">

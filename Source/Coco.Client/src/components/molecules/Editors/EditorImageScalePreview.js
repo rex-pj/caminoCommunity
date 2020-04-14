@@ -8,22 +8,22 @@ import { Image } from "../../atoms/Images";
 
 const FormInput = styled.div`
   text-align: center;
-  margin: ${p => p.theme.size.tiny} auto;
+  margin: ${(p) => p.theme.size.tiny} auto;
 
   svg {
-    color: ${p => p.theme.color.light};
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.size.small};
+    color: ${(p) => p.theme.color.light};
+    margin-right: ${(p) => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.size.small};
     path {
       color: inherit;
     }
   }
 
   ${LabelNormal} {
-    color: ${p => p.theme.color.light};
-    margin-right: ${p => p.theme.size.exTiny};
+    color: ${(p) => p.theme.color.light};
+    margin-right: ${(p) => p.theme.size.exTiny};
     font-weight: bold;
-    font-size: ${p => p.theme.size.distance};
+    font-size: ${(p) => p.theme.size.distance};
   }
 
   .image-title {
@@ -36,14 +36,14 @@ const ImageWrap = styled.div`
 `;
 
 const EmptyImage = styled(NoImage)`
-  border-radius: ${p => p.theme.borderRadius.medium};
+  border-radius: ${(p) => p.theme.borderRadius.medium};
   width: 200px;
   height: 200px;
   display: inline-block;
-  font-size: ${p => p.theme.size.large};
+  font-size: ${(p) => p.theme.size.large};
 `;
 
-export default props => {
+export default (props) => {
   const {
     src,
     alt,
@@ -51,12 +51,11 @@ export default props => {
     height,
     handleInputChange,
     onWithScaleChanged,
-    isValid
   } = props;
 
   return (
     <Fragment>
-      {src && isValid ? (
+      {src ? (
         <Fragment>
           <FormInput>
             <div className="row">
@@ -67,7 +66,7 @@ export default props => {
                   name="alt"
                   value={alt}
                   autoComplete="off"
-                  onChange={e => handleInputChange(e)}
+                  onChange={(e) => handleInputChange(e)}
                 />
               </div>
             </div>
@@ -80,7 +79,7 @@ export default props => {
                   name="width"
                   value={width}
                   autoComplete="off"
-                  onChange={e => onWithScaleChanged(e)}
+                  onChange={(e) => onWithScaleChanged(e)}
                 />
               </div>
               <div className="col-md-6">
@@ -89,7 +88,7 @@ export default props => {
                   name="height"
                   value={height}
                   autoComplete="off"
-                  onChange={e => onWithScaleChanged(e)}
+                  onChange={(e) => onWithScaleChanged(e)}
                 />
               </div>
             </div>
@@ -97,7 +96,7 @@ export default props => {
         </Fragment>
       ) : null}
       <ImageWrap>
-        {src && isValid ? (
+        {src ? (
           <Image src={src} alt={alt} width={width} height={height} />
         ) : (
           <EmptyImage />

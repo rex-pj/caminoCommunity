@@ -1,13 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
-import {
-  GET_USER_IDENTIFY,
-  UPDATE_USER_IDENTIFIER,
-} from "../../utils/GraphQLQueries";
+import { GET_USER_IDENTIFY } from "../../utils/GraphQlQueries/queries";
+import { UPDATE_USER_IDENTIFIER } from "../../utils/GraphQlQueries/mutations";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { publicClient } from "../../utils/GraphQLClient";
 import { useStore } from "../../store/hook-store";
 import { SessionContext } from "../../store/context/SessionContext";
 
@@ -17,7 +14,6 @@ export default (props) => {
   const [updateUserIdentifier] = useMutation(UPDATE_USER_IDENTIFIER);
   const sessionContext = useContext(SessionContext);
   const { loading, error, data, refetch } = useQuery(GET_USER_IDENTIFY, {
-    client: publicClient,
     variables: {
       criterias: {
         userId,

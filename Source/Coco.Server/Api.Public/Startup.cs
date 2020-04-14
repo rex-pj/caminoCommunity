@@ -77,8 +77,6 @@ namespace Api.Public
             });
 
             services.AddTransient<IUserResolver, UserResolver>();
-            services.AddTransient<ICountryResolver, CountryResolver>();
-            services.AddTransient<IGenderResolver, GenderResolver>();
 
             #region GraphQL DI
             services.AddGraphQlDependency();

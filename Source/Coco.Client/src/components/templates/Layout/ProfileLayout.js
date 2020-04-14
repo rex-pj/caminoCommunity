@@ -4,12 +4,12 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   > .row {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -12px;
+    margin-right: -12px;
   }
 
   > .row > .col {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 `;
 
@@ -17,7 +17,7 @@ export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout
       {...rest}
-      component={matchProps => (
+      component={(matchProps) => (
         <Wrapper className="container px-lg-5">
           <Component {...matchProps} />
         </Wrapper>

@@ -9,44 +9,44 @@ import EditorImageScalePreview from "./EditorImageScalePreview";
 import { validateImageLink } from "../../../utils/Validity";
 
 const Body = styled(PanelBody)`
-  padding: ${p => p.theme.size.tiny};
+  padding: ${(p) => p.theme.size.tiny};
 `;
 
 const Footer = styled.div`
   min-height: 20px;
   text-align: right;
-  border-top: 1px solid ${p => p.theme.rgbaColor.darker};
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
+  border-top: 1px solid ${(p) => p.theme.rgbaColor.darker};
+  padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
 
   button {
-    margin-left: ${p => p.theme.size.exTiny};
+    margin-left: ${(p) => p.theme.size.exTiny};
     font-weight: normal;
-    padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
+    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
 
     svg {
-      margin-right: ${p => p.theme.size.exTiny};
+      margin-right: ${(p) => p.theme.size.exTiny};
     }
   }
 `;
 
 const PhotoUpload = styled(ImageUpload)`
   text-align: center;
-  margin: 0 auto ${p => p.theme.size.tiny} auto;
+  margin: 0 auto ${(p) => p.theme.size.tiny} auto;
   display: block;
   width: 200px;
 
   > span {
-    color: ${p => p.theme.color.neutral};
-    height: ${p => p.theme.size.medium};
-    padding: 0 ${p => p.theme.size.tiny};
-    background-color: ${p => p.theme.color.lighter};
-    border-radius: ${p => p.theme.borderRadius.large};
-    border: 1px solid ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
+    height: ${(p) => p.theme.size.medium};
+    padding: 0 ${(p) => p.theme.size.tiny};
+    background-color: ${(p) => p.theme.color.lighter};
+    border-radius: ${(p) => p.theme.borderRadius.large};
+    border: 1px solid ${(p) => p.theme.color.neutral};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${p => p.theme.color.light};
+      background-color: ${(p) => p.theme.color.light};
     }
 
     svg {
@@ -56,27 +56,27 @@ const PhotoUpload = styled(ImageUpload)`
   }
 `;
 
-export default props => {
+export default (props) => {
   const [photoData, setPhotoData] = useState({
     src: "",
     width: "auto",
     height: "auto",
     alt: "",
-    isValid: false
+    isValid: false,
   });
 
   const onClose = () => {
     props.onClose();
   };
 
-  const onChangeImage = async e => {
+  const onChangeImage = async (e) => {
     const { convertImageCallback } = props;
     var file = e.file;
-    await convertImageCallback(file).then(data => {
+    await convertImageCallback(file).then((data) => {
       setPhotoData({
         ...photoData,
         src: data.url,
-        alt: data.fileName
+        alt: data.fileName,
       });
     });
   };
@@ -93,7 +93,7 @@ export default props => {
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     const newEditorState = EditorState.set(editorState, {
-      currentContent: contentStateWithEntity
+      currentContent: contentStateWithEntity,
     });
 
     const imageEditorState = AtomicBlockUtils.insertAtomicBlock(
@@ -106,7 +106,7 @@ export default props => {
     onClose();
   };
 
-  const onWithScaleChanged = e => {
+  const onWithScaleChanged = (e) => {
     const value = e.target.value;
     const formData = photoData;
     if ("auto".indexOf(value) >= 0) {
@@ -119,11 +119,11 @@ export default props => {
     }
 
     setPhotoData({
-      ...formData
+      ...formData,
     });
   };
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     const formData = photoData || {};
     const { name, value } = evt.target;
 
@@ -131,15 +131,14 @@ export default props => {
 
     formData[name] = value;
     setPhotoData({
-      ...formData
+      ...formData,
     });
   };
 
-  const { isValid } = photoData;
   return (
     <Fragment>
       <Body>
-        <PhotoUpload onChange={e => onChangeImage(e)}>
+        <PhotoUpload onChange={(e) => onChangeImage(e)}>
           Chọn ảnh để upload
         </PhotoUpload>
         <EditorImageScalePreview
@@ -152,7 +151,7 @@ export default props => {
         <ButtonSecondary size="sm" onClick={onClose}>
           Đóng
         </ButtonSecondary>
-        <ButtonPrimary size="sm" onClick={onUploadImage} disabled={!isValid}>
+        <ButtonPrimary size="sm" onClick={onUploadImage}>
           <FontAwesomeIcon icon="check" />
           Thêm ảnh
         </ButtonPrimary>

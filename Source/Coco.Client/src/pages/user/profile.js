@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import Profile from "../../components/organisms/User/Profile";
 import { SessionContext } from "../../store/context/SessionContext";
-import { publicClient } from "../../utils/GraphQLClient";
-import { GET_USER_INFO } from "../../utils/GraphQLQueries";
+import { GET_USER_INFO } from "../../utils/GraphQlQueries/queries";
 import { useQuery } from "@apollo/react-hooks";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
@@ -17,7 +16,6 @@ export default withRouter((props) => {
   const { params } = match;
   const { userId, pageNumber } = params;
   const { loading, error, data, refetch } = useQuery(GET_USER_INFO, {
-    client: publicClient,
     variables: {
       criterias: {
         userId,

@@ -1,4 +1,4 @@
-﻿namespace Api.Public.Models
+﻿namespace Api.Identity.Models
 {
     public class CountryModel
     {

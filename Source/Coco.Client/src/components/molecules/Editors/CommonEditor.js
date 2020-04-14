@@ -7,7 +7,7 @@ import EditorImageModal from "./EditorImageModal";
 import {
   getEntityRange,
   getSelectionEntity,
-  getSelectionText
+  getSelectionText,
 } from "draftjs-utils";
 import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
 import {
@@ -15,7 +15,7 @@ import {
   STYLES,
   HEADING_TYPES,
   findLinkEntities,
-  findImageEntities
+  findImageEntities,
 } from "./Utils";
 
 const Root = styled.div`
@@ -24,24 +24,26 @@ const Root = styled.div`
 
 const Container = styled.div`
   margin-bottom: 15px;
-  background: ${p => p.theme.color.white};
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  min-height: ${p => (p.height ? `${p.height}px` : "100px")};
+  background: ${(p) => p.theme.color.white};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  min-height: ${(p) => (p.height ? `${p.height}px` : "100px")};
 `;
 
 const ConttentBox = styled.div`
-  padding: ${p => p.theme.size.distance};
+  padding: ${(p) => p.theme.size.distance};
 `;
 
 const styles = {
   link: {
-    textDecoration: "underline"
+    textDecoration: "underline",
   },
-  image: {}
+  image: {
+    maxWidth: "100%",
+  },
 };
 
-const LinkComponent = props => {
+const LinkComponent = (props) => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
   return (
     <a href={url} style={styles.link}>
@@ -50,7 +52,7 @@ const LinkComponent = props => {
   );
 };
 
-const ImageComponent = props => {
+const ImageComponent = (props) => {
   const { src, width, height, alt } = props.contentState
     .getEntity(props.entityKey)
     .getData();
@@ -65,16 +67,16 @@ const ImageComponent = props => {
   );
 };
 
-export default props => {
+export default (props) => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
-      component: LinkComponent
+      component: LinkComponent,
     },
     {
       strategy: findImageEntities,
-      component: ImageComponent
-    }
+      component: ImageComponent,
+    },
   ]);
 
   const { placeholder, className, height, convertImageCallback } = props;
@@ -100,7 +102,7 @@ export default props => {
     const entityType = contentState.getEntity(currentEntity).get("type");
 
     const currentValues = {
-      selectionText: getSelectionText(editorState)
+      selectionText: getSelectionText(editorState),
     };
     if (entityType === "LINK") {
       const entityRange = getEntityRange(editorState, currentEntity);
@@ -111,13 +113,13 @@ export default props => {
       currentValues.link = {
         target: contentStateData.url,
         targetOption: contentStateData.targetOption,
-        title: entityRange && entityRange.text
+        title: entityRange && entityRange.text,
       };
     }
     return currentValues;
   };
 
-  const onChange = editorState => {
+  const onChange = (editorState) => {
     return setEditorState(editorState);
   };
 
@@ -146,21 +148,21 @@ export default props => {
     return "not-handled";
   };
 
-  const toggleInlineStyle = style => {
+  const toggleInlineStyle = (style) => {
     const newState = RichUtils.toggleInlineStyle(editorState, style);
     if (newState) {
       onChange(newState);
     }
   };
 
-  const toggleBlockType = style => {
+  const toggleBlockType = (style) => {
     const newState = RichUtils.toggleBlockType(editorState, style);
     if (newState) {
       onChange(newState);
     }
   };
 
-  const onAddLink = e => {
+  const onAddLink = (e) => {
     const { newEditorState, entityKey } = e;
     onChange(
       RichUtils.toggleLink(
@@ -175,7 +177,7 @@ export default props => {
     }, 0);
   };
 
-  const removeLink = e => {
+  const removeLink = (e) => {
     e.preventDefault();
     const selection = editorState.getSelection();
     if (!selection.isCollapsed()) {
@@ -183,11 +185,11 @@ export default props => {
     }
   };
 
-  const clearFormat = newEditorState => {
+  const clearFormat = (newEditorState) => {
     onChange(newEditorState);
   };
 
-  const toggleLinkModal = isOpen => {
+  const toggleLinkModal = (isOpen) => {
     if (!isOpen) {
       setTimeout(() => {
         focus();
@@ -196,7 +198,7 @@ export default props => {
     setLinkPopupOpen(!!isOpen);
   };
 
-  const toggleImageModal = isOpen => {
+  const toggleImageModal = (isOpen) => {
     if (!isOpen) {
       setTimeout(() => {
         focus();
@@ -205,7 +207,7 @@ export default props => {
     setImagePopupOpen(!!isOpen);
   };
 
-  const onAddImage = newEditorState => {
+  const onAddImage = (newEditorState) => {
     onChange(newEditorState);
   };
 

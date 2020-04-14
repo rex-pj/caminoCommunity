@@ -18,6 +18,7 @@ namespace Coco.Business.ValidationStrategies
                 {
                     return false;
                 }
+
                 ImageUtils.Base64ToImage(value.ToString());
                 return true;
             }

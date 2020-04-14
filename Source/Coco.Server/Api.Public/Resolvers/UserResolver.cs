@@ -1,13 +1,9 @@
 ﻿using Api.Public.Models;
-using Coco.Api.Framework.Commons.Helpers;
 using Coco.Api.Framework.Models;
 using Coco.Api.Framework.Resolvers;
-using Coco.Business.Contracts;
 using Coco.Entities.Enums;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Coco.Api.Framework.Services.Contracts;
 using MimeKit.Text;
 using Coco.Api.Framework.SessionManager.Contracts;
@@ -15,7 +11,6 @@ using Coco.Common.Resources;
 using Microsoft.Extensions.Configuration;
 using Api.Public.Resolvers.Contracts;
 using HotChocolate.Resolvers;
-using HotChocolate;
 
 namespace Api.Public.Resolvers
 {
@@ -23,8 +18,6 @@ namespace Api.Public.Resolvers
     {
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly ICountryBusiness _countryBusiness;
-        private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
         private readonly string _appName;
         private readonly string _registerConfirmUrl;
@@ -34,35 +27,17 @@ namespace Api.Public.Resolvers
 
         public UserResolver(ILoginManager<ApplicationUser> loginManager,
             IUserManager<ApplicationUser> userManager,
-            IMapper mapper,
             IEmailSender emailSender,
-            IConfiguration configuration,
-            ICountryBusiness countryBusiness)
+            IConfiguration configuration)
         {
             _loginManager = loginManager;
             _userManager = userManager;
-            _countryBusiness = countryBusiness;
-            _mapper = mapper;
             _emailSender = emailSender;
             _appName = configuration["ApplicationName"];
             _registerConfirmUrl = configuration["RegisterConfimation:Url"];
             _registerConfirmFromEmail = configuration["RegisterConfimation:FromEmail"];
             _registerConfirmFromName = configuration["RegisterConfimation:FromName"];
             _resetPasswordUrl = configuration["ResetPassword:Url"];
-        }
-
-        public ApplicationUser GetLoggedUser(IResolverContext context)
-        {
-            try
-            {
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = sessionContext.CurrentUser;
-                return currentUser;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         public async Task<UserTokenResult> SigninAsync(IResolverContext context)
@@ -124,38 +99,6 @@ namespace Api.Public.Resolvers
                 else
                 {
                     HandleContextError(context, result.Errors);
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
-        {
-            try
-            {
-                var model = context.Argument<FindUserModel>("criterias");
-                var userIdentityId = model.UserId;
-
-                var userContext = context.ContextData["SessionContext"] as ISessionContext;
-                if (string.IsNullOrEmpty(model.UserId) && userContext != null
-                    && userContext.CurrentUser != null)
-                {
-                    userIdentityId = userContext.CurrentUser.UserIdentityId;
-                }
-
-                var user = await _userManager.FindUserByIdentityIdAsync(userIdentityId, userContext.AuthenticationToken);
-
-                var result = _mapper.Map<FullUserInfoModel>(user);
-                result.UserIdentityId = userIdentityId;
-                if (userContext.CurrentUser != null && !string.IsNullOrEmpty(user.AuthenticationToken)
-                    || user.AuthenticationToken.Equals(userContext.AuthenticationToken))
-                {
-                    result.CanEdit = true;
                 }
 
                 return result;

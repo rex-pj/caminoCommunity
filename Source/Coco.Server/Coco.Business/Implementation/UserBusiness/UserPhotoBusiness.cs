@@ -1,5 +1,4 @@
-﻿using AutoMapper.QueryableExtensions;
-using Coco.Business.Contracts;
+﻿using Coco.Business.Contracts;
 using Coco.Business.ValidationStrategies;
 using Coco.Common.Exceptions;
 using Coco.Common.Utils;

@@ -1,7 +1,7 @@
-﻿using Api.Public.Models;
+﻿using Api.Identity.Models;
 using HotChocolate.Types;
 
-namespace Api.Public.GraphQLTypes.InputTypes
+namespace Api.Identity.GraphQLTypes.InputTypes
 {
     public class FindUserInputType : InputObjectType<FindUserModel>
     {
