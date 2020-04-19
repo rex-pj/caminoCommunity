@@ -102,10 +102,3 @@ query ($criterias: ActiveUserModelInput!){
     }
   }
 `;
-
-export const ValidateImageUrl = gpl`
-  query ($criterias: ImageValidationModelInput!){
-    validateImageUrl(criterias: $criterias) {
-      isValid
-  }
-}`;

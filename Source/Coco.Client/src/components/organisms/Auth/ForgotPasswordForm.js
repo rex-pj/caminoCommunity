@@ -6,30 +6,30 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import ForgotAuthNavigation from "../../../components/organisms/NavigationMenu/ForgotAuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import ForgotPasswordModel from "../../../models/ForgotPasswordModel";
+import forgotPasswordModel from "../../../models/forgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PrimaryNotice } from "../../atoms/Notices/AlertNotice";
 import { withRouter } from "react-router-dom";
 
 const Textbox = styled(TextboxSecondary)`
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.dark};
-  padding: ${p => p.theme.size.tiny};
+  color: ${(p) => p.theme.color.dark};
+  padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${p => p.theme.color.light};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.light};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
-    background-color: ${p => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.moreDark};
   }
 
   &.invalid {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
@@ -38,39 +38,39 @@ const FormFooter = styled(PanelFooter)`
 `;
 
 const Label = styled(LabelNormal)`
-  margin-left: ${p => p.theme.size.tiny};
+  margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   font-weight: 600;
 `;
 
 const FormRow = styled.div`
-  margin-bottom: ${p => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
-  border: 1px solid ${p => p.theme.color.primaryLight};
+  font-size: ${(p) => p.theme.fontSize.small};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 `;
 
-export default withRouter(props => {
+export default withRouter((props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   const [isFormEnabled, setFormEnabled] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
-  let formData = ForgotPasswordModel;
+  let formData = forgotPasswordModel;
 
-  const handleInputBlur = evt => {
+  const handleInputBlur = (evt) => {
     const { name } = evt.target;
     if (!formData[name].isValid) {
       evt.target.classList.add("invalid");
@@ -79,7 +79,7 @@ export default withRouter(props => {
     }
   };
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     if (isSubmitted) {
       setSubmitted(false);
     }
@@ -101,7 +101,7 @@ export default withRouter(props => {
     }
   };
 
-  const onUpdate = async e => {
+  const onUpdate = async (e) => {
     e.preventDefault();
 
     if (isFormEnabled) {
@@ -142,7 +142,7 @@ export default withRouter(props => {
   };
 
   return (
-    <form onSubmit={e => onUpdate(e)} method="POST">
+    <form onSubmit={(e) => onUpdate(e)} method="POST">
       <div className="row no-gutters">
         <div className="col col-12 col-sm-7">
           <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
@@ -165,8 +165,8 @@ export default withRouter(props => {
                 type="email"
                 name="email"
                 autoComplete="off"
-                onChange={e => handleInputChange(e)}
-                onBlur={e => handleInputBlur(e)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormFooter>

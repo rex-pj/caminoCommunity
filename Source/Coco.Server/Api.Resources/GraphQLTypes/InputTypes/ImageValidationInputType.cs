@@ -7,8 +7,7 @@ namespace Api.Resources.GraphQLTypes.InputTypes
     {
         protected override void Configure(IInputObjectTypeDescriptor<ImageValidationModel> descriptor)
         {
-            descriptor.Field(x => x.Url).Type<NonNullType<StringType>>();
-            descriptor.Field(x => x.IsValid).Ignore();
+            descriptor.Field(x => x.Url).Type<StringType>();
         }
     }
 }

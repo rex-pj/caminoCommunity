@@ -5,7 +5,7 @@ using System;
 
 namespace Api.Resources.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PhotoController : ControllerBase
     {

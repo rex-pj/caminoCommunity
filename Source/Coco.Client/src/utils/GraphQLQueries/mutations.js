@@ -123,3 +123,11 @@ mutation ($criterias: ResetPasswordModelInput!){
     }
   }
 `;
+
+export const VALIDATE_IMAGE_URL = gpl`
+mutation ($criterias: ImageValidationModelInput!){
+    validateImageUrl(criterias: $criterias) {
+      isSucceed
+    }
+  }
+`;

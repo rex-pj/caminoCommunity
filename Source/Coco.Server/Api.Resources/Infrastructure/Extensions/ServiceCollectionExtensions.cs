@@ -1,4 +1,5 @@
 ﻿using Api.Resources.GraphQLTypes.InputTypes;
+using Api.Resources.MutationTypes;
 using Api.Resources.QueryTypes;
 using Coco.Api.Framework.GraphQLTypes.ResultTypes;
 using Coco.Api.Framework.Models;
@@ -15,10 +16,12 @@ namespace Api.Resources.Infrastructure.Extensions
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)
                 .AddQueryType<ImageQueryType>()
+                .AddMutationType<ImageMutationType>()
                 .AddType<AccessModeEnumType>()
                 .AddType<ApiErrorType>()
                 .AddType<SelectOptionType>()
                 .AddType<ImageValidationInputType>()
+                .AddType<IApiResult>()
                 .Create());
         }
     }

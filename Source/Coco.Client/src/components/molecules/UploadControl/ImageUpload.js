@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const InputFile = styled.input.attrs(p => ({ type: "file" }))`
+const InputFile = styled.input.attrs((p) => ({ type: "file" }))`
   display: none;
 `;
 
@@ -16,7 +16,7 @@ const UploadButton = styled.span`
 
   > span {
     color: inherit;
-    margin-left: ${p => p.theme.size.exTiny};
+    margin-left: ${(p) => p.theme.size.exTiny};
   }
 `;
 
@@ -27,19 +27,20 @@ class ImageUpload extends Component {
     this.fileRef = React.createRef();
   }
 
-  handleImageChange = e => {
+  handleImageChange = (e) => {
     e.preventDefault();
 
-    if (e.target && e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
+    const { target } = e;
+    if (target && target.files && target.files.length > 0) {
+      const file = target.files[0];
 
       const reader = new FileReader();
       reader.onloadend = () => {
         if (this.props.onChange) {
           this.props.onChange({
-            event: e,
+            target: target,
             file,
-            preview: reader.result
+            preview: reader.result,
           });
         }
       };
@@ -48,7 +49,7 @@ class ImageUpload extends Component {
     }
   };
 
-  openFileUpload = e => {
+  openFileUpload = (e) => {
     if (this.fileRef && this.fileRef.current) {
       this.fileRef.current.click();
     }
@@ -62,10 +63,11 @@ class ImageUpload extends Component {
           <span>{this.props.children}</span>
         </UploadButton>
         <InputFile
+          name={this.props.name}
           ref={this.fileRef}
           type="file"
           accept=".jpg,.jpeg,.png"
-          onChange={e => this.handleImageChange(e)}
+          onChange={(e) => this.handleImageChange(e)}
         />
       </div>
     );

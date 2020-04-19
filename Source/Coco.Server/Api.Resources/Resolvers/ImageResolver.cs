@@ -3,6 +3,8 @@ using Api.Public.Resolvers.Contracts;
 using HotChocolate.Resolvers;
 using Api.Resources.Models;
 using Coco.Business.ValidationStrategies;
+using Coco.Api.Framework.Models;
+using Coco.Commons.Models;
 
 namespace Api.Public.Resolvers
 {
@@ -14,15 +16,28 @@ namespace Api.Public.Resolvers
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public ImageValidationModel ValidateImageUrl(IResolverContext context)
+        public IApiResult ValidateImageUrl(IResolverContext context)
         {
             var model = context.Argument<ImageValidationModel>("criterias");
             _validationStrategyContext.SetStrategy(new ImageUrlValidationStrategy());
+            if(model == null || string.IsNullOrEmpty(model.Url))
+            {
+                return ApiResult.Failed(new CommonError());
+            }
+
             bool canUpdate = _validationStrategyContext.Validate(model.Url);
 
-            return new ImageValidationModel() { 
-                IsValid = canUpdate
-            };
+            if (!canUpdate)
+            {
+                _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
+                canUpdate = _validationStrategyContext.Validate(model.Url);
+            }
+
+            if (canUpdate)
+            {
+                return ApiResult.Success();
+            }
+            return ApiResult.Failed(new CommonError());
         }
     }
 }

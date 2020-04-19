@@ -1,4 +1,6 @@
-﻿using Api.Resources.Infrastructure.Extensions;
+﻿using Api.Public.Resolvers;
+using Api.Public.Resolvers.Contracts;
+using Api.Resources.Infrastructure.Extensions;
 using AutoMapper;
 using Coco.Api.Framework.Infrastructure;
 using Coco.Api.Framework.MappingProfiles;
@@ -57,6 +59,7 @@ namespace Api.Resources
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
+            services.AddTransient<IImageResolver, ImageResolver>();
             services.AddGraphQlDependency();
         }
 
