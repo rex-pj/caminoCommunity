@@ -19,19 +19,6 @@
       "UpstreamPathTemplate": "/public-api/{catchAll}"
     },
     {
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7005
-        }
-      ],
-      "DownstreamPathTemplate": "/api/{catchAll}",
-      "DownstreamScheme": "http",
-      "UpstreamHttpMethod": [ "GET" ],
-      "UpstreamPathTemplate": "/cdn/{catchAll}"
-    },
-
-    {
       "DelegatingHandlers": [
         "GraphQlDelegatingHandler"
       ],
@@ -44,7 +31,19 @@
       "DownstreamPathTemplate": "/api/graphql",
       "DownstreamScheme": "http",
       "UpstreamHttpMethod": [ "POST", "GET" ],
-      "UpstreamPathTemplate": "/cdn-api/graphql"
+      "UpstreamPathTemplate": "/resc-api/graphql"
+    },
+    {
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "DownstreamPathTemplate": "/photo/{catchAll}",
+      "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/resc-photo/{catchAll}"
     },
     {
       "DelegatingHandlers": [

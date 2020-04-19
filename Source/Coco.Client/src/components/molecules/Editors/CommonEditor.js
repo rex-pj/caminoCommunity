@@ -79,7 +79,13 @@ export default (props) => {
     },
   ]);
 
-  const { placeholder, className, height, convertImageCallback } = props;
+  const {
+    placeholder,
+    className,
+    height,
+    convertImageCallback,
+    onImageValidate,
+  } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
   );
@@ -233,7 +239,7 @@ export default (props) => {
             editorState={editorState}
             onChange={onChange}
             handleKeyCommand={handleKeyCommand}
-            placeholder={placeholder ? placeholder : "Enter some text..."}
+            placeholder={placeholder ? placeholder : "Nội dung bài viết..."}
           />
         </ConttentBox>
       </Container>
@@ -252,6 +258,7 @@ export default (props) => {
         editorState={editorState}
         convertImageCallback={convertImageCallback}
         modalBodyComponent={EditorImageModal}
+        onImageValidate={onImageValidate}
       />
     </Root>
   );

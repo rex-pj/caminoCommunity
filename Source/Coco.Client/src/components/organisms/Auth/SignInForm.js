@@ -7,7 +7,7 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import SigninModel from "../../../models/SigninModel";
+import signinModel from "../../../models/signinModel";
 import { checkValidity } from "../../../utils/Validity";
 
 const Textbox = styled(TextboxSecondary)`
@@ -74,7 +74,7 @@ const ForgotPasswordRow = styled(FormRow)`
 export default (props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
-  let formData = SigninModel;
+  let formData = signinModel;
 
   const handleInputBlur = (evt) => {
     const { name } = evt.target;

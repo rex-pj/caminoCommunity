@@ -7,11 +7,11 @@ const TabButton = styled(ButtonPrimary)`
   border-bottom-left-radius: 0;
   font-weight: normal;
   border: 0;
-  color: ${p => p.theme.color.primaryDark};
-  background-color: ${p => p.theme.color.light};
+  color: ${(p) => p.theme.color.primaryDark};
+  background-color: ${(p) => p.theme.color.light};
 
   :hover {
-    background-color: ${p => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.light};
   }
 `;
 
@@ -19,24 +19,24 @@ const Item = styled.li`
   display: inline-block;
 
   &.actived ${TabButton} {
-    color: ${p => p.theme.color.light};
-    background-color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.neutral};
   }
 
   ${TabButton} {
-    border-top-right-radius: ${p =>
+    border-top-right-radius: ${(p) =>
       p.tabOrder === 0 ? "0px" : p.theme.borderRadius.normal};
-    border-top-left-radius: ${p =>
+    border-top-left-radius: ${(p) =>
       p.tabOrder === p.totalTabs - 1 ? "0px" : p.theme.borderRadius.normal};
   }
 `;
 
-export default props => {
+export default (props) => {
   const { className, tabOrder, totalTabs, actived } = props;
 
-  const toggleTab = () => {
+  const toggleTab = (e) => {
     if (props.toggleTab) {
-      props.toggleTab(tabOrder);
+      props.toggleTab(e, tabOrder);
     }
   };
 

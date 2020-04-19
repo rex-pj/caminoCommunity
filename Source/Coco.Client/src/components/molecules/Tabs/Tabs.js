@@ -8,16 +8,19 @@ const Root = styled.div``;
 const List = styled.ul`
   list-style: none;
   padding-left: 0;
-  border-bottom: 1px solid ${p => p.theme.color.neutral};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutral};
   margin-bottom: 0;
 `;
 
-export default props => {
-  const { tabs, className } = props;
+export default (props) => {
+  const { tabs, className, onTabClicked } = props;
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  const toggleTab = index => {
+  const toggleTab = (e, index) => {
     setCurrentTabIndex(index);
+    if (onTabClicked) {
+      onTabClicked(e);
+    }
   };
 
   return (

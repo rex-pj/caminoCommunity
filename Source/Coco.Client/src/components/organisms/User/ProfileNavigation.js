@@ -10,26 +10,29 @@ const Root = styled.div`
 
 const ListItem = styled.li`
   display: inline-block;
-  margin: 0 ${p => p.theme.size.distance};
+  margin: 0 ${(p) => p.theme.size.distance};
 
   a.actived {
-    color: ${p => p.theme.color.primaryDark};
+    color: ${(p) => p.theme.color.primaryDark};
     text-decoration: none;
     font-weight: 600;
+    border-bottom: 3px solid ${(p) => p.theme.color.primary};
   }
 
   :hover a {
-    color: ${p => p.theme.color.primaryDark};
+    color: ${(p) => p.theme.color.primaryDark};
     text-decoration: none;
   }
 
   a {
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
     font-weight: 500;
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     border: 0;
-    height: ${p => p.theme.size.medium};
-    line-height: ${p => p.theme.size.medium};
+    height: ${(p) => p.theme.size.medium};
+    line-height: ${(p) => p.theme.size.medium};
+    display: inline-block;
+    height: 100%;
   }
 `;
 
@@ -111,13 +114,13 @@ export default (class extends Component {
                 {
                   url: `${baseUrl}/${userId}/update`,
                   name: "Cập nhật thông tin cá nhân",
-                  isNav: true
+                  isNav: true,
                 },
                 {
                   url: `${baseUrl}/${userId}/security`,
                   name: "Bảo mật",
-                  isNav: true
-                }
+                  isNav: true,
+                },
               ]}
             />
           </div>

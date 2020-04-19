@@ -4,44 +4,44 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../atoms/Panels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
-import PasswordUpdateModel from "../../../models/PasswordUpdateModel";
+import passwordUpdateModel from "../../../models/passwordUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/atoms/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  margin-bottom: ${p => p.theme.size.normal};
-  background-color: ${p => p.theme.color.white};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  margin-bottom: ${(p) => p.theme.size.normal};
+  background-color: ${(p) => p.theme.color.white};
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: ${p => p.theme.size.exTiny};
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
+  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
 `;
 
 const Heading = styled(QuaternaryDarkHeading)`
-  margin-bottom: ${p => p.theme.size.distance};
-  margin-left: ${p => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.distance};
+  margin-left: ${(p) => p.theme.size.exTiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
   }
 `;
 
@@ -50,12 +50,12 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default props => {
-  let formData = PasswordUpdateModel;
+export default (props) => {
+  let formData = passwordUpdateModel;
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const onTextboxChange = e => {
+  const onTextboxChange = (e) => {
     formData = formData || {};
     const { name, value } = e.target;
 
@@ -78,7 +78,7 @@ export default props => {
     return isFormValid;
   };
 
-  const onUpdate = e => {
+  const onUpdate = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -110,7 +110,7 @@ export default props => {
     <Fragment>
       <Heading>Thay đổi mật khẩu</Heading>
       <MainPanel>
-        <form onSubmit={e => onUpdate(e)} method="POST">
+        <form onSubmit={(e) => onUpdate(e)} method="POST">
           <Fragment>
             <FormGroup>
               <LabelAndTextbox

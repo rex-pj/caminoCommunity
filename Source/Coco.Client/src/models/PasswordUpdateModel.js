@@ -1,29 +1,27 @@
-let model = {
+export default {
   currentPassword: {
     value: "",
     validation: {
       isRequired: true,
-      minLength: 6
+      minLength: 6,
     },
-    isValid: false
+    isValid: false,
   },
   newPassword: {
     value: "",
     validation: {
       isRequired: true,
-      minLength: 6
+      minLength: 6,
     },
-    isValid: false
+    isValid: false,
   },
   confirmPassword: {
     value: "",
     validation: {
       isRequired: true,
       minLength: 6,
-      sameRefProperty: "newPassword"
+      sameRefProperty: "newPassword",
     },
-    isValid: false
-  }
+    isValid: false,
+  },
 };
-
-export default model;

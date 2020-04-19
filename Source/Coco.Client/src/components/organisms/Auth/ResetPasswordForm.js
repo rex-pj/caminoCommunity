@@ -7,27 +7,27 @@ import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import ResetPasswordNavigation from "../../../components/organisms/NavigationMenu/ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
-import ResetPasswordModel from "../../../models/ResetPasswordModel";
+import resetPasswordModel from "../../../models/resetPasswordModel";
 
 const Textbox = styled(TextboxSecondary)`
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.color.primaryLight};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${p => p.theme.color.dark};
-  padding: ${p => p.theme.size.tiny};
+  color: ${(p) => p.theme.color.dark};
+  padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${p => p.theme.color.light};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.light};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
-    background-color: ${p => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.moreDark};
   }
 
   &.invalid {
-    border: 1px solid ${p => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.dangerLight};
   }
 `;
 
@@ -36,56 +36,56 @@ const FormFooter = styled(PanelFooter)`
 `;
 
 const Label = styled(LabelNormal)`
-  margin-left: ${p => p.theme.size.tiny};
+  margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   font-weight: 600;
 `;
 
 const FormRow = styled.div`
-  margin-bottom: ${p => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
-  border: 1px solid ${p => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.primaryLight};
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 `;
 
 const Instruction = styled.div`
   text-align: center;
-  margin: ${p => p.theme.size.distance} ${p => p.theme.size.distance} 0
-    ${p => p.theme.size.distance};
-  padding: ${p => p.theme.size.distance};
-  background: ${p => p.theme.rgbaColor.light};
-  border-radius: ${p => p.theme.borderRadius.medium};
+  margin: ${(p) => p.theme.size.distance} ${(p) => p.theme.size.distance} 0
+    ${(p) => p.theme.size.distance};
+  padding: ${(p) => p.theme.size.distance};
+  background: ${(p) => p.theme.rgbaColor.light};
+  border-radius: ${(p) => p.theme.borderRadius.medium};
 
   ${SecondaryHeading} {
-    font-size: ${p => p.theme.fontSize.giant};
-    color: ${p => p.theme.color.lighter};
+    font-size: ${(p) => p.theme.fontSize.giant};
+    color: ${(p) => p.theme.color.lighter};
     text-transform: uppercase;
   }
 
   p {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
     margin-bottom: 0;
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 `;
 
-export default props => {
-  let formData = ResetPasswordModel;
+export default (props) => {
+  let formData = resetPasswordModel;
   const { args } = props;
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -97,11 +97,11 @@ export default props => {
     formData.key.isValid = checkValidity(formData, args.key, "key");
   }
 
-  const handleInputBlur = evt => {
+  const handleInputBlur = (evt) => {
     alertInvalidForm(evt.target);
   };
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     formData = formData || {};
     const { name, value } = evt.target;
 
@@ -113,7 +113,7 @@ export default props => {
     forceUpdate();
   };
 
-  const alertInvalidForm = target => {
+  const alertInvalidForm = (target) => {
     const { name } = target;
     if (!formData[name].isValid) {
       target.classList.add("invalid");
@@ -122,7 +122,7 @@ export default props => {
     }
   };
 
-  const onResetPassword = e => {
+  const onResetPassword = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -162,7 +162,7 @@ export default props => {
   const isFormCheckValid = checkIsFormValid();
 
   return (
-    <form onSubmit={e => onResetPassword(e)} method="POST">
+    <form onSubmit={(e) => onResetPassword(e)} method="POST">
       <ResetPasswordNavigation />
       <Instruction>
         <p>Mật khẩu nên bao gồm chữ, số, ký tự đặc biệt và chữ viết hoa</p>
@@ -175,8 +175,8 @@ export default props => {
             placeholder="Nhập mật khẩu hiện tại của bạn vào đây"
             name="currentPassword"
             type="password"
-            onChange={e => handleInputChange(e)}
-            onBlur={e => handleInputBlur(e)}
+            onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputBlur(e)}
           />
         </FormRow>
         <FormRow>
@@ -186,8 +186,8 @@ export default props => {
             placeholder="Nhập mật khẩu mới"
             type="password"
             name="password"
-            onChange={e => handleInputChange(e)}
-            onBlur={e => handleInputBlur(e)}
+            onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputBlur(e)}
           />
         </FormRow>
         <FormRow>
@@ -197,8 +197,8 @@ export default props => {
             placeholder="Nhập lại mật khẩu mới"
             type="password"
             name="confirmPassword"
-            onChange={e => handleInputChange(e)}
-            onBlur={e => handleInputBlur(e)}
+            onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputBlur(e)}
           />
         </FormRow>
         <FormFooter>

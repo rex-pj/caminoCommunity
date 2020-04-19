@@ -9,7 +9,7 @@ import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNav
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import DateSelector from "../../../components/molecules/DateSelector";
 import { checkValidity } from "../../../utils/Validity";
-import SignupModel from "../../../models/SignupModel";
+import signupModel from "../../../models/signupModel";
 
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -94,7 +94,7 @@ const BirthDateSelector = styled(DateSelector)`
 `;
 
 export default (props) => {
-  let formData = SignupModel;
+  let formData = signupModel;
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
