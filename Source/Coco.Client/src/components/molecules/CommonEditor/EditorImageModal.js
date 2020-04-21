@@ -98,20 +98,14 @@ export default (props) => {
 
     await onImageValidate(url).then((response) => {
       const { errors, data } = response;
-      let isSucceed = false;
-      if (!errors && data) {
-        const { validateImageUrl } = data;
-        isSucceed = validateImageUrl.isSucceed;
+      if (errors || !data) {
+        return;
       }
 
-      if (isSucceed) {
-        formData[formName].isValid = true;
-        formData[formName].value = url;
-      } else {
-        formData[formName].isValid = false;
-        formData[formName].value = url;
-      }
-
+      const { validateImageUrl } = data;
+      const { isSucceed } = validateImageUrl;
+      formData[formName].isValid = isSucceed;
+      formData[formName].value = url;
       setImageData({
         ...formData,
       });

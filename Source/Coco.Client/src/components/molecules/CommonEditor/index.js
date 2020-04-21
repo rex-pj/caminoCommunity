@@ -85,6 +85,7 @@ export default (props) => {
     height,
     convertImageCallback,
     onImageValidate,
+    onChanged,
   } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty(decorator)
@@ -126,6 +127,9 @@ export default (props) => {
   };
 
   const onChange = (editorState) => {
+    if (onChanged) {
+      onChanged(editorState);
+    }
     return setEditorState(editorState);
   };
 
