@@ -3,11 +3,11 @@ export const styleMap = {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
     fontSize: 16,
-    padding: 2
+    padding: 2,
   },
   HIGHLIGHT: {
-    background: "#fffe0d"
-  }
+    background: "#fffe0d",
+  },
 };
 
 export const STYLES = [
@@ -18,7 +18,7 @@ export const STYLES = [
   { icon: "highlighter", style: "HIGHLIGHT", type: "inline" },
   { icon: "quote-left", style: "blockquote", type: "block" },
   { icon: "list-ul", style: "unordered-list-item", type: "block" },
-  { icon: "list-ol", style: "ordered-list-item", type: "block" }
+  { icon: "list-ol", style: "ordered-list-item", type: "block" },
 ];
 
 export const HEADING_TYPES = [
@@ -28,11 +28,11 @@ export const HEADING_TYPES = [
   { label: "Heading 3", style: "header-three" },
   { label: "Heading 4", style: "header-four" },
   { label: "Heading 5", style: "header-five" },
-  { label: "Heading 6", style: "header-six" }
+  { label: "Heading 6", style: "header-six" },
 ];
 
 export const findLinkEntities = (contentBlock, callback, contentState) => {
-  contentBlock.findEntityRanges(character => {
+  contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
       entityKey !== null &&
@@ -42,7 +42,7 @@ export const findLinkEntities = (contentBlock, callback, contentState) => {
 };
 
 export const findImageEntities = (contentBlock, callback, contentState) => {
-  contentBlock.findEntityRanges(character => {
+  contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
       entityKey !== null &&

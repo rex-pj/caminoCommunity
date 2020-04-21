@@ -1,14 +1,14 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { UrlConstant } from "../../utils/Constant";
 import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
-import CommonEditor from "../../components/molecules/Editors/CommonEditor";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/react-hooks";
 import cdnClient from "../../utils/GraphQLClient/cdnClient";
 import { VALIDATE_IMAGE_URL } from "../../utils/GraphQlQueries/mutations";
+import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 
 export default withRouter((props) => {
   const feedItems = [];
@@ -129,14 +129,10 @@ export default withRouter((props) => {
     });
   };
 
-  useEffect(() => {
-    return () => {};
-  }, [validateImageUrl]);
-
   const { totalPage, currentPage, baseUrl, pageQuery } = pageOptions;
   return (
     <Fragment>
-      <CommonEditor
+      <ArticleEditor
         height={230}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
