@@ -1,6 +1,6 @@
-﻿using Coco.Api.Framework.SessionManager.Contracts;
-using Coco.Api.Framework.Models;
-using Coco.Api.Framework.Resolvers;
+﻿using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.Models;
+using Coco.Framework.Resolvers;
 using Coco.Entities.Enums;
 using Coco.Entities.Dtos.General;
 using System;

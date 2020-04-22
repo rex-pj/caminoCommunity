@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Framework.Models;
 using System.Collections.Generic;
 
 namespace Api.Identity.Resolvers.Contracts

@@ -1,8 +1,8 @@
 ﻿using Api.Content.Infrastructure.Extensions;
 using AutoMapper;
-using Coco.Api.Framework.Infrastructure;
-using Coco.Api.Framework.Infrastructure.Extensions;
-using Coco.Api.Framework.MappingProfiles;
+using Coco.Framework.Infrastructure;
+using Coco.Framework.Infrastructure.Extensions;
+using Coco.Framework.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;

@@ -1,6 +1,6 @@
 ﻿using Api.Identity.Resolvers.Contracts;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
-using Coco.Api.Framework.Models;
+using Coco.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.Models;
 using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes

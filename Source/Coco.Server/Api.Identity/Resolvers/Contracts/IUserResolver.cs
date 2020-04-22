@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Framework.Models;
 using Coco.Entities.Dtos.User;
 using HotChocolate.Resolvers;
 using System.Threading.Tasks;

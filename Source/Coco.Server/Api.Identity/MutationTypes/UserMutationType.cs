@@ -1,9 +1,9 @@
 ﻿using Api.Identity.GraphQLTypes.InputTypes;
 using Api.Identity.GraphQLTypes.ResultTypes;
 using Api.Identity.Resolvers.Contracts;
-using Coco.Api.Framework.Attributes;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
-using Coco.Api.Framework.Middlewares;
+using Coco.Framework.Attributes;
+using Coco.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.Middlewares;
 using HotChocolate.Types;
 
 namespace Api.Identity.MutationTypes

@@ -1,6 +1,6 @@
 ﻿using Api.Public.GraphQLTypes.InputTypes;
 using Api.Public.Resolvers.Contracts;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
 
 namespace Api.Public.QueryTypes

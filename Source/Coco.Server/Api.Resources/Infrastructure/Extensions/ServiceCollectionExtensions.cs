@@ -1,8 +1,8 @@
 ﻿using Api.Resources.GraphQLTypes.InputTypes;
 using Api.Resources.MutationTypes;
 using Api.Resources.QueryTypes;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
-using Coco.Api.Framework.Models;
+using Coco.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.Models;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 

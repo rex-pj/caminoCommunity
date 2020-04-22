@@ -1,6 +1,6 @@
 ﻿using Api.Content.MutationTypes;
 using Api.Content.QueryTypes;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,6 +1,6 @@
 ﻿using Api.Identity.Resolvers.Contracts;
-using Coco.Api.Framework.Commons.Helpers;
-using Coco.Api.Framework.Models;
+using Coco.Framework.Commons.Helpers;
+using Coco.Framework.Models;
 using Coco.Entities.Enums;
 using System.Collections.Generic;
 
