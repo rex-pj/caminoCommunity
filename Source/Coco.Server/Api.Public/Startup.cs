@@ -2,9 +2,9 @@
 using Api.Public.Resolvers;
 using Api.Public.Resolvers.Contracts;
 using AutoMapper;
-using Coco.Api.Framework.Infrastructure;
-using Coco.Api.Framework.MappingProfiles;
-using Coco.Api.Framework.SessionManager.Core;
+using Coco.Framework.Infrastructure;
+using Coco.Framework.MappingProfiles;
+using Coco.Framework.SessionManager.Core;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;

@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Framework.Models;
 using HotChocolate.Resolvers;
 
 namespace Api.Public.Resolvers.Contracts

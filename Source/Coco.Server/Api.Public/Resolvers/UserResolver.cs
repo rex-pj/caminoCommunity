@@ -1,12 +1,12 @@
 ﻿using Api.Public.Models;
-using Coco.Api.Framework.Models;
-using Coco.Api.Framework.Resolvers;
+using Coco.Framework.Models;
+using Coco.Framework.Resolvers;
 using Coco.Entities.Enums;
 using System;
 using System.Threading.Tasks;
-using Coco.Api.Framework.Services.Contracts;
+using Coco.Framework.Services.Contracts;
 using MimeKit.Text;
-using Coco.Api.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Contracts;
 using Coco.Common.Resources;
 using Microsoft.Extensions.Configuration;
 using Api.Public.Resolvers.Contracts;

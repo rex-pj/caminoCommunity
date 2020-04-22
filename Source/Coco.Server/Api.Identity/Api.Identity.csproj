@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Coco.Api.Framework\Coco.Api.Framework.csproj" />
+    <ProjectReference Include="..\Coco.Framework\Coco.Framework.csproj" />
     <ProjectReference Include="..\Coco.Business\Coco.Business.csproj" />
     <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
   </ItemGroup>

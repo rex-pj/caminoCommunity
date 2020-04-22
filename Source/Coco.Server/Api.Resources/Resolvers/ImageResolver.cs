@@ -1,9 +1,9 @@
-﻿using Coco.Api.Framework.Resolvers;
+﻿using Coco.Framework.Resolvers;
 using Api.Public.Resolvers.Contracts;
 using HotChocolate.Resolvers;
 using Api.Resources.Models;
 using Coco.Business.ValidationStrategies;
-using Coco.Api.Framework.Models;
+using Coco.Framework.Models;
 using Coco.Commons.Models;
 
 namespace Api.Public.Resolvers

@@ -1,4 +1,4 @@
-﻿using Coco.Api.Framework.Models;
+﻿using Coco.Framework.Models;
 using HotChocolate.Types;
 
 namespace Api.Identity.GraphQLTypes.ResultTypes

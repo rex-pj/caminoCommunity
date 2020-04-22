@@ -2,8 +2,8 @@
 using Api.Public.Resolvers.Contracts;
 using Api.Resources.Infrastructure.Extensions;
 using AutoMapper;
-using Coco.Api.Framework.Infrastructure;
-using Coco.Api.Framework.MappingProfiles;
+using Coco.Framework.Infrastructure;
+using Coco.Framework.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;

@@ -1,6 +1,6 @@
 ﻿using Api.Public.Resolvers.Contracts;
 using Api.Resources.GraphQLTypes.InputTypes;
-using Coco.Api.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
 
 namespace Api.Resources.MutationTypes
