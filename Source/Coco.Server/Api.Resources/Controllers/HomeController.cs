@@ -8,7 +8,7 @@ namespace Api.Resources.Controllers
     {
         public IActionResult Index()
         {
-            return Content("Cdn Page");
+            return Content("Resource Page");
         }
     }
 }

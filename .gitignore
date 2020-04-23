@@ -29,3 +29,5 @@ Source/Coco.Server/Coco.IdentityDAL/bin/
 Source/Coco.Server/Coco.IdentityDAL/obj/
 Source/Coco.Server/Coco.Framework/obj/
 Source/Coco.Server/Coco.Framework/bin/
+Source/Coco.Server/Coco.Management/bin/
+Source/Coco.Server/Coco.Management/obj/

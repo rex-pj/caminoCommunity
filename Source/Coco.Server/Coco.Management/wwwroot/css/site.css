@@ -1,0 +1,101 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #f4f7f6;
+}
+
+.box-shadow {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky header styles
+-------------------------------------------------- */
+.site-logo {
+    max-width: 35px;
+    max-height: 35px;
+    margin-right: 8px;
+}
+
+/* Nav tools
+-------------------------------------------------- */
+.nav-tool {
+    height: 100%;
+    margin-left: -15px;
+}
+
+.nav-tool .nav-tool-item > a {
+    border-right: 0;
+    border-left: 0;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    font-size: 14px;
+    display: block;
+    padding: 0.75rem 0.75rem;
+    position: relative;
+    background-color: #f1f1f1;
+    font-weight: 600;
+}
+
+.nav-tool .nav-tool-item > a.collapsed {
+    background-color: transparent;
+    font-weight: 400;
+}
+
+.nav-tool .nav-tool-item > a::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    height: 100%;
+    background-color: #f68c1f;
+}
+
+.nav-tool .nav-tool-item > a.collapsed::after {
+    display: none;
+}
+
+.nav-tool .list-group-item {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-color: #f1f1f1;
+    font-size: 14px;
+}
+
+        .nav-tool .list-group-item.active {
+            font-weight: 600;
+            background-color: #ffffff;
+        }
+/* Sticky footer styles
+-------------------------------------------------- */
+.main {
+    margin-top: 15px;
+    border: 0;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}

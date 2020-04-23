@@ -1,0 +1,139 @@
+﻿@using Coco.Management.Common.Const;
+@{
+    var routeData = ViewContext.RouteData;
+    var controllerName = routeData.Values["controller"].ToString();
+    var actionName = routeData.Values["action"].ToString();
+    var articleDomains = new string[]
+    {
+        RequestDomains.HOME,
+        RequestDomains.ARTICLE,
+        RequestDomains.ARTICLE_CATEGORY
+    };
+
+    var farmDomains = new string[]
+    {
+        RequestDomains.FARM,
+        RequestDomains.FARM_TYPE
+    };
+
+    var farmGroupDomains = new string[]
+    {
+        RequestDomains.FARM_GROUP,
+        RequestDomains.FARM_GROUP_TYPE
+    };
+
+    var productDomains = new string[]
+    {
+        RequestDomains.PRODUCT,
+        RequestDomains.PRODUCT_CATEGORY
+    };
+
+    var isArticleDomain = articleDomains.Contains(controllerName);
+    var isFarmDomain = farmDomains.Contains(controllerName);
+    var isFarmGroupDomain = farmGroupDomains.Contains(controllerName);
+    var isProductDomain = productDomains.Contains(controllerName);
+}
+<div class="nav-tool">
+    <div class="accordion" id="navAccordion">
+        <div class="nav-tool-item">
+            <a asp-controller="Article"
+               asp-action="Index"
+               class="text-dark @(isArticleDomain ? "active" : "collapsed")"
+               data-toggle="collapse"
+               data-target="#collapseArticle"
+               aria-expanded="true"
+               aria-controls="collapseArticle">
+                <i class="fa fa-book"></i> Articles
+            </a>
+
+            <div id="collapseArticle"
+                 class="collapse"
+                 aria-labelledby="headingArticle"
+                 data-parent="#navAccordion">
+                <div class="list-group">
+                    <a asp-controller="ArticleCategory"
+                       asp-action="Index" class="list-group-item text-dark active">
+                        Article Categories
+                    </a>
+                    <a asp-controller="Article"
+                       asp-action="Index" class="list-group-item text-dark">Article Contents</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-tool-item">
+            <a asp-controller="Farm"
+               asp-action="Index"
+               class="text-dark @(isFarmDomain ? "active" : "collapsed")"
+               data-toggle="collapse"
+               data-target="#collapseFarm"
+               aria-expanded="true"
+               aria-controls="collapseFarm">
+                <i class="fa fa-warehouse"></i> Farms
+            </a>
+
+            <div id="collapseFarm"
+                 class="collapse"
+                 aria-labelledby="headingFarm"
+                 data-parent="#navAccordion">
+                <div class="list-group">
+                    <a asp-controller="FarmType"
+                       asp-action="Index" class="list-group-item text-dark">
+                        Farm Types
+                    </a>
+                    <a asp-controller="Farm"
+                       asp-action="Index" class="list-group-item text-dark">Farm Contents</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-tool-item">
+            <a asp-controller="FarmGroup"
+               asp-action="Index"
+               class="text-dark @(isFarmGroupDomain ? "active" : "collapsed")"
+               data-toggle="collapse"
+               data-target="#collapseFarmGroup"
+               aria-expanded="true"
+               aria-controls="collapseFarmGroup">
+                <i class="fa fa-flag"></i> Farm Groups
+            </a>
+
+            <div id="collapseFarmGroup"
+                 class="collapse"
+                 aria-labelledby="headingFarmGroup"
+                 data-parent="#navAccordion">
+                <div class="list-group">
+                    <a asp-controller="FarmGroupType"
+                       asp-action="Index" class="list-group-item text-dark">
+                        Farm Group Types
+                    </a>
+                    <a asp-controller="FarmGroup"
+                       asp-action="Index" class="list-group-item text-dark">Farm Group Contents</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-tool-item">
+            <a asp-controller="Product"
+               asp-action="Index"
+               class="text-dark  @(isProductDomain ? "active" : "collapsed")"
+               data-toggle="collapse"
+               data-target="#collapseProduct"
+               aria-expanded="true"
+               aria-controls="collapseProduct">
+                <i class="fa fa-apple-alt"></i> Products
+            </a>
+
+            <div id="collapseProduct"
+                 class="collapse"
+                 aria-labelledby="headingProduct"
+                 data-parent="#navAccordion">
+                <div class="list-group">
+                    <a asp-controller="ProductCategory"
+                       asp-action="Index" class="list-group-item text-dark">
+                        Products Categories
+                    </a>
+                    <a asp-controller="Product"
+                       asp-action="Index" class="list-group-item text-dark">Products Contents</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

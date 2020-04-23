@@ -40,24 +40,29 @@ namespace Coco.Framework.Attributes
                     throw new ArgumentNullException(nameof(filterContext));
                 }
 
-                //check whether this filter has been overridden for the action
-                var actionFilter = filterContext.ActionDescriptor.FilterDescriptors
-                    .Where(filterDescriptor => filterDescriptor.Scope == FilterScope.Action)
-                    .Select(filterDescriptor => filterDescriptor.Filter).OfType<AuthenticationUserAttribute>()
-                    .FirstOrDefault();
+                var actionDescriptor = filterContext.ActionDescriptor;
+                var filterDescriptors = actionDescriptor.FilterDescriptors;
 
-                if (actionFilter != null && actionFilter.IgnoreFilter && _ignoreFilter)
+                //check whether this filter has been overridden for the action
+                var actionFilter = filterDescriptors
+                    .FirstOrDefault(x => x.Scope == FilterScope.Action)
+                    .Filter;
+
+                var authenticationFilter = actionFilter as AuthenticationUserAttribute;
+                if (authenticationFilter != null && authenticationFilter.IgnoreFilter && _ignoreFilter)
+                {
+                    return;
+                }
+
+                if(!filterContext.Filters.Any(filter => filter is AuthenticationFilter))
                 {
                     return;
                 }
 
                 //there is AuthorizeLoggedUserFilter, so check access
-                if (filterContext.Filters.Any(filter => filter is AuthenticationFilter))
+                if (_sessionContext.CurrentUser == null)
                 {
-                    if (_sessionContext.CurrentUser == null)
-                    {
-                        filterContext.Result = new ForbidResult();
-                    }
+                    filterContext.Result = new ForbidResult();
                 }
             }
         }
