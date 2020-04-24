@@ -19,8 +19,8 @@ Source/Coco.Server/Api.Public/obj/
 Source/Coco.Server/.vs/Coco.Server/v16/
 Source/Coco.Server/.vs/Coco.Server/DesignTimeBuild/.dtbcache
 Source/Coco.Server/.vs/Coco.Server/v16/.suo
-Source/Coco.Server/Api.Resources/bin/
-Source/Coco.Server/Api.Resources/obj/
+Source/Coco.Server/Api.Resource/bin/
+Source/Coco.Server/Api.Resource/obj/
 Source/Coco.Server/Coco.Web.Management/obj/
 Source/Coco.Server/Coco.Web.Management/bin/
 Source/Coco.Server/Api.Identity/bin/
@@ -31,3 +31,5 @@ Source/Coco.Server/Coco.Framework/obj/
 Source/Coco.Server/Coco.Framework/bin/
 Source/Coco.Server/Coco.Management/bin/
 Source/Coco.Server/Coco.Management/obj/
+Source/Coco.Server/Api.Auth/bin/
+Source/Coco.Server/Api.Auth/obj/

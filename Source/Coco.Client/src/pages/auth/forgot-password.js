@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
 import { useMutation } from "@apollo/react-hooks";
-import { publicClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../utils/GraphQLClient";
 import { FORGOT_PASSWORD } from "../../utils/GraphQlQueries/mutations";
 import { getError } from "../../utils/Helper";
 import { withRouter } from "react-router-dom";
@@ -12,7 +12,7 @@ export default withRouter((props) => {
   const dispatch = useStore(false)[1];
   const sessionContext = useContext(SessionContext);
   const [forgotPassword] = useMutation(FORGOT_PASSWORD, {
-    client: publicClient,
+    client: unauthClient,
   });
 
   const notifyError = (error, lang) => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
-import { publicClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../utils/GraphQLClient";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { SIGN_UP } from "../../utils/GraphQlQueries/mutations";
 import { useStore } from "../../store/hook-store";
@@ -10,7 +10,7 @@ export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const [signup] = useMutation(SIGN_UP, {
-    client: publicClient,
+    client: unauthClient,
   });
 
   const showError = (title, message) => {

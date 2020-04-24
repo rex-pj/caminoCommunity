@@ -13,21 +13,6 @@
           "Port": 7004
         }
       ],
-      "DownstreamPathTemplate": "/api/{catchAll}",
-      "DownstreamScheme": "http",
-      "UpstreamHttpMethod": [ "POST", "GET" ],
-      "UpstreamPathTemplate": "/public-api/{catchAll}"
-    },
-    {
-      "DelegatingHandlers": [
-        "GraphQlDelegatingHandler"
-      ],
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7005
-        }
-      ],
       "DownstreamPathTemplate": "/api/graphql",
       "DownstreamScheme": "http",
       "UpstreamHttpMethod": [ "POST", "GET" ],
@@ -37,7 +22,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7005
+          "Port": 7004
         }
       ],
       "DownstreamPathTemplate": "/photo/{catchAll}",
@@ -73,7 +58,7 @@
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
       "UpstreamHttpMethod": [ "POST", "GET" ],
-      "UpstreamPathTemplate": "/identity-api/{catchAll}"
+      "UpstreamPathTemplate": "/auth-api/{catchAll}"
     }
   ]
 }

@@ -36,12 +36,12 @@ namespace Coco.Business
                 .AddTransient<IRoleBusiness, RoleBusiness>()
                 .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>();
 
-            services.AddTransient<IRepository<User>, EfUserRepository<User>>()
-                .AddTransient<IRepository<UserInfo>, EfUserRepository<UserInfo>>()
-                .AddTransient<IRepository<Country>, EfUserRepository<Country>>()
-                .AddTransient<IRepository<Role>, EfUserRepository<Role>>()
-                .AddTransient<IRepository<UserPhoto>, EfUserRepository<UserPhoto>>()
-                .AddTransient<IRepository<UserAttribute>, EfUserRepository<UserAttribute>>();
+            services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
+                .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
+                .AddTransient<IRepository<Country>, EfIdentityRepository<Country>>()
+                .AddTransient<IRepository<Role>, EfIdentityRepository<Role>>()
+                .AddTransient<IRepository<UserPhoto>, EfIdentityRepository<UserPhoto>>()
+                .AddTransient<IRepository<UserAttribute>, EfIdentityRepository<UserAttribute>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<ValidationStrategyContext>();

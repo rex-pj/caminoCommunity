@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
 import { useMutation } from "@apollo/react-hooks";
-import { publicClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQlQueries/mutations";
 import { withRouter } from "react-router-dom";
 import { SessionContext } from "../../store/context/SessionContext";
@@ -14,7 +14,7 @@ export default withRouter((props) => {
   const dispatch = useStore(false)[1];
   const sessionContext = useContext(SessionContext);
   const [signin] = useMutation(SIGNIN, {
-    client: publicClient,
+    client: unauthClient,
   });
 
   useEffect(() => {

@@ -16,7 +16,7 @@ namespace Coco.DAL
 
         public void RegiserTypes(IServiceCollection services)
         {
-            services.AddDbContext<CocoDbContext>
+            services.AddDbContext<ContentDbContext>
                 (x => x.UseSqlServer(_connectionString));
         }
     }

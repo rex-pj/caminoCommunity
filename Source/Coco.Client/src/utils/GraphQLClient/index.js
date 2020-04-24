@@ -1,5 +1,5 @@
 // Graphql
-import identityClient from "./IdentityClient";
-import publicClient from "./PublicClient";
+import authClient from "./authClient";
+import unauthClient from "./unauthClient";
 
-export { publicClient, identityClient };
+export { unauthClient, authClient };

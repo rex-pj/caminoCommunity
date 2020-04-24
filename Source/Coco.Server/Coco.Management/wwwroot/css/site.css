@@ -48,6 +48,11 @@ body {
     position: relative;
     background-color: #f1f1f1;
     font-weight: 600;
+    text-decoration: none;
+}
+
+.nav-tool .nav-tool-item > a.collapsed:hover {
+    background-color: #f1f1f1;
 }
 
 .nav-tool .nav-tool-item > a.collapsed {
@@ -71,17 +76,24 @@ body {
     display: none;
 }
 
-.nav-tool .list-group-item {
-    border-radius: 0;
-    border-left: 0;
-    border-right: 0;
-    border-color: #f1f1f1;
-    font-size: 14px;
+    .nav-tool .list-group-item {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        border-color: #f1f1f1;
+        font-size: 14px;
+        padding: 0.75rem 0.75rem;
+    }
+
+.nav-tool .list-group-item:hover,
+.nav-tool .list-group-item.active:hover {
+    text-decoration: none;
+    font-weight: 600;
 }
 
         .nav-tool .list-group-item.active {
+            background-color: #FFFFFF;
             font-weight: 600;
-            background-color: #ffffff;
         }
 /* Sticky footer styles
 -------------------------------------------------- */

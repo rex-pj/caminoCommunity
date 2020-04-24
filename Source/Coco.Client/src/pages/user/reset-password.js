@@ -4,14 +4,14 @@ import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { RESET_PASSWORD } from "../../utils/GraphQlQueries/mutations";
 import { useStore } from "../../store/hook-store";
-import { publicClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../utils/GraphQLClient";
 
 export default withRouter((props) => {
   const { match, history } = props;
   const { params } = match;
   const { email, key } = params;
   const [resetPassword] = useMutation(RESET_PASSWORD, {
-    client: publicClient,
+    client: unauthClient,
   });
   const dispatch = useStore(false)[1];
 
