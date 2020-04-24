@@ -1,12 +1,11 @@
-﻿using Api.Resources.GraphQLTypes.InputTypes;
-using Api.Resources.MutationTypes;
-using Api.Resources.QueryTypes;
+﻿using Api.Resource.GraphQLTypes;
+using Api.Resource.GraphQLTypes.InputTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using Coco.Framework.Models;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Api.Resources.Infrastructure.Extensions
+namespace Api.Resource.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
@@ -15,8 +14,8 @@ namespace Api.Resources.Infrastructure.Extensions
             return services
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)
-                .AddQueryType<ImageQueryType>()
-                .AddMutationType<ImageMutationType>()
+                .AddQueryType<QueryType>()
+                .AddMutationType<MutationType>()
                 .AddType<AccessModeEnumType>()
                 .AddType<ApiErrorType>()
                 .AddType<SelectOptionType>()

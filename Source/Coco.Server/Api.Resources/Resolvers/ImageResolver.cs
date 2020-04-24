@@ -1,7 +1,7 @@
 ﻿using Coco.Framework.Resolvers;
 using Api.Public.Resolvers.Contracts;
 using HotChocolate.Resolvers;
-using Api.Resources.Models;
+using Api.Resource.Models;
 using Coco.Business.ValidationStrategies;
 using Coco.Framework.Models;
 using Coco.Commons.Models;

@@ -17,11 +17,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Api.Resources": {
+    "Api.Resource": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/home",
-      "applicationUrl": "http://localhost:7005",
+      "applicationUrl": "http://localhost:7004",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

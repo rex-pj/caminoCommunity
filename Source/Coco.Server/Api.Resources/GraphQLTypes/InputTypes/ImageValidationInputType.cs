@@ -1,7 +1,7 @@
-﻿using Api.Resources.Models;
+﻿using Api.Resource.Models;
 using HotChocolate.Types;
 
-namespace Api.Resources.GraphQLTypes.InputTypes
+namespace Api.Resource.GraphQLTypes.InputTypes
 {
     public class ImageValidationInputType : InputObjectType<ImageValidationModel>
     {

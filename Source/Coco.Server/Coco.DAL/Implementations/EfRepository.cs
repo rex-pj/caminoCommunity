@@ -15,7 +15,7 @@ namespace Coco.DAL.Implementations
     {
         #region Fields
 
-        private readonly CocoDbContext _dbContext;
+        private readonly ContentDbContext _dbContext;
 
         private DbSet<TEntity> _dbSet;
 
@@ -36,7 +36,7 @@ namespace Coco.DAL.Implementations
 
         #region Ctor
 
-        public EfRepository(CocoDbContext context)
+        public EfRepository(ContentDbContext context)
         {
             this._dbContext = context;
         }

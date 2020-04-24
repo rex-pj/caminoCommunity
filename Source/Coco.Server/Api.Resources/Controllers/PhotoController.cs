@@ -3,7 +3,7 @@ using Coco.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace Api.Resources.Controllers
+namespace Api.Resource.Controllers
 {
     [Route("[controller]")]
     [ApiController]

@@ -1,6 +1,6 @@
 ﻿using Api.Public.Resolvers;
 using Api.Public.Resolvers.Contracts;
-using Api.Resources.Infrastructure.Extensions;
+using Api.Resource.Infrastructure.Extensions;
 using AutoMapper;
 using Coco.Framework.Infrastructure;
 using Coco.Framework.MappingProfiles;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Api.Resources
+namespace Api.Resource
 {
     public class Startup
     {

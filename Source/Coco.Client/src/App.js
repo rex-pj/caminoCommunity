@@ -14,7 +14,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
 import { ApolloProvider } from "@apollo/react-hooks";
-import { identityClient } from "./utils/GraphQLClient";
+import { authClient } from "./utils/GraphQLClient";
 import configureModalStore from "./store/hook-store/modal-store";
 import configureAvatarStore from "./store/hook-store/avatar-store";
 import configureNotifyStore from "./store/hook-store/notify-store";
@@ -36,7 +36,7 @@ library.add(fas);
 export default () => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const { loading, data, refetch, error } = useQuery(GET_LOGGED_USER, {
-    client: identityClient,
+    client: authClient,
   });
 
   const relogin = async () => {
@@ -64,7 +64,7 @@ export default () => {
     <SessionContext.Provider
       value={{ ...userObj, relogin: relogin, isLoading: loading }}
     >
-      <ApolloProvider client={identityClient}>
+      <ApolloProvider client={authClient}>
         <BrowserRouter>
           <Switch>
             <DefaultLayout

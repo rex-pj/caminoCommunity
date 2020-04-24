@@ -3,7 +3,7 @@ import Active from "../../components/organisms/User/Active";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { ACTIVE } from "../../utils/GraphQlQueries/queries";
-import { publicClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../utils/GraphQLClient";
 
 export default withRouter((props) => {
   const { match } = props;
@@ -11,7 +11,7 @@ export default withRouter((props) => {
   const { email, key } = params;
 
   const { data, loading, error } = useQuery(ACTIVE, {
-    client: publicClient,
+    client: unauthClient,
     variables: {
       criterias: {
         email,

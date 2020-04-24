@@ -1,5 +1,4 @@
-﻿using Api.Content.MutationTypes;
-using Api.Content.QueryTypes;
+﻿using Api.Content.GraphQLTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate;
 using HotChocolate.Types;
@@ -13,8 +12,8 @@ namespace Api.Content.Infrastructure.Extensions
         {
             return services.AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)
-                .AddQueryType<UserQueryType>()
-                .AddMutationType<UserMutationType>()
+                .AddQueryType<QueryType>()
+                .AddMutationType<MutationType>()
                 .AddType(typeof(ListType<>))
                 .AddType<AccessModeEnumType>()
                 .AddType<ApiErrorType>()
