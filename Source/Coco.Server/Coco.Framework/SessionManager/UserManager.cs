@@ -128,12 +128,12 @@ namespace Coco.Framework.SessionManager
         }
 
         /// <summary>
-        /// Should return <see cref="ApiResult.Success"/> if validation is successful. This is
+        /// Should return <see cref="CommonResult.Success"/> if validation is successful. This is
         /// called before updating the password hash.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="password">The password.</param>
-        /// <returns>A <see cref="ApiResult"/> representing whether validation was successful.</returns>
+        /// <returns>A <see cref="CommonResult"/> representing whether validation was successful.</returns>
         protected async Task<bool> ValidatePasswordAsync(ApplicationUser user, string password)
         {
             var errors = new List<CommonError>();
@@ -335,7 +335,7 @@ namespace Coco.Framework.SessionManager
         ///// </summary>
         ///// <param name="user">The user</param>
         ///// <returns>A <see cref="IdentityResult"/> representing whether validation was successful.</returns>
-        protected virtual async Task<IApiResult> ValidateUserAsync(ApplicationUser user)
+        protected virtual async Task<ICommonResult> ValidateUserAsync(ApplicationUser user)
         {
             var errors = new List<CommonError>();
             foreach (var v in UserValidators)
@@ -349,9 +349,9 @@ namespace Coco.Framework.SessionManager
 
             if (errors.Count > 0)
             {
-                return ApiResult.Failed(errors.ToArray());
+                return CommonResult.Failed(errors.ToArray());
             }
-            return new ApiResult(true);
+            return new CommonResult(true);
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace Coco.Framework.SessionManager
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
         /// the specified <paramref name="password" /> matches the one store for the <paramref name="user"/>,
         /// otherwise false.</returns>
-        public virtual async Task<IApiResult> CheckPasswordAsync(ApplicationUser user, string password)
+        public virtual async Task<ICommonResult> CheckPasswordAsync(ApplicationUser user, string password)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -394,7 +394,7 @@ namespace Coco.Framework.SessionManager
                 return await UpdateAuthenticationAsync(user);
             }
 
-            return ApiResult.Failed(new CommonError());
+            return CommonResult.Failed(new CommonError());
         }
 
         private void ModifyUserAuthenticate(ApplicationUser user)
@@ -420,12 +420,12 @@ namespace Coco.Framework.SessionManager
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<IApiResult> UpdateAuthenticationAsync(ApplicationUser user)
+        protected virtual async Task<ICommonResult> UpdateAuthenticationAsync(ApplicationUser user)
         {
             var result = await ValidateUserAsync(user);
             if (!result.IsSucceed)
             {
-                return ApiResult.Failed(result.Errors.ToArray());
+                return CommonResult.Failed(result.Errors.ToArray());
             }
 
             return await UserStore.UpdateAuthenticationAsync(user);
@@ -465,7 +465,7 @@ namespace Coco.Framework.SessionManager
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual async Task<IApiResult> CreateAsync(ApplicationUser user)
+        public virtual async Task<ICommonResult> CreateAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
 
@@ -706,7 +706,7 @@ namespace Coco.Framework.SessionManager
             return await UserPhotoStore.DeleteUserPhotoAsync(userId, userPhotoType);
         }
 
-        public virtual async Task<IApiResult> ForgotPasswordAsync(string email)
+        public virtual async Task<ICommonResult> ForgotPasswordAsync(string email)
         {
             ThrowIfDisposed();
 
@@ -758,7 +758,7 @@ namespace Coco.Framework.SessionManager
             return await UserStampStore.DeleteUserAuthenticationAttributes(applicationUser, authenticationToken);
         }
 
-        public async Task<IApiResult> ActiveAsync(string email, string activeKey)
+        public async Task<ICommonResult> ActiveAsync(string email, string activeKey)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -778,7 +778,7 @@ namespace Coco.Framework.SessionManager
 
             if (user.IsActived)
             {
-                return ApiResult.Failed(Describer.UserAlreadyActived());
+                return CommonResult.Failed(Describer.UserAlreadyActived());
             }
 
             var activationAttribute = await UserStampStore.GetActivationKeyAsync(user.Id);
@@ -802,7 +802,7 @@ namespace Coco.Framework.SessionManager
             return result;
         }
 
-        private IApiResult ValidateToken(long userId, string token)
+        private ICommonResult ValidateToken(long userId, string token)
         {
             var tokenResult = UserStampStore.GetAuthenticationAttribute(userId, token);
             bool hasToken = tokenResult != null && !string.IsNullOrEmpty(tokenResult.AuthenticationToken);
@@ -810,13 +810,13 @@ namespace Coco.Framework.SessionManager
 
             if (!isValid)
             {
-                return ApiResult.Failed(new CommonError() { 
+                return CommonResult.Failed(new CommonError() { 
                     Code = ErrorMessageConst.UN_EXPECTED_EXCEPTION,
                     Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
                 });
             }
 
-            return ApiResult.Success(tokenResult.AuthenticationToken, isValid);
+            return CommonResult.Success(tokenResult.AuthenticationToken, isValid);
         }
         #endregion
 

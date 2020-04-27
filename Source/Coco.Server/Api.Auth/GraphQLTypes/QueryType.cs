@@ -12,7 +12,7 @@ namespace Api.Auth.GraphQLTypes
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
             descriptor.Field<IUserResolver>(x => x.SignoutAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
 
@@ -29,7 +29,7 @@ namespace Api.Auth.GraphQLTypes
 
             // Public query
             descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Argument("criterias", a => a.Type<ActiveUserInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
         }

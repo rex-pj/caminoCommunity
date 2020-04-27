@@ -16,13 +16,13 @@ namespace Api.Public.Resolvers
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public IApiResult ValidateImageUrl(IResolverContext context)
+        public ICommonResult ValidateImageUrl(IResolverContext context)
         {
             var model = context.Argument<ImageValidationModel>("criterias");
             _validationStrategyContext.SetStrategy(new ImageUrlValidationStrategy());
             if(model == null || string.IsNullOrEmpty(model.Url))
             {
-                return ApiResult.Failed(new CommonError());
+                return CommonResult.Failed(new CommonError());
             }
 
             bool canUpdate = _validationStrategyContext.Validate(model.Url);
@@ -35,9 +35,9 @@ namespace Api.Public.Resolvers
 
             if (canUpdate)
             {
-                return ApiResult.Success();
+                return CommonResult.Success();
             }
-            return ApiResult.Failed(new CommonError());
+            return CommonResult.Failed(new CommonError());
         }
     }
 }

@@ -10,18 +10,18 @@ namespace Api.Auth.Resolvers.Contracts
         ApplicationUser GetLoggedUser(IResolverContext context);
         Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context);
-        Task<IApiResult> SignoutAsync(IResolverContext context);
-        Task<IApiResult> UpdateAvatarAsync(IResolverContext context);
-        Task<IApiResult> UpdateCoverAsync(IResolverContext context);
-        Task<IApiResult> DeleteAvatarAsync(IResolverContext context);
-        Task<IApiResult> DeleteCoverAsync(IResolverContext context);
+        Task<ICommonResult> SignoutAsync(IResolverContext context);
+        Task<ICommonResult> UpdateAvatarAsync(IResolverContext context);
+        Task<ICommonResult> UpdateCoverAsync(IResolverContext context);
+        Task<ICommonResult> DeleteAvatarAsync(IResolverContext context);
+        Task<ICommonResult> DeleteCoverAsync(IResolverContext context);
         Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context);
         Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context);
 
         Task<UserTokenResult> SigninAsync(IResolverContext context);
-        Task<IApiResult> SignupAsync(IResolverContext context);
-        Task<IApiResult> ForgotPasswordAsync(IResolverContext context);
-        Task<IApiResult> ActiveAsync(IResolverContext context);
+        Task<ICommonResult> SignupAsync(IResolverContext context);
+        Task<ICommonResult> ForgotPasswordAsync(IResolverContext context);
+        Task<ICommonResult> ActiveAsync(IResolverContext context);
         Task<UserTokenResult> ResetPasswordAsync(IResolverContext context);
     }
 }

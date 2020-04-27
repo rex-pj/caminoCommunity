@@ -117,23 +117,23 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> SignoutAsync(IResolverContext context)
+        public async Task<ICommonResult> SignoutAsync(IResolverContext context)
         {
             try
             {
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
                 var currentUser = sessionContext.CurrentUser;
 
-                var isLoggedOut = await _loginManager.LogoutAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                var isLoggedOut = await _loginManager.LogoutAsync(currentUser);
                 if (!isLoggedOut)
                 {
-                    return ApiResult.Failed(new CommonError()
+                    return CommonResult.Failed(new CommonError()
                     {
                         Code = ErrorMessageConst.EXCEPTION,
                         Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
                     });
                 }
-                return ApiResult.Success();
+                return CommonResult.Success();
             }
             catch (Exception ex)
             {
@@ -142,7 +142,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> UpdateAvatarAsync(IResolverContext context)
+        public async Task<ICommonResult> UpdateAvatarAsync(IResolverContext context)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace Api.Auth.Resolvers
                 model.UserPhotoType = UserPhotoTypeEnum.Avatar;
                 var result = await _userManager.UpdateAvatarAsync(model, sessionContext.CurrentUser);
 
-                return ApiResult.Success(result);
+                return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
@@ -161,7 +161,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> UpdateCoverAsync(IResolverContext context)
+        public async Task<ICommonResult> UpdateCoverAsync(IResolverContext context)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Api.Auth.Resolvers
                 model.UserPhotoType = UserPhotoTypeEnum.Cover;
                 var result = await _userManager.UpdateCoverAsync(model, sessionContext.CurrentUser);
 
-                return ApiResult.Success(result);
+                return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> DeleteAvatarAsync(IResolverContext context)
+        public async Task<ICommonResult> DeleteAvatarAsync(IResolverContext context)
         {
             try
             {
@@ -193,7 +193,7 @@ namespace Api.Auth.Resolvers
 
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
                 var result = await _userManager.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Avatar);
-                return ApiResult.Success(result);
+                return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
@@ -202,7 +202,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> DeleteCoverAsync(IResolverContext context)
+        public async Task<ICommonResult> DeleteCoverAsync(IResolverContext context)
         {
             try
             {
@@ -215,7 +215,7 @@ namespace Api.Auth.Resolvers
 
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
                 var result = await _userManager.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
-                return ApiResult.Success(result);
+                return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
@@ -291,7 +291,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> SignupAsync(IResolverContext context)
+        public async Task<ICommonResult> SignupAsync(IResolverContext context)
         {
             try
             {
@@ -314,7 +314,7 @@ namespace Api.Auth.Resolvers
                 var result = await _userManager.CreateAsync(user);
                 if (result.IsSucceed)
                 {
-                    var response = result as ApiResult;
+                    var response = result as CommonResult;
                     var userResponse = response.Result as ApplicationUser;
                     var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{userResponse.ActiveUserStamp}";
                     await _emailSender.SendEmailAsync(new MailMessageModel()
@@ -340,7 +340,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> ForgotPasswordAsync(IResolverContext context)
+        public async Task<ICommonResult> ForgotPasswordAsync(IResolverContext context)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace Api.Auth.Resolvers
 
                 var result = await _userManager.ForgotPasswordAsync(criterias.Email);
 
-                var response = result as ApiResult;
+                var response = result as CommonResult;
                 var userResponse = response.Result.ToString();
                 var activeUserUrl = $"{_resetPasswordUrl}/{criterias.Email}/{userResponse}";
                 await _emailSender.SendEmailAsync(new MailMessageModel()
@@ -384,7 +384,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<IApiResult> ActiveAsync(IResolverContext context)
+        public async Task<ICommonResult> ActiveAsync(IResolverContext context)
         {
             try
             {

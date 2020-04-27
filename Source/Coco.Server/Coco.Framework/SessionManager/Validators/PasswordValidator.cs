@@ -33,7 +33,7 @@ namespace Coco.Framework.SessionManager.Validators
         /// <param name="user">The user whose password should be validated.</param>
         /// <param name="password">The password supplied for validation</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public virtual Task<IApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user, string password)
+        public virtual Task<ICommonResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user, string password)
         {
             if (password == null)
             {
@@ -75,8 +75,8 @@ namespace Coco.Framework.SessionManager.Validators
             }
             return
                 Task.FromResult(errors.Count == 0
-                    ? new ApiResult(true)
-                    : ApiResult.Failed(errors.ToArray()));
+                    ? new CommonResult(true)
+                    : CommonResult.Failed(errors.ToArray()));
         }
 
         /// <summary>

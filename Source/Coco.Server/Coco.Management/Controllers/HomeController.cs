@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Coco.Framework.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Coco.Management.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        [AuthenticationSession]
+        public IActionResult Index()
         {
-            _logger = logger;
+            return View();
         }
 
-        public IActionResult Index()
+        public IActionResult Error()
         {
             return View();
         }

@@ -33,7 +33,7 @@ namespace Coco.Framework.SessionManager.Validators
         /// <param name="manager">The <see cref="UserManager{TUser}"/> that can be used to retrieve user properties.</param>
         /// <param name="user">The user to validate.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the validation operation.</returns>
-        public virtual async Task<IApiResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user)
+        public virtual async Task<ICommonResult> ValidateAsync(IUserManager<ApplicationUser> manager, ApplicationUser user)
         {
             if (manager == null)
             {
@@ -52,10 +52,10 @@ namespace Coco.Framework.SessionManager.Validators
 
             if(errors.Count > 0)
             {
-                return ApiResult.Failed(errors.ToArray());
+                return CommonResult.Failed(errors.ToArray());
             }
 
-            return new ApiResult(true);
+            return new CommonResult(true);
         }
 
         private async Task ValidateUserName(IUserManager<ApplicationUser> manager, ApplicationUser user, ICollection<CommonError> errors)

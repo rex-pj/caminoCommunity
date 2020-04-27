@@ -34,17 +34,7 @@ namespace Coco.Framework.SessionManager
         }
         #endregion
 
-        /// <summary>
-        /// Attempts to sign in the specified <paramref name="userName"/> and <paramref name="password"/> combination
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="userName">The user name to sign in.</param>
-        /// <param name="password">The password to attempt to sign in with.</param>
-        /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
-        /// <param name="lockoutOnFailure">Flag indicating if the user user should be locked if the sign in fails.</param>
-        /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
-        /// for the sign-in attempt.</returns>
-        public virtual async Task<IApiResult> LoginAsync(string userName, string password)
+        public virtual async Task<ICommonResult> LoginAsync(string userName, string password, bool canRemember = true)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
@@ -58,18 +48,10 @@ namespace Coco.Framework.SessionManager
                 return result;
             }
 
-            return ApiResult.Failed(Describer.PasswordMismatch());
+            return CommonResult.Failed(Describer.PasswordMismatch());
         }
 
-        /// <summary>
-        /// Attempts a password sign in for a user.
-        /// </summary>
-        /// <param name="user">The user to sign in.</param>
-        /// <param name="password">The password to attempt to sign in with.</param>
-        /// <returns>The task object representing the asynchronous operation containing the <see name="SignInResult"/>
-        /// for the sign-in attempt.</returns>
-        /// <returns></returns>
-        public virtual async Task<IApiResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
+        public virtual async Task<ICommonResult> CheckPasswordSignInAsync(ApplicationUser user, string password)
         {
             if (user == null)
             {
@@ -81,25 +63,24 @@ namespace Coco.Framework.SessionManager
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
-        /// <summary>
-        /// Logout
-        /// </summary>
-        /// <param name="userIdentity">The user id is encrypted</param>
-        /// <param name="authenticationToken">Jwt token</param>
-        /// <returns></returns>
-        public virtual async Task<bool> LogoutAsync(string userIdentityId, string authenticationToken)
+        public virtual async Task<bool> LogoutAsync(ApplicationUser user = null)
         {
-            if (string.IsNullOrEmpty(userIdentityId))
+            if(user == null)
             {
-                throw new ArgumentNullException(nameof(userIdentityId));
+                throw new ArgumentNullException(nameof(user));
             }
 
-            if (string.IsNullOrEmpty(authenticationToken))
+            if (string.IsNullOrEmpty(user.UserIdentityId))
             {
-                throw new ArgumentNullException(nameof(authenticationToken));
+                throw new ArgumentNullException(nameof(user.UserIdentityId));
             }
 
-            return await _userManager.ClearUserLoginAsync(userIdentityId, authenticationToken);
+            if (string.IsNullOrEmpty(user.AuthenticationToken))
+            {
+                throw new ArgumentNullException(nameof(user.AuthenticationToken));
+            }
+
+            return await _userManager.ClearUserLoginAsync(user.UserIdentityId, user.AuthenticationToken);
         }
     }
 }
