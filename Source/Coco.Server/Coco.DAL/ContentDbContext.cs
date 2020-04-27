@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Coco.DAL.MappingConfigs.FarmMappings;
-using Coco.Entities.Domain.Farm;
+using Coco.DAL.MappingConfigs.ArgiMappings;
+using Coco.Entities.Domain.Agri;
 using Coco.Contract;
 using System.Threading.Tasks;
 using Coco.Entities.Base;
+using Coco.Entities.Domain.Content;
+using Coco.DAL.MappingConfigs.ContentMappings;
 
 namespace Coco.DAL
 {
@@ -21,6 +23,8 @@ namespace Coco.DAL
 
         #region DbSets
         public DbSet<Product> Product { get; set; }
+
+        public DbSet<ArticleCategory> ArticleCategory { get; set; }
         #endregion
 
         #region Ctor
@@ -34,6 +38,7 @@ namespace Coco.DAL
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new ProductMappingConfig());
+            modelBuilder.ApplyConfiguration(new ArticleCategoryMappingConfig());
         }
 
         public async Task<int> SaveChangesAsync()

@@ -2,6 +2,8 @@
 using Api.Auth.GraphQLTypes.InputTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using Coco.Framework.Models;
+using Coco.Framework.SessionManager;
+using Coco.Framework.SessionManager.Contracts;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,13 +14,13 @@ namespace Api.Auth.Infrastructure.Extensions
         public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
         {
             services.AddAuthentication();
-
+            services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
             return services
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)
                 .AddQueryType<QueryType>()
                 .AddMutationType<MutationType>()
-                .AddType<ApiErrorType>()
+                .AddType<CommonErrorType>()
                 .AddType<UpdatePerItemInputType>()
                 .AddType<SelectOptionType>()
                 .AddType<FindUserInputType>()
@@ -31,7 +33,7 @@ namespace Api.Auth.Infrastructure.Extensions
                 .AddType<AccessModeEnumType>()
                 .AddType<ActiveUserInputType>()
                 .AddType<ForgotPasswordInputType>()
-                .AddType<IApiResult>()
+                .AddType<ICommonResult>()
                 .Create());
         }
     }

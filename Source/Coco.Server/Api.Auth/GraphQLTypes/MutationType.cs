@@ -31,32 +31,32 @@ namespace Api.Auth.GraphQLTypes
                 .Resolver(ctx => ctx.Service<IUserResolver>().UpdatePasswordAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.UpdateAvatarAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().UpdateAvatarAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.UpdateCoverAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().UpdateCoverAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.DeleteAvatarAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().DeleteAvatarAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.DeleteCoverAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().DeleteCoverAsync(ctx));
 
             // Public mutation
             descriptor.Field<IUserResolver>(x => x.SignupAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Argument("criterias", a => a.Type<SignupInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().SignupAsync(ctx));
 
@@ -66,7 +66,7 @@ namespace Api.Auth.GraphQLTypes
                 .Resolver(ctx => ctx.Service<IUserResolver>().SigninAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.ForgotPasswordAsync(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Argument("criterias", a => a.Type<NonNullType<ForgotPasswordInputType>>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().ForgotPasswordAsync(ctx));
 

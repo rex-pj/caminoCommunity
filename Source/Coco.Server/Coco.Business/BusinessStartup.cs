@@ -6,13 +6,16 @@ using Coco.DAL.Implementations;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
-using Coco.Entities.Domain.Farm;
+using Coco.Entities.Domain.Agri;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
+using Coco.Entities.Domain.Content;
+using AutoMapper;
+using Coco.Business.MappingProfiles;
 
 namespace Coco.Business
 {
@@ -34,7 +37,8 @@ namespace Coco.Business
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
                 .AddTransient<IRoleBusiness, RoleBusiness>()
-                .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>();
+                .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>()
+                .AddTransient<IArticleCategoryBusiness, ArticleCategoryBusiness>();
 
             services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
@@ -44,6 +48,7 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserAttribute>, EfIdentityRepository<UserAttribute>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
+                .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()
                 .AddTransient<ValidationStrategyContext>();
 
             _dalStartup.RegiserTypes(services);

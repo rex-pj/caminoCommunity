@@ -10,7 +10,7 @@ namespace Api.Resource.GraphQLTypes
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
             descriptor.Field<IImageResolver>(x => x.ValidateImageUrl(default))
-                .Type<ApiResultType>()
+                .Type<CommonResultType>()
                 .Argument("criterias", a => a.Type<ImageValidationInputType>())
                 .Resolver(ctx => ctx.Service<IImageResolver>().ValidateImageUrl(ctx));
         }

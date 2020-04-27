@@ -11,13 +11,13 @@ namespace Coco.Framework.SessionManager.Contracts
     public interface IUserManager<TUser> : IDisposable where TUser : class
     {
         IdentityOptions Options { get; set; }
-        Task<IApiResult> CreateAsync(TUser user);
+        Task<ICommonResult> CreateAsync(TUser user);
         string GetUserNameAsync(TUser user);
         Task<string> GetEmailAsync(TUser user);
         Task<TUser> FindByEmailAsync(string email);
         Task<TUser> FindByNameAsync(string userName);
         Task<string> GetUserIdAsync(TUser user);
-        Task<IApiResult> CheckPasswordAsync(TUser user, string password);
+        Task<ICommonResult> CheckPasswordAsync(TUser user, string password);
         TUser GetLoggingUser(string userIdentityId, string authenticationToken);
         Task<UserFullDto> FindUserByIdentityIdAsync(string userIdentityId, string authenticationToken = null);
         Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel model, string userIdentityId, string token);
@@ -27,9 +27,9 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user, string userIdentityId, string token);
         Task<UserTokenResult> ChangePasswordAsync(long userId, string currentPassword, string newPassword);
         Task<UserTokenResult> ResetPasswordAsync(ResetPasswordModel model, long userId);
-        Task<IApiResult> ForgotPasswordAsync(string email);
+        Task<ICommonResult> ForgotPasswordAsync(string email);
         Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
         Task<bool> ClearUserLoginAsync(string userIdentityId, string authenticationToken);
-        Task<IApiResult> ActiveAsync(string email, string activeKey);
+        Task<ICommonResult> ActiveAsync(string email, string activeKey);
     }
 }

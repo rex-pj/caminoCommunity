@@ -1,16 +1,16 @@
-﻿using Coco.Entities.Base;
-using System;
+﻿using System;
 
-namespace Coco.Entities.Domain.Farm
+namespace Coco.Management.Models
 {
-    public class Product : BaseEntity
+    public class ArticleCategoryViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public long UpdateById { get; set; }
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
-        public DateTime UpdatedDate { get; set; }
-        public long UpdatedById { get; set; }
+        public int? ParentCategoryId { get; set; }
     }
 }

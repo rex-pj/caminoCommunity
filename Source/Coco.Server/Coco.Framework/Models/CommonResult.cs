@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Coco.Framework.Models
 {
-    public interface IApiResult<TResult>
+    public interface ICommonResult<TResult>
     {
         AccessModeEnum AccessMode { get; set; }
         bool IsSucceed { get; set; }
@@ -12,44 +12,44 @@ namespace Coco.Framework.Models
         List<CommonError> Errors { get; set; }
     }
 
-    public interface IApiResult : IApiResult<object>
+    public interface ICommonResult : ICommonResult<object>
     {
     }
 
-    public class ApiResult : ApiResult<object>, IApiResult
+    public class CommonResult : CommonResult<object>, ICommonResult
     {
-        public ApiResult() : this(false)
+        public CommonResult() : this(false)
         {
 
         }
 
-        public ApiResult(bool isSucceed = false)
+        public CommonResult(bool isSucceed = false)
         {
             IsSucceed = isSucceed;
             Errors = new List<CommonError>();
         }
     }
 
-    public class ApiResult<TResult> : IApiResult<TResult>
+    public class CommonResult<TResult> : ICommonResult<TResult>
     {
         public AccessModeEnum AccessMode { get; set; }
         public bool IsSucceed { get; set; }
         public List<CommonError> Errors { get; set; }
         public TResult Result { get; set; }
 
-        public static IApiResult Success()
+        public static ICommonResult Success()
         {
-            return new ApiResult(true);
+            return new CommonResult(true);
         }
 
-        public static IApiResult Success(TResult result)
+        public static ICommonResult Success(TResult result)
         {
             var updateResult = Success();
             updateResult.Result = result;
             return updateResult;
         }
 
-        public static IApiResult Success(TResult result, bool canEdit)
+        public static ICommonResult Success(TResult result, bool canEdit)
         {
             var accessMode = canEdit ? AccessModeEnum.CanEdit : AccessModeEnum.ReadOnly;
             var updateResult = Success(result);
@@ -57,9 +57,9 @@ namespace Coco.Framework.Models
             return updateResult;
         }
 
-        public static IApiResult Failed(CommonError[] errors)
+        public static ICommonResult Failed(CommonError[] errors)
         {
-            var result = new ApiResult();
+            var result = new CommonResult();
             if (errors != null)
             {
                 result.Errors.AddRange(errors);
@@ -67,7 +67,7 @@ namespace Coco.Framework.Models
             return result;
         }
 
-        public static IApiResult Failed(CommonError error)
+        public static ICommonResult Failed(CommonError error)
         {
             return Failed(new CommonError[] { error });
         }

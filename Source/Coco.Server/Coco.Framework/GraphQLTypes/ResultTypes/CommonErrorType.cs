@@ -3,7 +3,7 @@ using HotChocolate.Types;
 
 namespace Coco.Framework.GraphQLTypes.ResultTypes
 {
-    public class ApiErrorType : ObjectType<CommonError>
+    public class CommonErrorType : ObjectType<CommonError>
     {
         protected override void Configure(IObjectTypeDescriptor<CommonError> descriptor)
         {

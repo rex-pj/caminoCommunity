@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace Coco.Framework.Attributes
 {
-    public class AuthenticationUserAttribute : TypeFilterAttribute
+    public class AuthenticationTokenAttribute : TypeFilterAttribute
     {
         #region Properties
         public bool IgnoreFilter { get; }
         #endregion
 
-        public AuthenticationUserAttribute(bool isIgnore = false) : base(typeof(AuthenticationFilter))
+        public AuthenticationTokenAttribute(bool isIgnore = false) : base(typeof(AuthenticationFilter))
         {
             this.IgnoreFilter = isIgnore;
             this.Arguments = new object[] { isIgnore };
@@ -48,7 +48,7 @@ namespace Coco.Framework.Attributes
                     .FirstOrDefault(x => x.Scope == FilterScope.Action)
                     .Filter;
 
-                var authenticationFilter = actionFilter as AuthenticationUserAttribute;
+                var authenticationFilter = actionFilter as AuthenticationTokenAttribute;
                 if (authenticationFilter != null && authenticationFilter.IgnoreFilter && _ignoreFilter)
                 {
                     return;

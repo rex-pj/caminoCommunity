@@ -5,6 +5,6 @@ namespace Api.Public.Resolvers.Contracts
 {
     public interface IImageResolver
     {
-        IApiResult ValidateImageUrl(IResolverContext context);
+        ICommonResult ValidateImageUrl(IResolverContext context);
     }
 }

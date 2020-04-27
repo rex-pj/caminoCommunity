@@ -1,9 +1,9 @@
 ﻿using Coco.Entities.Constant;
-using Coco.Entities.Domain.Farm;
+using Coco.Entities.Domain.Agri;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.DAL.MappingConfigs.FarmMappings
+namespace Coco.DAL.MappingConfigs.ArgiMappings
 {
     public class ProductMappingConfig : IEntityTypeConfiguration<Product>
     {

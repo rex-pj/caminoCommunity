@@ -28,7 +28,6 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IPasswordValidator<ApplicationUser>, PasswordValidator>()
                 .AddTransient<IUserValidator<ApplicationUser>, UserValidator>()
                 .AddTransient<IUserManager<ApplicationUser>, UserManager>()
-                .AddTransient<ILoginManager<ApplicationUser>, LoginManager>()
                 .AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
                 .AddTransient<IUserStore<ApplicationUser>, UserStore>()
