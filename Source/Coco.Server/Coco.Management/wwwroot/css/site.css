@@ -29,11 +29,39 @@ body {
     margin-right: 8px;
 }
 
+/* Nav tab
+-------------------------------------------------- */
+#navTab {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-top: 8px;
+}
+
+#navTab .nav-link {
+    font-weight: 600;
+    color: #f68c1f;
+    color: #495057
+}
+
+#navTab .nav-item:first-child .nav-link {
+    border-top-left-radius: 0;
+}
+
+#navTab .nav-link.active {
+    background-color: #f4f7f6;
+    border-bottom: 1px solid #f4f7f6;
+    color: #f68c1f;
+}
+
+#navTabContent .tab-pane{
+    padding-top: 15px;
+}
 /* Nav tools
 -------------------------------------------------- */
 .nav-tool {
     height: 100%;
     margin-left: -15px;
+    margin-right: -15px;
 }
 
 .nav-tool .nav-tool-item > a {

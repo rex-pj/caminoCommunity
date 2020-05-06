@@ -1,4 +1,5 @@
 ﻿using Coco.Entities.Base;
+using Coco.Entities.Domain.Content;
 using Coco.Entities.Domain.Dbo;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
 ﻿using Coco.Entities.Dtos.Auth;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Coco.Business.Contracts
 {
@@ -9,5 +11,6 @@ namespace Coco.Business.Contracts
         RoleDto Find(byte id);
         RoleDto GetByName(string name);
         bool Update(RoleDto roleModel);
+        Task<List<RoleDto>> GetAsync();
     }
 }

@@ -12,6 +12,11 @@ namespace Coco.DAL.MappingConfigs.ContentMappings
             builder.ToTable("Category", TableSchemaConst.CONTENT);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            builder.HasOne(x => x.ParentCategory)
+                .WithMany(x => x.ChildCategories)
+                .HasForeignKey(x => x.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

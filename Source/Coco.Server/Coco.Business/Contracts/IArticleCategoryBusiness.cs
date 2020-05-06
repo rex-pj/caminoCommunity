@@ -1,13 +1,16 @@
-﻿using Coco.Entities.Dtos.Content;
+﻿using Coco.Entities.Domain.Content;
+using Coco.Entities.Dtos.Content;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Coco.Business.Contracts
 {
     public interface IArticleCategoryBusiness
     {
         ArticleCategoryDto Find(int id);
-        Task<List<ArticleCategoryDto>> GetAsync();
+        List<ArticleCategoryDto> GetFull();
+        List<ArticleCategoryDto> Get(Expression<Func<ArticleCategory, bool>> filter);
         public long Add(ArticleCategoryDto category);
         ArticleCategoryDto Update(ArticleCategoryDto category);
     }

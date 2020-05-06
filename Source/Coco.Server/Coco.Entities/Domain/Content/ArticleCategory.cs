@@ -1,5 +1,6 @@
 ﻿using Coco.Entities.Base;
 using System;
+using System.Collections.Generic;
 
 namespace Coco.Entities.Domain.Content
 {
@@ -13,5 +14,7 @@ namespace Coco.Entities.Domain.Content
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public int? ParentCategoryId { get; set; }
+        public virtual ArticleCategory ParentCategory { get; set; }
+        public virtual ICollection<ArticleCategory> ChildCategories { get; set; }
     }
 }

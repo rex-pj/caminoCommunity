@@ -1,6 +1,7 @@
 ﻿using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.General;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Coco.Business.Contracts
 {
@@ -17,5 +18,6 @@ namespace Coco.Business.Contracts
         Task<UpdatePerItemDto> UpdateInfoItemAsync(UpdatePerItemDto model);
         Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model);
         Task<bool> ActiveAsync(long id);
+        List<UserFullDto> GetFull();
     }
 }

@@ -1,0 +1,41 @@
+﻿@using Coco.Management.Models
+@model PagerViewModel<RoleViewModel>
+@{
+    ViewData["Title"] = "Role management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card-header bg-secondary text-light">
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-light">
+                <th scope="col">#</th>
+                <th scope="col">Role</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Collections.Any())
+            {
+                var index = 1;
+                foreach (var role in Model.Collections)
+                {
+                    <tr>
+                        <th>@index</th>
+                        <td>@role.Name</td>
+                        <td>@role.Description</td>
+                    </tr>
+                    index += 1;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

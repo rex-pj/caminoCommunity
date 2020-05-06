@@ -1,8 +1,60 @@
-﻿
+﻿@using Coco.Management.Models
+@model PagerViewModel<ArticleCategoryViewModel>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Article categories management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Index</h1>
-
+<div class="card-header bg-secondary text-light">
+    <a asp-action="Create" asp-controller="ArticleCategory" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-light">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Created</th>
+                <th scope="col">Updated</th>
+                <th scope="col">Tools</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Collections.Any())
+            {
+                foreach (var cate in Model.Collections)
+                {
+                    <tr>
+                        <th>@cate.Id</th>
+                        <td>
+                            <a asp-action="Detail" asp-controller="ArticleCategory" asp-route-id="@cate.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@cate.Description">
+                                @cate.Name
+                            </a>
+                        </td>
+                        <td>
+                            <div>@cate.CreatedDate.ToLongDateString()</div>
+                            <p class="text-muted">by: @cate.CreatedBy</p>
+                        </td>
+                        <td>
+                            <div>@cate.UpdatedDate.ToLongDateString()</div>
+                            <p class="text-muted">by: @cate.UpdatedBy</p>
+                        </td>
+                        <td>
+                            <a asp-action="Update" asp-controller="ArticleCategory" asp-route-id="@cate.Id" class="btn btn-sm btn-outline-dark">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
