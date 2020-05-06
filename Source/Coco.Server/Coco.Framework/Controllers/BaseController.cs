@@ -2,12 +2,20 @@
 
 namespace Coco.Framework.Controllers
 {
-    public class BaseController : ControllerBase
+    public class BaseController : Controller
     {
-        #region Ctor
         public BaseController()
         {
         }
-        #endregion
+
+        public IActionResult RedirectToErrorPage()
+        {
+            return RedirectToAction("Error", "Home");
+        }
+
+        public IActionResult RedirectToNotFoundPage()
+        {
+            return RedirectToAction("PageNotFound", "Home");
+        }
     }
 }

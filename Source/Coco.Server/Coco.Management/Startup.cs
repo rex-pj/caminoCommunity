@@ -34,12 +34,18 @@ namespace Coco.Management
             InvokeInitialStartup(services);
 
             services.AddAuthentication(IdentityConstants.ApplicationScheme).AddCookie(IdentityConstants.ApplicationScheme);
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
         }
 
         private void InvokeInitialStartup(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(ArticleCategoryMappingProfile), typeof(UserMappingProfile));
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), 
+                typeof(ArticleCategoryMappingProfile), 
+                typeof(UserMappingProfile), 
+                typeof(RoleMappingProfile),
+                typeof(AuthMappingProfile));
+
             services.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser>>();
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);

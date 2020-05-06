@@ -2,11 +2,11 @@
 {
     public class TableSchemaConst
     {
-        public static readonly string DBO = "dbo";
-        public static readonly string AGRICULTURE = "agri";
-        public static readonly string AUTH = "auth";
-        public static readonly string CMDB = "cmdb";
-        public static readonly string CONTENT = "content";
-        public static readonly string WORK = "work";
+        public const string DBO = "dbo";
+        public const string AGRICULTURE = "agri";
+        public const string AUTH = "auth";
+        public const string CMDB = "cmdb";
+        public const string CONTENT = "content";
+        public const string WORK = "work";
     }
 }

@@ -4,9 +4,11 @@ using Coco.Entities.Dtos.Content;
 using Coco.Framework.Controllers;
 using Coco.Management.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Coco.Management.Controllers
 {
@@ -20,22 +22,54 @@ namespace Coco.Management.Controllers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var categories = await _articleCategoryBusiness.GetAsync();
-            var model = _mapper.Map<List<ArticleCategoryViewModel>>(categories);
-            return View(model);
+            var categories = _articleCategoryBusiness.GetFull();
+            var categoryModels = _mapper.Map<List<ArticleCategoryViewModel>>(categories);
+            var categoryPage = new PagerViewModel<ArticleCategoryViewModel>(categoryModels);
+
+            return View(categoryPage);
         }
 
-        public IActionResult Detail()
+        public IActionResult Detail(int id)
         {
-            return View();
+            if (id <= 0)
+            {
+                return RedirectToNotFoundPage();
+            }
+
+            try
+            {
+                var category = _articleCategoryBusiness.Find(id);
+                if (category == null)
+                {
+                    return RedirectToNotFoundPage();
+                }
+
+                var model = _mapper.Map<ArticleCategoryViewModel>(category);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return RedirectToErrorPage();
+            }
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var model = new ArticleCategoryViewModel()
+            {
+                SelectCategories = _articleCategoryBusiness
+                .Get(x => !x.ParentCategoryId.HasValue)
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                })
+            };
+
+            return View(model);
         }
 
         [HttpGet]
@@ -43,6 +77,19 @@ namespace Coco.Management.Controllers
         {
             var category = _articleCategoryBusiness.Find(id);
             var model = _mapper.Map<ArticleCategoryViewModel>(category);
+
+            if (category.ParentCategoryId.HasValue)
+            {
+                model.SelectCategories = _articleCategoryBusiness
+                .Get(x => x.Id != id && !x.ParentCategoryId.HasValue)
+                .Where(x => x.Id != id)
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                });
+            }            
+
             return View(model);
         }
 

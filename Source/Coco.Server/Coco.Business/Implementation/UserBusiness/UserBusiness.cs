@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Coco.Entities.Enums;
+using System.Collections.Generic;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -174,6 +175,29 @@ namespace Coco.Business.Implementation.UserBusiness
                 .FirstOrDefaultAsync();
 
             return existUser;
+        }
+
+        public List<UserFullDto> GetFull()
+        {
+            var users = _userRepository.Get()
+                .Select(x => new UserFullDto() {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Address = x.UserInfo.Address,
+                    AvatarUrl = x.UserInfo.AvatarUrl,
+                    Lastname = x.Lastname,
+                    Firstname = x.Firstname,
+                    BirthDate = x.UserInfo.BirthDate,
+                    IsEmailConfirmed = x.IsEmailConfirmed,
+                    PhoneNumber = x.UserInfo.PhoneNumber,
+                    GenderLabel = x.UserInfo.Gender.Name,
+                    IsActived = x.IsActived,
+                    StatusLabel = x.Status.Name,
+                    CountryName = x.UserInfo.Country.Name
+                })
+                .ToList();
+
+            return users;
         }
         #endregion
     }

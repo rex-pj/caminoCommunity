@@ -11,5 +11,8 @@
         public const string FARM_GROUP_TYPE = "FarmGroupType";
         public const string PRODUCT = "Product";
         public const string PRODUCT_CATEGORY = "ProductCategory";
+        public const string USER = "User";
+        public const string ROLE = "Role";
+        public const string PERMISSION = "Permission";
     }
 }

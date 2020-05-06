@@ -1,9 +1,10 @@
 ﻿using Coco.Framework.Attributes;
+using Coco.Framework.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Coco.Management.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseAuthController
     {
         [AuthenticationSession]
         public IActionResult Index()
@@ -12,6 +13,11 @@ namespace Coco.Management.Controllers
         }
 
         public IActionResult Error()
+        {
+            return View();
+        }
+
+        public IActionResult PageNotFound()
         {
             return View();
         }

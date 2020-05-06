@@ -27,7 +27,9 @@ namespace Coco.IdentityDAL.Implementations
             get
             {
                 if (_dbSet == null)
+                {
                     _dbSet = _dbContext.Set<TEntity>();
+                }
 
                 return _dbSet;
             }
@@ -38,7 +40,7 @@ namespace Coco.IdentityDAL.Implementations
 
         public EfIdentityRepository(IdentityDbContext context)
         {
-            this._dbContext = context;
+            _dbContext = context;
         }
         #endregion
 

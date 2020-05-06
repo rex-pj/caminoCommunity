@@ -8,14 +8,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("DocumentHead", required: false)
 </head>
 <body>
     <div class="container">
-        <div class="card main box-shadow">
-            <div class="card-body">
-                @RenderBody()
-            </div>
-        </div>
+        @RenderBody()
     </div>
 
     <partial name="_Footer" />

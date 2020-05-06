@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Coco.DAL.MappingConfigs.ArgiMappings;
 using Coco.Entities.Domain.Agri;
 using Coco.Contract;
 using System.Threading.Tasks;
 using Coco.Entities.Base;
 using Coco.Entities.Domain.Content;
-using Coco.DAL.MappingConfigs.ContentMappings;
 
 namespace Coco.DAL
 {
@@ -35,10 +33,13 @@ namespace Coco.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ArticleCategory>()
+                .HasOne(x => x.ParentCategory)
+                .WithMany(x => x.ChildCategories)
+                .HasForeignKey(x => x.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.ApplyConfiguration(new ProductMappingConfig());
-            modelBuilder.ApplyConfiguration(new ArticleCategoryMappingConfig());
+            base.OnModelCreating(modelBuilder);
         }
 
         public async Task<int> SaveChangesAsync()
