@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Coco.IdentityDAL.MappingConfigs;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
@@ -40,18 +39,6 @@ namespace Coco.IdentityDAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfiguration(new GenderMappingConfig())
-                .ApplyConfiguration(new StatusMappingConfig())
-                .ApplyConfiguration(new UserPhotoMappingConfig())
-                .ApplyConfiguration(new UserInfoMappingConfig())
-                .ApplyConfiguration(new UserMappingConfig())
-                .ApplyConfiguration(new UserAttributeMappingConfig())
-                .ApplyConfiguration(new RoleMappingConfig())
-                .ApplyConfiguration(new UserRoleMappingConfig())
-                .ApplyConfiguration(new CountryMappingConfig())
-                .ApplyConfiguration(new CareerMappingConfig())
-                .ApplyConfiguration(new UserCareerMappingConfig());
         }
 
         public async Task<int> SaveChangesAsync()

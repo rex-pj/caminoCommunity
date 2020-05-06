@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Management.Models
 {
@@ -12,7 +13,12 @@ namespace Coco.Management.Models
         }
 
         public int Id { get; set; }
+        
+        [Required(AllowEmptyStrings = false)]
+        [MaxLength(255)]
         public string Name { get; set; }
+        
+        [MaxLength(1000)]
         public string Description { get; set; }
         public DateTime UpdatedDate { get; set; }
         public long UpdateById { get; set; }
