@@ -32,10 +32,8 @@ namespace Coco.Entities.Domain.Identity
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         
-        [ForeignKey("CreatedBy")]
         public long? CreatedById { get; set; }
         
-        [ForeignKey("UpdatedBy")]
         public long? UpdatedById { get; set; }
         public bool IsActived { get; set; }
 
@@ -47,16 +45,12 @@ namespace Coco.Entities.Domain.Identity
         public virtual UserInfo UserInfo { get; set; }
         public virtual Status Status { get; set; }
 
-        [ForeignKey("CreatedById")]
         public virtual ICollection<User> CreatedUsers { get; set; }
 
-        [ForeignKey("UpdatedById")]
         public virtual ICollection<User> UpdatedUsers { get; set; }
 
-        [ForeignKey("UserId")]
         public virtual ICollection<UserCareer> UserCareers { get; set; }
 
-        [ForeignKey("UserId")]
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

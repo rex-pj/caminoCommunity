@@ -33,6 +33,12 @@ namespace Coco.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ArticleCategory>()
+                .HasOne(x => x.ParentCategory)
+                .WithMany(x => x.ChildCategories)
+                .HasForeignKey(x => x.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
 

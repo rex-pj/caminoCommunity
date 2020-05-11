@@ -9,12 +9,10 @@ namespace Coco.Entities.Domain.Work
     [Table(nameof(UserCareer), Schema = TableSchemaConst.DBO)]
     public class UserCareer : BaseEntity
     {
-        [Key]
         [ForeignKey("Career")]
         public byte CareerId { get; set; }
 
-        [Key]
-        [ForeignKey("Career")]
+        [ForeignKey("User")]
         public long UserId { get; set; }
 
         public virtual Career Career { get; set; }

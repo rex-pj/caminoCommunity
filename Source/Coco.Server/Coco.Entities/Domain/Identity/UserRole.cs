@@ -9,11 +9,9 @@ namespace Coco.Entities.Domain.Auth
     [Table(nameof(UserRole), Schema = TableSchemaConst.DBO)]
     public class UserRole : BaseEntity
     {
-        [Key]
         [ForeignKey("User")]
         public long UserId { get; set; }
         
-        [Key]
         [ForeignKey("Role")]
         public byte RoleId { get; set; }
 

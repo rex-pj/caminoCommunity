@@ -20,10 +20,11 @@ namespace Coco.Entities.Domain.Dbo
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string ImageData { get; set; }
+
+        [ForeignKey("UserInfo")]
         public long UserId { get; set; }
         public byte TypeId { get; set; }
 
-        [ForeignKey("UserId")]
         public virtual UserInfo UserInfo { get; set; }
     }
 }
