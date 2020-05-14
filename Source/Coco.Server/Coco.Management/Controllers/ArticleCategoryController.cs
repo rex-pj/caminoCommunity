@@ -13,7 +13,6 @@ using System.Linq;
 
 namespace Coco.Management.Controllers
 {
-    [SessionAuthorization(Policy = "CanEditCategory")]
     public class ArticleCategoryController : BaseAuthController
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;

@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain.Auth;
-using Coco.Framework.Models;
+﻿using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -16,6 +15,8 @@ namespace Coco.Framework.Attributes
         public bool IgnoreFilter;
         public string Policy;
         public string Roles;
+        private string[] _roles;
+
         public SessionAuthorizationAttribute(bool ignoreFilter = false, string policy = "", string roles = "")
         {
             IgnoreFilter = ignoreFilter;
@@ -31,7 +32,6 @@ namespace Coco.Framework.Attributes
             }
 
             var filterDescriptors = filterContext.ActionDescriptor.FilterDescriptors;
-
             //check whether this filter has been overridden for the action
             var actionFilter = filterDescriptors
                 .FirstOrDefault(x => x.Scope == FilterScope.Action || x.Scope == FilterScope.Controller)
@@ -51,13 +51,34 @@ namespace Coco.Framework.Attributes
             var userPrincipalId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedUserId = long.Parse(userPrincipalId);
             var userManager = httpContext.RequestServices.GetRequiredService<IUserManager<ApplicationUser>>();
+            
             var userPolicy = await userManager.GetRoleAuthorizationsAsync(loggedUserId);
+            if(userPolicy == null)
+            {
+                filterContext.Result = new RedirectResult("/Authentication/Logout");
+            }
 
+            if (!string.IsNullOrEmpty(Roles))
+            {
+                _roles = Roles.Trim().Split(",");
+            }
+
+            if (_roles.Any())
+            {
+                foreach (var role in _roles)
+                {
+                    if (userPolicy.Roles.Any(x => x.Name == role))
+                    {
+                        return;
+                    }
+                }
+            }
+            
             var isUserHasPolicy = userPolicy.AuthorizationPolicies.Any(x => x.Name == Policy);
             var isRoleHasPolicy = userPolicy.Roles.Any(x => x.AuthorizationPolicies.Any(a => a.Name == Policy));
             if (!isUserHasPolicy && !isRoleHasPolicy)
             {
-                filterContext.Result = new RedirectResult("/Authentication/Login");
+                filterContext.Result = new RedirectResult("/Authentication/Logout");
             }
         }
     }
