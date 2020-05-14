@@ -9,8 +9,10 @@ namespace Coco.Business.Contracts
         byte Add(RoleDto roleModel);
         bool Delete(byte id);
         RoleDto Find(byte id);
-        RoleDto GetByName(string name);
+        Task<RoleDto> GetByNameAsync(string name);
         bool Update(RoleDto roleModel);
         Task<List<RoleDto>> GetAsync();
+        RoleDto FindByName(string name);
+        List<RoleDto> Search(string query = "", int page = 1, int pageSize = 10);
     }
 }

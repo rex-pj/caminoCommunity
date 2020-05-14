@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
-using Coco.Framework.MappingProfiles;
+using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Business.MappingProfiles;
 using Coco.Framework.Infrastructure;
 using Coco.Framework.Infrastructure.Extensions;
@@ -56,7 +56,7 @@ namespace Api.Auth
 
         private void InvokeInitialStartup(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 

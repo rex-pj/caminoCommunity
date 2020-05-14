@@ -148,7 +148,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var photoType = (byte)type;
             var userPhoto = _userPhotoRepository
-                .GetAsNoTracking(x => x.Code.Equals(code) && x.TypeId.Equals(photoType))
+                .Get(x => x.Code.Equals(code) && x.TypeId.Equals(photoType))
                 .Select(x => new UserPhotoDto()
                 {
                     Code = x.Code,

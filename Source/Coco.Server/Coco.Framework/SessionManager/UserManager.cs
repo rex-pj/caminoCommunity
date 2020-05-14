@@ -96,13 +96,6 @@ namespace Coco.Framework.SessionManager
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Updates a user's password hash.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="newPassword">The new password.</param>
-        /// <param name="validatePassword">Whether to validate the password.</param>
-        /// <returns>Whether the password has was successfully updated.</returns>
         protected virtual async Task<bool> UpdatePasswordHash(ApplicationUser user, string newPassword, bool validatePassword = true)
         {
             if (validatePassword)
@@ -127,13 +120,6 @@ namespace Coco.Framework.SessionManager
             return true;
         }
 
-        /// <summary>
-        /// Should return <see cref="CommonResult.Success"/> if validation is successful. This is
-        /// called before updating the password hash.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="password">The password.</param>
-        /// <returns>A <see cref="CommonResult"/> representing whether validation was successful.</returns>
         protected async Task<bool> ValidatePasswordAsync(ApplicationUser user, string password)
         {
             var errors = new List<CommonError>();
@@ -159,11 +145,6 @@ namespace Coco.Framework.SessionManager
             return true;
         }
 
-        /// <summary>
-        /// Gets the email address for the specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose email should be returned.</param>
-        /// <returns>The task object containing the results of the asynchronous operation, the email address for the specified <paramref name="user"/>.</returns>
         public virtual async Task<string> GetEmailAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
@@ -174,31 +155,16 @@ namespace Coco.Framework.SessionManager
             return await UserEmailStore.GetEmailAsync(user);
         }
 
-        /// <summary>
-        /// Normalize user or role name for consistent comparisons.
-        /// </summary>
-        /// <param name="name">The name to normalize.</param>
-        /// <returns>A normalized value representing the specified <paramref name="name"/>.</returns>
         public virtual string NormalizeName(string name)
         {
             return (_lookupNormalizer == null) ? name : _lookupNormalizer.NormalizeName(name);
         }
 
-        /// <summary>
-        /// Normalize email for consistent comparisons.
-        /// </summary>
-        /// <param name="email">The email to normalize.</param>
-        /// <returns>A normalized value representing the specified <paramref name="email"/>.</returns>
         public virtual string NormalizeEmail(string email)
         {
             return (_lookupNormalizer == null) ? email : _lookupNormalizer.NormalizeEmail(email);
         }
 
-        /// <summary>
-        /// Gets the user name for the specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose name should be retrieved.</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the name for the specified <paramref name="user"/>.</returns>
         public virtual string GetUserNameAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
@@ -209,15 +175,6 @@ namespace Coco.Framework.SessionManager
             return UserStore.GetUserNameAsync(user);
         }
 
-        /// <summary>
-        /// Gets the user, if any, associated with the normalized value of the specified email address.
-        /// Note: Its recommended that identityOptions.User.RequireUniqueEmail be set to true when using this method, otherwise
-        /// the store may throw if there are users with duplicate emails.
-        /// </summary>
-        /// <param name="email">The email address to return the user for.</param>
-        /// <returns>
-        /// The task object containing the results of the asynchronous lookup operation, the user, if any, associated with a normalized value of the specified email address.
-        /// </returns>
         public virtual async Task<ApplicationUser> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
@@ -231,13 +188,6 @@ namespace Coco.Framework.SessionManager
             return user;
         }
 
-        /// <summary>
-        /// Finds and returns a user, if any, who has the specified user name.
-        /// </summary>
-        /// <param name="userName">The user name to search for.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="userName"/> if it exists.
-        /// </returns>
         public virtual async Task<ApplicationUser> FindByNameAsync(string userName)
         {
             ThrowIfDisposed();
@@ -252,15 +202,6 @@ namespace Coco.Framework.SessionManager
             return user;
         }
 
-        /// <summary>
-        /// Gets a flag indicating whether the email address for the specified <paramref name="user"/> has been verified, true if the email address is verified otherwise
-        /// false.
-        /// </summary>
-        /// <param name="user">The user whose email confirmation status should be returned.</param>
-        /// <returns>
-        /// The task object containing the results of the asynchronous operation, a flag indicating whether the email address for the specified <paramref name="user"/>
-        /// has been confirmed or not.
-        /// </returns>
         public virtual async Task<bool> IsEmailConfirmedAsync(ApplicationUser user)
         {
             ThrowIfDisposed();
@@ -365,15 +306,6 @@ namespace Coco.Framework.SessionManager
             return await UserStore.GetUserIdAsync(user);
         }
 
-        /// <summary>
-        /// Returns a flag indicating whether the given <paramref name="password"/> is valid for the
-        /// specified <paramref name="user"/>.
-        /// </summary>
-        /// <param name="user">The user whose password should be validated.</param>
-        /// <param name="password">The password to validate</param>
-        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
-        /// the specified <paramref name="password" /> matches the one store for the <paramref name="user"/>,
-        /// otherwise false.</returns>
         public virtual async Task<ICommonResult> CheckPasswordAsync(ApplicationUser user, string password)
         {
             ThrowIfDisposed();
@@ -415,11 +347,6 @@ namespace Coco.Framework.SessionManager
             user.AuthenticationToken = new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        /// <summary>
-        /// Called to update the user after validating and updating the normalized email/user name.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>Whether the operation was successful.</returns>
         protected virtual async Task<ICommonResult> UpdateAuthenticationAsync(ApplicationUser user)
         {
             var result = await ValidateUserAsync(user);
@@ -431,16 +358,6 @@ namespace Coco.Framework.SessionManager
             return await UserStore.UpdateAuthenticationAsync(user);
         }
 
-        /// <summary>
-        /// Returns a <see cref="PasswordVerificationResult"/> indicating the result of a password hash comparison.
-        /// </summary>
-        /// <param name="store">The store containing a user's password.</param>
-        /// <param name="user">The user whose password should be verified.</param>
-        /// <param name="password">The password to verify.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="PasswordVerificationResult"/>
-        /// of the operation.
-        /// </returns>
         protected virtual async Task<PasswordVerificationResult> VerifyPasswordAsync(ApplicationUser user, string password)
         {
             var hash = await UserPasswordStore.GetPasswordHashAsync(user);
@@ -453,18 +370,20 @@ namespace Coco.Framework.SessionManager
             return _passwordHasher.VerifyHashedPassword(user, hash, passwordSalted);
         }
 
+        public virtual async Task<List<string>> GetRolesAsync(ApplicationUser user)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            var userRoles = await UserStore.GetUserRolesAsync(user);
+            return userRoles.ConvertAll(x => x.RoleName);
+        }
+
         #endregion
 
         #region CRUD
-        /// <summary>
-        /// Creates the specified <paramref name="user"/> in the backing store with no password,
-        /// as an asynchronous operation.
-        /// </summary>
-        /// <param name="user">The user to create.</param>
-        /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
-        /// </returns>
         public virtual async Task<ICommonResult> CreateAsync(ApplicationUser user)
         {
             ThrowIfDisposed();

@@ -12,6 +12,11 @@ namespace Coco.Management.MappingProfiles
             CreateMap<RoleDto, RoleViewModel>();
             CreateMap<RoleViewModel, RoleDto>();
             CreateMap<UserFullDto, UserViewModel>();
+            CreateMap<UserDto, UserViewModel>();
+            CreateMap<AuthorizationPolicyDto, AuthorizationPolicyViewModel>();
+            CreateMap<AuthorizationPolicyViewModel, AuthorizationPolicyDto>();
+            CreateMap<AuthorizationPolicyUsersDto, AuthorizationPolicyUsersViewModel>();
+            CreateMap<AuthorizationPolicyRolesDto, AuthorizationPolicyRolesViewModel>();
         }
     }
 }

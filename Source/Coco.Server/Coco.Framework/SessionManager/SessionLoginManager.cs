@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Linq;
+using Coco.Framework.SessionManager.Entities;
 
 namespace Coco.Framework.SessionManager
 {
@@ -67,7 +68,7 @@ namespace Coco.Framework.SessionManager
             var result = await CheckPasswordSignInAsync(user, password);
             if (result.IsSucceed)
             {
-                await Context.SignOutAsync(IdentityConstants.ApplicationScheme);
+                await Context.SignOutAsync(IdentitySettings.APP_SESSION_SCHEMA);
                 await LoginWithClaimsAsync(user, new AuthenticationProperties { IsPersistent = canRemember }, new Claim[] { new Claim("amr", "pwd") });
                 return result;
             }
@@ -83,7 +84,7 @@ namespace Coco.Framework.SessionManager
                 userPrincipal.Identities.First().AddClaim(claim);
             }
            
-            await Context.SignInAsync(IdentityConstants.ApplicationScheme,
+            await Context.SignInAsync(IdentitySettings.APP_SESSION_SCHEMA,
                 userPrincipal, authenticationProperties);
         }
 
@@ -101,7 +102,7 @@ namespace Coco.Framework.SessionManager
 
         public virtual async Task<bool> LogoutAsync(ApplicationUser user = null)
         {
-            await Context.SignOutAsync(IdentityConstants.ApplicationScheme);
+            await Context.SignOutAsync(IdentitySettings.APP_SESSION_SCHEMA);
             return true;
         }
     }

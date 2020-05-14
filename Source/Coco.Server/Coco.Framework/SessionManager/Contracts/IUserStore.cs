@@ -2,6 +2,7 @@
 using Coco.Entities.Dtos.User;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Coco.Framework.SessionManager.Contracts
 {
@@ -20,5 +21,6 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel user);
         Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user);
         Task<ICommonResult> ActiveAsync(TUser user);
+        Task<List<ApplicationUserRole>> GetUserRolesAsync(ApplicationUser user);
     }
 }

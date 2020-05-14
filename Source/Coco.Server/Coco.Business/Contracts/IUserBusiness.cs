@@ -19,5 +19,6 @@ namespace Coco.Business.Contracts
         Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model);
         Task<bool> ActiveAsync(long id);
         List<UserFullDto> GetFull();
+        List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10);
     }
 }

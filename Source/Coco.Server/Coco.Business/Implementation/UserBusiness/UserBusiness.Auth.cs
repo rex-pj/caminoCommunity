@@ -59,7 +59,7 @@ namespace Coco.Business.Implementation.UserBusiness
         public UserDto GetLoggedIn(long id)
         {
             var user = _userRepository
-                .GetAsNoTracking(x => x.Id == id)
+                .Get(x => x.Id == id)
                 .Select(UserMapping.UserModelSelector)
                 .FirstOrDefault();
 

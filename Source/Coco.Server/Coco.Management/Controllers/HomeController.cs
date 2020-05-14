@@ -1,12 +1,18 @@
 ﻿using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Coco.Management.Controllers
 {
     public class HomeController : BaseAuthController
     {
-        [AuthenticationSession]
+        public HomeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        {
+        }
+
+
+        [SessionAuthentication]
         public IActionResult Index()
         {
             return View();

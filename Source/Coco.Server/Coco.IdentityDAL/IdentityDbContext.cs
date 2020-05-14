@@ -30,6 +30,9 @@ namespace Coco.IdentityDAL
         public DbSet<Country> Country { get; set; }
         public DbSet<UserPhoto> UserPhoto { get; set; }
         public DbSet<UserAttribute> UserAttribute { get; set; }
+        public DbSet<AuthorizationPolicy> AuthorizationPolicy { get; set; }
+        public DbSet<UserAuthorizationPolicy> UserAuthorizationPolicy { get; set; }
+        public DbSet<RoleAuthorizationPolicy> RoleAuthorizationPolicy { get; set; }
         #endregion
 
         #region Ctor
@@ -66,23 +69,16 @@ namespace Coco.IdentityDAL
                .WithOne(x => x.User)
                .HasForeignKey(c => c.UserId);
 
-            // UserInfo
-            modelBuilder.Entity<UserInfo>()
-               .HasMany(c => c.UserPhotos)
-               .WithOne(x => x.UserInfo)
-               .HasForeignKey(c => c.UserId);
+            modelBuilder.Entity<User>()
+                .HasMany(c => c.UserAuthorizationPolicies)
+                .WithOne(x => x.User)
+                .HasForeignKey(c => c.UserId);
 
             // Role
             modelBuilder.Entity<Role>()
                .HasMany(c => c.UserRoles)
                .WithOne(x => x.Role)
                .HasForeignKey(c => c.RoleId);
-
-            // Status
-            modelBuilder.Entity<Status>()
-                .HasMany(x => x.Users)
-                .WithOne(x => x.Status)
-                .HasForeignKey(x => x.StatusId);
 
             // UserRole
             modelBuilder.Entity<UserRole>()
@@ -92,6 +88,22 @@ namespace Coco.IdentityDAL
                    table.RoleId
                });
 
+            // UserAuthorizationPolicy
+            modelBuilder.Entity<UserAuthorizationPolicy>()
+               .HasKey(table => new
+               {
+                   table.UserId,
+                   table.AuthorizationPolicyId
+               });
+
+            // RoleAuthorizationPolicy
+            modelBuilder.Entity<RoleAuthorizationPolicy>()
+               .HasKey(table => new
+               {
+                   table.RoleId,
+                   table.AuthorizationPolicyId
+               });
+
             // UserCareer
             modelBuilder.Entity<UserCareer>()
                .HasKey(table => new
@@ -99,29 +111,6 @@ namespace Coco.IdentityDAL
                    table.UserId,
                    table.CareerId
                });
-
-            // Career
-            modelBuilder.Entity<Career>()
-              .HasMany(c => c.UserCareers)
-              .WithOne(x => x.Career)
-              .HasForeignKey(c => c.CareerId);
-
-            // Country
-            modelBuilder.Entity<Country>()
-                .HasMany(x => x.UserInfos)
-                .WithOne(x => x.Country)
-                .HasForeignKey(x => x.CountryId);
-
-            // Gender
-            modelBuilder.Entity<Gender>()
-                .HasMany(x => x.UserInfos)
-                .WithOne(x => x.Gender)
-                .HasForeignKey(x => x.GenderId);
-
-            // UserPhoto
-            modelBuilder.Entity<UserPhoto>()
-                .HasOne(x => x.UserInfo)
-                .WithMany(x => x.UserPhotos);
 
             base.OnModelCreating(modelBuilder);
         }

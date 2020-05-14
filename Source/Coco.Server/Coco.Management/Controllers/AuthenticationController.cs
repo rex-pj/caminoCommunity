@@ -34,7 +34,7 @@ namespace Coco.Management.Controllers
         }
 
         [HttpGet]
-        [AuthenticationSession]
+        [SessionAuthentication]
         public async Task<IActionResult> Logout()
         {
             await _sessionLoginManager.LogoutAsync();

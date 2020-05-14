@@ -111,7 +111,7 @@ namespace Coco.Business.Implementation.UserBusiness
             bool canUpdate = _validationStrategyContext.Validate(model);
             if (!canUpdate)
             {
-                foreach(var item in _validationStrategyContext.Errors)
+                foreach (var item in _validationStrategyContext.Errors)
                 {
                     throw new ArgumentNullException(item.Message);
                 }
@@ -138,7 +138,7 @@ namespace Coco.Business.Implementation.UserBusiness
             email = email.ToLower();
 
             var user = await _userRepository
-                .GetAsNoTracking(x => x.Email.Equals(email))
+                .Get(x => x.Email.Equals(email))
                 .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
@@ -150,7 +150,7 @@ namespace Coco.Business.Implementation.UserBusiness
             username = username.ToLower();
 
             var user = await _userRepository
-                .GetAsNoTracking(x => x.Email.Equals(username))
+                .Get(x => x.Email.Equals(username))
                 .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
@@ -160,7 +160,7 @@ namespace Coco.Business.Implementation.UserBusiness
         public async Task<UserDto> FindByIdAsync(long id)
         {
             var existUser = await _userRepository
-                .GetAsNoTracking(x => x.Id.Equals(id))
+                .Get(x => x.Id.Equals(id))
                 .Select(UserMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
@@ -170,17 +170,50 @@ namespace Coco.Business.Implementation.UserBusiness
         public async Task<UserFullDto> FindFullByIdAsync(long id)
         {
             var existUser = await _userRepository
-                .GetAsNoTracking(x => x.Id.Equals(id))
+                .Get(x => x.Id.Equals(id))
                 .Select(UserMapping.FullUserModelSelector)
                 .FirstOrDefaultAsync();
 
             return existUser;
         }
 
+        public List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10)
+        {
+            if (query == null)
+            {
+                query = string.Empty;
+            }
+
+            query = query.ToLower();
+
+            var data = _userRepository.Get(x => string.IsNullOrEmpty(query) || x.Lastname.ToLower().Contains(query)
+                || x.Firstname.ToLower().Contains(query) || x.DisplayName.ToLower().Contains(query));
+
+            data = data.Skip(0).Take(10);
+            if (pageSize > 0)
+            {
+                data = data.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var users = data
+                .Select(x => new UserFullDto()
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Lastname = x.Lastname,
+                    Firstname = x.Firstname,
+                    DisplayName = x.DisplayName
+                })
+                .ToList();
+
+            return users;
+        }
+
         public List<UserFullDto> GetFull()
         {
             var users = _userRepository.Get()
-                .Select(x => new UserFullDto() {
+                .Select(x => new UserFullDto()
+                {
                     Id = x.Id,
                     Email = x.Email,
                     Address = x.UserInfo.Address,

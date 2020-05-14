@@ -52,5 +52,6 @@ namespace Coco.Entities.Domain.Identity
         public virtual ICollection<UserCareer> UserCareers { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserAuthorizationPolicy> UserAuthorizationPolicies { get; set; }
     }
 }

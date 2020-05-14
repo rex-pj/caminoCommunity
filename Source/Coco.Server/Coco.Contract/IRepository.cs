@@ -17,30 +17,11 @@ namespace Coco.Contract
         IQueryable<TEntity> Get();
 
         /// <summary>
-        /// Get entities with no tracking
-        /// </summary>
-        /// <returns></returns>
-        IQueryable<TEntity> GetAsNoTracking();
-
-        /// <summary>
         /// Get entities by filter
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter);
-
-        /// <summary>
-        /// Get entities by filter with no tracking
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        IQueryable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter);
-
-        /// <summary>
-        /// Get entities with no tracking async
-        /// </summary>
-        /// <returns></returns>
-        Task<IList<TEntity>> GetAsNoTrackingAsync();
 
         /// <summary>
         /// Get entities async
@@ -54,13 +35,6 @@ namespace Coco.Contract
         /// <param name="filter"></param>
         /// <returns></returns>
         Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter);
-
-        /// <summary>
-        /// Get entities by filter with no tracking async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        Task<IList<TEntity>> GetAsNoTrackingAsync(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
         /// Get entity by identifier
@@ -123,11 +97,6 @@ namespace Coco.Contract
         /// </summary>
         /// <param name="entity">Entity</param>
         void UpdateByName(TEntity entity, object value, string propertyName, bool isIgnoreCase = false);
-
-        /// <summary>
-        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
-        /// </summary>
-        IQueryable<TEntity> TableNoTracking { get; }
 
         /// <summary>
         /// Gets a table

@@ -1,10 +1,13 @@
 ﻿using Coco.Framework.Attributes;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Coco.Framework.Controllers
 {
-    [AuthenticationSession]
+    [SessionAuthentication]
     public class BaseAuthController : BaseController
     {
+        public BaseAuthController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        {
+        }
     }
 }

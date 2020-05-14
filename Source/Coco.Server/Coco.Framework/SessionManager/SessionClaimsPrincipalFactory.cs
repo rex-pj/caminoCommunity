@@ -53,4 +53,39 @@ namespace Coco.Framework.SessionManager
             return id;
         }
     }
+
+    public class SessionClaimsPrincipalFactory<TUser, TRole> : SessionClaimsPrincipalFactory<TUser>
+        where TUser : class
+        where TRole : class
+    {
+        public ISessionRoleManager<TRole> RoleManager { get; private set; }
+
+        public SessionClaimsPrincipalFactory(IUserManager<TUser> userManager, ISessionRoleManager<TRole> roleManager, 
+            IOptions<IdentityOptions> options)
+            : base(userManager, options)
+        {
+            if (roleManager == null)
+            {
+                throw new ArgumentNullException(nameof(roleManager));
+            }
+            RoleManager = roleManager;
+        }
+
+        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(TUser user)
+        {
+            var id = await base.GenerateClaimsAsync(user);
+            var roles = await UserManager.GetRolesAsync(user);
+            foreach (var roleName in roles)
+            {
+                id.AddClaim(new Claim(Options.ClaimsIdentity.RoleClaimType, roleName));
+                var role = await RoleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    id.AddClaims(await RoleManager.GetClaimsAsync(role));
+                }
+            }
+
+            return id;
+        }
+    }
 }

@@ -40,7 +40,10 @@
     var roleAndPermissionDomains = new[]
     {
         RequestDomains.ROLE,
-        RequestDomains.PERMISSION
+        RequestDomains.PERMISSION,
+        RequestDomains.AUTHORIZATION_POLICY,
+        RequestDomains.USER_AUTHORIZATION_POLICY,
+        RequestDomains.ROLE_AUTHORIZATION_POLICY
     };
 
     var isHomeDomain = homeDomains.Contains(controllerName);
@@ -48,20 +51,21 @@
     var isFarmDomain = farmDomains.Contains(controllerName);
     var isFarmGroupDomain = farmGroupDomains.Contains(controllerName);
     var isProductDomain = productDomains.Contains(controllerName);
-    var isArticle = controllerName.Equals("Article");
-    var isArticleCategory = controllerName.Equals("ArticleCategory");
-    var isFarm = controllerName.Equals("Farm");
-    var isFarmType = controllerName.Equals("FarmType");
-    var isFarmGroup = controllerName.Equals("FarmGroup");
-    var isFarmGroupType = controllerName.Equals("FarmGroupType");
-    var isProduct = controllerName.Equals("Product");
-    var isProductCategory = controllerName.Equals("ProductCategory");
+    var isArticle = controllerName.Equals(RequestDomains.ARTICLE);
+    var isArticleCategory = controllerName.Equals(RequestDomains.ARTICLE_CATEGORY);
+    var isFarm = controllerName.Equals(RequestDomains.FARM);
+    var isFarmType = controllerName.Equals(RequestDomains.FARM_TYPE);
+    var isFarmGroup = controllerName.Equals(RequestDomains.FARM_GROUP);
+    var isFarmGroupType = controllerName.Equals(RequestDomains.FARM_GROUP_TYPE);
+    var isProduct = controllerName.Equals(RequestDomains.PRODUCT);
+    var isProductCategory = controllerName.Equals(RequestDomains.PRODUCT_CATEGORY);
 
     var isUserDomain = userDomains.Contains(controllerName);
     var isRolePermissionDomain = roleAndPermissionDomains.Contains(controllerName);
-    var isUser = controllerName.Equals("User");
-    var isRole = controllerName.Equals("Role");
-    var isPermission = controllerName.Equals("Permission");
+    var isUser = controllerName.Equals(RequestDomains.USER);
+    var isRole = controllerName.Equals(RequestDomains.ROLE);
+    var isPermission = controllerName.Equals(RequestDomains.PERMISSION);
+    var isAuthorizationPolicy = controllerName.Equals(RequestDomains.AUTHORIZATION_POLICY);
 
     var isSecurityTabOpen = isUserDomain || isRolePermissionDomain;
 }
@@ -244,6 +248,10 @@
                             <a asp-controller="Permission"
                                asp-action="Index" class="list-group-item text-dark @(isPermission?"active":"")">
                                 <i class="fa fa-angle-right"></i> Permissions
+                            </a>
+                            <a asp-controller="AuthorizationPolicy"
+                               asp-action="Index" class="list-group-item text-dark @(isAuthorizationPolicy?"active":"")">
+                                <i class="fa fa-angle-right"></i> Authorization Policies
                             </a>
                         </div>
                     </div>

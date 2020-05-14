@@ -3,14 +3,14 @@ using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
 using Coco.Framework.Infrastructure;
-using Coco.Framework.MappingProfiles;
+using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Entities;
 using Coco.Management.MappingProfiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +33,9 @@ namespace Coco.Management
         {
             InvokeInitialStartup(services);
 
-            services.AddAuthentication(IdentityConstants.ApplicationScheme).AddCookie(IdentityConstants.ApplicationScheme);
+            services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA)
+                .AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
+
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
         }
@@ -41,12 +43,10 @@ namespace Coco.Management
         private void InvokeInitialStartup(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(FrameworkMappingProfile), 
-                typeof(ArticleCategoryMappingProfile), 
-                typeof(UserMappingProfile), 
-                typeof(RoleMappingProfile),
+                typeof(ContentMappingProfile), 
+                typeof(IdentityMappingProfile), 
                 typeof(AuthMappingProfile));
 
-            services.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser>>();
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
