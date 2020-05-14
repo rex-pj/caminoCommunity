@@ -164,15 +164,18 @@ GO
 CREATE TABLE dbo.[Role]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
-	Name VARCHAR(255) NOT NULL,
-	[Description] NVARCHAR(1000) NULL
+	[Name] VARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
 )
 
 GO
 ALTER TABLE dbo.[Role]
 ADD CONSTRAINT PK_Role
 PRIMARY KEY (Id);
-
 --USER_ROLE--
 GO
 CREATE TABLE dbo.[UserRole]
@@ -180,6 +183,7 @@ CREATE TABLE dbo.[UserRole]
 	RoleId TINYINT NOT NULL,
 	UserId BIGINT NOT NULL,
 	GrantedDate DATETIME2 NULL,
+	GrantedById BIGINT NOT NULL,
 	IsGranted BIT NOT NULL
 )
 
@@ -198,6 +202,75 @@ ALTER TABLE dbo.[UserRole]
 ADD CONSTRAINT PK_UserRole
 PRIMARY KEY (RoleId, UserId);
 
+--[AuthorizationPolicy]--
+GO
+CREATE TABLE dbo.[AuthorizationPolicy]
+(
+	Id SMALLINT NOT NULL IDENTITY(1,1),
+	[Name] VARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[AuthorizationPolicy]
+ADD CONSTRAINT PK_AuthorizationPolicy
+PRIMARY KEY (Id);
+
+--[UserAuthorizationPolicy]--
+GO
+CREATE TABLE dbo.UserAuthorizationPolicy
+(
+	AuthorizationPolicyId SMALLINT NOT NULL,
+	UserId BIGINT NOT NULL,
+	GrantedDate DATETIME2 NULL,
+	GrantedById BIGINT NOT NULL,
+	IsGranted BIT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.UserAuthorizationPolicy
+ADD CONSTRAINT FK_UserAuthorizationPolicy_User
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
+
+GO
+ALTER TABLE dbo.[UserAuthorizationPolicy]
+ADD CONSTRAINT FK_UserAuthorizationPolicy_AuthorizationPolicy
+FOREIGN KEY (AuthorizationPolicyId) REFERENCES dbo.[AuthorizationPolicy](Id);
+
+GO
+ALTER TABLE dbo.[UserAuthorizationPolicy]
+ADD CONSTRAINT PK_UserAuthorizationPolicy
+PRIMARY KEY (AuthorizationPolicyId, UserId);
+
+--[RoleAuthorizationPolicy]--
+GO
+CREATE TABLE dbo.RoleAuthorizationPolicy
+(
+	AuthorizationPolicyId SMALLINT NOT NULL,
+	RoleId TINYINT NOT NULL,
+	GrantedDate DATETIME2 NULL,
+	GrantedById BIGINT NOT NULL,
+	IsGranted BIT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[RoleAuthorizationPolicy]
+ADD CONSTRAINT FK_RoleAuthorizationPolicy_Role
+FOREIGN KEY (RoleId) REFERENCES dbo.[Role](Id);
+
+GO
+ALTER TABLE dbo.[RoleAuthorizationPolicy]
+ADD CONSTRAINT FK_RoleAuthorizationPolicy_AuthorizationPolicy
+FOREIGN KEY (AuthorizationPolicyId) REFERENCES dbo.[AuthorizationPolicy](Id);
+
+GO
+ALTER TABLE dbo.[UserAuthorizationPolicy]
+ADD CONSTRAINT PK_RoleAuthorizationPolicy
+PRIMARY KEY (AuthorizationPolicyId, RoleId);
 
 --GENDER--
 CREATE TABLE dbo.Gender

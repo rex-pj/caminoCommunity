@@ -5,6 +5,7 @@ using Coco.Entities.Dtos.General;
 using System;
 using System.Threading.Tasks;
 using Coco.Framework.SessionManager.Core;
+using System.Collections.Generic;
 
 namespace Coco.Framework.SessionManager.Contracts
 {
@@ -31,5 +32,7 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
         Task<bool> ClearUserLoginAsync(string userIdentityId, string authenticationToken);
         Task<ICommonResult> ActiveAsync(string email, string activeKey);
+        Task<List<string>> GetRolesAsync(TUser user);
+        Task<ApplicationUserRoleAuthorizationPolicy> GetRoleAuthorizationsAsync(long id);
     }
 }

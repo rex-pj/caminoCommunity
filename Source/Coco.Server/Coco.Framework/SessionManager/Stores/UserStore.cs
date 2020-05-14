@@ -12,6 +12,7 @@ using Coco.Framework.SessionManager.Core;
 using System.Linq;
 using Coco.Common.Exceptions;
 using Coco.Commons.Models;
+using System.Collections.Generic;
 
 namespace Coco.Framework.SessionManager.Stores
 {
@@ -23,6 +24,7 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IMapper _mapper;
         private readonly IUserAttributeBusiness _userAttributeBusiness;
         private readonly IUserStampStore<ApplicationUser> _userStampStore;
+        private readonly IUserRoleBusniess _userRoleBusniess;
 
         /// <summary>
         /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
@@ -37,6 +39,7 @@ namespace Coco.Framework.SessionManager.Stores
             IConfiguration configuration,
             IMapper mapper,
             IUserStampStore<ApplicationUser> userStampStore,
+            IUserRoleBusniess userRoleBusniess,
             IdentityErrorDescriber errors = null)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
@@ -45,6 +48,7 @@ namespace Coco.Framework.SessionManager.Stores
             _textCrypter = textCrypter;
             _mapper = mapper;
             _userStampStore = userStampStore;
+            _userRoleBusniess = userRoleBusniess;
             Describer = errors ?? new IdentityErrorDescriber();
         }
 
@@ -293,6 +297,20 @@ namespace Coco.Framework.SessionManager.Stores
             {
                 return CommonResult.Failed(new CommonError { Code = ex.Message, Message = ex.Message });
             }
+        }
+
+        public async Task<List<ApplicationUserRole>> GetUserRolesAsync(ApplicationUser user)
+        {
+            var userDto = _mapper.Map<UserDto>(user);
+            var userRoles = await _userRoleBusniess.GetUserRolesAsync(userDto);
+            return _mapper.Map<List<ApplicationUserRole>>(userRoles);
+        }
+
+        public ApplicationUserRoleAuthorizationPolicy GetRoleAuthorizationsAsync(ApplicationUser user)
+        {
+            var userDto = _mapper.Map<UserDto>(user);
+            var roleAuthorizationPolicies = _userBusiness.GetRoleAuthorizationPolicies(userDto);
+            return _mapper.Map<ApplicationUserRoleAuthorizationPolicy>(roleAuthorizationPolicies);
         }
 
         /// <summary>

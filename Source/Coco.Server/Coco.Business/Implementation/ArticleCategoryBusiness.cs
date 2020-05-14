@@ -49,6 +49,17 @@ namespace Coco.Business.Implementation
             return category;
         }
 
+        public ArticleCategoryDto FindByName(string name)
+        {
+            var exist = _articleCategoryRepository.Get(x => x.Name == name)
+                .Include(x => x.ParentCategory)
+                .FirstOrDefault();
+
+            var category = _mapper.Map<ArticleCategoryDto>(exist);
+            
+            return category;
+        }
+
         public List<ArticleCategoryDto> GetFull()
         {
             var categories = _articleCategoryRepository.Get().Select(a => new ArticleCategoryDto

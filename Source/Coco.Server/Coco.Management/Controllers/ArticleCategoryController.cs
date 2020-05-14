@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Entities.Dtos.Content;
+using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
 using Coco.Management.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 
 namespace Coco.Management.Controllers
 {
@@ -16,7 +17,8 @@ namespace Coco.Management.Controllers
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
-        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness)
+        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
+            :base(httpContextAccessor)
         {
             _mapper = mapper;
             _articleCategoryBusiness = articleCategoryBusiness;
@@ -97,19 +99,23 @@ namespace Coco.Management.Controllers
         public IActionResult CreateOrUpdate(ArticleCategoryViewModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
-            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            category.UpdatedById = userId;
-            if (category.Id <= 0)
-            {
-                category.CreatedById = userId;
-                _articleCategoryBusiness.Add(category);
-            }
-            else
+            category.UpdatedById = LoggedUserId;
+            if (category.Id > 0)
             {
                 _articleCategoryBusiness.Update(category);
+                return RedirectToAction("Detail", new { id = category.Id });
             }
 
-            return RedirectToAction("Index");
+            var exist = _articleCategoryBusiness.FindByName(model.Name);
+            if (exist != null)
+            {
+                return RedirectToErrorPage();
+            }
+
+            category.CreatedById = LoggedUserId;
+            var newId = _articleCategoryBusiness.Add(category);
+
+            return RedirectToAction("Detail", new { id = newId });
         }
     }
 }

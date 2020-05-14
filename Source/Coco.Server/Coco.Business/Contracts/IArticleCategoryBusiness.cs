@@ -13,5 +13,6 @@ namespace Coco.Business.Contracts
         List<ArticleCategoryDto> Get(Expression<Func<ArticleCategory, bool>> filter);
         public long Add(ArticleCategoryDto category);
         ArticleCategoryDto Update(ArticleCategoryDto category);
+        ArticleCategoryDto FindByName(string name);
     }
 }

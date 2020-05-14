@@ -23,7 +23,7 @@ namespace Coco.Business.Implementation
 
         public async Task<UserAttribute> GetAsync(long userId, string key)
         {
-            var exists = await _userAttributeRepository.GetAsNoTrackingAsync(x => x.UserId == userId && x.Key.Equals(key));
+            var exists = await _userAttributeRepository.GetAsync(x => x.UserId == userId && x.Key.Equals(key));
             if (exists == null || !exists.Any())
             {
                 return null;
@@ -35,13 +35,13 @@ namespace Coco.Business.Implementation
 
         public async Task<IEnumerable<UserAttribute>> GetAsync(long userId)
         {
-            var exists = await _userAttributeRepository.GetAsNoTrackingAsync(x => x.UserId == userId);
+            var exists = await _userAttributeRepository.GetAsync(x => x.UserId == userId);
             return exists.ToList();
         }
 
         public IEnumerable<UserAttribute> Get(long userId)
         {
-            var exists = _userAttributeRepository.GetAsNoTracking(x => x.UserId == userId);
+            var exists = _userAttributeRepository.Get(x => x.UserId == userId);
             return exists.ToList();
         }
 

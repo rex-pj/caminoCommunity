@@ -3,7 +3,7 @@ using Api.Public.Resolvers.Contracts;
 using Api.Resource.Infrastructure.Extensions;
 using AutoMapper;
 using Coco.Framework.Infrastructure;
-using Coco.Framework.MappingProfiles;
+using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Business;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
@@ -55,7 +55,7 @@ namespace Api.Resource
 
         private void InvokeInitialStartup(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(UserMappingProfile));
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
