@@ -2,6 +2,7 @@
 using Coco.Entities.Dtos.General;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Coco.Entities.Dtos.Auth;
 
 namespace Coco.Business.Contracts
 {
@@ -20,5 +21,6 @@ namespace Coco.Business.Contracts
         Task<bool> ActiveAsync(long id);
         List<UserFullDto> GetFull();
         List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10);
+        UserRoleAuthorizationPoliciesDto GetRoleAuthorizationPolicies(UserDto user);
     }
 }

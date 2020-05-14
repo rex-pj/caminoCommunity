@@ -3,7 +3,6 @@ using Coco.Framework.SessionManager.Contracts;
 using DescriberCore = Coco.Framework.SessionManager.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 using System.Security.Claims;

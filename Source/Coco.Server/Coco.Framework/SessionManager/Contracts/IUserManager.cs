@@ -33,5 +33,6 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<bool> ClearUserLoginAsync(string userIdentityId, string authenticationToken);
         Task<ICommonResult> ActiveAsync(string email, string activeKey);
         Task<List<string>> GetRolesAsync(TUser user);
+        Task<ApplicationUserRoleAuthorizationPolicy> GetRoleAuthorizationsAsync(long id);
     }
 }

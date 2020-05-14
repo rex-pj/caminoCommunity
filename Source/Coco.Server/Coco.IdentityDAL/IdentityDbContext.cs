@@ -80,6 +80,11 @@ namespace Coco.IdentityDAL
                .WithOne(x => x.Role)
                .HasForeignKey(c => c.RoleId);
 
+            modelBuilder.Entity<Role>()
+               .HasMany(c => c.RoleAuthorizationPolicies)
+               .WithOne(x => x.Role)
+               .HasForeignKey(c => c.RoleId);
+
             // UserRole
             modelBuilder.Entity<UserRole>()
                .HasKey(table => new

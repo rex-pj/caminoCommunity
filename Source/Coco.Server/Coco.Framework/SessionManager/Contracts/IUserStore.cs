@@ -19,8 +19,9 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<UserFullDto> FindFullByIdAsync(long id);
         Task<UserFullDto> FindByIdentityIdAsync(string userIdentityId);
         Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel user);
-        Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user);
+        Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(TUser user);
         Task<ICommonResult> ActiveAsync(TUser user);
-        Task<List<ApplicationUserRole>> GetUserRolesAsync(ApplicationUser user);
+        Task<List<ApplicationUserRole>> GetUserRolesAsync(TUser user);
+        ApplicationUserRoleAuthorizationPolicy GetRoleAuthorizationsAsync(TUser user);
     }
 }

@@ -50,7 +50,7 @@ namespace Coco.Management.Controllers
                 var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
                 return View(model);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return RedirectToErrorPage();
             }

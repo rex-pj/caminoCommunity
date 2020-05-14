@@ -306,6 +306,13 @@ namespace Coco.Framework.SessionManager.Stores
             return _mapper.Map<List<ApplicationUserRole>>(userRoles);
         }
 
+        public ApplicationUserRoleAuthorizationPolicy GetRoleAuthorizationsAsync(ApplicationUser user)
+        {
+            var userDto = _mapper.Map<UserDto>(user);
+            var roleAuthorizationPolicies = _userBusiness.GetRoleAuthorizationPolicies(userDto);
+            return _mapper.Map<ApplicationUserRoleAuthorizationPolicy>(roleAuthorizationPolicies);
+        }
+
         /// <summary>
         /// Throws if this class has been disposed.
         /// </summary>

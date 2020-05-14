@@ -239,7 +239,7 @@ namespace Coco.Framework.SessionManager
             {
                 user.AuthenticationToken = tokenValidity.Result.ToString();
             }
-            
+
             return user;
         }
 
@@ -492,7 +492,7 @@ namespace Coco.Framework.SessionManager
                 }
 
                 user.PasswordSalt = await UserStampStore.GetPasswordSaltAsync(user.Id);
-                if(user == null || !(await VerifyPasswordAsync(user, model.CurrentPassword) != PasswordVerificationResult.Failed))
+                if (user == null || !(await VerifyPasswordAsync(user, model.CurrentPassword) != PasswordVerificationResult.Failed))
                 {
                     throw new CocoApplicationException(Describer.PasswordMismatch());
                 }
@@ -587,7 +587,7 @@ namespace Coco.Framework.SessionManager
             }
 
             var currentUser = await FindUserByIdentityIdAsync(user.UserIdentityId, user.AuthenticationToken);
-            if(currentUser == null)
+            if (currentUser == null)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -677,6 +677,19 @@ namespace Coco.Framework.SessionManager
             return await UserStampStore.DeleteUserAuthenticationAttributes(applicationUser, authenticationToken);
         }
 
+        public async Task<ApplicationUserRoleAuthorizationPolicy> GetRoleAuthorizationsAsync(long id)
+        {
+            var exist = await UserStore.FindByIdAsync(id);
+            if (exist == null)
+            {
+                return null;
+            }
+
+            var user = _mapper.Map<ApplicationUser>(exist);
+
+            return UserStore.GetRoleAuthorizationsAsync(user);
+        }
+
         public async Task<ICommonResult> ActiveAsync(string email, string activeKey)
         {
             if (string.IsNullOrEmpty(email))
@@ -729,7 +742,8 @@ namespace Coco.Framework.SessionManager
 
             if (!isValid)
             {
-                return CommonResult.Failed(new CommonError() { 
+                return CommonResult.Failed(new CommonError()
+                {
                     Code = ErrorMessageConst.UN_EXPECTED_EXCEPTION,
                     Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
                 });

@@ -36,8 +36,9 @@ namespace Coco.Framework.SessionManager.Stores
                 throw new ArgumentNullException(nameof(role));
             }
 
+            var claims = new List<Claim>();
             // Todo: need implement claims
-            return await Task.FromResult(new List<Claim>());
+            return await Task.FromResult(claims);
         }
 
         public void Dispose()

@@ -30,5 +30,6 @@ namespace Coco.Entities.Domain.Auth
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<RoleAuthorizationPolicy> RoleAuthorizationPolicies { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Entities.Dtos.Content;
+using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
 using Coco.Management.Models;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using System.Linq;
 
 namespace Coco.Management.Controllers
 {
+    [SessionAuthorization(Policy = "CanEditCategory")]
     public class ArticleCategoryController : BaseAuthController
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
