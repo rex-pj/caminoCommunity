@@ -176,6 +176,16 @@ GO
 ALTER TABLE dbo.[Role]
 ADD CONSTRAINT PK_Role
 PRIMARY KEY (Id);
+
+GO
+ALTER TABLE dbo.[Role]
+ADD CONSTRAINT FK_Role_CreatedBy
+FOREIGN KEY (CreatedById) REFERENCES dbo.[User](Id);
+
+GO
+ALTER TABLE dbo.[Role]
+ADD CONSTRAINT FK_Role_UpdatedBy
+FOREIGN KEY (UpdatedById) REFERENCES dbo.[User](Id);
 --USER_ROLE--
 GO
 CREATE TABLE dbo.[UserRole]
