@@ -23,7 +23,11 @@ namespace Coco.Entities.Domain.Dbo
 
         [ForeignKey("UserInfo")]
         public long UserId { get; set; }
+
+        [ForeignKey("Type")]
         public byte TypeId { get; set; }
+
+        public virtual UserPhotoType Type { get; set; }
 
         public virtual UserInfo UserInfo { get; set; }
     }

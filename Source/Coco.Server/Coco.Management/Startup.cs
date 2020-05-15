@@ -1,5 +1,7 @@
 using AutoMapper;
 using Coco.Business;
+using Coco.Business.Contracts;
+using Coco.Business.Implementation;
 using Coco.Business.MappingProfiles;
 using Coco.Contract;
 using Coco.Framework.Infrastructure;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace Coco.Management
 {
@@ -36,6 +39,8 @@ namespace Coco.Management
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA)
                 .AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
 
+            services.AddScoped<ISeedDataBusiness, SeedDataBusiness>();
+
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
         }
@@ -55,7 +60,7 @@ namespace Coco.Management
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISeedDataBusiness seedDataBusiness)
         {
             if (env.IsDevelopment())
             {
@@ -74,6 +79,11 @@ namespace Coco.Management
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            if (seedDataBusiness.CanSeed())
+            {
+                seedDataBusiness.SeedingData();
+            }
 
             app.UseEndpoints(endpoints =>
             {
