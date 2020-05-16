@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
+﻿using Coco.Entities.Constant;
 using Coco.Entities.Domain.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coco.Entities.Domain.Dbo
 {
     [Table(nameof(Country), Schema = TableSchemaConst.DBO)]
-    public class Country : BaseEntity
+    public class Country
     {
         public Country()
         {

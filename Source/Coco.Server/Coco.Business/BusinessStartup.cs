@@ -6,14 +6,13 @@ using Coco.DAL.Implementations;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
-using Coco.Entities.Domain.Agri;
+using Coco.Entities.Domain.Content;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
-using Coco.Entities.Domain.Content;
 
 namespace Coco.Business
 {

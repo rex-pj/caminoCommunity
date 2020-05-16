@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
+﻿using Coco.Entities.Constant;
 using Coco.Entities.Domain.Identity;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coco.Entities.Domain.Dbo
 {
     [Table(nameof(UserPhoto), Schema = TableSchemaConst.DBO)]
-    public class UserPhoto : BaseEntity
+    public class UserPhoto
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

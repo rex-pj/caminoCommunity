@@ -273,3 +273,34 @@ GO
 ALTER TABLE Agri.GroupProduct
 ADD CONSTRAINT FK_GroupProduct_Group
 FOREIGN KEY (GroupId) REFERENCES Agri.[Group](Id);
+
+-- CAREER --
+
+GO
+CREATE TABLE dbo.Career
+(
+	Id TINYINT NOT NULL IDENTITY(1,1),
+	Name NVARCHAR(10),
+	[Description] NVARCHAR(1000) NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.Career
+ADD CONSTRAINT PK_Career
+PRIMARY KEY (Id);
+-- USER CAREER --
+GO
+CREATE TABLE dbo.UserCareer
+(
+	CareerId TINYINT NOT NULL,
+	UserId BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.UserCareer
+ADD CONSTRAINT PK_UserCareer
+PRIMARY KEY (CareerId, UserId);

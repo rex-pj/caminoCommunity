@@ -9,7 +9,6 @@ using AutoMapper;
 using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Business.MappingProfiles;
 using Coco.Framework.Infrastructure;
-using Coco.Framework.Infrastructure.Extensions;
 using Api.Auth.Infrastructure.Extensions;
 using HotChocolate.AspNetCore;
 using Api.Auth.Resolvers.Contracts;

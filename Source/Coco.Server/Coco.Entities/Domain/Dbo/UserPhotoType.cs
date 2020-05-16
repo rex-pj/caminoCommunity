@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
+﻿using Coco.Entities.Constant;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coco.Entities.Domain.Dbo
 {
     [Table(nameof(UserPhotoType), Schema = TableSchemaConst.DBO)]
-    public class UserPhotoType : BaseEntity
+    public class UserPhotoType
     {
         public UserPhotoType()
         {
