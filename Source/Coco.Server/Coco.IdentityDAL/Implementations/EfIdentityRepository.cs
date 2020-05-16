@@ -1,5 +1,4 @@
 ﻿using Coco.Contract;
-using Coco.Entities.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class EfIdentityRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
+    public class EfIdentityRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         #region Fields
 

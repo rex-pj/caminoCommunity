@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Contract
 {
-    public interface IRepository<TEntity> where TEntity : BaseEntity
+    public interface IRepository<TEntity> where TEntity : class
     {
         #region Methods
         /// <summary>

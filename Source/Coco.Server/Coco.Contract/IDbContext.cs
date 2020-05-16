@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Base;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace Coco.Contract
         /// </summary>
         /// <typeparam name="TEntity">Entity type</typeparam>
         /// <returns>A set for the given entity type</returns>
-        DbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity;
+        DbSet<TEntity> Set<TEntity>() where TEntity :  class;
 
         /// <summary>
         /// Saves all changes made in this context to the database

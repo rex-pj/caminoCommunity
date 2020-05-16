@@ -33,3 +33,8 @@ Source/Coco.Server/Coco.Management/bin/
 Source/Coco.Server/Coco.Management/obj/
 Source/Coco.Server/Api.Auth/bin/
 Source/Coco.Server/Api.Auth/obj/
+Source/Coco.Server/Coco.Api.Framework/obj/
+Source/Coco.Server/Coco.UserDAL/obj/
+Source/Coco.Server/Coco.Api.Framework/bin/
+Source/Coco.Server/Api.Resources/obj/
+Source/Coco.Server/Api.Resources/bin/

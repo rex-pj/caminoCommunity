@@ -1,28 +1,21 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
-using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Work;
+﻿using Coco.Entities.Domain.Auth;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coco.Entities.Domain.Identity
 {
-    [Table(nameof(User), Schema = TableSchemaConst.DBO)]
-    public class User : BaseEntity
+    public class User
     {
         public User()
         {
             CreatedUsers = new HashSet<User>();
             UpdatedUsers = new HashSet<User>();
-            UserCareers = new HashSet<UserCareer>();
             UserRoles = new HashSet<UserRole>();
+            UserAuthorizationPolicies = new HashSet<UserAuthorizationPolicy>();
+            GrantedUserAuthorizationPolicies = new HashSet<UserAuthorizationPolicy>();
+            GrantedRoleAuthorizationPolicies = new HashSet<RoleAuthorizationPolicy>();
         }
         
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [ForeignKey("UserInfo")]
         public long Id { get; set; }
         public string Email { get; set; }
         public string Lastname { get; set; }
@@ -37,7 +30,6 @@ namespace Coco.Entities.Domain.Identity
         public long? UpdatedById { get; set; }
         public bool IsActived { get; set; }
 
-        [ForeignKey("Status")]
         public byte StatusId { get; set; }
         public virtual bool IsEmailConfirmed { get; set; }
         public virtual User CreatedBy { get; set; }
@@ -49,9 +41,13 @@ namespace Coco.Entities.Domain.Identity
 
         public virtual ICollection<User> UpdatedUsers { get; set; }
 
-        public virtual ICollection<UserCareer> UserCareers { get; set; }
-
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<Role> CreatedRoles { get; set; }
+        public virtual ICollection<Role> UpdatedRoles { get; set; }
+        public virtual ICollection<AuthorizationPolicy> CreatedAuthorizationPolicies { get; set; }
+        public virtual ICollection<AuthorizationPolicy> UpdatedAuthorizationPolicies { get; set; }
         public virtual ICollection<UserAuthorizationPolicy> UserAuthorizationPolicies { get; set; }
+        public virtual ICollection<UserAuthorizationPolicy> GrantedUserAuthorizationPolicies { get; set; }
+        public virtual ICollection<RoleAuthorizationPolicy> GrantedRoleAuthorizationPolicies { get; set; }
     }
 }

@@ -2,10 +2,9 @@
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Dbo;
-using Coco.Entities.Base;
 using System.Threading.Tasks;
 using Coco.Contract;
-using Coco.Entities.Domain.Work;
+using Coco.IdentityDAL.Mapping;
 
 namespace Coco.IdentityDAL
 {
@@ -16,19 +15,20 @@ namespace Coco.IdentityDAL
         /// </summary>
         /// <typeparam name="TEntity">Entity type</typeparam>
         /// <returns>A set for the given entity type</returns>
-        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity
+        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
             return base.Set<TEntity>();
         }
 
         #region DbSets
-        public DbSet<Gender> Gender { get; set; }
-        public DbSet<Status> Status { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<Gender> Gender { get; set; }
+        public DbSet<Status> Status { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Country> Country { get; set; }
         public DbSet<UserPhoto> UserPhoto { get; set; }
+        public DbSet<UserPhotoType> UserPhotoType { get; set; }
         public DbSet<UserAttribute> UserAttribute { get; set; }
         public DbSet<AuthorizationPolicy> AuthorizationPolicy { get; set; }
         public DbSet<UserAuthorizationPolicy> UserAuthorizationPolicy { get; set; }
@@ -43,81 +43,18 @@ namespace Coco.IdentityDAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // User
-            modelBuilder.Entity<User>()
-                .HasMany(x => x.CreatedUsers)
-                .WithOne(x => x.CreatedBy)
-                .HasForeignKey(x => x.CreatedById);
-
-            modelBuilder.Entity<User>()
-                .HasMany(x => x.UpdatedUsers)
-                .WithOne(x => x.UpdatedBy)
-                .HasForeignKey(x => x.UpdatedById);
-
-            modelBuilder.Entity<User>()
-                .HasOne(x => x.UserInfo)
-                .WithOne(x => x.User)
-                .HasForeignKey<UserInfo>(x => x.Id);
-
-            modelBuilder.Entity<User>()
-                .HasMany(c => c.UserCareers)
-               .WithOne(x => x.User)
-               .HasForeignKey(c => c.UserId);
-
-            modelBuilder.Entity<User>()
-                .HasMany(c => c.UserRoles)
-               .WithOne(x => x.User)
-               .HasForeignKey(c => c.UserId);
-
-            modelBuilder.Entity<User>()
-                .HasMany(c => c.UserAuthorizationPolicies)
-                .WithOne(x => x.User)
-                .HasForeignKey(c => c.UserId);
-
-            // Role
-            modelBuilder.Entity<Role>()
-               .HasMany(c => c.UserRoles)
-               .WithOne(x => x.Role)
-               .HasForeignKey(c => c.RoleId);
-
-            modelBuilder.Entity<Role>()
-               .HasMany(c => c.RoleAuthorizationPolicies)
-               .WithOne(x => x.Role)
-               .HasForeignKey(c => c.RoleId);
-
-            // UserRole
-            modelBuilder.Entity<UserRole>()
-               .HasKey(table => new
-               {
-                   table.UserId,
-                   table.RoleId
-               });
-
-            // UserAuthorizationPolicy
-            modelBuilder.Entity<UserAuthorizationPolicy>()
-               .HasKey(table => new
-               {
-                   table.UserId,
-                   table.AuthorizationPolicyId
-               });
-
-            // RoleAuthorizationPolicy
-            modelBuilder.Entity<RoleAuthorizationPolicy>()
-               .HasKey(table => new
-               {
-                   table.RoleId,
-                   table.AuthorizationPolicyId
-               });
-
-            // UserCareer
-            modelBuilder.Entity<UserCareer>()
-               .HasKey(table => new
-               {
-                   table.UserId,
-                   table.CareerId
-               });
-
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new UserMap())
+                .ApplyConfiguration(new UserInfoMap())
+                .ApplyConfiguration(new RoleMap())
+                .ApplyConfiguration(new UserRoleMap())
+                .ApplyConfiguration(new UserAttributeMap())
+                .ApplyConfiguration(new AuthorizationPolicyMap())
+                .ApplyConfiguration(new UserAuthorizationPolicyMap())
+                .ApplyConfiguration(new RoleAuthorizationPolicyMap())
+                .ApplyConfiguration(new StatusMap())
+                .ApplyConfiguration(new GenderMap());
         }
 
         public async Task<int> SaveChangesAsync()

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Coco.Entities.Domain.Agri;
+using Coco.Entities.Domain.Content;
 using Coco.Contract;
 using System.Threading.Tasks;
-using Coco.Entities.Base;
-using Coco.Entities.Domain.Content;
 
 namespace Coco.DAL
 {
@@ -14,7 +12,7 @@ namespace Coco.DAL
         /// </summary>
         /// <typeparam name="TEntity">Entity type</typeparam>
         /// <returns>A set for the given entity type</returns>
-        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity
+        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
             return base.Set<TEntity>();
         }

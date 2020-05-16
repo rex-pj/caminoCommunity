@@ -1,20 +1,16 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
-using Coco.Entities.Domain.Identity;
+﻿using Coco.Entities.Constant;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coco.Entities.Domain.Work
+namespace Coco.Entities.Domain.Content
 {
     [Table(nameof(UserCareer), Schema = TableSchemaConst.DBO)]
-    public class UserCareer : BaseEntity
+    public class UserCareer
     {
         [ForeignKey("Career")]
         public byte CareerId { get; set; }
 
-        [ForeignKey("User")]
         public long UserId { get; set; }
 
         public virtual Career Career { get; set; }
-        public virtual User User { get; set; }
     }
 }

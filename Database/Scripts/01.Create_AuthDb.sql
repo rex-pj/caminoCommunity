@@ -1,7 +1,7 @@
-CREATE DATABASE Coco_IdentityDb
+CREATE DATABASE Coco_IdentityDb1
 
 GO
-USE Coco_IdentityDb;
+USE Coco_IdentityDb1;
 
 --USER--
 GO
@@ -108,56 +108,6 @@ GO
 ALTER TABLE dbo.[User]
 ADD CONSTRAINT FK_User_Status
 FOREIGN KEY (StatusId) REFERENCES dbo.[Status](Id);
-
-GO
-CREATE TABLE dbo.Career
-(
-	Id TINYINT NOT NULL IDENTITY(1,1),
-	Name NVARCHAR(10),
-	[Description] NVARCHAR(1000) NOT NULL,
-	UpdatedDate DATETIME2 NOT NULL,
-	UpdatedById BIGINT NOT NULL,
-	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
-)
-
-GO
-ALTER TABLE dbo.Career
-ADD CONSTRAINT PK_Career
-PRIMARY KEY (Id);
-
-GO
-ALTER TABLE dbo.Career
-ADD CONSTRAINT FK_Career_CreatedBy
-FOREIGN KEY (CreatedById) REFERENCES dbo.[User](Id);
-
-GO
-ALTER TABLE dbo.Career
-ADD CONSTRAINT FK_Career_UpdatedBy
-FOREIGN KEY (UpdatedById) REFERENCES dbo.[User](Id);
-
--- USER BUSINESS --
-GO
-CREATE TABLE dbo.UserCareer
-(
-	CareerId TINYINT NOT NULL,
-	UserId BIGINT NOT NULL
-)
-
-GO
-ALTER TABLE dbo.UserCareer
-ADD CONSTRAINT FK_UserCareer_User
-FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
-
-GO
-ALTER TABLE dbo.UserCareer
-ADD CONSTRAINT FK_UserCareer_Career
-FOREIGN KEY (CareerId) REFERENCES dbo.Career(Id);
-
-GO
-ALTER TABLE dbo.UserCareer
-ADD CONSTRAINT PK_UserCareer
-PRIMARY KEY (CareerId, UserId);
 
 --ROLE--
 GO
@@ -278,7 +228,7 @@ ADD CONSTRAINT FK_RoleAuthorizationPolicy_AuthorizationPolicy
 FOREIGN KEY (AuthorizationPolicyId) REFERENCES dbo.[AuthorizationPolicy](Id);
 
 GO
-ALTER TABLE dbo.[UserAuthorizationPolicy]
+ALTER TABLE dbo.[RoleAuthorizationPolicy]
 ADD CONSTRAINT PK_RoleAuthorizationPolicy
 PRIMARY KEY (AuthorizationPolicyId, RoleId);
 

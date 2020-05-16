@@ -1,13 +1,12 @@
-﻿using Coco.Entities.Base;
-using Coco.Entities.Constant;
+﻿using Coco.Entities.Constant;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coco.Entities.Domain.Agri
+namespace Coco.Entities.Domain.Content
 {
     [Table(nameof(Product), Schema = TableSchemaConst.AGRICULTURE)]
-    public class Product : BaseEntity
+    public class Product
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
