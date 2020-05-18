@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.Commons.Constants
+﻿namespace Coco.Common.Const
 {
     public class ExceptionConstant
     {
@@ -10,17 +10,17 @@
         public static readonly string NullSecurityStamp = "Null SecurityStamp";
         public static readonly string ConcurrencyFailure = "Concurrency Failure";
         public static readonly string DefaultError = "Default Error";
-        internal static readonly string LoginAlreadyAssociated = "Login Already Associated";
-        internal static readonly string InvalidToken = "Invalid Token";
-        internal static readonly string UserAlreadyHasPassword = "User Already Has Password";
-        internal static readonly string UserAlreadyActived = "User Already Actived";
-        internal static readonly string UserLockoutNotEnabled = "User Lockout Not Enabled";
+        public static readonly string LoginAlreadyAssociated = "Login Already Associated";
+        public static readonly string InvalidToken = "Invalid Token";
+        public static readonly string UserAlreadyHasPassword = "User Already Has Password";
+        public static readonly string UserAlreadyActived = "User Already Actived";
+        public static readonly string UserLockoutNotEnabled = "User Lockout Not Enabled";
         public static readonly string PasswordMismatch = "Password Mismatch";
         public static readonly string RecoveryCodeRedemptionFailed = "Recovery Code Redemption Failed";
-        internal static readonly string PasswordRequiresNonAlphanumeric = "Password Requires Non Alphanumeric";
-        internal static readonly string PasswordRequiresDigit = "Password Requires Digit";
-        internal static readonly string PasswordRequiresLower = "Password Requires Lower";
-        internal static readonly string PasswordRequiresUpper = "Password Requires Upper";
+        public static readonly string PasswordRequiresNonAlphanumeric = "Password Requires Non Alphanumeric";
+        public static readonly string PasswordRequiresDigit = "Password Requires Digit";
+        public static readonly string PasswordRequiresLower = "Password Requires Lower";
+        public static readonly string PasswordRequiresUpper = "Password Requires Upper";
         public static readonly string UnexpectedErrorOccurred = "An unexpected error has occurred";
     }
 }

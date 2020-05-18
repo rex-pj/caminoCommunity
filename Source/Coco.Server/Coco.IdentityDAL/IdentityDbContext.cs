@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Dbo;
 using System.Threading.Tasks;
 using Coco.Contract;
 using Coco.IdentityDAL.Mapping;
@@ -54,6 +53,9 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new UserAuthorizationPolicyMap())
                 .ApplyConfiguration(new RoleAuthorizationPolicyMap())
                 .ApplyConfiguration(new StatusMap())
+                .ApplyConfiguration(new CountryMap())
+                .ApplyConfiguration(new UserPhotoMap())
+                .ApplyConfiguration(new UserPhotoTypeMap())
                 .ApplyConfiguration(new GenderMap());
         }
 

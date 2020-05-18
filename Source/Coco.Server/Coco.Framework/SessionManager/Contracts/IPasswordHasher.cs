@@ -1,4 +1,4 @@
-﻿using Coco.Framework.Commons.Enums;
+﻿using Coco.Entities.Enums;
 using Coco.Framework.Models;
 
 namespace Coco.Framework.SessionManager.Contracts

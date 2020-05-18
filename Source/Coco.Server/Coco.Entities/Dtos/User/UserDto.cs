@@ -11,8 +11,8 @@ namespace Coco.Entities.Dtos.User
         public DateTime? BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-        public long? CreatedById { get; set; }
-        public long? UpdatedById { get; set; }
+        public long CreatedById { get; set; }
+        public long UpdatedById { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
         public bool IsActived { get; set; }

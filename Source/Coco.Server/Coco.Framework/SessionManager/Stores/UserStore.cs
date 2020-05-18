@@ -11,8 +11,8 @@ using AutoMapper;
 using Coco.Framework.SessionManager.Core;
 using System.Linq;
 using Coco.Common.Exceptions;
-using Coco.Commons.Models;
 using System.Collections.Generic;
+using Coco.Entities.Models;
 
 namespace Coco.Framework.SessionManager.Stores
 {

@@ -2,11 +2,11 @@
 using System;
 using System.Security.Cryptography;
 using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.Commons.Enums;
+using Coco.Entities.Enums;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
-using Coco.Framework.Commons.Constants;
 using Coco.Framework.SessionManager.Core;
+using Coco.Common.Const;
 
 namespace Coco.Framework.SessionManager
 {

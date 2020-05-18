@@ -1,4 +1,4 @@
-﻿using Coco.Framework.Commons.Enums;
+﻿using Coco.Entities.Enums;
 
 namespace Coco.Framework.Models
 {

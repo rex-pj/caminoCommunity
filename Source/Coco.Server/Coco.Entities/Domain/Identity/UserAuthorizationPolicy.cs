@@ -1,17 +1,17 @@
-﻿using Coco.Entities.Constant;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Identity
 {
-    [Table(nameof(UserAuthorizationPolicy), Schema = TableSchemaConst.DBO)]
     public class UserAuthorizationPolicy
     {
         public long UserId { get; set; }
-
         public short AuthorizationPolicyId { get; set; }
+        [Required]
         public DateTime GrantedDate { get; set; }
+        [Required]
         public long GrantedById { get; set; }
+        [Required]
         public bool IsGranted { get; set; }
         public virtual User User { get; set; }
         public virtual User GrantedBy { get; set; }

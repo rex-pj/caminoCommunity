@@ -1,12 +1,10 @@
-﻿using Coco.Entities.Constant;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coco.Entities.Domain.Content
 {
-    [Table(nameof(Career), Schema = TableSchemaConst.DBO)]
     public class Career
     {
         public Career()

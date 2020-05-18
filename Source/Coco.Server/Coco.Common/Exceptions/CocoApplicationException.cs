@@ -1,5 +1,5 @@
 ﻿using Coco.Common.Const;
-using Coco.Commons.Models;
+using Coco.Entities.Models;
 using System;
 using System.Collections.Generic;
 

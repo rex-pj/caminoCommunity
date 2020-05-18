@@ -1,4 +1,4 @@
-﻿namespace Coco.Commons.Models
+﻿namespace Coco.Entities.Models
 {
     public class CommonError
     {

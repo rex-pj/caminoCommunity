@@ -1,5 +1,4 @@
-﻿using Coco.Framework.SessionManager.Entities;
-using System;
+﻿using System;
 
 namespace Coco.Framework.Models
 {

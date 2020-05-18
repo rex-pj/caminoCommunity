@@ -1,7 +1,7 @@
 ﻿using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.Commons.Constants;
 using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
+using Coco.Common.Const;
 
 namespace Coco.Framework.SessionManager
 {

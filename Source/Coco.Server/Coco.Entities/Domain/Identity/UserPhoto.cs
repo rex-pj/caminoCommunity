@@ -1,33 +1,28 @@
-﻿using Coco.Entities.Constant;
-using Coco.Entities.Domain.Identity;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coco.Entities.Domain.Dbo
+namespace Coco.Entities.Domain.Identity
 {
-    [Table(nameof(UserPhoto), Schema = TableSchemaConst.DBO)]
     public class UserPhoto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+        [Required]
         public string Code { get; set; }
         public string Name { get; set; }
+        [Required]
         public string Url { get; set; }
         public string Description { get; set; }
+        [Required]
         public DateTime CreatedDate { get; set; }
+        [Required]
         public long CreatedById { get; set; }
+        [Required]
         public string ImageData { get; set; }
-
-        [ForeignKey("UserInfo")]
+        [Required]
         public long UserId { get; set; }
-
-        [ForeignKey("Type")]
+        [Required]
         public byte TypeId { get; set; }
-
         public virtual UserPhotoType Type { get; set; }
-
         public virtual UserInfo UserInfo { get; set; }
     }
 }

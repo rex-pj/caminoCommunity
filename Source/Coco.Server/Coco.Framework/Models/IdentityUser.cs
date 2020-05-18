@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Coco.Framework.SessionManager.Entities
+namespace Coco.Framework.Models
 {
     public class IdentityUser<TKey> where TKey : IEquatable<TKey>
     {

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos;
 using Coco.Entities.Dtos.Auth;

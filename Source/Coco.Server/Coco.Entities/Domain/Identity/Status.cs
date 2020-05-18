@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Identity
 {
@@ -10,6 +11,7 @@ namespace Coco.Entities.Domain.Identity
         }
 
         public byte Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
 

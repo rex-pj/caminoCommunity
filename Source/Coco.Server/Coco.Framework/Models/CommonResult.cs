@@ -1,5 +1,5 @@
-﻿using Coco.Framework.Commons.Enums;
-using Coco.Commons.Models;
+﻿using Coco.Entities.Enums;
+using Coco.Entities.Models;
 using System.Collections.Generic;
 
 namespace Coco.Framework.Models

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
     <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
   </ItemGroup>
 

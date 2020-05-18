@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Coco.Framework.Commons.Encode;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Core;
-using Coco.Framework.SessionManager.Entities;
 using Coco.Business.Contracts;
 using Coco.Entities.Dtos.User;
 using Microsoft.Extensions.Configuration;
@@ -20,8 +18,9 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IMapper _mapper;
         private readonly int _resetPasswordExpirationHours;
         public readonly int _registerConfimationExpirationHours;
+        private readonly ITextRandom _textRandom;
 
-        public UserStampStore(IUserAttributeBusiness userAttributeBusiness, IMapper mapper, IConfiguration configuration)
+        public UserStampStore(IUserAttributeBusiness userAttributeBusiness, IMapper mapper, IConfiguration configuration, ITextRandom textRandom)
         {
             _userAttributeBusiness = userAttributeBusiness;
             _mapper = mapper;
@@ -29,6 +28,7 @@ namespace Coco.Framework.SessionManager.Stores
             int.TryParse(resetPasswordExpirationHours, out _resetPasswordExpirationHours);
             var registerConfimationExpirationHours = configuration["RegisterConfimation:ExpirationHours"];
             int.TryParse(registerConfimationExpirationHours, out _registerConfimationExpirationHours);
+            _textRandom = textRandom;
         }
 
         public IEnumerable<UserAttributeDto> GetUserAttributes(long userId)
@@ -171,7 +171,7 @@ namespace Coco.Framework.SessionManager.Stores
 
         public string NewSecuritySalt()
         {
-            return SaltGenerator.GetSalt();
+            return _textRandom.GetSalt();
         }
     }
 }

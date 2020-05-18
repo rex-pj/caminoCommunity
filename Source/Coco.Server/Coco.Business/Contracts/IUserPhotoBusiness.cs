@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain.Dbo;
-using Coco.Entities.Enums;
+﻿using Coco.Entities.Enums;
 using Coco.Entities.Dtos;
 using Coco.Entities.Dtos.General;
 using System.Threading.Tasks;

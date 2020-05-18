@@ -1,6 +1,6 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Dbo;
+using Coco.Entities.Domain.Identity;
 using System.Collections.Generic;
 using System.Linq;
 

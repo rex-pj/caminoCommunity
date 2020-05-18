@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coco.Framework.SessionManager.Core;
-using Coco.Commons.Models;
+using Coco.Entities.Models;
 
 namespace Coco.Framework.SessionManager.Validators
 {

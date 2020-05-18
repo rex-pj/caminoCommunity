@@ -1,6 +1,7 @@
 ﻿using Coco.Entities.Domain.Auth;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Identity
 {
@@ -17,21 +18,29 @@ namespace Coco.Entities.Domain.Identity
         }
         
         public long Id { get; set; }
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string Lastname { get; set; }
+        [Required]
         public string Firstname { get; set; }
+        [Required]
         public string DisplayName { get; set; }
+        [Required]
         public string Password { get; set; }
+        [Required]
         public DateTime CreatedDate { get; set; }
+        [Required]
         public DateTime UpdatedDate { get; set; }
-        
-        public long? CreatedById { get; set; }
-        
-        public long? UpdatedById { get; set; }
+        [Required]
+        public long CreatedById { get; set; }
+        [Required]
+        public long UpdatedById { get; set; }
+        [Required]
         public bool IsActived { get; set; }
-
+        [Required]
         public byte StatusId { get; set; }
-        public virtual bool IsEmailConfirmed { get; set; }
+        public bool IsEmailConfirmed { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }
         public virtual UserInfo UserInfo { get; set; }
@@ -49,5 +58,6 @@ namespace Coco.Entities.Domain.Identity
         public virtual ICollection<UserAuthorizationPolicy> UserAuthorizationPolicies { get; set; }
         public virtual ICollection<UserAuthorizationPolicy> GrantedUserAuthorizationPolicies { get; set; }
         public virtual ICollection<RoleAuthorizationPolicy> GrantedRoleAuthorizationPolicies { get; set; }
+        public virtual ICollection<UserRole> GrantedUserRoles { get; set; }
     }
 }

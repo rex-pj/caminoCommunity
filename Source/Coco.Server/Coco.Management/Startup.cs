@@ -9,7 +9,6 @@ using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.SessionManager.Entities;
 using Coco.Management.MappingProfiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

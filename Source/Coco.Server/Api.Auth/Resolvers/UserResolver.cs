@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Coco.Entities.Dtos.User;
 using Api.Auth.Resolvers.Contracts;
 using HotChocolate.Resolvers;
-using Coco.Commons.Models;
+using Coco.Entities.Models;
 using Coco.Common.Const;
 using AutoMapper;
 using Coco.Framework.Services.Contracts;
