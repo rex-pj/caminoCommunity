@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.Commons.Constants
+﻿namespace Coco.Common.Const
 {
     public class HttpHeaderContants
     {

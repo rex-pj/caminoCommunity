@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.Models
+﻿namespace Coco.Entities.Models
 {
     public interface ISelectOption
     {

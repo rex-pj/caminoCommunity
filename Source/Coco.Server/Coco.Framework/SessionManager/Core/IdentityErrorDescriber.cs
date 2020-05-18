@@ -1,7 +1,7 @@
-﻿//using Coco.Framework.Commons.Constants;
-//using Coco.Framework.Commons.Helpers;
+﻿using Coco.Common.Const;
+using Coco.Entities.Models;
+using Coco.Common.Resources;
 //using Coco.Common.Const;
-//using Coco.Common.Models;
 
 //namespace Coco.Framework.SessionManager.Core
 //{

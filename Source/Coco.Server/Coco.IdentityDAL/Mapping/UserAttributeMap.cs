@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Constant;
+﻿using Coco.Common.Const;
 using Coco.Entities.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

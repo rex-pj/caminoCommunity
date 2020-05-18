@@ -1,6 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Coco.Business.Implementation
 {
@@ -14,7 +15,7 @@ namespace Coco.Business.Implementation
 
         public bool CanSeed()
         {
-            return _identityDbContext.Database.EnsureCreated();
+            return !_identityDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
         }
 
         public void SeedingData()
@@ -23,7 +24,7 @@ namespace Coco.Business.Implementation
             {
                 return;
             }
-            _identityDbContext.Database.Migrate();
+            _identityDbContext.Database.EnsureCreated();
         }
     }
 }

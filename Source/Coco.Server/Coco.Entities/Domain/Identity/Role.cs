@@ -1,12 +1,10 @@
-﻿using Coco.Entities.Constant;
-using Coco.Entities.Domain.Identity;
+﻿using Coco.Entities.Domain.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Auth
 {
-    [Table(nameof(Role), Schema = TableSchemaConst.DBO)]
     public class Role
     {
         public Role()
@@ -15,11 +13,16 @@ namespace Coco.Entities.Domain.Auth
         }
 
         public byte Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        [Required]
         public DateTime CreatedDate { get; set; }
+        [Required]
         public long CreatedById { get; set; }
+        [Required]
         public DateTime UpdatedDate { get; set; }
+        [Required]
         public long UpdatedById { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }

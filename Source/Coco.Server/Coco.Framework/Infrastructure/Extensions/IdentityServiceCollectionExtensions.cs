@@ -31,6 +31,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 //.AddTransient<ITextCrypter, TextCrypter>()
                 //.AddTransient(typeof(IUserStampStore<>), typeof(UserStampStore<>))
                 .AddTransient<ISessionContext, SessionContext>()
+                .AddScoped<ITextRandom, TextRandom>()
                 .AddScoped<IEmailSender, EmailSender>();
 
             if (setupAction != null)

@@ -1,12 +1,8 @@
-﻿using Coco.Entities.Constant;
-using Coco.Entities.Domain.Identity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coco.Entities.Domain.Dbo
+namespace Coco.Entities.Domain.Identity
 {
-    [Table(nameof(Country), Schema = TableSchemaConst.DBO)]
     public class Country
     {
         public Country()
@@ -14,13 +10,11 @@ namespace Coco.Entities.Domain.Dbo
             this.UserInfos = new HashSet<UserInfo>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public short Id { get; set; }
+        [Required]
         public string Code { get; set; }
+        [Required]
         public string Name { get; set; }
-
-        [ForeignKey("CountryId")]
         public virtual ICollection<UserInfo> UserInfos { get; set; }
     }
 }

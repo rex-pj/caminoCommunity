@@ -1,11 +1,9 @@
-﻿using Coco.Entities.Constant;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coco.Entities.Domain.Content
 {
-    [Table(nameof(Product), Schema = TableSchemaConst.AGRICULTURE)]
     public class Product
     {
         [Key]

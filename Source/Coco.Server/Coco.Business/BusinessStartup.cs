@@ -5,7 +5,6 @@ using Coco.DAL;
 using Coco.DAL.Implementations;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Content;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
