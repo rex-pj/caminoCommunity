@@ -7,11 +7,11 @@ namespace Coco.Framework.SessionManager
 {
     public class SessionContext : ISessionContext
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserManager<ApplicationUser> _userManager;
         public readonly HttpContext HttpContext;
         public readonly HttpRequest HttpRequest;
         public readonly IHeaderDictionary RequestHeaders;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserManager<ApplicationUser> _userManager;
         public string AuthenticationToken { get; protected set; }
         protected SessionContextHeaders AuthorizationHeaders { get; set; }
 
@@ -37,25 +37,13 @@ namespace Coco.Framework.SessionManager
                 AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
             }
 
-            _currentUser = GetLoggedUser();
+            CurrentUser = GetLoggedUser();
         }
-
-        private ApplicationUser _currentUser;
 
         /// <summary>
         /// Gets or sets the current customer
         /// </summary>
-        public ApplicationUser CurrentUser
-        {
-            get
-            {
-                return _currentUser;
-            }
-            set
-            {
-                _currentUser = value;
-            }
-        }
+        public ApplicationUser CurrentUser { get; set; }
 
         protected ApplicationUser GetLoggedUser()
         {

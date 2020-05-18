@@ -2,8 +2,6 @@
 using Api.Resource.GraphQLTypes.InputTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager;
-using Coco.Framework.SessionManager.Contracts;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +11,6 @@ namespace Api.Resource.Infrastructure.Extensions
     {
         public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
         {
-            services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
             return services
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)

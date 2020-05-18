@@ -14,7 +14,7 @@ namespace Api.Auth.Infrastructure.Extensions
         public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
         {
             services.AddAuthentication();
-            services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
+            //services.AddTransient<ILoginManager<ApplicationUser>, LoginManager>();
             return services
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)

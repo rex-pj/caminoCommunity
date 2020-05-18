@@ -1,5 +1,5 @@
 ﻿using Coco.Common.Const;
-using Coco.Commons.Models;
+using Coco.Common.Models;
 using System;
 using System.Collections.Generic;
 
@@ -10,8 +10,7 @@ namespace Coco.Common.Exceptions
         public string Code { get; private set; }
         public List<CommonError> Errors { get; protected set; }
         
-        public CocoApplicationException() 
-            : base(ErrorMessageConst.UN_EXPECTED_EXCEPTION)
+        public CocoApplicationException() : base(ErrorMessageConst.UN_EXPECTED_EXCEPTION)
         {
             Code = ErrorMessageConst.UN_EXPECTED_EXCEPTION;
         }

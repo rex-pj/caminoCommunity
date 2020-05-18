@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Stores.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager.Stores
 {
-    public class SessionRoleStore : ISessionRoleStore<ApplicationRole>
+    public class SessionRoleStore : ISessionRoleStore<ApplicationRole>, IDisposable
     {
         private readonly IRoleBusiness _roleBusiness;
         private readonly IMapper _mapper;

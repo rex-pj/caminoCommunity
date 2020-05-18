@@ -34,6 +34,12 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public async Task<UserPhotoUpdateDto> UpdateUserPhotoAsync(UserPhotoUpdateDto model, long userId)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)
             {
@@ -79,6 +85,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             using (var transaction = _identityContext.Database.BeginTransaction())
             {
+                model.UserPhotoCode = Guid.NewGuid().ToString();
                 if (userPhoto == null)
                 {
                     userPhoto = new UserPhoto()
@@ -121,6 +128,11 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public async Task DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
         {
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
             var type = (byte)userPhotoType;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
