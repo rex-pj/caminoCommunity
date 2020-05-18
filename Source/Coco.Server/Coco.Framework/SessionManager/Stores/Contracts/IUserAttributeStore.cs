@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager.Stores.Contracts
 {
-    public interface IUserStampStore<TUser> where TUser : class
+    public interface IUserAttributeStore<TUser> where TUser : class
     {
         Task<string> GetSecurityStampAsync(long userId, string key);
         Task<string> GetPasswordSaltAsync(long userId);
@@ -21,6 +21,5 @@ namespace Coco.Framework.SessionManager.Stores.Contracts
         Task<string> GetResetPasswordKeyAsync(long userId);
         Task<bool> DeleteResetPasswordByEmailAttribute(ApplicationUser user);
         string NewSecurityStamp();
-        string NewSecuritySalt();
     }
 }

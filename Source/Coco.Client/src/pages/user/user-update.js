@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
-import { GET_USER_IDENTIFY } from "../../utils/GraphQlQueries/queries";
-import { UPDATE_USER_IDENTIFIER } from "../../utils/GraphQlQueries/mutations";
+import { GET_USER_IDENTIFY } from "../../utils/GraphQLQueries/queries";
+import { UPDATE_USER_IDENTIFIER } from "../../utils/GraphQLQueries/mutations";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";

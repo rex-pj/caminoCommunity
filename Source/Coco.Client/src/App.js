@@ -19,7 +19,7 @@ import configureModalStore from "./store/hook-store/modal-store";
 import configureAvatarStore from "./store/hook-store/avatar-store";
 import configureNotifyStore from "./store/hook-store/notify-store";
 import { useQuery } from "@apollo/react-hooks";
-import { GET_LOGGED_USER } from "./utils/GraphQlQueries/queries";
+import { GET_LOGGED_USER } from "./utils/GraphQLQueries/queries";
 import { SessionContext } from "./store/context/SessionContext";
 import AuthService from "./services/AuthService";
 import { getLocalStorageByKey } from "./services/StorageService";

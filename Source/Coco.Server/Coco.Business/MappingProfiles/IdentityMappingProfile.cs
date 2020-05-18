@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Coco.Entities.Domain.Auth;
-using Coco.Entities.Domain.Dbo;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos;
 using Coco.Entities.Dtos.Auth;
@@ -24,7 +23,7 @@ namespace Coco.Business.MappingProfiles
                     UpdatedById = s.UpdatedById,
                     CreatedById = s.CreatedById,
                     Email = s.Email,
-                    Password = s.Password,
+                    PasswordHash = s.PasswordHash,
                     IsActived = s.IsActived,
                     StatusId = s.StatusId
                 }));

@@ -23,6 +23,8 @@ namespace Coco.Business.Implementation.UserBusiness
 
             userModel.StatusId = 1;
             userModel.IsActived = false;
+            userModel.CreatedDate = DateTime.UtcNow;
+            userModel.UpdatedDate = DateTime.UtcNow;
 
             var userInfo = _mapper.Map<UserInfo>(userModel);
 
@@ -47,7 +49,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository.FindAsync(model.UserId);
 
-            user.Password = model.NewPassword;
+            user.PasswordHash = model.NewPassword;
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 

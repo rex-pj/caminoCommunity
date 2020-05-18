@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Coco.Entities.Models;
+using System.Collections.Generic;
 
 namespace Coco.Framework.Models
 {

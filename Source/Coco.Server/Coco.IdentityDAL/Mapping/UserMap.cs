@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Constant;
+﻿using Coco.Common.Const;
 using Coco.Entities.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -9,64 +9,27 @@ namespace Coco.IdentityDAL.Mapping
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable(nameof(UserInfo), TableSchemaConst.DBO);
+            builder.ToTable(nameof(User), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder
                 .HasOne(x => x.UserInfo)
                 .WithOne(x => x.User)
-                .HasForeignKey<UserInfo>(x => x.Id);
+                .HasForeignKey<UserInfo>(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
-                .HasMany(x => x.CreatedUsers)
-                .WithOne(x => x.CreatedBy)
-                .HasForeignKey(x => x.CreatedById);
+                .HasOne(x => x.CreatedBy)
+                .WithMany(x => x.CreatedUsers)
+                .HasForeignKey(x => x.CreatedById)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .HasMany(x => x.UpdatedUsers)
-                .WithOne(x => x.UpdatedBy)
-                .HasForeignKey(x => x.UpdatedById);
-
-            builder
-                .HasMany(c => c.UserRoles)
-               .WithOne(x => x.User)
-               .HasForeignKey(c => c.UserId);
-
-            builder
-               .HasMany(c => c.CreatedRoles)
-               .WithOne(x => x.CreatedBy)
-               .HasForeignKey(c => c.CreatedById);
-
-            builder
-               .HasMany(c => c.UpdatedRoles)
-               .WithOne(x => x.UpdatedBy)
-               .HasForeignKey(c => c.UpdatedById);
-
-            builder
-                .HasMany(c => c.CreatedAuthorizationPolicies)
-                .WithOne(x => x.CreatedBy)
-                .HasForeignKey(c => c.CreatedById);
-
-            builder
-                .HasMany(c => c.UpdatedAuthorizationPolicies)
-                .WithOne(x => x.UpdatedBy)
-                .HasForeignKey(c => c.UpdatedById);
-
-            builder
-                .HasMany(c => c.UserAuthorizationPolicies)
-                .WithOne(x => x.User)
-                .HasForeignKey(c => c.UserId);
-
-            builder
-                .HasMany(c => c.UserAuthorizationPolicies)
-                .WithOne(x => x.User)
-                .HasForeignKey(c => c.UserId);
-
-            builder
-                .HasMany(c => c.GrantedRoleAuthorizationPolicies)
-                .WithOne(x => x.GrantedBy)
-                .HasForeignKey(c => c.GrantedById);
+                .HasOne(x => x.UpdatedBy)
+                .WithMany(x => x.UpdatedUsers)
+                .HasForeignKey(x => x.UpdatedById)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

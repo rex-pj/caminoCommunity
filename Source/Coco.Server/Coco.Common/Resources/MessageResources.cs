@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.Commons.Helpers
+﻿namespace Coco.Common.Resources
 {
     public class MessageResources
     {
@@ -22,37 +22,37 @@
             return $"Email '{userEmail}' is already taken.";
         }
 
-        internal static string FormatInvalidRoleName(string role)
+        public static string FormatInvalidRoleName(string role)
         {
             return $"Role name '{role}' is invalid.";
         }
 
-        internal static string FormatDuplicateRoleName(string role)
+        public static string FormatDuplicateRoleName(string role)
         {
             return $"Role name '{role}' is already taken.";
         }
 
-        internal static string FormatPasswordRequiresUniqueChars(int uniqueChars)
+        public static string FormatPasswordRequiresUniqueChars(int uniqueChars)
         {
             return $"Passwords must use at least {uniqueChars} different characters.";
         }
 
-        internal static string FormatPasswordTooShort(int length)
+        public static string FormatPasswordTooShort(int length)
         {
             return $"Passwords must be at least {length} characters.";
         }
 
-        internal static string FormatPasswordTooLong(int length)
+        public static string FormatPasswordTooLong(int length)
         {
             return $"Passwords must be shorter than {length} characters.";
         }
 
-        internal static string FormatUserNotInRole(string role)
+        public static string FormatUserNotInRole(string role)
         {
             return $"User is not in role '{role}'.";
         }
 
-        internal static string FormatUserAlreadyInRole(string role)
+        public static string FormatUserAlreadyInRole(string role)
         {
             return $"User already in role '{role}'.";
         }

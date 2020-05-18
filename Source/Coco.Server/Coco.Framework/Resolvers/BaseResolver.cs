@@ -1,4 +1,4 @@
-﻿using Coco.Common.Models;
+﻿using Coco.Entities.Models;
 using HotChocolate.Resolvers;
 using System;
 using System.Collections.Generic;

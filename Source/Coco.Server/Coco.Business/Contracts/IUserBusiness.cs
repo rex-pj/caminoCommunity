@@ -10,8 +10,8 @@ namespace Coco.Business.Contracts
     {
         Task<UserDto> CreateAsync(UserDto user);
         UserDto GetLoggedIn(long id);
-        Task<UserDto> FindUserByEmail(string email);
-        Task<UserDto> FindUserByUsername(string username);
+        Task<UserDto> FindByEmailAsync(string email);
+        Task<UserDto> FindByUsernameAsync(string username);
         void Delete(long id);
         Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto model);
         Task<UserDto> FindByIdAsync(long id);

@@ -1,4 +1,4 @@
-﻿namespace Coco.Entities.Constant
+﻿namespace Coco.Common.Const
 {
     public class TableSchemaConst
     {

@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.Commons.Enums
+﻿namespace Coco.Entities.Enums
 {
     /// <summary>
     /// Specifies the results for password verification.

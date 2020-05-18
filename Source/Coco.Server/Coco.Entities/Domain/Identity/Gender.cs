@@ -1,6 +1,4 @@
-﻿using Coco.Entities.Constant;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace Coco.Entities.Domain.Identity
 {

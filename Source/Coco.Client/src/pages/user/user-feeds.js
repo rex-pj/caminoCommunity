@@ -7,7 +7,7 @@ import { Pagination } from "../../components/molecules/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/react-hooks";
 import cdnClient from "../../utils/GraphQLClient/cdnClient";
-import { VALIDATE_IMAGE_URL } from "../../utils/GraphQlQueries/mutations";
+import { VALIDATE_IMAGE_URL } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 
 export default withRouter((props) => {

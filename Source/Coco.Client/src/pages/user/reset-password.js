@@ -2,7 +2,7 @@ import React from "react";
 import ResetPasswordForm from "../../components/organisms/Auth/ResetPasswordForm";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
-import { RESET_PASSWORD } from "../../utils/GraphQlQueries/mutations";
+import { RESET_PASSWORD } from "../../utils/GraphQLQueries/mutations";
 import { useStore } from "../../store/hook-store";
 import { unauthClient } from "../../utils/GraphQLClient";
 

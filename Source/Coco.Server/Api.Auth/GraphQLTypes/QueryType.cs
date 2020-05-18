@@ -11,27 +11,27 @@ namespace Api.Auth.GraphQLTypes
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field<IUserResolver>(x => x.SignoutAsync(default))
-                .Type<CommonResultType>()
-                .Directive<AuthenticationDirectiveType>()
-                .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
+            //descriptor.Field<IUserResolver>(x => x.SignoutAsync(default))
+            //    .Type<CommonResultType>()
+            //    .Directive<AuthenticationDirectiveType>()
+            //    .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
 
-            descriptor.Field<IUserResolver>(x => x.GetLoggedUser(default))
-                .Type<LoggedInResultType>()
-                .Directive<InitializeSessionDirectiveType>()
-                .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUser(ctx));
+            //descriptor.Field<IUserResolver>(x => x.GetLoggedUser(default))
+            //    .Type<LoggedInResultType>()
+            //    .Directive<InitializeSessionDirectiveType>()
+            //    .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUser(ctx));
 
-            descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
-                .Type<FullUserInfoResultType>()
-                .Directive<InitializeSessionDirectiveType>()
-                .Argument("criterias", a => a.Type<FindUserInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().GetFullUserInfoAsync(ctx));
+            //descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
+            //    .Type<FullUserInfoResultType>()
+            //    .Directive<InitializeSessionDirectiveType>()
+            //    .Argument("criterias", a => a.Type<FindUserInputType>())
+            //    .Resolver(ctx => ctx.Service<IUserResolver>().GetFullUserInfoAsync(ctx));
 
-            // Public query
-            descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
-                .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<ActiveUserInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
+            //// Public query
+            //descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
+            //    .Type<CommonResultType>()
+            //    .Argument("criterias", a => a.Type<ActiveUserInputType>())
+            //    .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
         }
     }
 }

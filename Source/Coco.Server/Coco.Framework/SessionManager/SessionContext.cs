@@ -1,7 +1,7 @@
 ﻿using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.Commons.Constants;
 using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
+using Coco.Common.Const;
 
 namespace Coco.Framework.SessionManager
 {
@@ -52,12 +52,12 @@ namespace Coco.Framework.SessionManager
                 return new ApplicationUser();
             }
 
-            var user = _userManager
-                    .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
-            user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
-            user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+            //var user = _userManager
+            //        .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
+            //user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            //user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
 
-            return user;
+            return null;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()

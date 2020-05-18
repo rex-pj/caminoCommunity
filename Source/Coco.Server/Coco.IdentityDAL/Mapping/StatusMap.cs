@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Constant;
+﻿using Coco.Common.Const;
 using Coco.Entities.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,7 +11,7 @@ namespace Coco.IdentityDAL.Mapping
         {
             builder.ToTable(nameof(Status), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
 
             builder
                .HasMany(c => c.Users)

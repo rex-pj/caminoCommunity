@@ -11,8 +11,8 @@ namespace Coco.Entities.Dtos.User
         public DateTime? BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-        public long? CreatedById { get; set; }
-        public long? UpdatedById { get; set; }
+        public long CreatedById { get; set; }
+        public long UpdatedById { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
         public bool IsActived { get; set; }
@@ -21,12 +21,11 @@ namespace Coco.Entities.Dtos.User
         public string Firstname { get; set; }
         public string DisplayName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string PasswordSalt { get; set; }
+        public string PasswordHash { get; set; }
+        public string SecurityStamp { get; set; }
         public string AuthenticationToken { get; set; }
         public DateTime? Expiration { get; set; }
         public string IdentityStamp { get; set; }
-        public string SecurityStamp { get; set; }
         public string AvatarUrl { get; set; }
         public string CoverPhotoUrl { get; set; }
         public bool IsEmailConfirmed { get; set; }
