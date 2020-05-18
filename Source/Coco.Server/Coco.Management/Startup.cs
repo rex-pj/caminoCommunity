@@ -7,16 +7,13 @@ using Coco.Contract;
 using Coco.Framework.Infrastructure;
 using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.SessionManager.Entities;
 using Coco.Management.MappingProfiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 
 namespace Coco.Management
 {
@@ -55,7 +52,7 @@ namespace Coco.Management
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
-            services.AddTransient<ILoginManager<ApplicationUser>, SessionLoginManager>();
+            //services.AddTransient<ILoginManager<ApplicationUser>, SessionLoginManager>();
         }
 
 

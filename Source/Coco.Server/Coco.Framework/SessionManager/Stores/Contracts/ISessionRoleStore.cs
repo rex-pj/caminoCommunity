@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Coco.Framework.SessionManager.Contracts
+namespace Coco.Framework.SessionManager.Stores.Contracts
 {
     public interface ISessionRoleStore<TRole>
     {

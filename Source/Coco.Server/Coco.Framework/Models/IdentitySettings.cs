@@ -1,4 +1,4 @@
-﻿namespace Coco.Framework.SessionManager.Entities
+﻿namespace Coco.Framework.Models
 {
     public static class IdentitySettings
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Coco.Entities.Dtos.User;
 using Api.Auth.Resolvers.Contracts;
 using HotChocolate.Resolvers;
-using Coco.Commons.Models;
+using Coco.Common.Models;
 using Coco.Common.Const;
 using AutoMapper;
 using Coco.Framework.Services.Contracts;
@@ -17,6 +17,7 @@ using Api.Auth.Models;
 using Coco.Auth.Models;
 using Coco.Common.Resources;
 using MimeKit.Text;
+using Coco.Business.Contracts;
 
 namespace Api.Auth.Resolvers
 {
@@ -31,14 +32,16 @@ namespace Api.Auth.Resolvers
         private readonly string _resetPasswordUrl;
         private readonly string _registerConfirmFromEmail;
         private readonly string _registerConfirmFromName;
+        private readonly IUserPhotoBusiness _userPhotoBusiness;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, 
-            IMapper mapper, IEmailSender emailSender,
+            IMapper mapper, IEmailSender emailSender, IUserPhotoBusiness userPhotoBusiness,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _loginManager = loginManager;
             _mapper = mapper;
+            _userPhotoBusiness = userPhotoBusiness;
 
             _emailSender = emailSender;
             _appName = configuration["ApplicationName"];
@@ -148,9 +151,16 @@ namespace Api.Auth.Resolvers
             {
                 var model = GenerateUserPhotoModel(context);
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = sessionContext.CurrentUser;
+
+                var user = await _userManager.FindUserByIdentityIdAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
                 model.UserPhotoType = UserPhotoTypeEnum.Avatar;
-                var result = await _userManager.UpdateAvatarAsync(model, sessionContext.CurrentUser);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, user.Id);
 
                 return CommonResult.Success(result);
             }
@@ -167,9 +177,16 @@ namespace Api.Auth.Resolvers
             {
                 var model = GenerateUserPhotoModel(context);
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = sessionContext.CurrentUser;
+
+                var user = await _userManager.FindUserByIdentityIdAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
                 model.UserPhotoType = UserPhotoTypeEnum.Cover;
-                var result = await _userManager.UpdateCoverAsync(model, sessionContext.CurrentUser);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, user.Id);
 
                 return CommonResult.Success(result);
             }
@@ -192,8 +209,14 @@ namespace Api.Auth.Resolvers
                 }
 
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var result = await _userManager.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Avatar);
-                return CommonResult.Success(result);
+                var currentUser = sessionContext.CurrentUser;
+                if (currentUser.Id < 0)
+                {
+                    throw new ArgumentNullException(nameof(currentUser.Id));
+                }
+
+                await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoTypeEnum.Avatar);
+                return CommonResult.Success(new UserPhotoUpdateDto());
             }
             catch (Exception ex)
             {
@@ -214,8 +237,8 @@ namespace Api.Auth.Resolvers
                 }
 
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var result = await _userManager.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
-                return CommonResult.Success(result);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
+                return CommonResult.Success(new UserPhotoUpdateDto());
             }
             catch (Exception ex)
             {

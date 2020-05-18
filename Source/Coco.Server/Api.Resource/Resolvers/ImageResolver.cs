@@ -4,7 +4,7 @@ using HotChocolate.Resolvers;
 using Api.Resource.Models;
 using Coco.Business.ValidationStrategies;
 using Coco.Framework.Models;
-using Coco.Commons.Models;
+using Coco.Common.Models;
 
 namespace Api.Public.Resolvers
 {

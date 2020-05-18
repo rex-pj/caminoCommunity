@@ -3,7 +3,7 @@ using Coco.Entities.Dtos.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Coco.Framework.SessionManager.Contracts
+namespace Coco.Framework.SessionManager.Stores.Contracts
 {
     public interface IUserStampStore<TUser> where TUser : class
     {
