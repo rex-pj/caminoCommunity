@@ -11,7 +11,7 @@ import {
 import {
   UPDATE_USER_AVATAR,
   DELETE_USER_AVATAR,
-} from "../../../utils/GraphQlQueries/mutations";
+} from "../../../utils/GraphQLQueries/mutations";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";

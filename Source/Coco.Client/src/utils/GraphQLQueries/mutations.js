@@ -1,6 +1,6 @@
 import gpl from "graphql-tag";
 
-export const SIGN_UP = gpl`
+export const SIGNUP = gpl`
   mutation Signup($criterias: SignupModelInput){
     signup(criterias: $criterias){
       isSucceed,

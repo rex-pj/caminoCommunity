@@ -3,7 +3,7 @@ import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
-import { SIGNOUT } from "../../utils/GraphQlQueries/queries";
+import { SIGNOUT } from "../../utils/GraphQLQueries/queries";
 import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter((props) => {

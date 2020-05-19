@@ -322,16 +322,14 @@ namespace Api.Auth.Resolvers
                 var user = new ApplicationUser()
                 {
                     BirthDate = model.BirthDate,
-                    CreatedDate = DateTime.UtcNow,
                     DisplayName = $"{model.Lastname} {model.Firstname}",
                     Email = model.Email,
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
                     GenderId = (byte)model.GenderId,
                     StatusId = (byte)UserStatusEnum.New,
-                    UpdatedDate = DateTime.UtcNow,
                     UserName = model.Email,
-                    Password = model.Password
+                    Password = model.Password,
                 };
 
                 var result = await _userManager.CreateAsync(user);

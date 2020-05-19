@@ -21,13 +21,15 @@ namespace Coco.Entities.Domain.Identity
         [Required]
         public string Email { get; set; }
         [Required]
+        public string UserName { get; set; }
+        [Required]
         public string Lastname { get; set; }
         [Required]
         public string Firstname { get; set; }
         [Required]
         public string DisplayName { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
         [Required]
         public DateTime CreatedDate { get; set; }
         [Required]

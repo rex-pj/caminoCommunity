@@ -2,7 +2,7 @@ import React from "react";
 import Active from "../../components/organisms/User/Active";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
-import { ACTIVE } from "../../utils/GraphQlQueries/queries";
+import { ACTIVE } from "../../utils/GraphQLQueries/queries";
 import { unauthClient } from "../../utils/GraphQLClient";
 
 export default withRouter((props) => {

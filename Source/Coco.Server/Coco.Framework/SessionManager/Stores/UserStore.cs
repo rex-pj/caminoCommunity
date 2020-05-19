@@ -1,336 +1,107 @@
-﻿//using Coco.Framework.Models;
-//using Coco.Framework.SessionManager.Contracts;
-//using Coco.Business.Contracts;
-//using System.Threading.Tasks;
-//using System;
-//using Coco.Entities.Dtos.User;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.Configuration;
-//using Coco.Entities.Dtos.General;
-//using AutoMapper;
-//using Coco.Framework.SessionManager.Core;
-//using System.Linq;
-//using Coco.Common.Exceptions;
-//using Coco.Common.Models;
-//using System.Collections.Generic;
-//using Coco.Framework.SessionManager.Stores.Contracts;
+﻿using AutoMapper;
+using Coco.Business.Contracts;
+using Coco.Entities.Dtos.User;
+using Coco.Framework.Models;
+using Coco.Framework.SessionManager.Stores.Contracts;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-//namespace Coco.Framework.SessionManager.Stores
-//{
-//    public class UserStore : IUserStore<ApplicationUser>
-//    {
-//        private readonly IUserBusiness _userBusiness;
-//        private readonly ITextCrypter _textCrypter;
-//        private readonly string _textCrypterSaltKey;
-//        private readonly IMapper _mapper;
-//        private readonly IUserAttributeBusiness _userAttributeBusiness;
-//        private readonly IUserStampStore<ApplicationUser> _userStampStore;
-//        private readonly IUserRoleBusniess _userRoleBusniess;
+namespace Coco.Framework.SessionManager.Stores
+{
+    public class UserStore : IUserStore<ApplicationUser>
+    {
+        private readonly IUserBusiness _userBusiness;
+        private IMapper _mapper;
+        private readonly IUserAttributeStore<ApplicationUser> _userAttributeStore;
 
-//        /// <summary>
-//        /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.
-//        /// </summary>
-//        /// <value>The <see cref="IdentityErrorDescriber"/> used to provider error messages for the current <see cref="UserValidator{TUser}"/>.</value>
-//        public IdentityErrorDescriber Describer { get; private set; }
-//        private bool _isDisposed;
+        public UserStore(IUserBusiness userBusiness, IUserAttributeStore<ApplicationUser> userAttributeStore, IMapper mapper)
+        {
+            _userBusiness = userBusiness;
+            _userAttributeStore = userAttributeStore;
+            _mapper = mapper;
+        }
 
-//        public UserStore(IUserBusiness userBusiness,
-//            IUserAttributeBusiness userAttributeBusiness,
-//            ITextCrypter textCrypter,
-//            IConfiguration configuration,
-//            IMapper mapper,
-//            IUserStampStore<ApplicationUser> userStampStore,
-//            IUserRoleBusniess userRoleBusniess,
-//            IdentityErrorDescriber errors = null)
-//        {
-//            _textCrypterSaltKey = configuration["Crypter:SaltKey"];
-//            _userBusiness = userBusiness;
-//            _userAttributeBusiness = userAttributeBusiness;
-//            _textCrypter = textCrypter;
-//            _mapper = mapper;
-//            _userStampStore = userStampStore;
-//            _userRoleBusniess = userRoleBusniess;
-//            Describer = errors ?? new IdentityErrorDescriber();
-//        }
+        public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
 
-//        #region IUserStore<LoggedUser> Members
-//        public async Task<ICommonResult> CreateAsync(ApplicationUser user)
-//        {
-//            try
-//            {
-//                if (user == null)
-//                {
-//                    throw new ArgumentNullException(nameof(user));
-//                }
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Password = user.PasswordHash;
 
-//                var userModel = _mapper.Map<UserDto>(user);
-//                userModel.Password = user.PasswordHash;
+                var response = await _userBusiness.CreateAsync(userDto);
+                if (response.Id > 0)
+                {
+                    var userResponse = _mapper.Map<ApplicationUser>(response);
+                    userResponse.ActiveUserStamp = user.ActiveUserStamp;
+                    userResponse.SecurityStamp = user.SecurityStamp;
 
-//                var userData = await _userBusiness.CreateAsync(userModel);
-//                var userResult = _mapper.Map<ApplicationUser>(userData);
+                    var newUserAttributes = _userAttributeStore.NewUserRegisterAttributes(userResponse);
+                    await _userAttributeStore.SetAttributesAsync(newUserAttributes);
+                }
 
-//                return CommonResult.Success(userResult);
-//            }
-//            catch (Exception ex)
-//            {
-//                return CommonResult.Failed(new CommonError { Code = ex.Message, Message = ex.Message });
-//            }
-//        }
-//        #endregion
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed();
+            }
+        }
 
-//        /// <summary>
-//        /// Gets the user, if any, associated with the specified, normalized email address.
-//        /// </summary>
-//        /// <param name="normalizedEmail">The normalized email address to return the user for.</param>
-//        /// <returns>
-//        /// The task object containing the results of the asynchronous lookup operation, the user if any associated with the specified normalized email address.
-//        /// </returns>
-//        public virtual async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail)
-//        {
-//            ThrowIfDisposed();
+        public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
 
-//            var entity = await _userBusiness.FindUserByEmail(normalizedEmail);
-//            var result = _mapper.Map<ApplicationUser>(entity);
-//            return result;
-//        }
+        public void Dispose()
+        {
+            throw new System.NotImplementedException();
+        }
 
-//        /// <summary>
-//        /// Updates the specified <paramref name="user"/> in the user store.
-//        /// </summary>
-//        /// <param name="user">The user to update.</param>
-//        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-//        public virtual async Task<ICommonResult> UpdateAuthenticationAsync(ApplicationUser user)
-//        {
-//            ThrowIfDisposed();
-//            if (user == null)
-//            {
-//                throw new ArgumentNullException(nameof(user));
-//            }
+        public Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//            try
-//            {
-//                var userModel = _mapper.Map<UserDto>(user);
-//                var authenticationAttributes = _userStampStore.NewUserAuthenticationAttributes(user);
-//                var userAttribute = await _userAttributeBusiness.CreateAsync(authenticationAttributes);
+        public Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//                if (userAttribute == null || !userAttribute.Any())
-//                {
-//                    return CommonResult.Failed(Describer.InvalidToken());
-//                }
+        public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//                var authTokenResult = userAttribute.FirstOrDefault(x => x.Key == UserAttributeOptions.AUTHENTICATION_TOKEN);
-//                if (authTokenResult == null || string.IsNullOrEmpty(authTokenResult.Value))
-//                {
-//                    throw new UnauthorizedAccessException();
-//                }
+        public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//                string userIdentityId = _textCrypter.Encrypt(authTokenResult.UserId.ToString(), _textCrypterSaltKey);
-//                var userInfo = _mapper.Map<UserInfoModel>(user);
-//                userInfo.UserIdentityId = userIdentityId;
-//                return CommonResult.Success(new UserTokenResult()
-//                {
-//                    AuthenticationToken = authTokenResult.Value,
-//                    UserInfo = userInfo
-//                });
-//            }
-//            catch (DbUpdateConcurrencyException)
-//            {
-//                return CommonResult.Failed(Describer.ConcurrencyFailure());
-//            }
-//        }
+        public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//        public virtual async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(ApplicationUser user)
-//        {
-//            ThrowIfDisposed();
+        public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//            try
-//            {
-//                var userModel = _mapper.Map<UserIdentifierUpdateDto>(user);
-//                var result = await _userBusiness.UpdateIdentifierAsync(userModel);
+        public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
 
-//                return new UserIdentifierUpdateDto()
-//                {
-//                    DisplayName = result.DisplayName,
-//                    Firstname = result.Firstname,
-//                    Lastname = result.Lastname
-//                };
-//            }
-//            catch (DbUpdateConcurrencyException)
-//            {
-//                throw new CocoApplicationException(Describer.ConcurrencyFailure());
-//            }
-//        }
-
-//        public async Task<ApplicationUser> FindByIdAsync(long userId)
-//        {
-//            if (userId <= 0)
-//            {
-//                throw new ArgumentNullException(nameof(userId));
-//            }
-
-//            var user = await _userBusiness.FindByIdAsync(userId);
-
-//            var result = _mapper.Map<ApplicationUser>(user);
-//            result.PasswordHash = user.Password;
-
-//            return result;
-//        }
-
-//        public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName)
-//        {
-//            var userEntity = await _userBusiness.FindUserByUsername(normalizedUserName.ToLower());
-//            var result = _mapper.Map<ApplicationUser>(userEntity);
-
-//            if (result != null)
-//            {
-//                result.UserName = result.Email;
-//            }
-
-//            return result;
-//        }
-
-//        public ApplicationUser FindByIdentityId(string userIdentityId)
-//        {
-//            var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
-//            var userId = long.Parse(userIdDecrypted);
-
-//            var user = GetLoggedInUser(userId);
-//            return user;
-//        }
-
-//        private ApplicationUser GetLoggedInUser(long id)
-//        {
-//            var userEntity = _userBusiness.GetLoggedIn(id);
-//            return _mapper.Map<ApplicationUser>(userEntity);
-//        }
-
-//        public async Task<UserFullDto> FindByIdentityIdAsync(string userIdentityId)
-//        {
-//            var userIdDecrypted = _textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey);
-//            var userId = long.Parse(userIdDecrypted);
-
-//            var user = await FindFullByIdAsync(userId);
-//            return await Task.FromResult(user);
-//        }
-
-//        public async Task<UserFullDto> FindFullByIdAsync(long id)
-//        {
-//            var userEntity = await _userBusiness.FindFullByIdAsync(id);
-
-//            return await Task.FromResult(userEntity);
-//        }
-
-//        public Task<string> GetUserIdAsync(ApplicationUser user)
-//        {
-//            if (user == null)
-//            {
-//                throw new ArgumentNullException(nameof(user));
-//            }
-
-//            return Task.FromResult(user.Id.ToString());
-//        }
-
-//        public string GetUserNameAsync(ApplicationUser user)
-//        {
-//            if (user == null)
-//            {
-//                throw new ArgumentNullException(nameof(user));
-//            }
-
-//            return user.UserName;
-//        }
-
-//        /// <summary>
-//        /// Updates the specified <paramref name="model"/> in the user store.
-//        /// </summary>
-//        /// <param name="model">The user info to update.</param>
-//        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the update operation.</returns>
-//        public virtual async Task<UpdatePerItemModel> UpdateInfoItemAsync(UpdatePerItemModel model)
-//        {
-//            ThrowIfDisposed();
-//            if (model == null)
-//            {
-//                throw new ArgumentNullException(nameof(model));
-//            }
-
-//            if (model.PropertyName == null)
-//            {
-//                throw new ArgumentNullException(nameof(model.PropertyName));
-//            }
-
-//            if (model.Key == null)
-//            {
-//                throw new ArgumentNullException(nameof(model.Key));
-//            }
-
-//            try
-//            {
-//                var userIdDecrypted = _textCrypter.Decrypt(model.Key.ToString(), _textCrypterSaltKey);
-//                var userId = long.Parse(userIdDecrypted);
-//                var userModel = new UpdatePerItemDto()
-//                {
-//                    Key = userId,
-//                    Value = model.Value,
-//                    PropertyName = model.PropertyName
-//                };
-
-//                var result = await _userBusiness.UpdateInfoItemAsync(userModel);
-
-//                model.Value = result.Value;
-
-//                return model;
-//            }
-//            catch (DbUpdateConcurrencyException ex)
-//            {
-//                throw new CocoApplicationException(ex);
-//            }
-//        }
-
-//        public async Task<ICommonResult> ActiveAsync(ApplicationUser user)
-//        {
-//            try
-//            {
-//                var isSucceed = await _userBusiness.ActiveAsync(user.Id);
-
-//                return new CommonResult(isSucceed);
-//            }
-//            catch (Exception ex)
-//            {
-//                return CommonResult.Failed(new CommonError { Code = ex.Message, Message = ex.Message });
-//            }
-//        }
-
-//        public async Task<List<ApplicationUserRole>> GetUserRolesAsync(ApplicationUser user)
-//        {
-//            var userDto = _mapper.Map<UserDto>(user);
-//            var userRoles = await _userRoleBusniess.GetUserRolesAsync(userDto);
-//            return _mapper.Map<List<ApplicationUserRole>>(userRoles);
-//        }
-
-//        public ApplicationUserRoleAuthorizationPolicy GetRoleAuthorizationsAsync(ApplicationUser user)
-//        {
-//            var userDto = _mapper.Map<UserDto>(user);
-//            var roleAuthorizationPolicies = _userBusiness.GetRoleAuthorizationPolicies(userDto);
-//            return _mapper.Map<ApplicationUserRoleAuthorizationPolicy>(roleAuthorizationPolicies);
-//        }
-
-//        /// <summary>
-//        /// Throws if this class has been disposed.
-//        /// </summary>
-//        protected void ThrowIfDisposed()
-//        {
-//            if (_isDisposed)
-//            {
-//                throw new ObjectDisposedException(GetType().Name);
-//            }
-//        }
-
-//        /// <summary>
-//        /// Dispose the store
-//        /// </summary>
-//        public void Dispose()
-//        {
-//            _isDisposed = true;
-//        }
-//    }
-//}
+        public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+}

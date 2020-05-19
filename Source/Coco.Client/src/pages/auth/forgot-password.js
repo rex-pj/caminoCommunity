@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
 import { useMutation } from "@apollo/react-hooks";
 import { unauthClient } from "../../utils/GraphQLClient";
-import { FORGOT_PASSWORD } from "../../utils/GraphQlQueries/mutations";
+import { FORGOT_PASSWORD } from "../../utils/GraphQLQueries/mutations";
 import { getError } from "../../utils/Helper";
 import { withRouter } from "react-router-dom";
 import { SessionContext } from "../../store/context/SessionContext";
