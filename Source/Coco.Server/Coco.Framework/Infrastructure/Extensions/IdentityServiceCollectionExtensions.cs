@@ -1,7 +1,10 @@
-﻿using Coco.Framework.Services.Contracts;
+﻿using Coco.Framework.Models;
+using Coco.Framework.Services.Contracts;
 using Coco.Framework.Services.Implementation;
 using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Stores;
+using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,18 +21,22 @@ namespace Coco.Framework.Infrastructure.Extensions
 
         public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
+            services.AddIdentity<ApplicationUser, ApplicationRole>();
+
             services
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
-                //.AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager>()
+                .AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager<ApplicationUser>>()
+                .AddTransient<ISessionRoleManager<ApplicationRole>, ApplicationRoleManager<ApplicationRole>>()
                 //.AddTransient<ISessionRoleManager<ApplicationRole>, SessionRoleManager>()
                 //.AddTransient<ISessionRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
                 //.AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
-                //.AddTransient<IUserStore<ApplicationUser>, UserStore>()
+                .AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>()
+                .AddTransient<IRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()
                 //.AddTransient<ITextCrypter, TextCrypter>()
-                //.AddTransient(typeof(IUserStampStore<>), typeof(UserStampStore<>))
+                .AddTransient(typeof(IUserAttributeStore<>), typeof(UserAttributeStore<>))
                 .AddTransient<ISessionContext, SessionContext>()
                 .AddScoped<ITextRandom, TextRandom>()
                 .AddScoped<IEmailSender, EmailSender>();

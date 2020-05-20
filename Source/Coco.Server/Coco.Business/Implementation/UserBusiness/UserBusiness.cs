@@ -133,7 +133,7 @@ namespace Coco.Business.Implementation.UserBusiness
         #endregion
 
         #region GET
-        public async Task<UserDto> FindUserByEmail(string email)
+        public async Task<UserDto> FindByEmailAsync(string email)
         {
             email = email.ToLower();
 
@@ -145,7 +145,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return user;
         }
 
-        public async Task<UserDto> FindUserByUsername(string username)
+        public async Task<UserDto> FindByUsernameAsync(string username)
         {
             username = username.ToLower();
 

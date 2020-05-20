@@ -52,12 +52,12 @@ namespace Coco.Framework.SessionManager
                 return new ApplicationUser();
             }
 
-            var user = _userManager
-                    .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
-            user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
-            user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+            //var user = _userManager
+            //        .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
+            //user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            //user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
 
-            return user;
+            return null;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()
