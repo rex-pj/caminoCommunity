@@ -1,12 +1,7 @@
-﻿using Coco.Framework.Models;
-using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.SessionManager.Stores.Contracts;
+﻿using Coco.Framework.SessionManager.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {

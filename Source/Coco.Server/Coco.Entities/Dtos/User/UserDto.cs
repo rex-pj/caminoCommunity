@@ -21,12 +21,11 @@ namespace Coco.Entities.Dtos.User
         public string Firstname { get; set; }
         public string DisplayName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string PasswordSalt { get; set; }
+        public string PasswordHash { get; set; }
+        public string SecurityStamp { get; set; }
         public string AuthenticationToken { get; set; }
         public DateTime? Expiration { get; set; }
         public string IdentityStamp { get; set; }
-        public string SecurityStamp { get; set; }
         public string AvatarUrl { get; set; }
         public string CoverPhotoUrl { get; set; }
         public bool IsEmailConfirmed { get; set; }

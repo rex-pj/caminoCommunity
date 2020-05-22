@@ -23,7 +23,7 @@ namespace Coco.Business.MappingProfiles
                     UpdatedById = s.UpdatedById,
                     CreatedById = s.CreatedById,
                     Email = s.Email,
-                    PasswordHash = s.Password,
+                    PasswordHash = s.PasswordHash,
                     IsActived = s.IsActived,
                     StatusId = s.StatusId
                 }));

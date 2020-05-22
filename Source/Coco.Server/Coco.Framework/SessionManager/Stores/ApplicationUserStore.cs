@@ -5,7 +5,6 @@ using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +34,7 @@ namespace Coco.Framework.SessionManager.Stores
                 }
 
                 var userDto = _mapper.Map<UserDto>(user);
-                userDto.Password = user.PasswordHash;
+                userDto.PasswordHash = user.PasswordHash;
 
                 var response = await _userBusiness.CreateAsync(userDto);
                 if (response.Id > 0)
@@ -134,6 +133,35 @@ namespace Coco.Framework.SessionManager.Stores
         public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public virtual Task SetPasswordHashAsync(ApplicationUser user, string passwordHash, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            user.PasswordHash = passwordHash;
+            return Task.CompletedTask;
+        }
+
+        public virtual Task<string> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            return Task.FromResult(user.PasswordHash);
+        }
+
+        public virtual Task<bool> HasPasswordAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(user.PasswordHash != null);
         }
 
         public virtual string ConvertIdToString(long id)

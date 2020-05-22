@@ -19,7 +19,7 @@ namespace Coco.Business.Mapping
             IsActived = user.IsActived,
             StatusId = user.StatusId,
             Email = user.Email,
-            Password = user.PasswordHash,
+            PasswordHash = user.PasswordHash,
             Id = user.Id,
             IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,

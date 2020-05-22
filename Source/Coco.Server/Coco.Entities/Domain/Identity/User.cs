@@ -19,14 +19,19 @@ namespace Coco.Entities.Domain.Identity
         
         public long Id { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Email { get; set; }
         [Required]
+        [MaxLength(255)]
         public string UserName { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Lastname { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Firstname { get; set; }
         [Required]
+        [MaxLength(255)]
         public string DisplayName { get; set; }
         [Required]
         public string PasswordHash { get; set; }
