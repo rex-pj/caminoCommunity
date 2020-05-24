@@ -2,6 +2,7 @@
 using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Coco.Common.Const;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {
@@ -36,28 +37,32 @@ namespace Coco.Framework.SessionManager
             {
                 AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
             }
-
-            CurrentUser = GetLoggedUser();
         }
 
-        /// <summary>
-        /// Gets or sets the current customer
-        /// </summary>
-        public ApplicationUser CurrentUser { get; set; }
-
-        protected ApplicationUser GetLoggedUser()
+        public async Task<ApplicationUser> GetLoggedUserAsync()
         {
             if (!IsAuthorizationHeadersValid())
             {
                 return new ApplicationUser();
             }
 
-            //var user = _userManager
-            //        .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
-            //user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
-            //user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+            var userId = await _userManager.DecryptUserIdAsync(AuthorizationHeaders.UserIdentityId);
+            var currentUser = await _userManager.FindByIdAsync(userId.ToString());
+            if (currentUser == null)
+            {
+                return new ApplicationUser();
+            }
 
-            return null;
+            var user = await _userManager.FindByLoginAsync(ServiceProvidersNameConst.COCO_API_AUTH, AuthorizationHeaders.AuthenticationToken);
+            if(user == null || user.Id != currentUser.Id)
+            {
+                return new ApplicationUser();
+            }
+
+            user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+
+            return user;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()
@@ -78,9 +83,7 @@ namespace Coco.Framework.SessionManager
 
         private bool IsAuthorizationHeadersValid()
         {
-            return AuthorizationHeaders != null
-                && !string.IsNullOrEmpty(AuthorizationHeaders.AuthenticationToken)
-                && !string.IsNullOrEmpty(AuthorizationHeaders.UserIdentityId);
+            return AuthorizationHeaders != null && !string.IsNullOrEmpty(AuthorizationHeaders.AuthenticationToken) && !string.IsNullOrEmpty(AuthorizationHeaders.UserIdentityId);
         }
     }
 }

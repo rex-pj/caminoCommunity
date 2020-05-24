@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace Coco.Framework.SessionManager
 {
-    public class ApplicationRoleManager<TRole> : RoleManager<TRole>, ISessionRoleManager<TRole>
-        where TRole : IdentityRole<int>
+    public class ApplicationRoleManager<TRole> : RoleManager<TRole>, ISessionRoleManager<TRole> 
+        where TRole : IdentityRole<long>
     {
         public ApplicationRoleManager(IRoleStore<TRole> store, IEnumerable<IRoleValidator<TRole>> roleValidators,
             ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, ILogger<RoleManager<TRole>> logger)

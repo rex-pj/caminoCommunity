@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using Coco.Framework.SessionManager.Contracts;
-using System.Security.Cryptography;
+using Coco.Framework.SessionManager.Stores.Contracts;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {
@@ -25,97 +25,27 @@ namespace Coco.Framework.SessionManager
         {
         }
 
-        public override async Task<IdentityResult> CreateAsync(TUser user)
+        private IUserEncryptionStore<TUser> GetUserEncryptionStore()
         {
-            return await base.CreateAsync(user);
-        }
-
-        protected override Task<IdentityResult> UpdatePasswordHash(TUser user, string newPassword, bool validatePassword)
-            => UpdatePasswordHash(GetPasswordStore(), user, newPassword, validatePassword);
-
-        private async Task<IdentityResult> UpdatePasswordHash(IUserPasswordStore<TUser> passwordStore,
-            TUser user, string newPassword, bool validatePassword = true)
-        {
-            if (validatePassword)
-            {
-                var validate = await ValidatePasswordAsync(user, newPassword);
-                if (!validate.Succeeded)
-                {
-                    return validate;
-                }
-            }
-            var hash = newPassword != null ? PasswordHasher.HashPassword(user, newPassword) : null;
-            await passwordStore.SetPasswordHashAsync(user, hash, CancellationToken);
-            //await UpdateSecurityStampInternal(user);
-            return IdentityResult.Success;
-        }
-
-
-        public virtual async Task UpdateNormalizedUserNameAsync(TUser user)
-        {
-            var normalizedName = NormalizeName(await GetUserNameAsync(user));
-            //normalizedName = ProtectPersonalData(normalizedName);
-            await Store.SetNormalizedUserNameAsync(user, normalizedName, CancellationToken);
-        }
-
-        private IUserPasswordStore<TUser> GetPasswordStore()
-        {
-            var cast = Store as IUserPasswordStore<TUser>;
+            var cast = Store as IUserEncryptionStore<TUser>;
             if (cast == null)
             {
-                //throw new NotSupportedException(Resources.StoreNotIUserPasswordStore);
+                throw new NotSupportedException("Store is not UserEncryptionStore");
             }
             return cast;
         }
 
-        //        private string ProtectPersonalData(string data)
-        //        {
-        //            if (Options.Stores.ProtectPersonalData)
-        //            {
-        //                var keyRing = _services.GetService<ILookupProtectorKeyRing>();
-        //                var protector = _services.GetService<ILookupProtector>();
-        //                return protector.Protect(keyRing.CurrentKeyId, data);
-        //            }
-        //            return data;
-        //        }
 
-        //        private async Task UpdateSecurityStampInternal(TUser user)
-        //        {
-        //            if (SupportsUserSecurityStamp)
-        //            {
-        //                await GetSecurityStore().SetSecurityStampAsync(user, NewSecurityStamp(), CancellationToken);
-        //            }
-        //        }
-
-        //        private static string NewSecurityStamp()
-        //        {
-        //            byte[] bytes = new byte[20];
-        //#if NETSTANDARD2_0
-        //                    _rng.GetBytes(bytes);
-        //#else
-        //            RandomNumberGenerator.Fill(bytes);
-        //#endif
-        //            return Base32.ToBase32(bytes);
-        //        }
-
-        private IUserSecurityStampStore<TUser> GetSecurityStore()
+        public async Task<string> EncryptUserIdAsync(long userId)
         {
-            var cast = Store as IUserSecurityStampStore<TUser>;
-            if (cast == null)
-            {
-                //throw new NotSupportedException(Resources.StoreNotIUserSecurityStampStore);
-            }
-            return cast;
+            var userEncryptionStore = GetUserEncryptionStore();
+            return await userEncryptionStore.EncryptUserId(userId);
         }
 
-        private IUserLockoutStore<TUser> GetUserLockoutStore()
+        public async Task<long> DecryptUserIdAsync(string userIdentityId)
         {
-            var cast = Store as IUserLockoutStore<TUser>;
-            if (cast == null)
-            {
-                //throw new NotSupportedException(Resources.StoreNotIUserLockoutStore);
-            }
-            return cast;
+            var userEncryptionStore = GetUserEncryptionStore();
+            return await userEncryptionStore.DecryptUserId(userIdentityId);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Coco.Entities.Domain.Auth
             this.UserRoles = new HashSet<UserRole>();
         }
 
-        public byte Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Coco.Framework.Models
 {
@@ -16,17 +17,18 @@ namespace Coco.Framework.Models
         public DateTime? UpdatedDate { get; set; }
         public byte? GenderId { get; set; }
         public string GenderLabel { get; set; }
+
+        // Extend
         public short? CountryId { get; set; }
         public string CountryName { get; set; }
         public string CountryCode { get; set; }
         public bool IsActived { get; set; }
         public byte StatusId { get; set; }
-        public string PhoneNumber { get; set; }
-        public string AuthenticationToken { get; set; }
         public string UserIdentityId { get; set; }
         public DateTime? Expiration { get; set; }
         public string StatusLabel { get; set; }
         public string AvatarUrl { get; set; }
         public string CoverPhotoUrl { get; set; }
+        public string AuthenticationToken { get; set; }
     }
 }

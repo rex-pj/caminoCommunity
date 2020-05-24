@@ -8,7 +8,7 @@ namespace Coco.Entities.Domain.Auth
     {
         public long UserId { get; set; }
         
-        public byte RoleId { get; set; }
+        public long RoleId { get; set; }
         [Required]
         public DateTime GrantedDate { get; set; }
         [Required]

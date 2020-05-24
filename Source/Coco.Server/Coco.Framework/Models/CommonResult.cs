@@ -57,7 +57,7 @@ namespace Coco.Framework.Models
             return updateResult;
         }
 
-        public static ICommonResult Failed(CommonError[] errors)
+        public static ICommonResult Failed(IEnumerable<CommonError> errors)
         {
             var result = new CommonResult();
             if (errors != null)

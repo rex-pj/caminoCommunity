@@ -1,4 +1,4 @@
-USE Coco_IdentityDb
+USE Coco_IdentityDb1
 
 -- USER STATUS --
 INSERT INTO dbo.[Status]
@@ -32,20 +32,20 @@ VALUES
 ('Blocked', 'The user is being blocked')
 
 -- USER ROLE --
-INSERT INTO dbo.[Role]
-([Name], [Description])
-VALUES
-('Admin', 'The administrator')
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Admin', 'The administrator')
 
-INSERT INTO dbo.[Role]
-([Name], [Description])
-VALUES
-('Moderator', 'The moderator')
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Moderator', 'The moderator')
 
-INSERT INTO dbo.[Role]
-([Name], [Description])
-VALUES
-('Approver', 'The approver')
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Approver', 'The approver')
 
 -- GENDER --
 INSERT INTO dbo.Gender

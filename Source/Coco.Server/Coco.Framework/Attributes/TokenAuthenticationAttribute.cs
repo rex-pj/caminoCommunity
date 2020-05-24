@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.Attributes
 {
@@ -18,7 +19,7 @@ namespace Coco.Framework.Attributes
             this.Arguments = new object[] { isIgnore };
         }
 
-        public class AuthenticationFilter : IAuthorizationFilter
+        public class AuthenticationFilter : IAsyncAuthorizationFilter
         {
             #region Fields
 
@@ -33,7 +34,7 @@ namespace Coco.Framework.Attributes
                 _sessionContext = sessionContext;
             }
 
-            public void OnAuthorization(AuthorizationFilterContext filterContext)
+            public async Task OnAuthorizationAsync(AuthorizationFilterContext filterContext)
             {
                 if (filterContext == null)
                 {
@@ -54,13 +55,14 @@ namespace Coco.Framework.Attributes
                     return;
                 }
 
-                if(!filterContext.Filters.Any(filter => filter is AuthenticationFilter))
+                if (!filterContext.Filters.Any(filter => filter is AuthenticationFilter))
                 {
                     return;
                 }
 
+                var currentUser = await _sessionContext.GetLoggedUserAsync();
                 //there is AuthorizeLoggedUserFilter, so check access
-                if (_sessionContext.CurrentUser == null)
+                if (currentUser == null || currentUser.Id <= 0)
                 {
                     filterContext.Result = new ForbidResult();
                 }

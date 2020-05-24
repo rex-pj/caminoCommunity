@@ -24,8 +24,8 @@ namespace Coco.Management.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var result = await _sessionLoginManager.LoginAsync(model.UserName, model.Password);
-            if (!result.IsSucceed)
+            var result = await _sessionLoginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
+            if (!result.Succeeded)
             {
                 return RedirectToAction("Login", "Authentication");
             }

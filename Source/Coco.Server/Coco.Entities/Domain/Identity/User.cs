@@ -1,5 +1,6 @@
 ﻿using Coco.Entities.Domain.Auth;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -66,5 +67,8 @@ namespace Coco.Entities.Domain.Identity
         public virtual ICollection<UserAuthorizationPolicy> GrantedUserAuthorizationPolicies { get; set; }
         public virtual ICollection<RoleAuthorizationPolicy> GrantedRoleAuthorizationPolicies { get; set; }
         public virtual ICollection<UserRole> GrantedUserRoles { get; set; }
+        public virtual ICollection<UserClaim> UserClaims { get; set; }
+        public virtual ICollection<UserToken> UserTokens { get; set; }
+        public virtual ICollection<UserLogin> UserLogins { get; set; }
     }
 }

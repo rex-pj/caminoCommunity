@@ -60,10 +60,10 @@ namespace Api.Auth.GraphQLTypes
                 .Argument("criterias", a => a.Type<SignupInputType>())
                 .Resolver(ctx => ctx.Service<IUserResolver>().SignupAsync(ctx));
 
-            //descriptor.Field<IUserResolver>(x => x.SigninAsync(default))
-            //    .Type<UserTokenResultType>()
-            //    .Argument("criterias", a => a.Type<SigninInputType>())
-            //    .Resolver(ctx => ctx.Service<IUserResolver>().SigninAsync(ctx));
+            descriptor.Field<IUserResolver>(x => x.SigninAsync(default))
+                .Type<UserTokenResultType>()
+                .Argument("criterias", a => a.Type<SigninInputType>())
+                .Resolver(ctx => ctx.Service<IUserResolver>().SigninAsync(ctx));
 
             //descriptor.Field<IUserResolver>(x => x.ForgotPasswordAsync(default))
             //    .Type<CommonResultType>()

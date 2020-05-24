@@ -13,7 +13,6 @@ using Api.Auth.Infrastructure.Extensions;
 using HotChocolate.AspNetCore;
 using Api.Auth.Resolvers.Contracts;
 using Api.Auth.Resolvers;
-using Coco.Framework.Models;
 
 namespace Api.Auth
 {
@@ -60,6 +59,7 @@ namespace Api.Auth
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
+            services.AddHttpContextAccessor();
             services.AddTransient<IUserResolver, UserResolver>();
             services.AddTransient<ICountryResolver, CountryResolver>();
             services.AddTransient<IGenderResolver, GenderResolver>();

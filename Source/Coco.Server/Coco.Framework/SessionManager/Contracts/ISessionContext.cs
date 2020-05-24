@@ -1,10 +1,11 @@
 ﻿using Coco.Framework.Models;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager.Contracts
 {
     public interface ISessionContext
     {
-        ApplicationUser CurrentUser { get; set; }
         string AuthenticationToken { get; }
+        Task<ApplicationUser> GetLoggedUserAsync();
     }
 }

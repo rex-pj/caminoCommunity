@@ -12,7 +12,8 @@ CREATE TABLE dbo.[User]
 	Lastname NVARCHAR(255) NOT NULL,
 	FirstName NVARCHAR(255) NOT NULL,
 	DisplayName NVARCHAR(255) NOT NULL,
-	[Password] NVARCHAR(MAX) NOT NULL,
+	UserName NVARCHAR(255) NOT NULL,
+	[PasswordHash] NVARCHAR(MAX) NOT NULL,
 	IsEmailConfirmed BIT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	UpdatedDate DATETIME2 NOT NULL,
@@ -113,7 +114,7 @@ FOREIGN KEY (StatusId) REFERENCES dbo.[Status](Id);
 GO
 CREATE TABLE dbo.[Role]
 (
-	Id TINYINT NOT NULL IDENTITY(1,1),
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	[Name] VARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(1000) NULL,
 	UpdatedDate DATETIME2 NOT NULL,
@@ -140,7 +141,7 @@ FOREIGN KEY (UpdatedById) REFERENCES dbo.[User](Id);
 GO
 CREATE TABLE dbo.[UserRole]
 (
-	RoleId TINYINT NOT NULL,
+	RoleId BIGINT NOT NULL,
 	UserId BIGINT NOT NULL,
 	GrantedDate DATETIME2 NULL,
 	GrantedById BIGINT NOT NULL,
@@ -211,7 +212,7 @@ GO
 CREATE TABLE dbo.RoleAuthorizationPolicy
 (
 	AuthorizationPolicyId SMALLINT NOT NULL,
-	RoleId TINYINT NOT NULL,
+	RoleId BIGINT NOT NULL,
 	GrantedDate DATETIME2 NULL,
 	GrantedById BIGINT NOT NULL,
 	IsGranted BIT NOT NULL
@@ -284,4 +285,66 @@ CREATE TABLE dbo.UserAttribute
 GO
 ALTER TABLE dbo.UserAttribute
 ADD CONSTRAINT PK_UserAttribute
+PRIMARY KEY (Id);
+
+/**USER CLAIMS**/
+GO
+CREATE TABLE dbo.[UserClaim]
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	UserId BIGINT NOT NULL,
+	ClaimType NVARCHAR(MAX) NOT NULL,
+	ClaimValue NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[UserClaim]
+ADD CONSTRAINT PK_UserClaim
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE dbo.[UserClaim]
+ADD CONSTRAINT FK_UserClaim_User
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
+
+/**USER TOKENS**/
+GO
+CREATE TABLE dbo.[UserToken]
+(
+	UserId BIGINT NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
+	[Value] NVARCHAR(255) NOT NULL,
+	[LoginProvider] NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[UserToken]
+ADD CONSTRAINT FK_UserToken_User
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
+
+GO
+ALTER TABLE dbo.[UserToken]
+ADD CONSTRAINT PK_UserToken
+PRIMARY KEY (UserId, [Name], [Value]);
+
+
+/**USER LOGINS**/
+GO
+CREATE TABLE dbo.[UserLogin]
+(
+	Id BIGINT NOT NULL,
+	UserId BIGINT NOT NULL,
+	LoginProvider NVARCHAR(255) NOT NULL,
+	ProviderDisplayName NVARCHAR(255) NOT NULL,
+	ProviderKey NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[UserLogin]
+ADD CONSTRAINT FK_UserLogin_User
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
+
+GO
+ALTER TABLE dbo.[UserLogin]
+ADD CONSTRAINT PK_UserLogin
 PRIMARY KEY (Id);

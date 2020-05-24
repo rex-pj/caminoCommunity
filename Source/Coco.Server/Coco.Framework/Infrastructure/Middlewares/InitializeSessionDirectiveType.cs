@@ -1,4 +1,6 @@
-﻿using Coco.Framework.SessionManager.Contracts;
+﻿using Coco.Common.Exceptions;
+using Coco.Framework.Models;
+using Coco.Framework.SessionManager.Contracts;
 using HotChocolate.Types;
 
 namespace Coco.Framework.Infrastructure.Middlewares
@@ -14,7 +16,13 @@ namespace Coco.Framework.Infrastructure.Middlewares
             descriptor.Use(next => async context =>
             {
                 var sessionContext = context.Service<ISessionContext>();
-                if (sessionContext != null && sessionContext.CurrentUser != null)
+                if (sessionContext == null)
+                {
+                    throw new CocoApplicationException("SessionContext is not registered");
+                }
+
+                var currentUser = await sessionContext.GetLoggedUserAsync();
+                if (currentUser != null && currentUser.Id > 0)
                 {
                     context.ContextData["SessionContext"] = sessionContext;
                 }

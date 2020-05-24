@@ -1,9 +1,9 @@
-﻿namespace Coco.Framework.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Coco.Framework.Models
 {
-    public class ApplicationUserRole
+    public class ApplicationUserRole : IdentityUserRole<long>
     {
-        public long UserId { get; set; }
-        public int RoleId { get; set; }
         public string RoleName { get; set; }
     }
 }

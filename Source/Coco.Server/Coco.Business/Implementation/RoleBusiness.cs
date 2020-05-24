@@ -5,6 +5,7 @@ using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.IdentityDAL;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Coco.Business.Implementation
         }
 
         #region CRUD
-        public byte Add(RoleDto roleModel)
+        public long Add(RoleDto roleModel)
         {
             if (roleModel == null)
             {
@@ -103,6 +104,19 @@ namespace Coco.Business.Implementation
         public RoleDto FindByName(string name)
         {
             var exist = _roleRepository.Get(x => x.Name == name).FirstOrDefault();
+            if (exist == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<RoleDto>(exist);
+        }
+
+        public async Task<RoleDto> FindByNameAsync(string name)
+        {
+            name = name.ToLower();
+            var exist = await _roleRepository.Get(x => x.Name.ToLower() == name)
+                .FirstOrDefaultAsync();
             if (exist == null)
             {
                 return null;

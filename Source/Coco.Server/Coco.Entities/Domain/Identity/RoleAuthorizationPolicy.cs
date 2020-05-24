@@ -6,7 +6,7 @@ namespace Coco.Entities.Domain.Identity
 {
     public class RoleAuthorizationPolicy
     {
-        public byte RoleId { get; set; }
+        public long RoleId { get; set; }
         [Required]
         public short AuthorizationPolicyId { get; set; }
         [Required]

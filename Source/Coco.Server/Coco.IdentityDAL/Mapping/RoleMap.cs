@@ -11,7 +11,7 @@ namespace Coco.IdentityDAL.Mapping
         {
             builder.ToTable(nameof(Role), TableSchemaConst.DBO);
             builder.HasKey(x => x.Id);
-            builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder
                .HasMany(c => c.UserRoles)
