@@ -35,10 +35,12 @@ namespace Coco.Business
                 .AddTransient<IRoleBusiness, RoleBusiness>()
                 .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>()
                 .AddTransient<IArticleCategoryBusiness, ArticleCategoryBusiness>()
-                .AddTransient<IUserRoleBusniess, UserRoleBusniess>()
+                .AddTransient<IUserRoleBusiness, UserRoleBusiness>()
                 .AddTransient<IAuthorizationPolicyBusiness, AuthorizationPolicyBusiness>()
                 .AddTransient<IRoleAuthorizationPolicyBusiness, RoleAuthorizationPolicyBusiness>()
-                .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>();
+                .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>()
+                .AddTransient<IUserClaimBusiness, UserClaimBusiness>()
+                .AddTransient<IUserTokenBusiness, UserTokenBusiness>();
 
             services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
@@ -49,7 +51,9 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserRole>, EfIdentityRepository<UserRole>>()
                 .AddTransient<IRepository<AuthorizationPolicy>, EfIdentityRepository<AuthorizationPolicy>>()
                 .AddTransient<IRepository<UserAuthorizationPolicy>, EfIdentityRepository<UserAuthorizationPolicy>>()
-                .AddTransient<IRepository<RoleAuthorizationPolicy>, EfIdentityRepository<RoleAuthorizationPolicy>>();
+                .AddTransient<IRepository<RoleAuthorizationPolicy>, EfIdentityRepository<RoleAuthorizationPolicy>>()
+                .AddTransient<IRepository<UserClaim>, EfIdentityRepository<UserClaim>>()
+                .AddTransient<IRepository<UserToken>, EfIdentityRepository<UserToken>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()

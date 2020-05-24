@@ -2,6 +2,7 @@
 using Coco.Framework.Models;
 using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.Auth;
+using System.Security.Claims;
 
 namespace Coco.Framework.Infrastructure.MappingProfiles
 {
@@ -16,6 +17,11 @@ namespace Coco.Framework.Infrastructure.MappingProfiles
             CreateMap<ApplicationUser, UserIdentifierUpdateDto>();
             CreateMap<RoleDto, ApplicationRole>();
             CreateMap<UserRoleDto, ApplicationUserRole>();
+            CreateMap<ApplicationUserClaim, UserClaimDto>();
+            CreateMap<UserClaimDto, ApplicationUserClaim>();
+            CreateMap<Claim, ClaimDto>();
+            CreateMap<UserTokenDto, ApplicationUserToken>();
+            CreateMap<ApplicationUserToken, UserTokenDto>();
         }
     }
 }

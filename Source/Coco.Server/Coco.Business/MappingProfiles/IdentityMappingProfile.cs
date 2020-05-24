@@ -18,8 +18,9 @@ namespace Coco.Business.MappingProfiles
                     DisplayName = s.DisplayName,
                     Firstname = s.Firstname,
                     Lastname = s.Lastname,
-                    UpdatedDate = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow,
+                    UserName = s.UserName,
+                    UpdatedDate = s.CreatedDate,
+                    CreatedDate = s.UpdatedDate,
                     UpdatedById = s.UpdatedById,
                     CreatedById = s.CreatedById,
                     Email = s.Email,
@@ -56,6 +57,10 @@ namespace Coco.Business.MappingProfiles
             CreateMap<AuthorizationPolicyDto, AuthorizationPolicy>();
             CreateMap<Role, RoleDto>();
             CreateMap<RoleDto, Role>();
+            CreateMap<UserClaimDto, UserClaim>();
+            CreateMap<UserClaim, UserClaimDto>();
+            CreateMap<UserToken, UserTokenDto>();
+            CreateMap<UserTokenDto, UserToken>();
         }
     }
 }

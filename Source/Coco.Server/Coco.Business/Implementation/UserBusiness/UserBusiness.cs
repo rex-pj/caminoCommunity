@@ -41,13 +41,13 @@ namespace Coco.Business.Implementation.UserBusiness
         #endregion
 
         #region CRUD
-        public void Delete(long id)
+        public async Task DeleteAsync(long id)
         {
             var user = _userRepository.Find(id);
             user.IsActived = false;
 
             _userRepository.Update(user);
-            _identityContext.SaveChanges();
+            await _identityContext.SaveChangesAsync();
         }
 
         public async Task<bool> ActiveAsync(long id)
@@ -130,6 +130,22 @@ namespace Coco.Business.Implementation.UserBusiness
 
             return model;
         }
+
+        public async Task<UserDto> UpdateAsync(UserDto user)
+        {
+            var exist = await _userRepository.FindAsync(user.Id);
+
+            exist.UpdatedById = user.Id;
+            exist.UpdatedDate = DateTime.UtcNow;
+            exist.Lastname = user.Lastname;
+            exist.Firstname = user.Firstname;
+            exist.DisplayName = user.DisplayName;
+
+            _userRepository.Update(exist);
+            await _identityContext.SaveChangesAsync();
+
+            return user;
+        }
         #endregion
 
         #region GET
@@ -139,7 +155,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository
                 .Get(x => x.Email.Equals(email))
-                .Select(UserMapping.UserModelSelector)
+                .Select(UserExpressionMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return user;
@@ -151,7 +167,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var user = await _userRepository
                 .Get(x => x.Email.Equals(username))
-                .Select(UserMapping.UserModelSelector)
+                .Select(UserExpressionMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return user;
@@ -161,7 +177,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
-                .Select(UserMapping.UserModelSelector)
+                .Select(UserExpressionMapping.UserModelSelector)
                 .FirstOrDefaultAsync();
 
             return existUser;
@@ -171,7 +187,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
-                .Select(UserMapping.FullUserModelSelector)
+                .Select(UserExpressionMapping.FullUserModelSelector)
                 .FirstOrDefaultAsync();
 
             return existUser;

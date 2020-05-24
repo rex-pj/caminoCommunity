@@ -18,7 +18,7 @@ namespace Api.Auth.Resolvers.Contracts
         //Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context);
         //Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context);
 
-        //Task<UserTokenResult> SigninAsync(IResolverContext context);
+        Task<UserTokenResult> SigninAsync(IResolverContext context);
         Task<ICommonResult> SignupAsync(IResolverContext context);
         //Task<ICommonResult> ForgotPasswordAsync(IResolverContext context);
         //Task<ICommonResult> ActiveAsync(IResolverContext context);

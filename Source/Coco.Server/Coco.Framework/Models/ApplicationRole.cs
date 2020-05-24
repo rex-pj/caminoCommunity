@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Coco.Framework.Models
 {
-    public class ApplicationRole : IdentityRole<int>
+    public class ApplicationRole : IdentityRole<long>
     {
         public ApplicationRole()
         {

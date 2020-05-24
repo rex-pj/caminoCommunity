@@ -36,10 +36,10 @@ namespace Coco.Framework.SessionManager.Stores
             return _mapper.Map<IEnumerable<UserAttributeDto>>(data);
         }
 
-        public UserTokenResult GetAuthenticationAttribute(long userId, string authenticationToken)
+        public ApplicationUserToken GetAuthenticationAttribute(long userId, string tokenName)
         {
-            var result = new UserTokenResult();
-            if (string.IsNullOrEmpty(authenticationToken))
+            var result = new ApplicationUserToken();
+            if (string.IsNullOrEmpty(tokenName))
             {
                 return result;
             }
@@ -51,12 +51,12 @@ namespace Coco.Framework.SessionManager.Stores
             }
 
             var tokenResult = attributes
-                .FirstOrDefault(x => x.Key == UserAttributeOptions.AUTHENTICATION_TOKEN && x.Value.Equals(authenticationToken)
+                .FirstOrDefault(x => x.Key == UserAttributeOptions.AUTHENTICATION_TOKEN && x.Value.Equals(tokenName)
                 && x.Expiration > DateTime.UtcNow && !x.IsDisabled);
 
             if (tokenResult != null)
             {
-                result.AuthenticationToken = tokenResult.Value;
+                result.Value = tokenResult.Value;
             }
 
             return result;
@@ -73,7 +73,7 @@ namespace Coco.Framework.SessionManager.Stores
             return data.Value;
         }
 
-        public async Task<string> GetPasswordSaltAsync(long userId)
+        public async Task<string> GetSecurityStampAsync(long userId)
         {
             return await GetSecurityStampAsync(userId, UserAttributeOptions.SECURITY_SALT);
         }

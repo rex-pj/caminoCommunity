@@ -21,17 +21,20 @@ namespace Coco.Framework.Infrastructure.Extensions
 
         public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
-            services.AddIdentity<ApplicationUser, ApplicationRole>();
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddTokenProvider("Coco.Api.Auth", typeof(DataProtectorTokenProvider<ApplicationUser>));
 
             services
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager<ApplicationUser>>()
+                .AddTransient<ILoginManager<ApplicationUser>, ApplicationLoginManager<ApplicationUser>>()
                 .AddTransient<ISessionRoleManager<ApplicationRole>, ApplicationRoleManager<ApplicationRole>>()
                 //.AddTransient<ISessionRoleManager<ApplicationRole>, SessionRoleManager>()
                 //.AddTransient<ISessionRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
                 //.AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
                 .AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>()
+                .AddTransient<IUserPasswordStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()

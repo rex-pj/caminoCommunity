@@ -16,7 +16,6 @@ export const SIGNIN = gpl`
   mutation Signin($criterias: SigninModelInput!){
     signin(criterias: $criterias){
       userInfo {
-        displayName,
         userIdentityId
       },
       authenticationToken

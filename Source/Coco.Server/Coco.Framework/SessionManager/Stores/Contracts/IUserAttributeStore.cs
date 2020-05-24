@@ -8,8 +8,8 @@ namespace Coco.Framework.SessionManager.Stores.Contracts
     public interface IUserAttributeStore<TUser> where TUser : class
     {
         Task<string> GetSecurityStampAsync(long userId, string key);
-        Task<string> GetPasswordSaltAsync(long userId);
-        UserTokenResult GetAuthenticationAttribute(long userId, string authenticationToken);
+        Task<string> GetSecurityStampAsync(long userId);
+        ApplicationUserToken GetAuthenticationAttribute(long userId, string tokenName);
         Task<UserAttributeDto> SetResetPasswordStampAsync(ApplicationUser user, string stamp);
         Task<IEnumerable<UserAttributeDto>> SetAttributesAsync(IEnumerable<UserAttributeDto> userAttributes);
         IEnumerable<UserAttributeDto> NewUserRegisterAttributes(ApplicationUser user);

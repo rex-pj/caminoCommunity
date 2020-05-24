@@ -5,13 +5,14 @@ using System.Linq.Expressions;
 
 namespace Coco.Business.Mapping
 {
-    public static class UserMapping
+    public static class UserExpressionMapping
     {
         public static Expression<Func<User, UserDto>> UserModelSelector = user => new UserDto
         {
             DisplayName = user.DisplayName,
             Firstname = user.Firstname,
             Lastname = user.Lastname,
+            UserName = user.UserName,
             UpdatedDate = user.UpdatedDate,
             CreatedDate = user.CreatedDate,
             UpdatedById = user.UpdatedById,
@@ -37,6 +38,7 @@ namespace Coco.Business.Mapping
             DisplayName = user.DisplayName,
             Firstname = user.Firstname,
             Lastname = user.Lastname,
+            UserName = user.UserName,
             Email = user.Email,
             PhoneNumber = user.UserInfo.PhoneNumber,
             Description = user.UserInfo.Description,

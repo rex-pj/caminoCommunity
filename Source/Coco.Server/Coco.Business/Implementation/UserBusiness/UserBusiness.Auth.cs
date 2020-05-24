@@ -96,7 +96,7 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             var user = _userRepository
                 .Get(x => x.Id == id)
-                .Select(UserMapping.UserModelSelector)
+                .Select(UserExpressionMapping.UserModelSelector)
                 .FirstOrDefault();
 
             return user;
