@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Common.Const;
-using Coco.Common.Resources;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
 using Coco.Framework.Models;
-using Coco.Framework.Services.Contracts;
 using Coco.Framework.SessionManager.Core;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,12 +22,7 @@ namespace Coco.Framework.SessionManager.Stores
         IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>
     {
         private readonly IMapper _mapper;
-        private readonly string _appName;
-        private readonly string _registerConfirmUrl;
-        private readonly string _resetPasswordUrl;
-        private readonly string _registerConfirmFromEmail;
-        private readonly string _registerConfirmFromName;
-        private readonly IEmailSender _emailSender;
+        
         private readonly IUserBusiness _userBusiness;
         private readonly IUserAttributeStore<ApplicationUser> _userAttributeStore;
         private readonly IUserClaimBusiness _userClaimBusiness;
@@ -40,12 +30,12 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IRoleBusiness _roleBusiness;
         private readonly IUserTokenBusiness _userTokenBusiness;
 
-        public override IQueryable<ApplicationUser> Users => throw new NotImplementedException();
+        public override IQueryable<ApplicationUser> Users { get; }
 
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness, 
             IUserAttributeStore<ApplicationUser> userAttributeStore, IUserClaimBusiness userClaimBusiness,
             IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, IUserTokenBusiness userTokenBusiness,
-            IMapper mapper, IConfiguration configuration, IEmailSender emailSender) 
+            IMapper mapper) 
             : base(describer)
         {
             _userBusiness = userBusiness;
@@ -55,13 +45,7 @@ namespace Coco.Framework.SessionManager.Stores
             _userTokenBusiness = userTokenBusiness;
             _roleBusiness = roleBusiness;
             _mapper = mapper;
-            _emailSender = emailSender;
-
-            _appName = configuration[ConfigurationSettingsConst.APPLICATION_NAME];
-            _registerConfirmUrl = configuration[ConfigurationSettingsConst.REGISTER_CONFIRMATION_URL];
-            _registerConfirmFromEmail = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_EMAIL];
-            _registerConfirmFromName = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_NAME];
-            _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
+            
         }
 
         public override async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -80,42 +64,15 @@ namespace Coco.Framework.SessionManager.Stores
                 if (response.Id > 0)
                 {
                     var userResponse = _mapper.Map<ApplicationUser>(response);
-                    userResponse.ActiveUserStamp = user.ActiveUserStamp;
                     userResponse.SecurityStamp = user.SecurityStamp;
 
                     var newUserAttributes = _userAttributeStore.NewUserRegisterAttributes(userResponse);
                     await _userAttributeStore.SetAttributesAsync(newUserAttributes);
-
-                    // Send activation email
-                    await SendActiveEmailAsync(userResponse, cancellationToken);
                 }
 
                 return IdentityResult.Success;
             }
-            catch (Exception ex)
-            {
-                return IdentityResult.Failed();
-            }
-        }
-
-        public async Task<IdentityResult> SendActiveEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{user.ActiveUserStamp}";
-                await _emailSender.SendEmailAsync(new MailMessageModel()
-                {
-                    Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-                    FromEmail = _registerConfirmFromEmail,
-                    FromName = _registerConfirmFromName,
-                    ToEmail = user.Email,
-                    ToName = user.DisplayName,
-                    Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
-                }, TextFormat.Html);
-
-                return IdentityResult.Success;
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return IdentityResult.Failed();
             }
@@ -151,13 +108,16 @@ namespace Coco.Framework.SessionManager.Stores
         public override async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             var user = await _userBusiness.FindByUsernameAsync(normalizedUserName);
+            if (user != null)
+            {
+                user.SecurityStamp = await _userAttributeStore.GetSecurityStampAsync(user.Id);
+            }
+            
             return _mapper.Map<ApplicationUser>(user);
         }
 
         public override async Task<string> GetSecurityStampAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
-            var securityStamp = await _userAttributeStore.GetSecurityStampAsync(user.Id, UserAttributeOptions.SECURITY_SALT);
-            user.SecurityStamp = securityStamp;
             return await base.GetSecurityStampAsync(user, cancellationToken);
         }
 

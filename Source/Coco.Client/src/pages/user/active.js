@@ -8,7 +8,11 @@ import { unauthClient } from "../../utils/GraphQLClient";
 export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
-  const { email, key } = params;
+  const { email } = params;
+  let { key } = params;
+  if (!key && params[0]) {
+    key = params[0];
+  }
 
   const { data, loading, error } = useQuery(ACTIVE, {
     client: unauthClient,

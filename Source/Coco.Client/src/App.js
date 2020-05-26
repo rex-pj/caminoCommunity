@@ -161,7 +161,11 @@ export default () => {
             />
             <PromptLayout
               exact={true}
-              path="/user/active/:email/:key"
+              path={[
+                "/user/active/:email/:key",
+                "/user/active/:email/:key+",
+                "/user/active/:email/*",
+              ]}
               component={() => <AsyncPage page="./pages/user/active" />}
             />
             <PromptLayout

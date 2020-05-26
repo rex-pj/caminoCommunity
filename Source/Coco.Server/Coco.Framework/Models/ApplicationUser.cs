@@ -30,6 +30,5 @@ namespace Coco.Framework.Models
         public string AvatarUrl { get; set; }
         public string CoverPhotoUrl { get; set; }
         public string AuthenticationToken { get; set; }
-        public string ActiveUserStamp { get; set; }
     }
 }

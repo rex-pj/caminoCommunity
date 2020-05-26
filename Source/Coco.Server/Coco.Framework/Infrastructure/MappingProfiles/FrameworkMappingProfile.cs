@@ -11,9 +11,11 @@ namespace Coco.Framework.Infrastructure.MappingProfiles
         public FrameworkMappingProfile()
         {
             CreateMap<ApplicationUser, UserInfoModel>();
-            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<ApplicationUser, UserDto>()
+                .ForMember(dest => dest.IsEmailConfirmed, opt => opt.MapFrom(src => src.EmailConfirmed));
+            CreateMap<UserDto, ApplicationUser>()
+                .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => src.IsEmailConfirmed));
             CreateMap<UserFullDto, FullUserInfoModel>();
-            CreateMap<UserDto, ApplicationUser>();
             CreateMap<ApplicationUser, UserIdentifierUpdateDto>();
             CreateMap<RoleDto, ApplicationRole>();
             CreateMap<UserRoleDto, ApplicationUserRole>();

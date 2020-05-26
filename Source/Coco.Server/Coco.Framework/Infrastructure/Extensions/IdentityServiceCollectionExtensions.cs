@@ -21,8 +21,16 @@ namespace Coco.Framework.Infrastructure.Extensions
 
         public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddTokenProvider("Coco.Api.Auth", typeof(DataProtectorTokenProvider<ApplicationUser>));
+            services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
+                {
+                    o.Password.RequireDigit = true;
+                    o.Password.RequireLowercase = true;
+                    o.Password.RequireUppercase = true;
+                    o.Password.RequireNonAlphanumeric = true;
+                    o.Password.RequiredLength = 6;
+                })
+                .AddTokenProvider("Coco.Api.Auth", typeof(DataProtectorTokenProvider<ApplicationUser>))
+                .AddDefaultTokenProviders();
 
             services
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()

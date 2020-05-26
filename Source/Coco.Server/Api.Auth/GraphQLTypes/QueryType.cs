@@ -27,11 +27,10 @@ namespace Api.Auth.GraphQLTypes
             //    .Argument("criterias", a => a.Type<FindUserInputType>())
             //    .Resolver(ctx => ctx.Service<IUserResolver>().GetFullUserInfoAsync(ctx));
 
-            //// Public query
-            //descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
-            //    .Type<CommonResultType>()
-            //    .Argument("criterias", a => a.Type<ActiveUserInputType>())
-            //    .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
+            descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
+                .Type<CommonResultType>()
+                .Argument("criterias", a => a.Type<ActiveUserInputType>())
+                .Resolver(ctx => ctx.Service<IUserResolver>().ActiveAsync(ctx));
         }
     }
 }

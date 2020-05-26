@@ -13,7 +13,6 @@ using Api.Auth.Infrastructure.Extensions;
 using HotChocolate.AspNetCore;
 using Api.Auth.Resolvers.Contracts;
 using Api.Auth.Resolvers;
-using Coco.Framework.Models;
 
 namespace Api.Auth
 {

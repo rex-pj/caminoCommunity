@@ -15,10 +15,8 @@ namespace Coco.Framework.SessionManager.Stores.Contracts
         IEnumerable<UserAttributeDto> NewUserRegisterAttributes(ApplicationUser user);
         IEnumerable<UserAttributeDto> NewUserAuthenticationAttributes(ApplicationUser user);
         Task<bool> DeleteUserAuthenticationAttributes(ApplicationUser user, string authenticationToken);
-        Task<string> GetActivationKeyAsync(long userId);
         Task<bool> DeleteUserAttribute(ApplicationUser user, string key);
         Task<bool> DeleteUserActivationAttribute(ApplicationUser user);
-        Task<string> GetResetPasswordKeyAsync(long userId);
         Task<bool> DeleteResetPasswordByEmailAttribute(ApplicationUser user);
         string NewSecurityStamp();
     }

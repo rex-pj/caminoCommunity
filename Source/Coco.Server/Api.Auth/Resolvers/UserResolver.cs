@@ -11,6 +11,13 @@ using Api.Auth.Models;
 using Coco.Business.Contracts;
 using Microsoft.AspNetCore.Http;
 using Coco.Framework.SessionManager.Core;
+using Coco.Framework.Services.Contracts;
+using Coco.Common.Const;
+using Microsoft.Extensions.Configuration;
+using Coco.Common.Resources;
+using MimeKit.Text;
+using Coco.Entities.Models;
+using System.Linq;
 
 namespace Api.Auth.Resolvers
 {
@@ -20,14 +27,28 @@ namespace Api.Auth.Resolvers
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _appName;
+        private readonly string _registerConfirmUrl;
+        private readonly string _resetPasswordUrl;
+        private readonly string _registerConfirmFromEmail;
+        private readonly string _registerConfirmFromName;
+        private readonly IEmailSender _emailSender;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, 
-            IUserPhotoBusiness userPhotoBusiness, IHttpContextAccessor httpContextAccessor)
+            IUserPhotoBusiness userPhotoBusiness, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, 
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _loginManager = loginManager;
             _userPhotoBusiness = userPhotoBusiness;
             _httpContextAccessor = httpContextAccessor;
+
+            _emailSender = emailSender;
+            _appName = configuration[ConfigurationSettingsConst.APPLICATION_NAME];
+            _registerConfirmUrl = configuration[ConfigurationSettingsConst.REGISTER_CONFIRMATION_URL];
+            _registerConfirmFromEmail = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_EMAIL];
+            _registerConfirmFromName = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_NAME];
+            _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
         }
 
         public ApplicationUser GetLoggedUser(IResolverContext context)
@@ -317,8 +338,58 @@ namespace Api.Auth.Resolvers
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    user = await _userManager.FindByNameAsync(user.UserName);
+                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await SendActiveEmailAsync(user, confirmationToken);
+                }
 
                 return CommonResult.Success();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
+        {
+            try
+            {
+                var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{confirmationToken}";
+                await _emailSender.SendEmailAsync(new MailMessageModel()
+                {
+                    Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
+                    FromEmail = _registerConfirmFromEmail,
+                    FromName = _registerConfirmFromName,
+                    ToEmail = user.Email,
+                    ToName = user.DisplayName,
+                    Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
+                }, TextFormat.Html);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<ICommonResult> ActiveAsync(IResolverContext context)
+        {
+            try
+            {
+                var model = context.Argument<ActiveUserModel>("criterias");
+
+                var user = await _userManager.FindByNameAsync(model.Email);
+                var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
+                if (result.Succeeded)
+                {
+                    return CommonResult.Success();
+                }
+
+                return CommonResult.Failed(new CommonError() { 
+                    Message = result.Errors.FirstOrDefault().Description
+                });
             }
             catch (Exception ex)
             {
@@ -361,22 +432,6 @@ namespace Api.Auth.Resolvers
         //        {
         //            HandleContextError(context, result.Errors);
         //        }
-
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-        //public async Task<ICommonResult> ActiveAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var model = context.Argument<ActiveUserModel>("criterias");
-
-        //        var result = await _userManagerOld.ActiveAsync(model.Email, model.ActiveKey);
 
         //        return result;
         //    }

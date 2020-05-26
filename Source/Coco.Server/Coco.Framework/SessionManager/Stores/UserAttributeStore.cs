@@ -75,17 +75,7 @@ namespace Coco.Framework.SessionManager.Stores
 
         public async Task<string> GetSecurityStampAsync(long userId)
         {
-            return await GetSecurityStampAsync(userId, UserAttributeOptions.SECURITY_SALT);
-        }
-
-        public async Task<string> GetActivationKeyAsync(long userId)
-        {
-            return await GetSecurityStampAsync(userId, UserAttributeOptions.ACTIVE_USER_BY_EMAIL_CONFIRM);
-        }
-
-        public async Task<string> GetResetPasswordKeyAsync(long userId)
-        {
-            return await GetSecurityStampAsync(userId, UserAttributeOptions.RESET_PASSWORD_BY_EMAIL_CONFIRM);
+            return await GetSecurityStampAsync(userId, UserAttributeOptions.SECURITY_STAMP);
         }
 
         public async Task<UserAttributeDto> SetResetPasswordStampAsync(ApplicationUser user, string stamp)
@@ -106,19 +96,10 @@ namespace Coco.Framework.SessionManager.Stores
 
         public IEnumerable<UserAttributeDto> NewUserRegisterAttributes(ApplicationUser user)
         {
-            var expiration = DateTime.UtcNow.AddHours(_registerConfimationExpirationHours);
             yield return new UserAttributeDto()
             {
                 UserId = user.Id,
-                Key = UserAttributeOptions.ACTIVE_USER_BY_EMAIL_CONFIRM,
-                Value = !string.IsNullOrEmpty(user.ActiveUserStamp) ? user.ActiveUserStamp : NewSecurityStamp(),
-                Expiration = expiration
-            };
-
-            yield return new UserAttributeDto()
-            {
-                UserId = user.Id,
-                Key = UserAttributeOptions.SECURITY_SALT,
+                Key = UserAttributeOptions.SECURITY_STAMP,
                 Value = !string.IsNullOrEmpty(user.SecurityStamp) ? user.SecurityStamp : NewSecurityStamp()
             };
         }
