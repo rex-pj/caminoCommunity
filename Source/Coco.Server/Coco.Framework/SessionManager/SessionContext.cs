@@ -2,6 +2,8 @@
 using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Coco.Common.Const;
+using System.Threading.Tasks;
+using Coco.Framework.SessionManager.Core;
 
 namespace Coco.Framework.SessionManager
 {
@@ -36,28 +38,30 @@ namespace Coco.Framework.SessionManager
             {
                 AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
             }
-
-            CurrentUser = GetLoggedUser();
         }
 
-        /// <summary>
-        /// Gets or sets the current customer
-        /// </summary>
-        public ApplicationUser CurrentUser { get; set; }
-
-        protected ApplicationUser GetLoggedUser()
+        public async Task<ApplicationUser> GetLoggedUserAsync()
         {
             if (!IsAuthorizationHeadersValid())
             {
                 return new ApplicationUser();
             }
 
-            //var user = _userManager
-            //        .GetLoggingUser(AuthorizationHeaders.UserIdentityId, AuthorizationHeaders.AuthenticationToken);
-            //user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
-            //user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+            var userId = await _userManager.DecryptUserIdAsync(AuthorizationHeaders.UserIdentityId);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
-            return null;
+            var isValidToken = await _userManager.VerifyUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, 
+                UserAttributeOptions.AUTHENTICATION_TOKEN, AuthenticationToken);
+            
+            if (isValidToken)
+            {
+                user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+                user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+
+                return user;
+            }
+
+            return new ApplicationUser();
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()

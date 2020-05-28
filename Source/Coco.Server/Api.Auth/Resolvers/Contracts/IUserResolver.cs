@@ -1,5 +1,4 @@
 ﻿using Coco.Framework.Models;
-using Coco.Entities.Dtos.User;
 using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 
@@ -7,7 +6,7 @@ namespace Api.Auth.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        //ApplicationUser GetLoggedUser(IResolverContext context);
+         Task<ApplicationUser> GetLoggedUserAsync(IResolverContext context);
         //Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context);
         //Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context);
         //Task<ICommonResult> SignoutAsync(IResolverContext context);

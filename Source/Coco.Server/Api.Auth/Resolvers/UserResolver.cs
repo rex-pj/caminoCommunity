@@ -51,12 +51,12 @@ namespace Api.Auth.Resolvers
             _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
         }
 
-        public ApplicationUser GetLoggedUser(IResolverContext context)
+        public async Task<ApplicationUser> GetLoggedUserAsync(IResolverContext context)
         {
             try
             {
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = sessionContext.CurrentUser;
+                var currentUser = await sessionContext.GetLoggedUserAsync();
                 return currentUser;
             }
             catch (Exception ex)
@@ -306,11 +306,17 @@ namespace Api.Auth.Resolvers
                 }
 
                 var user = await _userManager.FindByNameAsync(model.Username);
-                var token = await _userManager.GenerateUserTokenAsync(user, "Coco.Api.Auth", UserAttributeOptions.AUTHENTICATION_TOKEN);
-                await _userManager.SetAuthenticationTokenAsync(user, "Coco.Api.Auth", UserAttributeOptions.AUTHENTICATION_TOKEN, token);
+                var token = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.AUTHENTICATION_TOKEN);
+                await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.AUTHENTICATION_TOKEN, token);
 
-                return new UserTokenResult() { 
-                    AuthenticationToken = token
+                var userIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
+                return new UserTokenResult(true) {
+                    AuthenticationToken = token,
+                    UserInfo = new UserInfoModel()
+                    {
+                        UserIdentityId = userIdentityId,
+                        DisplayName = user.DisplayName
+                    }
                 };
             }
             catch (Exception ex)
@@ -379,17 +385,28 @@ namespace Api.Auth.Resolvers
             try
             {
                 var model = context.Argument<ActiveUserModel>("criterias");
-
                 var user = await _userManager.FindByNameAsync(model.Email);
-                var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
-                if (result.Succeeded)
+                if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
-                    return CommonResult.Success();
+                    var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
+                    if (result.Succeeded)
+                    {
+                        return CommonResult.Success();
+                    }
+
+                    var errors = result.Errors.Select(x => new CommonError() { 
+                        Message = x.Description,
+                        Code = x.Code
+                    });
+
+                    return CommonResult.Failed(errors);
                 }
 
-                return CommonResult.Failed(new CommonError() { 
-                    Message = result.Errors.FirstOrDefault().Description
+                return CommonResult.Failed(new CommonError()
+                {
+                    Message = "The user is already confirmed"
                 });
+
             }
             catch (Exception ex)
             {

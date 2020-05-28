@@ -16,10 +16,10 @@ namespace Api.Auth.GraphQLTypes
             //    .Directive<AuthenticationDirectiveType>()
             //    .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
 
-            //descriptor.Field<IUserResolver>(x => x.GetLoggedUser(default))
-            //    .Type<LoggedInResultType>()
-            //    .Directive<InitializeSessionDirectiveType>()
-            //    .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUser(ctx));
+            descriptor.Field<IUserResolver>(x => x.GetLoggedUserAsync(default))
+                .Type<LoggedInResultType>()
+                .Directive<InitializeSessionDirectiveType>()
+                .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUserAsync(ctx));
 
             //descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
             //    .Type<FullUserInfoResultType>()

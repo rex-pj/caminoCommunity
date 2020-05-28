@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {
@@ -22,6 +23,11 @@ namespace Coco.Framework.SessionManager
             IUserConfirmation<TUser> confirmation) :
             base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
         {
+        }
+
+        public Task<bool> LogoutAsync(TUser user = null)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

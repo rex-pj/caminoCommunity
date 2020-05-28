@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Stores.Contracts;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {
@@ -21,6 +23,29 @@ namespace Coco.Framework.SessionManager
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services,
                  logger)
         {
+        }
+
+        private IUserEncryptionStore<TUser> GetUserEncryptionStore()
+        {
+            var cast = Store as IUserEncryptionStore<TUser>;
+            if (cast == null)
+            {
+                throw new NotSupportedException("Store is not UserEncryptionStore");
+            }
+            return cast;
+        }
+
+
+        public async Task<string> EncryptUserIdAsync(long userId)
+        {
+            var userEncryptionStore = GetUserEncryptionStore();
+            return await userEncryptionStore.EncryptUserId(userId);
+        }
+
+        public async Task<long> DecryptUserIdAsync(string userIdentityId)
+        {
+            var userEncryptionStore = GetUserEncryptionStore();
+            return await userEncryptionStore.DecryptUserId(userIdentityId);
         }
     }
 }

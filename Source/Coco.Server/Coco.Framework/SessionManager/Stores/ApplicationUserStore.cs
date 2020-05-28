@@ -3,10 +3,11 @@ using Coco.Business.Contracts;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager.Core;
+using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,7 +20,8 @@ namespace Coco.Framework.SessionManager.Stores
 {
     public class ApplicationUserStore : UserStoreBase<ApplicationUser, ApplicationRole, long, ApplicationUserClaim, 
         ApplicationUserRole, ApplicationUserLogin, ApplicationUserToken, ApplicationRoleClaim>, 
-        IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>
+        IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>,
+        IUserEncryptionStore<ApplicationUser>
     {
         private readonly IMapper _mapper;
         
@@ -29,15 +31,18 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IUserRoleBusiness _userRoleBusiness;
         private readonly IRoleBusiness _roleBusiness;
         private readonly IUserTokenBusiness _userTokenBusiness;
+        private readonly ITextEncryption _textCrypter;
+        private readonly string _textCrypterSaltKey;
 
         public override IQueryable<ApplicationUser> Users { get; }
 
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness, 
             IUserAttributeStore<ApplicationUser> userAttributeStore, IUserClaimBusiness userClaimBusiness,
             IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, IUserTokenBusiness userTokenBusiness,
-            IMapper mapper) 
+            ITextEncryption textCrypter, IMapper mapper, IConfiguration configuration) 
             : base(describer)
         {
+            _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _userBusiness = userBusiness;
             _userAttributeStore = userAttributeStore;
             _userClaimBusiness = userClaimBusiness;
@@ -45,7 +50,7 @@ namespace Coco.Framework.SessionManager.Stores
             _userTokenBusiness = userTokenBusiness;
             _roleBusiness = roleBusiness;
             _mapper = mapper;
-            
+            _textCrypter = textCrypter;
         }
 
         public override async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -411,6 +416,18 @@ namespace Coco.Framework.SessionManager.Stores
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
             return IdentityResult.Success;
+        }
+
+        public async Task<string> EncryptUserId(long userId)
+        {
+            var encryptId = _textCrypter.Encrypt(userId.ToString(), _textCrypterSaltKey);
+            return await Task.FromResult(encryptId);
+        }
+
+        public async Task<long> DecryptUserId(string userIdentityId)
+        {
+            var id = long.Parse(_textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey));
+            return await Task.FromResult(id);
         }
     }
 }

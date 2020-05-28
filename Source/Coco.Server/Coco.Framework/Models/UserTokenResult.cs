@@ -6,7 +6,7 @@ namespace Coco.Framework.Models
     {
         public string AuthenticationToken { get; set; }
         public bool IsSucceed { get; set; }
-        public UserInfoModel UserInfo { get; internal set; }
+        public UserInfoModel UserInfo { get; set; }
         public AccessModeEnum AccessMode { get; set; }
 
         public UserTokenResult()

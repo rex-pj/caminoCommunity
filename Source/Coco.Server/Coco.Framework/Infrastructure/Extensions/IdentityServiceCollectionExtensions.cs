@@ -1,4 +1,5 @@
-﻿using Coco.Framework.Models;
+﻿using Coco.Common.Const;
+using Coco.Framework.Models;
 using Coco.Framework.Services.Contracts;
 using Coco.Framework.Services.Implementation;
 using Coco.Framework.SessionManager;
@@ -21,15 +22,15 @@ namespace Coco.Framework.Infrastructure.Extensions
 
         public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
-            services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(x =>
                 {
-                    o.Password.RequireDigit = true;
-                    o.Password.RequireLowercase = true;
-                    o.Password.RequireUppercase = true;
-                    o.Password.RequireNonAlphanumeric = true;
-                    o.Password.RequiredLength = 6;
+                    x.Password.RequireDigit = true;
+                    x.Password.RequireLowercase = true;
+                    x.Password.RequireUppercase = true;
+                    x.Password.RequireNonAlphanumeric = true;
+                    x.Password.RequiredLength = 6;
                 })
-                .AddTokenProvider("Coco.Api.Auth", typeof(DataProtectorTokenProvider<ApplicationUser>))
+                .AddTokenProvider(ServiceProvidersNameConst.COCO_API_AUTH, typeof(DataProtectorTokenProvider<ApplicationUser>))
                 .AddDefaultTokenProviders();
 
             services
@@ -37,6 +38,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager<ApplicationUser>>()
                 .AddTransient<ILoginManager<ApplicationUser>, ApplicationLoginManager<ApplicationUser>>()
                 .AddTransient<ISessionRoleManager<ApplicationRole>, ApplicationRoleManager<ApplicationRole>>()
+                .AddTransient<IUserEncryptionStore<ApplicationUser>, ApplicationUserStore>()
                 //.AddTransient<ISessionRoleManager<ApplicationRole>, SessionRoleManager>()
                 //.AddTransient<ISessionRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
@@ -46,10 +48,9 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IRoleStore<ApplicationRole>, SessionRoleStore>()
                 //.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()
-                //.AddTransient<ITextCrypter, TextCrypter>()
+                .AddTransient<ITextEncryption, TextEncryption>()
                 .AddTransient(typeof(IUserAttributeStore<>), typeof(UserAttributeStore<>))
                 .AddTransient<ISessionContext, SessionContext>()
-                .AddScoped<ITextRandom, TextRandom>()
                 .AddScoped<IEmailSender, EmailSender>();
 
             if (setupAction != null)

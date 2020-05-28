@@ -59,5 +59,8 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<bool> HasPasswordAsync(TUser user);
         Task<bool> IsEmailConfirmedAsync(TUser user);
         Task<bool> IsInRoleAsync(TUser user, string role);
+        Task<string> EncryptUserIdAsync(long userId);
+        Task<long> DecryptUserIdAsync(string userIdentityId);
+        Task<bool> VerifyUserTokenAsync(TUser user, string tokenProvider, string purpose, string token);
     }
 }
