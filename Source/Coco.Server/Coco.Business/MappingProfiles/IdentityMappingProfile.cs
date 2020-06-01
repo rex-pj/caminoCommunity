@@ -61,6 +61,8 @@ namespace Coco.Business.MappingProfiles
             CreateMap<UserClaim, UserClaimDto>();
             CreateMap<UserToken, UserTokenDto>();
             CreateMap<UserTokenDto, UserToken>();
+            CreateMap<UserLogin, UserLoginDto>();
+            CreateMap<UserLoginDto, UserLogin>();
         }
     }
 }

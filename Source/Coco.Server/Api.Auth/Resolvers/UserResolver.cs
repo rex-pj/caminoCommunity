@@ -18,6 +18,7 @@ using Coco.Common.Resources;
 using MimeKit.Text;
 using Coco.Entities.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace Api.Auth.Resolvers
 {
@@ -306,8 +307,8 @@ namespace Api.Auth.Resolvers
                 }
 
                 var user = await _userManager.FindByNameAsync(model.Username);
-                var token = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.AUTHENTICATION_TOKEN);
-                await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.AUTHENTICATION_TOKEN, token);
+                var token = _userManager.GenerateNewAuthenticatorKey();
+                await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.COCO_API_AUTH, token, UserAttributeOptions.AUTHENTICATION_TOKEN));
 
                 var userIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
                 return new UserTokenResult(true) {

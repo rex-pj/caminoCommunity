@@ -31,6 +31,7 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IUserRoleBusiness _userRoleBusiness;
         private readonly IRoleBusiness _roleBusiness;
         private readonly IUserTokenBusiness _userTokenBusiness;
+        private readonly IUserLoginBusiness _userLoginBusiness;
         private readonly ITextEncryption _textCrypter;
         private readonly string _textCrypterSaltKey;
 
@@ -39,6 +40,7 @@ namespace Coco.Framework.SessionManager.Stores
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness, 
             IUserAttributeStore<ApplicationUser> userAttributeStore, IUserClaimBusiness userClaimBusiness,
             IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, IUserTokenBusiness userTokenBusiness,
+            IUserLoginBusiness userLoginBusiness,
             ITextEncryption textCrypter, IMapper mapper, IConfiguration configuration) 
             : base(describer)
         {
@@ -49,6 +51,7 @@ namespace Coco.Framework.SessionManager.Stores
             _userRoleBusiness = userRoleBusiness;
             _userTokenBusiness = userTokenBusiness;
             _roleBusiness = roleBusiness;
+            _userLoginBusiness = userLoginBusiness;
             _mapper = mapper;
             _textCrypter = textCrypter;
         }
@@ -280,22 +283,42 @@ namespace Coco.Framework.SessionManager.Stores
 
         public override Task AddLoginAsync(ApplicationUser user, UserLoginInfo login, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (login == null)
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
+
+            var userLogin = CreateUserLogin(user, login);
+            var userLoginDto = _mapper.Map<UserLoginDto>(userLogin);
+            _userLoginBusiness.Add(userLoginDto);
+            return Task.FromResult(false);
         }
 
-        protected override Task<ApplicationUserLogin> FindUserLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        protected override async Task<ApplicationUserLogin> FindUserLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var userLoginDto = await _userLoginBusiness.FindAsync(loginProvider, providerKey);
+            return _mapper.Map<ApplicationUserLogin>(userLoginDto);
         }
 
-        protected override Task<ApplicationUserLogin> FindUserLoginAsync(long userId, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        protected override async Task<ApplicationUserLogin> FindUserLoginAsync(long userId, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var userLoginDto = await _userLoginBusiness.FindAsync(userId, loginProvider, providerKey);
+            return _mapper.Map<ApplicationUserLogin>(userLoginDto);
         }
 
-        public override Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken = default)
+        public override async Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var userInfos = (await _userLoginBusiness.GetByUserIdAsync(user.Id))
+                .Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName))
+                .ToList();
+
+            return userInfos;
         }
 
         public override Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default)

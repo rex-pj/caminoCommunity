@@ -326,3 +326,25 @@ GO
 ALTER TABLE dbo.[UserToken]
 ADD CONSTRAINT PK_UserToken
 PRIMARY KEY (UserId, [Name], [Value]);
+
+
+/**USER LOGINS**/
+GO
+CREATE TABLE dbo.[UserLogin]
+(
+	Id BIGINT NOT NULL,
+	UserId BIGINT NOT NULL,
+	LoginProvider NVARCHAR(255) NOT NULL,
+	ProviderDisplayName NVARCHAR(255) NOT NULL,
+	ProviderKey NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[UserLogin]
+ADD CONSTRAINT FK_UserLogin_User
+FOREIGN KEY (UserId) REFERENCES dbo.[User](Id);
+
+GO
+ALTER TABLE dbo.[UserLogin]
+ADD CONSTRAINT PK_UserLogin
+PRIMARY KEY (Id);

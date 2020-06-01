@@ -30,7 +30,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                     x.Password.RequireNonAlphanumeric = true;
                     x.Password.RequiredLength = 6;
                 })
-                .AddTokenProvider(ServiceProvidersNameConst.COCO_API_AUTH, typeof(DataProtectorTokenProvider<ApplicationUser>))
+                .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(ServiceProvidersNameConst.COCO_API_AUTH)
                 .AddDefaultTokenProviders();
 
             services
@@ -41,12 +41,9 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IUserEncryptionStore<ApplicationUser>, ApplicationUserStore>()
                 //.AddTransient<ISessionRoleManager<ApplicationRole>, SessionRoleManager>()
                 //.AddTransient<ISessionRoleStore<ApplicationRole>, SessionRoleStore>()
-                //.AddTransient<IPasswordHasher<ApplicationUser>, PasswordHasher>()
-                //.AddTransient<IUserPasswordStore<ApplicationUser>, UserPasswordStore>()
                 .AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IRoleStore<ApplicationRole>, SessionRoleStore>()
-                //.AddTransient<IUserEmailStore<ApplicationUser>, UserEmailStore>()
                 //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddTransient(typeof(IUserAttributeStore<>), typeof(UserAttributeStore<>))

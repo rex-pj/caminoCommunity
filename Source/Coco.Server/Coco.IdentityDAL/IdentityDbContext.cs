@@ -58,7 +58,8 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new UserPhotoTypeMap())
                 .ApplyConfiguration(new GenderMap())
                 .ApplyConfiguration(new UserClaimMap())
-                .ApplyConfiguration(new UserTokenMap());
+                .ApplyConfiguration(new UserTokenMap())
+                .ApplyConfiguration(new UserLoginMap());
         }
 
         public async Task<int> SaveChangesAsync()

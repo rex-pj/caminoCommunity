@@ -40,7 +40,8 @@ namespace Coco.Business
                 .AddTransient<IRoleAuthorizationPolicyBusiness, RoleAuthorizationPolicyBusiness>()
                 .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>()
                 .AddTransient<IUserClaimBusiness, UserClaimBusiness>()
-                .AddTransient<IUserTokenBusiness, UserTokenBusiness>();
+                .AddTransient<IUserTokenBusiness, UserTokenBusiness>()
+                .AddTransient<IUserLoginBusiness, UserLoginBusiness>();
 
             services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
@@ -53,7 +54,8 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserAuthorizationPolicy>, EfIdentityRepository<UserAuthorizationPolicy>>()
                 .AddTransient<IRepository<RoleAuthorizationPolicy>, EfIdentityRepository<RoleAuthorizationPolicy>>()
                 .AddTransient<IRepository<UserClaim>, EfIdentityRepository<UserClaim>>()
-                .AddTransient<IRepository<UserToken>, EfIdentityRepository<UserToken>>();
+                .AddTransient<IRepository<UserToken>, EfIdentityRepository<UserToken>>()
+                .AddTransient<IRepository<UserLogin>, EfIdentityRepository<UserLogin>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()

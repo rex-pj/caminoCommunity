@@ -24,6 +24,8 @@ namespace Coco.Framework.Infrastructure.MappingProfiles
             CreateMap<Claim, ClaimDto>();
             CreateMap<UserTokenDto, ApplicationUserToken>();
             CreateMap<ApplicationUserToken, UserTokenDto>();
+            CreateMap<UserLoginDto, ApplicationUserLogin>();
+            CreateMap<ApplicationUserLogin, UserLoginDto>();
         }
     }
 }

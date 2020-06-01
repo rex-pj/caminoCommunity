@@ -3,7 +3,6 @@ using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Coco.Common.Const;
 using System.Threading.Tasks;
-using Coco.Framework.SessionManager.Core;
 
 namespace Coco.Framework.SessionManager
 {
@@ -48,20 +47,22 @@ namespace Coco.Framework.SessionManager
             }
 
             var userId = await _userManager.DecryptUserIdAsync(AuthorizationHeaders.UserIdentityId);
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-
-            var isValidToken = await _userManager.VerifyUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, 
-                UserAttributeOptions.AUTHENTICATION_TOKEN, AuthenticationToken);
-            
-            if (isValidToken)
+            var currentUser = await _userManager.FindByIdAsync(userId.ToString());
+            if (currentUser == null)
             {
-                user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
-                user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
-
-                return user;
+                return new ApplicationUser();
             }
 
-            return new ApplicationUser();
+            var user = await _userManager.FindByLoginAsync(ServiceProvidersNameConst.COCO_API_AUTH, AuthorizationHeaders.AuthenticationToken);
+            if(user == null || user.Id != currentUser.Id)
+            {
+                return new ApplicationUser();
+            }
+
+            user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
+            user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+
+            return user;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()
@@ -82,9 +83,7 @@ namespace Coco.Framework.SessionManager
 
         private bool IsAuthorizationHeadersValid()
         {
-            return AuthorizationHeaders != null
-                && !string.IsNullOrEmpty(AuthorizationHeaders.AuthenticationToken)
-                && !string.IsNullOrEmpty(AuthorizationHeaders.UserIdentityId);
+            return AuthorizationHeaders != null && !string.IsNullOrEmpty(AuthorizationHeaders.AuthenticationToken) && !string.IsNullOrEmpty(AuthorizationHeaders.UserIdentityId);
         }
     }
 }
