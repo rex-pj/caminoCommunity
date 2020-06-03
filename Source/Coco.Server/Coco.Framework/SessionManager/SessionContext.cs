@@ -39,6 +39,8 @@ namespace Coco.Framework.SessionManager
             }
         }
 
+        public Task<ApplicationUser> CurrentUser => GetLoggedUserAsync();
+
         public async Task<ApplicationUser> GetLoggedUserAsync()
         {
             if (!IsAuthorizationHeadersValid())
@@ -61,6 +63,7 @@ namespace Coco.Framework.SessionManager
 
             user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
             user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
+            user.Id = userId;
 
             return user;
         }
