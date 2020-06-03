@@ -35,7 +35,6 @@ namespace Coco.Framework.SessionManager
             return cast;
         }
 
-
         public async Task<string> EncryptUserIdAsync(long userId)
         {
             var userEncryptionStore = GetUserEncryptionStore();

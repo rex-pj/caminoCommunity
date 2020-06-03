@@ -7,5 +7,6 @@ namespace Coco.Framework.SessionManager.Contracts
     {
         string AuthenticationToken { get; }
         Task<ApplicationUser> GetLoggedUserAsync();
+        Task<ApplicationUser> CurrentUser { get; }
     }
 }

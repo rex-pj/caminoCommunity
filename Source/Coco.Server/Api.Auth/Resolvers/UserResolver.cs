@@ -19,6 +19,8 @@ using MimeKit.Text;
 using Coco.Entities.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Coco.Auth.Models;
+using AutoMapper;
 
 namespace Api.Auth.Resolvers
 {
@@ -27,6 +29,7 @@ namespace Api.Auth.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserPhotoBusiness _userPhotoBusiness;
+        private readonly IUserBusiness _userBusiness;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _appName;
         private readonly string _registerConfirmUrl;
@@ -34,15 +37,18 @@ namespace Api.Auth.Resolvers
         private readonly string _registerConfirmFromEmail;
         private readonly string _registerConfirmFromName;
         private readonly IEmailSender _emailSender;
+        private readonly IMapper _mapper;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, 
             IUserPhotoBusiness userPhotoBusiness, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, 
-            IEmailSender emailSender)
+            IEmailSender emailSender, IMapper mapper, IUserBusiness userBusiness)
         {
             _userManager = userManager;
             _loginManager = loginManager;
             _userPhotoBusiness = userPhotoBusiness;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
+            _userBusiness = userBusiness;
 
             _emailSender = emailSender;
             _appName = configuration[ConfigurationSettingsConst.APPLICATION_NAME];
@@ -57,7 +63,7 @@ namespace Api.Auth.Resolvers
             try
             {
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetLoggedUserAsync();
+                var currentUser = await sessionContext.CurrentUser;
                 return currentUser;
             }
             catch (Exception ex)
@@ -66,34 +72,28 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        //public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<FindUserModel>("criterias");
-        //        var userIdentityId = criterias.UserId;
+        public async Task<FullUserInfoModel> FindFullUserInfoAsync(IResolverContext context)
+        {
+            try
+            {
+                var criterias = context.Argument<FindUserModel>("criterias");
+  
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = await sessionContext.CurrentUser;
 
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        if (string.IsNullOrEmpty(criterias.UserId))
-        //        {
-        //            userIdentityId = sessionContext.CurrentUser.UserIdentityId;
-        //        }
+                var user = await _userBusiness.FindFullByIdAsync(currentUser.Id);
 
-        //        var user = await _userManagerOld.FindUserByIdentityIdAsync(userIdentityId, sessionContext.AuthenticationToken);
+                var userInfo = _mapper.Map<FullUserInfoModel>(user);
+                userInfo.UserIdentityId = currentUser.UserIdentityId;
+                userInfo.CanEdit = !string.IsNullOrEmpty(user.AuthenticationToken) && user.AuthenticationToken.Equals(sessionContext.AuthenticationToken);
 
-        //        var userInfo = _mapper.Map<FullUserInfoModel>(user);
-        //        userInfo.UserIdentityId = userIdentityId;
-        //        userInfo.CanEdit = sessionContext.CurrentUser != null
-        //            && !string.IsNullOrEmpty(user.AuthenticationToken)
-        //            && user.AuthenticationToken.Equals(sessionContext.AuthenticationToken);
-
-        //        return userInfo;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+                return userInfo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
         //public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
