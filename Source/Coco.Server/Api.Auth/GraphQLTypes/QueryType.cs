@@ -21,11 +21,11 @@ namespace Api.Auth.GraphQLTypes
                 .Directive<InitializeSessionDirectiveType>()
                 .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUserAsync(ctx));
 
-            descriptor.Field<IUserResolver>(x => x.FindFullUserInfoAsync(default))
+            descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
                 .Type<FullUserInfoResultType>()
                 .Directive<InitializeSessionDirectiveType>()
                 .Argument("criterias", a => a.Type<FindUserInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().FindFullUserInfoAsync(ctx));
+                .Resolver(ctx => ctx.Service<IUserResolver>().GetFullUserInfoAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.ActiveAsync(default))
                 .Type<CommonResultType>()

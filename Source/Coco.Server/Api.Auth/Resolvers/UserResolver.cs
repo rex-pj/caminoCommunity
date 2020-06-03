@@ -72,14 +72,14 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<FullUserInfoModel> FindFullUserInfoAsync(IResolverContext context)
+        public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
         {
             try
             {
                 var criterias = context.Argument<FindUserModel>("criterias");
   
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.CurrentUser;
+                var currentUser = await sessionContext.GetLoggedUserAsync();
 
                 var user = await _userBusiness.FindFullByIdAsync(currentUser.Id);
 
