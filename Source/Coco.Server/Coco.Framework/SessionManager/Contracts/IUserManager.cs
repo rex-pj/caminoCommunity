@@ -43,6 +43,7 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<string> GetEmailAsync(TUser user);
         Task<bool> GetLockoutEnabledAsync(TUser user);
         Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user);
+        Task<IdentityResult> RemoveLoginAsync(TUser user, string loginProvider, string providerKey);
         Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user);
         Task<string> GetPhoneNumberAsync(TUser user);
         Task<IList<string>> GetRolesAsync(TUser user);

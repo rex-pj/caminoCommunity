@@ -53,7 +53,10 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public void Remove(UserLoginDto userLoginDto)
         {
-            var userLogin = _mapper.Map<UserLogin>(userLoginDto);
+            var userLogin = _userLoginRepository
+                .Get(x => x.LoginProvider == userLoginDto.LoginProvider && x.ProviderKey == userLoginDto.ProviderKey 
+                && x.ProviderDisplayName == userLoginDto.ProviderDisplayName && x.UserId == userLoginDto.UserId);
+
             _userLoginRepository.Delete(userLogin);
         }
     }

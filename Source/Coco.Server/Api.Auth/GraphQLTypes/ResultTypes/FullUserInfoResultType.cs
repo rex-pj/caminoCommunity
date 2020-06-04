@@ -1,4 +1,5 @@
-﻿using Api.Auth.Resolvers.Contracts;
+﻿using Api.Auth.Models;
+using Api.Auth.Resolvers.Contracts;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using Coco.Framework.Models;
 using HotChocolate.Types;

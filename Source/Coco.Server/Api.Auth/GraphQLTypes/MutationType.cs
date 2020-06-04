@@ -12,11 +12,11 @@ namespace Api.Auth.GraphQLTypes
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            //descriptor.Field<IUserResolver>(x => x.UpdateUserInfoItemAsync(default))
-            //    .Type<ItemUpdatedResultType>()
-            //    .Argument("criterias", a => a.Type<UpdatePerItemInputType>())
-            //    .Directive<AuthenticationDirectiveType>()
-            //    .Resolver(ctx => ctx.Service<IUserResolver>().UpdateUserInfoItemAsync(ctx));
+            descriptor.Field<IUserResolver>(x => x.UpdateUserInfoItemAsync(default))
+                .Type<ItemUpdatedResultType>()
+                .Argument("criterias", a => a.Type<UpdatePerItemInputType>())
+                .Directive<AuthenticationDirectiveType>()
+                .Resolver(ctx => ctx.Service<IUserResolver>().UpdateUserInfoItemAsync(ctx));
 
             //descriptor.Field<IUserResolver>(x => x.UpdateIdentifierAsync(default))
             //    .Type<UserIdentifierUpdateResultType>()

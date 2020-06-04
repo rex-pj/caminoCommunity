@@ -15,7 +15,6 @@ namespace Coco.Framework.Infrastructure.MappingProfiles
                 .ForMember(dest => dest.IsEmailConfirmed, opt => opt.MapFrom(src => src.EmailConfirmed));
             CreateMap<UserDto, ApplicationUser>()
                 .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => src.IsEmailConfirmed));
-            CreateMap<UserFullDto, FullUserInfoModel>();
             CreateMap<ApplicationUser, UserIdentifierUpdateDto>();
             CreateMap<RoleDto, ApplicationRole>();
             CreateMap<UserRoleDto, ApplicationUserRole>();
