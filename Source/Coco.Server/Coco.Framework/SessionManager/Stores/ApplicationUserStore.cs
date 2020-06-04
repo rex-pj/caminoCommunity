@@ -321,9 +321,20 @@ namespace Coco.Framework.SessionManager.Stores
             return userInfos;
         }
 
-        public override Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default)
+        public override async Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            var entry = await FindUserLoginAsync(user.Id, loginProvider, providerKey, cancellationToken);
+            if (entry != null)
+            {
+                var userLogin = _mapper.Map<UserLoginDto>(entry);
+                _userLoginBusiness.Remove(userLogin);
+            }
         }
 
         public override async Task<IList<Claim>> GetClaimsAsync(ApplicationUser user, CancellationToken cancellationToken = default)

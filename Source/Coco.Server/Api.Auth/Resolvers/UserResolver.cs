@@ -63,7 +63,7 @@ namespace Api.Auth.Resolvers
             try
             {
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.CurrentUser;
+                var currentUser = await sessionContext.GetLoggedUserAsync();
                 return currentUser;
             }
             catch (Exception ex)
@@ -77,15 +77,20 @@ namespace Api.Auth.Resolvers
             try
             {
                 var criterias = context.Argument<FindUserModel>("criterias");
-  
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                
+                long userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
                 var currentUser = await sessionContext.GetLoggedUserAsync();
-
-                var user = await _userBusiness.FindFullByIdAsync(currentUser.Id);
+                if (string.IsNullOrEmpty(criterias.UserId))
+                {
+                    userId = currentUser.Id;
+                }
+                
+                var user = await _userBusiness.FindFullByIdAsync(userId);
 
                 var userInfo = _mapper.Map<FullUserInfoModel>(user);
                 userInfo.UserIdentityId = currentUser.UserIdentityId;
-                userInfo.CanEdit = !string.IsNullOrEmpty(user.AuthenticationToken) && user.AuthenticationToken.Equals(sessionContext.AuthenticationToken);
+                userInfo.CanEdit = userId == currentUser.Id;
 
                 return userInfo;
             }
@@ -96,55 +101,71 @@ namespace Api.Auth.Resolvers
         }
 
 
-        //public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<UpdatePerItemModel>("criterias");
-        //        var userContext = context.ContextData["SessionContext"] as ISessionContext;
+        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
+        {
+            try
+            {
+                var criterias = context.Argument<UpdatePerItemModel>("criterias");
+                if (!criterias.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
-        //        if (!criterias.CanEdit)
-        //        {
-        //            throw new UnauthorizedAccessException();
-        //        }
+                if (criterias.PropertyName == null)
+                {
+                    throw new ArgumentNullException(nameof(criterias.PropertyName));
+                }
 
-        //        var currentUser = userContext.CurrentUser;
+                if (criterias.Key == null || string.IsNullOrEmpty(criterias.Key.ToString()))
+                {
+                    throw new ArgumentNullException(nameof(criterias.Key));
+                }
 
-        //        var result = await _userManagerOld.UpdateInfoItemAsync(criterias, currentUser.UserIdentityId, currentUser.AuthenticationToken);
+                var userContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = await userContext.GetLoggedUserAsync();
 
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
+                var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
+                if(userId != currentUser.Id)
+                {
+                    throw new UnauthorizedAccessException();
+                }
 
-        //public async Task<ICommonResult> SignoutAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        var currentUser = sessionContext.CurrentUser;
+                var updatePerItem = _mapper.Map<UpdatePerItemDto>(criterias);
+                updatePerItem.Key = userId;
+                var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
+                return _mapper.Map<UpdatePerItemModel>(updatedItem);
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                return null;
+            }
+        }
 
-        //        var isLoggedOut = await _loginManager.LogoutAsync(currentUser);
-        //        if (!isLoggedOut)
-        //        {
-        //            return CommonResult.Failed(new CommonError()
-        //            {
-        //                Code = ErrorMessageConst.EXCEPTION,
-        //                Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
-        //            });
-        //        }
-        //        return CommonResult.Success();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
+        public async Task<ICommonResult> SignoutAsync(IResolverContext context)
+        {
+            try
+            {
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = await sessionContext.GetLoggedUserAsync();
+
+                var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.COCO_API_AUTH, currentUser.AuthenticationToken);
+                if (!result.Succeeded)
+                {
+                    return CommonResult.Failed(new CommonError()
+                    {
+                        Code = ErrorMessageConst.EXCEPTION,
+                        Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
+                    });
+                }
+                return CommonResult.Success();
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                return null;
+            }
+        }
 
         //public async Task<ICommonResult> UpdateAvatarAsync(IResolverContext context)
         //{

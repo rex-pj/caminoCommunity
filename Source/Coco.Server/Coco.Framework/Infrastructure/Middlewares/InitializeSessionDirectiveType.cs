@@ -21,11 +21,8 @@ namespace Coco.Framework.Infrastructure.Middlewares
                     throw new CocoApplicationException("SessionContext is not registered");
                 }
 
-                var currentUser = await sessionContext.CurrentUser;
-                if (currentUser != null && currentUser.Id > 0)
-                {
-                    context.ContextData["SessionContext"] = sessionContext;
-                }
+                var currentUser = await sessionContext.GetLoggedUserAsync();
+                context.ContextData["SessionContext"] = sessionContext;
 
                 await next.Invoke(context);
             });

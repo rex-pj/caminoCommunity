@@ -13,6 +13,7 @@ using Api.Auth.Infrastructure.Extensions;
 using HotChocolate.AspNetCore;
 using Api.Auth.Resolvers.Contracts;
 using Api.Auth.Resolvers;
+using Api.Auth.Infrastructure.MappingProfiles;
 
 namespace Api.Auth
 {
@@ -55,7 +56,7 @@ namespace Api.Auth
 
         private void InvokeInitialStartup(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile), typeof(AuthMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 

@@ -39,8 +39,6 @@ namespace Coco.Framework.SessionManager
             }
         }
 
-        public Task<ApplicationUser> CurrentUser => GetLoggedUserAsync();
-
         public async Task<ApplicationUser> GetLoggedUserAsync()
         {
             if (!IsAuthorizationHeadersValid())
@@ -55,17 +53,21 @@ namespace Coco.Framework.SessionManager
                 return new ApplicationUser();
             }
 
-            var user = await _userManager.FindByLoginAsync(ServiceProvidersNameConst.COCO_API_AUTH, AuthorizationHeaders.AuthenticationToken);
+            var user = await _userManager.FindByLoginAsync(ServiceProvidersNameConst.COCO_API_AUTH, AuthenticationToken);
             if(user == null || user.Id != currentUser.Id)
             {
                 return new ApplicationUser();
             }
+            
+            user.Id = userId;
+            UpdateAuthenticate(user);
+            return user;
+        }
 
+        private void UpdateAuthenticate(ApplicationUser user)
+        {
             user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;
             user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
-            user.Id = userId;
-
-            return user;
         }
 
         public SessionContextHeaders GetAuthorizationHeaders()

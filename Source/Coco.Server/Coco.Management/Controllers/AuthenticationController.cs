@@ -37,7 +37,7 @@ namespace Coco.Management.Controllers
         [SessionAuthentication]
         public async Task<IActionResult> Logout()
         {
-            await _sessionLoginManager.LogoutAsync();
+            //await _sessionLoginManager.SignoutAsync();
             return View("Login");
         }
     }

@@ -1,7 +1,8 @@
 ﻿using Coco.Entities.Models;
+using Coco.Framework.Models;
 using System.Collections.Generic;
 
-namespace Coco.Framework.Models
+namespace Api.Auth.Models
 {
     public class FullUserInfoModel : UserInfoModel
     {

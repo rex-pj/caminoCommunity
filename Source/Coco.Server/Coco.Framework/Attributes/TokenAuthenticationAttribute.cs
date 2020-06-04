@@ -60,7 +60,7 @@ namespace Coco.Framework.Attributes
                     return;
                 }
 
-                var currentUser = await _sessionContext.CurrentUser;
+                var currentUser = await _sessionContext.GetLoggedUserAsync();
                 //there is AuthorizeLoggedUserFilter, so check access
                 if (currentUser == null || currentUser.Id <= 0)
                 {

@@ -41,7 +41,8 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public void Remove(UserTokenDto userTokenDto)
         {
-            var userToken = _mapper.Map<UserToken>(userTokenDto);
+            var userToken = _userTokenRepository.Get(x => x.LoginProvider == userTokenDto.LoginProvider
+                && x.Value == userTokenDto.Value && x.Name == userTokenDto.Name && x.UserId == userTokenDto.UserId);
             _userTokenRepository.Delete(userToken);
         }
     }

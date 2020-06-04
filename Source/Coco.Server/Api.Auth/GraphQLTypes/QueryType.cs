@@ -11,10 +11,10 @@ namespace Api.Auth.GraphQLTypes
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            //descriptor.Field<IUserResolver>(x => x.SignoutAsync(default))
-            //    .Type<CommonResultType>()
-            //    .Directive<AuthenticationDirectiveType>()
-            //    .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
+            descriptor.Field<IUserResolver>(x => x.SignoutAsync(default))
+                .Type<CommonResultType>()
+                .Directive<AuthenticationDirectiveType>()
+                .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.GetLoggedUserAsync(default))
                 .Type<LoggedInResultType>()

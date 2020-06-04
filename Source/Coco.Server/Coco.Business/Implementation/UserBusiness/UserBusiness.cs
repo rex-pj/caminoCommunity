@@ -99,6 +99,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 userInfo.User.UpdatedDate = DateTime.UtcNow;
                 userInfo.User.UpdatedById = userInfo.Id;
             }
+
             _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _identityContext.SaveChangesAsync();
 
