@@ -21,6 +21,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Coco.Auth.Models;
 using AutoMapper;
+using Coco.Entities.Dtos.User;
 
 namespace Api.Auth.Resolvers
 {
@@ -39,8 +40,8 @@ namespace Api.Auth.Resolvers
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, 
-            IUserPhotoBusiness userPhotoBusiness, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, 
+        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager,
+            IUserPhotoBusiness userPhotoBusiness, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,
             IEmailSender emailSender, IMapper mapper, IUserBusiness userBusiness)
         {
             _userManager = userManager;
@@ -58,46 +59,34 @@ namespace Api.Auth.Resolvers
             _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
         }
 
-        public async Task<ApplicationUser> GetLoggedUserAsync(IResolverContext context)
+        public async Task<FullUserInfoModel> GetLoggedUserAsync(IResolverContext context)
         {
-            try
-            {
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetLoggedUserAsync();
-                return currentUser;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+            var currentUser = await sessionContext.GetCurrentUserAsync();
+
+            var user = _mapper.Map<FullUserInfoModel>(currentUser);
+            return user;
         }
 
         public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
         {
-            try
-            {
-                var criterias = context.Argument<FindUserModel>("criterias");
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                
-                long userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-                var currentUser = await sessionContext.GetLoggedUserAsync();
-                if (string.IsNullOrEmpty(criterias.UserId))
-                {
-                    userId = currentUser.Id;
-                }
-                
-                var user = await _userBusiness.FindFullByIdAsync(userId);
+            var criterias = context.Argument<FindUserModel>("criterias");
+            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
 
-                var userInfo = _mapper.Map<FullUserInfoModel>(user);
-                userInfo.UserIdentityId = currentUser.UserIdentityId;
-                userInfo.CanEdit = userId == currentUser.Id;
-
-                return userInfo;
-            }
-            catch (Exception ex)
+            long userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+            var currentUser = await sessionContext.GetCurrentUserAsync();
+            if (string.IsNullOrEmpty(criterias.UserId))
             {
-                throw ex;
+                userId = currentUser.Id;
             }
+
+            var user = await _userBusiness.FindFullByIdAsync(userId);
+
+            var userInfo = _mapper.Map<FullUserInfoModel>(user);
+            userInfo.UserIdentityId = currentUser.UserIdentityId;
+            userInfo.CanEdit = userId == currentUser.Id;
+
+            return userInfo;
         }
 
 
@@ -113,19 +102,19 @@ namespace Api.Auth.Resolvers
 
                 if (criterias.PropertyName == null)
                 {
-                    throw new ArgumentNullException(nameof(criterias.PropertyName));
+                    throw new ArgumentException(nameof(criterias.PropertyName));
                 }
 
                 if (criterias.Key == null || string.IsNullOrEmpty(criterias.Key.ToString()))
                 {
-                    throw new ArgumentNullException(nameof(criterias.Key));
+                    throw new ArgumentException(nameof(criterias.Key));
                 }
 
                 var userContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await userContext.GetLoggedUserAsync();
+                var currentUser = await userContext.GetCurrentUserAsync();
 
                 var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
-                if(userId != currentUser.Id)
+                if (userId != currentUser.Id)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -147,7 +136,7 @@ namespace Api.Auth.Resolvers
             try
             {
                 var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetLoggedUserAsync();
+                var currentUser = await sessionContext.GetCurrentUserAsync();
 
                 var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.COCO_API_AUTH, currentUser.AuthenticationToken);
                 if (!result.Succeeded)
@@ -167,154 +156,78 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        //public async Task<ICommonResult> UpdateAvatarAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var model = GenerateUserPhotoModel(context);
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        var currentUser = sessionContext.CurrentUser;
+        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context)
+        {
+            try
+            {
+                var criterias = context.Argument<UserIdentifierUpdateDto>("criterias");
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
 
-        //        var user = await _userManagerOld.FindUserByIdentityIdAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
-        //        if (user == null)
-        //        {
-        //            throw new UnauthorizedAccessException();
-        //        }
+                var currentUser = await sessionContext.GetCurrentUserAsync();
+                currentUser.Lastname = criterias.Lastname;
+                currentUser.Firstname = criterias.Firstname;
+                currentUser.DisplayName = criterias.DisplayName;
 
-        //        model.UserPhotoType = UserPhotoTypeEnum.Avatar;
-        //        var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, user.Id);
+                var updatedUser = await _userManager.UpdateAsync(currentUser);
 
-        //        return CommonResult.Success(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
+                if (updatedUser.Succeeded)
+                {
+                    return new UserIdentifierUpdateDto()
+                    {
+                        DisplayName = currentUser.DisplayName,
+                        Firstname = currentUser.Firstname,
+                        Id = currentUser.Id,
+                        Lastname = currentUser.Lastname
+                    };
+                }
+                return new UserIdentifierUpdateDto();
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                return null;
+            }
+        }
 
-        //public async Task<ICommonResult> UpdateCoverAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var model = GenerateUserPhotoModel(context);
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        var currentUser = sessionContext.CurrentUser;
+        public async Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context)
+        {
+            try
+            {
+                var criterias = context.Argument<UserPasswordUpdateDto>("criterias");
+                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
 
-        //        var user = await _userManagerOld.FindUserByIdentityIdAsync(currentUser.UserIdentityId, currentUser.AuthenticationToken);
-        //        if (user == null)
-        //        {
-        //            throw new UnauthorizedAccessException();
-        //        }
+                var currentUser = await sessionContext.GetCurrentUserAsync();
+                criterias.UserId = currentUser.Id;
 
-        //        model.UserPhotoType = UserPhotoTypeEnum.Cover;
-        //        var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, user.Id);
+                if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
+                {
+                    throw new ArgumentException($"{nameof(criterias.NewPassword)} and {nameof(criterias.ConfirmPassword)} is not the same");
+                }
 
-        //        return CommonResult.Success(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
+                var result = await _userManager.ChangePasswordAsync(currentUser, criterias.CurrentPassword, criterias.NewPassword);
+                if (result.Succeeded)
+                {
+                    return new UserTokenResult()
+                    {
+                        AuthenticationToken = currentUser.AuthenticationToken,
+                        AccessMode = AccessModeEnum.CanEdit,
+                        IsSucceed = true,
+                        UserInfo = _mapper.Map<UserInfoModel>(currentUser)
+                    };
+                }
 
-        //public async Task<ICommonResult> DeleteAvatarAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<PhotoDeleteModel>("criterias");
-
-        //        if (!criterias.CanEdit)
-        //        {
-        //            throw new UnauthorizedAccessException();
-        //        }
-
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        var currentUser = sessionContext.CurrentUser;
-        //        if (currentUser.Id < 0)
-        //        {
-        //            throw new ArgumentNullException(nameof(currentUser.Id));
-        //        }
-
-        //        await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoTypeEnum.Avatar);
-        //        return CommonResult.Success(new UserPhotoUpdateDto());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
-
-        //public async Task<ICommonResult> DeleteCoverAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<PhotoDeleteModel>("criterias");
-
-        //        if (!criterias.CanEdit)
-        //        {
-        //            throw new UnauthorizedAccessException();
-        //        }
-
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-        //        await _userPhotoBusiness.DeleteUserPhotoAsync(sessionContext.CurrentUser.Id, UserPhotoTypeEnum.Cover);
-        //        return CommonResult.Success(new UserPhotoUpdateDto());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
-
-        //public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<UserIdentifierUpdateDto>("criterias");
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-
-        //        var currentUser = sessionContext.CurrentUser;
-        //        currentUser.Lastname = criterias.Lastname;
-        //        currentUser.Firstname = criterias.Firstname;
-        //        currentUser.DisplayName = criterias.DisplayName;
-
-        //        return await _userManagerOld.UpdateIdentifierAsync(currentUser, currentUser.UserIdentityId, currentUser.AuthenticationToken);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return null;
-        //    }
-        //}
-
-        //public async Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<UserPasswordUpdateDto>("criterias");
-        //        var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-
-        //        var currentUser = sessionContext.CurrentUser;
-        //        criterias.UserId = currentUser.Id;
-
-        //        if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
-        //        {
-        //            throw new ArgumentException($"{nameof(criterias.NewPassword)} and {nameof(criterias.ConfirmPassword)} is not the same");
-        //        }
-
-        //        var result = await _userManagerOld.ChangePasswordAsync(currentUser.Id, criterias.CurrentPassword, criterias.NewPassword);
-
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HandleContextError(context, ex);
-        //        return new UserTokenResult(false);
-        //    }
-        //}
+                return new UserTokenResult()
+                {
+                    AccessMode = AccessModeEnum.ReadOnly,
+                    IsSucceed = false
+                };
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                return new UserTokenResult(false);
+            }
+        }
 
         public async Task<UserTokenResult> SigninAsync(IResolverContext context)
         {
@@ -332,7 +245,8 @@ namespace Api.Auth.Resolvers
                 await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.COCO_API_AUTH, token, UserAttributeOptions.AUTHENTICATION_TOKEN));
 
                 var userIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
-                return new UserTokenResult(true) {
+                return new UserTokenResult(true)
+                {
                     AuthenticationToken = token,
                     UserInfo = new UserInfoModel()
                     {
@@ -350,90 +264,69 @@ namespace Api.Auth.Resolvers
 
         public async Task<ICommonResult> SignupAsync(IResolverContext context)
         {
-            try
+            var model = context.Argument<SignupModel>("criterias");
+            var user = new ApplicationUser()
             {
-                var model = context.Argument<SignupModel>("criterias");
-                var user = new ApplicationUser()
-                {
-                    BirthDate = model.BirthDate,
-                    DisplayName = $"{model.Lastname} {model.Firstname}",
-                    Email = model.Email,
-                    Firstname = model.Firstname,
-                    Lastname = model.Lastname,
-                    GenderId = (byte)model.GenderId,
-                    StatusId = (byte)UserStatusEnum.New,
-                    UserName = model.Email,
-                };
+                BirthDate = model.BirthDate,
+                DisplayName = $"{model.Lastname} {model.Firstname}",
+                Email = model.Email,
+                Firstname = model.Firstname,
+                Lastname = model.Lastname,
+                GenderId = (byte)model.GenderId,
+                StatusId = (byte)UserStatusEnum.New,
+                UserName = model.Email,
+            };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    user = await _userManager.FindByNameAsync(user.UserName);
-                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    await SendActiveEmailAsync(user, confirmationToken);
-                }
-
-                return CommonResult.Success();
-            }
-            catch (Exception ex)
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
             {
-                throw ex;
+                user = await _userManager.FindByNameAsync(user.UserName);
+                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await SendActiveEmailAsync(user, confirmationToken);
             }
+
+            return CommonResult.Success();
         }
 
         private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
         {
-            try
+            var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{confirmationToken}";
+            await _emailSender.SendEmailAsync(new MailMessageModel()
             {
-                var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{confirmationToken}";
-                await _emailSender.SendEmailAsync(new MailMessageModel()
-                {
-                    Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-                    FromEmail = _registerConfirmFromEmail,
-                    FromName = _registerConfirmFromName,
-                    ToEmail = user.Email,
-                    ToName = user.DisplayName,
-                    Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
-                }, TextFormat.Html);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
+                FromEmail = _registerConfirmFromEmail,
+                FromName = _registerConfirmFromName,
+                ToEmail = user.Email,
+                ToName = user.DisplayName,
+                Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
+            }, TextFormat.Html);
         }
 
         public async Task<ICommonResult> ActiveAsync(IResolverContext context)
         {
-            try
+            var model = context.Argument<ActiveUserModel>("criterias");
+            var user = await _userManager.FindByNameAsync(model.Email);
+            if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                var model = context.Argument<ActiveUserModel>("criterias");
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (!await _userManager.IsEmailConfirmedAsync(user))
+                var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
+                if (result.Succeeded)
                 {
-                    var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
-                    if (result.Succeeded)
-                    {
-                        return CommonResult.Success();
-                    }
-
-                    var errors = result.Errors.Select(x => new CommonError() { 
-                        Message = x.Description,
-                        Code = x.Code
-                    });
-
-                    return CommonResult.Failed(errors);
+                    return CommonResult.Success();
                 }
 
-                return CommonResult.Failed(new CommonError()
+                var errors = result.Errors.Select(x => new CommonError()
                 {
-                    Message = "The user is already confirmed"
+                    Message = x.Description,
+                    Code = x.Code
                 });
 
+                return CommonResult.Failed(errors);
             }
-            catch (Exception ex)
+
+            return CommonResult.Failed(new CommonError()
             {
-                throw ex;
-            }
+                Message = "The user is already confirmed"
+            });
         }
 
         //public async Task<ICommonResult> ForgotPasswordAsync(IResolverContext context)
@@ -443,16 +336,16 @@ namespace Api.Auth.Resolvers
         //        var criterias = context.Argument<ForgotPasswordModel>("criterias");
         //        if (criterias == null)
         //        {
-        //            throw new NullReferenceException(nameof(criterias));
+        //            throw new ArgumentException(nameof(criterias));
         //        }
 
-        //        var user = await _userManagerOld.FindByEmailAsync(criterias.Email);
-        //        if (user == null || !(await _userManagerOld.IsEmailConfirmedAsync(user)))
+        //        var user = await _userManager.FindByEmailAsync(criterias.Email);
+        //        if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
         //        {
         //            throw new ApplicationException("ForgotPasswordConfirmation");
         //        }
 
-        //        var result = await _userManagerOld.ForgotPasswordAsync(criterias.Email);
+        //        var result = await _userManager.ForgotPasswordAsync(criterias.Email);
 
         //        var response = result as CommonResult;
         //        var userResponse = response.Result.ToString();
@@ -511,18 +404,5 @@ namespace Api.Auth.Resolvers
         //        throw ex;
         //    }
         //}
-
-        #region Privates
-        private UserPhotoUpdateDto GenerateUserPhotoModel(IResolverContext context)
-        {
-            var model = context.Argument<UserPhotoUpdateDto>("criterias");
-            if (!model.CanEdit)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            return model;
-        }
-        #endregion
     }
 }

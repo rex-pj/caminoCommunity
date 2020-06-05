@@ -63,5 +63,7 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<string> EncryptUserIdAsync(long userId);
         Task<long> DecryptUserIdAsync(string userIdentityId);
         Task<bool> VerifyUserTokenAsync(TUser user, string tokenProvider, string purpose, string token);
+        Task<IdentityResult> ResetPasswordAsync(TUser user, string token, string newPassword);
+        Task<IdentityResult> UpdateAsync(TUser user);
     }
 }

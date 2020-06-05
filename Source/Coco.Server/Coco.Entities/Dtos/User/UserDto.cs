@@ -27,8 +27,6 @@ namespace Coco.Entities.Dtos.User
         public string AuthenticationToken { get; set; }
         public DateTime? Expiration { get; set; }
         public string IdentityStamp { get; set; }
-        public string AvatarUrl { get; set; }
-        public string CoverPhotoUrl { get; set; }
         public bool IsEmailConfirmed { get; set; }
     }
 }

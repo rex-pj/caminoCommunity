@@ -2,6 +2,7 @@
 using Coco.Entities.Domain.Content;
 using Coco.Contract;
 using System.Threading.Tasks;
+using Coco.DAL.Mapping;
 
 namespace Coco.DAL
 {
@@ -21,6 +22,8 @@ namespace Coco.DAL
         public DbSet<Product> Product { get; set; }
 
         public DbSet<ArticleCategory> ArticleCategory { get; set; }
+        public DbSet<UserPhoto> UserPhoto { get; set; }
+        public DbSet<UserPhotoType> UserPhotoType { get; set; }
         #endregion
 
         #region Ctor
@@ -31,11 +34,10 @@ namespace Coco.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ArticleCategory>()
-                .HasOne(x => x.ParentCategory)
-                .WithMany(x => x.ChildCategories)
-                .HasForeignKey(x => x.ParentCategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder
+                .ApplyConfiguration(new ArticleCategoryMap())
+                .ApplyConfiguration(new UserPhotoMap())
+                .ApplyConfiguration(new UserPhotoTypeMap());
 
             base.OnModelCreating(modelBuilder);
         }

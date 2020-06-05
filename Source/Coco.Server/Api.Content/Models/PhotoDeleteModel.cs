@@ -1,4 +1,4 @@
-﻿namespace Coco.Auth.Models
+﻿namespace Api.Content.Models
 {
     public class PhotoDeleteModel
     {

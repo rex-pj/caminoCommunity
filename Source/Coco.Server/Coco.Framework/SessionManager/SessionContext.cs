@@ -39,7 +39,7 @@ namespace Coco.Framework.SessionManager
             }
         }
 
-        public async Task<ApplicationUser> GetLoggedUserAsync()
+        public async Task<ApplicationUser> GetCurrentUserAsync()
         {
             if (!IsAuthorizationHeadersValid())
             {

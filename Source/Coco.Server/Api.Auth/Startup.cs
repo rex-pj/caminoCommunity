@@ -19,13 +19,11 @@ namespace Api.Auth
 {
     public class Startup
     {
-        private IBootstrapper _bootstrapper;
+        private readonly IBootstrapper _bootstrapper;
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
-        private IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
 
@@ -64,6 +62,7 @@ namespace Api.Auth
             services.AddTransient<IUserResolver, UserResolver>();
             services.AddTransient<ICountryResolver, CountryResolver>();
             services.AddTransient<IGenderResolver, GenderResolver>();
+            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
 
             #region GraphQL DI
             services.AddGraphQlDependency();

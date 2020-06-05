@@ -13,6 +13,7 @@ namespace Api.Auth.Infrastructure.MappingProfiles
             CreateMap<UpdatePerItemModel, UpdatePerItemDto>();
             CreateMap<UpdatePerItemDto, UpdatePerItemModel>();
             CreateMap<UserFullDto, FullUserInfoModel>();
+            CreateMap<ApplicationUser, FullUserInfoModel>();
         }
     }
 }

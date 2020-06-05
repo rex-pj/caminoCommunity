@@ -7,7 +7,6 @@ using Coco.Contract;
 using Coco.Framework.Infrastructure;
 using Coco.Framework.Infrastructure.MappingProfiles;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager.Contracts;
 using Coco.Management.MappingProfiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +18,7 @@ namespace Coco.Management
 {
     public class Startup
     {
-        private IBootstrapper _bootstrapper;
+        private readonly IBootstrapper _bootstrapper;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -51,8 +50,6 @@ namespace Coco.Management
 
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
-
-            //services.AddTransient<ILoginManager<ApplicationUser>, SessionLoginManager>();
         }
 
 

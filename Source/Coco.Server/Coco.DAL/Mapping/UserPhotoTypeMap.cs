@@ -1,9 +1,9 @@
 ﻿using Coco.Common.Const;
-using Coco.Entities.Domain.Identity;
+using Coco.Entities.Domain.Content;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Coco.IdentityDAL.Mapping
+namespace Coco.DAL.Mapping
 {
     public class UserPhotoTypeMap : IEntityTypeConfiguration<UserPhotoType>
     {

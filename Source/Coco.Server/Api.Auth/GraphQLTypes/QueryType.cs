@@ -17,7 +17,7 @@ namespace Api.Auth.GraphQLTypes
                 .Resolver(ctx => ctx.Service<IUserResolver>().SignoutAsync(ctx));
 
             descriptor.Field<IUserResolver>(x => x.GetLoggedUserAsync(default))
-                .Type<LoggedInResultType>()
+                .Type<FullUserInfoResultType>()
                 .Directive<InitializeSessionDirectiveType>()
                 .Resolver(ctx => ctx.Service<IUserResolver>().GetLoggedUserAsync(ctx));
 

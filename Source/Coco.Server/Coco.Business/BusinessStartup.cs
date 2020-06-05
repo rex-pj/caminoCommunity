@@ -17,14 +17,12 @@ namespace Coco.Business
 {
     public class BusinessStartup : IBootstrapper
     {
-        private readonly IConfiguration _config;
         private readonly IBootstrapper _dalStartup;
         private readonly IBootstrapper _userDalStartup;
         public BusinessStartup(IConfiguration config)
         {
-            _config = config;
-            _dalStartup = new DalStartup(_config);
-            _userDalStartup = new IdentityDalStartup(_config);
+            _dalStartup = new DalStartup(config);
+            _userDalStartup = new IdentityDalStartup(config);
         }
 
         public void RegiserTypes(IServiceCollection services)
@@ -47,7 +45,6 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
                 .AddTransient<IRepository<Country>, EfIdentityRepository<Country>>()
                 .AddTransient<IRepository<Role>, EfIdentityRepository<Role>>()
-                .AddTransient<IRepository<UserPhoto>, EfIdentityRepository<UserPhoto>>()
                 .AddTransient<IRepository<UserAttribute>, EfIdentityRepository<UserAttribute>>()
                 .AddTransient<IRepository<UserRole>, EfIdentityRepository<UserRole>>()
                 .AddTransient<IRepository<AuthorizationPolicy>, EfIdentityRepository<AuthorizationPolicy>>()
@@ -59,6 +56,7 @@ namespace Coco.Business
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()
+                .AddTransient<IRepository<UserPhoto>, EfRepository<UserPhoto>>()
                 .AddTransient<ValidationStrategyContext>();
 
             _dalStartup.RegiserTypes(services);

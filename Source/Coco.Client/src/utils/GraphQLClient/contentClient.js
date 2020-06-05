@@ -5,7 +5,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
 
 const httpLink = createHttpLink({
-  uri: process.env.REACT_APP_CDN_API_URL,
+  uri: process.env.REACT_APP_CONTENT_API_URL,
 });
 
 const contextLink = setContext(async (_, { headers }) => {

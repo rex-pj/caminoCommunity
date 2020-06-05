@@ -8,6 +8,6 @@ namespace Coco.Business.ValidationStrategies.Interfaces
     {
         IEnumerable<ErrorObject> Errors { get; set; }
         bool IsValid<T>(T value);
-        IEnumerable<ErrorObject> GetErrors(Exception e);
+        IEnumerable<ErrorObject> GetErrors(Exception exception);
     }
 }

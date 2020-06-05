@@ -1,7 +1,7 @@
 ﻿using Coco.Entities.Dtos.General;
 using HotChocolate.Types;
 
-namespace Api.Auth.GraphQLTypes.InputTypes
+namespace Api.Content.GraphQLTypes.InputTypes
 {
     public class UserPhotoUpdateInputType : InputObjectType<UserPhotoUpdateDto>
     {

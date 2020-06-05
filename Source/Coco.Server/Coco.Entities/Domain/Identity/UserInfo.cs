@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Identity
@@ -8,7 +7,6 @@ namespace Coco.Entities.Domain.Identity
     {
         public UserInfo()
         {
-            this.UserPhotos = new HashSet<UserPhoto>();
         }
 
         public long Id { get; set; }
@@ -22,11 +20,8 @@ namespace Coco.Entities.Domain.Identity
         public DateTime? BirthDate { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
-        public string AvatarUrl { get; set; }
-        public string CoverPhotoUrl { get; set; }
         public virtual User User { get; set; }
         public virtual Gender Gender { get; set; }
         public virtual Country Country { get; set; }
-        public virtual ICollection<UserPhoto> UserPhotos { get; set; }
     }
 }

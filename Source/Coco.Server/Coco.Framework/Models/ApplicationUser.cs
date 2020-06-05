@@ -27,8 +27,6 @@ namespace Coco.Framework.Models
         public string UserIdentityId { get; set; }
         public DateTime? Expiration { get; set; }
         public string StatusLabel { get; set; }
-        public string AvatarUrl { get; set; }
-        public string CoverPhotoUrl { get; set; }
         public string AuthenticationToken { get; set; }
     }
 }

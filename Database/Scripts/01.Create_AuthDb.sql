@@ -332,7 +332,7 @@ PRIMARY KEY (UserId, [Name], [Value]);
 GO
 CREATE TABLE dbo.[UserLogin]
 (
-	Id BIGINT NOT NULL,
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	UserId BIGINT NOT NULL,
 	LoginProvider NVARCHAR(255) NOT NULL,
 	ProviderDisplayName NVARCHAR(255) NOT NULL,
