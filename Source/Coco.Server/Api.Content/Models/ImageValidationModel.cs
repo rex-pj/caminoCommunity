@@ -1,4 +1,4 @@
-﻿namespace Api.Resource.Models
+﻿namespace Api.Content.Models
 {
     public class ImageValidationModel
     {

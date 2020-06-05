@@ -6,6 +6,6 @@ namespace Coco.Framework.SessionManager.Contracts
     public interface ISessionContext
     {
         string AuthenticationToken { get; }
-        Task<ApplicationUser> GetLoggedUserAsync();
+        Task<ApplicationUser> GetCurrentUserAsync();
     }
 }

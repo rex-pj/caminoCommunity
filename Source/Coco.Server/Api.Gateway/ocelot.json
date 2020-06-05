@@ -4,25 +4,10 @@
   },
   "ReRoutes": [
     {
-      "DelegatingHandlers": [
-        "GraphQlDelegatingHandler"
-      ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7004
-        }
-      ],
-      "DownstreamPathTemplate": "/api/graphql",
-      "DownstreamScheme": "http",
-      "UpstreamHttpMethod": [ "POST", "GET" ],
-      "UpstreamPathTemplate": "/resc-api/graphql"
-    },
-    {
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7004
+          "Port": 7002
         }
       ],
       "DownstreamPathTemplate": "/photo/{catchAll}",

@@ -18,6 +18,7 @@ import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER,
 } from "../../../utils/GraphQLQueries/mutations";
+import contentClient from "../../../utils/GraphQLClient/contentClient";
 
 const Wrap = styled.div`
     position: relative;
@@ -275,7 +276,9 @@ export default (props) => {
     props.showValidationError(title, message);
   };
 
-  const [updateCover] = useMutation(UPDATE_USER_COVER);
+  const [updateCover] = useMutation(UPDATE_USER_COVER, {
+    client: contentClient,
+  });
   const onUpdate = async () => {
     const { src } = coverState;
     if (photoEditor && props.onUpdated && src) {
@@ -314,7 +317,10 @@ export default (props) => {
     }
   };
 
-  const [deleteCover] = useMutation(DELETE_USER_COVER);
+  const [deleteCover] = useMutation(DELETE_USER_COVER, {
+    client: contentClient,
+  });
+
   const onDelete = async () => {
     const { canEdit } = props;
 

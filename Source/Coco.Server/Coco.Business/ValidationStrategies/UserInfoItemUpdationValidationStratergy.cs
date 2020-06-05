@@ -17,41 +17,33 @@ namespace Coco.Business.ValidationStrategies
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public bool IsValid<T>(T data)
+        public bool IsValid<T>(T value)
         {
-            var model = data as UpdatePerItemDto;
+            var model = value as UpdatePerItemDto;
             var propertyName = model.PropertyName;
-            UserInfo userInfo = new UserInfo();
+            UserInfo userInfo;
 
             var ignoreCase = StringComparison.InvariantCultureIgnoreCase;
 
-            if (propertyName.Equals(nameof(userInfo.Id), ignoreCase)
-                || propertyName.Equals(nameof(userInfo.User), ignoreCase)
-                || propertyName.Equals(nameof(userInfo.AvatarUrl), ignoreCase)
-                || propertyName.Equals(nameof(userInfo.CoverPhotoUrl), ignoreCase))
+            if (propertyName.Equals(nameof(userInfo.Id), ignoreCase) || propertyName.Equals(nameof(userInfo.User), ignoreCase))
             {
                 Errors = GetErrors(new NotSupportedException($"Not support {propertyName}"));
                 return false;
             }
-
             
             if (propertyName.Equals(nameof(userInfo.PhoneNumber), ignoreCase))
             {
                 _validationStrategyContext.SetStrategy(new PhoneValidationStrategy());
-                bool isValid = (model.Value == null
-                    || string.IsNullOrEmpty(model.Value.ToString()))
-                    || _validationStrategyContext.Validate(model.Value);
+                bool isValid = (model.Value == null || string.IsNullOrEmpty(model.Value.ToString())) || _validationStrategyContext.Validate(model.Value);
 
                 if (!isValid)
                 {
                     Errors = _validationStrategyContext.Errors;
                 }
             }
-            else if (propertyName.Equals(nameof(userInfo.BirthDate), ignoreCase))
+            else if (propertyName.Equals(nameof(userInfo.BirthDate), ignoreCase) && model.Value == null)
             {
-                if (model.Value == null) {
-                    Errors = GetErrors(new NotSupportedException(nameof(userInfo.BirthDate)));
-                };
+                Errors = GetErrors(new NotSupportedException(nameof(userInfo.BirthDate)));
             }
 
             return Errors == null || !Errors.Any();

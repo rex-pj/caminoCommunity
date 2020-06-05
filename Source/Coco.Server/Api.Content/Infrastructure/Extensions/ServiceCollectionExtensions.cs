@@ -1,4 +1,5 @@
 ﻿using Api.Content.GraphQLTypes;
+using Api.Content.GraphQLTypes.InputTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate;
 using HotChocolate.Types;
@@ -14,6 +15,8 @@ namespace Api.Content.Infrastructure.Extensions
                 .AddServices(sp)
                 .AddQueryType<QueryType>()
                 .AddMutationType<MutationType>()
+                .AddType<UserPhotoUpdateInputType>()
+                .AddType<DeleteUserPhotoInputType>()
                 .AddType(typeof(ListType<>))
                 .AddType<AccessModeEnumType>()
                 .AddType<CommonErrorType>()

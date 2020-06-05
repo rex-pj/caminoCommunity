@@ -71,19 +71,19 @@ namespace Coco.Business.Implementation.UserBusiness
         {
             if (model.PropertyName == null)
             {
-                throw new ArgumentNullException(nameof(model.PropertyName));
+                throw new ArgumentException(nameof(model.PropertyName));
             }
 
             if (model.Key == null)
             {
-                throw new ArgumentNullException(nameof(model.Key));
+                throw new ArgumentException(nameof(model.Key));
             }
 
             var userInfo = _userInfoRepository.Find(model.Key);
 
             if (userInfo == null)
             {
-                throw new ArgumentNullException(nameof(userInfo));
+                throw new ArgumentException(nameof(userInfo));
             }
 
             _validationStrategyContext.SetStrategy(new UserInfoItemUpdationValidationStratergy(_validationStrategyContext));
@@ -235,7 +235,6 @@ namespace Coco.Business.Implementation.UserBusiness
                     Id = x.Id,
                     Email = x.Email,
                     Address = x.UserInfo.Address,
-                    AvatarUrl = x.UserInfo.AvatarUrl,
                     Lastname = x.Lastname,
                     Firstname = x.Firstname,
                     BirthDate = x.UserInfo.BirthDate,

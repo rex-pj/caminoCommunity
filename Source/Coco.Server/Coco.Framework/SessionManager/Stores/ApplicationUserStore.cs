@@ -20,7 +20,7 @@ namespace Coco.Framework.SessionManager.Stores
 {
     public class ApplicationUserStore : UserStoreBase<ApplicationUser, ApplicationRole, long, ApplicationUserClaim, 
         ApplicationUserRole, ApplicationUserLogin, ApplicationUserToken, ApplicationRoleClaim>, 
-        IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>,
+        IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>,
         IUserEncryptionStore<ApplicationUser>
     {
         private readonly IMapper _mapper;
@@ -56,7 +56,7 @@ namespace Coco.Framework.SessionManager.Stores
             _textCrypter = textCrypter;
         }
 
-        public override async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -86,14 +86,14 @@ namespace Coco.Framework.SessionManager.Stores
             }
         }
 
-        public override async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public override async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
         {
             var id = long.Parse(userId);
             var user = await _userBusiness.FindByIdAsync(id);
             return _mapper.Map<ApplicationUser>(user);
         }
 
-        public override async Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -113,7 +113,7 @@ namespace Coco.Framework.SessionManager.Stores
             return IdentityResult.Success;
         }
 
-        public override async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public override async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
         {
             var user = await _userBusiness.FindByUsernameAsync(normalizedUserName);
             if (user != null)
@@ -144,7 +144,7 @@ namespace Coco.Framework.SessionManager.Stores
             var roleEntity = await FindRoleAsync(normalizedRoleName, cancellationToken);
             if (roleEntity == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Role Not Found", normalizedRoleName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Role {0} does not exist.", normalizedRoleName));
             }
             var applicationUserRole = CreateUserRole(user, roleEntity);
             var userRoleDto = _mapper.Map<UserRoleDto>(applicationUserRole);

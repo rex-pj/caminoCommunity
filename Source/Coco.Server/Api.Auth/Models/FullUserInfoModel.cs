@@ -23,6 +23,8 @@ namespace Api.Auth.Models
             CountrySelections = countrySelections;
         }
 
+        public string AvatarUrl { get; set; }
+        public string CoverPhotoUrl { get; set; }
         public bool CanEdit { get; set; }
         public IEnumerable<ISelectOption> GenderSelections { get; set; }
         public IEnumerable<ISelectOption> CountrySelections { get; set; }

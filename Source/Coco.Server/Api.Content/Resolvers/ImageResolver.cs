@@ -1,12 +1,12 @@
 ﻿using Coco.Framework.Resolvers;
-using Api.Public.Resolvers.Contracts;
+using Api.Content.Resolvers.Contracts;
 using HotChocolate.Resolvers;
-using Api.Resource.Models;
+using Api.Content.Models;
 using Coco.Business.ValidationStrategies;
 using Coco.Framework.Models;
 using Coco.Entities.Models;
 
-namespace Api.Public.Resolvers
+namespace Api.Content.Resolvers
 {
     public class ImageResolver : BaseResolver, IImageResolver
     {

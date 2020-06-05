@@ -12,17 +12,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Coco.Framework.Models;
+using Api.Content.Resolvers.Contracts;
+using Api.Content.Resolvers;
+using Api.Content.Infrastructure.MappingProfiles;
 
 namespace Api.Content
 {
     public class Startup
     {
         readonly string MyAllowSpecificOrigins = "AllowOrigin";
-        private IBootstrapper _bootstrapper;
+        private readonly IBootstrapper _bootstrapper;
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
             _bootstrapper = new BusinessStartup(configuration);
         }
 
@@ -52,13 +53,14 @@ namespace Api.Content
 
         private void InvokeInitialStartup(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile), typeof(ContentMappingProfile));
             FrameworkStartup.AddCustomStores(services);
             _bootstrapper.RegiserTypes(services);
 
-            #region GraphQL DI
+            services.AddTransient<IImageResolver, ImageResolver>();
+            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+
             services.AddGraphQlDependency();
-            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +77,8 @@ namespace Api.Content
             app.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors(MyAllowSpecificOrigins)
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseWebSockets()
                 .UseGraphQL("/api/graphql")
                 .UseBasicApiMiddleware();

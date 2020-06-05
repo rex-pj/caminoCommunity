@@ -83,6 +83,11 @@ namespace Coco.DAL.Implementations
         }
 
         /// <summary>
+        /// Gets a table
+        /// </summary>
+        public virtual IQueryable<TEntity> Table => DbSet;
+
+        /// <summary>
         /// Get first or default
         /// </summary>
         /// <param name="filter"></param>
@@ -93,9 +98,14 @@ namespace Coco.DAL.Implementations
         }
 
         /// <summary>
-        /// Gets a table
+        /// Get first or default by filter
         /// </summary>
-        public virtual IQueryable<TEntity> Table => DbSet;
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
+        {
+            return DbSet.FirstOrDefault(filter);
+        }
 
         /// <summary>
         /// Get first or default async
@@ -105,16 +115,6 @@ namespace Coco.DAL.Implementations
         public async Task<TEntity> FirstOrDefaultAsync()
         {
             return await DbSet.FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        /// Get first or default by filter
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
-        {
-            return DbSet.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Coco.DAL.Implementations
 
             if (propertyInfo == null)
             {
-                throw new ArgumentNullException(nameof(propertyInfo));
+                throw new ArgumentException(nameof(propertyInfo));
             }
 
             var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;

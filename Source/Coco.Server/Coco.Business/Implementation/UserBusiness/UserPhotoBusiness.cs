@@ -11,21 +11,25 @@ using Coco.IdentityDAL;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Coco.Entities.Domain.Content;
+using Coco.DAL;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly IDbContext _identityContext;
+        private readonly IdentityDbContext _identityContext;
+        private readonly ContentDbContext _contentDbContext;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(IdentityDbContext identityContext,
-            ValidationStrategyContext validationStrategyContext,
-            IRepository<UserPhoto> userPhotoRepository,
+        public UserPhotoBusiness(IdentityDbContext identityContext, ContentDbContext contentDbContext,
+            ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
             _identityContext = identityContext;
+            _contentDbContext = contentDbContext;
             _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -37,7 +41,6 @@ namespace Coco.Business.Implementation.UserBusiness
             {
                 throw new ArgumentNullException(nameof(model));
             }
-
             
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)
@@ -108,15 +111,6 @@ namespace Coco.Business.Implementation.UserBusiness
                     _userPhotoRepository.Update(userPhoto);
                 }
 
-                if (model.UserPhotoType == UserPhotoTypeEnum.Avatar)
-                {
-                    userInfo.AvatarUrl = model.UserPhotoCode;
-                }
-                else
-                {
-                    userInfo.CoverPhotoUrl = model.UserPhotoCode;
-                }
-
                 await _identityContext.SaveChangesAsync();
                 transaction.Commit();
 
@@ -135,6 +129,7 @@ namespace Coco.Business.Implementation.UserBusiness
             var type = (byte)userPhotoType;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
+                .AsNoTracking()
                 .FirstOrDefault();
 
             if (userPhoto == null)
@@ -142,24 +137,16 @@ namespace Coco.Business.Implementation.UserBusiness
                 return;
             }
 
-            if (userPhotoType == UserPhotoTypeEnum.Avatar)
-            {
-                userPhoto.UserInfo.AvatarUrl = null;
-            }
-            else
-            {
-                userPhoto.UserInfo.CoverPhotoUrl = null;
-            }
-
             _userPhotoRepository.Delete(userPhoto);
             await _identityContext.SaveChangesAsync();
+            await _contentDbContext.SaveChangesAsync();
         }
 
-        public UserPhotoDto GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
+        public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhoto = _userPhotoRepository
-                .Get(x => x.Code.Equals(code) && x.TypeId.Equals(photoType))
+            var userPhoto = (await _userPhotoRepository
+                .GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType)))
                 .Select(x => new UserPhotoDto()
                 {
                     Code = x.Code,
@@ -169,6 +156,23 @@ namespace Coco.Business.Implementation.UserBusiness
                     Name = x.Name,
                     TypeId = x.TypeId,
                     UserId = x.UserId,
+                    Url = x.Url
+                })
+                .FirstOrDefault();
+
+            return userPhoto;
+        }
+
+        public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
+        {
+            var photoType = (byte)type;
+            var userPhoto = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType))
+                .Select(x => new UserPhotoDto()
+                {
+                    Code = x.Code,
+                    Description = x.Description,
+                    Id = x.Id,
+                    Name = x.Name,
                     Url = x.Url
                 })
                 .FirstOrDefault();

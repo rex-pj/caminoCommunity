@@ -26,8 +26,7 @@ namespace Coco.IdentityDAL
         public DbSet<Status> Status { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Country> Country { get; set; }
-        public DbSet<UserPhoto> UserPhoto { get; set; }
-        public DbSet<UserPhotoType> UserPhotoType { get; set; }
+        
         public DbSet<UserAttribute> UserAttribute { get; set; }
         public DbSet<AuthorizationPolicy> AuthorizationPolicy { get; set; }
         public DbSet<UserAuthorizationPolicy> UserAuthorizationPolicy { get; set; }
@@ -54,8 +53,6 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new RoleAuthorizationPolicyMap())
                 .ApplyConfiguration(new StatusMap())
                 .ApplyConfiguration(new CountryMap())
-                .ApplyConfiguration(new UserPhotoMap())
-                .ApplyConfiguration(new UserPhotoTypeMap())
                 .ApplyConfiguration(new GenderMap())
                 .ApplyConfiguration(new UserClaimMap())
                 .ApplyConfiguration(new UserTokenMap())

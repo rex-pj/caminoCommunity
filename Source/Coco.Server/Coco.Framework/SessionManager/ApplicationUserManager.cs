@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Framework.SessionManager
 {
-    public class ApplicationUserManager<TUser> : UserManager<TUser>, IUserManager<TUser>, IDisposable where TUser : IdentityUser<long>
+    public class ApplicationUserManager<TUser> : UserManager<TUser>, IUserManager<TUser> where TUser : IdentityUser<long>
     {
         public ApplicationUserManager(IUserStore<TUser> store,
             IOptions<IdentityOptions> optionsAccessor,

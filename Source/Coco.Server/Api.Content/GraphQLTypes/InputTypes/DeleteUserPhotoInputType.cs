@@ -1,7 +1,7 @@
-﻿using Coco.Auth.Models;
+﻿using Api.Content.Models;
 using HotChocolate.Types;
 
-namespace Api.Auth.GraphQLTypes.InputTypes
+namespace Api.Content.GraphQLTypes.InputTypes
 {
     public class DeleteUserPhotoInputType : InputObjectType<PhotoDeleteModel>
     {

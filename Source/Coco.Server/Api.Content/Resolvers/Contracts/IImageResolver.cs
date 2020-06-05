@@ -1,7 +1,7 @@
 ﻿using Coco.Framework.Models;
 using HotChocolate.Resolvers;
 
-namespace Api.Public.Resolvers.Contracts
+namespace Api.Content.Resolvers.Contracts
 {
     public interface IImageResolver
     {

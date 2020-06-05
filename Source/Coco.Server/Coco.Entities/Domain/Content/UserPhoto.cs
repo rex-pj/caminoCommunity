@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Coco.Entities.Domain.Identity
+namespace Coco.Entities.Domain.Content
 {
     public class UserPhoto
     {
@@ -23,6 +23,5 @@ namespace Coco.Entities.Domain.Identity
         [Required]
         public byte TypeId { get; set; }
         public virtual UserPhotoType Type { get; set; }
-        public virtual UserInfo UserInfo { get; set; }
     }
 }
