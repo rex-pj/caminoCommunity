@@ -89,8 +89,8 @@ export default withRouter((props) => {
           }}
           categories={[
             { id: 1, name: "Trồng trọt" },
-            { id: 3, name: "Chăn nuôi" },
-            { id: 4, name: "Chế biến" },
+            { id: 2, name: "Chăn nuôi" },
+            { id: 3, name: "Chế biến" },
             { id: 4, name: "Phương thức canh tác" },
           ]}
         />

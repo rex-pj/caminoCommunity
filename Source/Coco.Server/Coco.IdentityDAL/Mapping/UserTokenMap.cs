@@ -10,11 +10,7 @@ namespace Coco.IdentityDAL.Mapping
         public void Configure(EntityTypeBuilder<UserToken> builder)
         {
             builder.ToTable(nameof(UserToken), TableSchemaConst.DBO);
-            builder.HasKey(x => new { 
-                x.UserId,
-                x.Value,
-                x.Name
-            });
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name)
                 .IsRequired()

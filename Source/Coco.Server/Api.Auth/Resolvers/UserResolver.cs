@@ -59,11 +59,9 @@ namespace Api.Auth.Resolvers
             _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
         }
 
-        public async Task<FullUserInfoModel> GetLoggedUserAsync(IResolverContext context)
+        public FullUserInfoModel GetLoggedUser(IResolverContext context)
         {
-            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-            var currentUser = await sessionContext.GetCurrentUserAsync();
-
+            var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
             var user = _mapper.Map<FullUserInfoModel>(currentUser);
             return user;
         }
@@ -71,10 +69,9 @@ namespace Api.Auth.Resolvers
         public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
         {
             var criterias = context.Argument<FindUserModel>("criterias");
-            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+            var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
             long userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-            var currentUser = await sessionContext.GetCurrentUserAsync();
             if (string.IsNullOrEmpty(criterias.UserId))
             {
                 userId = currentUser.Id;
@@ -110,8 +107,7 @@ namespace Api.Auth.Resolvers
                     throw new ArgumentException(nameof(criterias.Key));
                 }
 
-                var userContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await userContext.GetCurrentUserAsync();
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
                 var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
                 if (userId != currentUser.Id)
@@ -135,8 +131,7 @@ namespace Api.Auth.Resolvers
         {
             try
             {
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetCurrentUserAsync();
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
                 var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.COCO_API_AUTH, currentUser.AuthenticationToken);
                 if (!result.Succeeded)
@@ -161,9 +156,8 @@ namespace Api.Auth.Resolvers
             try
             {
                 var criterias = context.Argument<UserIdentifierUpdateDto>("criterias");
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
-                var currentUser = await sessionContext.GetCurrentUserAsync();
                 currentUser.Lastname = criterias.Lastname;
                 currentUser.Firstname = criterias.Firstname;
                 currentUser.DisplayName = criterias.DisplayName;
@@ -194,9 +188,7 @@ namespace Api.Auth.Resolvers
             try
             {
                 var criterias = context.Argument<UserPasswordUpdateDto>("criterias");
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-
-                var currentUser = await sessionContext.GetCurrentUserAsync();
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
                 criterias.UserId = currentUser.Id;
 
                 if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))

@@ -8,7 +8,7 @@ namespace Api.Auth.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-         Task<FullUserInfoModel> GetLoggedUserAsync(IResolverContext context);
+        FullUserInfoModel GetLoggedUser(IResolverContext context);
         Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context);
         Task<ICommonResult> SignoutAsync(IResolverContext context);

@@ -41,7 +41,7 @@ namespace Coco.Business.Implementation.UserBusiness
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            
+
             var userInfo = _userInfoRepository.Find(userId);
             if (userInfo == null)
             {
@@ -85,7 +85,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 .Get(x => x.UserId == userId && x.TypeId == userPhotoType)
                 .FirstOrDefault();
 
-            using (var transaction = _identityContext.Database.BeginTransaction())
+            using (var transaction = _contentDbContext.Database.BeginTransaction())
             {
                 model.UserPhotoCode = Guid.NewGuid().ToString();
                 if (userPhoto == null)
@@ -111,7 +111,7 @@ namespace Coco.Business.Implementation.UserBusiness
                     _userPhotoRepository.Update(userPhoto);
                 }
 
-                await _identityContext.SaveChangesAsync();
+                await _contentDbContext.SaveChangesAsync();
                 transaction.Commit();
 
                 model.PhotoUrl = userPhoto.Code;
@@ -138,46 +138,49 @@ namespace Coco.Business.Implementation.UserBusiness
             }
 
             _userPhotoRepository.Delete(userPhoto);
-            await _identityContext.SaveChangesAsync();
             await _contentDbContext.SaveChangesAsync();
         }
 
         public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhoto = (await _userPhotoRepository
-                .GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType)))
-                .Select(x => new UserPhotoDto()
-                {
-                    Code = x.Code,
-                    Description = x.Description,
-                    Id = x.Id,
-                    ImageData = x.ImageData,
-                    Name = x.Name,
-                    TypeId = x.TypeId,
-                    UserId = x.UserId,
-                    Url = x.Url
-                })
-                .FirstOrDefault();
+            var userPhotos = await _userPhotoRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
 
-            return userPhoto;
+            if (userPhotos == null || !userPhotos.Any())
+            {
+                return null;
+            }
+
+            return userPhotos.Select(x => new UserPhotoDto()
+            {
+                Code = x.Code,
+                Description = x.Description,
+                Id = x.Id,
+                ImageData = x.ImageData,
+                Name = x.Name,
+                TypeId = x.TypeId,
+                UserId = x.UserId,
+                Url = x.Url
+            }).FirstOrDefault();
         }
 
         public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhoto = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType))
-                .Select(x => new UserPhotoDto()
-                {
-                    Code = x.Code,
-                    Description = x.Description,
-                    Id = x.Id,
-                    Name = x.Name,
-                    Url = x.Url
-                })
-                .FirstOrDefault();
+            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));
+            if (userPhotos == null || !userPhotos.Any())
+            {
+                return null;
+            }
 
-            return userPhoto;
+            return userPhotos.Select(x => new UserPhotoDto()
+            {
+                Code = x.Code,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name,
+                Url = x.Url
+            }).FirstOrDefault();
         }
     }
 }
