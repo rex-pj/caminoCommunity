@@ -36,10 +36,10 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
                 .Type<ListType<CountryResultType>>()
                 .Resolver(ctx => ctx.Service<ICountryResolver>().GetAll());
             descriptor.Field(x => x.AvatarUrl)
-                .Resolver(async ctx => await ctx.Service<IUserPhotoResolver>().GetAvatarUrlByUserIdAsync(ctx))
+                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().GetAvatarUrlByUserId(ctx))
                 .Type<StringType>();
             descriptor.Field(x => x.CoverPhotoUrl)
-                .Resolver(async ctx => await ctx.Service<IUserPhotoResolver>().GetCoverUrlByUserIdAsync(ctx))
+                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().GetCoverUrlByUserId(ctx))
                 .Type<StringType>();
         }
     }

@@ -59,7 +59,7 @@ export default withRouter((props) => {
           onChange={(e) => handleInputChange(e)}
           placeholder="Danh mục bài viết"
         >
-          <option value={0} key={0} selected={false}>
+          <option value={0} key={0} disabled={true}>
             Danh mục bài viết
           </option>
           {categories

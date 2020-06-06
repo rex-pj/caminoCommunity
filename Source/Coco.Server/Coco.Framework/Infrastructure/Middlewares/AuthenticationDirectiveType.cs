@@ -29,6 +29,11 @@ namespace Coco.Framework.Infrastructure.Middlewares
                 else
                 {
                     context.ContextData["SessionContext"] = sessionContext;
+                    var currentuser = await sessionContext.GetCurrentUserAsync();
+                    if (currentuser != null)
+                    {
+                        context.ContextData["CurrentUser"] = currentuser;
+                    }
                 }
 
                 await next.Invoke(context);

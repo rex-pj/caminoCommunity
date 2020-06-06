@@ -566,6 +566,9 @@ INSERT [dbo].[Country] ([Id], [Code], [Name]) VALUES (250, N'ZWE', N'Zimbabwe')
 GO
 SET IDENTITY_INSERT [dbo].[Country] OFF
 
+
+USE CocoDb
+
 GO
 INSERT INTO dbo.UserPhotoType
 ([Name], [Description])

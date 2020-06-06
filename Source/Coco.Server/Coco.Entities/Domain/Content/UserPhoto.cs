@@ -9,7 +9,6 @@ namespace Coco.Entities.Domain.Content
         [Required]
         public string Code { get; set; }
         public string Name { get; set; }
-        [Required]
         public string Url { get; set; }
         public string Description { get; set; }
         [Required]

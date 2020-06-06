@@ -1,6 +1,7 @@
 ﻿using Api.Content.Models;
 using Api.Content.Resolvers.Contracts;
 using Coco.Business.Contracts;
+using Coco.Common.Const;
 using Coco.Entities.Dtos.General;
 using Coco.Entities.Enums;
 using Coco.Framework.Models;
@@ -28,8 +29,7 @@ namespace Api.Content.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetCurrentUserAsync();
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
                 var user = await _userManager.FindByIdAsync(currentUser.Id.ToString());
                 if (user == null)
@@ -54,8 +54,7 @@ namespace Api.Content.Resolvers
             try
             {
                 var model = GenerateUserPhotoModel(context);
-                var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-                var currentUser = await sessionContext.GetCurrentUserAsync();
+                var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
                 var user = await _userManager.FindByIdAsync(currentUser.Id.ToString());
                 if (user == null)

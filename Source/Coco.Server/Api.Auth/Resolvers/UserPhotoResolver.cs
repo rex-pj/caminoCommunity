@@ -1,10 +1,9 @@
 ﻿using Api.Auth.Resolvers.Contracts;
 using Coco.Business.Contracts;
+using Coco.Common.Const;
 using Coco.Entities.Enums;
 using Coco.Framework.Models;
-using Coco.Framework.SessionManager.Contracts;
 using HotChocolate.Resolvers;
-using System.Threading.Tasks;
 
 namespace Api.Auth.Resolvers
 {
@@ -16,17 +15,15 @@ namespace Api.Auth.Resolvers
             _userPhotoBusiness = userPhotoBusiness;
         }
 
-        public async Task<string> GetAvatarUrlByUserIdAsync(IResolverContext context)
+        public string GetAvatarUrlByUserId(IResolverContext context)
         {
-            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-            var currentUser = await sessionContext.GetCurrentUserAsync();
+            var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
             return GetUserPhotoUrl(currentUser, UserPhotoTypeEnum.Avatar);
         }
 
-        public async Task<string> GetCoverUrlByUserIdAsync(IResolverContext context)
+        public string GetCoverUrlByUserId(IResolverContext context)
         {
-            var sessionContext = context.ContextData["SessionContext"] as ISessionContext;
-            var currentUser = await sessionContext.GetCurrentUserAsync();
+            var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
             return GetUserPhotoUrl(currentUser, UserPhotoTypeEnum.Cover);
         }
 
