@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import SignInForm from "../../components/organisms/Auth/SignInForm";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../utils/GraphQLClient";
 import { SIGNIN } from "../../utils/GraphQLQueries/mutations";
 import { withRouter } from "react-router-dom";

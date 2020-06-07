@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../utils/GraphQLClient";
 import { FORGOT_PASSWORD } from "../../utils/GraphQLQueries/mutations";
 import { getError } from "../../utils/Helper";

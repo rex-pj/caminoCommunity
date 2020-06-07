@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Profile from "../../components/organisms/User/Profile";
 import { SessionContext } from "../../store/context/SessionContext";
 import { GET_USER_INFO } from "../../utils/GraphQLQueries/queries";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";

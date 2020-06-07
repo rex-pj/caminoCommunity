@@ -1,7 +1,7 @@
 import React from "react";
 import Active from "../../components/organisms/User/Active";
 import { withRouter } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import { ACTIVE } from "../../utils/GraphQLQueries/queries";
 import { unauthClient } from "../../utils/GraphQLClient";
 
