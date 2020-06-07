@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import AuthService from "../../services/AuthService";
 import { withRouter } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import SignOutPanel from "../../components/organisms/Auth/SignOutPanel";
 import { SIGNOUT } from "../../utils/GraphQLQueries/queries";
 import { SessionContext } from "../../store/context/SessionContext";

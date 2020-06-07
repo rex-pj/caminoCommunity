@@ -1,14 +1,13 @@
-import { ApolloClient } from "apollo-client";
-import { createHttpLink } from "apollo-link-http";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import introspectionResult from "../GraphQLQueries/introspection-result";
 import { setContext } from "apollo-link-context";
-import { InMemoryCache } from "apollo-cache-inmemory";
 import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
 
 const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
   uri: process.env.REACT_APP_AUTH_API_URL,
 });
 
@@ -29,9 +28,13 @@ const contextLink = setContext(async (_, { headers }) => {
   };
 });
 
+const cache = new InMemoryCache({
+  possibleTypes: introspectionResult.possibleTypes,
+});
+
 let client = new ApolloClient({
   link: contextLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: cache,
   ssrMode: true,
   initialState: preloadedState,
   defaultOptions: {

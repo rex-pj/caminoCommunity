@@ -13,12 +13,12 @@ import {
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import loadable from "@loadable/component";
-import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloProvider } from "@apollo/client";
 import { authClient } from "./utils/GraphQLClient";
 import configureModalStore from "./store/hook-store/modal-store";
 import configureAvatarStore from "./store/hook-store/avatar-store";
 import configureNotifyStore from "./store/hook-store/notify-store";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import { GET_LOGGED_USER } from "./utils/GraphQLQueries/queries";
 import { SessionContext } from "./store/context/SessionContext";
 import AuthService from "./services/AuthService";

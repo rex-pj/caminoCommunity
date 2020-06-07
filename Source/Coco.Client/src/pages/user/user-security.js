@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import UpdatePasswordForm from "../../components/organisms/User/UpdatePasswordForm";
 import { UPDATE_USER_PASSWORD } from "../../utils/GraphQLQueries/mutations";
 import { useStore } from "../../store/hook-store";

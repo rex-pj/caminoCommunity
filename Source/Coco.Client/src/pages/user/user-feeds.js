@@ -5,7 +5,7 @@ import { UrlConstant } from "../../utils/Constant";
 import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
 import { fileToBase64 } from "../../utils/Helper";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import contentClient from "../../utils/GraphQLClient/contentClient";
 import { VALIDATE_IMAGE_URL } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";

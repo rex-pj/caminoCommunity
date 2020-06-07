@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/client";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
 import { GET_USER_IDENTIFY } from "../../utils/GraphQLQueries/queries";
 import { UPDATE_USER_IDENTIFIER } from "../../utils/GraphQLQueries/mutations";

@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/client";
 import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries/queries";
 import { UPDATE_USER_INFO_PER_ITEM } from "../../utils/GraphQLQueries/mutations";
 import About from "../../components/organisms/User/About";

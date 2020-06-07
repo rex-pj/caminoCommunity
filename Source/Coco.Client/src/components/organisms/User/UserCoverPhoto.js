@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 import AvatarEditor from "react-avatar-editor";

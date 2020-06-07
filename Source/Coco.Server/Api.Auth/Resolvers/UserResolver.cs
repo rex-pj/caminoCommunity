@@ -71,10 +71,10 @@ namespace Api.Auth.Resolvers
             var criterias = context.Argument<FindUserModel>("criterias");
             var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
 
-            long userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-            if (string.IsNullOrEmpty(criterias.UserId))
+            var userId = currentUser.Id;
+            if (!string.IsNullOrEmpty(criterias.UserId))
             {
-                userId = currentUser.Id;
+                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
             var user = await _userBusiness.FindFullByIdAsync(userId);
@@ -85,7 +85,6 @@ namespace Api.Auth.Resolvers
 
             return userInfo;
         }
-
 
         public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
         {

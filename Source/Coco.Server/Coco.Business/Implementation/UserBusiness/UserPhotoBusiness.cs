@@ -164,7 +164,7 @@ namespace Coco.Business.Implementation.UserBusiness
             }).FirstOrDefault();
         }
 
-        public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
+        public UserPhotoDto GetUserPhotoByUserIdAsync(long userId, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
             var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));

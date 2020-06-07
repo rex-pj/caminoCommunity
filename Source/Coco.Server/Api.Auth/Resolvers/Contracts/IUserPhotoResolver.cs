@@ -1,10 +1,11 @@
 ﻿using HotChocolate.Resolvers;
+using System.Threading.Tasks;
 
 namespace Api.Auth.Resolvers.Contracts
 {
     public interface IUserPhotoResolver
     {
-        string GetAvatarUrlByUserId(IResolverContext context);
-        string GetCoverUrlByUserId(IResolverContext context);
+        Task<string> GetAvatarUrlByUserId(IResolverContext context);
+        Task<string> GetCoverUrlByUserId(IResolverContext context);
     }
 }

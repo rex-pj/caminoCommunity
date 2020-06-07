@@ -14,7 +14,7 @@ namespace Coco.Framework.GraphQLTypes.ResultTypes
         }
     }
 
-    public class SelectOptionType : SelectOptionType<SelectOption>
+    public class SelectOptionType : SelectOptionType<ISelectOption>
     {
         public SelectOptionType() : base() {}
     }
