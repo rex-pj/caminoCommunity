@@ -1,5 +1,4 @@
 ﻿using Api.Auth.Models;
-using Api.Auth.Resolvers.Contracts;
 using HotChocolate.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
@@ -9,9 +8,7 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
         protected override void Configure(IObjectTypeDescriptor<UserAvatarModel> descriptor)
         {
             descriptor.Name("UserAvatar");
-            descriptor.Field(x => x.Url)
-                .Type<StringType>()
-                .Resolver(async ctx => await ctx.Service<IUserPhotoResolver>().GetAvatarUrlByUserId(ctx));
+            descriptor.Field(x => x.Url).Type<StringType>();
         }
     }
 }

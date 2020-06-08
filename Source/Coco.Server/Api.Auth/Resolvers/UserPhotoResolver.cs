@@ -1,7 +1,10 @@
-﻿using Api.Auth.Resolvers.Contracts;
+﻿using Api.Auth.Models;
+using Api.Auth.Resolvers.Contracts;
+using AutoMapper;
 using Coco.Auth.Models;
 using Coco.Business.Contracts;
 using Coco.Common.Const;
+using Coco.Entities.Dtos;
 using Coco.Entities.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
@@ -14,48 +17,57 @@ namespace Api.Auth.Resolvers
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
+        private readonly ISessionContext _sessionContext;
 
-        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, IUserManager<ApplicationUser> userManager)
+        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext, IMapper mapper)
         {
             _userManager = userManager;
             _userPhotoBusiness = userPhotoBusiness;
+            _mapper = mapper;
+            _sessionContext = sessionContext;
         }
 
-        public async Task<string> GetAvatarUrlByUserId(IResolverContext context)
+        public async Task<UserAvatarModel> GetUserAvatarUrl(IResolverContext context)
         {
             var criterias = context.Argument<FindUserModel>("criterias");
             var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
-            var userId = currentUser.Id;
-            if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+            if (currentUser != null)
             {
-                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-            }
+                var userId = currentUser.Id;
+                if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+                {
+                    userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+                }
 
-            return GetUserPhotoUrl(userId, UserPhotoTypeEnum.Avatar);
+                return _mapper.Map<UserAvatarModel>(GetUserPhotoUrl(userId, UserPhotoTypeEnum.Avatar));
+            }
+            return null;
         }
 
-        public async Task<string> GetCoverUrlByUserId(IResolverContext context)
+        public async Task<UserCoverModel> GetUserCoverUrl(IResolverContext context)
         {
             var criterias = context.Argument<FindUserModel>("criterias");
             var currentUser = context.ContextData[SessionContextConst.CURRENT_USER] as ApplicationUser;
-            var userId = currentUser.Id;
-            if (criterias != null &&  !string.IsNullOrEmpty(criterias.UserId))
+            if (currentUser != null)
             {
-                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-            }
+                var userId = currentUser.Id;
+                if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+                {
+                    userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+                }
 
-            return GetUserPhotoUrl(userId, UserPhotoTypeEnum.Cover);
+                return _mapper.Map<UserCoverModel>(GetUserPhotoUrl(userId, UserPhotoTypeEnum.Cover));
+            }
+            return null;
         }
 
-        private string GetUserPhotoUrl(long userId, UserPhotoTypeEnum type)
+        private UserPhotoDto GetUserPhotoUrl(long userId, UserPhotoTypeEnum type)
         {
-            var userPhoto = _userPhotoBusiness.GetUserPhotoByUserIdAsync(userId, type);
-            if (userPhoto == null)
-            {
-                return string.Empty;
-            }
+            var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
 
-            return userPhoto.Code;
+            userPhoto.Url = userPhoto.Code;
+            return userPhoto;
         }
     }
 }

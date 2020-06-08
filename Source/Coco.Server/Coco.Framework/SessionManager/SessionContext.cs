@@ -3,6 +3,7 @@ using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Coco.Common.Const;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Coco.Framework.SessionManager
 {
@@ -11,16 +12,14 @@ namespace Coco.Framework.SessionManager
         public readonly HttpContext HttpContext;
         public readonly HttpRequest HttpRequest;
         public readonly IHeaderDictionary RequestHeaders;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserManager<ApplicationUser> _userManager;
         public string AuthenticationToken { get; protected set; }
         protected SessionContextHeaders AuthorizationHeaders { get; set; }
 
         public SessionContext(IHttpContextAccessor httpContextAccessor, IUserManager<ApplicationUser> userManager)
         {
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
-            HttpContext = _httpContextAccessor.HttpContext;
+            HttpContext = httpContextAccessor.HttpContext;
 
             if (HttpContext != null)
             {
@@ -58,7 +57,7 @@ namespace Coco.Framework.SessionManager
             {
                 return new ApplicationUser();
             }
-            
+
             user.Id = userId;
             UpdateAuthenticate(user);
             return user;

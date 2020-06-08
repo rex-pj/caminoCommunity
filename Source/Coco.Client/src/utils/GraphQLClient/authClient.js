@@ -28,9 +28,7 @@ const contextLink = setContext(async (_, { headers }) => {
   };
 });
 
-const cache = new InMemoryCache({
-  possibleTypes: introspectionResult.possibleTypes,
-});
+const cache = new InMemoryCache();
 
 let client = new ApolloClient({
   link: contextLink.concat(httpLink),

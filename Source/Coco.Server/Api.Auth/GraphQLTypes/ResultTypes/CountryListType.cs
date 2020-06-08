@@ -9,7 +9,7 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
         {
             descriptor.Name("CountryList");
             descriptor
-                .Field("CountrySelections")
+                .Field("countrySelections")
                 .Type<CountryResultType>()
                 .Resolver(ctx => ctx.Service<ICountryResolver>().GetAll());
         }

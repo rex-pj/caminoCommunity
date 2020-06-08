@@ -13,7 +13,7 @@ const UserFragment = {
   `,
   countries: gql`
     fragment CountryParts on CountryList {
-      CountrySelections {
+      countrySelections {
         id
         name
       }
@@ -21,7 +21,7 @@ const UserFragment = {
   `,
   genders: gql`
     fragment GenderParts on GenderList {
-      GenderSelections {
+      genderSelections {
         id
         text
       }
@@ -30,7 +30,7 @@ const UserFragment = {
 };
 
 export const GET_LOGGED_USER = gql`
-  fragment UserInfoParts on UserInfo {
+  fragment UserInfoParts on FullUserInfo {
     lastname
     firstname
     email
@@ -44,7 +44,11 @@ export const GET_LOGGED_USER = gql`
   query {
     loggedUser {
       ...UserInfoParts
+    }
+    userAvatarUrl {
       ...UserAvatarParts
+    }
+    userCoverUrl {
       ...UserCovertParts
     }
   }
@@ -54,7 +58,7 @@ export const GET_USER_INFO = gql`
   ${UserFragment.avatar}
   ${UserFragment.cover}
 
-  fragment UserInfoParts on UserInfo {
+  fragment UserInfoParts on FullUserInfo {
     canEdit
     email
     displayName

@@ -10,7 +10,7 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
         {
             descriptor.Name("GenderList");
             descriptor
-                .Field("GenderSelections")
+                .Field("genderSelections")
                 .Type<SelectOptionType>()
                 .Resolver(ctx => ctx.Service<IGenderResolver>().GetSelections());
         }
