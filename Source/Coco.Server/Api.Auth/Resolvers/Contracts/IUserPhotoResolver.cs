@@ -1,11 +1,12 @@
-﻿using HotChocolate.Resolvers;
+﻿using Api.Auth.Models;
+using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 
 namespace Api.Auth.Resolvers.Contracts
 {
     public interface IUserPhotoResolver
     {
-        Task<string> GetAvatarUrlByUserId(IResolverContext context);
-        Task<string> GetCoverUrlByUserId(IResolverContext context);
+        Task<UserAvatarModel> GetUserAvatarUrl(IResolverContext context);
+        Task<UserCoverModel> GetUserCoverUrl(IResolverContext context);
     }
 }

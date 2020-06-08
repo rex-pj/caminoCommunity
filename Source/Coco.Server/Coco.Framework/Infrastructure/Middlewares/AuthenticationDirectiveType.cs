@@ -1,4 +1,5 @@
-﻿using Coco.Common.Exceptions;
+﻿using Coco.Common.Const;
+using Coco.Common.Exceptions;
 using Coco.Framework.SessionManager.Contracts;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -18,21 +19,23 @@ namespace Coco.Framework.Infrastructure.Middlewares
                 var sessionContext = context.Service<ISessionContext>();
                 if (sessionContext == null)
                 {
-                    throw new CocoApplicationException("SessionContext is not registered");
+                    throw new CocoApplicationException($"{SessionContextConst.SESSION_CONTEXT} is not registered");
                 }
 
-                var currentUser = await sessionContext.GetCurrentUserAsync();
-                if (currentUser == null || currentUser.Id <= 0)
+                if (!context.ContextData.ContainsKey(SessionContextConst.SESSION_CONTEXT))
                 {
-                    context.Result = new ForbidResult();
-                }
-                else
-                {
-                    context.ContextData["SessionContext"] = sessionContext;
-                    var currentuser = await sessionContext.GetCurrentUserAsync();
-                    if (currentuser != null)
+                    context.ContextData[SessionContextConst.SESSION_CONTEXT] = sessionContext;
+                    if (!context.ContextData.ContainsKey(SessionContextConst.CURRENT_USER))
                     {
-                        context.ContextData["CurrentUser"] = currentuser;
+                        var currentuser = await sessionContext.GetCurrentUserAsync();
+                        if (currentuser != null && currentuser.Id > 0)
+                        {
+                            context.ContextData[SessionContextConst.CURRENT_USER] = currentuser;
+                        }
+                        else
+                        {
+                            context.Result = new ForbidResult();
+                        }
                     }
                 }
 

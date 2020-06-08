@@ -1,9 +1,7 @@
-import { ApolloClient } from "apollo-client";
-import { createHttpLink } from "apollo-link-http";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import { InMemoryCache } from "apollo-cache-inmemory";
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
   uri: process.env.REACT_APP_AUTH_API_URL,
 });
 

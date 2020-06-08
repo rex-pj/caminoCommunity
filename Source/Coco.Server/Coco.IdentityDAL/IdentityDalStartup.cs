@@ -17,7 +17,7 @@ namespace Coco.IdentityDAL
         public void RegiserTypes(IServiceCollection services)
         {
             services.AddDbContext<IdentityDbContext>
-                (x => x.UseLazyLoadingProxies().UseSqlServer(_connectionString));
+                (x => x.UseSqlServer(_connectionString));
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddTransient(typeof(IUserAttributeStore<>), typeof(UserAttributeStore<>))
-                .AddTransient<ISessionContext, SessionContext>()
+                .AddScoped<ISessionContext, SessionContext>()
                 .AddScoped<IEmailSender, EmailSender>();
 
             if (setupAction != null)
