@@ -66,6 +66,7 @@ namespace Api.Auth.Resolvers
         {
             var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
 
+            userPhoto.Url = userPhoto.Code;
             return userPhoto;
         }
     }

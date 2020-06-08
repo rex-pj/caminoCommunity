@@ -1,7 +1,11 @@
 ﻿using Coco.Common.Const;
 using Coco.Common.Exceptions;
+using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Core;
 using HotChocolate.Types;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.Infrastructure.Middlewares
 {
@@ -21,14 +25,17 @@ namespace Coco.Framework.Infrastructure.Middlewares
                     throw new CocoApplicationException($"{SessionContextConst.SESSION_CONTEXT} is not registered");
                 }
 
-                context.ContextData[SessionContextConst.SESSION_CONTEXT] = sessionContext;
-                if (!context.ContextData.ContainsKey(SessionContextConst.CURRENT_USER))
+                var sessionState = context.Service<SessionState>();
+                sessionState.Sessions[SessionContextConst.SESSION_CONTEXT] = sessionContext;
+                if (!sessionState.Sessions.ContainsKey(SessionContextConst.CURRENT_USER))
                 {
-                    var currentuser = await sessionContext.GetCurrentUserAsync();
-                    if (currentuser != null && currentuser.Id > 0)
-                    {
-                        context.ContextData[SessionContextConst.CURRENT_USER] = currentuser;
-                    }
+                    sessionState.Sessions[SessionContextConst.CURRENT_USER] = sessionContext.GetCurrentUserAsync();
+                }
+
+                if (!context.ContextData.ContainsKey(SessionContextConst.CURRENT_USER) && sessionState.Sessions.ContainsKey(SessionContextConst.CURRENT_USER))
+                {
+                    var currentUser = sessionState.Sessions[SessionContextConst.CURRENT_USER] as Task<ApplicationUser>;
+                    context.ContextData[SessionContextConst.CURRENT_USER] = await currentUser;
                 }
 
                 await next.Invoke(context);

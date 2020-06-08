@@ -4,6 +4,7 @@ using Coco.Framework.Services.Contracts;
 using Coco.Framework.Services.Implementation;
 using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
+using Coco.Framework.SessionManager.Core;
 using Coco.Framework.SessionManager.Stores;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +49,8 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddTransient(typeof(IUserAttributeStore<>), typeof(UserAttributeStore<>))
                 .AddScoped<ISessionContext, SessionContext>()
-                .AddScoped<IEmailSender, EmailSender>();
+                .AddScoped<IEmailSender, EmailSender>()
+                .AddScoped<SessionState>();
 
             if (setupAction != null)
             {

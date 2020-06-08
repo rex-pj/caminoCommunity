@@ -24,12 +24,12 @@ namespace Api.Auth.GraphQLTypes
             descriptor.Field<IUserPhotoResolver>(x => x.GetUserAvatarUrl(default))
                 .Type<UserAvatarResultType>()
                 .Directive<InitializeSessionDirectiveType>()
-                .Resolver(async ctx => await ctx.Service<IUserPhotoResolver>().GetUserAvatarUrl(ctx));
+                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().GetUserAvatarUrl(ctx));
 
             descriptor.Field<IUserPhotoResolver>(x => x.GetUserCoverUrl(default))
                 .Type<UserCoverResultType>()
                 .Directive<InitializeSessionDirectiveType>()
-                .Resolver(async ctx => await ctx.Service<IUserPhotoResolver>().GetUserCoverUrl(ctx));
+                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().GetUserCoverUrl(ctx));
 
             descriptor.Field<IUserResolver>(x => x.GetFullUserInfoAsync(default))
                 .Type<FullUserInfoResultType>()
