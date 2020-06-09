@@ -6,18 +6,7 @@ namespace Api.Auth.Models
 {
     public class FullUserInfoModel : UserInfoModel
     {
-        public FullUserInfoModel()
-        {
-
-        }
-
-        public FullUserInfoModel(UserInfoModel userInfo) : base(userInfo)
-        {
-        }
-
-        public FullUserInfoModel(UserInfoModel userInfo, IEnumerable<SelectOption> genderOptions,
-            IEnumerable<SelectOption> countrySelections) : base(userInfo)
-        {
-        }
+        public IEnumerable<ISelectOption> GenderSelections { get; set; }
+        public IEnumerable<ISelectOption> CountrySelections { get; set; }
     }
 }

@@ -57,7 +57,7 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
   z-index: 3;
 `;
 
-export default withRouter(({ component: Component, ...rest }) => {
+export default withRouter((props) => {
   const {
     isEditCoverMode,
     userId,
@@ -65,7 +65,7 @@ export default withRouter(({ component: Component, ...rest }) => {
     baseUrl,
     pages,
     userInfo,
-  } = rest;
+  } = props;
 
   return (
     <Fragment>
@@ -78,9 +78,9 @@ export default withRouter(({ component: Component, ...rest }) => {
         <UserCoverPhoto
           userInfo={userInfo}
           canEdit={userInfo.canEdit}
-          onUpdated={rest.userCoverUpdated}
-          onToggleEditMode={rest.onToggleEditCoverMode}
-          showValidationError={rest.showValidationError}
+          onUpdated={props.userCoverUpdated}
+          onToggleEditMode={props.onToggleEditCoverMode}
+          showValidationError={props.showValidationError}
         />
         <AvatarBlock
           userInfo={userInfo}

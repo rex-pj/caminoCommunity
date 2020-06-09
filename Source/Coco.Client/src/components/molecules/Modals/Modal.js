@@ -16,7 +16,7 @@ const Root = styled(PanelDefault)`
   z-index: 100;
   margin: 0 auto;
   position: absolute;
-  max-width: ${p => (p.size === "lg" ? "90%" : "720px")};
+  max-width: ${(p) => (p.size === "lg" ? "90%" : "720px")};
 `;
 
 const Scroll = styled.div`
@@ -24,18 +24,18 @@ const Scroll = styled.div`
   z-index: 900;
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${p => p.theme.color.light};
+    border-bottom: 1px solid ${(p) => p.theme.color.light};
     font-weight: 600;
     position: relative;
   }
 
   ${PanelFooter} {
-    border-top: 1px solid ${p => p.theme.color.light};
+    border-top: 1px solid ${(p) => p.theme.color.light};
     text-align: right;
 
     button {
-      margin-left: ${p => p.theme.size.tiny};
-      border-radius: ${p => p.theme.borderRadius.large};
+      margin-left: ${(p) => p.theme.size.tiny};
+      border-radius: ${(p) => p.theme.borderRadius.large};
     }
   }
 `;
@@ -54,7 +54,7 @@ const Backdrop = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: ${p => p.theme.rgbaColor.darker};
+  background-color: ${(p) => p.theme.rgbaColor.darker};
   z-index: 99;
 `;
 
@@ -75,14 +75,14 @@ export default ({ ...props }) => {
   const onExecuteAsync = async (action, data, callbackName) => {
     return await action(data)
       .then(() => {
-        closeModal();
         dispatch(callbackName);
+        closeModal();
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch("NOTIFY", {
           title: "Có lỗi xảy ra trong quá trình xử lý",
           mesage: "Có lỗi xảy ra khi cập nhật, vui lòng thử lại!",
-          type: "error"
+          type: "error",
         });
       });
   };

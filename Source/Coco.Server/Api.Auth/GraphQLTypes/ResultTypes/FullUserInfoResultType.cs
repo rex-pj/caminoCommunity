@@ -1,4 +1,6 @@
 ﻿using Api.Auth.Models;
+using Api.Auth.Resolvers.Contracts;
+using Coco.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
 
 namespace Api.Auth.GraphQLTypes.ResultTypes
@@ -27,6 +29,12 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
             descriptor.Field(x => x.CountryName).Type<StringType>();
             descriptor.Field(x => x.StatusId).Type<IntType>();
             descriptor.Field(x => x.StatusLabel).Type<StringType>();
+            descriptor.Field(x => x.GenderSelections)
+                .Resolver(ctx => ctx.Service<IGenderResolver>().GetSelections())
+                .Type<ListType<SelectOptionType>>();
+            descriptor.Field(x => x.CountrySelections)
+                .Type<ListType<CountryResultType>>()
+                .Resolver(ctx => ctx.Service<ICountryResolver>().GetAll());
         }
     }
 }
