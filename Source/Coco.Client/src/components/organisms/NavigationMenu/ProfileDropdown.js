@@ -12,39 +12,39 @@ const Root = styled.div`
 `;
 
 const EmptyAvatar = styled(NoAvatar)`
-  border-radius: ${p => p.theme.borderRadius.normal};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   width: 28px;
   height: 28px;
   font-size: 16px;
   display: inline-block;
   vertical-align: middle;
-  margin-right: ${p => p.theme.size.exTiny};
+  margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
 const ProfileButton = styled(RouterLinkButton)`
-  color: ${p => p.theme.color.lighter};
-  background-color: ${p => p.theme.rgbaColor.darkLight};
-  border: 1px solid ${p => p.theme.rgbaColor.light};
+  color: ${(p) => p.theme.color.lighter};
+  background-color: ${(p) => p.theme.rgbaColor.darkLight};
+  border: 1px solid ${(p) => p.theme.rgbaColor.light};
   ${ImageCircle} {
     height: 100%;
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
   }
 `;
 
 const PorfileButtonGroup = styled(ButtonGroup)`
   ${ProfileButton},
   ${ButtonPrimary} {
-    border: 1px solid ${p => p.theme.rgbaColor.light};
-    background-color: ${p => p.theme.rgbaColor.darkLight};
-    font-size: ${p => p.theme.fontSize.tiny};
-    padding: 3px ${p => p.theme.size.exTiny};
+    border: 1px solid ${(p) => p.theme.rgbaColor.light};
+    background-color: ${(p) => p.theme.rgbaColor.darkLight};
+    font-size: ${(p) => p.theme.fontSize.tiny};
+    padding: 3px ${(p) => p.theme.size.exTiny};
     margin: 1px 0;
     font-weight: 600;
-    height: ${p => p.theme.size.normal};
+    height: ${(p) => p.theme.size.normal};
     vertical-align: middle;
 
     :hover {
-      color: ${p => p.theme.color.light};
+      color: ${(p) => p.theme.color.light};
     }
   }
 
@@ -66,17 +66,18 @@ const UserName = styled.span`
   font-size: inherit;
 `;
 
-export default function(props) {
-  const userIdentityId = props.userInfo ? props.userInfo.userIdentityId : null;
+export default function (props) {
+  const { userInfo } = props;
+  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
   const profileDropdowns = [
     {
       name: "Thông tin cá nhân",
-      url: userIdentityId ? `/profile/${userIdentityId}` : ""
+      url: userIdentityId ? `/profile/${userIdentityId}` : "",
     },
     {
       name: "Thoát",
-      url: "/auth/signout"
-    }
+      url: "/auth/signout",
+    },
   ];
   const [profileState] = useState({ dropdowns: profileDropdowns });
 
@@ -84,18 +85,16 @@ export default function(props) {
     <Root>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
-          {props.userInfo && props.userInfo.avatarUrl ? (
+          {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
             <ImageCircle
-              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${props.userInfo.avatarUrl}`}
+              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.userAvatar.code}`}
               alt=""
             />
           ) : (
             <EmptyAvatar />
           )}
 
-          <UserName>
-            {props.userInfo ? props.userInfo.displayName : ""}
-          </UserName>
+          <UserName>{userInfo ? userInfo.displayName : ""}</UserName>
         </ProfileButton>
         {profileState.dropdowns ? (
           <DropdownButton

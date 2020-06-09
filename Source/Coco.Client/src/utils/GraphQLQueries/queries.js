@@ -1,131 +1,83 @@
 import { gql } from "@apollo/client";
 
-const UserFragment = {
-  avatar: gql`
-    fragment UserAvatarParts on UserAvatar {
-      url
-    }
-  `,
-  cover: gql`
-    fragment UserCovertParts on UserCover {
-      url
-    }
-  `,
-  countries: gql`
-    fragment CountryParts on CountryList {
-      countrySelections {
-        id
-        name
-      }
-    }
-  `,
-  genders: gql`
-    fragment GenderParts on GenderList {
-      genderSelections {
-        id
-        text
-      }
-    }
-  `,
-};
-
 export const GET_LOGGED_USER = gql`
-  fragment UserInfoParts on FullUserInfo {
-    lastname
-    firstname
-    email
-    displayName
-    userIdentityId
-  }
-
-  ${UserFragment.avatar}
-  ${UserFragment.cover}
-
   query {
     loggedUser {
-      ...UserInfoParts
+      lastname
+      firstname
+      email
+      displayName
+      userIdentityId
     }
-    userAvatarUrl {
-      ...UserAvatarParts
-    }
-    userCoverUrl {
-      ...UserCovertParts
+    userPhotos {
+      photoType
+      code
     }
   }
 `;
 
 export const GET_USER_INFO = gql`
-  ${UserFragment.avatar}
-  ${UserFragment.cover}
-
-  fragment UserInfoParts on FullUserInfo {
-    canEdit
-    email
-    displayName
-    userIdentityId
-    address
-    birthDate
-    countryName
-    description
-    createdDate
-    phoneNumber
-  }
   query($criterias: FindUserModelInput!) {
     fullUserInfo(criterias: $criterias) {
-      ...UserInfoParts
-      ...UserAvatarParts
-      ...UserCovertParts
+      canEdit
+      email
+      displayName
+      userIdentityId
+      address
+      birthDate
+      countryName
+      description
+      createdDate
+      phoneNumber
+    }
+    userPhotos(criterias: $criterias) {
+      code
+      photoType
     }
   }
 `;
 
 export const GET_USER_IDENTIFY = gql`
-  fragment UserInfoParts on UserInfo {
-    canEdit
-    birthDate
-    displayName
-    email
-    firstname
-    lastname
-    userIdentityId
-  }
-
   query($criterias: FindUserModelInput!) {
     fullUserInfo(criterias: $criterias) {
-      ...UserInfoParts
+      canEdit
+      birthDate
+      displayName
+      email
+      firstname
+      lastname
+      userIdentityId
     }
   }
 `;
 
 export const GET_FULL_USER_INFO = gql`
-  fragment UserInfoParts on UserInfo {
-    canEdit
-    birthDate
-    displayName
-    email
-    firstname
-    lastname
-    createdDate
-    description
-    address
-    phoneNumber
-    genderLabel
-    genderId
-    countryName
-    countryId
-    statusLabel
-    userIdentityId
-  }
-
-  ${UserFragment.cover}
-  ${UserFragment.countries}
-  ${UserFragment.genders}
   query($criterias: FindUserModelInput!) {
     fullUserInfo(criterias: $criterias) {
-      ...UserInfoParts
-      ...UserCovertParts
-      ...GenderParts
-      ...CountryParts
+      canEdit
+      birthDate
+      displayName
+      email
+      firstname
+      lastname
+      createdDate
+      description
+      address
+      phoneNumber
+      genderLabel
+      genderId
+      countryName
+      countryId
+      statusLabel
+      userIdentityId
+      countrySelections {
+        id
+        name
+      }
+      genderSelections {
+        id
+        text
+      }
     }
   }
 `;

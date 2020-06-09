@@ -39,8 +39,10 @@ export default () => {
     client: authClient,
   });
 
-  const relogin = async () => {
-    return refetch();
+  const relogin = () => {
+    if (refetch) {
+      return refetch();
+    }
   };
 
   const parseLoggedUser = (response) => {
@@ -61,10 +63,10 @@ export default () => {
   const userObj = !!isLogin ? parseLoggedUser(data) : {};
 
   return (
-    <SessionContext.Provider
-      value={{ ...userObj, relogin: relogin, isLoading: loading }}
-    >
-      <ApolloProvider client={authClient}>
+    <ApolloProvider client={authClient}>
+      <SessionContext.Provider
+        value={{ ...userObj, relogin: relogin, isLoading: loading }}
+      >
         <BrowserRouter>
           <Switch>
             <DefaultLayout
@@ -183,7 +185,7 @@ export default () => {
             />
           </Switch>
         </BrowserRouter>
-      </ApolloProvider>
-    </SessionContext.Provider>
+      </SessionContext.Provider>
+    </ApolloProvider>
   );
 };

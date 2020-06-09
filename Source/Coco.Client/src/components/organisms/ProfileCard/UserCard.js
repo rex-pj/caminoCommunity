@@ -18,44 +18,44 @@ const CoverWrapper = styled.div`
   position: relative;
 
   img {
-    border-top-left-radius: ${p => p.theme.borderRadius.normal};
-    border-top-right-radius: ${p => p.theme.borderRadius.normal};
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
   }
 `;
 
 const Username = styled.h3`
   margin-bottom: 0;
   position: absolute;
-  bottom: calc(${p => p.theme.size.normal} + 15px);
-  left: ${p => p.theme.size.exSmall};
+  bottom: calc(${(p) => p.theme.size.normal} + 15px);
+  left: ${(p) => p.theme.size.exSmall};
   z-index: 1;
   line-height: 1;
-  font-size: ${p => p.theme.fontSize.normal};
-  text-shadow: ${p => p.theme.shadow.TextShadow};
+  font-size: ${(p) => p.theme.fontSize.normal};
+  text-shadow: ${(p) => p.theme.shadow.TextShadow};
   a {
-    color: ${p => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.lighter};
   }
 `;
 
 const ProfileImage = styled(ImageCircle)`
   position: absolute;
   top: -20px;
-  left: ${p => p.theme.size.exSmall};
-  width: calc(${p => p.theme.size.medium} + ${p => p.theme.size.exTiny});
-  height: calc(${p => p.theme.size.medium} + ${p => p.theme.size.exTiny});
-  border: 3px solid ${p => p.theme.rgbaColor.cyan};
+  left: ${(p) => p.theme.size.exSmall};
+  width: calc(${(p) => p.theme.size.medium} + ${(p) => p.theme.size.exTiny});
+  height: calc(${(p) => p.theme.size.medium} + ${(p) => p.theme.size.exTiny});
+  border: 3px solid ${(p) => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 
 const EmptyAvatar = styled(NoAvatar)`
-  border-radius: ${p => p.theme.borderRadius.large};
+  border-radius: ${(p) => p.theme.borderRadius.large};
   width: 55px;
   height: 55px;
   font-size: 24px;
   position: absolute;
   top: -20px;
   left: 15px;
-  border: 5px solid ${p => p.theme.rgbaColor.cyan};
+  border: 5px solid ${(p) => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 
@@ -68,20 +68,20 @@ const BoxShadowBar = styled.div`
 `;
 
 const StaticBar = styled.div`
-  height: ${p => p.theme.size.medium};
-  border-bottom-left-radius: ${p => p.theme.borderRadius.normal};
-  border-bottom-right-radius: ${p => p.theme.borderRadius.normal};
+  height: ${(p) => p.theme.size.medium};
+  border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
+  border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
-export default function(props) {
+export default function (props) {
   const { className, menuList } = props;
   const { userInfo } = props;
   const userIdentityId = userInfo ? userInfo.userIdentityId : null;
   return (
     <Root className={className}>
-      {userInfo && userInfo.avatarUrl ? (
+      {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
         <ProfileImage
-          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.avatarUrl}`}
+          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.userAvatar.code}`}
         />
       ) : (
         <EmptyAvatar />
@@ -89,9 +89,9 @@ export default function(props) {
 
       <BoxShadowBar>
         <CoverWrapper>
-          {userInfo && userInfo.coverPhotoUrl ? (
+          {userInfo && userInfo.userCover && userInfo.userCover.code ? (
             <Thumbnail
-              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userInfo.coverPhotoUrl}`}
+              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userInfo.userCover.code}`}
             />
           ) : (
             <EmptyCover />
@@ -100,7 +100,7 @@ export default function(props) {
         </CoverWrapper>
         <Username>
           <AnchorLink to={userIdentityId ? `/profile/${userIdentityId}` : ""}>
-            {props.userInfo ? props.userInfo.displayName : ""}
+            {userInfo ? userInfo.displayName : ""}
           </AnchorLink>
         </Username>
         <StaticBar>

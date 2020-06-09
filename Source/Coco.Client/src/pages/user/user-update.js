@@ -11,6 +11,7 @@ import { SessionContext } from "../../store/context/SessionContext";
 export default (props) => {
   const { userId } = props;
   const [isFormEnabled] = useState(true);
+  const dispatch = useStore(false)[1];
   const [updateUserIdentifier] = useMutation(UPDATE_USER_IDENTIFIER);
   const sessionContext = useContext(SessionContext);
   const { loading, error, data, refetch } = useQuery(GET_USER_IDENTIFY, {
@@ -67,7 +68,6 @@ export default (props) => {
       });
   };
 
-  const dispatch = useStore(false)[1];
   const showNotification = (title, message, type) => {
     dispatch("NOTIFY", {
       title,

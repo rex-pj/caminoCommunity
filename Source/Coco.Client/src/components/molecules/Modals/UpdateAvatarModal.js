@@ -224,10 +224,13 @@ const UpdateAvatarModal = (props) => {
 
       await props
         .onExecute(updateAvatar, { variables }, "AVATAR_UPDATED")
-        .finally(async () => {
+        .then(async () => {
           props.setDisabled(false);
-          await sessionContext.relogin();
-        });
+          if (sessionContext.relogin) {
+            await sessionContext.relogin();
+          }
+        })
+        .catch(() => {});
     }
   };
 
@@ -247,7 +250,7 @@ const UpdateAvatarModal = (props) => {
 
     await props
       .onExecute(deleteAvatar, { variables }, "AVATAR_UPDATED")
-      .finally(() => {
+      .then(() => {
         props.setDisabled(false);
         sessionContext.relogin();
       });

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Coco.Entities.Domain.Content;
 using Coco.DAL;
+using System.Collections.Generic;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -164,10 +165,25 @@ namespace Coco.Business.Implementation.UserBusiness
             }).FirstOrDefault();
         }
 
+        public async Task<IEnumerable<UserPhotoDto>> GetUserPhotosAsync(long userId)
+        {
+            var userPhotos = await _userPhotoRepository.GetAsync(x => x.UserId == userId);
+            
+            return userPhotos.Select(x => new UserPhotoDto()
+            {
+                Code = x.Code,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name,
+                Url = x.Url,
+                TypeId = x.TypeId
+            });
+        }
+
         public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));
+            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType)).AsNoTracking();
             if (userPhotos == null || !userPhotos.Any())
             {
                 return null;
@@ -179,7 +195,8 @@ namespace Coco.Business.Implementation.UserBusiness
                 Description = x.Description,
                 Id = x.Id,
                 Name = x.Name,
-                Url = x.Url
+                Url = x.Url,
+                TypeId = x.TypeId
             }).FirstOrDefault();
         }
     }

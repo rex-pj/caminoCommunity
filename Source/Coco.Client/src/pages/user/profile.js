@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
+import { parseUserInfo } from "../../services/UserService";
 
 export default withRouter((props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
@@ -79,10 +80,6 @@ export default withRouter((props) => {
   };
 
   const [state, dispatch] = useStore(false);
-  if (state.type === "AVATAR_UPDATED") {
-    refetch();
-  }
-
   const showValidationError = (title, message) => {
     dispatch("NOTIFY", {
       title,
@@ -110,7 +107,11 @@ export default withRouter((props) => {
     }
   };
 
-  useEffect(() => {}, [refetch, sessionContext.relogin]);
+  useEffect(() => {
+    if (state.type === "AVATAR_UPDATED") {
+      refetch();
+    }
+  }, [state, refetch, sessionContext]);
 
   if (loading) {
     return <Loading>Loading</Loading>;
@@ -123,7 +124,7 @@ export default withRouter((props) => {
     return <ErrorBlock>Not Found</ErrorBlock>;
   }
 
-  const { fullUserInfo } = data;
+  const fullUserInfo = parseUserInfo(data);
 
   return (
     <Profile

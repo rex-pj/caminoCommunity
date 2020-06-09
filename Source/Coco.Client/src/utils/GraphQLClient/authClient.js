@@ -1,5 +1,4 @@
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import introspectionResult from "../GraphQLQueries/introspection-result";
 import { setContext } from "apollo-link-context";
 import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
 

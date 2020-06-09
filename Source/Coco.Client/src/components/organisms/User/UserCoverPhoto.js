@@ -350,7 +350,7 @@ export default (props) => {
   };
 
   const { userInfo } = props;
-  const { coverPhotoUrl } = userInfo;
+  const { userCover } = userInfo;
   const { src } = coverState;
 
   if (src) {
@@ -390,10 +390,10 @@ export default (props) => {
     <Wrap>
       {!!isInUpdateMode ? (
         <Fragment>
-          {coverPhotoUrl ? (
+          {userCover && userCover.code ? (
             <Thumbnail
               className="cover-thumbnail"
-              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${coverPhotoUrl}`}
+              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userCover.code}`}
               alt=""
             />
           ) : (
@@ -425,10 +425,10 @@ export default (props) => {
             <FontAwesomeIcon icon="pencil-alt" />
           </EditButton>
           <a href={userInfo.url} className="cover-link">
-            {coverPhotoUrl ? (
+            {userCover && userCover.code ? (
               <Thumbnail
                 className="cover-thumbnail"
-                src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${coverPhotoUrl}`}
+                src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userCover.code}`}
                 alt=""
               />
             ) : (

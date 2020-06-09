@@ -21,7 +21,7 @@
     "draft-js-export-html": "^1.4.1",
     "draftjs-utils": "^0.10.2",
     "express": "^4.17.1",
-    "graphql": "^15.0.0",
+    "graphql": "^15.1.0",
     "pushstate-server": "^3.1.0",
     "query-string": "^6.13.0",
     "rc-slider": "^8.7.1",
