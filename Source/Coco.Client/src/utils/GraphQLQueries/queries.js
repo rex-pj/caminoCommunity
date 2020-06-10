@@ -1,17 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const GET_LOGGED_USER = gql`
-  fragment LoggedUserInfoParts on FullUserInfo {
-    lastname
-    firstname
-    email
-    displayName
-    userIdentityId
-  }
-
   query {
     loggedUser {
-      ...LoggedUserInfoParts
+      lastname
+      firstname
+      email
+      displayName
+      userIdentityId
     }
     userPhotos {
       photoType
@@ -42,19 +38,15 @@ export const GET_USER_INFO = gql`
 `;
 
 export const GET_USER_IDENTIFY = gql`
-  fragment UserIdentityInfoParts on UserInfo {
-    canEdit
-    birthDate
-    displayName
-    email
-    firstname
-    lastname
-    userIdentityId
-  }
-
   query($criterias: FindUserModelInput!) {
     fullUserInfo(criterias: $criterias) {
-      ...UserIdentityInfoParts
+      canEdit
+      birthDate
+      displayName
+      email
+      firstname
+      lastname
+      userIdentityId
     }
   }
 `;
