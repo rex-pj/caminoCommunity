@@ -29,13 +29,8 @@ const parseUserInfo = (response) => {
 
   userLanguage = userLanguage ? userLanguage : "vn";
 
-  let currentUser = {
-    isLogin,
-    userLanguage,
-  };
-
   if (response) {
-    const { loggedUser, userPhotos } = response;
+    const { currentUser, userPhotos } = response;
 
     let userAvatar = {};
     let userCover = {};
@@ -49,15 +44,18 @@ const parseUserInfo = (response) => {
         userCover = cover;
       }
     }
-    currentUser = {
+    return {
       ...currentUser,
-      ...loggedUser,
       userAvatar,
       userCover,
+      isLogin,
+      userLanguage,
     };
   }
-
-  return currentUser;
+  return {
+    isLogin,
+    userLanguage,
+  };
 };
 
 const setLogin = (userInfo, token) => {

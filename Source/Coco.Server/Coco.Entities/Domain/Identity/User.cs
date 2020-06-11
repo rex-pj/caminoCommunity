@@ -1,6 +1,5 @@
 ﻿using Coco.Entities.Domain.Auth;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -48,6 +47,8 @@ namespace Coco.Entities.Domain.Identity
         public bool IsActived { get; set; }
         [Required]
         public byte StatusId { get; set; }
+        [Required]
+        public string SecurityStamp { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }

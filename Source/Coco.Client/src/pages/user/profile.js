@@ -75,11 +75,29 @@ export default withRouter((props) => {
     },
   ];
 
+  const [state, dispatch] = useStore(false);
+  useEffect(() => {
+    if (state.type === "AVATAR_UPDATED") {
+      refetch();
+    }
+  }, [state, refetch, sessionContext]);
+
+  if (loading) {
+    return <Loading>Loading</Loading>;
+  }
+
+  if (error) {
+    return <ErrorBlock>Error</ErrorBlock>;
+  }
+
+  if (!data) {
+    return <ErrorBlock>Not Found</ErrorBlock>;
+  }
+
   const onToggleEditCoverMode = (e) => {
     setEditCoverMode(e);
   };
 
-  const [state, dispatch] = useStore(false);
   const showValidationError = (title, message) => {
     dispatch("NOTIFY", {
       title,
@@ -106,23 +124,6 @@ export default withRouter((props) => {
         });
     }
   };
-
-  useEffect(() => {
-    if (state.type === "AVATAR_UPDATED") {
-      refetch();
-    }
-  }, [state, refetch, sessionContext]);
-
-  if (loading) {
-    return <Loading>Loading</Loading>;
-  }
-  if (error) {
-    return <ErrorBlock>Error</ErrorBlock>;
-  }
-
-  if (!data) {
-    return <ErrorBlock>Not Found</ErrorBlock>;
-  }
 
   const fullUserInfo = parseUserInfo(data);
 

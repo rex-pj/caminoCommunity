@@ -18,7 +18,7 @@ namespace Api.Auth.Resolvers.Contracts
         Task<UserTokenResult> SigninAsync(IResolverContext context);
         Task<ICommonResult> SignupAsync(IResolverContext context);
         Task<ICommonResult> ActiveAsync(IResolverContext context);
-        //Task<ICommonResult> ForgotPasswordAsync(IResolverContext context);
-        //Task<UserTokenResult> ResetPasswordAsync(IResolverContext context);
+        Task<ICommonResult> ForgotPasswordAsync(IResolverContext context);
+        Task<ICommonResult> ResetPasswordAsync(IResolverContext context);
     }
 }

@@ -9,38 +9,38 @@ import { PanelFooter } from "../../../components/atoms/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  margin-bottom: ${p => p.theme.size.normal};
-  background-color: ${p => p.theme.color.white};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  margin-bottom: ${(p) => p.theme.size.normal};
+  background-color: ${(p) => p.theme.color.white};
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: ${p => p.theme.size.exTiny};
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
+  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
 `;
 
 const Heading = styled(QuaternaryDarkHeading)`
-  margin-bottom: ${p => p.theme.size.distance};
-  margin-left: ${p => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.distance};
+  margin-left: ${(p) => p.theme.size.exTiny};
 `;
 
 const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
 
   :hover {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.color.primaryLight};
-    color: ${p => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.neutral};
     cursor: auto;
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
   }
 `;
 
@@ -49,36 +49,36 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default props => {
+export default (props) => {
   const { userInfo } = props;
 
   let model = {
     displayName: {
       value: userInfo.displayName,
       validation: {
-        isRequired: true
+        isRequired: true,
       },
-      isValid: !!userInfo.displayName
+      isValid: !!userInfo.displayName,
     },
     lastname: {
       value: userInfo.firstname,
       validation: {
-        isRequired: true
+        isRequired: true,
       },
-      isValid: !!userInfo.firstname
+      isValid: !!userInfo.firstname,
     },
     firstname: {
       value: userInfo.lastname,
       validation: {
-        isRequired: true
+        isRequired: true,
       },
-      isValid: !!userInfo.lastname
-    }
+      isValid: !!userInfo.lastname,
+    },
   };
 
   const [formData, setFromData] = useState(model);
 
-  const onTextboxChange = e => {
+  const onTextboxChange = (e) => {
     let userData = formData || {};
     const { name, value } = e.target;
 
@@ -87,7 +87,7 @@ export default props => {
     userData[name].value = value;
 
     setFromData({
-      ...userData
+      ...userData,
     });
   };
 
@@ -103,7 +103,7 @@ export default props => {
     return isFormValid;
   };
 
-  const onUpdate = e => {
+  const onUpdate = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -136,7 +136,7 @@ export default props => {
     <Fragment>
       <Heading>Cập nhật thông tin cá nhân</Heading>
       <MainPanel>
-        <form onSubmit={e => onUpdate(e)} method="POST">
+        <form onSubmit={(e) => onUpdate(e)} method="POST">
           {userInfo ? (
             <Fragment>
               <FormGroup>

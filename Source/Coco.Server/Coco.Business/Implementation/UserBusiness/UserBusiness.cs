@@ -142,6 +142,7 @@ namespace Coco.Business.Implementation.UserBusiness
             exist.Firstname = user.Firstname;
             exist.DisplayName = user.DisplayName;
             exist.IsEmailConfirmed = user.IsEmailConfirmed;
+            exist.PasswordHash = user.PasswordHash;
 
             _userRepository.Update(exist);
             await _identityContext.SaveChangesAsync();

@@ -25,7 +25,13 @@ const contextLink = setContext(async (_, { headers }) => {
 
 export default new ApolloClient({
   link: contextLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      UserPhotoModel: {
+        keyFields: ["code"],
+      },
+    },
+  }),
   ssrMode: true,
   defaultOptions: {
     watchQuery: {

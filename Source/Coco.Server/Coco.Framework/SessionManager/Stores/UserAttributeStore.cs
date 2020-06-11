@@ -18,16 +18,12 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IUserAttributeBusiness _userAttributeBusiness;
         private readonly IMapper _mapper;
         private readonly int _resetPasswordExpirationHours;
-        public readonly int _registerConfimationExpirationHours;
 
         public UserAttributeStore(IUserAttributeBusiness userAttributeBusiness, IMapper mapper, IConfiguration configuration)
         {
             _userAttributeBusiness = userAttributeBusiness;
             _mapper = mapper;
-            var resetPasswordExpirationHours = configuration["ResetPassword:ExpirationHours"];
-            int.TryParse(resetPasswordExpirationHours, out _resetPasswordExpirationHours);
-            var registerConfimationExpirationHours = configuration["RegisterConfimation:ExpirationHours"];
-            int.TryParse(registerConfimationExpirationHours, out _registerConfimationExpirationHours);
+            int.TryParse(configuration["ResetPassword:ExpirationHours"], out _resetPasswordExpirationHours);
         }
 
         public IEnumerable<UserAttributeDto> GetUserAttributes(long userId)

@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Identity;
 using Coco.Auth.Models;
 using AutoMapper;
 using Coco.Entities.Dtos.User;
+using Coco.Common.Exceptions;
 
 namespace Api.Auth.Resolvers
 {
@@ -78,6 +79,11 @@ namespace Api.Auth.Resolvers
             }
 
             var user = await _userBusiness.FindFullByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
 
             var userInfo = _mapper.Map<FullUserInfoModel>(user);
             userInfo.UserIdentityId = currentUser.UserIdentityId;
@@ -207,11 +213,8 @@ namespace Api.Auth.Resolvers
                     };
                 }
 
-                return new UserTokenResult()
-                {
-                    AccessMode = AccessModeEnum.ReadOnly,
-                    IsSucceed = false
-                };
+                HandleContextError(context, result.Errors);
+                return new UserTokenResult(false);
             }
             catch (Exception ex)
             {
@@ -268,15 +271,29 @@ namespace Api.Auth.Resolvers
                 UserName = model.Email,
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
+            try
             {
-                user = await _userManager.FindByNameAsync(user.UserName);
-                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                await SendActiveEmailAsync(user, confirmationToken);
-            }
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    user = await _userManager.FindByNameAsync(user.UserName);
+                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await SendActiveEmailAsync(user, confirmationToken);
+                }
+                else
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
-            return CommonResult.Success();
+                return CommonResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return CommonResult.Failed(new CommonError()
+                {
+                    Message = ex.Message
+                });
+            }
         }
 
         private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
@@ -320,80 +337,86 @@ namespace Api.Auth.Resolvers
             });
         }
 
-        //public async Task<ICommonResult> ForgotPasswordAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var criterias = context.Argument<ForgotPasswordModel>("criterias");
-        //        if (criterias == null)
-        //        {
-        //            throw new ArgumentException(nameof(criterias));
-        //        }
+        public async Task<ICommonResult> ForgotPasswordAsync(IResolverContext context)
+        {
+            try
+            {
+                var criterias = context.Argument<ForgotPasswordModel>("criterias");
+                if (criterias == null)
+                {
+                    throw new ArgumentException(nameof(criterias));
+                }
 
-        //        var user = await _userManager.FindByEmailAsync(criterias.Email);
-        //        if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-        //        {
-        //            throw new ApplicationException("ForgotPasswordConfirmation");
-        //        }
+                var user = await _userManager.FindByEmailAsync(criterias.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    throw new CocoApplicationException("ForgotPasswordConfirmation");
+                }
 
-        //        var result = await _userManager.ForgotPasswordAsync(criterias.Email);
+                var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.RESET_PASSWORD_BY_EMAIL_CONFIRM, resetPasswordToken);
 
-        //        var response = result as CommonResult;
-        //        var userResponse = response.Result.ToString();
-        //        var activeUserUrl = $"{_resetPasswordUrl}/{criterias.Email}/{userResponse}";
-        //        await _emailSender.SendEmailAsync(new MailMessageModel()
-        //        {
-        //            Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-        //            FromEmail = _registerConfirmFromEmail,
-        //            FromName = _registerConfirmFromName,
-        //            ToEmail = user.Email,
-        //            ToName = user.DisplayName,
-        //            Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appName),
-        //        }, TextFormat.Html);
+                var activeUserUrl = $"{_resetPasswordUrl}/{criterias.Email}/{resetPasswordToken}";
+                await _emailSender.SendEmailAsync(new MailMessageModel()
+                {
+                    Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
+                    FromEmail = _registerConfirmFromEmail,
+                    FromName = _registerConfirmFromName,
+                    ToEmail = user.Email,
+                    ToName = user.DisplayName,
+                    Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appName),
+                }, TextFormat.Html);
 
-        //        if (!result.IsSucceed)
-        //        {
-        //            HandleContextError(context, result.Errors);
-        //        }
+                if (!result.Succeeded)
+                {
+                    HandleContextError(context, result.Errors);
+                }
 
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+                return CommonResult.Success();
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                throw;
+            }
+        }
 
-        //public async Task<UserTokenResult> ResetPasswordAsync(IResolverContext context)
-        //{
-        //    try
-        //    {
-        //        var model = context.Argument<ResetPasswordModel>("criterias");
+        public async Task<ICommonResult> ResetPasswordAsync(IResolverContext context)
+        {
+            try
+            {
+                var model = context.Argument<ResetPasswordModel>("criterias");
 
-        //        if (model == null)
-        //        {
-        //            throw new NullReferenceException(nameof(model));
-        //        }
+                if (model == null)
+                {
+                    throw new ArgumentException(nameof(model));
+                }
 
-        //        if (!model.Password.Equals(model.ConfirmPassword))
-        //        {
-        //            throw new ArgumentException($"{nameof(model.Password)} and {nameof(model.ConfirmPassword)} is not the same");
-        //        }
+                if (!model.Password.Equals(model.ConfirmPassword))
+                {
+                    throw new ArgumentException($"{nameof(model.Password)} and {nameof(model.ConfirmPassword)} is not the same");
+                }
 
-        //        var user = await _userManagerOld.FindByEmailAsync(model.Email);
-        //        if (user == null || !(await _userManagerOld.IsEmailConfirmedAsync(user)))
-        //        {
-        //            throw new UnauthorizedAccessException("ResetPasswordFailed");
-        //        }
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    throw new UnauthorizedAccessException("ResetPasswordFailed");
+                }
 
-        //        var result = await _userManagerOld.ResetPasswordAsync(model, user.Id);
+                var result = await _userManager.ResetPasswordAsync(user, model.Key, model.Password);
 
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+                if (!result.Succeeded)
+                {
+                    HandleContextError(context, result.Errors);
+                }
+
+                return CommonResult.Success();
+            }
+            catch (Exception ex)
+            {
+                HandleContextError(context, ex);
+                throw ex;
+            }
+        }
     }
 }

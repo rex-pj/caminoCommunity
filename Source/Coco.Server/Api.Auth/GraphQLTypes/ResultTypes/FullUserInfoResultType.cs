@@ -9,7 +9,6 @@ namespace Api.Auth.GraphQLTypes.ResultTypes
     {
         protected override void Configure(IObjectTypeDescriptor<FullUserInfoModel> descriptor)
         {
-            descriptor.Name("FullUserInfo");
             descriptor.Field(x => x.Lastname).Type<StringType>();
             descriptor.Field(x => x.Firstname).Type<StringType>();
             descriptor.Field(x => x.Email).Type<StringType>();

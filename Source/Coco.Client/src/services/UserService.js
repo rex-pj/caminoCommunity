@@ -1,6 +1,6 @@
 export const parseUserInfo = (response) => {
   if (response) {
-    const { fullUserInfo, userPhotos } = response;
+    const { userInfo, userPhotos } = response;
 
     let userAvatar = {};
     let userCover = {};
@@ -15,7 +15,7 @@ export const parseUserInfo = (response) => {
       }
     }
     const user = {
-      ...fullUserInfo,
+      ...userInfo,
       userAvatar,
       userCover,
     };

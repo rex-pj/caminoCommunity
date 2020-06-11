@@ -21,6 +21,7 @@ namespace Coco.Business.Mapping
             StatusId = user.StatusId,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
+            SecurityStamp = user.SecurityStamp,
             Id = user.Id,
             IsEmailConfirmed = user.IsEmailConfirmed,
             GenderId = user.UserInfo.GenderId,
