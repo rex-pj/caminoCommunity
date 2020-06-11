@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_LOGGED_USER = gql`
   query {
-    loggedUser {
+    currentUser: loggedUser {
       lastname
       firstname
       email
@@ -18,7 +18,7 @@ export const GET_LOGGED_USER = gql`
 
 export const GET_USER_INFO = gql`
   query($criterias: FindUserModelInput!) {
-    fullUserInfo(criterias: $criterias) {
+    userInfo: fullUserInfo(criterias: $criterias) {
       canEdit
       email
       displayName
@@ -39,13 +39,12 @@ export const GET_USER_INFO = gql`
 
 export const GET_USER_IDENTIFY = gql`
   query($criterias: FindUserModelInput!) {
-    fullUserInfo(criterias: $criterias) {
+    userIdentityInfo: fullUserInfo(criterias: $criterias) {
       canEdit
-      birthDate
-      displayName
       email
       firstname
       lastname
+      displayName
       userIdentityId
     }
   }

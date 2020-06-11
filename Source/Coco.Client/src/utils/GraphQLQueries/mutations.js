@@ -96,6 +96,7 @@ export const UPDATE_USER_PASSWORD = gql`
   mutation UpdatePassword($criterias: UserPasswordUpdateDtoInput!) {
     updatePassword(criterias: $criterias) {
       authenticationToken
+      isSucceed
     }
   }
 `;

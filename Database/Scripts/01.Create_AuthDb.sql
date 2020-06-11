@@ -21,6 +21,7 @@ CREATE TABLE dbo.[User]
 	CreatedById BIGINT NULL,
 	IsActived BIT NOT NULL,
 	StatusId TINYINT NOT NULL,
+	SecurityStamp NVARCHAR(MAX) NOT NULL
 )
 
 GO

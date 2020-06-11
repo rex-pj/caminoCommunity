@@ -68,21 +68,16 @@ namespace Coco.Framework.SessionManager.Stores
                 var userDto = _mapper.Map<UserDto>(user);
                 userDto.PasswordHash = user.PasswordHash;
 
-                var response = await _userBusiness.CreateAsync(userDto);
-                if (response.Id > 0)
-                {
-                    var userResponse = _mapper.Map<ApplicationUser>(response);
-                    userResponse.SecurityStamp = user.SecurityStamp;
-
-                    var newUserAttributes = _userAttributeStore.NewUserRegisterAttributes(userResponse);
-                    await _userAttributeStore.SetAttributesAsync(newUserAttributes);
-                }
+                await _userBusiness.CreateAsync(userDto);
 
                 return IdentityResult.Success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return IdentityResult.Failed();
+                return IdentityResult.Failed(new IdentityError() { 
+                    Code = ex.Message,
+                    Description = ex.ToString()
+                });
             }
         }
 
@@ -116,11 +111,6 @@ namespace Coco.Framework.SessionManager.Stores
         public override async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
         {
             var user = await _userBusiness.FindByUsernameAsync(normalizedUserName);
-            if (user != null)
-            {
-                user.SecurityStamp = await _userAttributeStore.GetSecurityStampAsync(user.Id);
-            }
-            
             return _mapper.Map<ApplicationUser>(user);
         }
 

@@ -27,7 +27,13 @@ const contextLink = setContext(async (_, { headers }) => {
   };
 });
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+  typePolicies: {
+    FullUserInfoModel: {
+      keyFields: ["userIdentityId"],
+    },
+  },
+});
 
 let client = new ApolloClient({
   link: contextLink.concat(httpLink),

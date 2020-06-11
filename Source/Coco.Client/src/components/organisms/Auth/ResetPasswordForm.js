@@ -203,7 +203,7 @@ export default (props) => {
         </FormRow>
         <FormFooter>
           <SubmitButton type="submit" disabled={!isFormCheckValid}>
-            Ghi danh
+            Đổi mật khẩu
           </SubmitButton>
         </FormFooter>
       </PanelBody>

@@ -3,7 +3,6 @@ using Coco.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Coco.Common.Const;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Coco.Framework.SessionManager
 {

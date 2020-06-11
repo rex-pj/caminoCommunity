@@ -24,7 +24,8 @@ namespace Coco.Business.MappingProfiles
                     Email = s.Email,
                     PasswordHash = s.PasswordHash,
                     IsActived = s.IsActived,
-                    StatusId = s.StatusId
+                    StatusId = s.StatusId,
+                    SecurityStamp = s.SecurityStamp
                 }));
 
             CreateMap<User, UserDto>()

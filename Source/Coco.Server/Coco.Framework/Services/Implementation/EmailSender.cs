@@ -1,4 +1,5 @@
-﻿using Coco.Framework.Models;
+﻿using Coco.Common.Const;
+using Coco.Framework.Models;
 using Coco.Framework.Services.Contracts;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +17,10 @@ namespace Coco.Framework.Services.Implementation
         private readonly string _userName;
         private readonly string _Password;
         public EmailSender(IConfiguration configuration) {
-            _host = configuration["EmailSender:SmtpServer"];
-            _port = int.Parse(configuration["EmailSender:SmtpPort"]);
-            _userName = configuration["EmailSender:UserName"];
-            _Password = configuration["EmailSender:Password"];
+            _host = configuration[ConfigurationSettingsConst.EMAIL_SENDER_SMTP_SERVER];
+            _port = int.Parse(configuration[ConfigurationSettingsConst.EMAIL_SENDER_SMTP_PORT]);
+            _userName = configuration[ConfigurationSettingsConst.EMAIL_SENDER_USER_NAME];
+            _Password = configuration[ConfigurationSettingsConst.EMAIL_SENDER_PASSWORD];
         }
 
         public async Task SendEmailAsync(MailMessageModel email, TextFormat messageFormat = TextFormat.Plain)

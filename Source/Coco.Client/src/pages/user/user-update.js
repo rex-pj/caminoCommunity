@@ -83,13 +83,13 @@ export default (props) => {
     return <ErrorBlock>Error</ErrorBlock>;
   }
 
-  const { fullUserInfo } = data;
-  const { canEdit } = fullUserInfo;
+  const { userIdentityInfo } = data;
+  const { canEdit } = userIdentityInfo;
   return (
     <ProfileUpdateFrom
       onUpdate={(e) => onUpdate(e)}
       isFormEnabled={isFormEnabled}
-      userInfo={fullUserInfo}
+      userInfo={userIdentityInfo}
       canEdit={canEdit}
       showValidationError={showNotification}
     />

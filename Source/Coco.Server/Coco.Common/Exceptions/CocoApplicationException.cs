@@ -8,7 +8,7 @@ namespace Coco.Common.Exceptions
     public class CocoApplicationException : Exception
     {
         public string Code { get; private set; }
-        public List<CommonError> Errors { get; protected set; }
+        public IEnumerable<CommonError> Errors { get; protected set; }
         
         public CocoApplicationException() 
             : base(ErrorMessageConst.UN_EXPECTED_EXCEPTION)
@@ -22,7 +22,7 @@ namespace Coco.Common.Exceptions
             Code = error.Code;
         }
 
-        public CocoApplicationException(List<CommonError> errors)
+        public CocoApplicationException(IEnumerable<CommonError> errors)
             : base()
         {
             Errors = errors;
