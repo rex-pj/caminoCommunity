@@ -68,13 +68,16 @@ namespace Coco.Framework.SessionManager.Stores
                 var userDto = _mapper.Map<UserDto>(user);
                 userDto.PasswordHash = user.PasswordHash;
 
-                var response = await _userBusiness.CreateAsync(userDto);
+                await _userBusiness.CreateAsync(userDto);
 
                 return IdentityResult.Success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return IdentityResult.Failed();
+                return IdentityResult.Failed(new IdentityError() { 
+                    Code = ex.Message,
+                    Description = ex.ToString()
+                });
             }
         }
 

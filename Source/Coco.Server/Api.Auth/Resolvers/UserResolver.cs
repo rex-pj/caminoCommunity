@@ -35,9 +35,11 @@ namespace Api.Auth.Resolvers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _appName;
         private readonly string _registerConfirmUrl;
-        private readonly string _resetPasswordUrl;
         private readonly string _registerConfirmFromEmail;
         private readonly string _registerConfirmFromName;
+        private readonly string _resetPasswordUrl;
+        private readonly string _resetPasswordFromEmail;
+        private readonly string _resetPasswordFromName;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
 
@@ -58,6 +60,8 @@ namespace Api.Auth.Resolvers
             _registerConfirmFromEmail = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_EMAIL];
             _registerConfirmFromName = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_NAME];
             _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
+            _resetPasswordFromEmail = configuration[ConfigurationSettingsConst.RESET_PASSWORD_FROM_EMAIL];
+            _resetPasswordFromName = configuration[ConfigurationSettingsConst.RESET_PASSWORD_FROM_NAME];
         }
 
         public FullUserInfoModel GetLoggedUser(IResolverContext context)
@@ -360,8 +364,8 @@ namespace Api.Auth.Resolvers
                 await _emailSender.SendEmailAsync(new MailMessageModel()
                 {
                     Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-                    FromEmail = _registerConfirmFromEmail,
-                    FromName = _registerConfirmFromName,
+                    FromEmail = _resetPasswordFromEmail,
+                    FromName = _resetPasswordFromName,
                     ToEmail = user.Email,
                     ToName = user.DisplayName,
                     Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appName),
@@ -386,7 +390,6 @@ namespace Api.Auth.Resolvers
             try
             {
                 var model = context.Argument<ResetPasswordModel>("criterias");
-
                 if (model == null)
                 {
                     throw new ArgumentException(nameof(model));
@@ -404,18 +407,19 @@ namespace Api.Auth.Resolvers
                 }
 
                 var result = await _userManager.ResetPasswordAsync(user, model.Key, model.Password);
-
                 if (!result.Succeeded)
                 {
                     HandleContextError(context, result.Errors);
                 }
+
+                await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, model.Key);
 
                 return CommonResult.Success();
             }
             catch (Exception ex)
             {
                 HandleContextError(context, ex);
-                throw ex;
+                throw;
             }
         }
     }

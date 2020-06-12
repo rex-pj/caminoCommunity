@@ -14,7 +14,7 @@ import { withRouter } from "react-router-dom";
 const Textbox = styled(TextboxSecondary)`
   border-radius: ${(p) => p.theme.size.normal};
   border: 1px solid ${(p) => p.theme.color.primaryLight};
-  background-color: ${(p) => p.theme.rgbaColor.darkLight};
+  background-color: ${(p) => p.theme.rgbaColor.lighter};
   width: 100%;
   color: ${(p) => p.theme.color.dark};
   padding: ${(p) => p.theme.size.tiny};

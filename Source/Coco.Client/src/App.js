@@ -172,7 +172,11 @@ export default () => {
             />
             <PromptLayout
               exact={true}
-              path="/user/reset-password/:email/:key"
+              path={[
+                "/user/reset-password/:email/:key",
+                "/user/reset-password/:email/:key+",
+                "/user/reset-password/:email/*",
+              ]}
               component={() => <AsyncPage page="./pages/user/reset-password" />}
             />
             <PromptLayout

@@ -9,7 +9,12 @@ import { unauthClient } from "../../utils/GraphQLClient";
 export default withRouter((props) => {
   const { match, history } = props;
   const { params } = match;
-  const { email, key } = params;
+  const { email } = params;
+  let { key } = params;
+  if (!key && params[0]) {
+    key = params[0];
+  }
+
   const [resetPassword] = useMutation(RESET_PASSWORD, {
     client: unauthClient,
   });
