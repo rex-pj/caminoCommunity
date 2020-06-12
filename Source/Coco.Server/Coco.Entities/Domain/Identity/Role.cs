@@ -1,9 +1,8 @@
-﻿using Coco.Entities.Domain.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Coco.Entities.Domain.Auth
+namespace Coco.Entities.Domain.Identity
 {
     public class Role
     {
@@ -24,9 +23,11 @@ namespace Coco.Entities.Domain.Auth
         public DateTime UpdatedDate { get; set; }
         [Required]
         public long UpdatedById { get; set; }
+        public string ConcurrencyStamp { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<RoleClaim> RoleClaims { get; set; }
         public virtual ICollection<RoleAuthorizationPolicy> RoleAuthorizationPolicies { get; set; }
     }
 }

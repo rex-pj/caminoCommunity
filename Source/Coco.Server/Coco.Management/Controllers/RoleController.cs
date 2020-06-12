@@ -2,7 +2,10 @@
 using Coco.Business.Contracts;
 using Coco.Entities.Dtos.Auth;
 using Coco.Framework.Controllers;
+using Coco.Framework.Models;
+using Coco.Framework.SessionManager.Contracts;
 using Coco.Management.Models;
+using HotChocolate.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,7 +19,8 @@ namespace Coco.Management.Controllers
     {
         private readonly IRoleBusiness _roleBusiness;
         private readonly IMapper _mapper;
-        public RoleController(IMapper mapper, IRoleBusiness roleBusiness, IHttpContextAccessor httpContextAccessor)
+        private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
+        public RoleController(IMapper mapper, IRoleBusiness roleBusiness, IHttpContextAccessor httpContextAccessor, IApplicationRoleManager<ApplicationRole> roleManager)
             : base(httpContextAccessor)
         {
             _mapper = mapper;
@@ -64,7 +68,7 @@ namespace Coco.Management.Controllers
 
             try
             {
-                var role = _roleBusiness.Find(id);
+                var role = _roleBusiness.FindAsync(id);
                 if (role == null)
                 {
                     return RedirectToNotFoundPage();
@@ -90,20 +94,20 @@ namespace Coco.Management.Controllers
         [HttpGet]
         public IActionResult Update(byte id)
         {
-            var role = _roleBusiness.Find(id);
+            var role = _roleBusiness.FindAsync(id);
             var model = _mapper.Map<RoleViewModel>(role);
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult CreateOrUpdate(RoleViewModel model)
+        public async Task<IActionResult> CreateOrUpdate(RoleViewModel model)
         {
-            var role = _mapper.Map<RoleDto>(model);
+            var role = _mapper.Map<ApplicationRole>(model);
             role.UpdatedById = LoggedUserId;
-            if(role.Id > 0)
+            if (role.Id > 0)
             {
-                _roleBusiness.Update(role);
+                await _roleManager.UpdateAsync(role);
                 return RedirectToAction("Detail", new { id = role.Id });
             }
 
@@ -114,7 +118,7 @@ namespace Coco.Management.Controllers
             }
 
             role.CreatedById = LoggedUserId;
-            var newId = _roleBusiness.Add(role);
+            var newId = _roleManager.CreateAsync(role);
             return RedirectToAction("Detail", new { id = newId });
         }
     }

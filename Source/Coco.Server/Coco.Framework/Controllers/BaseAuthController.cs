@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Coco.Framework.Controllers
 {
-    [SessionAuthentication]
+    [ApplicationAuthentication]
     public class BaseAuthController : BaseController
     {
         public BaseAuthController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)

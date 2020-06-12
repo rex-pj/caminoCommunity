@@ -1,8 +1,7 @@
-﻿using Coco.Entities.Domain.Identity;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Coco.Entities.Domain.Auth
+namespace Coco.Entities.Domain.Identity
 {
     public class UserRole
     {

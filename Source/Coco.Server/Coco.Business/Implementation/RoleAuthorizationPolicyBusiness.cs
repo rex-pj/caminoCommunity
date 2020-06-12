@@ -1,6 +1,5 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.IdentityDAL;

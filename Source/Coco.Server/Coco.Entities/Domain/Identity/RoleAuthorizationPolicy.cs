@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain.Auth;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Coco.Entities.Domain.Identity

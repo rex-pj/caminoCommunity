@@ -13,5 +13,6 @@ namespace Coco.Entities.Dtos.Auth
         public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string UpdatedByName { get; set; }
+        public string ConcurrencyStamp { get; set; }
     }
 }

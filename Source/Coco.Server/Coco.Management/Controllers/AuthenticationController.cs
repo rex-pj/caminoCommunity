@@ -9,10 +9,10 @@ namespace Coco.Management.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly ILoginManager<ApplicationUser> _sessionLoginManager;
-        public AuthenticationController(ILoginManager<ApplicationUser> sessionLoginManager)
+        private readonly ILoginManager<ApplicationUser> _loginManager;
+        public AuthenticationController(ILoginManager<ApplicationUser> loginManager)
         {
-            _sessionLoginManager = sessionLoginManager;
+            _loginManager = loginManager;
         }
 
         [HttpGet]
@@ -24,7 +24,7 @@ namespace Coco.Management.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var result = await _sessionLoginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
+            var result = await _loginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
             if (!result.Succeeded)
             {
                 return RedirectToAction("Login", "Authentication");
@@ -34,10 +34,10 @@ namespace Coco.Management.Controllers
         }
 
         [HttpGet]
-        [SessionAuthentication]
+        [ApplicationAuthentication]
         public async Task<IActionResult> Logout()
         {
-            //await _sessionLoginManager.SignoutAsync();
+            await _loginManager.SignOutAsync();
             return View("Login");
         }
     }

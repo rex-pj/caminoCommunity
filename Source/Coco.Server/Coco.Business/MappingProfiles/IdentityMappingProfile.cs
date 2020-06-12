@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
@@ -57,6 +56,8 @@ namespace Coco.Business.MappingProfiles
             CreateMap<UserTokenDto, UserToken>();
             CreateMap<UserLogin, UserLoginDto>();
             CreateMap<UserLoginDto, UserLogin>();
+            CreateMap<RoleClaimDto, RoleClaim>();
+            CreateMap<RoleClaim, RoleClaimDto>();
         }
     }
 }

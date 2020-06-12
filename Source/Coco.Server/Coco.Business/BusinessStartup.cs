@@ -4,7 +4,6 @@ using Coco.Contract;
 using Coco.DAL;
 using Coco.DAL.Implementations;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Content;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
@@ -39,7 +38,8 @@ namespace Coco.Business
                 .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>()
                 .AddTransient<IUserClaimBusiness, UserClaimBusiness>()
                 .AddTransient<IUserTokenBusiness, UserTokenBusiness>()
-                .AddTransient<IUserLoginBusiness, UserLoginBusiness>();
+                .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
+                .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>();
 
             services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
@@ -52,7 +52,8 @@ namespace Coco.Business
                 .AddTransient<IRepository<RoleAuthorizationPolicy>, EfIdentityRepository<RoleAuthorizationPolicy>>()
                 .AddTransient<IRepository<UserClaim>, EfIdentityRepository<UserClaim>>()
                 .AddTransient<IRepository<UserToken>, EfIdentityRepository<UserToken>>()
-                .AddTransient<IRepository<UserLogin>, EfIdentityRepository<UserLogin>>();
+                .AddTransient<IRepository<UserLogin>, EfIdentityRepository<UserLogin>>()
+                .AddTransient<IRepository<RoleClaim>, EfIdentityRepository<RoleClaim>>();
 
             services.AddTransient<IRepository<Product>, EfRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()

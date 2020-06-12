@@ -26,7 +26,6 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IMapper _mapper;
         
         private readonly IUserBusiness _userBusiness;
-        private readonly IUserAttributeStore<ApplicationUser> _userAttributeStore;
         private readonly IUserClaimBusiness _userClaimBusiness;
         private readonly IUserRoleBusiness _userRoleBusiness;
         private readonly IRoleBusiness _roleBusiness;
@@ -38,15 +37,13 @@ namespace Coco.Framework.SessionManager.Stores
         public override IQueryable<ApplicationUser> Users { get; }
 
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness, 
-            IUserAttributeStore<ApplicationUser> userAttributeStore, IUserClaimBusiness userClaimBusiness,
-            IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, IUserTokenBusiness userTokenBusiness,
-            IUserLoginBusiness userLoginBusiness,
+            IUserClaimBusiness userClaimBusiness, IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, 
+            IUserTokenBusiness userTokenBusiness, IUserLoginBusiness userLoginBusiness,
             ITextEncryption textCrypter, IMapper mapper, IConfiguration configuration) 
             : base(describer)
         {
             _textCrypterSaltKey = configuration["Crypter:SaltKey"];
             _userBusiness = userBusiness;
-            _userAttributeStore = userAttributeStore;
             _userClaimBusiness = userClaimBusiness;
             _userRoleBusiness = userRoleBusiness;
             _userTokenBusiness = userTokenBusiness;
