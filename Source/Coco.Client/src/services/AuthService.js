@@ -1,7 +1,6 @@
 import {
   AUTH_KEY,
   AUTH_LOGIN_KEY,
-  AUTH_DISPLAY_NAME,
   AUTH_USER_HASHED_ID,
   AUTH_USER_LANGUAGE,
 } from "../utils/AppSettings";
@@ -60,7 +59,6 @@ const parseUserInfo = (response) => {
 
 const setLogin = (userInfo, token) => {
   if (userInfo) {
-    setLocalStorage(AUTH_DISPLAY_NAME, userInfo.displayName);
     setLocalStorage(AUTH_USER_HASHED_ID, userInfo.userIdentityId);
   }
 
@@ -71,7 +69,6 @@ const setLogin = (userInfo, token) => {
 const logOut = () => {
   removeUserToken();
   removeLocalStorage(AUTH_LOGIN_KEY);
-  removeLocalStorage(AUTH_DISPLAY_NAME);
   removeLocalStorage(AUTH_USER_HASHED_ID);
   return true;
 };

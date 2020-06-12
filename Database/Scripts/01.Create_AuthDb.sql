@@ -83,7 +83,8 @@ CREATE TABLE dbo.[Role]
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	ConcurrencyStamp NVARCHAR(60) NULL
 )
 
 GO
@@ -126,6 +127,25 @@ ALTER TABLE dbo.[UserRole]
 ADD CONSTRAINT PK_UserRole
 PRIMARY KEY (RoleId, UserId);
 
+/**ROLE CLAIMS**/
+GO
+CREATE TABLE dbo.[RoleClaim]
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	RoleId BIGINT NOT NULL,
+	ClaimType NVARCHAR(MAX) NOT NULL,
+	ClaimValue NVARCHAR(MAX) NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[RoleClaim]
+ADD CONSTRAINT PK_RoleClaim
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE dbo.[RoleClaim]
+ADD CONSTRAINT FK_RoleClaim_User
+FOREIGN KEY (RoleId) REFERENCES dbo.[Role](Id);
 --[AuthorizationPolicy]--
 GO
 CREATE TABLE dbo.[AuthorizationPolicy]

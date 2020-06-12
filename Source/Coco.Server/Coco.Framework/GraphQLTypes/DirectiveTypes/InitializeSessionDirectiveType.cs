@@ -4,10 +4,9 @@ using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Core;
 using HotChocolate.Types;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace Coco.Framework.Infrastructure.Middlewares
+namespace Coco.Framework.GraphQLTypes.DirectiveTypes
 {
     public class InitializeSessionDirectiveType : DirectiveType
     {
@@ -34,8 +33,9 @@ namespace Coco.Framework.Infrastructure.Middlewares
 
                 if (!context.ContextData.ContainsKey(SessionContextConst.CURRENT_USER) && sessionState.Sessions.ContainsKey(SessionContextConst.CURRENT_USER))
                 {
-                    var currentUser = sessionState.Sessions[SessionContextConst.CURRENT_USER] as Task<ApplicationUser>;
-                    context.ContextData[SessionContextConst.CURRENT_USER] = await currentUser;
+                    var currentUser = await (sessionState.Sessions[SessionContextConst.CURRENT_USER] as Task<ApplicationUser>);
+                    sessionState.CurrentUser = currentUser;
+                    context.ContextData[SessionContextConst.CURRENT_USER] = currentUser;
                 }
 
                 await next.Invoke(context);

@@ -1,7 +1,7 @@
 ﻿using Api.Content.GraphQLTypes.InputTypes;
 using Api.Content.Resolvers.Contracts;
+using Coco.Framework.GraphQLTypes.DirectiveTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
-using Coco.Framework.Infrastructure.Middlewares;
 using HotChocolate.Types;
 
 namespace Api.Content.GraphQLTypes

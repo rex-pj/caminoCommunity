@@ -176,6 +176,20 @@ namespace Coco.DAL.Implementations
         }
 
         /// <summary>
+        /// Attach entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual void Attach(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            DbSet.Attach(entity);
+        }
+
+        /// <summary>
         /// Update entity
         /// </summary>
         /// <param name="entity">Entity</param>

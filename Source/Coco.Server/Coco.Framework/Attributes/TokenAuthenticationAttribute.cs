@@ -34,14 +34,14 @@ namespace Coco.Framework.Attributes
                 _sessionContext = sessionContext;
             }
 
-            public async Task OnAuthorizationAsync(AuthorizationFilterContext filterContext)
+            public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                if (filterContext == null)
+                if (context == null)
                 {
-                    throw new ArgumentNullException(nameof(filterContext));
+                    throw new ArgumentNullException(nameof(context));
                 }
 
-                var actionDescriptor = filterContext.ActionDescriptor;
+                var actionDescriptor = context.ActionDescriptor;
                 var filterDescriptors = actionDescriptor.FilterDescriptors;
 
                 //check whether this filter has been overridden for the action
@@ -55,7 +55,7 @@ namespace Coco.Framework.Attributes
                     return;
                 }
 
-                if (!filterContext.Filters.Any(filter => filter is AuthenticationFilter))
+                if (!context.Filters.Any(filter => filter is AuthenticationFilter))
                 {
                     return;
                 }
@@ -64,7 +64,7 @@ namespace Coco.Framework.Attributes
                 //there is AuthorizeLoggedUserFilter, so check access
                 if (currentUser == null || currentUser.Id <= 0)
                 {
-                    filterContext.Result = new ForbidResult();
+                    context.Result = new ForbidResult();
                 }
             }
         }

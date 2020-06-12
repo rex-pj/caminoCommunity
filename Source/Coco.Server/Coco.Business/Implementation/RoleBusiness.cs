@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Auth;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.IdentityDAL;
@@ -29,7 +28,7 @@ namespace Coco.Business.Implementation
         }
 
         #region CRUD
-        public long Add(RoleDto roleModel)
+        public async Task<long> AddAsync(RoleDto roleModel)
         {
             if (roleModel == null)
             {
@@ -41,22 +40,22 @@ namespace Coco.Business.Implementation
             role.CreatedDate = DateTime.UtcNow;
 
             _roleRepository.Add(role);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return role.Id;
         }
 
-        public bool Delete(byte id)
+        public async Task<bool> DeleteAsync(long id)
         {
             var role = _roleRepository.Find(id);
             _roleRepository.Delete(role);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
-        public RoleDto Find(byte id)
+        public async Task<RoleDto> FindAsync(long id)
         {
-            var exist = _roleRepository.Find(id);
+            var exist = await _roleRepository.FindAsync(id);
             if (exist == null)
             {
                 return null;
@@ -83,7 +82,7 @@ namespace Coco.Business.Implementation
 
             var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query));
 
-            data = data.Skip(0).Take(10);
+            data = data.Skip(page).Take(pageSize);
             if (pageSize > 0)
             {
                 data = data.Skip((page - 1) * pageSize).Take(pageSize);
@@ -149,7 +148,7 @@ namespace Coco.Business.Implementation
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == role.CreatedById);
                 role.CreatedByName = createdBy.DisplayName;
 
-                var updatedBy = createdByUsers.FirstOrDefault(x => x.Id == role.CreatedById);
+                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == role.CreatedById);
                 role.UpdatedByName = updatedBy.DisplayName;
             }
 
@@ -157,21 +156,22 @@ namespace Coco.Business.Implementation
             return roleDtos;
         }
 
-        public bool Update(RoleDto role)
+        public async Task<bool> UpdateAsync(RoleDto roleModel)
         {
-            if (role.Id <= 0)
+            if (roleModel.Id <= 0)
             {
-                throw new ArgumentNullException("Role Id");
+                throw new ArgumentException("Role Id");
             }
 
-            var exist = _roleRepository.Find(role.Id);
-            exist.Description = role.Description;
-            exist.Name = exist.Name;
-            exist.UpdatedById = role.UpdatedById;
+            var exist = _roleRepository.Find(roleModel.Id);
+            exist.Description = roleModel.Description;
+            exist.Name = roleModel.Name;
+            exist.UpdatedById = roleModel.UpdatedById;
             exist.UpdatedDate = DateTime.UtcNow;
+            exist.ConcurrencyStamp = roleModel.ConcurrencyStamp;
 
             _roleRepository.Update(exist);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

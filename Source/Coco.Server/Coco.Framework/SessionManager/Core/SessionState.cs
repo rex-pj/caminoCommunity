@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using Coco.Framework.Models;
+using System.Collections.Concurrent;
 
 namespace Coco.Framework.SessionManager.Core
 {
@@ -10,5 +11,6 @@ namespace Coco.Framework.SessionManager.Core
         }
 
         public ConcurrentDictionary<string, object> Sessions { get; set; }
+        public ApplicationUser CurrentUser { get; set; }
     }
 }

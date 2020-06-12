@@ -12,7 +12,7 @@ namespace Coco.Management.Controllers
         }
 
 
-        [SessionAuthentication]
+        [ApplicationAuthentication]
         public IActionResult Index()
         {
             return View();

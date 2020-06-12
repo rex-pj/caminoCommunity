@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain.Auth;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

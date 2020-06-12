@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Coco.Entities.Domain.Identity;
-using Coco.Entities.Domain.Auth;
 using System.Threading.Tasks;
 using Coco.Contract;
 using Coco.IdentityDAL.Mapping;
@@ -25,6 +24,7 @@ namespace Coco.IdentityDAL
         public DbSet<Gender> Gender { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Role> Role { get; set; }
+        public DbSet<RoleClaim> RoleClaim { get; set; }
         public DbSet<Country> Country { get; set; }
         
         public DbSet<UserAttribute> UserAttribute { get; set; }
@@ -47,6 +47,7 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new UserInfoMap())
                 .ApplyConfiguration(new RoleMap())
                 .ApplyConfiguration(new UserRoleMap())
+                .ApplyConfiguration(new RoleClaimMap())
                 .ApplyConfiguration(new UserAttributeMap())
                 .ApplyConfiguration(new AuthorizationPolicyMap())
                 .ApplyConfiguration(new UserAuthorizationPolicyMap())

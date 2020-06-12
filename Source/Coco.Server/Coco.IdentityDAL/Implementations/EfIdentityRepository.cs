@@ -83,6 +83,11 @@ namespace Coco.IdentityDAL.Implementations
         }
 
         /// <summary>
+        /// Gets a table
+        /// </summary>
+        public virtual IQueryable<TEntity> Table => DbSet;
+
+        /// <summary>
         /// Get first or default
         /// </summary>
         /// <param name="filter"></param>
@@ -90,21 +95,6 @@ namespace Coco.IdentityDAL.Implementations
         public TEntity FirstOrDefault()
         {
             return DbSet.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets a table
-        /// </summary>
-        public virtual IQueryable<TEntity> Table => DbSet;
-
-        /// <summary>
-        /// Get first or default async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public async Task<TEntity> FirstOrDefaultAsync()
-        {
-            return await DbSet.FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -125,6 +115,16 @@ namespace Coco.IdentityDAL.Implementations
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
         {
             return await DbSet.FirstOrDefaultAsync(filter);
+        }
+
+        /// <summary>
+        /// Get first or default async
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<TEntity> FirstOrDefaultAsync()
+        {
+            return await DbSet.FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -173,6 +173,20 @@ namespace Coco.IdentityDAL.Implementations
             }
 
             DbSet.AddRange(entities);
+        }
+
+        /// <summary>
+        /// Attach entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual void Attach(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            DbSet.Attach(entity);
         }
 
         /// <summary>
@@ -276,7 +290,7 @@ namespace Coco.IdentityDAL.Implementations
 
             if (propertyInfo == null)
             {
-                throw new ArgumentNullException(nameof(propertyInfo));
+                throw new ArgumentException(nameof(propertyInfo));
             }
 
             var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;

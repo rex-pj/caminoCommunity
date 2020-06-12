@@ -62,6 +62,12 @@ namespace Coco.Contract
         void Add(IEnumerable<TEntity> entities);
 
         /// <summary>
+        /// Attach entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        void Attach(TEntity entity);
+
+        /// <summary>
         /// Update entity
         /// </summary>
         /// <param name="entity">Entity</param>

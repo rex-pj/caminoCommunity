@@ -1,8 +1,8 @@
 ﻿using Api.Auth.GraphQLTypes.InputTypes;
 using Api.Auth.GraphQLTypes.ResultTypes;
 using Api.Auth.Resolvers.Contracts;
+using Coco.Framework.GraphQLTypes.DirectiveTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
-using Coco.Framework.Infrastructure.Middlewares;
 using HotChocolate.Types;
 
 namespace Api.Auth.GraphQLTypes
