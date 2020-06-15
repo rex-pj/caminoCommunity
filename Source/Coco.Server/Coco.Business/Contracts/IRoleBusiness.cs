@@ -7,7 +7,7 @@ namespace Coco.Business.Contracts
     public interface IRoleBusiness
     {
         Task<long> AddAsync(RoleDto roleModel);
-        bool Delete(long id);
+        Task<bool> DeleteAsync(long id);
         Task<RoleDto> FindAsync(long id);
         Task<RoleDto> GetByNameAsync(string name);
         Task<bool> UpdateAsync(RoleDto roleModel);

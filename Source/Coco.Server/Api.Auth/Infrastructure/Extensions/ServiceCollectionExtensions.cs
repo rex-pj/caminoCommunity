@@ -1,7 +1,6 @@
 ﻿using Api.Auth.GraphQLTypes;
 using Api.Auth.GraphQLTypes.InputTypes;
 using Coco.Framework.GraphQLTypes.ResultTypes;
-using Coco.Framework.Infrastructure.Middlewares;
 using Coco.Framework.Models;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;

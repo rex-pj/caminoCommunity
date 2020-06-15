@@ -73,7 +73,7 @@ namespace Coco.Framework.SessionManager.Stores
 
             try
             {
-                _roleBusiness.Delete(role.Id);
+                await _roleBusiness.DeleteAsync(role.Id);
             }
             catch (DbUpdateConcurrencyException)
             {

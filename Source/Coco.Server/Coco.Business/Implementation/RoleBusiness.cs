@@ -44,11 +44,11 @@ namespace Coco.Business.Implementation
             return role.Id;
         }
 
-        public bool Delete(long id)
+        public async Task<bool> DeleteAsync(long id)
         {
             var role = _roleRepository.Find(id);
             _roleRepository.Delete(role);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -82,7 +82,7 @@ namespace Coco.Business.Implementation
 
             var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query));
 
-            data = data.Skip(0).Take(10);
+            data = data.Skip(page).Take(pageSize);
             if (pageSize > 0)
             {
                 data = data.Skip((page - 1) * pageSize).Take(pageSize);

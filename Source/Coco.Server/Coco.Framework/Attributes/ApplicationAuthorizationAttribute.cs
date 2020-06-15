@@ -18,7 +18,6 @@ namespace Coco.Framework.Attributes
         public string Policy { get; set; }
         public string Roles { get; set; }
 
-
         public ApplicationAuthorizationAttribute(bool ignoreFilter = false, string policy = "", string roles = "") : base(typeof(ApplicationAuthorizationFilter))
         {
             IgnoreFilter = ignoreFilter;
@@ -33,7 +32,6 @@ namespace Coco.Framework.Attributes
             public string Policy { get; set; }
             private string[] _roles;
 
-
             public ApplicationAuthorizationFilter(bool ignoreFilter = false, string policy = "", string roles = "")
             {
                 Policy = policy;
@@ -43,11 +41,6 @@ namespace Coco.Framework.Attributes
 
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                if (context == null)
-                {
-                    throw new ArgumentNullException(nameof(context));
-                }
-
                 var filterDescriptors = context.ActionDescriptor.FilterDescriptors;
                 //check whether this filter has been overridden for the action
                 var actionFilter = filterDescriptors

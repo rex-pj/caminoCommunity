@@ -2,7 +2,6 @@
 using Coco.Business.Contracts;
 using Coco.Common.Helpers;
 using Coco.Entities.Dtos.Auth;
-using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
 using Coco.Management.Common.Enums;
 using Coco.Management.Models;

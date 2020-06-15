@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos.Auth;
 using Coco.Framework.Controllers;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Management.Models;
-using HotChocolate.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,6 +23,7 @@ namespace Coco.Management.Controllers
         {
             _mapper = mapper;
             _roleBusiness = roleBusiness;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -59,7 +58,7 @@ namespace Coco.Management.Controllers
             return Json(userModels);
         }
 
-        public IActionResult Detail(byte id)
+        public async Task<IActionResult> Detail(byte id)
         {
             if (id <= 0)
             {
@@ -68,7 +67,7 @@ namespace Coco.Management.Controllers
 
             try
             {
-                var role = _roleBusiness.FindAsync(id);
+                var role = await _roleManager.FindByIdAsync(id.ToString());
                 if (role == null)
                 {
                     return RedirectToNotFoundPage();
@@ -92,9 +91,9 @@ namespace Coco.Management.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(byte id)
+        public async Task<IActionResult> Update(long id)
         {
-            var role = _roleBusiness.FindAsync(id);
+            var role = await _roleManager.FindByIdAsync(id.ToString());
             var model = _mapper.Map<RoleViewModel>(role);
 
             return View(model);
