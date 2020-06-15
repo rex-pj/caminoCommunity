@@ -96,11 +96,6 @@ namespace Coco.Contract
         /// </summary>
         /// <param name="entities">Entities</param>
         void Delete(IEnumerable<TEntity> entities);
-
-        /// <summary>
-        /// Gets a table
-        /// </summary>
-        IQueryable<TEntity> Table { get; }
         #endregion
     }
 }
