@@ -100,7 +100,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 userInfo.User.UpdatedById = userInfo.Id;
             }
 
-            _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
+            _identityContext.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _identityContext.SaveChangesAsync();
 
             return model;

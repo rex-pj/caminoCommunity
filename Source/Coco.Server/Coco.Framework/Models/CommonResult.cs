@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Enums;
+﻿using Coco.Common.Enums;
 using Coco.Entities.Models;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ namespace Coco.Framework.Models
 {
     public interface ICommonResult<TResult>
     {
-        AccessModeEnum AccessMode { get; set; }
+        AccessMode AccessMode { get; set; }
         bool IsSucceed { get; set; }
         TResult Result { get; set; }
         List<CommonError> Errors { get; set; }
@@ -32,7 +32,7 @@ namespace Coco.Framework.Models
 
     public class CommonResult<TResult> : ICommonResult<TResult>
     {
-        public AccessModeEnum AccessMode { get; set; }
+        public AccessMode AccessMode { get; set; }
         public bool IsSucceed { get; set; }
         public List<CommonError> Errors { get; set; }
         public TResult Result { get; set; }
@@ -51,7 +51,7 @@ namespace Coco.Framework.Models
 
         public static ICommonResult Success(TResult result, bool canEdit)
         {
-            var accessMode = canEdit ? AccessModeEnum.CanEdit : AccessModeEnum.ReadOnly;
+            var accessMode = canEdit ? AccessMode.CanEdit : AccessMode.ReadOnly;
             var updateResult = Success(result);
             updateResult.AccessMode = accessMode;
             return updateResult;

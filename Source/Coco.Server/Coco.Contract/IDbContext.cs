@@ -31,6 +31,12 @@ namespace Coco.Contract
         // Summary:
         // Provides access to database related information and operations for this context.
         DatabaseFacade Database { get; }
+
+        /// <summary>
+        /// Update entity by Property Name
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        void UpdateByName<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class;
         #endregion
     }
 }

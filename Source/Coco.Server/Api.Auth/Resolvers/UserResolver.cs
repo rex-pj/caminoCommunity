@@ -22,6 +22,7 @@ using Coco.Auth.Models;
 using AutoMapper;
 using Coco.Entities.Dtos.User;
 using Coco.Common.Exceptions;
+using Coco.Common.Enums;
 
 namespace Api.Auth.Resolvers
 {
@@ -208,7 +209,7 @@ namespace Api.Auth.Resolvers
                 return new UserTokenResult()
                 {
                     AuthenticationToken = CurrentUser.AuthenticationToken,
-                    AccessMode = AccessModeEnum.CanEdit,
+                    AccessMode = AccessMode.CanEdit,
                     IsSucceed = true,
                     UserInfo = _mapper.Map<UserInfoModel>(CurrentUser)
                 };

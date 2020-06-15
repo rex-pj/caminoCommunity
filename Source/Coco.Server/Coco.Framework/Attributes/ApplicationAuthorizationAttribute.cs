@@ -6,7 +6,6 @@ using Coco.Framework.SessionManager.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +29,6 @@ namespace Coco.Framework.Attributes
             private readonly bool _ignoreFilter;
             public string Roles { get; set; }
             public string Policy { get; set; }
-            private string[] _roles;
 
             public ApplicationAuthorizationFilter(bool ignoreFilter = false, string policy = "", string roles = "")
             {
@@ -42,7 +40,6 @@ namespace Coco.Framework.Attributes
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
                 var filterDescriptors = context.ActionDescriptor.FilterDescriptors;
-                //check whether this filter has been overridden for the action
                 var actionFilter = filterDescriptors
                     .FirstOrDefault(x => x.Scope == FilterScope.Action || x.Scope == FilterScope.Controller)
                     .Filter;
@@ -64,21 +61,22 @@ namespace Coco.Framework.Attributes
                 var mapper = httpContext.RequestServices.GetRequiredService<IMapper>();
 
                 var userDto = mapper.Map<UserDto>(user);
-                var userPolicy = userBusiness.GetRoleAuthorizationPolicies(userDto);
+                var userPolicy = userBusiness.GetUserRolesAuthorizationPolicies(userDto);
                 if (userPolicy == null)
                 {
                     context.Result = new RedirectResult("/Authentication/Logout");
                     return;
                 }
 
+                var roles = new string[] { };
                 if (!string.IsNullOrEmpty(Roles))
                 {
-                    _roles = Roles.Trim().Split(",");
+                    roles = Roles.Trim().Split(",");
                 }
 
-                if (_roles.Any())
+                if (roles.Any())
                 {
-                    foreach (var role in _roles)
+                    foreach (var role in roles)
                     {
                         if (userPolicy.Roles.Any(x => x.Name == role))
                         {
@@ -88,11 +86,18 @@ namespace Coco.Framework.Attributes
                 }
 
                 var isUserHasPolicy = userPolicy.AuthorizationPolicies.Any(x => x.Name == Policy);
-                var isRoleHasPolicy = userPolicy.Roles.Any(x => x.AuthorizationPolicies.Any(a => a.Name == Policy));
-                if (!isUserHasPolicy && !isRoleHasPolicy)
+                if (isUserHasPolicy)
                 {
-                    context.Result = new RedirectResult("/Authentication/Logout");
+                    return;
                 }
+                var isRoleHasPolicy = userPolicy.Roles.Any(x => x.AuthorizationPolicies.Any(a => a.Name == Policy));
+
+                if (isRoleHasPolicy)
+                {
+                    return;
+                }
+
+                context.Result = new RedirectResult("/Authentication/Logout");
             }
         }
     }

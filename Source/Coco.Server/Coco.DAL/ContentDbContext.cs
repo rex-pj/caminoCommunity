@@ -1,23 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Coco.Entities.Domain.Content;
 using Coco.Contract;
-using System.Threading.Tasks;
 using Coco.DAL.Mapping;
+using Coco.Entities;
 
 namespace Coco.DAL
 {
-    public class ContentDbContext : DbContext, IDbContext
+    public class ContentDbContext : CocoDbContext, IDbContext
     {
-        /// <summary>
-        /// Creates a DbSet that can be used to query and save instances of entity
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <returns>A set for the given entity type</returns>
-        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : class
-        {
-            return base.Set<TEntity>();
-        }
-
         #region DbSets
         public DbSet<Product> Product { get; set; }
 
@@ -40,11 +30,6 @@ namespace Coco.DAL
                 .ApplyConfiguration(new UserPhotoTypeMap());
 
             base.OnModelCreating(modelBuilder);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await base.SaveChangesAsync();
         }
     }
 }

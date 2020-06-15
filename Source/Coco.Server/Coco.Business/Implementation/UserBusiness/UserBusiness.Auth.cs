@@ -14,25 +14,25 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public  async Task<UserDto> CreateAsync(UserDto userModel)
+        public async Task<UserDto> CreateAsync(UserDto user)
         {
-            if (userModel == null)
+            if (user == null)
             {
-                throw new ArgumentNullException(nameof(userModel));
+                throw new ArgumentNullException(nameof(user));
             }
 
-            userModel.StatusId = 1;
-            userModel.IsActived = false;
-            userModel.CreatedDate = DateTime.UtcNow;
-            userModel.UpdatedDate = DateTime.UtcNow;
+            user.StatusId = 1;
+            user.IsActived = false;
+            user.CreatedDate = DateTime.UtcNow;
+            user.UpdatedDate = DateTime.UtcNow;
 
-            var userInfo = _mapper.Map<UserInfo>(userModel);
+            var userInfo = _mapper.Map<UserInfo>(user);
 
             _userInfoRepository.Add(userInfo);
             await _identityContext.SaveChangesAsync();
-            userModel.Id = userInfo.Id;
+            user.Id = userInfo.Id;
 
-            return userModel;
+            return user;
         }
 
         public async Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model)
@@ -41,10 +41,13 @@ namespace Coco.Business.Implementation.UserBusiness
             bool canUpdate = _validationStrategyContext.Validate(model);
             if (!canUpdate)
             {
-                foreach (var item in _validationStrategyContext.Errors)
-                {
-                    throw new ArgumentException(item.Message);
-                }
+                throw new UnauthorizedAccessException();
+            }
+
+            var errors = _validationStrategyContext.Errors;
+            if (errors != null || errors.Any())
+            {
+                throw new ArgumentException(_validationStrategyContext.Errors.FirstOrDefault().Message);
             }
 
             var user = await _userRepository.FindAsync(model.UserId);
@@ -53,12 +56,13 @@ namespace Coco.Business.Implementation.UserBusiness
             _userRepository.Update(user);
             await _identityContext.SaveChangesAsync();
 
-            return new UserDto() {
+            return new UserDto()
+            {
                 Id = user.Id
             };
         }
 
-        public UserRoleAuthorizationPoliciesDto GetRoleAuthorizationPolicies(UserDto user)
+        public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto user)
         {
             var userRoleAuthorizationPolicy = _userRepository.Get(x => x.Id == user.Id)
                 .Include(x => x.UserAuthorizationPolicies)
