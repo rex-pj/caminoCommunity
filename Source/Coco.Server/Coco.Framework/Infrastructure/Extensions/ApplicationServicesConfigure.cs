@@ -9,20 +9,18 @@ using Coco.Framework.SessionManager.Stores;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Coco.Framework.Infrastructure.Extensions
 {
-    public static class IdentityServiceCollectionExtensions
+    public static class ApplicationServicesConfigure
     {
-        public static void AddUserIdentity(this IServiceCollection services)
+        public static void ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddUserIdentity(setupAction: null);
-        }
-
-        public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
-        {
+            services.Configure<CocoSettings>(configuration.GetSection(CocoSettings.Name));
+            services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
+            services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
             services.AddIdentity<ApplicationUser, ApplicationRole>(x =>
                 {
                     x.Password.RequireDigit = true;
@@ -40,21 +38,13 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<ILoginManager<ApplicationUser>, ApplicationLoginManager<ApplicationUser>>()
                 .AddTransient<IApplicationRoleManager<ApplicationRole>, ApplicationRoleManager<ApplicationRole>>()
                 .AddTransient<IUserEncryptionStore<ApplicationUser>, ApplicationUserStore>()
-                //.AddTransient<ISessionRoleManager<ApplicationRole>, SessionRoleManager>()
-                //.AddTransient<ISessionRoleStore<ApplicationRole>, SessionRoleStore>()
                 .AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>()
-                //.AddScoped<ISessionClaimsPrincipalFactory<ApplicationUser>, SessionClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>()
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddScoped<ISessionContext, SessionContext>()
                 .AddScoped<IEmailSender, EmailSender>()
                 .AddScoped<SessionState>();
-
-            if (setupAction != null)
-            {
-                services.Configure(setupAction);
-            }
         }
     }
 }

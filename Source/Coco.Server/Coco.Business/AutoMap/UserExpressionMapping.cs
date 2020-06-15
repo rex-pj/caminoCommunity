@@ -3,7 +3,7 @@ using Coco.Entities.Dtos.User;
 using System;
 using System.Linq.Expressions;
 
-namespace Coco.Business.Mapping
+namespace Coco.Business.AutoMap
 {
     public static class UserExpressionMapping
     {

@@ -1,23 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Coco.Entities.Domain.Identity;
-using System.Threading.Tasks;
 using Coco.Contract;
 using Coco.IdentityDAL.Mapping;
+using Coco.Entities;
 
 namespace Coco.IdentityDAL
 {
-    public class IdentityDbContext : DbContext, IDbContext
+    public class IdentityDbContext : CocoDbContext, IDbContext
     {
-        /// <summary>
-        /// Creates a DbSet that can be used to query and save instances of entity
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <returns>A set for the given entity type</returns>
-        public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : class
-        {
-            return base.Set<TEntity>();
-        }
-
         #region DbSets
         public DbSet<User> User { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
@@ -35,8 +25,9 @@ namespace Coco.IdentityDAL
 
         #region Ctor
 
-        public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
-
+        public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { 
+            
+        }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,11 +49,6 @@ namespace Coco.IdentityDAL
                 .ApplyConfiguration(new UserClaimMap())
                 .ApplyConfiguration(new UserTokenMap())
                 .ApplyConfiguration(new UserLoginMap());
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await base.SaveChangesAsync();
         }
     }
 }

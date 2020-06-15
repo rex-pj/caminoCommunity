@@ -8,6 +8,7 @@ using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,17 +33,17 @@ namespace Coco.Framework.SessionManager.Stores
         private readonly IUserTokenBusiness _userTokenBusiness;
         private readonly IUserLoginBusiness _userLoginBusiness;
         private readonly ITextEncryption _textCrypter;
-        private readonly string _textCrypterSaltKey;
+        private readonly CrypterSettings _crypterSettings;
 
         public override IQueryable<ApplicationUser> Users { get; }
 
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness, 
             IUserClaimBusiness userClaimBusiness, IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness, 
             IUserTokenBusiness userTokenBusiness, IUserLoginBusiness userLoginBusiness,
-            ITextEncryption textCrypter, IMapper mapper, IConfiguration configuration) 
+            ITextEncryption textCrypter, IMapper mapper, IConfiguration configuration, IOptions<CrypterSettings> crypterSettings) 
             : base(describer)
         {
-            _textCrypterSaltKey = configuration["Crypter:SaltKey"];
+            _crypterSettings = crypterSettings.Value;
             _userBusiness = userBusiness;
             _userClaimBusiness = userClaimBusiness;
             _userRoleBusiness = userRoleBusiness;
@@ -441,13 +442,13 @@ namespace Coco.Framework.SessionManager.Stores
 
         public async Task<string> EncryptUserId(long userId)
         {
-            var encryptId = _textCrypter.Encrypt(userId.ToString(), _textCrypterSaltKey);
+            var encryptId = _textCrypter.Encrypt(userId.ToString(), _crypterSettings.SaltKey);
             return await Task.FromResult(encryptId);
         }
 
         public async Task<long> DecryptUserId(string userIdentityId)
         {
-            var id = long.Parse(_textCrypter.Decrypt(userIdentityId, _textCrypterSaltKey));
+            var id = long.Parse(_textCrypter.Decrypt(userIdentityId, _crypterSettings.SaltKey));
             return await Task.FromResult(id);
         }
     }

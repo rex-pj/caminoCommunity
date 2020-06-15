@@ -12,7 +12,6 @@ using Coco.Business.Contracts;
 using Coco.Framework.SessionManager.Core;
 using Coco.Framework.Services.Contracts;
 using Coco.Common.Const;
-using Microsoft.Extensions.Configuration;
 using Coco.Common.Resources;
 using MimeKit.Text;
 using Coco.Entities.Models;
@@ -22,6 +21,8 @@ using Coco.Auth.Models;
 using AutoMapper;
 using Coco.Entities.Dtos.User;
 using Coco.Common.Exceptions;
+using Coco.Common.Enums;
+using Microsoft.Extensions.Options;
 
 namespace Api.Auth.Resolvers
 {
@@ -30,33 +31,26 @@ namespace Api.Auth.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserBusiness _userBusiness;
-        private readonly string _appName;
-        private readonly string _registerConfirmUrl;
-        private readonly string _registerConfirmFromEmail;
-        private readonly string _registerConfirmFromName;
-        private readonly string _resetPasswordUrl;
-        private readonly string _resetPasswordFromEmail;
-        private readonly string _resetPasswordFromName;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
+        private readonly CocoSettings _cocoSettings;
+        private readonly RegisterConfirmationSettings _registerConfirmationSettings;
+        private readonly ResetPasswordSettings _resetPasswordSettings;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IConfiguration configuration,
-            IEmailSender emailSender, IMapper mapper, IUserBusiness userBusiness, SessionState sessionState)
+        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailSender emailSender, 
+            IMapper mapper, IUserBusiness userBusiness, SessionState sessionState, IOptions<CocoSettings> cocoSettings, 
+            IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<ResetPasswordSettings> resetPasswordSettings)
             : base(sessionState)
         {
             _userManager = userManager;
             _loginManager = loginManager;
             _mapper = mapper;
             _userBusiness = userBusiness;
+            _cocoSettings = cocoSettings.Value;
+            _registerConfirmationSettings = registerConfirmationSettings.Value;
+            _resetPasswordSettings = resetPasswordSettings.Value;
 
             _emailSender = emailSender;
-            _appName = configuration[ConfigurationSettingsConst.APPLICATION_NAME];
-            _registerConfirmUrl = configuration[ConfigurationSettingsConst.REGISTER_CONFIRMATION_URL];
-            _registerConfirmFromEmail = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_EMAIL];
-            _registerConfirmFromName = configuration[ConfigurationSettingsConst.REGISTER_CONFIRM_FROM_NAME];
-            _resetPasswordUrl = configuration[ConfigurationSettingsConst.RESET_PASSWORD_URL];
-            _resetPasswordFromEmail = configuration[ConfigurationSettingsConst.RESET_PASSWORD_FROM_EMAIL];
-            _resetPasswordFromName = configuration[ConfigurationSettingsConst.RESET_PASSWORD_FROM_NAME];
         }
 
         public FullUserInfoModel GetLoggedUser(IResolverContext context)
@@ -208,7 +202,7 @@ namespace Api.Auth.Resolvers
                 return new UserTokenResult()
                 {
                     AuthenticationToken = CurrentUser.AuthenticationToken,
-                    AccessMode = AccessModeEnum.CanEdit,
+                    AccessMode = AccessMode.CanEdit,
                     IsSucceed = true,
                     UserInfo = _mapper.Map<UserInfoModel>(CurrentUser)
                 };
@@ -246,8 +240,8 @@ namespace Api.Auth.Resolvers
                 }
 
                 var user = await _userManager.FindByNameAsync(model.Username);
-                var token = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.AUTHENTICATION_TOKEN);
-                await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.COCO_API_AUTH, token, UserAttributeOptions.AUTHENTICATION_TOKEN));
+                var token = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, Coco.Framework.SessionManager.Core.IdentitySettings.AUTHENTICATION_TOKEN_PURPOSE);
+                await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.COCO_API_AUTH, token, Coco.Framework.SessionManager.Core.IdentitySettings.AUTHENTICATION_TOKEN_PURPOSE));
 
                 var userIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
                 return new UserTokenResult(true)
@@ -309,15 +303,15 @@ namespace Api.Auth.Resolvers
 
         private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
         {
-            var activeUserUrl = $"{_registerConfirmUrl}/{user.Email}/{confirmationToken}";
+            var activeUserUrl = $"{_registerConfirmationSettings.Url}/{user.Email}/{confirmationToken}";
             await _emailSender.SendEmailAsync(new MailMessageModel()
             {
-                Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-                FromEmail = _registerConfirmFromEmail,
-                FromName = _registerConfirmFromName,
+                Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _cocoSettings.ApplicationName, activeUserUrl),
+                FromEmail = _registerConfirmationSettings.FromEmail,
+                FromName = _registerConfirmationSettings.FromName,
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
-                Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appName),
+                Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _cocoSettings.ApplicationName),
             }, TextFormat.Html);
         }
 
@@ -379,7 +373,7 @@ namespace Api.Auth.Resolvers
             }
 
             var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, UserAttributeOptions.RESET_PASSWORD_BY_EMAIL_CONFIRM, resetPasswordToken);
+            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, Coco.Framework.SessionManager.Core.IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
 
             if (result.Succeeded)
             {
@@ -399,15 +393,15 @@ namespace Api.Auth.Resolvers
 
         private async Task SendPasswordChangeAsync(ForgotPasswordModel criterias, ApplicationUser user, string token)
         {
-            var activeUserUrl = $"{_resetPasswordUrl}/{criterias.Email}/{token}";
+            var activeUserUrl = $"{_resetPasswordSettings.Url}/{criterias.Email}/{token}";
             await _emailSender.SendEmailAsync(new MailMessageModel()
             {
-                Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appName, activeUserUrl),
-                FromEmail = _resetPasswordFromEmail,
-                FromName = _resetPasswordFromName,
+                Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _cocoSettings.ApplicationName, activeUserUrl),
+                FromEmail = _resetPasswordSettings.FromEmail,
+                FromName = _resetPasswordSettings.FromName,
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
-                Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appName),
+                Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _cocoSettings.ApplicationName),
             }, TextFormat.Html);
         }
 

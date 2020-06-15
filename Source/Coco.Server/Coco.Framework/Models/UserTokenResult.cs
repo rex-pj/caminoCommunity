@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Enums;
+﻿using Coco.Common.Enums;
 
 namespace Coco.Framework.Models
 {
@@ -7,7 +7,7 @@ namespace Coco.Framework.Models
         public string AuthenticationToken { get; set; }
         public bool IsSucceed { get; set; }
         public UserInfoModel UserInfo { get; set; }
-        public AccessModeEnum AccessMode { get; set; }
+        public AccessMode AccessMode { get; set; }
 
         public UserTokenResult()
         {

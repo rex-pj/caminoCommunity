@@ -1,23 +1,18 @@
-﻿using Coco.Contract;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coco.IdentityDAL
 {
-    public class IdentityDalStartup : IBootstrapper
+    public static class IdentityDalStartup
     {
-        private readonly string _connectionString;
-
-        public IdentityDalStartup(IConfiguration config)
+        public static void ConfigureIdentityDataAccess(this IServiceCollection services, string connectionName)
         {
-            _connectionString = config.GetConnectionString("IdentityEntities");
-        }
+            var configuration = services.BuildServiceProvider()
+                .GetRequiredService<IConfiguration>();
 
-        public void RegiserTypes(IServiceCollection services)
-        {
-            services.AddDbContext<IdentityDbContext>
-                (x => x.UseSqlServer(_connectionString));
+            var connectionString = configuration.GetConnectionString(connectionName);
+            services.AddDbContext<IdentityDbContext>(x => x.UseSqlServer(connectionString));
         }
     }
 }

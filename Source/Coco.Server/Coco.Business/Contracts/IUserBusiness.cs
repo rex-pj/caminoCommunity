@@ -22,6 +22,6 @@ namespace Coco.Business.Contracts
         Task<UserDto> UpdateAsync(UserDto user);
         List<UserFullDto> GetFull();
         List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10);
-        UserRoleAuthorizationPoliciesDto GetRoleAuthorizationPolicies(UserDto user);
+        UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto user);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Coco.Business.Contracts;
-using Coco.Business.Mapping;
+using Coco.Business.AutoMap;
 using Coco.Business.ValidationStrategies;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
@@ -100,7 +100,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 userInfo.User.UpdatedById = userInfo.Id;
             }
 
-            _userInfoRepository.UpdateByName(userInfo, model.Value, model.PropertyName, true);
+            _identityContext.UpdateByName(userInfo, model.Value, model.PropertyName, true);
             await _identityContext.SaveChangesAsync();
 
             return model;

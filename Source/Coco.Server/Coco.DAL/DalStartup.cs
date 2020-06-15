@@ -1,23 +1,18 @@
-﻿using Coco.Contract;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coco.DAL
 {
-    public class DalStartup : IBootstrapper
+    public static class DalStartup
     {
-        private readonly string _connectionString;
-
-        public DalStartup(IConfiguration config)
+        public static void ConfigureContentDataAccess(this IServiceCollection services, string connectionName)
         {
-            _connectionString = config.GetConnectionString("CocoEntities");
-        }
+            var configuration = services.BuildServiceProvider()
+                .GetRequiredService<IConfiguration>();
 
-        public void RegiserTypes(IServiceCollection services)
-        {
-            services.AddDbContext<ContentDbContext>
-                (x => x.UseSqlServer(_connectionString));
+            var connectionString = configuration.GetConnectionString(connectionName);
+            services.AddDbContext<ContentDbContext>(x => x.UseSqlServer(connectionString));
         }
     }
 }
