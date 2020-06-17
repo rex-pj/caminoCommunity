@@ -6,7 +6,7 @@ using Coco.Entities.Dtos.User;
 using Coco.Entities.Enums;
 using Coco.Framework.Models;
 
-namespace Api.Auth.Infrastructure.MappingProfiles
+namespace Api.Auth.Infrastructure.AutoMap
 {
     public class AuthMappingProfile : Profile
     {

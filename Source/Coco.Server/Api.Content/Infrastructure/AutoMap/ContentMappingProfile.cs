@@ -2,7 +2,7 @@
 using Coco.Entities.Domain.Content;
 using Coco.Entities.Dtos;
 
-namespace Api.Content.Infrastructure.MappingProfiles
+namespace Api.Content.Infrastructure.AutoMap
 {
     public class ContentMappingProfile : Profile
     {

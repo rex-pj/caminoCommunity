@@ -14,14 +14,9 @@ using System;
 
 namespace Coco.Framework.Infrastructure.Extensions
 {
-    public static class IdentityServiceCollectionExtensions
+    public static class ApplicationServicesConfigure
     {
-        public static void AddUserIdentity(this IServiceCollection services)
-        {
-            services.AddUserIdentity(setupAction: null);
-        }
-
-        public static void AddUserIdentity(this IServiceCollection services, Action<IdentityOptions> setupAction)
+        public static void ConfigureApplicationServices(this IServiceCollection services)
         {
             services.AddIdentity<ApplicationUser, ApplicationRole>(x =>
                 {
@@ -47,11 +42,6 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddScoped<ISessionContext, SessionContext>()
                 .AddScoped<IEmailSender, EmailSender>()
                 .AddScoped<SessionState>();
-
-            if (setupAction != null)
-            {
-                services.Configure(setupAction);
-            }
         }
     }
 }

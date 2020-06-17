@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
 
-namespace Coco.Business.MappingProfiles
+namespace Coco.Business.AutoMap
 {
     public class IdentityMappingProfile : Profile
     {

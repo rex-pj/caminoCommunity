@@ -1,6 +1,14 @@
 ﻿using Api.Auth.GraphQLTypes;
 using Api.Auth.GraphQLTypes.InputTypes;
+using Api.Auth.Infrastructure.AutoMap;
+using Api.Auth.Resolvers;
+using Api.Auth.Resolvers.Contracts;
+using AutoMapper;
+using Coco.Business;
+using Coco.Business.AutoMap;
 using Coco.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.Infrastructure.AutoMap;
+using Coco.Framework.Infrastructure.Extensions;
 using Coco.Framework.Models;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,10 +17,10 @@ namespace Api.Auth.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddGraphQlDependency(this IServiceCollection services)
+        public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
             services.AddAuthentication();
-            return services
+            services
                 .AddGraphQL(sp => SchemaBuilder.New()
                 .AddServices(sp)
                 .AddQueryType<QueryType>()
@@ -30,6 +38,27 @@ namespace Api.Auth.Infrastructure.Extensions
                 .AddType<ForgotPasswordInputType>()
                 .AddType<ICommonResult>()
                 .Create());
+
+            services.AddTransient<IUserResolver, UserResolver>();
+            services.AddTransient<ICountryResolver, CountryResolver>();
+            services.AddTransient<IGenderResolver, GenderResolver>();
+            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthServices(this IServiceCollection services)
+        {
+            services.ConfigureApplicationMapping();
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile), typeof(AuthMappingProfile));
+            services.ConfigureApplicationServices();
+            services.ConfigureBusinessServices();
+
+            services.AddHttpContextAccessor();
+
+            services.ConfigureGraphQlServices();
+
+            return services;
         }
     }
 }

@@ -4,7 +4,7 @@ using Coco.Entities.Dtos.User;
 using Coco.Framework.Models;
 using Coco.Management.Models;
 
-namespace Coco.Management.MappingProfiles
+namespace Coco.Management.Infrastructure.AutoMap
 {
     public class AuthMappingProfile : Profile
     {

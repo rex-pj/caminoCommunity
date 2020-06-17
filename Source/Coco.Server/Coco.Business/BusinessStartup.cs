@@ -7,24 +7,15 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Domain.Content;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
 
 namespace Coco.Business
 {
-    public class BusinessStartup : IBootstrapper
+    public static class BusinessStartup
     {
-        private readonly IBootstrapper _dalStartup;
-        private readonly IBootstrapper _userDalStartup;
-        public BusinessStartup(IConfiguration config)
-        {
-            _dalStartup = new DalStartup(config);
-            _userDalStartup = new IdentityDalStartup(config);
-        }
-
-        public void RegiserTypes(IServiceCollection services)
+        public static void ConfigureBusinessServices(this IServiceCollection services)
         {
             services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
@@ -60,8 +51,8 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserPhoto>, EfRepository<UserPhoto>>()
                 .AddTransient<ValidationStrategyContext>();
 
-            _dalStartup.RegiserTypes(services);
-            _userDalStartup.RegiserTypes(services);
+            services.ConfigureContentDataAccess("CocoEntities");
+            services.ConfigureIdentityDataAccess("IdentityEntities");
         }
     }
 }

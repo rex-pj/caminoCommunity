@@ -4,7 +4,7 @@ using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.Auth;
 using System.Security.Claims;
 
-namespace Coco.Framework.Infrastructure.MappingProfiles
+namespace Coco.Framework.Infrastructure.AutoMap
 {
     public class FrameworkMappingProfile : Profile
     {

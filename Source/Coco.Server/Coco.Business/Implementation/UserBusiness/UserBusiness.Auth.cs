@@ -1,5 +1,5 @@
 ﻿using Coco.Business.Contracts;
-using Coco.Business.Mapping;
+using Coco.Business.AutoMap;
 using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
