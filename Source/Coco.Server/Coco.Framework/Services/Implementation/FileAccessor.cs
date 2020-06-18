@@ -16,5 +16,41 @@ namespace Coco.Framework.Services.Implementation
                 }
             }
         }
+
+        public bool FileExists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public void CreateFile(string path)
+        {
+            if (FileExists(path))
+            {
+                return;
+            }
+
+            var fileInfo = new FileInfo(path);
+            CreateDirectory(fileInfo.DirectoryName);
+
+            File.Create(path).Close();
+        }
+
+        public void CreateDirectory(string path)
+        {
+            if (!DirectoryExists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+
+        public void WriteAllText(string path, string contents, Encoding encoding)
+        {
+            File.WriteAllText(path, contents, encoding);
+        }
     }
 }

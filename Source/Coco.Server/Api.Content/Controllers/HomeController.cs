@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Content.Controllers
 {
@@ -9,7 +8,6 @@ namespace Api.Content.Controllers
     {
         // GET api/user
         [HttpGet, Route("")]
-        [EnableCors("AllowOrigin")]
         public IActionResult Index()
         {
             return Content("Content Api");
