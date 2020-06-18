@@ -7,10 +7,15 @@ using AutoMapper;
 using Coco.Business;
 using Coco.Business.AutoMap;
 using Coco.Framework.GraphQLTypes.ResultTypes;
+using Coco.Framework.Infrastructure.AutoMap;
 using Coco.Framework.Infrastructure.Extensions;
+using Coco.Framework.Models;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace Api.Content.Infrastructure.Extensions
 {
@@ -35,14 +40,31 @@ namespace Api.Content.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureContentServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureContentServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureApplicationMapping();
-            services.AddAutoMapper(typeof(IdentityMappingProfile), typeof(ContentMappingProfile));
-            services.ConfigureApplicationServices();
+            services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile), typeof(ContentMappingProfile));
+            services.ConfigureApplicationServices(configuration);
             services.ConfigureBusinessServices();
-
             services.ConfigureGraphQlServices();
+            services.ConfigureAuthCorsServices(services.BuildServiceProvider());
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthCorsServices(this IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            var cocoSettings = serviceProvider.GetRequiredService<IOptions<CocoSettings>>().Value;
+            services.AddCors(options =>
+            {
+                options.AddPolicy(cocoSettings.MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins(cocoSettings.AllowOrigins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             return services;
         }

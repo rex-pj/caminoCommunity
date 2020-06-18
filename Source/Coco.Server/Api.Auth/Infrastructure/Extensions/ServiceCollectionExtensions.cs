@@ -1,6 +1,7 @@
 ﻿using Api.Auth.GraphQLTypes;
 using Api.Auth.GraphQLTypes.InputTypes;
 using Api.Auth.Infrastructure.AutoMap;
+using Api.Auth.Models;
 using Api.Auth.Resolvers;
 using Api.Auth.Resolvers.Contracts;
 using AutoMapper;
@@ -11,7 +12,10 @@ using Coco.Framework.Infrastructure.AutoMap;
 using Coco.Framework.Infrastructure.Extensions;
 using Coco.Framework.Models;
 using HotChocolate;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace Api.Auth.Infrastructure.Extensions
 {
@@ -47,16 +51,36 @@ namespace Api.Auth.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureAuthServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureAuthServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureApplicationMapping();
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile), typeof(AuthMappingProfile));
-            services.ConfigureApplicationServices();
+            services.ConfigureApplicationServices(configuration);
+
+            services.Configure<RegisterConfirmationSettings>(configuration.GetSection(RegisterConfirmationSettings.Name));
+            services.Configure<ResetPasswordSettings>(configuration.GetSection(ResetPasswordSettings.Name));
             services.ConfigureBusinessServices();
 
             services.AddHttpContextAccessor();
-
             services.ConfigureGraphQlServices();
+            services.ConfigureAuthCorsServices(services.BuildServiceProvider());
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthCorsServices(this IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            var cocoSettings = serviceProvider.GetRequiredService<IOptions<CocoSettings>>().Value;
+            services.AddCors(options =>
+            {
+                options.AddPolicy(cocoSettings.MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins(cocoSettings.AllowOrigins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             return services;
         }

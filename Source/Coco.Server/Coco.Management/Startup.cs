@@ -1,6 +1,5 @@
 using Coco.Business.Contracts;
 using Coco.Business.Implementation;
-using Coco.Framework.Models;
 using Coco.Management.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,21 +11,17 @@ namespace Coco.Management
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureManagementServices();
-
-            services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA)
-                .AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
-
+            services.ConfigureManagementServices(_configuration);
             services.AddScoped<ISeedDataBusiness, SeedDataBusiness>();
 
             services.AddControllersWithViews()

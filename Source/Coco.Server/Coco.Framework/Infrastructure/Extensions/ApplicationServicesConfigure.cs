@@ -9,15 +9,18 @@ using Coco.Framework.SessionManager.Stores;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Coco.Framework.Infrastructure.Extensions
 {
     public static class ApplicationServicesConfigure
     {
-        public static void ConfigureApplicationServices(this IServiceCollection services)
+        public static void ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<CocoSettings>(configuration.GetSection(CocoSettings.Name));
+            services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
+            services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
             services.AddIdentity<ApplicationUser, ApplicationRole>(x =>
                 {
                     x.Password.RequireDigit = true;

@@ -23,7 +23,7 @@ namespace Coco.Framework.Models
 
         }
 
-        public CommonResult(bool isSucceed = false)
+        public CommonResult(bool isSucceed)
         {
             IsSucceed = isSucceed;
             Errors = new List<CommonError>();

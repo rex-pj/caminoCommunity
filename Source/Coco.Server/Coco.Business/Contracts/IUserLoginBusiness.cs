@@ -6,8 +6,8 @@ namespace Coco.Business.Contracts
 {
     public interface IUserLoginBusiness
     {
-        void Add(UserLoginDto userTokenDto);
-        void Remove(UserLoginDto userTokenDto);
+        void Add(UserLoginDto userLoginDto);
+        void Remove(UserLoginDto userLoginDto);
         Task<UserLoginDto> FindAsync(long userId, string loginProvider, string providerKey);
         Task<UserLoginDto> FindAsync(string loginProvider, string providerKey);
         Task<IList<UserLoginDto>> GetByUserIdAsync(long userId);

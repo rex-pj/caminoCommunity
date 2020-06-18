@@ -1,32 +1,31 @@
 ﻿using Coco.Framework.SessionManager.Contracts;
 using Coco.Common.Helpers;
-using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Coco.Framework.Models;
+using Microsoft.Extensions.Options;
 
 namespace Coco.Framework.SessionManager
 {
     public class TextEncryption : ITextEncryption
     {
-        private readonly string _pepperKey;
-        private readonly string _vIKey;
+        private readonly CrypterSettings _crypterSettings;
 
-        public TextEncryption(IConfiguration configuration)
+        public TextEncryption(IOptions<CrypterSettings> crypterSettings)
         {
-            _pepperKey = configuration["Crypter:PepperKey"];
-            _vIKey = configuration.GetValue<string>("Crypter:SecretKey");
+            _crypterSettings = crypterSettings.Value;
         }
 
         public string Encrypt(string plainText, string saltKey)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
+            using (var bytesDerived = new Rfc2898DeriveBytes(_crypterSettings.PepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);
                 using (var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros })
                 {
-                    var encryptor = symmetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(_vIKey));
+                    var encryptor = symmetricKey.CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(_crypterSettings.SecretKey));
 
                     byte[] cipherTextBytes;
 
@@ -50,12 +49,12 @@ namespace Coco.Framework.SessionManager
         public string Decrypt(string encryptedText, string saltKey)
         {
             var cipherTextBytes = DataConverters.StringToBytes(encryptedText);
-            using (var bytesDerived = new Rfc2898DeriveBytes(_pepperKey, Encoding.ASCII.GetBytes(saltKey)))
+            using (var bytesDerived = new Rfc2898DeriveBytes(_crypterSettings.PepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);
                 using (var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros })
                 {
-                    var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(_vIKey));
+                    var decryptor = symmetricKey.CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(_crypterSettings.SecretKey));
                     var plainText = string.Empty;
                     using (var memoryStream = new MemoryStream(cipherTextBytes))
                     {
