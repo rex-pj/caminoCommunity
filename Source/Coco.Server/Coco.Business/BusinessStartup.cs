@@ -32,23 +32,23 @@ namespace Coco.Business
                 .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
                 .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>();
 
-            services.AddTransient<IRepository<User>, EfIdentityRepository<User>>()
-                .AddTransient<IRepository<UserInfo>, EfIdentityRepository<UserInfo>>()
-                .AddTransient<IRepository<Country>, EfIdentityRepository<Country>>()
-                .AddTransient<IRepository<Role>, EfIdentityRepository<Role>>()
-                .AddTransient<IRepository<UserAttribute>, EfIdentityRepository<UserAttribute>>()
-                .AddTransient<IRepository<UserRole>, EfIdentityRepository<UserRole>>()
-                .AddTransient<IRepository<AuthorizationPolicy>, EfIdentityRepository<AuthorizationPolicy>>()
-                .AddTransient<IRepository<UserAuthorizationPolicy>, EfIdentityRepository<UserAuthorizationPolicy>>()
-                .AddTransient<IRepository<RoleAuthorizationPolicy>, EfIdentityRepository<RoleAuthorizationPolicy>>()
-                .AddTransient<IRepository<UserClaim>, EfIdentityRepository<UserClaim>>()
-                .AddTransient<IRepository<UserToken>, EfIdentityRepository<UserToken>>()
-                .AddTransient<IRepository<UserLogin>, EfIdentityRepository<UserLogin>>()
-                .AddTransient<IRepository<RoleClaim>, EfIdentityRepository<RoleClaim>>();
+            services.AddTransient<IRepository<User>, IdentityRepository<User>>()
+                .AddTransient<IRepository<UserInfo>, IdentityRepository<UserInfo>>()
+                .AddTransient<IRepository<Country>, IdentityRepository<Country>>()
+                .AddTransient<IRepository<Role>, IdentityRepository<Role>>()
+                .AddTransient<IRepository<UserAttribute>, IdentityRepository<UserAttribute>>()
+                .AddTransient<IRepository<UserRole>, IdentityRepository<UserRole>>()
+                .AddTransient<IRepository<AuthorizationPolicy>, IdentityRepository<AuthorizationPolicy>>()
+                .AddTransient<IRepository<UserAuthorizationPolicy>, IdentityRepository<UserAuthorizationPolicy>>()
+                .AddTransient<IRepository<RoleAuthorizationPolicy>, IdentityRepository<RoleAuthorizationPolicy>>()
+                .AddTransient<IRepository<UserClaim>, IdentityRepository<UserClaim>>()
+                .AddTransient<IRepository<UserToken>, IdentityRepository<UserToken>>()
+                .AddTransient<IRepository<UserLogin>, IdentityRepository<UserLogin>>()
+                .AddTransient<IRepository<RoleClaim>, IdentityRepository<RoleClaim>>();
 
-            services.AddTransient<IRepository<Product>, EfRepository<Product>>()
-                .AddTransient<IRepository<ArticleCategory>, EfRepository<ArticleCategory>>()
-                .AddTransient<IRepository<UserPhoto>, EfRepository<UserPhoto>>()
+            services.AddTransient<IRepository<Product>, ContentRepository<Product>>()
+                .AddTransient<IRepository<ArticleCategory>, ContentRepository<ArticleCategory>>()
+                .AddTransient<IRepository<UserPhoto>, ContentRepository<UserPhoto>>()
                 .AddTransient<ValidationStrategyContext>();
 
             services.ConfigureContentDataAccess("CocoEntities");

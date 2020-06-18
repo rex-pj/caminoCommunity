@@ -10,7 +10,7 @@ using HotChocolate.Resolvers;
 using Api.Auth.Models;
 using Coco.Business.Contracts;
 using Coco.Framework.SessionManager.Core;
-using Coco.Framework.Services.Contracts;
+using Coco.Framework.Providers.Contracts;
 using Coco.Common.Const;
 using Coco.Common.Resources;
 using MimeKit.Text;
@@ -31,13 +31,13 @@ namespace Api.Auth.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserBusiness _userBusiness;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailProvider _emailSender;
         private readonly IMapper _mapper;
         private readonly CocoSettings _cocoSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailSender emailSender, 
+        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender, 
             IMapper mapper, IUserBusiness userBusiness, SessionState sessionState, IOptions<CocoSettings> cocoSettings, 
             IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<ResetPasswordSettings> resetPasswordSettings)
             : base(sessionState)

@@ -2,9 +2,9 @@
 using MimeKit.Text;
 using System.Threading.Tasks;
 
-namespace Coco.Framework.Services.Contracts
+namespace Coco.Framework.Providers.Contracts
 {
-    public interface IEmailSender
+    public interface IEmailProvider
     {
         Task SendEmailAsync(MailMessageModel email, TextFormat messageFormat = TextFormat.Plain);
     }

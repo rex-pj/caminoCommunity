@@ -1,7 +1,7 @@
 ﻿using Coco.Common.Const;
 using Coco.Framework.Models;
-using Coco.Framework.Services.Contracts;
-using Coco.Framework.Services.Implementation;
+using Coco.Framework.Providers.Contracts;
+using Coco.Framework.Providers.Implementation;
 using Coco.Framework.SessionManager;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Core;
@@ -33,7 +33,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddDefaultTokenProviders();
 
             services
-                .AddSingleton<IFileAccessor, FileAccessor>()
+                .AddSingleton<IFileProvider, FileProvider>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager<ApplicationUser>>()
                 .AddTransient<ILoginManager<ApplicationUser>, ApplicationLoginManager<ApplicationUser>>()
@@ -44,7 +44,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>()
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddScoped<ISessionContext, SessionContext>()
-                .AddScoped<IEmailSender, EmailSender>()
+                .AddScoped<IEmailProvider, EmailProvider>()
                 .AddScoped<SessionState>();
         }
     }
