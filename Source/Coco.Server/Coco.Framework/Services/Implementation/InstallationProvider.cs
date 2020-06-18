@@ -2,6 +2,7 @@
 using Coco.Framework.Models;
 using Coco.Framework.Services.Contracts;
 using Newtonsoft.Json;
+using System;
 using System.Text;
 
 namespace Coco.Framework.Services.Implementation
@@ -14,20 +15,32 @@ namespace Coco.Framework.Services.Implementation
         {
             _fileAccessor = fileAccessor;
             _installationSettings = installationSettings;
+            if (!IsDatabaseInstalled)
+            {
+                IsDatabaseInstalled = LoadSettings().IsDatabaseInstalled;
+            }
+
+            if (!IsInitialized)
+            {
+                IsInitialized = LoadSettings().IsInitialized;
+            }
         }
 
-        private bool _isDatabaseInstalled;
+        public bool IsDatabaseInstalled { get; }
+        public bool IsInitialized { get; }
 
-        public bool IsDatabaseInstalled
+        public void SetDatabaseInstalled(string filePath = null)
         {
-            get
-            {
-                if (!_isDatabaseInstalled)
-                {
-                    _isDatabaseInstalled = LoadSettings().IsDatabaseInstalled;
-                }
+            filePath = filePath == null ? InstallationSettingsConst.FilePath : filePath;
 
-                return _isDatabaseInstalled;
+            try
+            {
+                _installationSettings.IsDatabaseInstalled = true;
+                SaveSettings(_installationSettings, filePath);
+            }
+            catch (Exception e)
+            {
+                _installationSettings.IsDatabaseInstalled = false;
             }
         }
 
@@ -43,11 +56,11 @@ namespace Coco.Framework.Services.Implementation
             {
                 var installSettings = new InstallationSettings()
                 {
-                    IsDatabaseInstalled = true
+                    IsInitialized = true
                 };
 
                 SaveSettings(installSettings, filePath);
-                _installationSettings.IsDatabaseInstalled = true;
+                _installationSettings.IsInitialized = true;
                 return installSettings;
             }
 

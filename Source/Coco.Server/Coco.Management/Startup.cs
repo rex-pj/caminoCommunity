@@ -44,9 +44,10 @@ namespace Coco.Management
             app.ConfigureManagementAppBuilder();
 
             var installationProvider = app.ApplicationServices.GetRequiredService<IInstallationProvider>();
-            if (!installationProvider.IsDatabaseInstalled && seedDataBusiness.CanSeed())
+            if (!installationProvider.IsDatabaseInstalled && installationProvider.IsInitialized && seedDataBusiness.CanSeed())
             {
                 seedDataBusiness.SeedingData();
+                installationProvider.SetDatabaseInstalled();
             }
 
             app.UseEndpoints(endpoints =>

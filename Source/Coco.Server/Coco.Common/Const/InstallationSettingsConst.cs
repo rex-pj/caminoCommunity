@@ -2,6 +2,6 @@
 {
     public static class InstallationSettingsConst
     {
-        public const string FilePath = "/App_Data/settings.json";
+        public const string FilePath = "App_Data/settings.json";
     }
 }
