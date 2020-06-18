@@ -33,6 +33,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddDefaultTokenProviders();
 
             services
+                .AddSingleton<IFileAccessor, FileAccessor>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddTransient<IUserManager<ApplicationUser>, ApplicationUserManager<ApplicationUser>>()
                 .AddTransient<ILoginManager<ApplicationUser>, ApplicationLoginManager<ApplicationUser>>()

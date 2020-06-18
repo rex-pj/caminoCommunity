@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Auth.Controllers
 {
@@ -8,7 +7,6 @@ namespace Api.Auth.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet, Route("")]
-        [EnableCors("AllowOrigin")]
         public IActionResult Index()
         {
             return Content("Auth Api");
