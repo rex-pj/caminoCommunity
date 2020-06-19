@@ -3,8 +3,7 @@ using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
+using LinqToDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +13,12 @@ namespace Coco.Business.Implementation
 {
     public class RoleBusiness : IRoleBusiness
     {
-        private readonly IdentityDbContext _dbContext;
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
-        public RoleBusiness(IMapper mapper, IdentityDbContext dbContext, IRepository<Role> roleRepository, IRepository<User> userRepository)
+        public RoleBusiness(IMapper mapper, IRepository<Role> roleRepository, IRepository<User> userRepository)
         {
-            _dbContext = dbContext;
             _roleRepository = roleRepository;
             _mapper = mapper;
             _userRepository = userRepository;
@@ -40,15 +37,13 @@ namespace Coco.Business.Implementation
             role.CreatedDate = DateTime.UtcNow;
 
             _roleRepository.Add(role);
-            await _dbContext.SaveChangesAsync();
             return role.Id;
         }
 
         public async Task<bool> DeleteAsync(long id)
         {
             var role = _roleRepository.Find(id);
-            _roleRepository.Delete(role);
-            await _dbContext.SaveChangesAsync();
+            await _roleRepository.DeleteAsync(role);
 
             return true;
         }
@@ -171,7 +166,7 @@ namespace Coco.Business.Implementation
             exist.ConcurrencyStamp = roleModel.ConcurrencyStamp;
 
             _roleRepository.Update(exist);
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.SaveChangesAsync();
 
             return true;
         }

@@ -4,7 +4,7 @@ using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
-using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ namespace Coco.Business.Implementation.UserBusiness
             var userInfo = _mapper.Map<UserInfo>(user);
 
             _userInfoRepository.Add(userInfo);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
             user.Id = userInfo.Id;
 
             return user;
@@ -54,7 +54,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             user.PasswordHash = model.NewPassword;
             _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
 
             return new UserDto()
             {
@@ -65,7 +65,7 @@ namespace Coco.Business.Implementation.UserBusiness
         public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto user)
         {
             var userRoleAuthorizationPolicy = _userRepository.Get(x => x.Id == user.Id)
-                .Include(x => x.UserAuthorizationPolicies)
+                //.Include(x => x.UserAuthorizationPolicies)
                 .Select(x => new UserRoleAuthorizationPoliciesDto()
                 {
                     UserId = x.Id,

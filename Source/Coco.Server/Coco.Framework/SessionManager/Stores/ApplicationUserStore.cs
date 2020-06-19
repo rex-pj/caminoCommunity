@@ -5,8 +5,9 @@ using Coco.Entities.Dtos.User;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Stores.Contracts;
+using LinqToDB;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -99,7 +100,8 @@ namespace Coco.Framework.SessionManager.Stores
             {
                 await _userBusiness.DeleteAsync(user.Id);
             }
-            catch (DbUpdateConcurrencyException)
+            // Todo: check DbUpdateConcurrencyException
+            catch (LinqToDBException)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -433,7 +435,8 @@ namespace Coco.Framework.SessionManager.Stores
                 var userDto = _mapper.Map<UserDto>(user);
                 await _userBusiness.UpdateAsync(userDto);
             }
-            catch (DbUpdateConcurrencyException)
+            // todo: check DbUpdateConcurrencyException
+            catch (LinqToDBException)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

@@ -15,8 +15,8 @@ namespace Coco.Business.Implementation
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        private readonly IdentityDbContext _identityDbContext;
-        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, IdentityDbContext identityDbContext, 
+        private readonly IdentityDbConnection _identityDbContext;
+        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, IdentityDbConnection identityDbContext, 
             IRepository<User> userRepository)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
@@ -95,7 +95,8 @@ namespace Coco.Business.Implementation
             newPolicy.CreatedDate = DateTime.UtcNow;
 
             _authorizationPolicyRepository.Add(newPolicy);
-            return _identityDbContext.SaveChanges();
+            return newPolicy.Id;
+            //return _identityDbContext.SaveChanges();
         }
 
         public AuthorizationPolicyDto Update(AuthorizationPolicyDto policy)
@@ -107,7 +108,7 @@ namespace Coco.Business.Implementation
             exist.UpdatedDate = DateTime.UtcNow;
 
             _authorizationPolicyRepository.Update(exist);
-            _identityDbContext.SaveChanges();
+            //_identityDbContext.SaveChanges();
 
             policy.UpdatedDate = exist.UpdatedDate;
             return policy;

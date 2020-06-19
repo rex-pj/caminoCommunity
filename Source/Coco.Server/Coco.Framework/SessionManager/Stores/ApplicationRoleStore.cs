@@ -3,8 +3,8 @@ using Coco.Business.Contracts;
 using Coco.Entities.Dtos.Auth;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Stores.Contracts;
+using LinqToDB;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +75,7 @@ namespace Coco.Framework.SessionManager.Stores
             {
                 await _roleBusiness.DeleteAsync(role.Id);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }
@@ -145,7 +145,8 @@ namespace Coco.Framework.SessionManager.Stores
                 var roleDto = _mapper.Map<RoleDto>(role);
                 await _roleBusiness.UpdateAsync(roleDto);
             }
-            catch (DbUpdateConcurrencyException)
+            // Todo: check DbUpdateConcurrencyException
+            catch (LinqToDBException)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

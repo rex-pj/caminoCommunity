@@ -13,14 +13,14 @@ namespace Coco.Business.Implementation.UserBusiness
     public class UserLoginBusiness : IUserLoginBusiness
     {
         private readonly IRepository<UserLogin> _userLoginRepository;
-        private readonly IdentityDbContext _identityDbContext;
+        //private readonly IdentityDbConnection _identityDbContext;
         private readonly IMapper _mapper;
 
-        public UserLoginBusiness(IRepository<UserLogin> userTokenRepository, IdentityDbContext identityDbContext, IMapper mapper)
+        public UserLoginBusiness(IRepository<UserLogin> userTokenRepository, IMapper mapper)
         {
             _mapper = mapper;
             _userLoginRepository = userTokenRepository;
-            _identityDbContext = identityDbContext;
+            //_identityDbContext = identityDbContext;
         }
 
         public async Task<UserLoginDto> FindAsync(long userId, string loginProvider, string providerKey)

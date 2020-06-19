@@ -1,10 +1,11 @@
 ﻿using Coco.Contract;
+using Coco.Entities.Domain;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityRepository<TEntity> : CocoRepository<TEntity> where TEntity : class
+    public class IdentityRepository<TEntity> : CocoRepository<TEntity> where TEntity : BaseEntity
     {
-        public IdentityRepository(IdentityDbContext context) : base(context)
+        public IdentityRepository(IdentityDbProvider provider) : base(provider)
         {
 
         }

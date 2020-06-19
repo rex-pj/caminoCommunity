@@ -6,33 +6,35 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.General;
 using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Coco.Entities.Enums;
 using System.Collections.Generic;
+using LinqToDB;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public partial class UserBusiness : IUserBusiness
     {
         #region Fields/Properties
-        private readonly IDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
+        private readonly IdentityDbProvider _identityDbProvider;
         #endregion
 
         #region Ctor
-        public UserBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
+        public UserBusiness(IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IMapper mapper,
-            IRepository<UserInfo> userInfoRepository)
+            IRepository<UserInfo> userInfoRepository,
+            IdentityDbProvider identityDbProvider)
         {
-            _identityContext = identityContext;
+            _identityDbProvider = identityDbProvider;
             _mapper = mapper;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
@@ -47,7 +49,7 @@ namespace Coco.Business.Implementation.UserBusiness
             user.IsActived = false;
 
             _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
         }
 
         public async Task<bool> ActiveAsync(long id)
@@ -62,7 +64,7 @@ namespace Coco.Business.Implementation.UserBusiness
             user.IsEmailConfirmed = true;
             user.StatusId = (byte)UserStatusEnum.Actived;
             _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
 
             return true;
         }
@@ -100,8 +102,8 @@ namespace Coco.Business.Implementation.UserBusiness
                 userInfo.User.UpdatedById = userInfo.Id;
             }
 
-            _identityContext.UpdateByName(userInfo, model.Value, model.PropertyName, true);
-            await _identityContext.SaveChangesAsync();
+            _identityDbProvider.UpdateByName(userInfo, model.Value, model.PropertyName, true);
+            //await _identityContext.SaveChangesAsync();
 
             return model;
         }
@@ -127,7 +129,7 @@ namespace Coco.Business.Implementation.UserBusiness
             user.DisplayName = model.DisplayName;
 
             _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
 
             return model;
         }
@@ -145,7 +147,7 @@ namespace Coco.Business.Implementation.UserBusiness
             exist.PasswordHash = user.PasswordHash;
 
             _userRepository.Update(exist);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
 
             return user;
         }

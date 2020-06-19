@@ -3,8 +3,7 @@ using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
+using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,14 +13,13 @@ namespace Coco.Business.Implementation
     public class RoleClaimBusiness : IRoleClaimBusiness
     {
         private readonly IRepository<RoleClaim> _roleClaimRepository;
-        private readonly IdentityDbContext _identityDbContext;
+        //private readonly IdentityDbConnection _identityDbContext;
         private readonly IMapper _mapper;
 
-        public RoleClaimBusiness(IRepository<RoleClaim> roleClaimRepository, IdentityDbContext identityDbContext,
-            IMapper mapper)
+        public RoleClaimBusiness(IRepository<RoleClaim> roleClaimRepository, IMapper mapper)
         {
             _roleClaimRepository = roleClaimRepository;
-            _identityDbContext = identityDbContext;
+            //_identityDbContext = identityDbContext;
             _mapper = mapper;
         }
 
@@ -29,7 +27,7 @@ namespace Coco.Business.Implementation
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Add(claim);
-            _identityDbContext.SaveChanges();
+            //_identityDbContext.SaveChanges();
         }
 
         public async Task<IList<RoleClaimDto>> GetByRoleIdAsync(long roleId)
@@ -49,7 +47,7 @@ namespace Coco.Business.Implementation
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Delete(claim);
-            _identityDbContext.SaveChanges();
+            //_identityDbContext.SaveChanges();
         }
 
         public async Task ReplaceClaimAsync(long roleId, ClaimDto claim, ClaimDto newClaim)

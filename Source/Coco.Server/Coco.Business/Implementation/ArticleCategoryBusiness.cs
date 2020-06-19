@@ -5,7 +5,6 @@ using Coco.DAL;
 using Coco.Entities.Domain.Content;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Content;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +17,10 @@ namespace Coco.Business.Implementation
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        private readonly ContentDbContext _contentDbContext;
+        private readonly ContentDbConnection _contentDbContext;
 
         public ArticleCategoryBusiness(IMapper mapper, IRepository<ArticleCategory> articleCategoryRepository,
-            IRepository<User> userRepository, ContentDbContext contentDbContext)
+            IRepository<User> userRepository, ContentDbConnection contentDbContext)
         {
             _mapper = mapper;
             _articleCategoryRepository = articleCategoryRepository;
@@ -32,7 +31,8 @@ namespace Coco.Business.Implementation
         public ArticleCategoryDto Find(int id)
         {
             var exist = _articleCategoryRepository.Get(x => x.Id == id)
-                .Include(x => x.ParentCategory)
+                // TODO: include check
+                //.Include(x => x.ParentCategory)
                 .FirstOrDefault();
 
             var createdByUser = _userRepository.Find(exist.CreatedById);
@@ -52,7 +52,8 @@ namespace Coco.Business.Implementation
         public ArticleCategoryDto FindByName(string name)
         {
             var exist = _articleCategoryRepository.Get(x => x.Name == name)
-                .Include(x => x.ParentCategory)
+                // TODO: include check
+                //.Include(x => x.ParentCategory)
                 .FirstOrDefault();
 
             var category = _mapper.Map<ArticleCategoryDto>(exist);
@@ -85,7 +86,7 @@ namespace Coco.Business.Implementation
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
                 category.CreatedBy = createdBy.DisplayName;
 
-                var updatedBy = createdByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
+                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
                 category.UpdatedBy = updatedBy.DisplayName;
             }
 
@@ -111,7 +112,7 @@ namespace Coco.Business.Implementation
             newCategory.CreatedDate = DateTime.UtcNow;
 
             _articleCategoryRepository.Add(newCategory);
-            return _contentDbContext.SaveChanges();
+            return newCategory.Id;
         }
 
         public ArticleCategoryDto Update(ArticleCategoryDto category)
@@ -124,7 +125,7 @@ namespace Coco.Business.Implementation
             exist.UpdatedDate = DateTime.UtcNow;
 
             _articleCategoryRepository.Update(exist);
-            _contentDbContext.SaveChanges();
+            //_contentDbContext.SaveChanges();
 
             category.UpdatedDate = exist.UpdatedDate;
             return category;

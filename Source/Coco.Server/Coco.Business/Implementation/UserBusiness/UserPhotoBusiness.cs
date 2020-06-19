@@ -11,21 +11,22 @@ using Coco.IdentityDAL;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+
 using Coco.Entities.Domain.Content;
 using Coco.DAL;
 using System.Collections.Generic;
+using System.Transactions;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly IdentityDbContext _identityContext;
-        private readonly ContentDbContext _contentDbContext;
+        private readonly IdentityDbConnection _identityContext;
+        private readonly ContentDbConnection _contentDbContext;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(IdentityDbContext identityContext, ContentDbContext contentDbContext,
+        public UserPhotoBusiness(IdentityDbConnection identityContext, ContentDbConnection contentDbContext,
             ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
@@ -86,38 +87,34 @@ namespace Coco.Business.Implementation.UserBusiness
                 .Get(x => x.UserId == userId && x.TypeId == userPhotoType)
                 .FirstOrDefault();
 
-            using (var transaction = _contentDbContext.Database.BeginTransaction())
+            model.UserPhotoCode = Guid.NewGuid().ToString();
+            if (userPhoto == null)
             {
-                model.UserPhotoCode = Guid.NewGuid().ToString();
-                if (userPhoto == null)
+                userPhoto = new UserPhoto()
                 {
-                    userPhoto = new UserPhoto()
-                    {
-                        CreatedById = userId,
-                        CreatedDate = DateTime.UtcNow,
-                        ImageData = newImage,
-                        TypeId = (byte)model.UserPhotoType,
-                        UserId = userId,
-                        Name = model.FileName,
-                        Code = model.UserPhotoCode,
-                    };
+                    CreatedById = userId,
+                    CreatedDate = DateTime.UtcNow,
+                    ImageData = newImage,
+                    TypeId = (byte)model.UserPhotoType,
+                    UserId = userId,
+                    Name = model.FileName,
+                    Code = model.UserPhotoCode,
+                };
 
-                    _userPhotoRepository.Add(userPhoto);
-                }
-                else
-                {
-                    userPhoto.ImageData = newImage;
-                    userPhoto.Name = model.FileName;
-                    userPhoto.Code = model.UserPhotoCode;
-                    _userPhotoRepository.Update(userPhoto);
-                }
-
-                await _contentDbContext.SaveChangesAsync();
-                transaction.Commit();
-
-                model.PhotoUrl = userPhoto.Code;
-                return model;
+                _userPhotoRepository.Add(userPhoto);
             }
+            else
+            {
+                userPhoto.ImageData = newImage;
+                userPhoto.Name = model.FileName;
+                userPhoto.Code = model.UserPhotoCode;
+                _userPhotoRepository.Update(userPhoto);
+            }
+
+            //await _contentDbContext.SaveChangesAsync();
+
+            model.PhotoUrl = userPhoto.Code;
+            return model;
         }
 
         public async Task DeleteUserPhotoAsync(long userId, UserPhotoTypeEnum userPhotoType)
@@ -130,7 +127,7 @@ namespace Coco.Business.Implementation.UserBusiness
             var type = (byte)userPhotoType;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefault();
 
             if (userPhoto == null)
@@ -139,7 +136,7 @@ namespace Coco.Business.Implementation.UserBusiness
             }
 
             _userPhotoRepository.Delete(userPhoto);
-            await _contentDbContext.SaveChangesAsync();
+            //await _contentDbContext.SaveChangesAsync();
         }
 
         public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
@@ -183,7 +180,7 @@ namespace Coco.Business.Implementation.UserBusiness
         public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType)).AsNoTracking();
+            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));//.AsNoTracking();
             if (userPhotos == null || !userPhotos.Any())
             {
                 return null;

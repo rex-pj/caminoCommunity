@@ -1,43 +1,45 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Coco.Entities.Domain;
+using LinqToDB;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Coco.Contract
 {
-    public abstract class CocoRepository<TEntity> : IRepository<TEntity> where TEntity : class
+    public abstract class CocoRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         #region Fields
 
-        private readonly DbContext _dbContext;
+        private readonly DbProvider _dbProvider;
 
-        private DbSet<TEntity> _dbSet;
+        private ITable<TEntity> _entities;
 
         /// <summary>
         /// Gets an entity set
         /// </summary>
-        protected virtual DbSet<TEntity> DbSet
+        protected virtual ITable<TEntity> Entities
         {
             get
             {
-                if (_dbSet == null)
+                if (_entities == null)
                 {
-                    _dbSet = _dbContext.Set<TEntity>();
+                    _entities = _dbProvider.GetTable<TEntity>();
                 }
 
-                return _dbSet;
+                return _entities;
             }
         }
         #endregion
 
         #region Ctor
 
-        protected CocoRepository(DbContext context)
+        protected CocoRepository(DbProvider dbProvider)
         {
-            _dbContext = context;
+            _dbProvider = dbProvider;
         }
         #endregion
 
@@ -48,7 +50,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public IQueryable<TEntity> Get()
         {
-            return DbSet;
+            return Entities;
         }
 
         /// <summary>
@@ -58,7 +60,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter)
         {
-            return DbSet.Where(filter);
+            return Entities.Where(filter);
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync()
         {
-            return await DbSet.ToListAsync();
+            return await Entities.ToListAsync();
         }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await DbSet.Where(filter).ToListAsync();
+            return await Entities.Where(filter).ToListAsync();
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public TEntity FirstOrDefault()
         {
-            return DbSet.FirstOrDefault();
+            return Entities.FirstOrDefault();
         }
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
         {
-            return DbSet.FirstOrDefault(filter);
+            return Entities.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync()
         {
-            return await DbSet.FirstOrDefaultAsync();
+            return await Entities.FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await DbSet.FirstOrDefaultAsync(filter);
+            return await Entities.FirstOrDefaultAsync(filter);
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace Coco.Contract
         /// <returns>Entity</returns>
         public virtual TEntity Find(object id)
         {
-            return DbSet.Find(id);
+            return Entities.FirstOrDefault(x => x.Id == id);
         }
 
         /// <summary>
@@ -137,7 +139,7 @@ namespace Coco.Contract
         /// <returns>Entity</returns>
         public virtual async Task<TEntity> FindAsync(object id)
         {
-            return await DbSet.FindAsync(id);
+            return await Entities.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Add(entity);
+            _dbProvider.Insert(entity);
         }
 
         /// <summary>
@@ -165,21 +167,11 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.AddRange(entities);
-        }
-
-        /// <summary>
-        /// Attach entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual void Attach(TEntity entity)
-        {
-            if (entity == null)
+            using (var transaction = new TransactionScope())
             {
-                throw new ArgumentNullException(nameof(entity));
+                _dbProvider.InsertRange(entities);
+                transaction.Complete();
             }
-
-            DbSet.Attach(entity);
         }
 
         /// <summary>
@@ -193,7 +185,7 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Update(entity);
+            _dbProvider.Update(entity);
         }
 
         /// <summary>
@@ -207,7 +199,10 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.UpdateRange(entities);
+            foreach (var entity in entities)
+            {
+                Update(entity);
+            }
         }
 
         /// <summary>
@@ -221,7 +216,7 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Remove(entity);
+            _dbProvider.Delete(entity);
         }
 
         /// <summary>
@@ -251,7 +246,21 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.RemoveRange(entities);
+            _dbProvider.DeleteRange(entities);
+        }
+
+        /// <summary>
+        /// Delete entity async
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public async Task DeleteAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            await _dbProvider.DeleteAsync(entity);
         }
         #endregion
     }
