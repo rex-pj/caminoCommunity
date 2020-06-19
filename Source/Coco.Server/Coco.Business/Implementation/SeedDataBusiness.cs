@@ -6,14 +6,15 @@ namespace Coco.Business.Implementation
 {
     public class SeedDataBusiness : ISeedDataBusiness
     {
-        private readonly IdentityDbConnection _identityDbContext;
-        public SeedDataBusiness(IdentityDbConnection identityDbContext)
-        {
-            _identityDbContext = identityDbContext;
-        }
+        //private readonly IdentityDbConnection _identityDbContext;
+        //public SeedDataBusiness(IdentityDbConnection identityDbContext)
+        //{
+        //    _identityDbContext = identityDbContext;
+        //}
 
         public bool CanSeed()
         {
+            return false;
             throw new NotImplementedException();
             //return !_identityDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
         }

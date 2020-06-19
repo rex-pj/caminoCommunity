@@ -5,7 +5,7 @@ namespace Coco.IdentityDAL
 {
     public class IdentityDbConnection : CocoDbConnection
     {
-        public IdentityDbConnection(LinqToDbConnectionOptions options) : base(options)
+        public IdentityDbConnection(LinqToDbConnectionOptions<IdentityDbConnection> options) : base(options)
         {
         }
     }

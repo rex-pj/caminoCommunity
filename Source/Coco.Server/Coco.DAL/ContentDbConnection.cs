@@ -5,7 +5,7 @@ namespace Coco.DAL
 {
     public class ContentDbConnection : CocoDbConnection
     {
-        public ContentDbConnection(LinqToDbConnectionOptions options) : base(options)
+        public ContentDbConnection(LinqToDbConnectionOptions<ContentDbConnection> options) : base(options)
         {
         }
     }

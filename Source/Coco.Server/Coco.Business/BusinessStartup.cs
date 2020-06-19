@@ -32,6 +32,8 @@ namespace Coco.Business
                 .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
                 .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>();
 
+            
+
             services.AddTransient<IRepository<User>, IdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, IdentityRepository<UserInfo>>()
                 .AddTransient<IRepository<Country>, IdentityRepository<Country>>()
@@ -53,6 +55,10 @@ namespace Coco.Business
 
             services.ConfigureContentDataAccess("CocoEntities");
             services.ConfigureIdentityDataAccess("IdentityEntities");
+            services.AddScoped<ContentDataProvider>();
+            services.AddScoped<IdentityDataProvider>();
+
+            services.AddTransient<ISeedDataBusiness, SeedDataBusiness>();
         }
     }
 }
