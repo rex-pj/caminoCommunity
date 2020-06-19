@@ -1,22 +1,23 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserClaimMap : IEntityTypeConfiguration<UserClaim>
+    public class UserClaimMap : EntityTypeBuilder<UserClaim>
     {
-        public void Configure(EntityTypeBuilder<UserClaim> builder)
+        public UserClaimMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserClaim), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder
-               .HasOne(c => c.User)
-               .WithMany(x => x.UserClaims)
-               .HasForeignKey(c => c.UserId);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserClaim>().HasTableName(nameof(UserClaim))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.User, (userClaim, user) => userClaim.UserId == user.Id);
         }
     }
 }

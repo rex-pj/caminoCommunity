@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Coco.DAL.Contracts;
+using Coco.DAL.Implementations;
+using LinqToDB.AspNet;
+using LinqToDB.AspNet.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +14,11 @@ namespace Coco.DAL
             var configuration = services.BuildServiceProvider()
                 .GetRequiredService<IConfiguration>();
 
-            var connectionString = configuration.GetConnectionString(connectionName);
-            services.AddDbContext<ContentDbContext>(x => x.UseSqlServer(connectionString));
+            services.AddLinqToDbContext<ContentDbConnection>((provider, options) => {
+                options.UseSqlServer(configuration.GetConnectionString(connectionName))
+                .UseDefaultLogging(provider);
+            })
+            .AddScoped<IContentDataProvider, ContentDataProvider>();
         }
     }
 }

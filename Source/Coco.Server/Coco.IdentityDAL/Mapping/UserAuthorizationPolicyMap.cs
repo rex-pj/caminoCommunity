@@ -1,32 +1,30 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserAuthorizationPolicyMap : IEntityTypeConfiguration<UserAuthorizationPolicy>
+    public class UserAuthorizationPolicyMap : EntityTypeBuilder<UserAuthorizationPolicy>
     {
-        public void Configure(EntityTypeBuilder<UserAuthorizationPolicy> builder)
+        public UserAuthorizationPolicyMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserAuthorizationPolicy), TableSchemaConst.DBO);
-            builder.HasKey(x => new
-            {
-                x.UserId,
-                x.AuthorizationPolicyId
-            });
+        }
 
-            builder
-               .HasOne(c => c.User)
-               .WithMany(x => x.UserAuthorizationPolicies)
-               .HasForeignKey(c => c.UserId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-            builder
-               .HasOne(c => c.GrantedBy)
-               .WithMany(x => x.GrantedUserAuthorizationPolicies)
-               .HasForeignKey(c => c.GrantedById)
-               .OnDelete(DeleteBehavior.NoAction);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserAuthorizationPolicy>().HasTableName(nameof(UserAuthorizationPolicy))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasPrimaryKey(x => new
+                {
+                    x.UserId,
+                    x.AuthorizationPolicyId
+                })
+                .Association(c => c.User, (userAuthorizationPolicy, user) => userAuthorizationPolicy.UserId == user.Id)
+                .Association(c => c.GrantedBy, 
+                    (userAuthorizationPolicy, grantedBy) => userAuthorizationPolicy.GrantedById == grantedBy.Id)
+                .Association(c => c.AuthorizationPolicy,
+                    (userAuthorizationPolicy, authorizationPolicy) => userAuthorizationPolicy.AuthorizationPolicyId == authorizationPolicy.Id);
         }
     }
 }

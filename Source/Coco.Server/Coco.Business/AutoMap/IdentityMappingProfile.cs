@@ -9,23 +9,9 @@ namespace Coco.Business.AutoMap
     {
         public IdentityMappingProfile()
         {
-            CreateMap<UserDto, UserInfo>()
-                .ForMember(t => t.User, opt => opt.MapFrom(s => new User()
-                {
-                    DisplayName = s.DisplayName,
-                    Firstname = s.Firstname,
-                    Lastname = s.Lastname,
-                    UserName = s.UserName,
-                    UpdatedDate = s.CreatedDate,
-                    CreatedDate = s.UpdatedDate,
-                    UpdatedById = s.UpdatedById,
-                    CreatedById = s.CreatedById,
-                    Email = s.Email,
-                    PasswordHash = s.PasswordHash,
-                    IsActived = s.IsActived,
-                    StatusId = s.StatusId,
-                    SecurityStamp = s.SecurityStamp
-                }));
+            CreateMap<UserDto, UserInfo>();
+
+            CreateMap<UserDto, User>();
 
             CreateMap<User, UserDto>()
                 .ForMember(t => t.GenderId, opt => opt.MapFrom(s => s.UserInfo.GenderId))

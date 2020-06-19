@@ -1,32 +1,29 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class RoleAuthorizationPolicyMap : IEntityTypeConfiguration<RoleAuthorizationPolicy>
+    public class RoleAuthorizationPolicyMap : EntityTypeBuilder<RoleAuthorizationPolicy>
     {
-        public void Configure(EntityTypeBuilder<RoleAuthorizationPolicy> builder)
+        public RoleAuthorizationPolicyMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(RoleAuthorizationPolicy), TableSchemaConst.DBO);
-            builder.HasKey(x => new
-            {
-                x.RoleId,
-                x.AuthorizationPolicyId
-            });
+        }
 
-            builder
-                .HasOne(c => c.GrantedBy)
-                .WithMany(x => x.GrantedRoleAuthorizationPolicies)
-                .HasForeignKey(c => c.GrantedById)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder
-              .HasOne(c => c.Role)
-              .WithMany(x => x.RoleAuthorizationPolicies)
-              .HasForeignKey(c => c.RoleId)
-              .OnDelete(DeleteBehavior.NoAction);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<RoleAuthorizationPolicy>().HasTableName(nameof(RoleAuthorizationPolicy))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasPrimaryKey(x => new
+                {
+                    x.RoleId,
+                    x.AuthorizationPolicyId
+                })
+                .Association(c => c.GrantedBy, (roleAuthorizationPolicy, grantedBy) => roleAuthorizationPolicy.GrantedById == grantedBy.Id)
+                .Association(c => c.AuthorizationPolicy, 
+                    (roleAuthorizationPolicy, authorizationPolicy) => roleAuthorizationPolicy.AuthorizationPolicyId == authorizationPolicy.Id)
+                .Association(c => c.Role, (roleAuthorizationPolicy, role) => roleAuthorizationPolicy.RoleId == role.Id);
         }
     }
 }

@@ -1,23 +1,24 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class CountryMap : IEntityTypeConfiguration<Country>
+    public class CountryMap : EntityTypeBuilder<Country>
     {
-        public void Configure(EntityTypeBuilder<Country> builder)
+        public CountryMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(Country), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder
-               .HasMany(c => c.UserInfos)
-               .WithOne(x => x.Country)
-               .HasForeignKey(c => c.CountryId)
-               .OnDelete(DeleteBehavior.NoAction);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<Country>()
+                .HasTableName(nameof(Country))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.UserInfos, (country, userInfos) => country.Id == userInfos.CountryId);
         }
     }
 }

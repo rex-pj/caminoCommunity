@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqToDB;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Coco.Contract
 {
@@ -12,32 +13,32 @@ namespace Coco.Contract
     {
         #region Fields
 
-        private readonly DbContext _dbContext;
+        private readonly ICocoDataProvider _dbProvider;
 
-        private DbSet<TEntity> _dbSet;
+        private ITable<TEntity> _entities;
 
         /// <summary>
         /// Gets an entity set
         /// </summary>
-        protected virtual DbSet<TEntity> DbSet
+        protected virtual ITable<TEntity> Entities
         {
             get
             {
-                if (_dbSet == null)
+                if (_entities == null)
                 {
-                    _dbSet = _dbContext.Set<TEntity>();
+                    _entities = _dbProvider.GetTable<TEntity>();
                 }
 
-                return _dbSet;
+                return _entities;
             }
         }
         #endregion
 
         #region Ctor
 
-        protected CocoRepository(DbContext context)
+        protected CocoRepository(ICocoDataProvider dbProvider)
         {
-            _dbContext = context;
+            _dbProvider = dbProvider;
         }
         #endregion
 
@@ -48,7 +49,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public IQueryable<TEntity> Get()
         {
-            return DbSet;
+            return Entities;
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter)
         {
-            return DbSet.Where(filter);
+            return Entities.Where(filter);
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync()
         {
-            return await DbSet.ToListAsync();
+            return await Entities.ToListAsync();
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await DbSet.Where(filter).ToListAsync();
+            return await Entities.Where(filter).ToListAsync();
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public TEntity FirstOrDefault()
         {
-            return DbSet.FirstOrDefault();
+            return Entities.FirstOrDefault();
         }
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
         {
-            return DbSet.FirstOrDefault(filter);
+            return Entities.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync()
         {
-            return await DbSet.FirstOrDefaultAsync();
+            return await Entities.FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -117,41 +118,21 @@ namespace Coco.Contract
         /// <returns></returns>
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
         {
-            return await DbSet.FirstOrDefaultAsync(filter);
-        }
-
-        /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
-        public virtual TEntity Find(object id)
-        {
-            return DbSet.Find(id);
-        }
-
-        /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
-        public virtual async Task<TEntity> FindAsync(object id)
-        {
-            return await DbSet.FindAsync(id);
+            return await Entities.FirstOrDefaultAsync(filter);
         }
 
         /// <summary>
         /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual void Add(TEntity entity)
+        public virtual object Add(TEntity entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Add(entity);
+            return _dbProvider.Insert(entity);
         }
 
         /// <summary>
@@ -165,21 +146,53 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.AddRange(entities);
+            using (var transaction = new TransactionScope())
+            {
+                _dbProvider.InsertRange(entities);
+                transaction.Complete();
+            }
         }
 
         /// <summary>
-        /// Attach entity
+        /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual void Attach(TEntity entity)
+        public virtual async Task<object> AddAsync(TEntity entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Attach(entity);
+            return await _dbProvider.InsertAsync(entity);
+        }
+
+        /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual long AddWithInt64Entity(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return _dbProvider.InsertWithInt64Identity(entity);
+        }
+
+        /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task<long> AddWithInt64EntityAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return await _dbProvider.InsertWithInt64IdentityAsync(entity);
         }
 
         /// <summary>
@@ -193,7 +206,7 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Update(entity);
+            _dbProvider.Update(entity);
         }
 
         /// <summary>
@@ -207,7 +220,24 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.UpdateRange(entities);
+            foreach (var entity in entities)
+            {
+                Update(entity);
+            }
+        }
+
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            await _dbProvider.UpdateAsync(entity);
         }
 
         /// <summary>
@@ -221,37 +251,49 @@ namespace Coco.Contract
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            DbSet.Remove(entity);
-        }
-
-        /// <summary>
-        /// Delete by id
-        /// </summary>
-        /// <param name="id">Entity Id</param>
-        public virtual void Delete(int id)
-        {
-            if (id <= 0)
-            {
-                throw new MissingPrimaryKeyException(nameof(id));
-            }
-
-            TEntity entity = Find(id);
-
-            Delete(entity);
+            _dbProvider.Delete(entity);
         }
 
         /// <summary>
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual void Delete(IEnumerable<TEntity> entities)
+        public virtual void Delete(IQueryable<TEntity> entities)
         {
             if (entities == null)
             {
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            DbSet.RemoveRange(entities);
+            _dbProvider.DeleteRange(entities);
+        }
+
+        /// <summary>
+        /// Delete entity async
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public async Task DeleteAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            await _dbProvider.DeleteAsync(entity);
+        }
+
+        /// <summary>
+        /// Delete entities
+        /// </summary>
+        /// <param name="entities">Entities</param>
+        public virtual async Task DeleteAsync(IQueryable<TEntity> entities)
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+
+            await _dbProvider.DeleteRangeAsync(entities);
         }
         #endregion
     }

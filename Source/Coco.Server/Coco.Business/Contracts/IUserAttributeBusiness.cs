@@ -9,7 +9,7 @@ namespace Coco.Business.Contracts
     public interface IUserAttributeBusiness
     {
         Task<UserAttribute> CreateOrUpdateAsync(long userId, string key, string value, DateTime? expiration = null);
-        Task<IEnumerable<UserAttribute>> CreateAsync(IEnumerable<UserAttributeDto> userAttributes);
+        IEnumerable<UserAttribute> Create(IEnumerable<UserAttributeDto> userAttributes);
         Task<UserAttribute> GetAsync(long userId, string key);
         IEnumerable<UserAttribute> Get(long userId);
         Task<IEnumerable<UserAttribute>> GetAsync(long userId);

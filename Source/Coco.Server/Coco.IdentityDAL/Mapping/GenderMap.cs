@@ -1,23 +1,25 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class GenderMap : IEntityTypeConfiguration<Gender>
+    public class GenderMap : EntityTypeBuilder<Gender>
     {
-        public void Configure(EntityTypeBuilder<Gender> builder)
+        public GenderMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(Gender), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
+        }
 
+        public override void Configure(FluentMappingBuilder builder)
+        {
             builder
-               .HasMany(c => c.UserInfos)
-               .WithOne(x => x.Gender)
-               .HasForeignKey(c => c.GenderId)
-               .OnDelete(DeleteBehavior.NoAction);
+                .Entity<Gender>()
+                .HasTableName(nameof(Gender))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(x => x.UserInfos, (gender, userInfo) => gender.Id == userInfo.GenderId);
         }
     }
 }

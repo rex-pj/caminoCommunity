@@ -5,37 +5,44 @@ using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.General;
-using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Coco.Entities.Enums;
 using System.Collections.Generic;
+using LinqToDB;
+using Coco.IdentityDAL.Contracts;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public partial class UserBusiness : IUserBusiness
     {
         #region Fields/Properties
-        private readonly IDbContext _identityContext;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
+        private readonly IIdentityDataProvider _identityDbProvider;
         #endregion
 
         #region Ctor
-        public UserBusiness(IdentityDbContext identityContext, IRepository<User> userRepository,
+        public UserBusiness(IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IMapper mapper,
-            IRepository<UserInfo> userInfoRepository)
+            IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
+            IRepository<UserInfo> userInfoRepository,
+            IRepository<UserRole> userRoleRepository,
+            IIdentityDataProvider identityDbProvider)
         {
-            _identityContext = identityContext;
+            _identityDbProvider = identityDbProvider;
             _mapper = mapper;
+            _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
+            _userRoleRepository = userRoleRepository;
             _validationStrategyContext = validationStrategyContext;
         }
         #endregion
@@ -43,16 +50,15 @@ namespace Coco.Business.Implementation.UserBusiness
         #region CRUD
         public async Task DeleteAsync(long id)
         {
-            var user = _userRepository.Find(id);
+            var user = _userRepository.FirstOrDefault(x => x.Id == id);
             user.IsActived = false;
 
-            _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            await _userRepository.UpdateAsync(user);
         }
 
         public async Task<bool> ActiveAsync(long id)
         {
-            var user = _userRepository.Find(id);
+            var user = _userRepository.FirstOrDefault(x => x.Id == id);
             if (user.IsActived)
             {
                 throw new InvalidOperationException($"User with email: {user.Email} is already actived");
@@ -61,8 +67,7 @@ namespace Coco.Business.Implementation.UserBusiness
             user.IsActived = true;
             user.IsEmailConfirmed = true;
             user.StatusId = (byte)UserStatusEnum.Actived;
-            _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            await _userRepository.UpdateAsync(user);
 
             return true;
         }
@@ -79,7 +84,8 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(nameof(model.Key));
             }
 
-            var userInfo = _userInfoRepository.Find(model.Key);
+            var key = (long)model.Key;
+            var userInfo = _userInfoRepository.FirstOrDefault(x => x.Id == key);
 
             if (userInfo == null)
             {
@@ -100,8 +106,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 userInfo.User.UpdatedById = userInfo.Id;
             }
 
-            _identityContext.UpdateByName(userInfo, model.Value, model.PropertyName, true);
-            await _identityContext.SaveChangesAsync();
+            await _identityDbProvider.UpdateByNameAsync(userInfo, model.Value, model.PropertyName, true);
 
             return model;
         }
@@ -118,7 +123,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 }
             }
 
-            var user = await _userRepository.FindAsync(model.Id);
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             user.UpdatedById = model.Id;
             user.UpdatedDate = DateTime.UtcNow;
@@ -127,14 +132,13 @@ namespace Coco.Business.Implementation.UserBusiness
             user.DisplayName = model.DisplayName;
 
             _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
 
             return model;
         }
 
         public async Task<UserDto> UpdateAsync(UserDto user)
         {
-            var exist = await _userRepository.FindAsync(user.Id);
+            var exist = await _userRepository.FirstOrDefaultAsync(x => x.Id == user.Id);
 
             exist.UpdatedById = user.Id;
             exist.UpdatedDate = DateTime.UtcNow;
@@ -145,7 +149,7 @@ namespace Coco.Business.Implementation.UserBusiness
             exist.PasswordHash = user.PasswordHash;
 
             _userRepository.Update(exist);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.SaveChangesAsync();
 
             return user;
         }

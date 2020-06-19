@@ -8,7 +8,7 @@ namespace Coco.Business.Contracts
 {
     public interface IUserBusiness
     {
-        Task<UserDto> CreateAsync(UserDto user);
+        Task<UserDto> CreateAsync(UserDto userDto);
         UserDto GetLoggedIn(long id);
         Task<UserDto> FindByEmailAsync(string email);
         Task<UserDto> FindByUsernameAsync(string username);

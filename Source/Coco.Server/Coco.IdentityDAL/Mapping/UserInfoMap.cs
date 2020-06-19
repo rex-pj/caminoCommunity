@@ -1,16 +1,25 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserInfoMap : IEntityTypeConfiguration<UserInfo>
+    public class UserInfoMap : EntityTypeBuilder<UserInfo>
     {
-        public void Configure(EntityTypeBuilder<UserInfo> builder)
+        public UserInfoMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserInfo), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
+        }
+
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserInfo>()
+                .HasTableName(nameof(UserInfo))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasPrimaryKey(x => x.Id)
+                .Association(e => e.User, (userInfo, user) => userInfo.Id == user.Id)
+                .Association(e => e.Gender, (user, gender) => user.GenderId == gender.Id)
+                .Association(e => e.Country, (user, country) => user.CountryId == country.Id);
         }
     }
 }

@@ -1,21 +1,27 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Content;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.DAL.Mapping
 {
-    public class ArticleCategoryMap : IEntityTypeConfiguration<ArticleCategory>
+    public class ArticleCategoryMap : EntityTypeBuilder<ArticleCategory>
     {
-        public void Configure(EntityTypeBuilder<ArticleCategory> builder)
+        public ArticleCategoryMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(ArticleCategory), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder.HasOne(x => x.ParentCategory)
-                .WithMany(x => x.ChildCategories)
-                .HasForeignKey(x => x.ParentCategoryId);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<ArticleCategory>()
+                .HasTableName(nameof(ArticleCategory))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(x => x.ParentCategory, 
+                    (articleCategory, parentCategory) => articleCategory.ParentCategoryId == parentCategory.Id)
+                .Association(x => x.ChildCategories, 
+                    (articleCategory, childCategories) => articleCategory.Id == childCategories.ParentCategoryId);
         }
     }
 }

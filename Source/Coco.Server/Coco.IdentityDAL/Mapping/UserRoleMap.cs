@@ -1,32 +1,26 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserRoleMap : IEntityTypeConfiguration<UserRole>
+    public class UserRoleMap : EntityTypeBuilder<UserRole>
     {
-        public void Configure(EntityTypeBuilder<UserRole> builder)
+        public UserRoleMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserRole), TableSchemaConst.DBO);
-            builder.HasKey(x => new
-            {
-                x.UserId,
-                x.RoleId
-            });
+        }
 
-            builder
-                .HasOne(c => c.User)
-                .WithMany(x => x.UserRoles)
-                .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder
-                .HasOne(c => c.GrantedBy)
-                .WithMany(x => x.GrantedUserRoles)
-                .HasForeignKey(c => c.GrantedById)
-                .OnDelete(DeleteBehavior.NoAction);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserRole>().HasTableName(nameof(UserRole))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasPrimaryKey(x => new {
+                    x.UserId,
+                    x.RoleId
+                })
+                .Association(c => c.User, (userRole, user) => userRole.UserId == user.Id)
+                .Association(c => c.GrantedBy, (userRole, grantedBy) => userRole.GrantedById == grantedBy.Id);
         }
     }
 }

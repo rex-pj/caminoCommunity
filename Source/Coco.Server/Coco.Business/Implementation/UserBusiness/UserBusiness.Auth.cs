@@ -4,7 +4,7 @@ using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
-using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,25 +14,45 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public async Task<UserDto> CreateAsync(UserDto user)
+        public async Task<UserDto> CreateAsync(UserDto userDto)
         {
-            if (user == null)
+            if (userDto == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                throw new ArgumentNullException(nameof(userDto));
             }
 
-            user.StatusId = 1;
-            user.IsActived = false;
-            user.CreatedDate = DateTime.UtcNow;
-            user.UpdatedDate = DateTime.UtcNow;
+            userDto.StatusId = 1;
+            userDto.IsActived = false;
+            userDto.CreatedDate = DateTime.UtcNow;
+            userDto.UpdatedDate = DateTime.UtcNow;
 
-            var userInfo = _mapper.Map<UserInfo>(user);
+            var user = _mapper.Map<User>(userDto);
+            var userInfo = _mapper.Map<UserInfo>(userDto);
 
-            _userInfoRepository.Add(userInfo);
-            await _identityContext.SaveChangesAsync();
-            user.Id = userInfo.Id;
+            using (var transaction = _identityDbProvider.BeginTransaction())
+            {
+                try
+                {
+                    var userId = await _userRepository.AddWithInt64EntityAsync(user);
+                    if (userId > 0)
+                    {
+                        userInfo.Id = userId;
+                        await _userInfoRepository.AddWithInt64EntityAsync(userInfo);
+                        transaction.Commit();
+                        userDto.Id = userId;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                }
+            }
 
-            return user;
+            return userDto;
         }
 
         public async Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model)
@@ -50,11 +70,12 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(_validationStrategyContext.Errors.FirstOrDefault().Message);
             }
 
-            var user = await _userRepository.FindAsync(model.UserId);
-
-            user.PasswordHash = model.NewPassword;
-            _userRepository.Update(user);
-            await _identityContext.SaveChangesAsync();
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.UserId);
+            if (user != null)
+            {
+                user.PasswordHash = model.NewPassword;
+                await _userRepository.UpdateAsync(user);
+            }
 
             return new UserDto()
             {
@@ -62,36 +83,43 @@ namespace Coco.Business.Implementation.UserBusiness
             };
         }
 
-        public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto user)
+        public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto userDto)
         {
-            var userRoleAuthorizationPolicy = _userRepository.Get(x => x.Id == user.Id)
-                .Include(x => x.UserAuthorizationPolicies)
-                .Select(x => new UserRoleAuthorizationPoliciesDto()
-                {
-                    UserId = x.Id,
-                    Firstname = x.Firstname,
-                    Lastname = x.Lastname,
-                    AuthorizationPolicies = x.UserAuthorizationPolicies.Select(a => new AuthorizationPolicyDto()
-                    {
-                        Id = a.AuthorizationPolicyId,
-                        Name = a.AuthorizationPolicy.Name,
-                        Description = a.AuthorizationPolicy.Description
-                    }),
-                    Roles = x.UserRoles.Select(r => new RoleAuthorizationPoliciesDto()
-                    {
-                        Id = r.RoleId,
-                        Name = r.Role.Name,
-                        AuthorizationPolicies = r.Role.RoleAuthorizationPolicies.Select(ra => new AuthorizationPolicyDto()
-                        {
-                            Id = ra.AuthorizationPolicyId,
-                            Name = ra.AuthorizationPolicy.Name,
-                            Description = ra.AuthorizationPolicy.Description
-                        })
-                    })
-                })
-                .FirstOrDefault();
+            var userRoleAuthorizationPolicy =
+                (from user in _userRepository.Get(x => x.Id == userDto.Id)
+                 join userAuthorizationPolicy in _userAuthorizationPolicyRepository.Get(x => x.UserId == userDto.Id)
+                 on user.Id equals userAuthorizationPolicy.UserId into userAuthorizationPolicies
+                 from uap in userAuthorizationPolicies.DefaultIfEmpty()
+                 //join userRole in _userRoleRepository.Get(x => x.UserId == userDto.Id)
+                 //on user.Id equals userRole.UserId into userRoles
+                 //from ur in userRoles.DefaultIfEmpty()
+                 select new UserRoleAuthorizationPoliciesDto()
+                 {
+                     UserId = user.Id,
+                     Firstname = user.Firstname,
+                     Lastname = user.Lastname,
+                     AuthorizationPolicies = userAuthorizationPolicies.Select(a => new AuthorizationPolicyDto()
+                     {
+                         Id = a.AuthorizationPolicyId,
+                         Name = a.AuthorizationPolicy.Name,
+                         Description = a.AuthorizationPolicy.Description
+                     }),
+                     //Roles = userRoles.Select(r => new RoleAuthorizationPoliciesDto()
+                     //{
+                     //    Id = r.RoleId,
+                     //    Name = r.Role.Name,
+                     //    AuthorizationPolicies = r.Role.RoleAuthorizationPolicies.Select(ra => new AuthorizationPolicyDto()
+                     //    {
+                     //        Id = ra.AuthorizationPolicyId,
+                     //        Name = ra.AuthorizationPolicy.Name,
+                     //        Description = ra.AuthorizationPolicy.Description
+                     //    })
+                     //})
+                 });
 
-            return userRoleAuthorizationPolicy;
+            var result = userRoleAuthorizationPolicy.FirstOrDefault();
+
+            return result;
         }
         #endregion
 

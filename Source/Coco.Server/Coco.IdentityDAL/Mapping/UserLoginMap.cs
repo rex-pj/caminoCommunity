@@ -1,33 +1,37 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserLoginMap : IEntityTypeConfiguration<UserLogin>
+    public class UserLoginMap : EntityTypeBuilder<UserLogin>
     {
-        public void Configure(EntityTypeBuilder<UserLogin> builder)
+        public UserLoginMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserLogin), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder.Property(x => x.ProviderDisplayName)
-                .IsRequired()
-                .HasMaxLength(255);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserLogin>().HasTableName(nameof(UserLogin))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.User, (userLogin, user) => userLogin.UserId == user.Id);
 
-            builder.Property(x => x.LoginProvider)
-                .IsRequired()
-                .HasMaxLength(255);
+            builder.Entity<UserLogin>()
+                .Property(x => x.ProviderDisplayName)
+                .IsNullable(false)
+                .HasLength(255);
 
-            builder.Property(x => x.ProviderKey)
-                .IsRequired();
+            builder.Entity<UserLogin>()
+                .Property(x => x.LoginProvider)
+                .IsNullable(false)
+                .HasLength(255);
 
-            builder
-               .HasOne(c => c.User)
-               .WithMany(x => x.UserLogins)
-               .HasForeignKey(c => c.UserId);
+            builder.Entity<UserLogin>()
+                .Property(x => x.ProviderKey)
+                .IsNullable(false);
         }
     }
 }

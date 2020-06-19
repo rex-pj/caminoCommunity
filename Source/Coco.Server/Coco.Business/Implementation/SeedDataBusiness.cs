@@ -1,21 +1,22 @@
 ﻿using Coco.Business.Contracts;
 using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
+using System;
 
 namespace Coco.Business.Implementation
 {
     public class SeedDataBusiness : ISeedDataBusiness
     {
-        private readonly IdentityDbContext _identityDbContext;
-        public SeedDataBusiness(IdentityDbContext identityDbContext)
-        {
-            _identityDbContext = identityDbContext;
-        }
+        //private readonly IdentityDbConnection _identityDbContext;
+        //public SeedDataBusiness(IdentityDbConnection identityDbContext)
+        //{
+        //    _identityDbContext = identityDbContext;
+        //}
 
         public bool CanSeed()
         {
-            return !_identityDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
+            return false;
+            throw new NotImplementedException();
+            //return !_identityDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
         }
 
         public void SeedingData()
@@ -24,7 +25,9 @@ namespace Coco.Business.Implementation
             {
                 return;
             }
-            _identityDbContext.Database.EnsureCreated();
+
+            throw new NotImplementedException();
+            //_identityDbContext.Database.EnsureCreated();
         }
     }
 }

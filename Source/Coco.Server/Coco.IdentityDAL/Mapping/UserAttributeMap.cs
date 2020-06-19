@@ -1,17 +1,22 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserAttributeMap : IEntityTypeConfiguration<UserAttribute>
+    public class UserAttributeMap : EntityTypeBuilder<UserAttribute>
     {
-        public void Configure(EntityTypeBuilder<UserAttribute> builder)
+        public UserAttributeMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserAttribute), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
+
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserAttribute>().HasTableName(nameof(UserAttribute))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id);
         }
     }
 }

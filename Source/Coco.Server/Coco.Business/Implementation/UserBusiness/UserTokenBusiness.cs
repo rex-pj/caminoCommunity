@@ -15,14 +15,12 @@ namespace Coco.Business.Implementation.UserBusiness
     public class UserTokenBusiness : IUserTokenBusiness
     {
         private readonly IRepository<UserToken> _userTokenRepository;
-        private readonly IdentityDbContext _identityDbContext;
         private readonly IMapper _mapper;
 
-        public UserTokenBusiness(IRepository<UserToken> userTokenRepository, IdentityDbContext identityDbContext, IMapper mapper)
+        public UserTokenBusiness(IRepository<UserToken> userTokenRepository, IMapper mapper)
         {
             _mapper = mapper;
             _userTokenRepository = userTokenRepository;
-            _identityDbContext = identityDbContext;
         }
 
         public async Task<UserTokenDto> FindAsync(long userId, string loginProvider, string name)

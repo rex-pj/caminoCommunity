@@ -3,8 +3,6 @@ using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
-using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -15,15 +13,13 @@ namespace Coco.Business.Implementation
         private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
-        private readonly IdentityDbContext _identityDbContext;
 
         public UserAuthorizationPolicyBusiness(IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
-            IRepository<AuthorizationPolicy> authorizationPolicyRepository, IRepository<User> userRepository, IdentityDbContext identityDbContext)
+            IRepository<AuthorizationPolicy> authorizationPolicyRepository, IRepository<User> userRepository)
         {
             _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _userRepository = userRepository;
-            _identityDbContext = identityDbContext;
         }
 
         public bool Add(long userId, short authorizationPolicyId, long loggedUserId)
@@ -49,19 +45,18 @@ namespace Coco.Business.Implementation
                 AuthorizationPolicyId = authorizationPolicyId
             });
 
-            _identityDbContext.SaveChanges();
             return true;
         }
 
         public bool Delete(long userId, short authorizationPolicyId)
         {
-            var user = _userRepository.Find(userId);
+            var user = _userRepository.FirstOrDefault(x => x.Id == userId);
             if (user == null)
             {
                 return false;
             }
 
-            var authorizationPolicy = _authorizationPolicyRepository.Find(authorizationPolicyId);
+            var authorizationPolicy = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == authorizationPolicyId);
             if (authorizationPolicy == null)
             {
                 return false;
@@ -70,14 +65,14 @@ namespace Coco.Business.Implementation
             var exist = _userAuthorizationPolicyRepository.Get(x => x.UserId == userId && x.AuthorizationPolicyId == authorizationPolicyId);
 
             _userAuthorizationPolicyRepository.Delete(exist);
-            _identityDbContext.SaveChanges();
             return true;
         }
 
         public AuthorizationPolicyUsersDto GetAuthoricationPolicyUsers(short id)
         {
             var authorizationUsers = _authorizationPolicyRepository.Get(x => x.Id == id)
-                .Include(x => x.AuthorizationPolicyUsers)
+                // TODO: include check
+                //.Include(x => x.AuthorizationPolicyUsers)
                 .Select(x => new AuthorizationPolicyUsersDto
                 {
                     Id = x.Id,

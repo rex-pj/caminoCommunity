@@ -1,22 +1,23 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class StatusMap : IEntityTypeConfiguration<Status>
+    public class StatusMap : EntityTypeBuilder<Status>
     {
-        public void Configure(EntityTypeBuilder<Status> builder)
+        public StatusMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(Status), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder
-               .HasMany(c => c.Users)
-               .WithOne(x => x.Status)
-               .HasForeignKey(c => c.StatusId);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<Status>().HasTableName(nameof(Status))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.Users, (status, users) => status.Id == users.StatusId);
         }
     }
 }

@@ -1,22 +1,23 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class RoleClaimMap : IEntityTypeConfiguration<RoleClaim>
+    public class RoleClaimMap : EntityTypeBuilder<RoleClaim>
     {
-        public void Configure(EntityTypeBuilder<RoleClaim> builder)
+        public RoleClaimMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(RoleClaim), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder
-               .HasOne(c => c.Role)
-               .WithMany(x => x.RoleClaims)
-               .HasForeignKey(c => c.RoleId);
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<RoleClaim>().HasTableName(nameof(RoleClaim))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.Role, (roleClaim, role) => roleClaim.RoleId == role.Id);
         }
     }
 }

@@ -1,17 +1,24 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Content;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.DAL.Mapping
 {
-    public class UserPhotoMap : IEntityTypeConfiguration<UserPhoto>
+    public class UserPhotoMap : EntityTypeBuilder<UserPhoto>
     {
-        public void Configure(EntityTypeBuilder<UserPhoto> builder)
+        public UserPhotoMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(UserPhoto), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
+
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<UserPhoto>()
+                .HasTableName(nameof(UserPhoto))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(x => x.Type, (userPhoto, type) => userPhoto.TypeId == type.Id);
         }
     }
 }

@@ -5,7 +5,7 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
 using Coco.IdentityDAL;
-using Microsoft.EntityFrameworkCore;
+using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,14 +15,11 @@ namespace Coco.Business.Implementation.UserBusiness
     public class UserClaimBusiness : IUserClaimBusiness
     {
         private readonly IRepository<UserClaim> _userClaimRepository;
-        private readonly IdentityDbContext _identityDbContext;
         private readonly IMapper _mapper;
 
-        public UserClaimBusiness(IRepository<UserClaim> userClaimRepository, IdentityDbContext identityDbContext,
-            IMapper mapper)
+        public UserClaimBusiness(IRepository<UserClaim> userClaimRepository, IMapper mapper)
         {
             _userClaimRepository = userClaimRepository;
-            _identityDbContext = identityDbContext;
             _mapper = mapper;
         }
 

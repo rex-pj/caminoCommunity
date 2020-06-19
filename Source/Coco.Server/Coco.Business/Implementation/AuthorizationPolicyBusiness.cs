@@ -3,7 +3,6 @@ using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,26 +14,24 @@ namespace Coco.Business.Implementation
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        private readonly IdentityDbContext _identityDbContext;
-        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, IdentityDbContext identityDbContext, 
+        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, 
             IRepository<User> userRepository)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _mapper = mapper;
-            _identityDbContext = identityDbContext;
             _userRepository = userRepository;
         }
 
         public AuthorizationPolicyDto Find(short id)
         {
-            var exist = _authorizationPolicyRepository.Find(id);
+            var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == id);
             if (exist == null)
             {
                 return null;
             }
 
-            var createdByUser = _userRepository.Find(exist.CreatedById);
-            var updatedByUser = _userRepository.Find(exist.UpdatedById);
+            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
+            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
             var policy = _mapper.Map<AuthorizationPolicyDto>(exist);
             policy.CreatedByName = createdByUser.DisplayName;
@@ -95,19 +92,20 @@ namespace Coco.Business.Implementation
             newPolicy.CreatedDate = DateTime.UtcNow;
 
             _authorizationPolicyRepository.Add(newPolicy);
-            return _identityDbContext.SaveChanges();
+            return newPolicy.Id;
+            //return _identityDbContext.SaveChanges();
         }
 
         public AuthorizationPolicyDto Update(AuthorizationPolicyDto policy)
         {
-            var exist = _authorizationPolicyRepository.Find(policy.Id);
+            var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == policy.Id);
             exist.Description = policy.Description;
             exist.Name = policy.Name;
             exist.UpdatedById = policy.UpdatedById;
             exist.UpdatedDate = DateTime.UtcNow;
 
             _authorizationPolicyRepository.Update(exist);
-            _identityDbContext.SaveChanges();
+            //_identityDbContext.SaveChanges();
 
             policy.UpdatedDate = exist.UpdatedDate;
             return policy;

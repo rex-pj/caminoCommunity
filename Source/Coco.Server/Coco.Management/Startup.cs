@@ -23,14 +23,13 @@ namespace Coco.Management
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureManagementServices(_configuration);
-            services.AddScoped<ISeedDataBusiness, SeedDataBusiness>();
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISeedDataBusiness seedDataBusiness)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -43,6 +42,7 @@ namespace Coco.Management
 
             app.ConfigureManagementAppBuilder();
 
+            var seedDataBusiness = app.ApplicationServices.GetRequiredService<ISeedDataBusiness>();
             var installationProvider = app.ApplicationServices.GetRequiredService<IInstallProvider>();
             if (!installationProvider.IsDatabaseInstalled && installationProvider.IsInitialized && seedDataBusiness.CanSeed())
             {

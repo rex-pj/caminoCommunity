@@ -1,34 +1,25 @@
 ﻿using Coco.Common.Const;
+using Coco.Contract.MapBuilder;
 using Coco.Entities.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class RoleMap : IEntityTypeConfiguration<Role>
+    public class RoleMap : EntityTypeBuilder<Role>
     {
-        public void Configure(EntityTypeBuilder<Role> builder)
+        public RoleMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
         {
-            builder.ToTable(nameof(Role), TableSchemaConst.DBO);
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        }
 
-            builder
-               .HasMany(c => c.UserRoles)
-               .WithOne(x => x.Role)
-               .HasForeignKey(c => c.RoleId);
-
-            builder
-               .HasOne(c => c.CreatedBy)
-               .WithMany(x => x.CreatedRoles)
-               .HasForeignKey(c => c.CreatedById);
-
-            builder
-               .HasOne(c => c.UpdatedBy)
-               .WithMany(x => x.UpdatedRoles)
-               .HasForeignKey(c => c.UpdatedById)
-               .OnDelete(DeleteBehavior.NoAction);
-
+        public override void Configure(FluentMappingBuilder builder)
+        {
+            builder.Entity<Role>().HasTableName(nameof(Role))
+                .HasSchemaName(TableSchemaConst.DBO)
+                .HasIdentity(x => x.Id)
+                .HasPrimaryKey(x => x.Id)
+                .Association(c => c.UserRoles, (role, userRoles) => role.Id == userRoles.RoleId)
+                .Association(c => c.CreatedBy, (role, createdBy) => role.CreatedById == createdBy.Id)
+                .Association(c => c.UpdatedBy, (role, updatedBy) => role.UpdatedById == updatedBy.Id);
         }
     }
 }

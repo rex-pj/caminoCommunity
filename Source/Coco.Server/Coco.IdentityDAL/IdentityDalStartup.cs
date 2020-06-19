@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Coco.IdentityDAL.Contracts;
+using Coco.IdentityDAL.Implementations;
+using LinqToDB.AspNet;
+using LinqToDB.AspNet.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +14,11 @@ namespace Coco.IdentityDAL
             var configuration = services.BuildServiceProvider()
                 .GetRequiredService<IConfiguration>();
 
-            var connectionString = configuration.GetConnectionString(connectionName);
-            services.AddDbContext<IdentityDbContext>(x => x.UseSqlServer(connectionString));
+            services.AddLinqToDbContext<IdentityDbConnection>((provider, options) => {
+                options.UseSqlServer(configuration.GetConnectionString(connectionName))
+                .UseDefaultLogging(provider);
+            })
+            .AddScoped<IIdentityDataProvider, IdentityDataProvider>();
         }
     }
 }
