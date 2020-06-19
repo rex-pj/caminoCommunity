@@ -1,17 +1,17 @@
 ﻿using Coco.Common.Const;
 using Coco.Framework.Models;
-using Coco.Framework.Services.Contracts;
+using Coco.Framework.Providers.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Text;
 
-namespace Coco.Framework.Services.Implementation
+namespace Coco.Framework.Providers.Implementation
 {
-    public class InstallationProvider : IInstallationProvider
+    public class InstallProvider : IInstallProvider
     {
-        private readonly IFileAccessor _fileAccessor;
-        private readonly InstallationSettings _installationSettings;
-        public InstallationProvider(IFileAccessor fileAccessor, InstallationSettings installationSettings)
+        private readonly IFileProvider _fileAccessor;
+        private readonly InstallSettings _installationSettings;
+        public InstallProvider(IFileProvider fileAccessor, InstallSettings installationSettings)
         {
             _fileAccessor = fileAccessor;
             _installationSettings = installationSettings;
@@ -44,7 +44,7 @@ namespace Coco.Framework.Services.Implementation
             }
         }
 
-        public InstallationSettings LoadSettings(string filePath = null)
+        public InstallSettings LoadSettings(string filePath = null)
         {
             if (_installationSettings != null && _installationSettings.IsDatabaseInstalled)
             {
@@ -54,7 +54,7 @@ namespace Coco.Framework.Services.Implementation
             filePath = filePath == null ? InstallationSettingsConst.FilePath : filePath;
             if (!_fileAccessor.FileExists(filePath))
             {
-                var installSettings = new InstallationSettings()
+                var installSettings = new InstallSettings()
                 {
                     IsInitialized = true
                 };
@@ -64,23 +64,23 @@ namespace Coco.Framework.Services.Implementation
                 return installSettings;
             }
 
-            var text = _fileAccessor.ReadAllText(filePath, Encoding.UTF8);
+            var text = _fileAccessor.ReadText(filePath, Encoding.UTF8);
             if (string.IsNullOrEmpty(text))
             {
-                return new InstallationSettings();
+                return new InstallSettings();
             }
 
-            var installationSettings = JsonConvert.DeserializeObject<InstallationSettings>(text);
+            var installationSettings = JsonConvert.DeserializeObject<InstallSettings>(text);
             _installationSettings.IsDatabaseInstalled = installationSettings.IsDatabaseInstalled;
             return installationSettings;
         }
 
-        public void SaveSettings(InstallationSettings settings, string filePath)
+        public void SaveSettings(InstallSettings settings, string filePath)
         {
             _fileAccessor.CreateFile(filePath);
 
             var text = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            _fileAccessor.WriteAllText(filePath, text, Encoding.UTF8);
+            _fileAccessor.WriteText(filePath, text, Encoding.UTF8);
         }
     }
 }

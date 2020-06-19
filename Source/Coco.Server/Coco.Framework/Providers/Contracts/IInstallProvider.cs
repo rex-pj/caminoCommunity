@@ -1,11 +1,11 @@
 ﻿using Coco.Framework.Models;
 
-namespace Coco.Framework.Services.Contracts
+namespace Coco.Framework.Providers.Contracts
 {
-    public interface IInstallationProvider
+    public interface IInstallProvider
     {
         void SetDatabaseInstalled(string filePath = null);
-        InstallationSettings LoadSettings(string filePath = null);
+        InstallSettings LoadSettings(string filePath = null);
         bool IsDatabaseInstalled { get; }
         bool IsInitialized { get; }
     }

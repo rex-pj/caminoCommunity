@@ -1,12 +1,17 @@
-﻿using Coco.Framework.Services.Contracts;
+﻿using Coco.Framework.Providers.Contracts;
 using System.IO;
 using System.Text;
 
-namespace Coco.Framework.Services.Implementation
+namespace Coco.Framework.Providers.Implementation
 {
-    public class FileAccessor : IFileAccessor
+    public class FileProvider : IFileProvider
     {
-        public string ReadAllText(string path, Encoding encoding)
+        public void WriteText(string path, string contents, Encoding encoding)
+        {
+            File.WriteAllText(path, contents, encoding);
+        }
+
+        public string ReadText(string path, Encoding encoding)
         {
             using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -46,11 +51,6 @@ namespace Coco.Framework.Services.Implementation
         public bool DirectoryExists(string path)
         {
             return Directory.Exists(path);
-        }
-
-        public void WriteAllText(string path, string contents, Encoding encoding)
-        {
-            File.WriteAllText(path, contents, encoding);
         }
     }
 }

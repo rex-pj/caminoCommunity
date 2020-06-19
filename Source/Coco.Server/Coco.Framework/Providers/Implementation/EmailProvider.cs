@@ -1,5 +1,5 @@
 ﻿using Coco.Framework.Models;
-using Coco.Framework.Services.Contracts;
+using Coco.Framework.Providers.Contracts;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -7,12 +7,12 @@ using MimeKit.Text;
 using System;
 using System.Threading.Tasks;
 
-namespace Coco.Framework.Services.Implementation
+namespace Coco.Framework.Providers.Implementation
 {
-    public class EmailSender : IEmailSender
+    public class EmailProvider : IEmailProvider
     {
         private readonly EmailSenderSettings _emailSenderSettings;
-        public EmailSender(IOptions<EmailSenderSettings> emailSenderSettings)
+        public EmailProvider(IOptions<EmailSenderSettings> emailSenderSettings)
         {
             _emailSenderSettings = emailSenderSettings.Value;
         }
