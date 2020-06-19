@@ -35,8 +35,8 @@ namespace Coco.Business.Implementation
                 //.Include(x => x.ParentCategory)
                 .FirstOrDefault();
 
-            var createdByUser = _userRepository.Find(exist.CreatedById);
-            var updatedByUser = _userRepository.Find(exist.UpdatedById);
+            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
+            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
             var category = _mapper.Map<ArticleCategoryDto>(exist);
             category.CreatedBy = createdByUser.DisplayName;
@@ -117,7 +117,7 @@ namespace Coco.Business.Implementation
 
         public ArticleCategoryDto Update(ArticleCategoryDto category)
         {
-            var exist = _articleCategoryRepository.Find(category.Id);
+            var exist = _articleCategoryRepository.FirstOrDefault(x => x.Id == category.Id);
             exist.Description = category.Description;
             exist.Name = category.Name;
             exist.ParentCategoryId = category.ParentCategoryId;

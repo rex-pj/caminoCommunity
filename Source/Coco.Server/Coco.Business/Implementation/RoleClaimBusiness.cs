@@ -13,13 +13,11 @@ namespace Coco.Business.Implementation
     public class RoleClaimBusiness : IRoleClaimBusiness
     {
         private readonly IRepository<RoleClaim> _roleClaimRepository;
-        //private readonly IdentityDbConnection _identityDbContext;
         private readonly IMapper _mapper;
 
         public RoleClaimBusiness(IRepository<RoleClaim> roleClaimRepository, IMapper mapper)
         {
             _roleClaimRepository = roleClaimRepository;
-            //_identityDbContext = identityDbContext;
             _mapper = mapper;
         }
 
@@ -47,7 +45,6 @@ namespace Coco.Business.Implementation
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Delete(claim);
-            //_identityDbContext.SaveChanges();
         }
 
         public async Task ReplaceClaimAsync(long roleId, ClaimDto claim, ClaimDto newClaim)

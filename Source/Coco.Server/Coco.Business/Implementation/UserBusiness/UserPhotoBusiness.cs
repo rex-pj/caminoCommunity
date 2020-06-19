@@ -44,7 +44,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentNullException(nameof(model));
             }
 
-            var userInfo = _userInfoRepository.Find(userId);
+            var userInfo = _userInfoRepository.FirstOrDefault(x => x.Id == userId);
             if (userInfo == null)
             {
                 throw new ArgumentException(nameof(userInfo));
@@ -101,14 +101,14 @@ namespace Coco.Business.Implementation.UserBusiness
                     Code = model.UserPhotoCode,
                 };
 
-                _userPhotoRepository.Add(userPhoto);
+                await _userPhotoRepository.AddAsync(userPhoto);
             }
             else
             {
                 userPhoto.ImageData = newImage;
                 userPhoto.Name = model.FileName;
                 userPhoto.Code = model.UserPhotoCode;
-                _userPhotoRepository.Update(userPhoto);
+                await _userPhotoRepository.UpdateAsync(userPhoto);
             }
 
             //await _contentDbContext.SaveChangesAsync();
@@ -135,7 +135,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 return;
             }
 
-            _userPhotoRepository.Delete(userPhoto);
+            await _userPhotoRepository.DeleteAsync(userPhoto);
             //await _contentDbContext.SaveChangesAsync();
         }
 

@@ -13,12 +13,12 @@ namespace Coco.Business.Implementation
     public class UserAttributeBusiness : IUserAttributeBusiness
     {
         private readonly IRepository<UserAttribute> _userAttributeRepository;
-        //private readonly IdentityDbConnection _identityDbContext;
+        private readonly IdentityDbConnection _identityDbConnection;
 
-        public UserAttributeBusiness(IRepository<UserAttribute> userAttributeRepository)
+        public UserAttributeBusiness(IRepository<UserAttribute> userAttributeRepository, IdentityDbConnection identityDbConnection)
         {
             _userAttributeRepository = userAttributeRepository;
-            //_identityDbContext = identityDbContext;
+            _identityDbConnection = identityDbConnection;
         }
 
         public async Task<UserAttribute> GetAsync(long userId, string key)
@@ -45,18 +45,18 @@ namespace Coco.Business.Implementation
             return exists.ToList();
         }
 
-        public async Task<IEnumerable<UserAttribute>> CreateAsync(IEnumerable<UserAttributeDto> userAttributes)
+        public IEnumerable<UserAttribute> Create(IEnumerable<UserAttributeDto> attributes)
         {
-            if (userAttributes == null || !userAttributes.Any())
+            if (attributes == null || !attributes.Any())
             {
                 return null;
             }
 
-            var result = new List<UserAttribute>();
+            var userAttributes = new List<UserAttribute>();
 
-            foreach (var item in userAttributes)
+            foreach (var item in attributes)
             {
-                var userAttribute = new UserAttribute()
+                var attribute = new UserAttribute()
                 {
                     Key = item.Key,
                     UserId = item.UserId,
@@ -64,13 +64,11 @@ namespace Coco.Business.Implementation
                     Expiration = item.Expiration
                 };
 
-                _userAttributeRepository.Add(userAttribute);
-
-                result.Add(userAttribute);
+                userAttributes.Add(attribute);
             }
 
-            //await _identityDbContext.SaveChangesAsync();
-            return result;
+            _userAttributeRepository.Add(userAttributes);
+            return userAttributes;
         }
 
         public async Task<IEnumerable<UserAttribute>> CreateOrUpdateAsync(IEnumerable<UserAttributeDto> userAttributes)
@@ -89,38 +87,41 @@ namespace Coco.Business.Implementation
 
             if (exists == null || !exists.Any())
             {
-                return await CreateAsync(userAttributes);
+                return Create(userAttributes);
             }
 
-            var result = new List<UserAttribute>();
-            foreach (var item in userAttributes)
+            using (var transaction = _identityDbConnection.BeginTransaction())
             {
-                var exist = exists.FirstOrDefault(x => x.UserId == item.UserId && x.Key.Equals(item.Key));
-                if (exist != null)
+                var attributeResults = new List<UserAttribute>();
+                foreach (var item in userAttributes)
                 {
-                    exist.Value = item.Value;
-                    exist.Expiration = item.Expiration;
-
-                    _userAttributeRepository.Update(exist);
-                    result.Add(exist);
-                }
-                else
-                {
-                    var userAttribute = new UserAttribute()
+                    var exist = exists.FirstOrDefault(x => x.UserId == item.UserId && x.Key.Equals(item.Key));
+                    if (exist != null)
                     {
-                        Key = item.Key,
-                        UserId = item.UserId,
-                        Value = item.Value,
-                        Expiration = item.Expiration
-                    };
+                        exist.Value = item.Value;
+                        exist.Expiration = item.Expiration;
 
-                    _userAttributeRepository.Add(userAttribute);
-                    result.Add(userAttribute);
+                        await _userAttributeRepository.UpdateAsync(exist);
+                        attributeResults.Add(exist);
+                    }
+                    else
+                    {
+                        var userAttribute = new UserAttribute()
+                        {
+                            Key = item.Key,
+                            UserId = item.UserId,
+                            Value = item.Value,
+                            Expiration = item.Expiration
+                        };
+
+                        _userAttributeRepository.Add(userAttribute);
+                        attributeResults.Add(userAttribute);
+                    }
                 }
-            }
 
-            //await _identityDbContext.SaveChangesAsync();
-            return result;
+                _identityDbConnection.CommitTransaction();
+                return attributeResults;
+            }
         }
 
         public async Task<UserAttribute> CreateOrUpdateAsync(long userId, string key, string value, DateTime? expiration = null)
@@ -132,8 +133,7 @@ namespace Coco.Business.Implementation
                 exist.Value = value;
                 exist.Expiration = expiration;
 
-                _userAttributeRepository.Update(exist);
-                //await _identityDbContext.SaveChangesAsync();
+                await _userAttributeRepository.UpdateAsync(exist);
 
                 return exist;
             }
@@ -146,8 +146,7 @@ namespace Coco.Business.Implementation
                 Expiration = expiration
             };
 
-            _userAttributeRepository.Add(data);
-            //await _identityDbContext.SaveChangesAsync();
+            await _userAttributeRepository.AddAsync(data);
             return data;
         }
 
@@ -160,8 +159,7 @@ namespace Coco.Business.Implementation
             }
 
             var data = exists.FirstOrDefault();
-            _userAttributeRepository.Delete(data);
-            //await _identityDbContext.SaveChangesAsync();
+            await _userAttributeRepository.DeleteAsync(data);
 
             return true;
         }
@@ -174,8 +172,7 @@ namespace Coco.Business.Implementation
                 return false;
             }
 
-            _userAttributeRepository.Delete(exists);
-            //await _identityDbContext.SaveChangesAsync();
+            await _userAttributeRepository.DeleteAsync(exists);
 
             return true;
         }

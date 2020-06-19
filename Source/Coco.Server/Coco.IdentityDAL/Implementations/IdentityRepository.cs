@@ -3,9 +3,9 @@ using Coco.Entities.Domain;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityRepository<TEntity> : CocoRepository<TEntity> where TEntity : BaseEntity
+    public class IdentityRepository<TEntity> : CocoRepository<TEntity> where TEntity : class
     {
-        public IdentityRepository(IdentityDbProvider provider) : base(provider)
+        public IdentityRepository(IdentityDataProvider provider) : base(provider)
         {
 
         }

@@ -54,13 +54,13 @@ namespace Coco.Business.Implementation
 
         public bool Delete(byte roleId, short authorizationPolicyId)
         {
-            var role = _roleRepository.Find(roleId);
+            var role = _roleRepository.FirstOrDefault(x => x.Id == roleId);
             if (role == null)
             {
                 return false;
             }
 
-            var authorizationPolicy = _authorizationPolicyRepository.Find(authorizationPolicyId);
+            var authorizationPolicy = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == authorizationPolicyId);
             if (authorizationPolicy == null)
             {
                 return false;

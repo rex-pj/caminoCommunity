@@ -28,7 +28,7 @@ namespace Coco.Business.Implementation.UserBusiness
 
             var userInfo = _mapper.Map<UserInfo>(user);
 
-            _userInfoRepository.Add(userInfo);
+            await _userInfoRepository.AddAsync(userInfo);
             //await _identityContext.SaveChangesAsync();
             user.Id = userInfo.Id;
 
@@ -50,7 +50,7 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(_validationStrategyContext.Errors.FirstOrDefault().Message);
             }
 
-            var user = await _userRepository.FindAsync(model.UserId);
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.UserId);
 
             user.PasswordHash = model.NewPassword;
             _userRepository.Update(user);

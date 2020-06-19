@@ -1,11 +1,13 @@
-﻿namespace Coco.Entities.Domain
+﻿using System;
+
+namespace Coco.Entities.Domain
 {
-    public class BaseEntity : BaseEntity<int>
+    public abstract class BaseEntity : BaseEntity<long>
     {
     }
 
-    public class BaseEntity<TKey>
+    public abstract class BaseEntity<TKey> where TKey : IComparable
     {
-        public TKey Id { get; set; }
+        public virtual TKey Id { get; set; }
     }
 }

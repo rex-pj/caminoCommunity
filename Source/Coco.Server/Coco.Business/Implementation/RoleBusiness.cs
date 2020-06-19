@@ -36,13 +36,13 @@ namespace Coco.Business.Implementation
             role.UpdatedDate = DateTime.UtcNow;
             role.CreatedDate = DateTime.UtcNow;
 
-            _roleRepository.Add(role);
+            role.Id = (long)(await _roleRepository.AddAsync(role));
             return role.Id;
         }
 
         public async Task<bool> DeleteAsync(long id)
         {
-            var role = _roleRepository.Find(id);
+            var role = _roleRepository.FirstOrDefault(x => x.Id == id);
             await _roleRepository.DeleteAsync(role);
 
             return true;
@@ -50,14 +50,14 @@ namespace Coco.Business.Implementation
 
         public async Task<RoleDto> FindAsync(long id)
         {
-            var exist = await _roleRepository.FindAsync(id);
+            var exist = await _roleRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (exist == null)
             {
                 return null;
             }
 
-            var createdByUser = _userRepository.Find(exist.CreatedById);
-            var updatedByUser = _userRepository.Find(exist.UpdatedById);
+            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
+            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
             var role = _mapper.Map<RoleDto>(exist);
             role.CreatedByName = createdByUser.DisplayName;
@@ -158,14 +158,14 @@ namespace Coco.Business.Implementation
                 throw new ArgumentException("Role Id");
             }
 
-            var exist = _roleRepository.Find(roleModel.Id);
+            var exist = _roleRepository.FirstOrDefault(x => x.Id == roleModel.Id);
             exist.Description = roleModel.Description;
             exist.Name = roleModel.Name;
             exist.UpdatedById = roleModel.UpdatedById;
             exist.UpdatedDate = DateTime.UtcNow;
             exist.ConcurrencyStamp = roleModel.ConcurrencyStamp;
 
-            _roleRepository.Update(exist);
+            await _roleRepository.UpdateAsync(exist);
             //await _dbContext.SaveChangesAsync();
 
             return true;

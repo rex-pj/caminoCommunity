@@ -27,14 +27,14 @@ namespace Coco.Business.Implementation
 
         public AuthorizationPolicyDto Find(short id)
         {
-            var exist = _authorizationPolicyRepository.Find(id);
+            var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == id);
             if (exist == null)
             {
                 return null;
             }
 
-            var createdByUser = _userRepository.Find(exist.CreatedById);
-            var updatedByUser = _userRepository.Find(exist.UpdatedById);
+            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
+            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
             var policy = _mapper.Map<AuthorizationPolicyDto>(exist);
             policy.CreatedByName = createdByUser.DisplayName;
@@ -101,7 +101,7 @@ namespace Coco.Business.Implementation
 
         public AuthorizationPolicyDto Update(AuthorizationPolicyDto policy)
         {
-            var exist = _authorizationPolicyRepository.Find(policy.Id);
+            var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == policy.Id);
             exist.Description = policy.Description;
             exist.Name = policy.Name;
             exist.UpdatedById = policy.UpdatedById;

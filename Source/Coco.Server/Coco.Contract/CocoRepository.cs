@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain;
-using LinqToDB;
+﻿using LinqToDB;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,11 +9,11 @@ using System.Transactions;
 
 namespace Coco.Contract
 {
-    public abstract class CocoRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
+    public abstract class CocoRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         #region Fields
 
-        private readonly DbProvider _dbProvider;
+        private readonly DataProvider _dbProvider;
 
         private ITable<TEntity> _entities;
 
@@ -37,7 +36,7 @@ namespace Coco.Contract
 
         #region Ctor
 
-        protected CocoRepository(DbProvider dbProvider)
+        protected CocoRepository(DataProvider dbProvider)
         {
             _dbProvider = dbProvider;
         }
@@ -123,37 +122,17 @@ namespace Coco.Contract
         }
 
         /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
-        public virtual TEntity Find(object id)
-        {
-            return Entities.FirstOrDefault(x => x.Id == id);
-        }
-
-        /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
-        public virtual async Task<TEntity> FindAsync(object id)
-        {
-            return await Entities.FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        /// <summary>
         /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual void Add(TEntity entity)
+        public virtual object Add(TEntity entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dbProvider.Insert(entity);
+            return _dbProvider.Insert(entity);
         }
 
         /// <summary>
@@ -172,6 +151,20 @@ namespace Coco.Contract
                 _dbProvider.InsertRange(entities);
                 transaction.Complete();
             }
+        }
+
+        /// <summary>
+        /// Add entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task<object> AddAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return await _dbProvider.InsertAsync(entity);
         }
 
         /// <summary>
@@ -206,6 +199,20 @@ namespace Coco.Contract
         }
 
         /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            await _dbProvider.UpdateAsync(entity);
+        }
+
+        /// <summary>
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>
@@ -220,26 +227,10 @@ namespace Coco.Contract
         }
 
         /// <summary>
-        /// Delete by id
-        /// </summary>
-        /// <param name="id">Entity Id</param>
-        public virtual void Delete(int id)
-        {
-            if (id <= 0)
-            {
-                throw new MissingPrimaryKeyException(nameof(id));
-            }
-
-            TEntity entity = Find(id);
-
-            Delete(entity);
-        }
-
-        /// <summary>
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual void Delete(IEnumerable<TEntity> entities)
+        public virtual void Delete(IQueryable<TEntity> entities)
         {
             if (entities == null)
             {
@@ -261,6 +252,20 @@ namespace Coco.Contract
             }
 
             await _dbProvider.DeleteAsync(entity);
+        }
+
+        /// <summary>
+        /// Delete entities
+        /// </summary>
+        /// <param name="entities">Entities</param>
+        public virtual async Task DeleteAsync(IQueryable<TEntity> entities)
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+
+            await _dbProvider.DeleteRangeAsync(entities);
         }
         #endregion
     }
