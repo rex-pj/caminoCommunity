@@ -7,7 +7,6 @@ namespace Coco.Contract
     {
         protected CocoDbConnection(LinqToDbConnectionOptions options) : base(options)
         {
-
         }
     }
 }

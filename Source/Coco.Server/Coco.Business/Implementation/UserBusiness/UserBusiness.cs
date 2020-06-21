@@ -21,6 +21,8 @@ namespace Coco.Business.Implementation.UserBusiness
         #region Fields/Properties
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
         private readonly IIdentityDataProvider _identityDbProvider;
@@ -30,13 +32,17 @@ namespace Coco.Business.Implementation.UserBusiness
         public UserBusiness(IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IMapper mapper,
+            IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
             IRepository<UserInfo> userInfoRepository,
+            IRepository<UserRole> userRoleRepository,
             IIdentityDataProvider identityDbProvider)
         {
             _identityDbProvider = identityDbProvider;
             _mapper = mapper;
+            _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
+            _userRoleRepository = userRoleRepository;
             _validationStrategyContext = validationStrategyContext;
         }
         #endregion

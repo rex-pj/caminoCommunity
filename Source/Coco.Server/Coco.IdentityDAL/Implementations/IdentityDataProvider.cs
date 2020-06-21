@@ -9,7 +9,6 @@ namespace Coco.IdentityDAL.Implementations
     {
         public IdentityDataProvider(IdentityDbConnection dataConnection) : base(dataConnection)
         {
-            
         }
 
         protected override void OnMappingSchemaCreating(MappingSchemaBuilder builder)

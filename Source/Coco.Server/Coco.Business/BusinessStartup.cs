@@ -37,6 +37,7 @@ namespace Coco.Business
                 .AddTransient<IRepository<Gender>, IdentityRepository<Gender>>()
                 .AddTransient<IRepository<Country>, IdentityRepository<Country>>()
                 .AddTransient<IRepository<Role>, IdentityRepository<Role>>()
+                .AddTransient<IRepository<UserRole>, IdentityRepository<UserRole>>()
                 .AddTransient<IRepository<UserAttribute>, IdentityRepository<UserAttribute>>()
                 .AddTransient<IRepository<UserRole>, IdentityRepository<UserRole>>()
                 .AddTransient<IRepository<AuthorizationPolicy>, IdentityRepository<AuthorizationPolicy>>()
