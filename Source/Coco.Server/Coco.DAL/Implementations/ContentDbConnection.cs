@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Content;
 using LinqToDB;
 using LinqToDB.Configuration;
 
-namespace Coco.DAL
+namespace Coco.DAL.Implementations
 {
     public class ContentDbConnection : CocoDbConnection
     {

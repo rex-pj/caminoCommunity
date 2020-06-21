@@ -10,16 +10,20 @@ using System.Threading.Tasks;
 
 namespace Coco.Contract
 {
-    public abstract class DataProvider
+    public abstract class CocoDataProvider
     {
         private readonly DataConnection _dataConnection;
         protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
-        protected DataProvider(DataConnection dataConnection)
+        protected CocoDataProvider(DataConnection dataConnection)
         {
             _dataConnection = dataConnection;
             var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            MappingSchemaBuilder = new MappingSchemaBuilder(fluentMappingBuilder);
-            OnMappingSchemaCreating(MappingSchemaBuilder);
+            if (Singleton<MappingSchemaBuilder>.Instance is null)
+            {
+                Singleton<MappingSchemaBuilder>.Instance = new MappingSchemaBuilder(fluentMappingBuilder);
+                MappingSchemaBuilder = Singleton<MappingSchemaBuilder>.Instance;
+                OnMappingSchemaCreating(MappingSchemaBuilder);
+            }
         }
 
         protected virtual void OnMappingSchemaCreating(MappingSchemaBuilder mappingSchemaBuilder)
@@ -27,12 +31,12 @@ namespace Coco.Contract
             _dataConnection.AddMappingSchema(mappingSchemaBuilder.FluentMappingBuilder.MappingSchema);
         }
 
-        public virtual DataConnectionTransaction BeginTrsaction()
+        public virtual DataConnectionTransaction BeginTransaction()
         {
             return _dataConnection.BeginTransaction();
         }
 
-        public virtual async Task<DataConnectionTransaction> BeginTrsactionAsync()
+        public virtual async Task<DataConnectionTransaction> BeginTransactionAsync()
         {
             return await _dataConnection.BeginTransactionAsync();
         }

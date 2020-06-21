@@ -2,7 +2,7 @@
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.User;
-using Coco.IdentityDAL;
+using Coco.IdentityDAL.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +13,12 @@ namespace Coco.Business.Implementation
     public class UserAttributeBusiness : IUserAttributeBusiness
     {
         private readonly IRepository<UserAttribute> _userAttributeRepository;
-        private readonly IdentityDbConnection _identityDbConnection;
+        private readonly IIdentityDataProvider _identityDataProvider;
 
-        public UserAttributeBusiness(IRepository<UserAttribute> userAttributeRepository, IdentityDbConnection identityDbConnection)
+        public UserAttributeBusiness(IRepository<UserAttribute> userAttributeRepository, IIdentityDataProvider identityDataProvider)
         {
             _userAttributeRepository = userAttributeRepository;
-            _identityDbConnection = identityDbConnection;
+            _identityDataProvider = identityDataProvider;
         }
 
         public async Task<UserAttribute> GetAsync(long userId, string key)
@@ -90,7 +90,7 @@ namespace Coco.Business.Implementation
                 return Create(userAttributes);
             }
 
-            using (var transaction = _identityDbConnection.BeginTransaction())
+            using (var transaction = _identityDataProvider.BeginTransaction())
             {
                 var attributeResults = new List<UserAttribute>();
                 foreach (var item in userAttributes)
@@ -119,7 +119,7 @@ namespace Coco.Business.Implementation
                     }
                 }
 
-                _identityDbConnection.CommitTransaction();
+                transaction.Commit();
                 return attributeResults;
             }
         }

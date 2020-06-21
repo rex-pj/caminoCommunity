@@ -3,8 +3,6 @@ using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
-using Coco.IdentityDAL;
-
 using System;
 using System.Linq;
 

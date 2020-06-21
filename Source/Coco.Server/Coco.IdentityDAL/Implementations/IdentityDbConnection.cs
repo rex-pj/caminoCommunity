@@ -3,7 +3,7 @@ using Coco.Entities.Domain.Identity;
 using LinqToDB;
 using LinqToDB.Configuration;
 
-namespace Coco.IdentityDAL
+namespace Coco.IdentityDAL.Implementations
 {
     public class IdentityDbConnection : CocoDbConnection
     {

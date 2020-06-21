@@ -17,7 +17,9 @@ namespace Coco.IdentityDAL.Mapping
                 .HasTableName(nameof(UserInfo))
                 .HasSchemaName(TableSchemaConst.DBO)
                 .HasPrimaryKey(x => x.Id)
-                .Association(e => e.User, (userInfo, user) => userInfo.Id == user.Id);
+                .Association(e => e.User, (userInfo, user) => userInfo.Id == user.Id)
+                .Association(e => e.Gender, (user, gender) => user.GenderId == gender.Id)
+                .Association(e => e.Country, (user, country) => user.CountryId == country.Id);
         }
     }
 }

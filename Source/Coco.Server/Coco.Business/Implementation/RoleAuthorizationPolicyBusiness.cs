@@ -2,8 +2,6 @@
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
-
 using System;
 using System.Linq;
 
@@ -14,7 +12,6 @@ namespace Coco.Business.Implementation
         private readonly IRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<Role> _roleRepository;
-        //private readonly IdentityDbConnection _identityDbContext;
 
         public RoleAuthorizationPolicyBusiness(IRepository<RoleAuthorizationPolicy> roleAuthorizationPolicyRepository,
             IRepository<AuthorizationPolicy> authorizationPolicyRepository, IRepository<Role> userRepository)

@@ -3,7 +3,6 @@ using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +14,11 @@ namespace Coco.Business.Implementation
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        private readonly IdentityDbConnection _identityDbContext;
-        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, IdentityDbConnection identityDbContext, 
+        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, 
             IRepository<User> userRepository)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _mapper = mapper;
-            _identityDbContext = identityDbContext;
             _userRepository = userRepository;
         }
 

@@ -166,8 +166,6 @@ namespace Coco.Business.Implementation
             exist.ConcurrencyStamp = roleModel.ConcurrencyStamp;
 
             await _roleRepository.UpdateAsync(exist);
-            //await _dbContext.SaveChangesAsync();
-
             return true;
         }
 

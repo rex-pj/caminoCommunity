@@ -1,13 +1,15 @@
 ﻿using Coco.Contract;
 using Coco.Contract.MapBuilder;
+using Coco.IdentityDAL.Contracts;
 using Coco.IdentityDAL.Mapping;
 
-namespace Coco.IdentityDAL
+namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityDataProvider : DataProvider, IDataProvider
+    public class IdentityDataProvider : CocoDataProvider, IIdentityDataProvider
     {
         public IdentityDataProvider(IdentityDbConnection dataConnection) : base(dataConnection)
         {
+            
         }
 
         protected override void OnMappingSchemaCreating(MappingSchemaBuilder builder)

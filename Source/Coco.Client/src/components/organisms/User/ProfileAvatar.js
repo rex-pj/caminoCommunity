@@ -75,7 +75,7 @@ function ProfileAvatar({ ...props }) {
   return (
     <Wrap className={className}>
       <AvatarLink href={userInfo.url}>
-        {userAvatar ? (
+        {userAvatar && userAvatar.code ? (
           <ProfileImage
             src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userAvatar.code}`}
           />

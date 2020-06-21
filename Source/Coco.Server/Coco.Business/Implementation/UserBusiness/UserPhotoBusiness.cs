@@ -7,31 +7,29 @@ using Coco.Entities.Domain.Identity;
 using Coco.Entities.Enums;
 using Coco.Entities.Dtos;
 using Coco.Entities.Dtos.General;
-using Coco.IdentityDAL;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Coco.Entities.Domain.Content;
-using Coco.DAL;
 using System.Collections.Generic;
-using System.Transactions;
+using Coco.IdentityDAL.Contracts;
+using Coco.DAL.Contracts;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly IdentityDbConnection _identityContext;
-        private readonly ContentDbConnection _contentDbContext;
+        private readonly IIdentityDataProvider _identityDataProvider;
+        private readonly IContentDataProvider _contentDataProvider;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(IdentityDbConnection identityContext, ContentDbConnection contentDbContext,
+        public UserPhotoBusiness(IIdentityDataProvider identityDataProvider, IContentDataProvider contentDataProvider,
             ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
-            _identityContext = identityContext;
-            _contentDbContext = contentDbContext;
+            _identityDataProvider = identityDataProvider;
+            _contentDataProvider = contentDataProvider;
             _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -110,9 +108,6 @@ namespace Coco.Business.Implementation.UserBusiness
                 userPhoto.Code = model.UserPhotoCode;
                 await _userPhotoRepository.UpdateAsync(userPhoto);
             }
-
-            //await _contentDbContext.SaveChangesAsync();
-
             model.PhotoUrl = userPhoto.Code;
             return model;
         }

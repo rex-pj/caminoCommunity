@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.DAL;
+using Coco.DAL.Implementations;
 using Coco.Entities.Domain.Content;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Content;

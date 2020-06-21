@@ -54,8 +54,6 @@ namespace Coco.Business
 
             services.ConfigureContentDataAccess("CocoEntities");
             services.ConfigureIdentityDataAccess("IdentityEntities");
-            services.AddScoped<ContentDataProvider>();
-            services.AddScoped<IdentityDataProvider>();
 
             services.AddTransient<ISeedDataBusiness, SeedDataBusiness>();
         }

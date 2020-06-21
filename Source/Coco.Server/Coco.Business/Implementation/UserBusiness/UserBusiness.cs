@@ -5,8 +5,6 @@ using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.User;
 using Coco.Entities.Dtos.General;
-using Coco.IdentityDAL;
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +12,7 @@ using AutoMapper;
 using Coco.Entities.Enums;
 using System.Collections.Generic;
 using LinqToDB;
+using Coco.IdentityDAL.Contracts;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -22,27 +21,21 @@ namespace Coco.Business.Implementation.UserBusiness
         #region Fields/Properties
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
-        private readonly IRepository<Gender> _genderRepository;
-        private readonly IRepository<Country> _countryRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
-        private readonly IdentityDataProvider _identityDbProvider;
+        private readonly IIdentityDataProvider _identityDbProvider;
         #endregion
 
         #region Ctor
         public UserBusiness(IRepository<User> userRepository,
-            IRepository<Gender> genderRepository,
             ValidationStrategyContext validationStrategyContext,
             IMapper mapper,
             IRepository<UserInfo> userInfoRepository,
-            IRepository<Country> countryRepository,
-            IdentityDataProvider identityDbProvider)
+            IIdentityDataProvider identityDbProvider)
         {
             _identityDbProvider = identityDbProvider;
             _mapper = mapper;
             _userRepository = userRepository;
-            _countryRepository = countryRepository;
-            _genderRepository = genderRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
         }
@@ -193,34 +186,10 @@ namespace Coco.Business.Implementation.UserBusiness
 
         public async Task<UserFullDto> FindFullByIdAsync(long id)
         {
-            var existUser = await (from user in _userRepository.Get(x => x.Id.Equals(id))
-                            join genders in _genderRepository.Get()
-                            on user.UserInfo.GenderId equals genders.Id into gd
-                            from gender in gd.DefaultIfEmpty()
-                            join countries in _countryRepository.Get()
-                            on user.UserInfo.CountryId equals countries.Id into ct
-                            from country in ct.DefaultIfEmpty()
-                            select new UserFullDto() {
-                                CreatedDate = user.CreatedDate,
-                                DisplayName = user.DisplayName,
-                                Firstname = user.Firstname,
-                                Lastname = user.Lastname,
-                                UserName = user.UserName,
-                                Email = user.Email,
-                                PhoneNumber = user.UserInfo.PhoneNumber,
-                                Description = user.UserInfo.Description,
-                                Address = user.UserInfo.Address,
-                                BirthDate = user.UserInfo.BirthDate,
-                                StatusId = user.StatusId,
-                                IsActived = user.IsActived,
-                                StatusLabel = user.Status.Name,
-                                Id = user.Id,
-                                GenderId = gender.Id,
-                                GenderLabel = gender.Name,
-                                CountryId = country.Id,
-                                CountryCode = country.Code,
-                                CountryName = country.Name
-                            }).FirstOrDefaultAsync();
+            var existUser = await _userRepository
+                .Get(x => x.Id.Equals(id))
+                .Select(UserExpressionMapping.FullUserModelSelector)
+                .FirstOrDefaultAsync();
 
             return existUser;
         }

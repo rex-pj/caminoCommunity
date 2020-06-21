@@ -29,7 +29,7 @@ namespace Coco.Business.Implementation.UserBusiness
             var user = _mapper.Map<User>(userDto);
             var userInfo = _mapper.Map<UserInfo>(userDto);
 
-            using(var transaction = _identityDbProvider.BeginTrsaction())
+            using(var transaction = _identityDbProvider.BeginTransaction())
             {
                 try
                 {
