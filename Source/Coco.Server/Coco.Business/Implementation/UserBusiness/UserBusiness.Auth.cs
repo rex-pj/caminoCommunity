@@ -14,25 +14,45 @@ namespace Coco.Business.Implementation.UserBusiness
     public partial class UserBusiness : IUserBusiness
     {
         #region CRUD
-        public async Task<UserDto> CreateAsync(UserDto user)
+        public async Task<UserDto> CreateAsync(UserDto userDto)
         {
-            if (user == null)
+            if (userDto == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                throw new ArgumentNullException(nameof(userDto));
             }
 
-            user.StatusId = 1;
-            user.IsActived = false;
-            user.CreatedDate = DateTime.UtcNow;
-            user.UpdatedDate = DateTime.UtcNow;
+            userDto.StatusId = 1;
+            userDto.IsActived = false;
+            userDto.CreatedDate = DateTime.UtcNow;
+            userDto.UpdatedDate = DateTime.UtcNow;
 
-            var userInfo = _mapper.Map<UserInfo>(user);
+            var user = _mapper.Map<User>(userDto);
+            var userInfo = _mapper.Map<UserInfo>(userDto);
 
-            await _userInfoRepository.AddAsync(userInfo);
-            //await _identityContext.SaveChangesAsync();
-            user.Id = userInfo.Id;
+            using(var transaction = _identityDbProvider.BeginTrsaction())
+            {
+                try
+                {
+                    var userId = await _userRepository.AddWithInt64EntityAsync(user);
+                    if (userId > 0)
+                    {
+                        userInfo.Id = userId;
+                        await _userInfoRepository.AddWithInt64EntityAsync(userInfo);
+                        transaction.Commit();
+                        userDto.Id = userId;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                    }
+                }
+                catch(Exception e)
+                {
+                    transaction.Rollback();
+                }
+            }
 
-            return user;
+            return userDto;
         }
 
         public async Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model)
@@ -51,10 +71,11 @@ namespace Coco.Business.Implementation.UserBusiness
             }
 
             var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.UserId);
-
-            user.PasswordHash = model.NewPassword;
-            _userRepository.Update(user);
-            //await _identityContext.SaveChangesAsync();
+            if(user != null)
+            {
+                user.PasswordHash = model.NewPassword;
+                await _userRepository.UpdateAsync(user);
+            }            
 
             return new UserDto()
             {

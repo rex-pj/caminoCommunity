@@ -80,6 +80,19 @@ namespace Coco.Contract
         /// </summary>
         /// <param name="entities">entity</param>
         Task<object> AddAsync(TEntity entity);
+
+        /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        long AddWithInt64Entity(TEntity entity);
+
+        /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        Task<long> AddWithInt64EntityAsync(TEntity entity);
+
         /// <summary>
         /// Update entity
         /// </summary>

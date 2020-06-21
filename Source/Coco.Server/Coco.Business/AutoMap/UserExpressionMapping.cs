@@ -44,14 +44,14 @@ namespace Coco.Business.AutoMap
             Address = user.UserInfo.Address,
             BirthDate = user.UserInfo.BirthDate,
             GenderId = user.UserInfo.GenderId,
-            GenderLabel = user.UserInfo.Gender.Name,
+            //GenderLabel = user.UserInfo.Gender.Name,
             StatusId = user.StatusId,
             IsActived = user.IsActived,
             StatusLabel = user.Status.Name,
             Id = user.Id,
             CountryId = user.UserInfo.CountryId,
-            CountryCode = user.UserInfo.Country.Code,
-            CountryName = user.UserInfo.Country.Name
+            //CountryCode = user.UserInfo.Country.Code,
+            //CountryName = user.UserInfo.Country.Name
         };
     }
 }

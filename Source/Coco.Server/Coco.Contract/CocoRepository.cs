@@ -168,6 +168,34 @@ namespace Coco.Contract
         }
 
         /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual long AddWithInt64Entity(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return _dbProvider.InsertWithInt64Identity(entity);
+        }
+
+        /// <summary>
+        /// Add with int64 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task<long> AddWithInt64EntityAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return await _dbProvider.InsertWithInt64IdentityAsync(entity);
+        }
+
+        /// <summary>
         /// Update entity
         /// </summary>
         /// <param name="entity">Entity</param>

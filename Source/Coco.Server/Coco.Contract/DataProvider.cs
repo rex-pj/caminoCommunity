@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Domain;
+﻿using Coco.Contract.MapBuilder;
 using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.Tools;
@@ -13,9 +13,48 @@ namespace Coco.Contract
     public abstract class DataProvider
     {
         private readonly DataConnection _dataConnection;
+        protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
         protected DataProvider(DataConnection dataConnection)
         {
             _dataConnection = dataConnection;
+            var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
+            MappingSchemaBuilder = new MappingSchemaBuilder(fluentMappingBuilder);
+            OnMappingSchemaCreating(MappingSchemaBuilder);
+        }
+
+        protected virtual void OnMappingSchemaCreating(MappingSchemaBuilder mappingSchemaBuilder)
+        {
+            _dataConnection.AddMappingSchema(mappingSchemaBuilder.FluentMappingBuilder.MappingSchema);
+        }
+
+        public virtual DataConnectionTransaction BeginTrsaction()
+        {
+            return _dataConnection.BeginTransaction();
+        }
+
+        public virtual async Task<DataConnectionTransaction> BeginTrsactionAsync()
+        {
+            return await _dataConnection.BeginTransactionAsync();
+        }
+
+        public virtual void CommitTransaction()
+        {
+            _dataConnection.CommitTransaction();
+        }
+
+        public virtual async Task CommitTransactionAsync()
+        {
+            await _dataConnection.CommitTransactionAsync();
+        }
+
+        public virtual void RollbackTransaction()
+        {
+            _dataConnection.RollbackTransaction();
+        }
+
+        public virtual async Task RollbackTransactionAsync()
+        {
+            await _dataConnection.RollbackTransactionAsync();
         }
 
         public virtual ITable<TEntity> GetTable<TEntity>() where TEntity : class
@@ -37,6 +76,18 @@ namespace Coco.Contract
         public async Task<object> InsertAsync<TEntity>(TEntity entity)
         {
             var id = await _dataConnection.InsertAsync(entity);
+            return id;
+        }
+
+        public async Task<long> InsertWithInt64IdentityAsync<TEntity>(TEntity entity)
+        {
+            var id = await _dataConnection.InsertWithInt64IdentityAsync(entity);
+            return id;
+        }
+
+        public long InsertWithInt64Identity<TEntity>(TEntity entity)
+        {
+            var id = _dataConnection.InsertWithInt64Identity(entity);
             return id;
         }
 
