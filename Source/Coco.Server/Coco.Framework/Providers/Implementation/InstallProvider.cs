@@ -56,7 +56,8 @@ namespace Coco.Framework.Providers.Implementation
             {
                 var installSettings = new InstallSettings()
                 {
-                    IsInitialized = true
+                    IsInitialized = true,
+                    InstallUrl = InstallationSettingsConst.InstallUrl
                 };
 
                 SaveSettings(installSettings, filePath);

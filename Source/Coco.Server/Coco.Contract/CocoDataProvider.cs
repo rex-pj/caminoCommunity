@@ -1,5 +1,6 @@
 ﻿using Coco.Contract.MapBuilder;
 using LinqToDB;
+using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.Tools;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Coco.Contract
 {
@@ -23,12 +25,35 @@ namespace Coco.Contract
                 Singleton<MappingSchemaBuilder>.Instance = new MappingSchemaBuilder(fluentMappingBuilder);
                 MappingSchemaBuilder = Singleton<MappingSchemaBuilder>.Instance;
                 OnMappingSchemaCreating(MappingSchemaBuilder);
+                AllowMultipleQuery();
             }
         }
 
-        protected virtual void OnMappingSchemaCreating(MappingSchemaBuilder mappingSchemaBuilder)
+        internal static void AllowMultipleQuery()
         {
-            _dataConnection.AddMappingSchema(mappingSchemaBuilder.FluentMappingBuilder.MappingSchema);
+            Configuration.Linq.AllowMultipleQuery = true;
+        }
+
+        protected virtual void OnMappingSchemaCreating(MappingSchemaBuilder builder)
+        {
+            _dataConnection.AddMappingSchema(builder.FluentMappingBuilder.MappingSchema);
+        }
+
+        public bool IsDatabaseExist()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_dataConnection.ConnectionString))
+                {
+                    connection.Open();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         public virtual DataConnectionTransaction BeginTransaction()

@@ -12,24 +12,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coco.Entities.Domain.Content;
 using System.Collections.Generic;
-using Coco.IdentityDAL.Contracts;
-using Coco.DAL.Contracts;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
     public class UserPhotoBusiness : IUserPhotoBusiness
     {
-        private readonly IIdentityDataProvider _identityDataProvider;
-        private readonly IContentDataProvider _contentDataProvider;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoBusiness(IIdentityDataProvider identityDataProvider, IContentDataProvider contentDataProvider,
-            ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
+        public UserPhotoBusiness(ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
-            _identityDataProvider = identityDataProvider;
-            _contentDataProvider = contentDataProvider;
             _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -122,7 +115,6 @@ namespace Coco.Business.Implementation.UserBusiness
             var type = (byte)userPhotoType;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
-                //.AsNoTracking()
                 .FirstOrDefault();
 
             if (userPhoto == null)
@@ -131,7 +123,6 @@ namespace Coco.Business.Implementation.UserBusiness
             }
 
             await _userPhotoRepository.DeleteAsync(userPhoto);
-            //await _contentDbContext.SaveChangesAsync();
         }
 
         public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoTypeEnum type)
@@ -175,7 +166,7 @@ namespace Coco.Business.Implementation.UserBusiness
         public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoTypeEnum type)
         {
             var photoType = (byte)type;
-            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));//.AsNoTracking();
+            var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));
             if (userPhotos == null || !userPhotos.Any())
             {
                 return null;

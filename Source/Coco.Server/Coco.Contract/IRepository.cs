@@ -1,5 +1,4 @@
-﻿using Coco.Entities.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,6 +8,11 @@ namespace Coco.Contract
 {
     public interface IRepository<TEntity> where TEntity : class
     {
+        /// <summary>
+        /// Gets a table
+        /// </summary>
+        IQueryable<TEntity> Table { get; }
+
         /// <summary>
         /// Get entities
         /// </summary>

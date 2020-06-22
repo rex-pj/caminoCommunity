@@ -149,7 +149,6 @@ namespace Coco.Business.Implementation.UserBusiness
             exist.PasswordHash = user.PasswordHash;
 
             _userRepository.Update(exist);
-            //await _identityContext.SaveChangesAsync();
 
             return user;
         }

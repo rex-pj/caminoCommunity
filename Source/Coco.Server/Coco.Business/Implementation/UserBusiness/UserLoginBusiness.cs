@@ -3,7 +3,6 @@ using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
-using Coco.IdentityDAL;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,14 +12,12 @@ namespace Coco.Business.Implementation.UserBusiness
     public class UserLoginBusiness : IUserLoginBusiness
     {
         private readonly IRepository<UserLogin> _userLoginRepository;
-        //private readonly IdentityDbConnection _identityDbContext;
         private readonly IMapper _mapper;
 
         public UserLoginBusiness(IRepository<UserLogin> userTokenRepository, IMapper mapper)
         {
             _mapper = mapper;
             _userLoginRepository = userTokenRepository;
-            //_identityDbContext = identityDbContext;
         }
 
         public async Task<UserLoginDto> FindAsync(long userId, string loginProvider, string providerKey)

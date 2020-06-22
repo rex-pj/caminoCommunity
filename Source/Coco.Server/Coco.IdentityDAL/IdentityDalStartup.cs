@@ -17,8 +17,9 @@ namespace Coco.IdentityDAL
             services.AddLinqToDbContext<IdentityDbConnection>((provider, options) => {
                 options.UseSqlServer(configuration.GetConnectionString(connectionName))
                 .UseDefaultLogging(provider);
-            })
-            .AddScoped<IIdentityDataProvider, IdentityDataProvider>();
+            });
+
+            services.AddScoped<IIdentityDataProvider, IdentityDataProvider>();
         }
     }
 }

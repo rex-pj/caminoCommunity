@@ -1,22 +1,24 @@
 ﻿using Coco.Business.Contracts;
-using Coco.IdentityDAL;
+using Coco.IdentityDAL.Contracts;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Data.SqlClient;
 
 namespace Coco.Business.Implementation
 {
     public class SeedDataBusiness : ISeedDataBusiness
     {
-        //private readonly IdentityDbConnection _identityDbContext;
-        //public SeedDataBusiness(IdentityDbConnection identityDbContext)
-        //{
-        //    _identityDbContext = identityDbContext;
-        //}
+        private readonly IIdentityDataProvider _identityDataProvider;
+        private readonly IConfiguration _configuration;
+        public SeedDataBusiness(IIdentityDataProvider identityDataProvider, IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _identityDataProvider = identityDataProvider;
+        }
 
         public bool CanSeed()
         {
-            return false;
-            throw new NotImplementedException();
-            //return !_identityDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
+            return !_identityDataProvider.IsDatabaseExist();
         }
 
         public void SeedingData()
@@ -26,8 +28,15 @@ namespace Coco.Business.Implementation
                 return;
             }
 
-            throw new NotImplementedException();
-            //_identityDbContext.Database.EnsureCreated();
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("IdentityEntities")))
+            {
+                var query = $"CREATE DATABASE [Coco_IdentityDb1]";
+
+                var command = new SqlCommand(query, connection);
+                command.Connection.Open();
+
+                command.ExecuteNonQuery();
+            }
         }
     }
 }

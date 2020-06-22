@@ -17,20 +17,8 @@ namespace Coco.Business
     {
         public static void ConfigureBusinessServices(this IServiceCollection services)
         {
-            services.AddTransient<IUserBusiness, UserBusiness>()
-                .AddTransient<ICountryBusiness, CountryBusiness>()
-                .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
-                .AddTransient<IRoleBusiness, RoleBusiness>()
-                .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>()
-                .AddTransient<IArticleCategoryBusiness, ArticleCategoryBusiness>()
-                .AddTransient<IUserRoleBusiness, UserRoleBusiness>()
-                .AddTransient<IAuthorizationPolicyBusiness, AuthorizationPolicyBusiness>()
-                .AddTransient<IRoleAuthorizationPolicyBusiness, RoleAuthorizationPolicyBusiness>()
-                .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>()
-                .AddTransient<IUserClaimBusiness, UserClaimBusiness>()
-                .AddTransient<IUserTokenBusiness, UserTokenBusiness>()
-                .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
-                .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>();
+            services.ConfigureContentDataAccess("CocoEntities");
+            services.ConfigureIdentityDataAccess("IdentityEntities");
 
             services.AddTransient<IRepository<User>, IdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, IdentityRepository<UserInfo>>()
@@ -48,15 +36,26 @@ namespace Coco.Business
                 .AddTransient<IRepository<UserLogin>, IdentityRepository<UserLogin>>()
                 .AddTransient<IRepository<RoleClaim>, IdentityRepository<RoleClaim>>();
 
+            services.AddTransient<IUserBusiness, UserBusiness>()
+                .AddTransient<ICountryBusiness, CountryBusiness>()
+                .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
+                .AddTransient<IRoleBusiness, RoleBusiness>()
+                .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>()
+                .AddTransient<IArticleCategoryBusiness, ArticleCategoryBusiness>()
+                .AddTransient<IUserRoleBusiness, UserRoleBusiness>()
+                .AddTransient<IAuthorizationPolicyBusiness, AuthorizationPolicyBusiness>()
+                .AddTransient<IRoleAuthorizationPolicyBusiness, RoleAuthorizationPolicyBusiness>()
+                .AddTransient<IUserAuthorizationPolicyBusiness, UserAuthorizationPolicyBusiness>()
+                .AddTransient<IUserClaimBusiness, UserClaimBusiness>()
+                .AddTransient<IUserTokenBusiness, UserTokenBusiness>()
+                .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
+                .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>()
+                .AddTransient<ISeedDataBusiness, SeedDataBusiness>();
+
             services.AddTransient<IRepository<Product>, ContentRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, ContentRepository<ArticleCategory>>()
                 .AddTransient<IRepository<UserPhoto>, ContentRepository<UserPhoto>>()
                 .AddTransient<ValidationStrategyContext>();
-
-            services.ConfigureContentDataAccess("CocoEntities");
-            services.ConfigureIdentityDataAccess("IdentityEntities");
-
-            services.AddTransient<ISeedDataBusiness, SeedDataBusiness>();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Coco.Management.Infrastructure.Extensions
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA).AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
             services.ConfigureBusinessServices();
 
-            services.AddTransient<IInstallProvider, InstallProvider>();
+            services.AddScoped<IInstallProvider, InstallProvider>();
             services.AddSingleton<InstallSettings>();
 
             return services;

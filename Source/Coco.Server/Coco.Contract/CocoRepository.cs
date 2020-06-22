@@ -1,7 +1,6 @@
 ﻿using LinqToDB;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -43,6 +42,11 @@ namespace Coco.Contract
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Gets a table
+        /// </summary>
+        public virtual IQueryable<TEntity> Table => Entities;
+
         /// <summary>
         /// Get entities
         /// </summary>
