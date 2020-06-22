@@ -28,5 +28,6 @@ namespace Coco.Contract
         Task CommitTransactionAsync();
         void RollbackTransaction();
         Task RollbackTransactionAsync();
+        bool IsDatabaseExist();
     }
 }

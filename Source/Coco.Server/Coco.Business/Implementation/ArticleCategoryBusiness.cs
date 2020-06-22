@@ -31,8 +31,6 @@ namespace Coco.Business.Implementation
         public ArticleCategoryDto Find(int id)
         {
             var exist = _articleCategoryRepository.Get(x => x.Id == id)
-                // TODO: include check
-                //.Include(x => x.ParentCategory)
                 .FirstOrDefault();
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
@@ -52,8 +50,6 @@ namespace Coco.Business.Implementation
         public ArticleCategoryDto FindByName(string name)
         {
             var exist = _articleCategoryRepository.Get(x => x.Name == name)
-                // TODO: include check
-                //.Include(x => x.ParentCategory)
                 .FirstOrDefault();
 
             var category = _mapper.Map<ArticleCategoryDto>(exist);
@@ -125,7 +121,6 @@ namespace Coco.Business.Implementation
             exist.UpdatedDate = DateTime.UtcNow;
 
             _articleCategoryRepository.Update(exist);
-            //_contentDbContext.SaveChanges();
 
             category.UpdatedDate = exist.UpdatedDate;
             return category;

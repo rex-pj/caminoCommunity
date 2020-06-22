@@ -4,7 +4,6 @@ using Coco.Business.ValidationStrategies;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,59 +70,62 @@ namespace Coco.Business.Implementation.UserBusiness
             }
 
             var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.UserId);
-            if (user != null)
+            if(user == null)
             {
-                user.PasswordHash = model.NewPassword;
-                await _userRepository.UpdateAsync(user);
+                return new UserDto();
             }
-
+            user.PasswordHash = model.NewPassword;
+            await _userRepository.UpdateAsync(user);
             return new UserDto()
             {
                 Id = user.Id
             };
-        }
 
+        }
+        #endregion
+
+        #region GET
         public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto userDto)
         {
+            var users = _userRepository.Get(x => x.Id == userDto.Id);
+            var userAuthorizationPolicies = _userAuthorizationPolicyRepository.Get(x => x.UserId == userDto.Id);
+            var userRoles = _userRoleRepository.Get(x => x.UserId == userDto.Id);
+
             var userRoleAuthorizationPolicy =
-                (from user in _userRepository.Get(x => x.Id == userDto.Id)
-                 join userAuthorizationPolicy in _userAuthorizationPolicyRepository.Get(x => x.UserId == userDto.Id)
-                 on user.Id equals userAuthorizationPolicy.UserId into userAuthorizationPolicies
-                 from uap in userAuthorizationPolicies.DefaultIfEmpty()
-                 //join userRole in _userRoleRepository.Get(x => x.UserId == userDto.Id)
-                 //on user.Id equals userRole.UserId into userRoles
-                 //from ur in userRoles.DefaultIfEmpty()
+                (from user in users
+                 join userAuthorizationPolicy in userAuthorizationPolicies
+                 on user.Id equals userAuthorizationPolicy.UserId into userAuthorizations
+                 from uap in userAuthorizations.DefaultIfEmpty()
+                 join userRole in userRoles
+                 on user.Id equals userRole.UserId into roles
+                 from ur in roles.DefaultIfEmpty()
                  select new UserRoleAuthorizationPoliciesDto()
                  {
                      UserId = user.Id,
                      Firstname = user.Firstname,
                      Lastname = user.Lastname,
-                     AuthorizationPolicies = userAuthorizationPolicies.Select(a => new AuthorizationPolicyDto()
+                     AuthorizationPolicies = userAuthorizations.Select(a => new AuthorizationPolicyDto()
                      {
                          Id = a.AuthorizationPolicyId,
                          Name = a.AuthorizationPolicy.Name,
                          Description = a.AuthorizationPolicy.Description
                      }),
-                     //Roles = userRoles.Select(r => new RoleAuthorizationPoliciesDto()
-                     //{
-                     //    Id = r.RoleId,
-                     //    Name = r.Role.Name,
-                     //    AuthorizationPolicies = r.Role.RoleAuthorizationPolicies.Select(ra => new AuthorizationPolicyDto()
-                     //    {
-                     //        Id = ra.AuthorizationPolicyId,
-                     //        Name = ra.AuthorizationPolicy.Name,
-                     //        Description = ra.AuthorizationPolicy.Description
-                     //    })
-                     //})
-                 });
+                     Roles = userRoles.Select(r => new RoleAuthorizationPoliciesDto()
+                     {
+                         Id = r.RoleId,
+                         Name = r.Role.Name,
+                         AuthorizationPolicies = r.Role.RoleAuthorizationPolicies.Select(ra => new AuthorizationPolicyDto()
+                         {
+                             Id = ra.AuthorizationPolicyId,
+                             Name = ra.AuthorizationPolicy.Name,
+                             Description = ra.AuthorizationPolicy.Description
+                         })
+                     })
+                 }).FirstOrDefault();
 
-            var result = userRoleAuthorizationPolicy.FirstOrDefault();
-
-            return result;
+            return userRoleAuthorizationPolicy;
         }
-        #endregion
 
-        #region GET
         public UserDto GetLoggedIn(long id)
         {
             var user = _userRepository

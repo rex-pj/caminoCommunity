@@ -1,6 +1,3 @@
-using Coco.Business.Contracts;
-using Coco.Business.Implementation;
-using Coco.Framework.Providers.Contracts;
 using Coco.Management.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,14 +38,7 @@ namespace Coco.Management
             }
 
             app.ConfigureManagementAppBuilder();
-
-            var seedDataBusiness = app.ApplicationServices.GetRequiredService<ISeedDataBusiness>();
-            var installationProvider = app.ApplicationServices.GetRequiredService<IInstallProvider>();
-            if (!installationProvider.IsDatabaseInstalled && installationProvider.IsInitialized && seedDataBusiness.CanSeed())
-            {
-                seedDataBusiness.SeedingData();
-                installationProvider.SetDatabaseInstalled();
-            }
+            app.UseCheckDatabaseInstalled();
 
             app.UseEndpoints(endpoints =>
             {
