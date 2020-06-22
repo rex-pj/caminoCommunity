@@ -1,5 +1,4 @@
 using Coco.Management.Infrastructure.Extensions;
-using Coco.Management.Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +38,7 @@ namespace Coco.Management
             }
 
             app.ConfigureManagementAppBuilder();
-            app.UseMiddleware<CheckDatabaseInstalledMiddleware>();
+            app.UseCheckDatabaseInstalled();
 
             app.UseEndpoints(endpoints =>
             {

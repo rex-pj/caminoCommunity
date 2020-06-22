@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Entities.Domain.Content;
 using Coco.Entities.Dtos.Content;
+using Coco.Entities.Dtos.General;
 using Coco.Management.Models;
 
 namespace Coco.Management.Infrastructure.AutoMap
@@ -13,6 +14,7 @@ namespace Coco.Management.Infrastructure.AutoMap
             CreateMap<ArticleCategoryDto, ArticleCategoryViewModel>();
             CreateMap<ArticleCategoryDto, ArticleCategory>();
             CreateMap<ArticleCategory, ArticleCategoryDto>();
+            CreateMap<InstallationViewModel, InstallationDto>();
         }
     }
 }

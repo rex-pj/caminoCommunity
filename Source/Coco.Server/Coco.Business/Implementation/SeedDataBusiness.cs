@@ -1,5 +1,7 @@
 ﻿using Coco.Business.Contracts;
+using Coco.Entities.Dtos.General;
 using Coco.IdentityDAL.Contracts;
+using LinqToDB.Data;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data.SqlClient;
@@ -16,27 +18,38 @@ namespace Coco.Business.Implementation
             _identityDataProvider = identityDataProvider;
         }
 
-        public bool CanSeed()
+        public bool IsDatabaseExist()
         {
-            return !_identityDataProvider.IsDatabaseExist();
+            return _identityDataProvider.IsDatabaseExist();
         }
 
-        public void SeedingData()
+        public void SeedingIdentityDb(InstallationDto installationDto)
         {
-            if (!CanSeed())
+            if (IsDatabaseExist())
             {
                 return;
             }
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("IdentityEntities")))
+            var builder = GetConnectionStringBuilder();
+            var databaseName = builder.InitialCatalog;
+
+            builder.InitialCatalog = "master";
+
+            using (var connection = new SqlConnection(builder.ConnectionString))
             {
-                var query = $"CREATE DATABASE [Coco_IdentityDb1]";
+                var query = $"CREATE DATABASE [{databaseName}]";
 
                 var command = new SqlCommand(query, connection);
                 command.Connection.Open();
-
                 command.ExecuteNonQuery();
-            }
+            }           
+        }
+
+        private SqlConnectionStringBuilder GetConnectionStringBuilder()
+        {
+            var connectionString = _configuration.GetConnectionString("IdentityEntities");
+
+            return new SqlConnectionStringBuilder(connectionString);
         }
     }
 }

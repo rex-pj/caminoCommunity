@@ -1,8 +1,10 @@
-﻿namespace Coco.Business.Contracts
+﻿using Coco.Entities.Dtos.General;
+
+namespace Coco.Business.Contracts
 {
     public interface ISeedDataBusiness
     {
-        bool CanSeed();
-        void SeedingData();
+        bool IsDatabaseExist();
+        void SeedingIdentityDb(InstallationDto installationDto);
     }
 }
