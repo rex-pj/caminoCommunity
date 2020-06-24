@@ -5,6 +5,6 @@ namespace Coco.Business.Contracts
     public interface ISeedDataBusiness
     {
         bool IsDatabaseExist();
-        void SeedingIdentityDb(InstallationDto installationDto);
+        void SeedingIdentityDb(SetupDto installationDto);
     }
 }

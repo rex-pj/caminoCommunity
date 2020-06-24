@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Coco.Management.Controllers
 {
-    public class InstallationController : Controller
+    public class SetupController : Controller
     {
         private readonly ISeedDataBusiness _seedDataBusiness;
-        private readonly IInstallProvider _installProvider;
+        private readonly ISetupProvider _setupProvider;
         private readonly IMapper _mapper;
-        public InstallationController(ISeedDataBusiness seedDataBusiness, IInstallProvider installProvider, IMapper mapper)
+        public SetupController(ISeedDataBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper)
         {
-            _installProvider = installProvider;
+            _setupProvider = setupProvider;
             _seedDataBusiness = seedDataBusiness;
             _mapper = mapper;
         }
@@ -22,7 +22,7 @@ namespace Coco.Management.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if (_installProvider.IsDatabaseInstalled)
+            if (_setupProvider.HasSetupDatabase)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -31,14 +31,14 @@ namespace Coco.Management.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(InstallationViewModel installModel)
+        public IActionResult Index(SetupViewModel installModel)
         {
-            if (_installProvider.IsDatabaseInstalled)
+            if (_setupProvider.HasSetupDatabase)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var installDto = _mapper.Map<InstallationDto>(installModel);
+            var installDto = _mapper.Map<SetupDto>(installModel);
             _seedDataBusiness.SeedingIdentityDb(installDto);
             return View();
         }

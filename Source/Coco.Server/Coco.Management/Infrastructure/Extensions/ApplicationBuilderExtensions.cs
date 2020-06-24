@@ -16,9 +16,9 @@ namespace Coco.Management.Infrastructure.Extensions
             return app;
         }
 
-        public static IApplicationBuilder UseCheckDatabaseInstalled(this IApplicationBuilder app)
+        public static IApplicationBuilder UseDatabaseSettingUp(this IApplicationBuilder app)
         {
-            return app.UseMiddleware<CheckDatabaseInstalledMiddleware>();
+            return app.UseMiddleware<DatabaseSettingUpMiddleware>();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Coco.Entities.Dtos.General
+﻿namespace Coco.Management.Models
 {
-    public class InstallationDto
+    public class SetupViewModel
     {
         public string AdminEmail { get; set; }
         public string AdminPassword { get; set; }
