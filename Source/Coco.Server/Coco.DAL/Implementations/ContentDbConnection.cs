@@ -5,7 +5,7 @@ using LinqToDB.Configuration;
 
 namespace Coco.DAL.Implementations
 {
-    public class ContentDbConnection : CocoDbConnection
+    public class ContentDbConnection : BaseDataConnection
     {
         public ITable<Product> Product { get; set; }
         public ITable<ArticleCategory> ArticleCategory { get; set; }

@@ -12,7 +12,7 @@ namespace Coco.Contract
     {
         #region Fields
 
-        private readonly ICocoDataProvider _dbProvider;
+        private readonly IBaseDataProvider _dbProvider;
 
         private ITable<TEntity> _entities;
 
@@ -35,7 +35,7 @@ namespace Coco.Contract
 
         #region Ctor
 
-        protected CocoRepository(ICocoDataProvider dbProvider)
+        protected CocoRepository(IBaseDataProvider dbProvider)
         {
             _dbProvider = dbProvider;
         }

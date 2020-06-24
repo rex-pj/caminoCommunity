@@ -75,7 +75,7 @@ namespace Coco.Framework.SessionManager.Stores
             {
                 await _roleBusiness.DeleteAsync(role.Id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

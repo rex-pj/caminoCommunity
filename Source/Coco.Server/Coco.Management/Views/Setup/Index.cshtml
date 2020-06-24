@@ -1,12 +1,12 @@
-﻿@model InstallationViewModel
+﻿@model SetupViewModel
 @{
     ViewData["Title"] = "Installing Coco Application";
-    Layout = "~/Views/Shared/_InstallLayout.cshtml";
+    Layout = "~/Views/Shared/_SetupLayout.cshtml";
 }
 
 <div class="card">
     <div class="card-body">
-        <form asp-action="Index" asp-controller="Installation" method="post">
+        <form asp-action="Index" asp-controller="Setup" method="post">
             <div class="form-group">
                 <label for="adminEmail">Admin Email</label>
                 <input type="email" class="form-control" asp-for="AdminEmail">

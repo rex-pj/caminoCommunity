@@ -10,7 +10,7 @@ namespace Coco.Entities.Domain.Identity
             Users = new HashSet<User>();
         }
 
-        public byte Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }

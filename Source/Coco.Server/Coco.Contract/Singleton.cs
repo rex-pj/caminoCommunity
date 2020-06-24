@@ -5,21 +5,24 @@ namespace Coco.Contract
 {
     public class Singleton<T>
     {
-        private static T instance;
-        public static IDictionary<Type, object> AllSingletons { get; }
+        private static T _instance;
+        public static IDictionary<Type, object> Singletons { get; }
 
         static Singleton()
         {
-            AllSingletons = new Dictionary<Type, object>();
+            Singletons = new Dictionary<Type, object>();
         }
 
         public static T Instance
         {
-            get => instance;
+            get
+            {
+                return _instance;
+            }
             set
             {
-                instance = value;
-                AllSingletons[typeof(T)] = value;
+                _instance = value;
+                Singletons[typeof(T)] = value;
             }
         }
     }

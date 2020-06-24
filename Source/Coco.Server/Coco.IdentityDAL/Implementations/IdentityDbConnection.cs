@@ -5,7 +5,7 @@ using LinqToDB.Configuration;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityDbConnection : CocoDbConnection
+    public class IdentityDbConnection : BaseDataConnection
     {
         public IdentityDbConnection(LinqToDbConnectionOptions<IdentityDbConnection> options) : base(options)
         {

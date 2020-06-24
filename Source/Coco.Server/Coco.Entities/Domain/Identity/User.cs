@@ -45,7 +45,7 @@ namespace Coco.Entities.Domain.Identity
         [Required]
         public bool IsActived { get; set; }
         [Required]
-        public byte StatusId { get; set; }
+        public int StatusId { get; set; }
         [Required]
         public string SecurityStamp { get; set; }
         public bool IsEmailConfirmed { get; set; }

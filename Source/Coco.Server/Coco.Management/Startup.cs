@@ -38,7 +38,7 @@ namespace Coco.Management
             }
 
             app.ConfigureManagementAppBuilder();
-            app.UseCheckDatabaseInstalled();
+            app.UseDatabaseSettingUp();
 
             app.UseEndpoints(endpoints =>
             {

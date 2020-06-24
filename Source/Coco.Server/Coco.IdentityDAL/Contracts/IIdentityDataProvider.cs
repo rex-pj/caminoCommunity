@@ -2,7 +2,7 @@
 
 namespace Coco.IdentityDAL.Contracts
 {
-    public interface IIdentityDataProvider : ICocoDataProvider
+    public interface IIdentityDataProvider : IBaseDataProvider
     {
     }
 }

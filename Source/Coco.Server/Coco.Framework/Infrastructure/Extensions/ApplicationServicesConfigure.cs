@@ -41,6 +41,7 @@ namespace Coco.Framework.Infrastructure.Extensions
                 .AddTransient<IUserEncryptionStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IUserPasswordStore<ApplicationUser>, ApplicationUserStore>()
+                .AddTransient<IUserSecurityStampStore<ApplicationUser>, ApplicationUserStore>()
                 .AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>()
                 .AddTransient<ITextEncryption, TextEncryption>()
                 .AddScoped<ISessionContext, SessionContext>()

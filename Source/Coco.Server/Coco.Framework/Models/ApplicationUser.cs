@@ -23,7 +23,7 @@ namespace Coco.Framework.Models
         public string CountryName { get; set; }
         public string CountryCode { get; set; }
         public bool IsActived { get; set; }
-        public byte StatusId { get; set; }
+        public int StatusId { get; set; }
         public string UserIdentityId { get; set; }
         public DateTime? Expiration { get; set; }
         public string StatusLabel { get; set; }

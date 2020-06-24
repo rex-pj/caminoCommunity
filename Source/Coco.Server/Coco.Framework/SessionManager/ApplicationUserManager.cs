@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using Coco.Framework.SessionManager.Core;
 
 namespace Coco.Framework.SessionManager
 {
@@ -45,6 +47,13 @@ namespace Coco.Framework.SessionManager
         {
             var userEncryptionStore = GetUserEncryptionStore();
             return await userEncryptionStore.DecryptUserId(userIdentityId);
+        }
+
+        public string NewSecurityStamp()
+        {
+            byte[] bytes = new byte[20];
+            RandomNumberGenerator.Fill(bytes);
+            return Base32.ToBase32(bytes);
         }
     }
 }

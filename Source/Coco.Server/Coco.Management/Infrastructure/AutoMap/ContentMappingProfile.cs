@@ -14,7 +14,7 @@ namespace Coco.Management.Infrastructure.AutoMap
             CreateMap<ArticleCategoryDto, ArticleCategoryViewModel>();
             CreateMap<ArticleCategoryDto, ArticleCategory>();
             CreateMap<ArticleCategory, ArticleCategoryDto>();
-            CreateMap<InstallationViewModel, InstallationDto>();
+            CreateMap<SetupViewModel, SetupDto>();
         }
     }
 }

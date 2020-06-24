@@ -5,22 +5,22 @@ using System.Threading.Tasks;
 
 namespace Coco.Management.Infrastructure.Middlewares
 {
-    public class CheckDatabaseInstalledMiddleware
+    public class DatabaseSettingUpMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public CheckDatabaseInstalledMiddleware(RequestDelegate next)
+        public DatabaseSettingUpMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IInstallProvider installProvider)
+        public async Task Invoke(HttpContext context, ISetupProvider installProvider)
         {
             // check the database is installed
-            if (!installProvider.IsDatabaseInstalled && installProvider.IsInitialized)
+            if (!installProvider.HasSetupDatabase && installProvider.IsInitialized)
             {
                 //redirect
-                var installUrl = installProvider.LoadSettings().InstallUrl;
+                var installUrl = installProvider.LoadSettings().SetupUrl;
                 var currentUrl = context.Request.Path.ToString();
                 if (!currentUrl.StartsWith(installUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
