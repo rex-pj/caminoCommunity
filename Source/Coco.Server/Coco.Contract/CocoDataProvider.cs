@@ -10,15 +10,21 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using LinqToDB.Mapping;
+using LinqToDB.DataProvider.SqlServer;
+using LinqToDB.DataProvider;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Coco.Contract
 {
     public abstract class CocoDataProvider
     {
         private readonly DataConnection _dataConnection;
+        private readonly IDataProvider _dataProvider;
         protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
         protected CocoDataProvider(DataConnection dataConnection)
         {
+            _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
             _dataConnection = dataConnection;
             var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
             if (Singleton<MappingSchemaBuilder>.Instance is null)
@@ -149,6 +155,60 @@ namespace Coco.Contract
         public async Task DeleteRangeAsync<TEntity>(IQueryable<TEntity> entities)
         {
             await entities.DeleteAsync();
+        }
+
+        public DataConnection CreateDataConnection()
+        {
+            var dataContext = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
+
+            return dataContext;
+        }
+
+        public SqlConnectionStringBuilder GetConnectionStringBuilder()
+        {
+            return new SqlConnectionStringBuilder(_dataConnection.ConnectionString);
+        }
+
+        public IList<string> GetCommandsFromScript(string sql)
+        {
+            var commands = new List<string>();
+
+            //origin from the Microsoft.EntityFrameworkCore.Migrations.SqlServerMigrationsSqlGenerator.Generate method
+            sql = Regex.Replace(sql, @"\\\r?\n", string.Empty, default, TimeSpan.FromMilliseconds(1000.0));
+            var batches = Regex.Split(sql, @"^\s*(GO[ \t]+[0-9]+|GO)(?:\s+|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+            var batchLength = batches.Length;
+            for (var i = 0; i < batchLength; i++)
+            {
+                if (string.IsNullOrWhiteSpace(batches[i]) || batches[i].StartsWith("GO", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var count = 1;
+                if (i != batches.Length - 1 && batches[i + 1].StartsWith("GO", StringComparison.OrdinalIgnoreCase))
+                {
+                    var match = Regex.Match(batches[i + 1], "([0-9]+)");
+                    if (match.Success)
+                    {
+                        count = int.Parse(match.Value);
+                    }
+                }
+
+                var builder = new StringBuilder();
+                for (var j = 0; j < count; j++)
+                {
+                    builder.Append(batches[i]);
+                    if (i == batches.Length - 1)
+                    {
+                        builder.AppendLine();
+                    }
+                }
+
+                commands.Add(builder.ToString());
+            }
+
+            return commands;
         }
 
         /// <summary>

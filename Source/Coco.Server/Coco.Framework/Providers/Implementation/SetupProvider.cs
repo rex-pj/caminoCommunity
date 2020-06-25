@@ -9,11 +9,11 @@ namespace Coco.Framework.Providers.Implementation
 {
     public class SetupProvider : ISetupProvider
     {
-        private readonly IFileProvider _fileAccessor;
+        private readonly IFileProvider _fileProvider;
         private readonly SetupSettings _setupSettings;
-        public SetupProvider(IFileProvider fileAccessor, SetupSettings setupSettings)
+        public SetupProvider(IFileProvider fileProvider, SetupSettings setupSettings)
         {
-            _fileAccessor = fileAccessor;
+            _fileProvider = fileProvider;
             _setupSettings = setupSettings;
             if (!HasSetupDatabase)
             {
@@ -31,7 +31,7 @@ namespace Coco.Framework.Providers.Implementation
 
         public void SetDatabaseHasBeenSetup(string filePath = null)
         {
-            filePath = filePath == null ? SetupSettingsConst.FilePath : filePath;
+            filePath ??= SetupSettingsConst.FilePath;
 
             try
             {
@@ -51,14 +51,17 @@ namespace Coco.Framework.Providers.Implementation
                 return _setupSettings;
             }
 
-            filePath = filePath == null ? SetupSettingsConst.FilePath : filePath;
-            if (!_fileAccessor.FileExists(filePath))
+            filePath ??= SetupSettingsConst.FilePath;
+            if (!_fileProvider.FileExists(filePath))
             {
                 var installSettings = new SetupSettings()
                 {
                     IsInitialized = true,
                     SetupUrl = SetupSettingsConst.SetupUrl,
-                    CreateIdentityPath = SetupSettingsConst.CreateIdentityPath
+                    CreateIdentityPath = SetupSettingsConst.CreateIdentityDbPath,
+                    PrepareIdentityDataPath = SetupSettingsConst.PrepareIdentityDataPath,
+                    CreateContentDbPath = SetupSettingsConst.CreateContentDbPath,
+                    PrepareContentDataPath = SetupSettingsConst.PrepareContentDataPath
                 };
 
                 SaveSettings(installSettings, filePath);
@@ -66,7 +69,7 @@ namespace Coco.Framework.Providers.Implementation
                 return installSettings;
             }
 
-            var text = _fileAccessor.ReadText(filePath, Encoding.UTF8);
+            var text = _fileProvider.ReadText(filePath, Encoding.UTF8);
             if (string.IsNullOrEmpty(text))
             {
                 return new SetupSettings();
@@ -79,10 +82,10 @@ namespace Coco.Framework.Providers.Implementation
 
         public void SaveSettings(SetupSettings settings, string filePath)
         {
-            _fileAccessor.CreateFile(filePath);
+            _fileProvider.CreateFile(filePath);
 
             var text = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            _fileAccessor.WriteText(filePath, text, Encoding.UTF8);
+            _fileProvider.WriteText(filePath, text, Encoding.UTF8);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using LinqToDB;
 using LinqToDB.Data;
-using LinqToDB.Mapping;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,5 +30,8 @@ namespace Coco.Contract
         void RollbackTransaction();
         Task RollbackTransactionAsync();
         bool IsDatabaseExist();
+        DataConnection CreateDataConnection();
+        SqlConnectionStringBuilder GetConnectionStringBuilder();
+        IList<string> GetCommandsFromScript(string sql);
     }
 }

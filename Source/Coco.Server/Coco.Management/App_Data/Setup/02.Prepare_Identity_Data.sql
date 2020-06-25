@@ -1,5 +1,3 @@
-USE Coco_IdentityDb1
-
 -- USER STATUS --
 INSERT INTO dbo.[Status]
 ([Name], [Description])
@@ -565,16 +563,3 @@ GO
 INSERT [dbo].[Country] ([Id], [Code], [Name]) VALUES (250, N'ZWE', N'Zimbabwe')
 GO
 SET IDENTITY_INSERT [dbo].[Country] OFF
-
-
-USE CocoDb
-
-GO
-INSERT INTO dbo.UserPhotoType
-([Name], [Description])
-VALUES ('Avatar', 'The avatar of the user')
-
-GO
-INSERT INTO dbo.UserPhotoType
-([Name], [Description])
-VALUES ('Cover', 'The cover of the user porfile page')

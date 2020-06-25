@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Coco.IdentityDAL\Coco.IdentityDAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Implementation\DataSeeding\" />
+  </ItemGroup>
+
 </Project>
