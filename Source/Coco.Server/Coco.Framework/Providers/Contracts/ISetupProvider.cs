@@ -1,4 +1,5 @@
 ﻿using Coco.Framework.Models;
+using System.Threading.Tasks;
 
 namespace Coco.Framework.Providers.Contracts
 {

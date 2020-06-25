@@ -23,7 +23,7 @@ namespace Coco.Framework.SessionManager.Stores
     public class ApplicationUserStore : UserStoreBase<ApplicationUser, ApplicationRole, long, ApplicationUserClaim, 
         ApplicationUserRole, ApplicationUserLogin, ApplicationUserToken, ApplicationRoleClaim>, 
         IUserPasswordStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>,
-        IUserEncryptionStore<ApplicationUser>
+        IUserEncryptionStore<ApplicationUser>, IUserSecurityStampStore<ApplicationUser>
     {
         private readonly IMapper _mapper;
         

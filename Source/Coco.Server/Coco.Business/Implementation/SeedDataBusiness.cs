@@ -1,9 +1,14 @@
-﻿using Coco.Business.Contracts;
+﻿using AutoMapper;
+using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.DAL.Contracts;
+using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.General;
+using Coco.Entities.Dtos.User;
 using Coco.IdentityDAL.Contracts;
+using LinqToDB;
 using LinqToDB.Data;
+using System;
 using System.Data.SqlClient;
 
 namespace Coco.Business.Implementation
@@ -12,10 +17,12 @@ namespace Coco.Business.Implementation
     {
         private readonly IIdentityDataProvider _identityDataProvider;
         private readonly IContentDataProvider _contentDataProvider;
-        public SeedDataBusiness(IIdentityDataProvider identityDataProvider, IContentDataProvider contentDataProvider)
+        private readonly IMapper _mapper;
+        public SeedDataBusiness(IIdentityDataProvider identityDataProvider, IContentDataProvider contentDataProvider, IMapper mapper)
         {
             _identityDataProvider = identityDataProvider;
             _contentDataProvider = contentDataProvider;
+            _mapper = mapper;
         }
 
         public bool IsIdentityDatabaseExist()
@@ -35,8 +42,13 @@ namespace Coco.Business.Implementation
                 return;
             }
 
-			CreateDatabase(_identityDataProvider);
-            CreateTables(_identityDataProvider, sql);
+            CreateDatabase(_identityDataProvider);
+            CreateData(_identityDataProvider, sql);
+        }
+
+        public void SeedingIdentityData(SetupDto installationDto, string sql)
+        {
+            CreateData(_identityDataProvider, sql);
         }
 
         public void SeedingContentDb(SetupDto installationDto, string sql)
@@ -47,7 +59,7 @@ namespace Coco.Business.Implementation
             }
 
             CreateDatabase(_contentDataProvider);
-            CreateTables(_contentDataProvider, sql);
+            CreateData(_contentDataProvider, sql);
         }
 
         private void CreateDatabase(ICocoDataProvider dataProvider)
@@ -65,16 +77,51 @@ namespace Coco.Business.Implementation
             }
         }
 
-        private void CreateTables(ICocoDataProvider dataProvider, string sql)
+        private void CreateData(ICocoDataProvider dataProvider, string sql)
         {
-			using (var dataConnection = dataProvider.CreateDataConnection())
+            using (var dataConnection = dataProvider.CreateDataConnection())
             {
-				var sqlCommands = dataProvider.GetCommandsFromScript(sql);
-				foreach (var command in sqlCommands)
-				{
-					dataConnection.Execute(command);
-				}
-			}
+                var sqlCommands = dataProvider.GetCommandsFromScript(sql);
+                foreach (var command in sqlCommands)
+                {
+                    dataConnection.Execute(command);
+                }
+            }
+        }
+
+        public void CreateInitialUser(UserDto userDto)
+        {
+            using (var dataConnection = _identityDataProvider.CreateDataConnection())
+            {
+                using (var transaction = dataConnection.BeginTransaction())
+                {
+                    userDto.StatusId = 1;
+                    userDto.IsActived = true;
+                    userDto.CreatedDate = DateTime.UtcNow;
+                    userDto.UpdatedDate = DateTime.UtcNow;
+
+                    var user = _mapper.Map<User>(userDto);
+                    var userInfo = _mapper.Map<UserInfo>(userDto);
+                    try
+                    {
+                        var userId = dataConnection.InsertWithInt64Identity(user, nameof(User));
+                        if (userId > 0)
+                        {
+                            userInfo.Id = userId;
+                            dataConnection.InsertWithInt64Identity(userInfo, nameof(UserInfo));
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
         }
     }
 }

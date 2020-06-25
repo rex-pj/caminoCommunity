@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Implementation\DataSeeding\**" />
+    <EmbeddedResource Remove="Implementation\DataSeeding\**" />
+    <None Remove="Implementation\DataSeeding\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
@@ -16,10 +22,6 @@
     <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
     <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
     <ProjectReference Include="..\Coco.IdentityDAL\Coco.IdentityDAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Implementation\DataSeeding\" />
   </ItemGroup>
 
 </Project>

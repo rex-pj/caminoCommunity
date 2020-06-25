@@ -29,22 +29,6 @@ INSERT INTO dbo.[Status]
 VALUES
 ('Blocked', 'The user is being blocked')
 
--- USER ROLE --
---INSERT INTO dbo.[Role]
---([Name], [Description])
---VALUES
---('Admin', 'The administrator')
-
---INSERT INTO dbo.[Role]
---([Name], [Description])
---VALUES
---('Moderator', 'The moderator')
-
---INSERT INTO dbo.[Role]
---([Name], [Description])
---VALUES
---('Approver', 'The approver')
-
 -- GENDER --
 INSERT INTO dbo.Gender
 ([Name])
@@ -563,3 +547,19 @@ GO
 INSERT [dbo].[Country] ([Id], [Code], [Name]) VALUES (250, N'ZWE', N'Zimbabwe')
 GO
 SET IDENTITY_INSERT [dbo].[Country] OFF
+
+ --USER ROLE --
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Admin', 'The administrator')
+
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Moderator', 'The moderator')
+
+--INSERT INTO dbo.[Role]
+--([Name], [Description])
+--VALUES
+--('Approver', 'The approver')

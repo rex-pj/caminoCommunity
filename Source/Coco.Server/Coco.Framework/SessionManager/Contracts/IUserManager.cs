@@ -65,5 +65,6 @@ namespace Coco.Framework.SessionManager.Contracts
         Task<bool> VerifyUserTokenAsync(TUser user, string tokenProvider, string purpose, string token);
         Task<IdentityResult> ResetPasswordAsync(TUser user, string token, string newPassword);
         Task<IdentityResult> UpdateAsync(TUser user);
+        string NewSecurityStamp();
     }
 }
