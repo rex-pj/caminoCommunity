@@ -1,12 +1,9 @@
 ﻿using Coco.Common.Const;
-using Coco.Entities.Enums;
-using Coco.Entities.Models;
 using Coco.Framework.Models;
 using Coco.Framework.Providers.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Coco.Framework.Providers.Implementation
 {

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Coco.Entities.Dtos.Auth;
+using Coco.Entities.Dtos.User;
+using System;
+using System.Collections.Generic;
 
 namespace Coco.Entities.Dtos.General
 {
@@ -10,5 +13,10 @@ namespace Coco.Entities.Dtos.General
         public DateTime BirthDate { get; set; }
         public string AdminPassword { get; set; }
         public string AdminConfirmPassword { get; set; }
+        public UserDto InitualUser { get; set; }
+        public IEnumerable<CountryDto> Countries { get; set; }
+        public IEnumerable<GenderDto> Genders { get; set; }
+        public IEnumerable<StatusDto> Statuses { get; set; }
+        public IEnumerable<RoleDto> Roles { get; set; }
     }
 }

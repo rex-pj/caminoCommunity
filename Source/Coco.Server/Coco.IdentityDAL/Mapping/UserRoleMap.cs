@@ -20,6 +20,7 @@ namespace Coco.IdentityDAL.Mapping
                     x.RoleId
                 })
                 .Association(c => c.User, (userRole, user) => userRole.UserId == user.Id)
+                .Association(c => c.Role, (userRole, role) => userRole.RoleId == role.Id)
                 .Association(c => c.GrantedBy, (userRole, grantedBy) => userRole.GrantedById == grantedBy.Id);
         }
     }

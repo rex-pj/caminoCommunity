@@ -16,7 +16,7 @@ namespace Coco.Management.Models
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
         public bool IsActived { get; set; }
-        public byte StatusId { get; set; }
+        public int StatusId { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }
         public string DisplayName { get; set; }

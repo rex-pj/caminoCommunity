@@ -35,7 +35,7 @@ namespace Coco.Business.Implementation
             return _contentDataProvider.IsDatabaseExist();
         }
 
-        public void SeedingIdentityDb(SetupDto installationDto, string sql)
+        public void SeedingIdentityDb(string sql)
         {
             if (IsIdentityDatabaseExist())
             {
@@ -43,15 +43,10 @@ namespace Coco.Business.Implementation
             }
 
             CreateDatabase(_identityDataProvider);
-            CreateData(_identityDataProvider, sql);
+            CreateDataByScript(_identityDataProvider, sql);
         }
 
-        public void SeedingIdentityData(SetupDto installationDto, string sql)
-        {
-            CreateData(_identityDataProvider, sql);
-        }
-
-        public void SeedingContentDb(SetupDto installationDto, string sql)
+        public void SeedingContentDb(string sql)
         {
             if (IsContentDatabaseExist())
             {
@@ -59,7 +54,7 @@ namespace Coco.Business.Implementation
             }
 
             CreateDatabase(_contentDataProvider);
-            CreateData(_contentDataProvider, sql);
+            CreateDataByScript(_contentDataProvider, sql);
         }
 
         private void CreateDatabase(ICocoDataProvider dataProvider)
@@ -77,7 +72,7 @@ namespace Coco.Business.Implementation
             }
         }
 
-        private void CreateData(ICocoDataProvider dataProvider, string sql)
+        private void CreateDataByScript(ICocoDataProvider dataProvider, string sql)
         {
             using (var dataConnection = dataProvider.CreateDataConnection())
             {
@@ -89,26 +84,86 @@ namespace Coco.Business.Implementation
             }
         }
 
-        public void CreateInitialUser(UserDto userDto)
+        public void PrepareIdentityData(SetupDto installationDto)
         {
             using (var dataConnection = _identityDataProvider.CreateDataConnection())
             {
                 using (var transaction = dataConnection.BeginTransaction())
                 {
-                    userDto.StatusId = 1;
-                    userDto.IsActived = true;
-                    userDto.CreatedDate = DateTime.UtcNow;
-                    userDto.UpdatedDate = DateTime.UtcNow;
+                    var statusTableName = nameof(Status);
+                    // Insert user statuses
+                    int activedStatusId = 0;
+                    foreach(var statusDto in installationDto.Statuses)
+                    {
+                        var status = new Status()
+                        {
+                            Name = statusDto.Name,
+                            Description = statusDto.Description
+                        };
 
+                        if (status.Name != "Actived")
+                        {
+                            dataConnection.Insert(status, statusTableName);
+                        }
+                        else
+                        {
+                            activedStatusId = dataConnection.Insert(status, statusTableName);
+                        }
+                    }
+
+                    if(activedStatusId == 0)
+                    {
+                        return;
+                    }
+                    
+                    // Insert genders
+                    var genderTableName = nameof(Gender);
+                    foreach (var gender in installationDto.Genders)
+                    {
+                        dataConnection.Insert(new Gender()
+                        {
+                            Name = gender.Name
+                        }, genderTableName);
+                    }
+
+                    // Insert countries
+                    var countryTableName = nameof(Country);
+                    foreach (var country in installationDto.Countries)
+                    {
+                        dataConnection.Insert(new Country()
+                        {
+                            Name = country.Name,
+                            Code = country.Code
+                        }, countryTableName);
+                    }
+
+                    var userDto = installationDto.InitualUser;
                     var user = _mapper.Map<User>(userDto);
                     var userInfo = _mapper.Map<UserInfo>(userDto);
                     try
                     {
+                        user.StatusId = activedStatusId;
+                        user.IsActived = true;
+                        user.CreatedDate = DateTime.UtcNow;
+                        user.UpdatedDate = DateTime.UtcNow;
                         var userId = dataConnection.InsertWithInt64Identity(user, nameof(User));
                         if (userId > 0)
                         {
                             userInfo.Id = userId;
                             dataConnection.InsertWithInt64Identity(userInfo, nameof(UserInfo));
+
+                            // Insert roles
+                            var roleTableName = nameof(Role);
+                            foreach (var role in installationDto.Roles)
+                            {
+                                dataConnection.Insert(new Role()
+                                {
+                                    Name = role.Name,
+                                    Description = role.Description,
+                                    CreatedById = userId,
+                                    UpdatedById = userId,
+                                }, roleTableName);
+                            }
                             transaction.Commit();
                         }
                         else
@@ -122,6 +177,7 @@ namespace Coco.Business.Implementation
                     }
                 }
             }
+            _identityDataProvider.Dispose();
         }
     }
 }

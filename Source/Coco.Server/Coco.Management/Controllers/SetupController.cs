@@ -6,14 +6,12 @@ using Coco.Entities.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.Providers.Contracts;
 using Coco.Framework.SessionManager.Contracts;
-using Coco.Framework.SessionManager.Core;
 using Coco.Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 
 namespace Coco.Management.Controllers
 {
@@ -51,41 +49,45 @@ namespace Coco.Management.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(SetupViewModel installModel)
+        public IActionResult Index(SetupViewModel setupModel)
         {
             if (_setupProvider.HasSetupDatabase)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var installDto = _mapper.Map<SetupDto>(installModel);
             var settings = _setupProvider.LoadSettings();
+
+            // Create Identity database
             var identityDbScript = _fileProvider.ReadText(settings.CreateIdentityPath, Encoding.Default);
-            _seedDataBusiness.SeedingIdentityDb(installDto, identityDbScript);
+            _seedDataBusiness.SeedingIdentityDb(identityDbScript);
 
+            // Create Content database
             var contentDbScript = _fileProvider.ReadText(settings.CreateContentDbPath, Encoding.Default);
-            _seedDataBusiness.SeedingContentDb(installDto, contentDbScript);
-
-            var identityPrepareScript = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-            _seedDataBusiness.SeedingIdentityData(installDto, identityPrepareScript);
+            _seedDataBusiness.SeedingContentDb(contentDbScript);
 
             var initialUser = new ApplicationUser()
             {
                 BirthDate = DateTime.UtcNow.AddYears(-10),
                 DisplayName = $"Trung Le",
-                Email = installDto.AdminEmail,
+                Email = setupModel.AdminEmail,
                 Firstname = "Le",
                 Lastname = "Trung",
                 StatusId = (byte)UserStatusEnum.New,
-                UserName = installDto.AdminEmail,
+                UserName = setupModel.AdminEmail,
             };
 
-            initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, installDto.AdminPassword);
+            initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, setupModel.AdminPassword);
             _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
 
-            var userDto = _mapper.Map<UserDto>(initialUser);
-            _seedDataBusiness.CreateInitialUser(userDto);
-            return View();
+            // Get Identity json data
+            var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
+            var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
+            setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
+
+            _seedDataBusiness.PrepareIdentityData(setupDto);
+            _setupProvider.SetDatabaseHasBeenSetup();
+            return RedirectToAction("Login", "Authentication");
         }
     }
 }

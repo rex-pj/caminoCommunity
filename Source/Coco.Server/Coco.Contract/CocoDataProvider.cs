@@ -17,8 +17,9 @@ using System.Text;
 
 namespace Coco.Contract
 {
-    public abstract class CocoDataProvider
+    public abstract class CocoDataProvider : IDisposable
     {
+        private bool _disposed;
         private readonly DataConnection _dataConnection;
         private readonly IDataProvider _dataProvider;
         protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
@@ -34,6 +35,13 @@ namespace Coco.Contract
                 OnMappingSchemaCreating(MappingSchemaBuilder);
                 AllowMultipleQuery();
             }
+        }
+
+        public DataConnection CreateDataConnection()
+        {
+            var dataConnection = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
+
+            return dataConnection;
         }
 
         internal static void AllowMultipleQuery()
@@ -155,13 +163,6 @@ namespace Coco.Contract
         public async Task DeleteRangeAsync<TEntity>(IQueryable<TEntity> entities)
         {
             await entities.DeleteAsync();
-        }
-
-        public DataConnection CreateDataConnection()
-        {
-            var dataContext = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
-
-            return dataContext;
         }
 
         public SqlConnectionStringBuilder GetConnectionStringBuilder()
@@ -287,6 +288,20 @@ namespace Coco.Contract
 
             var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
             propertyInfo.SetValue(entity, Convert.ChangeType(value, propertyType), null);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                Singleton<MappingSchemaBuilder>.Instance = null;
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }
