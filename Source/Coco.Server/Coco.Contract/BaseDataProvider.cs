@@ -9,49 +9,57 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using LinqToDB.Mapping;
 using LinqToDB.DataProvider.SqlServer;
 using LinqToDB.DataProvider;
 using System.Text.RegularExpressions;
 using System.Text;
+using LinqToDB.Mapping;
 
 namespace Coco.Contract
 {
-    public abstract class CocoDataProvider : IDisposable
+    public abstract class BaseDataProvider
     {
-        private bool _disposed;
-        private readonly DataConnection _dataConnection;
+        protected readonly DataConnection _dataConnection;
         private readonly IDataProvider _dataProvider;
         protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
-        protected CocoDataProvider(DataConnection dataConnection)
+        protected BaseDataProvider(DataConnection dataConnection)
         {
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
             _dataConnection = dataConnection;
-            var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            if (Singleton<MappingSchemaBuilder>.Instance is null)
+            
+            if (Singleton<MappingSchema>.Instance == null)
             {
-                Singleton<MappingSchemaBuilder>.Instance = new MappingSchemaBuilder(fluentMappingBuilder);
-                MappingSchemaBuilder = Singleton<MappingSchemaBuilder>.Instance;
-                OnMappingSchemaCreating(MappingSchemaBuilder);
-                AllowMultipleQuery();
+                LoadMappingSchemaBuilder();
             }
+
+            OnMappingSchemaCreated();
+            AllowMultipleQuery();
+        }
+
+        private void LoadMappingSchemaBuilder()
+        {
+            var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
+            MappingSchemaBuilder = new MappingSchemaBuilder(fluentMappingBuilder);
+            OnMappingSchemaCreating();
+            Singleton<MappingSchema>.Instance = _dataConnection.MappingSchema;
+        }
+
+        protected abstract void OnMappingSchemaCreating();
+
+        private void OnMappingSchemaCreated()
+        {
+            _dataConnection.AddMappingSchema(Singleton<MappingSchema>.Instance);
         }
 
         public DataConnection CreateDataConnection()
         {
             var dataConnection = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
-
             return dataConnection;
         }
 
         internal static void AllowMultipleQuery()
         {
             Configuration.Linq.AllowMultipleQuery = true;
-        }
-
-        protected virtual void OnMappingSchemaCreating(MappingSchemaBuilder builder)
-        {
-            _dataConnection.AddMappingSchema(builder.FluentMappingBuilder.MappingSchema);
         }
 
         public bool IsDatabaseExist()
@@ -288,20 +296,6 @@ namespace Coco.Contract
 
             var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
             propertyInfo.SetValue(entity, Convert.ChangeType(value, propertyType), null);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && !_disposed)
-            {
-                Singleton<MappingSchemaBuilder>.Instance = null;
-                _disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
         }
     }
 }

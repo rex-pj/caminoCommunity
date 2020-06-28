@@ -1,4 +1,5 @@
-﻿using Coco.Entities.Dtos.Auth;
+﻿using Coco.Entities.Domain.Identity;
+using Coco.Entities.Dtos.Auth;
 using Coco.Entities.Dtos.User;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace Coco.Entities.Dtos.General
         public IEnumerable<GenderDto> Genders { get; set; }
         public IEnumerable<StatusDto> Statuses { get; set; }
         public IEnumerable<RoleDto> Roles { get; set; }
+        public IEnumerable<AuthorizationPolicy> AuthorizationPolicies { get; set; }
     }
 }

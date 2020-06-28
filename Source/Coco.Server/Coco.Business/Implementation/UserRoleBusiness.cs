@@ -24,13 +24,13 @@ namespace Coco.Business.Implementation
 
         public async Task<IList<UserRoleDto>> GetUserRolesAsync(long userId)
         {
-            var userRoles = (await _userRoleRepository.GetAsync(x => x.UserId == userId))
+            var userRoles = await _userRoleRepository.Get(x => x.UserId == userId)
                 .Select(x => new UserRoleDto()
                 {
                     RoleId = x.RoleId,
                     RoleName = x.Role.Name,
                     UserId = x.UserId
-                }).ToList();
+                }).ToListAsync();
 
             return userRoles;
         }

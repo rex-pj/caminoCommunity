@@ -2,7 +2,7 @@
 
 namespace Coco.DAL.Contracts
 {
-    public interface IContentDataProvider : ICocoDataProvider
+    public interface IContentDataProvider : IBaseDataProvider
     {
     }
 }

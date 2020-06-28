@@ -5,20 +5,20 @@ using Coco.DAL.Mapping;
 
 namespace Coco.DAL.Implementations
 {
-    public class ContentDataProvider : CocoDataProvider, IContentDataProvider
+    public class ContentDataProvider : BaseDataProvider, IContentDataProvider
     {
         public ContentDataProvider(ContentDbConnection dataConnection) : base(dataConnection)
         {
 
         }
 
-        protected override void OnMappingSchemaCreating(MappingSchemaBuilder builder)
+        protected override void OnMappingSchemaCreating()
         {
-            var fluentBuilder = builder.FluentMappingBuilder;
-            builder.ApplyMappingBuilder(new ArticleCategoryMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserPhotoMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserPhotoTypeMap(fluentBuilder));
-            base.OnMappingSchemaCreating(builder);
+            var fluentBuilder = MappingSchemaBuilder.FluentMappingBuilder;
+            MappingSchemaBuilder.ApplyMappingBuilder(new ArticleCategoryMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoTypeMap(fluentBuilder));
+            //base.OnMappingSchemaCreating();
         }
     }
 }

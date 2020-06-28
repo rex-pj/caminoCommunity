@@ -50,6 +50,152 @@
       "Description": "The approver"
     }
   ],
+  "AuthorizationPolicies": [
+    {
+      "Name": "CanCreateArticleCategory",
+      "Description": "Can create article category"
+    },
+    {
+      "Name": "CanReadArticleCategory",
+      "Description": "Can read article category"
+    },
+    {
+      "Name": "CanUpdateArticleCategory",
+      "Description": "Can update article category"
+    },
+    {
+      "Name": "CanDeleteArticleCategory",
+      "Description": "Can delete article category"
+    },
+    {
+      "Name": "CanCreateArticle",
+      "Description": "Can create article"
+    },
+    {
+      "Name": "CanReadArticle",
+      "Description": "Can read article"
+    },
+    {
+      "Name": "CanUpdateArticle",
+      "Description": "Can update article"
+    },
+    {
+      "Name": "CanDeleteArticle",
+      "Description": "Can delete article"
+    },
+    {
+      "Name": "CanCreateUser",
+      "Description": "Can create user"
+    },
+    {
+      "Name": "CanReadUser",
+      "Description": "Can read user"
+    },
+    {
+      "Name": "CanUpdateUser",
+      "Description": "Can update user"
+    },
+    {
+      "Name": "CanDeleteUser",
+      "Description": "Can delete user"
+    },
+    {
+      "Name": "CanCreateUserStatus",
+      "Description": "Can create user status"
+    },
+    {
+      "Name": "CanReadUserStatus",
+      "Description": "Can read user status"
+    },
+    {
+      "Name": "CanUpdateUserStatus",
+      "Description": "Can update user status"
+    },
+    {
+      "Name": "CanDeleteUserStatus",
+      "Description": "Can delete user status"
+    },
+    {
+      "Name": "CanCreateRole",
+      "Description": "Can create role"
+    },
+    {
+      "Name": "CanReadRole",
+      "Description": "Can read role"
+    },
+    {
+      "Name": "CanUpdateRole",
+      "Description": "Can update role"
+    },
+    {
+      "Name": "CanDeleteRole",
+      "Description": "Can delete role"
+    },
+    {
+      "Name": "CanCreateUserRole",
+      "Description": "Can create user role"
+    },
+    {
+      "Name": "CanReadUserRole",
+      "Description": "Can read user role"
+    },
+    {
+      "Name": "CanUpdateUserRole",
+      "Description": "Can update user role"
+    },
+    {
+      "Name": "CanDeleteUserRole",
+      "Description": "Can delete user role"
+    },
+    {
+      "Name": "CanCreateAuthorizationPolicy",
+      "Description": "Can create authorization policy"
+    },
+    {
+      "Name": "CanReadAuthorizationPolicy",
+      "Description": "Can read authorization policy"
+    },
+    {
+      "Name": "CanUpdateAuthorizationPolicy",
+      "Description": "Can update authorization policy"
+    },
+    {
+      "Name": "CanDeleteAuthorizationPolicy",
+      "Description": "Can delete authorization policy"
+    },
+    {
+      "Name": "CanCreateUserAuthorizationPolicy",
+      "Description": "Can create user authorization policy"
+    },
+    {
+      "Name": "CanReadUserAuthorizationPolicy",
+      "Description": "Can read user authorization policy"
+    },
+    {
+      "Name": "CanUpdateUserAuthorizationPolicy",
+      "Description": "Can update user authorization policy"
+    },
+    {
+      "Name": "CanDeleteUserAuthorizationPolicy",
+      "Description": "Can delete user authorization policy"
+    },
+    {
+      "Name": "CanCreateRoleAuthorizationPolicy",
+      "Description": "Can create role authorization policy"
+    },
+    {
+      "Name": "CanReadRoleAuthorizationPolicy",
+      "Description": "Can read role authorization policy"
+    },
+    {
+      "Name": "CanUpdateRoleAuthorizationPolicy",
+      "Description": "Can update role authorization policy"
+    },
+    {
+      "Name": "CanDeleteRoleAuthorizationPolicy",
+      "Description": "Can delete role authorization policy"
+    }
+  ],
   "Countries": [
     {
       "Code": "AFG",

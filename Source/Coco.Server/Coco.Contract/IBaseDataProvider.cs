@@ -1,6 +1,5 @@
 ﻿using LinqToDB;
 using LinqToDB.Data;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Coco.Contract
 {
-    public interface ICocoDataProvider : IDisposable
+    public interface IBaseDataProvider
     {
         ITable<TEntity> GetTable<TEntity>() where TEntity : class;
         void InsertRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;

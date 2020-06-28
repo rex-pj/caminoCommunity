@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Contract;
+using Coco.Contract.MapBuilder;
 using Coco.DAL.Contracts;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.General;
@@ -9,6 +10,7 @@ using Coco.IdentityDAL.Contracts;
 using LinqToDB;
 using LinqToDB.Data;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Coco.Business.Implementation
@@ -57,7 +59,7 @@ namespace Coco.Business.Implementation
             CreateDataByScript(_contentDataProvider, sql);
         }
 
-        private void CreateDatabase(ICocoDataProvider dataProvider)
+        private void CreateDatabase(IBaseDataProvider dataProvider)
         {
             var builder = dataProvider.GetConnectionStringBuilder();
             var databaseName = builder.InitialCatalog;
@@ -72,7 +74,7 @@ namespace Coco.Business.Implementation
             }
         }
 
-        private void CreateDataByScript(ICocoDataProvider dataProvider, string sql)
+        private void CreateDataByScript(IBaseDataProvider dataProvider, string sql)
         {
             using (var dataConnection = dataProvider.CreateDataConnection())
             {
@@ -93,7 +95,7 @@ namespace Coco.Business.Implementation
                     var statusTableName = nameof(Status);
                     // Insert user statuses
                     int activedStatusId = 0;
-                    foreach(var statusDto in installationDto.Statuses)
+                    foreach (var statusDto in installationDto.Statuses)
                     {
                         var status = new Status()
                         {
@@ -111,11 +113,11 @@ namespace Coco.Business.Implementation
                         }
                     }
 
-                    if(activedStatusId == 0)
+                    if (activedStatusId == 0)
                     {
                         return;
                     }
-                    
+
                     // Insert genders
                     var genderTableName = nameof(Gender);
                     foreach (var gender in installationDto.Genders)
@@ -154,16 +156,76 @@ namespace Coco.Business.Implementation
 
                             // Insert roles
                             var roleTableName = nameof(Role);
+                            var adminRoleId = 0;
                             foreach (var role in installationDto.Roles)
                             {
-                                dataConnection.Insert(new Role()
+                                var newRole = new Role()
                                 {
                                     Name = role.Name,
                                     Description = role.Description,
                                     CreatedById = userId,
-                                    UpdatedById = userId,
-                                }, roleTableName);
+                                    UpdatedById = userId
+                                };
+
+                                if (role.Name == "Admin")
+                                {
+                                    adminRoleId = dataConnection.Insert(newRole, roleTableName);
+                                }
+                                else
+                                {
+                                    dataConnection.Insert(newRole, roleTableName);
+                                }
                             }
+
+                            if (adminRoleId > 0)
+                            {
+                                var adminUserRole = new UserRole()
+                                {
+                                    UserId = userId,
+                                    GrantedById = userId,
+                                    GrantedDate = DateTime.UtcNow,
+                                    IsGranted = true,
+                                    RoleId = adminRoleId
+                                };
+
+                                var userRoleTableName = nameof(UserRole);
+                                dataConnection.Insert(adminUserRole, userRoleTableName);
+                            }
+
+                            var authorizationPolicyTableName = nameof(AuthorizationPolicy);
+                            foreach (var authorizationPolicy in installationDto.AuthorizationPolicies)
+                            {
+                                dataConnection.Insert(new AuthorizationPolicy()
+                                {
+                                    Name = authorizationPolicy.Name,
+                                    Description = authorizationPolicy.Description,
+                                    CreatedById = userId,
+                                    CreatedDate = DateTime.UtcNow,
+                                    UpdatedById = userId,
+                                    UpdatedDate = DateTime.UtcNow,
+                                    AuthorizationPolicyRoles = new List<RoleAuthorizationPolicy>()
+                                    {
+                                        new RoleAuthorizationPolicy()
+                                        {
+                                            GrantedById = userId,
+                                            GrantedDate = DateTime.UtcNow,
+                                            IsGranted = true,
+                                            RoleId = adminRoleId,
+                                        }
+                                    },
+                                    AuthorizationPolicyUsers = new List<UserAuthorizationPolicy>()
+                                    {
+                                        new UserAuthorizationPolicy()
+                                        {
+                                            GrantedById = userId,
+                                            GrantedDate = DateTime.UtcNow,
+                                            IsGranted = true,
+                                            UserId = userId,
+                                        }
+                                    }
+                                }, authorizationPolicyTableName);
+                            }
+
                             transaction.Commit();
                         }
                         else
@@ -177,7 +239,6 @@ namespace Coco.Business.Implementation
                     }
                 }
             }
-            _identityDataProvider.Dispose();
         }
     }
 }

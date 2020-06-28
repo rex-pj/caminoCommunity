@@ -5,33 +5,31 @@ using Coco.IdentityDAL.Mapping;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityDataProvider : CocoDataProvider, IIdentityDataProvider
+    public class IdentityDataProvider : BaseDataProvider, IIdentityDataProvider
     {
         public IdentityDataProvider(IdentityDbConnection dataConnection) : base(dataConnection)
         {
 
         }
 
-        protected override void OnMappingSchemaCreating(MappingSchemaBuilder builder)
+        protected override void OnMappingSchemaCreating()
         {
-            var fluentBuilder = builder.FluentMappingBuilder;
-            builder.ApplyMappingBuilder(new UserMap(builder.FluentMappingBuilder));
-            builder.ApplyMappingBuilder(new UserInfoMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new AuthorizationPolicyMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new CountryMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new GenderMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new RoleAuthorizationPolicyMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new RoleClaimMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new RoleMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new StatusMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserAttributeMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserAuthorizationPolicyMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserClaimMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserLoginMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserRoleMap(fluentBuilder));
-            builder.ApplyMappingBuilder(new UserTokenMap(fluentBuilder));
-
-            base.OnMappingSchemaCreating(builder);
+            var fluentBuilder = MappingSchemaBuilder.FluentMappingBuilder;
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserInfoMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new AuthorizationPolicyMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new CountryMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new GenderMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new RoleAuthorizationPolicyMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new RoleClaimMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new RoleMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new StatusMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserAttributeMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserAuthorizationPolicyMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserClaimMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserLoginMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserRoleMap(fluentBuilder));
+            MappingSchemaBuilder.ApplyMappingBuilder(new UserTokenMap(fluentBuilder));
         }
     }
 }
