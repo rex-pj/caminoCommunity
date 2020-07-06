@@ -38,7 +38,7 @@ namespace Coco.Framework.Providers.Implementation
                 _setupSettings.HasSetupDatabase = true;
                 SaveSettings(_setupSettings, filePath);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _setupSettings.HasSetupDatabase = false;
             }

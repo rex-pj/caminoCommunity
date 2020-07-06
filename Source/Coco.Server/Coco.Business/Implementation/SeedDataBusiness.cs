@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Contract.MapBuilder;
 using Coco.DAL.Contracts;
 using Coco.Entities.Domain.Identity;
 using Coco.Entities.Dtos.General;
-using Coco.Entities.Dtos.User;
 using Coco.IdentityDAL.Contracts;
 using LinqToDB;
 using LinqToDB.Data;
@@ -139,6 +137,7 @@ namespace Coco.Business.Implementation
                         }, countryTableName);
                     }
 
+                    // Insert user
                     var userDto = installationDto.InitualUser;
                     var user = _mapper.Map<User>(userDto);
                     var userInfo = _mapper.Map<UserInfo>(userDto);
@@ -179,6 +178,7 @@ namespace Coco.Business.Implementation
 
                             if (adminRoleId > 0)
                             {
+                                // Insert user role
                                 var adminUserRole = new UserRole()
                                 {
                                     UserId = userId,
@@ -192,6 +192,7 @@ namespace Coco.Business.Implementation
                                 dataConnection.Insert(adminUserRole, userRoleTableName);
                             }
 
+                            // Insert authorization policies
                             var authorizationPolicyTableName = nameof(AuthorizationPolicy);
                             foreach (var authorizationPolicy in installationDto.AuthorizationPolicies)
                             {

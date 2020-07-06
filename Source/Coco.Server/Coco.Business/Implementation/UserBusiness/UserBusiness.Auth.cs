@@ -45,7 +45,7 @@ namespace Coco.Business.Implementation.UserBusiness
                         transaction.Rollback();
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
                 }
@@ -80,7 +80,6 @@ namespace Coco.Business.Implementation.UserBusiness
             {
                 Id = user.Id
             };
-
         }
         #endregion
 
