@@ -15,41 +15,34 @@ namespace Api.Auth.GraphQLTypes
             descriptor.Field<IUserResolver>(x => x.UpdateUserInfoItemAsync(default))
                 .Type<ItemUpdatedResultType>()
                 .Argument("criterias", a => a.Type<UpdatePerItemInputType>())
-                .Directive<AuthenticationDirectiveType>()
-                .Resolver(ctx => ctx.Service<IUserResolver>().UpdateUserInfoItemAsync(ctx));
+                .Directive<AuthenticationDirectiveType>();
 
             descriptor.Field<IUserResolver>(x => x.UpdateIdentifierAsync(default))
                 .Type<UserIdentifierUpdateResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<UserIdentifierUpdateInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().UpdateIdentifierAsync(ctx));
+                .Argument("criterias", a => a.Type<UserIdentifierUpdateInputType>());
 
             descriptor.Field<IUserResolver>(x => x.UpdatePasswordAsync(default))
                 .Type<UserTokenResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<NonNullType<UserPasswordUpdateInputType>>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().UpdatePasswordAsync(ctx));
+                .Argument("criterias", a => a.Type<NonNullType<UserPasswordUpdateInputType>>());
 
             // Public mutation
             descriptor.Field<IUserResolver>(x => x.SignupAsync(default))
                 .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<SignupInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().SignupAsync(ctx));
+                .Argument("criterias", a => a.Type<SignupInputType>());
 
             descriptor.Field<IUserResolver>(x => x.SigninAsync(default))
                 .Type<UserTokenResultType>()
-                .Argument("criterias", a => a.Type<SigninInputType>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().SigninAsync(ctx));
+                .Argument("criterias", a => a.Type<SigninInputType>());
 
             descriptor.Field<IUserResolver>(x => x.ForgotPasswordAsync(default))
                 .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<NonNullType<ForgotPasswordInputType>>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().ForgotPasswordAsync(ctx));
+                .Argument("criterias", a => a.Type<NonNullType<ForgotPasswordInputType>>());
 
             descriptor.Field<IUserResolver>(x => x.ResetPasswordAsync(default))
                 .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<NonNullType<ResetPasswordInputType>>())
-                .Resolver(ctx => ctx.Service<IUserResolver>().ResetPasswordAsync(ctx));
+                .Argument("criterias", a => a.Type<NonNullType<ResetPasswordInputType>>());
         }
     }
 }

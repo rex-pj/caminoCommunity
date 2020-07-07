@@ -12,32 +12,27 @@ namespace Api.Content.GraphQLTypes
         {
             descriptor.Field<IImageResolver>(x => x.ValidateImageUrl(default))
                 .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<ImageValidationInputType>())
-                .Resolver(ctx => ctx.Service<IImageResolver>().ValidateImageUrl(ctx));
+                .Argument("criterias", a => a.Type<ImageValidationInputType>());
 
             descriptor.Field<IUserPhotoResolver>(x => x.UpdateAvatarAsync(default))
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>())
-                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().UpdateAvatarAsync(ctx));
+                .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>());
 
             descriptor.Field<IUserPhotoResolver>(x => x.UpdateCoverAsync(default))
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>())
-                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().UpdateCoverAsync(ctx));
+                .Argument("criterias", a => a.Type<UserPhotoUpdateInputType>());
 
             descriptor.Field<IUserPhotoResolver>(x => x.DeleteAvatarAsync(default))
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>())
-                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().DeleteAvatarAsync(ctx));
+                .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
 
             descriptor.Field<IUserPhotoResolver>(x => x.DeleteCoverAsync(default))
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>())
-                .Resolver(ctx => ctx.Service<IUserPhotoResolver>().DeleteCoverAsync(ctx));
+                .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
         }
     }
 }

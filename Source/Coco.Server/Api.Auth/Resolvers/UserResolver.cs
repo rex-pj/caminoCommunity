@@ -6,7 +6,6 @@ using Coco.Entities.Dtos.General;
 using System;
 using System.Threading.Tasks;
 using Api.Auth.Resolvers.Contracts;
-using HotChocolate.Resolvers;
 using Api.Auth.Models;
 using Coco.Business.Contracts;
 using Coco.Framework.SessionManager.Core;
@@ -53,15 +52,9 @@ namespace Api.Auth.Resolvers
             _emailSender = emailSender;
         }
 
-        public FullUserInfoModel GetLoggedUser(IResolverContext context)
+        public FullUserInfoModel GetLoggedUser()
         {
             return _mapper.Map<FullUserInfoModel>(CurrentUser);
-        }
-
-        public async Task<FullUserInfoModel> GetFullUserInfoAsync(IResolverContext context)
-        {
-            var criterias = context.Argument<FindUserModel>("criterias");
-            return await GetFullUserInfoAsync(criterias);
         }
 
         public async Task<FullUserInfoModel> GetFullUserInfoAsync(FindUserModel criterias)
@@ -86,34 +79,27 @@ namespace Api.Auth.Resolvers
             return userInfo;
         }
 
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(IResolverContext context)
+        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(UpdatePerItemModel criterias)
         {
             try
             {
-                var criterias = context.Argument<UpdatePerItemModel>("criterias");
-                return await UpdateUserInfoItemAsync(criterias);
+                ValidateUserInfoItem(criterias);
+
+                var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
+                if (userId != CurrentUser.Id)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var updatePerItem = _mapper.Map<UpdatePerItemDto>(criterias);
+                updatePerItem.Key = userId;
+                var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
+                return _mapper.Map<UpdatePerItemModel>(updatedItem);
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
-            }
-        }
-
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(UpdatePerItemModel criterias)
-        {
-            ValidateUserInfoItem(criterias);
-
-            var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
-            if (userId != CurrentUser.Id)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var updatePerItem = _mapper.Map<UpdatePerItemDto>(criterias);
-            updatePerItem.Key = userId;
-            var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
-            return _mapper.Map<UpdatePerItemModel>(updatedItem);
+                throw ex;
+            }            
         }
 
         private void ValidateUserInfoItem(UpdatePerItemModel criterias)
@@ -134,7 +120,7 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<ICommonResult> SignoutAsync(IResolverContext context)
+        public async Task<ICommonResult> SignoutAsync()
         {
             try
             {
@@ -151,16 +137,14 @@ namespace Api.Auth.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(IResolverContext context)
+        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto criterias)
         {
             try
             {
-                var criterias = context.Argument<UserIdentifierUpdateDto>("criterias");
                 CurrentUser.Lastname = criterias.Lastname;
                 CurrentUser.Firstname = criterias.Firstname;
                 CurrentUser.DisplayName = criterias.DisplayName;
@@ -180,22 +164,19 @@ namespace Api.Auth.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<UserTokenResult> UpdatePasswordAsync(IResolverContext context)
+        public async Task<UserTokenResult> UpdatePasswordAsync(UserPasswordUpdateDto criterias)
         {
             try
             {
-                var criterias = context.Argument<UserPasswordUpdateDto>("criterias");
                 ComparePassword(criterias);
 
-                var result = await UpdatePasswordAsync(criterias);
+                var result = await _userManager.ChangePasswordAsync(CurrentUser, criterias.CurrentPassword, criterias.NewPassword);
                 if (!result.Succeeded)
                 {
-                    HandleContextError(context, result.Errors);
                     return new UserTokenResult(false);
                 }
 
@@ -209,15 +190,8 @@ namespace Api.Auth.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
                 return new UserTokenResult(false);
             }
-        }
-
-        public async Task<IdentityResult> UpdatePasswordAsync(UserPasswordUpdateDto criterias)
-        {
-            var result = await _userManager.ChangePasswordAsync(CurrentUser, criterias.CurrentPassword, criterias.NewPassword);
-            return result;
         }
 
         private void ComparePassword(UserPasswordUpdateDto criterias)
@@ -228,18 +202,17 @@ namespace Api.Auth.Resolvers
             }
         }
 
-        public async Task<UserTokenResult> SigninAsync(IResolverContext context)
+        public async Task<UserTokenResult> SigninAsync(SigninModel criterias)
         {
             try
             {
-                var model = context.Argument<SigninModel>("criterias");
-                var result = await _loginManager.PasswordSignInAsync(model.Username, model.Password, true, true);
+                var result = await _loginManager.PasswordSignInAsync(criterias.Username, criterias.Password, true, true);
                 if (!result.Succeeded)
                 {
                     throw new UnauthorizedAccessException();
                 }
 
-                var user = await _userManager.FindByNameAsync(model.Username);
+                var user = await _userManager.FindByNameAsync(criterias.Username);
                 var token = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, Coco.Framework.SessionManager.Core.IdentitySettings.AUTHENTICATION_TOKEN_PURPOSE);
                 await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.COCO_API_AUTH, token, Coco.Framework.SessionManager.Core.IdentitySettings.AUTHENTICATION_TOKEN_PURPOSE));
 
@@ -256,29 +229,27 @@ namespace Api.Auth.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<ICommonResult> SignupAsync(IResolverContext context)
+        public async Task<ICommonResult> SignupAsync(SignupModel criterias)
         {
-            var model = context.Argument<SignupModel>("criterias");
             var user = new ApplicationUser()
             {
-                BirthDate = model.BirthDate,
-                DisplayName = $"{model.Lastname} {model.Firstname}",
-                Email = model.Email,
-                Firstname = model.Firstname,
-                Lastname = model.Lastname,
-                GenderId = (byte)model.GenderId,
+                BirthDate = criterias.BirthDate,
+                DisplayName = $"{criterias.Lastname} {criterias.Firstname}",
+                Email = criterias.Email,
+                Firstname = criterias.Firstname,
+                Lastname = criterias.Lastname,
+                GenderId = (byte)criterias.GenderId,
                 StatusId = (byte)UserStatusEnum.New,
-                UserName = model.Email,
+                UserName = criterias.Email,
             };
 
             try
             {
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, criterias.Password);
                 if (result.Succeeded)
                 {
                     user = await _userManager.FindByNameAsync(user.UserName);
@@ -287,7 +258,10 @@ namespace Api.Auth.Resolvers
                 }
                 else
                 {
-                    HandleContextError(context, result.Errors);
+                    return CommonResult.Failed(result.Errors.Select(x => new CommonError() { 
+                        Code = x.Code,
+                        Message = x.Description
+                    }));
                 }
 
                 return CommonResult.Success();
@@ -315,13 +289,12 @@ namespace Api.Auth.Resolvers
             }, TextFormat.Html);
         }
 
-        public async Task<ICommonResult> ActiveAsync(IResolverContext context)
+        public async Task<ICommonResult> ActiveAsync(ActiveUserModel criterias)
         {
-            var model = context.Argument<ActiveUserModel>("criterias");
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(criterias.Email);
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                var result = await _userManager.ConfirmEmailAsync(user, model.ActiveKey);
+                var result = await _userManager.ConfirmEmailAsync(user, criterias.ActiveKey);
                 if (result.Succeeded)
                 {
                     return CommonResult.Success();
@@ -342,45 +315,40 @@ namespace Api.Auth.Resolvers
             });
         }
 
-        public async Task<ICommonResult> ForgotPasswordAsync(IResolverContext context)
+        public async Task<ICommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
         {
             try
             {
-                var criterias = context.Argument<ForgotPasswordModel>("criterias");
-                var result = await ForgotPasswordAsync(criterias);
+                ValidateForgotPassword(criterias);
+
+                var user = await _userManager.FindByEmailAsync(criterias.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    throw new CocoApplicationException("ForgotPasswordConfirmation");
+                }
+
+                var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, Coco.Framework.SessionManager.Core.IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
+
                 if (!result.Succeeded)
                 {
-                    HandleContextError(context, result.Errors);
+                    var errors = result.Errors.Select(x => new CommonError()
+                    {
+                        Message = x.Description,
+                        Code = x.Code
+                    });
+                    return CommonResult.Failed(errors);
                 }
+
+                await SendPasswordChangeAsync(criterias, user, resetPasswordToken);
 
                 return CommonResult.Success();
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
+                throw ex;
                 throw;
             }
-        }
-
-        public async Task<IdentityResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
-        {
-            ValidateForgotPassword(criterias);
-
-            var user = await _userManager.FindByEmailAsync(criterias.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-            {
-                throw new CocoApplicationException("ForgotPasswordConfirmation");
-            }
-
-            var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, Coco.Framework.SessionManager.Core.IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
-
-            if (result.Succeeded)
-            {
-                await SendPasswordChangeAsync(criterias, user, resetPasswordToken);
-            }
-
-            return result;
         }
 
         private void ValidateForgotPassword(ForgotPasswordModel criterias)
@@ -405,41 +373,36 @@ namespace Api.Auth.Resolvers
             }, TextFormat.Html);
         }
 
-        public async Task<ICommonResult> ResetPasswordAsync(IResolverContext context)
+        public async Task<ICommonResult> ResetPasswordAsync(ResetPasswordModel criterias)
         {
             try
             {
-                var criterias = context.Argument<ResetPasswordModel>("criterias");
-                var result = await ResetPasswordAsync(criterias);
+                ValidateResetPassword(criterias);
+                var user = await _userManager.FindByEmailAsync(criterias.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    throw new UnauthorizedAccessException("ResetPasswordFailed");
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, criterias.Key, criterias.Password);
                 if (!result.Succeeded)
                 {
-                    HandleContextError(context, result.Errors);
+                    var errors = result.Errors.Select(x => new CommonError()
+                    {
+                        Message = x.Description,
+                        Code = x.Code
+                    });
+
+                    return CommonResult.Failed(errors);
                 }
+                await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, criterias.Key);
+
                 return CommonResult.Success();
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                throw;
+                throw ex;
             }
-        }
-
-        public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordModel criterias)
-        {
-            ValidateResetPassword(criterias);
-            var user = await _userManager.FindByEmailAsync(criterias.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-            {
-                throw new UnauthorizedAccessException("ResetPasswordFailed");
-            }
-
-            var result = await _userManager.ResetPasswordAsync(user, criterias.Key, criterias.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.COCO_API_AUTH, criterias.Key);
-            }
-
-            return result;
         }
 
         private void ValidateResetPassword(ResetPasswordModel criterias)

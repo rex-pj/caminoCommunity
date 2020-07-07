@@ -29,9 +29,8 @@ namespace Api.Auth.Resolvers
             _mapper = mapper;
         }
 
-        public async Task<UserAvatarModel> GetUserAvatar(IResolverContext context)
+        public async Task<UserAvatarModel> GetUserAvatar(FindUserModel criterias)
         {
-            var criterias = context.Argument<FindUserModel>("criterias");
             if (CurrentUser != null)
             {
                 var userId = CurrentUser.Id;
@@ -45,9 +44,8 @@ namespace Api.Auth.Resolvers
             return null;
         }
 
-        public async Task<UserCoverModel> GetUserCover(IResolverContext context)
+        public async Task<UserCoverModel> GetUserCover(FindUserModel criterias)
         {
-            var criterias = context.Argument<FindUserModel>("criterias");
             if (CurrentUser != null)
             {
                 var userId = CurrentUser.Id;
@@ -61,9 +59,8 @@ namespace Api.Auth.Resolvers
             return null;
         }
 
-        public async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(IResolverContext context)
+        public async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(FindUserModel criterias)
         {
-            var criterias = context.Argument<FindUserModel>("criterias");
             if (CurrentUser != null)
             {
                 var userId = CurrentUser.Id;
