@@ -145,7 +145,7 @@ FOREIGN KEY (RoleId) REFERENCES dbo.[Role](Id);
 GO
 CREATE TABLE dbo.[AuthorizationPolicy]
 (
-	Id SMALLINT NOT NULL IDENTITY(1,1),
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	[Name] VARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(1000) NULL,
 	UpdatedDate DATETIME2 NOT NULL,
@@ -163,7 +163,7 @@ PRIMARY KEY (Id);
 GO
 CREATE TABLE dbo.UserAuthorizationPolicy
 (
-	AuthorizationPolicyId SMALLINT NOT NULL,
+	AuthorizationPolicyId BIGINT NOT NULL,
 	UserId BIGINT NOT NULL,
 	GrantedDate DATETIME2 NULL,
 	GrantedById BIGINT NOT NULL,
@@ -189,7 +189,7 @@ PRIMARY KEY (AuthorizationPolicyId, UserId);
 GO
 CREATE TABLE dbo.RoleAuthorizationPolicy
 (
-	AuthorizationPolicyId SMALLINT NOT NULL,
+	AuthorizationPolicyId BIGINT NOT NULL,
 	RoleId BIGINT NOT NULL,
 	GrantedDate DATETIME2 NULL,
 	GrantedById BIGINT NOT NULL,

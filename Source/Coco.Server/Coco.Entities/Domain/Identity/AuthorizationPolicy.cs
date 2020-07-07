@@ -6,7 +6,7 @@ namespace Coco.Entities.Domain.Identity
 {
     public class AuthorizationPolicy
     {
-        public short Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
