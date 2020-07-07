@@ -24,7 +24,7 @@ namespace Coco.Management.Controllers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(Policy = "CanViewArticleCategory")]
+        [ApplicationAuthorization(Policy = "CanReadArticleCategory")]
         public IActionResult Index()
         {
             var categories = _articleCategoryBusiness.GetFull();

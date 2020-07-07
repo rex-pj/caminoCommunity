@@ -19,7 +19,8 @@ namespace Coco.IdentityDAL.Mapping
                 .HasPrimaryKey(x => x.Id)
                 .Association(c => c.UserRoles, (role, userRoles) => role.Id == userRoles.RoleId)
                 .Association(c => c.CreatedBy, (role, createdBy) => role.CreatedById == createdBy.Id)
-                .Association(c => c.UpdatedBy, (role, updatedBy) => role.UpdatedById == updatedBy.Id);
+                .Association(c => c.UpdatedBy, (role, updatedBy) => role.UpdatedById == updatedBy.Id)
+                .Association(c => c.RoleAuthorizationPolicies, (role, roleAuthorizationPolicy) => role.Id == roleAuthorizationPolicy.RoleId);
         }
     }
 }

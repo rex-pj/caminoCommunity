@@ -6,7 +6,7 @@ namespace Coco.Entities.Domain.Identity
     public class UserAuthorizationPolicy
     {
         public long UserId { get; set; }
-        public short AuthorizationPolicyId { get; set; }
+        public long AuthorizationPolicyId { get; set; }
         [Required]
         public DateTime GrantedDate { get; set; }
         [Required]

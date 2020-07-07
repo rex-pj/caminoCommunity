@@ -196,35 +196,35 @@ namespace Coco.Business.Implementation
                             var authorizationPolicyTableName = nameof(AuthorizationPolicy);
                             foreach (var authorizationPolicy in installationDto.AuthorizationPolicies)
                             {
-                                dataConnection.Insert(new AuthorizationPolicy()
+                                var authorizationPolicyId = dataConnection.InsertWithInt64Identity(new AuthorizationPolicy()
                                 {
                                     Name = authorizationPolicy.Name,
                                     Description = authorizationPolicy.Description,
                                     CreatedById = userId,
                                     CreatedDate = DateTime.UtcNow,
                                     UpdatedById = userId,
-                                    UpdatedDate = DateTime.UtcNow,
-                                    AuthorizationPolicyRoles = new List<RoleAuthorizationPolicy>()
-                                    {
-                                        new RoleAuthorizationPolicy()
-                                        {
-                                            GrantedById = userId,
-                                            GrantedDate = DateTime.UtcNow,
-                                            IsGranted = true,
-                                            RoleId = adminRoleId,
-                                        }
-                                    },
-                                    AuthorizationPolicyUsers = new List<UserAuthorizationPolicy>()
-                                    {
-                                        new UserAuthorizationPolicy()
-                                        {
-                                            GrantedById = userId,
-                                            GrantedDate = DateTime.UtcNow,
-                                            IsGranted = true,
-                                            UserId = userId,
-                                        }
-                                    }
+                                    UpdatedDate = DateTime.UtcNow
                                 }, authorizationPolicyTableName);
+
+                                var roleAuthorizationPolicyTableName = nameof(RoleAuthorizationPolicy);
+                                dataConnection.Insert(new RoleAuthorizationPolicy()
+                                {
+                                    GrantedById = userId,
+                                    GrantedDate = DateTime.UtcNow,
+                                    IsGranted = true,
+                                    RoleId = adminRoleId,
+                                    AuthorizationPolicyId = authorizationPolicyId
+                                }, roleAuthorizationPolicyTableName);
+
+                                var userAuthorizationPolicyTableName = nameof(UserAuthorizationPolicy);
+                                dataConnection.Insert(new UserAuthorizationPolicy()
+                                {
+                                    GrantedById = userId,
+                                    GrantedDate = DateTime.UtcNow,
+                                    IsGranted = true,
+                                    UserId = userId,
+                                    AuthorizationPolicyId = authorizationPolicyId
+                                }, userAuthorizationPolicyTableName);
                             }
 
                             transaction.Commit();
