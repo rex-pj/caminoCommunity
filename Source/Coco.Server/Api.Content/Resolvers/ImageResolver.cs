@@ -18,21 +18,20 @@ namespace Api.Content.Resolvers
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public ICommonResult ValidateImageUrl(IResolverContext context)
+        public ICommonResult ValidateImageUrl(ImageValidationModel criterias)
         {
-            var model = context.Argument<ImageValidationModel>("criterias");
             _validationStrategyContext.SetStrategy(new ImageUrlValidationStrategy());
-            if(model == null || string.IsNullOrEmpty(model.Url))
+            if(criterias == null || string.IsNullOrEmpty(criterias.Url))
             {
                 return CommonResult.Failed(new CommonError());
             }
 
-            bool canUpdate = _validationStrategyContext.Validate(model.Url);
+            bool canUpdate = _validationStrategyContext.Validate(criterias.Url);
 
             if (!canUpdate)
             {
                 _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
-                canUpdate = _validationStrategyContext.Validate(model.Url);
+                canUpdate = _validationStrategyContext.Validate(criterias.Url);
             }
 
             if (canUpdate)

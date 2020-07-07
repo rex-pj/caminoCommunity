@@ -22,45 +22,50 @@ namespace Api.Content.Resolvers
             _userPhotoBusiness = userPhotoBusiness;
         }
 
-        public async Task<ICommonResult> UpdateAvatarAsync(IResolverContext context)
+        public async Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdateDto criterias)
         {
             try
             {
-                var model = GenerateUserPhotoModel(context);
-                model.UserPhotoType = UserPhotoTypeEnum.Avatar;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, CurrentUser.Id);
+                if (!criterias.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                criterias.UserPhotoType = UserPhotoTypeEnum.Avatar;
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
 
                 return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<ICommonResult> UpdateCoverAsync(IResolverContext context)
+        public async Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdateDto criterias)
         {
             try
             {
-                var model = GenerateUserPhotoModel(context);
-                model.UserPhotoType = UserPhotoTypeEnum.Cover;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(model, CurrentUser.Id);
+                if (!criterias.CanEdit)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                criterias.UserPhotoType = UserPhotoTypeEnum.Cover;
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
 
                 return CommonResult.Success(result);
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<ICommonResult> DeleteAvatarAsync(IResolverContext context)
+        public async Task<ICommonResult> DeleteAvatarAsync(PhotoDeleteModel criterias)
         {
             try
             {
-                var criterias = context.Argument<PhotoDeleteModel>("criterias");
                 if (!criterias.CanEdit)
                 {
                     throw new UnauthorizedAccessException();
@@ -71,16 +76,14 @@ namespace Api.Content.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
 
-        public async Task<ICommonResult> DeleteCoverAsync(IResolverContext context)
+        public async Task<ICommonResult> DeleteCoverAsync(PhotoDeleteModel criterias)
         {
             try
             {
-                var criterias = context.Argument<PhotoDeleteModel>("criterias");
                 if (!criterias.CanEdit)
                 {
                     throw new UnauthorizedAccessException();
@@ -91,22 +94,8 @@ namespace Api.Content.Resolvers
             }
             catch (Exception ex)
             {
-                HandleContextError(context, ex);
-                return null;
+                throw ex;
             }
         }
-
-        #region Privates
-        private UserPhotoUpdateDto GenerateUserPhotoModel(IResolverContext context)
-        {
-            var model = context.Argument<UserPhotoUpdateDto>("criterias");
-            if (!model.CanEdit)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            return model;
-        }
-        #endregion
     }
 }

@@ -1,14 +1,15 @@
-﻿using Coco.Framework.Models;
-using HotChocolate.Resolvers;
+﻿using Api.Content.Models;
+using Coco.Entities.Dtos.General;
+using Coco.Framework.Models;
 using System.Threading.Tasks;
 
 namespace Api.Content.Resolvers.Contracts
 {
     public interface IUserPhotoResolver
     {
-        Task<ICommonResult> UpdateAvatarAsync(IResolverContext context);
-        Task<ICommonResult> UpdateCoverAsync(IResolverContext context);
-        Task<ICommonResult> DeleteAvatarAsync(IResolverContext context);
-        Task<ICommonResult> DeleteCoverAsync(IResolverContext context);
+        Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdateDto criterias);
+        Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdateDto criterias);
+        Task<ICommonResult> DeleteAvatarAsync(PhotoDeleteModel criterias);
+        Task<ICommonResult> DeleteCoverAsync(PhotoDeleteModel criterias);
     }
 }

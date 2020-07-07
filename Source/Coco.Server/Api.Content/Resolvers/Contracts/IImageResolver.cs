@@ -1,10 +1,10 @@
-﻿using Coco.Framework.Models;
-using HotChocolate.Resolvers;
+﻿using Api.Content.Models;
+using Coco.Framework.Models;
 
 namespace Api.Content.Resolvers.Contracts
 {
     public interface IImageResolver
     {
-        ICommonResult ValidateImageUrl(IResolverContext context);
+        ICommonResult ValidateImageUrl(ImageValidationModel criterias);
     }
 }
