@@ -17,21 +17,34 @@ namespace Coco.Business.Implementation
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        private readonly ContentDbConnection _contentDbContext;
 
         public ArticleCategoryBusiness(IMapper mapper, IRepository<ArticleCategory> articleCategoryRepository,
-            IRepository<User> userRepository, ContentDbConnection contentDbContext)
+            IRepository<User> userRepository)
         {
             _mapper = mapper;
             _articleCategoryRepository = articleCategoryRepository;
-            _contentDbContext = contentDbContext;
             _userRepository = userRepository;
         }
 
         public ArticleCategoryDto Find(int id)
         {
-            var exist = _articleCategoryRepository.Get(x => x.Id == id)
-                .FirstOrDefault();
+            var exist = (from child in _articleCategoryRepository.Table
+                        join parent in _articleCategoryRepository.Table
+                        on child.ParentId equals parent.Id into categories
+                        from cate in categories.DefaultIfEmpty()
+                        where cate.Id == id
+                        select new ArticleCategoryDto
+                        {
+                            Description = child.Description,
+                            CreatedDate = child.CreatedDate,
+                            CreatedById = child.CreatedById,
+                            Id = child.Id,
+                            Name = child.Name,
+                            ParentId = child.ParentId,
+                            UpdatedById = child.UpdatedById,
+                            UpdatedDate = child.UpdatedDate,
+                            ParentCategoryName = cate.Name
+                        }).FirstOrDefault();
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
             var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
@@ -39,10 +52,6 @@ namespace Coco.Business.Implementation
             var category = _mapper.Map<ArticleCategoryDto>(exist);
             category.CreatedBy = createdByUser.DisplayName;
             category.UpdatedBy = updatedByUser.DisplayName;
-            if (exist.ParentCategory != null)
-            {
-                category.ParentCategoryName = exist.ParentCategory.Name;
-            }
 
             return category;
         }
@@ -66,7 +75,7 @@ namespace Coco.Business.Implementation
                 Description = a.Description,
                 Id = a.Id,
                 Name = a.Name,
-                ParentCategoryId = a.ParentCategoryId,
+                ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
                 UpdatedDate = a.UpdatedDate
             }).ToList();
@@ -101,14 +110,14 @@ namespace Coco.Business.Implementation
             return categories;
         }
 
-        public long Add(ArticleCategoryDto category)
+        public int Add(ArticleCategoryDto category)
         {
             var newCategory = _mapper.Map<ArticleCategory>(category);
             newCategory.UpdatedDate = DateTime.UtcNow;
             newCategory.CreatedDate = DateTime.UtcNow;
 
-            _articleCategoryRepository.Add(newCategory);
-            return newCategory.Id;
+            var id = _articleCategoryRepository.Add(newCategory);
+            return (int)id;
         }
 
         public ArticleCategoryDto Update(ArticleCategoryDto category)
@@ -116,7 +125,7 @@ namespace Coco.Business.Implementation
             var exist = _articleCategoryRepository.FirstOrDefault(x => x.Id == category.Id);
             exist.Description = category.Description;
             exist.Name = category.Name;
-            exist.ParentCategoryId = category.ParentCategoryId;
+            exist.ParentId = category.ParentId;
             exist.UpdatedById = category.UpdatedById;
             exist.UpdatedDate = DateTime.UtcNow;
 

@@ -61,7 +61,7 @@ namespace Coco.Management.Controllers
         {
             var model = new AuthorizationPolicyViewModel()
             {
-                SelectPermissionMethods = EnumHelpers.ToSelectListItems<PermissionMethodEnum>()
+                SelectPermissionMethods = EnumHelpers.ToSelectListItems<PermissionMethod>()
             };
 
             return View(model);
@@ -73,7 +73,7 @@ namespace Coco.Management.Controllers
             var policy = _authorizationPolicyBusiness.Find(id);
             var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
 
-            var permissionMethod = EnumHelpers.FilterEnumByName<PermissionMethodEnum>(model.Name);
+            var permissionMethod = EnumHelpers.FilterEnumByName<PermissionMethod>(model.Name);
             model.SelectPermissionMethods = EnumHelpers.ToSelectListItems(permissionMethod);
             model.PermissionMethod = (int)permissionMethod;
             var permissionMethodName = permissionMethod.ToString();
@@ -87,7 +87,7 @@ namespace Coco.Management.Controllers
         {
             if (model.PermissionMethod > 0)
             {
-                var permissionMethod = (PermissionMethodEnum)model.PermissionMethod;
+                var permissionMethod = (PermissionMethod)model.PermissionMethod;
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 

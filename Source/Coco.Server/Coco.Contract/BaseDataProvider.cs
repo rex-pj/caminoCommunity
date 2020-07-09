@@ -17,7 +17,7 @@ using LinqToDB.Mapping;
 
 namespace Coco.Contract
 {
-    public abstract class BaseDataProvider
+    public abstract class BaseDataProvider<TMappingSchema>
     {
         protected readonly DataConnection _dataConnection;
         private readonly IDataProvider _dataProvider;
@@ -27,7 +27,7 @@ namespace Coco.Contract
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
             _dataConnection = dataConnection;
             
-            if (Singleton<MappingSchema>.Instance == null)
+            if (Singleton<TMappingSchema>.Instance == null)
             {
                 LoadMappingSchemaBuilder();
             }
@@ -36,7 +36,7 @@ namespace Coco.Contract
             AllowMultipleQuery();
         }
 
-        private void LoadMappingSchemaBuilder()
+        protected void LoadMappingSchemaBuilder()
         {
             var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
             MappingSchemaBuilder = new MappingSchemaBuilder(fluentMappingBuilder);
@@ -46,7 +46,7 @@ namespace Coco.Contract
 
         protected abstract void OnMappingSchemaCreating();
 
-        private void OnMappingSchemaCreated()
+        protected void OnMappingSchemaCreated()
         {
             _dataConnection.AddMappingSchema(Singleton<MappingSchema>.Instance);
         }

@@ -1,6 +1,6 @@
 ﻿namespace Coco.Management.Common.Enums
 {
-    public enum PermissionMethodEnum
+    public enum PermissionMethod
     {
         Restrict = 0,
         CanView = 1,
