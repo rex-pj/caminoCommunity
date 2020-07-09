@@ -5,7 +5,7 @@ using Coco.IdentityDAL.Mapping;
 
 namespace Coco.IdentityDAL.Implementations
 {
-    public class IdentityDataProvider : BaseDataProvider, IIdentityDataProvider
+    public class IdentityDataProvider : BaseDataProvider<IdentityMappingSchema>, IIdentityDataProvider
     {
         public IdentityDataProvider(IdentityDbConnection dataConnection) : base(dataConnection)
         {

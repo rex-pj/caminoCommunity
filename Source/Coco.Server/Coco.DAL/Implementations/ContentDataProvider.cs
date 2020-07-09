@@ -5,7 +5,7 @@ using Coco.DAL.Mapping;
 
 namespace Coco.DAL.Implementations
 {
-    public class ContentDataProvider : BaseDataProvider, IContentDataProvider
+    public class ContentDataProvider : BaseDataProvider<ContentMappingSchema>, IContentDataProvider
     {
         public ContentDataProvider(ContentDbConnection dataConnection) : base(dataConnection)
         {
@@ -18,7 +18,6 @@ namespace Coco.DAL.Implementations
             MappingSchemaBuilder.ApplyMappingBuilder(new ArticleCategoryMap(fluentBuilder));
             MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoMap(fluentBuilder));
             MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoTypeMap(fluentBuilder));
-            //base.OnMappingSchemaCreating();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Coco.Management.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder ConfigureManagementAppBuilder(this IApplicationBuilder app)
+        public static IApplicationBuilder UseManagementConfiguration(this IApplicationBuilder app)
         {
             app.UseHttpsRedirection();
             app.UseStaticFiles();

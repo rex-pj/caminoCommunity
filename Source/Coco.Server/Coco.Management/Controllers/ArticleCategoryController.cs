@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
+using Coco.Common.Enums;
 using Coco.Entities.Dtos.Content;
 using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
@@ -18,13 +19,13 @@ namespace Coco.Management.Controllers
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
         public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
-            :base(httpContextAccessor)
+            : base(httpContextAccessor)
         {
             _mapper = mapper;
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(Policy = "CanReadArticleCategory")]
+        [ApplicationAuthorization(policy: "CanReadArticleCategory")]
         public IActionResult Index()
         {
             var categories = _articleCategoryBusiness.GetFull();
@@ -64,7 +65,7 @@ namespace Coco.Management.Controllers
             var model = new ArticleCategoryViewModel()
             {
                 SelectCategories = _articleCategoryBusiness
-                .Get(x => !x.ParentCategoryId.HasValue)
+                .Get(x => !x.ParentId.HasValue)
                 .Select(x => new SelectListItem()
                 {
                     Text = x.Name,
@@ -81,17 +82,17 @@ namespace Coco.Management.Controllers
             var category = _articleCategoryBusiness.Find(id);
             var model = _mapper.Map<ArticleCategoryViewModel>(category);
 
-            if (category.ParentCategoryId.HasValue)
+            if (category.ParentId.HasValue)
             {
                 model.SelectCategories = _articleCategoryBusiness
-                .Get(x => x.Id != id && !x.ParentCategoryId.HasValue)
+                .Get(x => x.Id != id && !x.ParentId.HasValue)
                 .Where(x => x.Id != id)
                 .Select(x => new SelectListItem()
                 {
                     Text = x.Name,
                     Value = x.Id.ToString()
                 });
-            }            
+            }
 
             return View(model);
         }

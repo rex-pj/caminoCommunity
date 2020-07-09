@@ -37,7 +37,7 @@ namespace Coco.Management
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.ConfigureManagementAppBuilder();
+            app.UseManagementConfiguration();
             app.UseDatabaseSettingUp();
 
             app.UseEndpoints(endpoints =>

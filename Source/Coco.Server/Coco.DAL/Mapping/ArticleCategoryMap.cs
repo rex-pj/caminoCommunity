@@ -19,9 +19,9 @@ namespace Coco.DAL.Mapping
                 .HasIdentity(x => x.Id)
                 .HasPrimaryKey(x => x.Id)
                 .Association(x => x.ParentCategory, 
-                    (articleCategory, parentCategory) => articleCategory.ParentCategoryId == parentCategory.Id)
+                    (articleCategory, parentCategory) => articleCategory.ParentId == parentCategory.Id)
                 .Association(x => x.ChildCategories, 
-                    (articleCategory, childCategories) => articleCategory.Id == childCategories.ParentCategoryId);
+                    (articleCategory, childCategories) => articleCategory.Id == childCategories.ParentId);
         }
     }
 }
