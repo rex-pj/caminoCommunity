@@ -36,7 +36,7 @@ namespace Coco.Business.Implementation
             role.UpdatedDate = DateTime.UtcNow;
             role.CreatedDate = DateTime.UtcNow;
 
-            role.Id = (long)(await _roleRepository.AddAsync(role));
+            role.Id = await _roleRepository.AddWithInt64EntityAsync(role);
             return role.Id;
         }
 
@@ -50,20 +50,32 @@ namespace Coco.Business.Implementation
 
         public async Task<RoleDto> FindAsync(long id)
         {
-            var exist = await _roleRepository.FirstOrDefaultAsync(x => x.Id == id);
-            if (exist == null)
+            var existRole = await (from role in _roleRepository.Table
+                                   join createdBy in _userRepository.Table
+                                   on role.CreatedById equals createdBy.Id
+                                   join updatedBy in _userRepository.Table
+                                   on role.UpdatedById equals updatedBy.Id
+                                   where role.Id == id
+                                   select new RoleDto()
+                                   {
+                                       CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
+                                       UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
+                                       CreatedById = role.CreatedById,
+                                       CreatedDate = role.CreatedDate,
+                                       Description = role.Description,
+                                       Id = role.Id,
+                                       Name = role.Name,
+                                       UpdatedById = role.UpdatedById,
+                                       UpdatedDate = role.UpdatedDate,
+                                       ConcurrencyStamp = role.ConcurrencyStamp
+                                   }).FirstOrDefaultAsync();
+
+            if (existRole == null)
             {
                 return null;
             }
 
-            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
-            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
-
-            var role = _mapper.Map<RoleDto>(exist);
-            role.CreatedByName = createdByUser.DisplayName;
-            role.UpdatedByName = updatedByUser.DisplayName;
-            
-            return role;
+            return existRole;
         }
 
         public List<RoleDto> Search(string query = "", int page = 1, int pageSize = 10)
@@ -121,34 +133,24 @@ namespace Coco.Business.Implementation
 
         public async Task<List<RoleDto>> GetAsync()
         {
-            var roles = (await _roleRepository.GetAsync())
-                .Select(a => new RoleDto {
-                    Id = a.Id,
-                    Name = a.Name,
-                    CreatedById = a.CreatedById,
-                    CreatedDate = a.CreatedDate,
-                    Description = a.Description,
-                    UpdatedById = a.UpdatedById,
-                    UpdatedDate = a.UpdatedDate
-                });
+            var roles = await (from role in _roleRepository.Table
+                         join createdBy in _userRepository.Table
+                         on role.CreatedById equals createdBy.Id
+                         join updatedBy in _userRepository.Table
+                         on role.UpdatedById equals updatedBy.Id select new RoleDto
+                         {
+                             Id = role.Id,
+                             Name = role.Name,
+                             CreatedById = role.CreatedById,
+                             CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
+                             CreatedDate = role.CreatedDate,
+                             Description = role.Description,
+                             UpdatedById = role.UpdatedById,
+                             UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
+                             UpdatedDate = role.UpdatedDate
+                         }).ToListAsync();
 
-            var createdByIds = roles.Select(x => x.CreatedById).ToArray();
-            var updatedByIds = roles.Select(x => x.UpdatedById).ToArray();
-
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
-
-            foreach (var role in roles)
-            {
-                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == role.CreatedById);
-                role.CreatedByName = createdBy.DisplayName;
-
-                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == role.CreatedById);
-                role.UpdatedByName = updatedBy.DisplayName;
-            }
-
-            var roleDtos = _mapper.Map<List<RoleDto>>(roles);
-            return roleDtos;
+            return roles;
         }
 
         public async Task<bool> UpdateAsync(RoleDto roleModel)

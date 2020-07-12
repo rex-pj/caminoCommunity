@@ -21,6 +21,7 @@ namespace Coco.Management.Infrastructure.AutoMap
             CreateMap<UserRoleAuthorizationPoliciesDto, ApplicationUserRoleAuthorizationPolicy>();
             CreateMap<RoleAuthorizationPoliciesDto, ApplicationRole>();
             CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
+            CreateMap<ApplicationRole, RoleViewModel>();
         }
     }
 }

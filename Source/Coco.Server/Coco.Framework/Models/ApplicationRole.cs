@@ -7,6 +7,9 @@ namespace Coco.Framework.Models
     {
         public long CreatedById { get; set; }
         public long UpdatedById { get; set; }
+        public string CreatedByName { get; set; }
+        public string UpdatedByName { get; set; }
+
         public ApplicationRole()
         {
             AuthorizationPolicies = new List<ApplicationAuthorizationPolicy>();
