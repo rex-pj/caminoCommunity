@@ -73,7 +73,7 @@ namespace Coco.Management.Controllers
                 Email = setupModel.AdminEmail,
                 Firstname = "Le",
                 Lastname = "Trung",
-                StatusId = (byte)UserStatusEnum.New,
+                StatusId = (byte)UserStatusEnum.Actived,
                 UserName = setupModel.AdminEmail,
             };
 
