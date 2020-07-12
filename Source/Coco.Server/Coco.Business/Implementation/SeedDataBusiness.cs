@@ -8,7 +8,6 @@ using Coco.IdentityDAL.Contracts;
 using LinqToDB;
 using LinqToDB.Data;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Coco.Business.Implementation
@@ -163,7 +162,9 @@ namespace Coco.Business.Implementation
                                     Name = role.Name,
                                     Description = role.Description,
                                     CreatedById = userId,
-                                    UpdatedById = userId
+                                    UpdatedById = userId,
+                                    CreatedDate = DateTime.UtcNow,
+                                    UpdatedDate = DateTime.UtcNow
                                 };
 
                                 if (role.Name == "Admin")

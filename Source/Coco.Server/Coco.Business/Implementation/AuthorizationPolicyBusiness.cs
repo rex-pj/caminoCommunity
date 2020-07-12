@@ -14,7 +14,7 @@ namespace Coco.Business.Implementation
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
-        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper, 
+        public AuthorizationPolicyBusiness(IRepository<AuthorizationPolicy> authorizationPolicyRepository, IMapper mapper,
             IRepository<User> userRepository)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
@@ -24,20 +24,31 @@ namespace Coco.Business.Implementation
 
         public AuthorizationPolicyDto Find(short id)
         {
-            var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == id);
-            if (exist == null)
+            var authorizationPolicy = (from policy in _authorizationPolicyRepository.Table
+                                       join createdBy in _userRepository.Table
+                                       on policy.CreatedById equals createdBy.Id
+                                       join updatedBy in _userRepository.Table
+                                       on policy.UpdatedById equals updatedBy.Id
+                                       where policy.Id == id
+                                       select new AuthorizationPolicyDto()
+                                       {
+                                           CreatedById = policy.CreatedById,
+                                           CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
+                                           CreatedDate = policy.CreatedDate,
+                                           UpdatedById = policy.UpdatedById,
+                                           UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
+                                           UpdatedDate = policy.UpdatedDate,
+                                           Description = policy.Description,
+                                           Id = policy.Id,
+                                           Name = policy.Name
+                                       }).FirstOrDefault();
+
+            if (authorizationPolicy == null)
             {
                 return null;
             }
 
-            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
-            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
-
-            var policy = _mapper.Map<AuthorizationPolicyDto>(exist);
-            policy.CreatedByName = createdByUser.DisplayName;
-            policy.UpdatedByName = updatedByUser.DisplayName;
-
-            return policy;
+            return authorizationPolicy;
         }
 
         public AuthorizationPolicyDto FindByName(string name)
@@ -55,33 +66,24 @@ namespace Coco.Business.Implementation
 
         public List<AuthorizationPolicyDto> GetFull()
         {
-            var authorizationPolicies = _authorizationPolicyRepository.Get()
-                .Select(a => new AuthorizationPolicyDto
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    CreatedById = a.CreatedById,
-                    CreatedDate = a.CreatedDate,
-                    Description = a.Description,
-                    UpdatedById = a.UpdatedById,
-                    UpdatedDate = a.UpdatedDate
-                }).ToList();
-
-            var createdByIds = authorizationPolicies.Select(x => x.CreatedById).ToArray();
-            var updatedByIds = authorizationPolicies.Select(x => x.UpdatedById).ToArray();
-
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
-
-            foreach (var authorizationPolicy in authorizationPolicies)
-            {
-                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == authorizationPolicy.CreatedById);
-                authorizationPolicy.CreatedByName = createdBy.DisplayName;
-
-                var updatedBy = createdByUsers.FirstOrDefault(x => x.Id == authorizationPolicy.CreatedById);
-                authorizationPolicy.UpdatedByName = updatedBy.DisplayName;
-            }
-
+            var authorizationPolicies = (from policy in _authorizationPolicyRepository.Table
+                                         join createdBy in _userRepository.Table
+                                         on policy.CreatedById equals createdBy.Id
+                                         join updatedBy in _userRepository.Table
+                                         on policy.UpdatedById equals updatedBy.Id
+                                         select new AuthorizationPolicyDto()
+                                         {
+                                             CreatedById = policy.CreatedById,
+                                             CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
+                                             CreatedDate = policy.CreatedDate,
+                                             UpdatedById = policy.UpdatedById,
+                                             UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
+                                             UpdatedDate = policy.UpdatedDate,
+                                             Description = policy.Description,
+                                             Id = policy.Id,
+                                             Name = policy.Name
+                                         }).ToList();
+            
             return authorizationPolicies;
         }
 
@@ -91,9 +93,8 @@ namespace Coco.Business.Implementation
             newPolicy.UpdatedDate = DateTime.UtcNow;
             newPolicy.CreatedDate = DateTime.UtcNow;
 
-            _authorizationPolicyRepository.Add(newPolicy);
-            return newPolicy.Id;
-            //return _identityDbContext.SaveChanges();
+            var id = _authorizationPolicyRepository.AddWithInt64Entity(newPolicy);
+            return id;
         }
 
         public AuthorizationPolicyDto Update(AuthorizationPolicyDto policy)
@@ -105,7 +106,6 @@ namespace Coco.Business.Implementation
             exist.UpdatedDate = DateTime.UtcNow;
 
             _authorizationPolicyRepository.Update(exist);
-            //_identityDbContext.SaveChanges();
 
             policy.UpdatedDate = exist.UpdatedDate;
             return policy;
