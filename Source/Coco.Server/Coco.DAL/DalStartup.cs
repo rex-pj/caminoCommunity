@@ -18,7 +18,7 @@ namespace Coco.DAL
                 options.UseSqlServer(configuration.GetConnectionString(connectionName))
                 .UseDefaultLogging(provider);
             })
-            .AddScoped<IContentDataProvider, ContentDataProvider>();
+            .AddTransient<IContentDataProvider, ContentDataProvider>();
         }
     }
 }
