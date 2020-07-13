@@ -80,6 +80,12 @@ namespace Coco.Framework.Providers.Implementation
             return installationSettings;
         }
 
+        public void DeleteSettings(string filePath = null)
+        {
+            filePath ??= SetupSettingsConst.FilePath;
+            _fileProvider.DeleteFile(filePath);
+        }
+
         public void SaveSettings(SetupSettings settings, string filePath)
         {
             _fileProvider.CreateFile(filePath);

@@ -58,36 +58,44 @@ namespace Coco.Management.Controllers
 
             var settings = _setupProvider.LoadSettings();
 
-            // Create Identity database
-            var identityDbScript = _fileProvider.ReadText(settings.CreateIdentityPath, Encoding.Default);
-            _seedDataBusiness.SeedingIdentityDb(identityDbScript);
-
-            // Create Content database
-            var contentDbScript = _fileProvider.ReadText(settings.CreateContentDbPath, Encoding.Default);
-            _seedDataBusiness.SeedingContentDb(contentDbScript);
-
-            var initialUser = new ApplicationUser()
+            try
             {
-                BirthDate = DateTime.UtcNow.AddYears(-10),
-                DisplayName = $"Trung Le",
-                Email = setupModel.AdminEmail,
-                Firstname = "Le",
-                Lastname = "Trung",
-                StatusId = (byte)UserStatusEnum.Actived,
-                UserName = setupModel.AdminEmail,
-            };
+                // Create Identity database
+                var identityDbScript = _fileProvider.ReadText(settings.CreateIdentityPath, Encoding.Default);
+                _seedDataBusiness.SeedingIdentityDb(identityDbScript);
 
-            initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, setupModel.AdminPassword);
-            _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
+                // Create Content database
+                var contentDbScript = _fileProvider.ReadText(settings.CreateContentDbPath, Encoding.Default);
+                _seedDataBusiness.SeedingContentDb(contentDbScript);
 
-            // Get Identity json data
-            var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-            var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
-            setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
+                var initialUser = new ApplicationUser()
+                {
+                    BirthDate = DateTime.UtcNow.AddYears(-10),
+                    DisplayName = $"Trung Le",
+                    Email = setupModel.AdminEmail,
+                    Firstname = "Le",
+                    Lastname = "Trung",
+                    StatusId = (byte)UserStatusEnum.Actived,
+                    UserName = setupModel.AdminEmail,
+                };
 
-            _seedDataBusiness.PrepareIdentityData(setupDto);
-            _setupProvider.SetDatabaseHasBeenSetup();
-            return RedirectToAction("Login", "Authentication");
+                initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, setupModel.AdminPassword);
+                _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
+
+                // Get Identity json data
+                var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
+                var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
+                setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
+
+                _seedDataBusiness.PrepareIdentityData(setupDto);
+                _setupProvider.SetDatabaseHasBeenSetup();
+                return RedirectToAction("Login", "Authentication");
+            }
+            catch(Exception e)
+            {
+                _fileProvider.DeleteFile(settings.SetupUrl);
+                return View();
+            }
         }
     }
 }
