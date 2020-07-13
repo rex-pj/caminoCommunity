@@ -5,6 +5,10 @@
 
     var settings = $.extend({}, defaults, options);
     var select2 = $(this);
+    if (select2.length === 0) {
+        return;
+    }
+
     select2.select2({
         ajax: {
             url: select2.data("url"),

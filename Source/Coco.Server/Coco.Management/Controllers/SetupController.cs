@@ -51,6 +51,11 @@ namespace Coco.Management.Controllers
         [HttpPost]
         public IActionResult Index(SetupViewModel setupModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
             if (_setupProvider.HasSetupDatabase)
             {
                 return RedirectToAction("Index", "Home");
@@ -70,11 +75,10 @@ namespace Coco.Management.Controllers
 
                 var initialUser = new ApplicationUser()
                 {
-                    BirthDate = DateTime.UtcNow.AddYears(-10),
-                    DisplayName = $"Trung Le",
+                    DisplayName = $"{setupModel.Lastname} {setupModel.Firstname}",
                     Email = setupModel.AdminEmail,
-                    Firstname = "Le",
-                    Lastname = "Trung",
+                    Firstname = setupModel.Firstname,
+                    Lastname = setupModel.Lastname,
                     StatusId = (byte)UserStatusEnum.Actived,
                     UserName = setupModel.AdminEmail,
                 };

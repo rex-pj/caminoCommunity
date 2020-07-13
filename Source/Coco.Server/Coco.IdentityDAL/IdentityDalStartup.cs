@@ -19,7 +19,7 @@ namespace Coco.IdentityDAL
                 .UseDefaultLogging(provider);
             });
 
-            services.AddScoped<IIdentityDataProvider, IdentityDataProvider>();
+            services.AddTransient<IIdentityDataProvider, IdentityDataProvider>();
         }
     }
 }
