@@ -1,5 +1,4 @@
 ﻿using Coco.Framework.Models;
-using System.Threading.Tasks;
 
 namespace Coco.Framework.Providers.Contracts
 {
@@ -9,5 +8,6 @@ namespace Coco.Framework.Providers.Contracts
         SetupSettings LoadSettings(string filePath = null);
         bool HasSetupDatabase { get; }
         bool IsInitialized { get; }
+        void DeleteSettings(string filePath = null);
     }
 }

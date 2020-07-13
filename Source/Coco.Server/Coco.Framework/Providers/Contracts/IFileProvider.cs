@@ -10,5 +10,6 @@ namespace Coco.Framework.Providers.Contracts
         void CreateFile(string path);
         void CreateDirectory(string path);
         bool DirectoryExists(string path);
+        void DeleteFile(string filePath);
     }
 }

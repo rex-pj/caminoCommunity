@@ -27,6 +27,11 @@ namespace Coco.Framework.Providers.Implementation
             return File.Exists(filePath);
         }
 
+        public void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
+        }
+
         public void CreateFile(string path)
         {
             if (FileExists(path))
