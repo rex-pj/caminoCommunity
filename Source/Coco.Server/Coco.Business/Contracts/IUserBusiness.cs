@@ -1,8 +1,7 @@
-﻿using Coco.Entities.Dtos.User;
-using Coco.Entities.Dtos.General;
+﻿using Coco.Core.Dtos.Identity;
+using Coco.Core.Dtos.General;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Coco.Entities.Dtos.Auth;
 
 namespace Coco.Business.Contracts
 {
@@ -16,7 +15,7 @@ namespace Coco.Business.Contracts
         Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto model);
         Task<UserDto> FindByIdAsync(long id);
         Task<UserFullDto> FindFullByIdAsync(long id);
-        Task<UpdatePerItemDto> UpdateInfoItemAsync(UpdatePerItemDto model);
+        Task<UpdatePerItem> UpdateInfoItemAsync(UpdatePerItem model);
         Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model);
         Task<bool> ActiveAsync(long id);
         Task<UserDto> UpdateAsync(UserDto user);

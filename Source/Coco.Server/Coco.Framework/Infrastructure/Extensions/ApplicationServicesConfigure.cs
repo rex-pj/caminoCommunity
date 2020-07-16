@@ -1,4 +1,4 @@
-﻿using Coco.Common.Const;
+﻿using Coco.Core.Constants;
 using Coco.Framework.Models;
 using Coco.Framework.Providers.Contracts;
 using Coco.Framework.Providers.Implementation;

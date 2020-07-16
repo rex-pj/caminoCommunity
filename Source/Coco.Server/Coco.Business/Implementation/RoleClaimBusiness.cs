@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Dtos.Auth;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Entities.Identity;
 using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,6 @@ namespace Coco.Business.Implementation
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Add(claim);
-            //_identityDbContext.SaveChanges();
         }
 
         public async Task<IList<RoleClaimDto>> GetByRoleIdAsync(long roleId)

@@ -1,17 +1,13 @@
-﻿using Coco.Common.Const;
-using Coco.Contract.MapBuilder;
-using Coco.Entities.Domain.Content;
+﻿using Coco.Core.Constants;
+using Coco.Core.Infrastructure.MapBuilders;
+using Coco.Core.Entities.Content;
 using LinqToDB.Mapping;
 
 namespace Coco.DAL.Mapping
 {
-    public class ArticleCategoryMap : EntityTypeBuilder<ArticleCategory>
+    public class ArticleCategoryMap : EntityMapBuilder<ArticleCategory>
     {
-        public ArticleCategoryMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
-        {
-        }
-
-        public override void Configure(FluentMappingBuilder builder)
+        public override void Map(FluentMappingBuilder builder)
         {
             builder.Entity<ArticleCategory>()
                 .HasTableName(nameof(ArticleCategory))

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos.Auth;
+using Coco.Core.Dtos.Identity;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using LinqToDB;

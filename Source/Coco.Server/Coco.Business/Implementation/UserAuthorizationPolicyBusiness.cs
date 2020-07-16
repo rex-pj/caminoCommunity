@@ -1,8 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Dtos.Auth;
-using Coco.Entities.Dtos.User;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Entities.Identity;
 using System;
 using System.Linq;
 

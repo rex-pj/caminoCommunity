@@ -1,7 +1,7 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Contract;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Dtos.Auth;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Entities.Identity;
 using System;
 using System.Linq;
 
@@ -19,7 +19,6 @@ namespace Coco.Business.Implementation
             _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _roleRepository = userRepository;
-            //_identityDbContext = identityDbContext;
         }
 
         public bool Add(byte roleId, short authorizationPolicyId, long loggedUserId)

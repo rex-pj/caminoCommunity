@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Coco.Entities\Coco.Entities.csproj" />
+    <ProjectReference Include="..\Coco.Core\Coco.Core.csproj" />
   </ItemGroup>
 
 </Project>

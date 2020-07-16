@@ -1,5 +1,5 @@
 ﻿using Coco.Contract;
-using Coco.Contract.MapBuilder;
+using Coco.Core.Infrastructure.MapBuilders;
 using Coco.IdentityDAL.Contracts;
 using Coco.IdentityDAL.Mapping;
 
@@ -14,22 +14,21 @@ namespace Coco.IdentityDAL.Implementations
 
         protected override void OnMappingSchemaCreating()
         {
-            var fluentBuilder = MappingSchemaBuilder.FluentMappingBuilder;
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserInfoMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new AuthorizationPolicyMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new CountryMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new GenderMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new RoleAuthorizationPolicyMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new RoleClaimMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new RoleMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new StatusMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserAttributeMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserAuthorizationPolicyMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserClaimMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserLoginMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserRoleMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserTokenMap(fluentBuilder));
+            FluentMappingBuilder.ApplyMappingBuilder<UserMap>()
+                .ApplyMappingBuilder<UserInfoMap>()
+                .ApplyMappingBuilder<AuthorizationPolicyMap>()
+                .ApplyMappingBuilder<CountryMap>()
+                .ApplyMappingBuilder<GenderMap>()
+                .ApplyMappingBuilder<RoleAuthorizationPolicyMap>()
+                .ApplyMappingBuilder<RoleClaimMap>()
+                .ApplyMappingBuilder<RoleMap>()
+                .ApplyMappingBuilder<StatusMap>()
+                .ApplyMappingBuilder<UserAttributeMap>()
+                .ApplyMappingBuilder<UserAuthorizationPolicyMap>()
+                .ApplyMappingBuilder<UserClaimMap>()
+                .ApplyMappingBuilder<UserLoginMap>()
+                .ApplyMappingBuilder<UserRoleMap>()
+                .ApplyMappingBuilder<UserTokenMap>();
         }
     }
 }

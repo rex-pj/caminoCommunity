@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Common.Helpers;
-using Coco.Entities.Dtos.Auth;
+using Coco.Core.Helpers;
+using Coco.Core.Dtos.Identity;
 using Coco.Framework.Controllers;
 using Coco.Management.Common.Enums;
 using Coco.Management.Models;
@@ -61,7 +61,7 @@ namespace Coco.Management.Controllers
         {
             var model = new AuthorizationPolicyViewModel()
             {
-                SelectPermissionMethods = EnumHelpers.ToSelectListItems<PermissionMethod>()
+                SelectPermissionMethods = EnumHelper.ToSelectListItems<PermissionMethod>()
             };
 
             return View(model);
@@ -73,8 +73,8 @@ namespace Coco.Management.Controllers
             var policy = _authorizationPolicyBusiness.Find(id);
             var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
 
-            var permissionMethod = EnumHelpers.FilterEnumByName<PermissionMethod>(model.Name);
-            model.SelectPermissionMethods = EnumHelpers.ToSelectListItems(permissionMethod);
+            var permissionMethod = EnumHelper.FilterEnumByName<PermissionMethod>(model.Name);
+            model.SelectPermissionMethods = EnumHelper.ToSelectListItems(permissionMethod);
             model.PermissionMethod = (int)permissionMethod;
             var permissionMethodName = permissionMethod.ToString();
             model.Name = model.Name.Replace(permissionMethodName, "");

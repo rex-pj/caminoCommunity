@@ -18,7 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Coco.Framework\Coco.Framework.csproj" />
     <ProjectReference Include="..\Coco.Business\Coco.Business.csproj" />
-    <ProjectReference Include="..\Coco.Common\Coco.Common.csproj" />
   </ItemGroup>
 
 </Project>

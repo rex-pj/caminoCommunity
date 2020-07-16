@@ -1,17 +1,13 @@
-﻿using Coco.Common.Const;
-using Coco.Contract.MapBuilder;
-using Coco.Entities.Domain.Identity;
+﻿using Coco.Core.Constants;
+using Coco.Core.Infrastructure.MapBuilders;
+using Coco.Core.Entities.Identity;
 using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class RoleMap : EntityTypeBuilder<Role>
+    public class RoleMap : EntityMapBuilder<Role>
     {
-        public RoleMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
-        {
-        }
-
-        public override void Configure(FluentMappingBuilder builder)
+        public override void Map(FluentMappingBuilder builder)
         {
             builder.Entity<Role>().HasTableName(nameof(Role))
                 .HasSchemaName(TableSchemaConst.DBO)

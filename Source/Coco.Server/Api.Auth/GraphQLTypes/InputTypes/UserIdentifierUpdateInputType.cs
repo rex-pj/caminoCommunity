@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Dtos.User;
+﻿using Coco.Core.Dtos.Identity;
 using HotChocolate.Types;
 
 namespace Api.Auth.GraphQLTypes.InputTypes

@@ -1,5 +1,4 @@
-﻿using Coco.Contract.MapBuilder;
-using LinqToDB;
+﻿using LinqToDB;
 using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.Tools;
@@ -14,6 +13,7 @@ using LinqToDB.DataProvider;
 using System.Text.RegularExpressions;
 using System.Text;
 using LinqToDB.Mapping;
+using Coco.Core.Infrastructure;
 
 namespace Coco.Contract
 {
@@ -21,7 +21,7 @@ namespace Coco.Contract
     {
         protected readonly DataConnection _dataConnection;
         private readonly IDataProvider _dataProvider;
-        protected MappingSchemaBuilder MappingSchemaBuilder { get; private set; }
+        protected FluentMappingBuilder FluentMappingBuilder { get; private set; }
         protected BaseDataProvider(DataConnection dataConnection)
         {
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
@@ -39,7 +39,7 @@ namespace Coco.Contract
         protected void LoadMappingSchemaBuilder()
         {
             var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            MappingSchemaBuilder = new MappingSchemaBuilder(fluentMappingBuilder);
+            FluentMappingBuilder = fluentMappingBuilder;
             OnMappingSchemaCreating();
             Singleton<MappingSchema>.Instance = _dataConnection.MappingSchema;
         }

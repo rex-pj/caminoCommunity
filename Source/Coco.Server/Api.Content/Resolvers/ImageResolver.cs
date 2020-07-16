@@ -1,11 +1,10 @@
 ﻿using Coco.Framework.Resolvers;
 using Api.Content.Resolvers.Contracts;
-using HotChocolate.Resolvers;
 using Api.Content.Models;
 using Coco.Business.ValidationStrategies;
 using Coco.Framework.Models;
-using Coco.Entities.Models;
 using Coco.Framework.SessionManager.Core;
+using Coco.Core.Dtos.General;
 
 namespace Api.Content.Resolvers
 {

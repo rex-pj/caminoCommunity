@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Dtos.Auth;
+﻿using Coco.Core.Dtos.Identity;
 
 namespace Coco.Business.Contracts
 {

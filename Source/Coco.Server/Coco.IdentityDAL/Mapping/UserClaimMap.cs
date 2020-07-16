@@ -1,17 +1,13 @@
-﻿using Coco.Common.Const;
-using Coco.Contract.MapBuilder;
-using Coco.Entities.Domain.Identity;
+﻿using Coco.Core.Constants;
+using Coco.Core.Infrastructure.MapBuilders;
+using Coco.Core.Entities.Identity;
 using LinqToDB.Mapping;
 
 namespace Coco.IdentityDAL.Mapping
 {
-    public class UserClaimMap : EntityTypeBuilder<UserClaim>
+    public class UserClaimMap : EntityMapBuilder<UserClaim>
     {
-        public UserClaimMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
-        {
-        }
-
-        public override void Configure(FluentMappingBuilder builder)
+        public override void Map(FluentMappingBuilder builder)
         {
             builder.Entity<UserClaim>().HasTableName(nameof(UserClaim))
                 .HasSchemaName(TableSchemaConst.DBO)

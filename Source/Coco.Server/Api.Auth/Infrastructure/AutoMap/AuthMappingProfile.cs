@@ -1,10 +1,10 @@
 ﻿using Api.Auth.Models;
 using AutoMapper;
-using Coco.Entities.Dtos;
-using Coco.Entities.Dtos.General;
-using Coco.Entities.Dtos.User;
-using Coco.Entities.Enums;
+using Coco.Core.Dtos.General;
+using Coco.Core.Dtos.Identity;
 using Coco.Framework.Models;
+using Coco.Core.Dtos.Content;
+using Coco.Core.Entities.Enums;
 
 namespace Api.Auth.Infrastructure.AutoMap
 {
@@ -12,8 +12,8 @@ namespace Api.Auth.Infrastructure.AutoMap
     {
         public AuthMappingProfile()
         {
-            CreateMap<UpdatePerItemModel, UpdatePerItemDto>();
-            CreateMap<UpdatePerItemDto, UpdatePerItemModel>();
+            CreateMap<UpdatePerItemModel, UpdatePerItem>();
+            CreateMap<UpdatePerItem, UpdatePerItemModel>();
             CreateMap<UserFullDto, FullUserInfoModel>();
             CreateMap<ApplicationUser, FullUserInfoModel>();
             CreateMap<UserPhotoDto, UserAvatarModel>();
@@ -21,9 +21,9 @@ namespace Api.Auth.Infrastructure.AutoMap
                 .ForMember(dest => dest.PhotoType, opt => opt.MapFrom((src, dest) => { 
                     if(src.TypeId > 0)
                     {
-                        return (UserPhotoTypeEnum)src.TypeId;
+                        return (UserPhotoType)src.TypeId;
                     }
-                    return UserPhotoTypeEnum.Undefined;
+                    return UserPhotoType.Undefined;
                 }));
         }
     }

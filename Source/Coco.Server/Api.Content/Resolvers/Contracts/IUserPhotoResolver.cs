@@ -1,5 +1,5 @@
 ﻿using Api.Content.Models;
-using Coco.Entities.Dtos.General;
+using Coco.Core.Dtos.General;
 using Coco.Framework.Models;
 using System.Threading.Tasks;
 

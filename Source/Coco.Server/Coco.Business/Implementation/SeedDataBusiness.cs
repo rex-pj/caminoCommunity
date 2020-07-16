@@ -2,13 +2,14 @@
 using Coco.Business.Contracts;
 using Coco.Contract;
 using Coco.DAL.Contracts;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Dtos.General;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Dtos.General;
 using Coco.IdentityDAL.Contracts;
 using LinqToDB;
 using LinqToDB.Data;
 using System;
 using System.Data.SqlClient;
+using Coco.Core.Entities.Identity;
 
 namespace Coco.Business.Implementation
 {
@@ -83,7 +84,7 @@ namespace Coco.Business.Implementation
             }
         }
 
-        public void PrepareIdentityData(SetupDto installationDto)
+        public void PrepareIdentityData(Setup installationDto)
         {
             using (var dataConnection = _identityDataProvider.CreateDataConnection())
             {

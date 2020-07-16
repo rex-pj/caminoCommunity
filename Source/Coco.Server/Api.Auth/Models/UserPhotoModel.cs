@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Enums;
+﻿using Coco.Core.Entities.Enums;
 
 namespace Api.Auth.Models
 {
@@ -11,6 +11,6 @@ namespace Api.Auth.Models
         public string Description { get; set; }
         public string ImageData { get; set; }
         public long UserId { get; set; }
-        public UserPhotoTypeEnum PhotoType { get; set; }
+        public UserPhotoType PhotoType { get; set; }
     }
 }

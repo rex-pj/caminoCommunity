@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Coco.Entities.Domain.Content;
-using Coco.Entities.Dtos;
+using Coco.Core.Entities.Content;
+using Coco.Core.Dtos.Content;
 
 namespace Api.Content.Infrastructure.AutoMap
 {

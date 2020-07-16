@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Domain.Identity;
+﻿using Coco.Core.Entities.Identity;
 using System.Collections.Generic;
 
 namespace Coco.Business.Contracts

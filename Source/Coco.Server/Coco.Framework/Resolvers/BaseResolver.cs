@@ -1,4 +1,4 @@
-﻿using Coco.Entities.Models;
+﻿using Coco.Core.Dtos.General;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Core;
 using HotChocolate.Resolvers;

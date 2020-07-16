@@ -1,5 +1,5 @@
-﻿using Coco.Common.Const;
-using Coco.Common.Exceptions;
+﻿using Coco.Core.Constants;
+using Coco.Core.Exceptions;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Core;

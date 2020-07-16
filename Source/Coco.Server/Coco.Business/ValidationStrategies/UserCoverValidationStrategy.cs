@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Common.Exceptions;
-using Coco.Common.Utils;
-using Coco.Entities.Dtos.General;
+using Coco.Core.Exceptions;
+using Coco.Core.Utils;
+using Coco.Core.Dtos.General;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -22,7 +22,7 @@ namespace Coco.Business.ValidationStrategies
                 Errors = GetErrors(new PhotoSizeInvalidException(nameof(data.PhotoUrl)));
             }
 
-            var image = ImageUtils.Base64ToImage(data.PhotoUrl);
+            var image = ImageUtil.Base64ToImage(data.PhotoUrl);
             if (image.Width < 1000 || image.Height < 300)
             {
                 Errors = GetErrors(new PhotoSizeInvalidException(nameof(data.PhotoUrl)));
