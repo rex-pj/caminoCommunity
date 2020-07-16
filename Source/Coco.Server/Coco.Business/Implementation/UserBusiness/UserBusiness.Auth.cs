@@ -1,12 +1,11 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.AutoMap;
 using Coco.Business.ValidationStrategies;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Dtos.Auth;
-using Coco.Entities.Dtos.User;
+using Coco.Core.Dtos.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Coco.Core.Entities.Identity;
 
 namespace Coco.Business.Implementation.UserBusiness
 {

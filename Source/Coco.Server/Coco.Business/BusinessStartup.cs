@@ -3,13 +3,13 @@ using Coco.Business.Implementation;
 using Coco.Contract;
 using Coco.DAL;
 using Coco.DAL.Implementations;
-using Coco.Entities.Domain.Identity;
-using Coco.Entities.Domain.Content;
+using Coco.Core.Entities.Content;
 using Coco.IdentityDAL;
 using Coco.IdentityDAL.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
+using Coco.Core.Entities.Identity;
 
 namespace Coco.Business
 {

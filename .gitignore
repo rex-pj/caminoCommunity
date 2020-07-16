@@ -33,3 +33,7 @@ Source/Coco.Server/Coco.UserDAL/obj/
 Source/Coco.Server/Api.Resources/obj/
 Source/Coco.Server/Api.Resources/bin/
 Source/Coco.Server/.vs/Coco.Server/
+Source/Coco.Server/Coco.ApiHost/obj/
+Source/Coco.Server/Coco.Core/obj/
+Source/Coco.Server/Coco.ApiHost/bin/
+Source/Coco.Server/Coco.Core/bin/

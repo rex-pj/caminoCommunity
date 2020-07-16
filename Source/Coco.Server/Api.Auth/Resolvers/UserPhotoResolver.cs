@@ -3,8 +3,8 @@ using Api.Auth.Resolvers.Contracts;
 using AutoMapper;
 using Coco.Auth.Models;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos;
-using Coco.Entities.Enums;
+using Coco.Core.Dtos.Content;
+using Coco.Core.Entities.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.Resolvers;
 using Coco.Framework.SessionManager.Contracts;
@@ -39,7 +39,7 @@ namespace Api.Auth.Resolvers
                     userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
                 }
 
-                return _mapper.Map<UserAvatarModel>(GetUserPhoto(userId, UserPhotoTypeEnum.Avatar));
+                return _mapper.Map<UserAvatarModel>(GetUserPhoto(userId, UserPhotoType.Avatar));
             }
             return null;
         }
@@ -54,7 +54,7 @@ namespace Api.Auth.Resolvers
                     userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
                 }
 
-                return _mapper.Map<UserCoverModel>(GetUserPhoto(userId, UserPhotoTypeEnum.Cover));
+                return _mapper.Map<UserCoverModel>(GetUserPhoto(userId, UserPhotoType.Cover));
             }
             return null;
         }
@@ -81,7 +81,7 @@ namespace Api.Auth.Resolvers
             return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
         }
 
-        private UserPhotoDto GetUserPhoto(long userId, UserPhotoTypeEnum type)
+        private UserPhotoDto GetUserPhoto(long userId, UserPhotoType type)
         {
             var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
             if (userPhoto != null)

@@ -1,8 +1,8 @@
 ﻿using Api.Auth.Resolvers.Contracts;
-using Coco.Entities.Enums;
+using Coco.Core.Entities.Enums;
 using System.Collections.Generic;
-using Coco.Entities.Models;
-using Coco.Common.Helpers;
+using Coco.Core.Helpers;
+using Coco.Core.Dtos.General;
 
 namespace Api.Auth.Resolvers
 {
@@ -10,7 +10,7 @@ namespace Api.Auth.Resolvers
     {
         public IEnumerable<ISelectOption> GetSelections()
         {
-            return EnumHelpers.EnumToSelectList<GenderEnum>();
+            return EnumHelper.EnumToSelectList<Gender>();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Framework.Models;
-using Coco.Entities.Dtos.User;
-using Coco.Entities.Dtos.Auth;
+using Coco.Core.Dtos.Identity;
 using System.Security.Claims;
 
 namespace Coco.Framework.Infrastructure.AutoMap

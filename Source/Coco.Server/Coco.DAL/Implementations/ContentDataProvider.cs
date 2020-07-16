@@ -1,5 +1,5 @@
 ﻿using Coco.Contract;
-using Coco.Contract.MapBuilder;
+using Coco.Core.Infrastructure.MapBuilders;
 using Coco.DAL.Contracts;
 using Coco.DAL.Mapping;
 
@@ -14,10 +14,9 @@ namespace Coco.DAL.Implementations
 
         protected override void OnMappingSchemaCreating()
         {
-            var fluentBuilder = MappingSchemaBuilder.FluentMappingBuilder;
-            MappingSchemaBuilder.ApplyMappingBuilder(new ArticleCategoryMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoMap(fluentBuilder));
-            MappingSchemaBuilder.ApplyMappingBuilder(new UserPhotoTypeMap(fluentBuilder));
+            FluentMappingBuilder.ApplyMappingBuilder<ArticleCategoryMap>()
+                .ApplyMappingBuilder<UserPhotoMap>()
+                .ApplyMappingBuilder<UserPhotoTypeMap>();
         }
     }
 }

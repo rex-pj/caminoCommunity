@@ -1,8 +1,8 @@
 ﻿using Api.Content.Models;
 using Api.Content.Resolvers.Contracts;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos.General;
-using Coco.Entities.Enums;
+using Coco.Core.Dtos.General;
+using Coco.Core.Entities.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.Resolvers;
 using Coco.Framework.SessionManager.Core;
@@ -31,7 +31,7 @@ namespace Api.Content.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                criterias.UserPhotoType = UserPhotoTypeEnum.Avatar;
+                criterias.UserPhotoType = UserPhotoType.Avatar;
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
 
                 return CommonResult.Success(result);
@@ -51,7 +51,7 @@ namespace Api.Content.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                criterias.UserPhotoType = UserPhotoTypeEnum.Cover;
+                criterias.UserPhotoType = UserPhotoType.Cover;
                 var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
 
                 return CommonResult.Success(result);
@@ -71,7 +71,7 @@ namespace Api.Content.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoTypeEnum.Avatar);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoType.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateDto());
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace Api.Content.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoTypeEnum.Cover);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoType.Cover);
                 return CommonResult.Success(new UserPhotoUpdateDto());
             }
             catch (Exception ex)

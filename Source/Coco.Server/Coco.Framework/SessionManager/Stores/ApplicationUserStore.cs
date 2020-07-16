@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos.Auth;
-using Coco.Entities.Dtos.User;
+using Coco.Core.Dtos.Identity;
 using Coco.Framework.Models;
 using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.SessionManager.Stores.Contracts;
 using LinqToDB;
 using Microsoft.AspNetCore.Identity;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;

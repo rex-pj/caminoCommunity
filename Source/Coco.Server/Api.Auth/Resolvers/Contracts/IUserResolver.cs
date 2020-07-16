@@ -1,6 +1,6 @@
 ﻿using Api.Auth.Models;
 using Coco.Auth.Models;
-using Coco.Entities.Dtos.User;
+using Coco.Core.Dtos.Identity;
 using Coco.Framework.Models;
 using System.Threading.Tasks;
 

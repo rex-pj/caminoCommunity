@@ -1,17 +1,13 @@
-﻿using Coco.Common.Const;
-using Coco.Contract.MapBuilder;
-using Coco.Entities.Domain.Content;
+﻿using Coco.Core.Constants;
+using Coco.Core.Infrastructure.MapBuilders;
+using Coco.Core.Entities.Content;
 using LinqToDB.Mapping;
 
 namespace Coco.DAL.Mapping
 {
-    public class UserPhotoMap : EntityTypeBuilder<UserPhoto>
+    public class UserPhotoMap : EntityMapBuilder<UserPhoto>
     {
-        public UserPhotoMap(FluentMappingBuilder fluentMappingBuilder) : base(fluentMappingBuilder)
-        {
-        }
-
-        public override void Configure(FluentMappingBuilder builder)
+        public override void Map(FluentMappingBuilder builder)
         {
             builder.Entity<UserPhoto>()
                 .HasTableName(nameof(UserPhoto))

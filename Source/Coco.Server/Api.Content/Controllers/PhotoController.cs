@@ -1,5 +1,5 @@
 ﻿using Coco.Business.Contracts;
-using Coco.Entities.Enums;
+using Coco.Core.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace Api.Content.Controllers
         [Route("avatar/{code}")]
         public async Task<IActionResult> Avatar(string code)
         {
-            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoTypeEnum.Avatar);
+            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoType.Avatar);
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
             return File(bytes, "image/jpeg");
@@ -33,7 +33,7 @@ namespace Api.Content.Controllers
         [Route("cover/{code}")]
         public async Task<IActionResult> CoverPhoto(string code)
         {
-            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoTypeEnum.Cover);
+            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoType.Cover);
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
             return File(bytes, "image/jpeg");

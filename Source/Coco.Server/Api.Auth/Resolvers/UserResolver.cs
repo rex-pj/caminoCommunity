@@ -1,8 +1,8 @@
 ﻿using Coco.Framework.SessionManager.Contracts;
 using Coco.Framework.Models;
 using Coco.Framework.Resolvers;
-using Coco.Entities.Enums;
-using Coco.Entities.Dtos.General;
+using Coco.Core.Entities.Enums;
+using Coco.Core.Dtos.General;
 using System;
 using System.Threading.Tasks;
 using Api.Auth.Resolvers.Contracts;
@@ -10,17 +10,16 @@ using Api.Auth.Models;
 using Coco.Business.Contracts;
 using Coco.Framework.SessionManager.Core;
 using Coco.Framework.Providers.Contracts;
-using Coco.Common.Const;
-using Coco.Common.Resources;
+using Coco.Core.Constants;
+using Coco.Core.Resources;
 using MimeKit.Text;
-using Coco.Entities.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Coco.Auth.Models;
 using AutoMapper;
-using Coco.Entities.Dtos.User;
-using Coco.Common.Exceptions;
-using Coco.Common.Enums;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Exceptions;
+using Coco.Core.Dtos.Enums;
 using Microsoft.Extensions.Options;
 
 namespace Api.Auth.Resolvers
@@ -91,7 +90,7 @@ namespace Api.Auth.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var updatePerItem = _mapper.Map<UpdatePerItemDto>(criterias);
+                var updatePerItem = _mapper.Map<UpdatePerItem>(criterias);
                 updatePerItem.Key = userId;
                 var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
                 return _mapper.Map<UpdatePerItemModel>(updatedItem);
@@ -243,7 +242,7 @@ namespace Api.Auth.Resolvers
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
                 GenderId = (byte)criterias.GenderId,
-                StatusId = (byte)UserStatusEnum.New,
+                StatusId = (byte)UserStatus.New,
                 UserName = criterias.Email,
             };
 

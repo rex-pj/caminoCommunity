@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Entities.Dtos.General;
-using Coco.Entities.Dtos.User;
-using Coco.Entities.Enums;
+using Coco.Core.Dtos.General;
+using Coco.Core.Dtos.Identity;
+using Coco.Core.Entities.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.Providers.Contracts;
 using Coco.Framework.SessionManager.Contracts;
@@ -79,7 +79,7 @@ namespace Coco.Management.Controllers
                     Email = setupModel.AdminEmail,
                     Firstname = setupModel.Firstname,
                     Lastname = setupModel.Lastname,
-                    StatusId = (byte)UserStatusEnum.Actived,
+                    StatusId = (byte)UserStatus.Actived,
                     UserName = setupModel.AdminEmail,
                 };
 
@@ -88,7 +88,7 @@ namespace Coco.Management.Controllers
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-                var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
+                var setupDto = JsonConvert.DeserializeObject<Setup>(indentityJson);
                 setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
 
                 _seedDataBusiness.PrepareIdentityData(setupDto);

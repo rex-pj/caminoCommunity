@@ -1,5 +1,5 @@
 ﻿using Coco.Contract;
-using Coco.Entities.Domain.Content;
+using Coco.Core.Entities.Content;
 using LinqToDB;
 using LinqToDB.Configuration;
 

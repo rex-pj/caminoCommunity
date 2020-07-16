@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Common.Utils;
+using Coco.Core.Utils;
 
 namespace Coco.Business.ValidationStrategies
 {
@@ -19,7 +19,7 @@ namespace Coco.Business.ValidationStrategies
                     return false;
                 }
 
-                return ImageUtils.IsImageUrl(value.ToString());
+                return ImageUtil.IsImageUrl(value.ToString());
             }
             catch (Exception e)
             {
