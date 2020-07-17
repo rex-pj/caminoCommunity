@@ -1,0 +1,31 @@
+﻿@addTagHelper *, Camino.Management
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Camino.Management</title>
+    <link rel="stylesheet" href="@Url.Content("~/lib/bootstrap/dist/css/bootstrap.min.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/lib/fontawesome/css/all.min.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/css/site.css")" type="text/css" />
+    <link rel="icon" type="image/png" href="@Url.Content("~/img/favicon.ico")">
+    @RenderSection("DocumentHead", required: false)
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                @RenderBody()
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+
+    <partial name="_Footer" />
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.AspNetCore" Version="10.4.3" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="10.4.3" />
+    <PackageReference Include="HotChocolate.AspNetCore.Playground" Version="10.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Camino.Framework\Camino.Framework.csproj" />
+  </ItemGroup>
+
+
+</Project>
