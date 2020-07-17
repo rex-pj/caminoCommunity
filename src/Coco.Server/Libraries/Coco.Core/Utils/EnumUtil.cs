@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.General;
+﻿using Coco.Core.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace Coco.Core.Utils
             return default;
         }
 
-        public static IEnumerable<SelectOption> EnumToSelectList<TEnum>(string selectedId = "")
+        public static IEnumerable<ISelectOption> EnumToSelectList<TEnum>(string selectedId = "")
         {
             var enumsData = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
             var result = enumsData.Select(e => new SelectOption()

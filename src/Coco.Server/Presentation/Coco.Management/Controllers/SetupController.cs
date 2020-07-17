@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Core.Dtos.General;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Entities.Enums;
+using Coco.Business.Dtos.General;
+using Coco.Business.Dtos.Identity;
+using Coco.Data.Enums;
 using Coco.Framework.Models;
 using Coco.Framework.Providers.Contracts;
 using Coco.Framework.SessionManager.Contracts;
@@ -88,7 +88,7 @@ namespace Coco.Management.Controllers
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-                var setupDto = JsonConvert.DeserializeObject<Setup>(indentityJson);
+                var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
                 setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
 
                 _seedDataBusiness.PrepareIdentityData(setupDto);

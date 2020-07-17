@@ -1,18 +1,18 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.AutoMap;
 using Coco.Business.ValidationStrategies;
-using Coco.Contract;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Dtos.General;
+using Coco.Data.Contracts;
+using Coco.Business.Dtos.Identity;
+using Coco.Business.Dtos.General;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Coco.Core.Entities.Enums;
+using Coco.Data.Enums;
 using System.Collections.Generic;
 using LinqToDB;
 using Coco.IdentityDAL.Contracts;
-using Coco.Core.Entities.Identity;
+using Coco.Data.Entities.Identity;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -22,7 +22,7 @@ namespace Coco.Business.Implementation.UserBusiness
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
-        private readonly IRepository<Core.Entities.Identity.UserRole> _userRoleRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
         private readonly IIdentityDataProvider _identityDbProvider;
@@ -34,7 +34,7 @@ namespace Coco.Business.Implementation.UserBusiness
             IMapper mapper,
             IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
             IRepository<UserInfo> userInfoRepository,
-            IRepository<Core.Entities.Identity.UserRole> userRoleRepository,
+            IRepository<UserRole> userRoleRepository,
             IIdentityDataProvider identityDbProvider)
         {
             _identityDbProvider = identityDbProvider;

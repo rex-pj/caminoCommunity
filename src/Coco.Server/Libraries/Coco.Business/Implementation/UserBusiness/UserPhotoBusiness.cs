@@ -2,16 +2,16 @@
 using Coco.Business.ValidationStrategies;
 using Coco.Core.Exceptions;
 using Coco.Core.Utils;
-using Coco.Contract;
-using Coco.Core.Dtos.General;
+using Coco.Data.Contracts;
+using Coco.Business.Dtos.General;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Coco.Core.Entities.Content;
+using Coco.Data.Entities.Content;
 using System.Collections.Generic;
-using Coco.Core.Entities.Identity;
-using Coco.Core.Dtos.Content;
-using UserPhotoType = Coco.Core.Entities.Enums.UserPhotoType;
+using Coco.Data.Entities.Identity;
+using Coco.Business.Dtos.Content;
+using UserPhotoKind = Coco.Data.Enums.UserPhotoKind;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -28,7 +28,7 @@ namespace Coco.Business.Implementation.UserBusiness
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public async Task<UserPhotoUpdateDto> UpdateUserPhotoAsync(UserPhotoUpdateDto model, long userId)
+        public async Task<UserPhotoUpdation> UpdateUserPhotoAsync(UserPhotoUpdation model, long userId)
         {
             if (model == null)
             {
@@ -49,27 +49,27 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(model.PhotoUrl);
             }
 
-            if (model.UserPhotoType == UserPhotoType.Avatar)
+            if (model.UserPhotoType == UserPhotoKind.Avatar)
             {
                 _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(model);
             }
-            else if (model.UserPhotoType == UserPhotoType.Cover)
+            else if (model.UserPhotoType == UserPhotoKind.Cover)
             {
                 _validationStrategyContext.SetStrategy(new UserCoverValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(model);
             }
 
-            if (!canUpdate && model.UserPhotoType == UserPhotoType.Avatar)
+            if (!canUpdate && model.UserPhotoType == UserPhotoKind.Avatar)
             {
-                throw new PhotoSizeInvalidException($"{nameof(UserPhotoType.Avatar)}Should larger than 100px X 100px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoKind.Avatar)}Should larger than 100px X 100px");
             }
             else if (!canUpdate)
             {
-                throw new PhotoSizeInvalidException($"{nameof(UserPhotoType.Cover)}Should larger than 1000px X 300px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoKind.Cover)}Should larger than 1000px X 300px");
             }
 
-            int maxSize = model.UserPhotoType == UserPhotoType.Avatar ? 600 : 1000;
+            int maxSize = model.UserPhotoType == UserPhotoKind.Avatar ? 600 : 1000;
             var newImage = ImageUtil
                 .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height, model.Scale, maxSize);
 
@@ -105,7 +105,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task DeleteUserPhotoAsync(long userId, UserPhotoType userPhotoType)
+        public async Task DeleteUserPhotoAsync(long userId, UserPhotoKind userPhotoType)
         {
             if (userId <= 0)
             {
@@ -125,7 +125,7 @@ namespace Coco.Business.Implementation.UserBusiness
             await _userPhotoRepository.DeleteAsync(userPhoto);
         }
 
-        public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoType type)
+        public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoKind type)
         {
             var photoType = (byte)type;
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
@@ -163,7 +163,7 @@ namespace Coco.Business.Implementation.UserBusiness
             });
         }
 
-        public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoType type)
+        public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoKind type)
         {
             var photoType = (byte)type;
             var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));

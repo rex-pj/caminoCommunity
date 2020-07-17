@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Dtos.General;
-using Coco.Core.Entities.Identity;
+using Coco.Business.Dtos.Identity;
+using Coco.Business.Dtos.General;
+using Coco.Data.Entities.Identity;
 
 namespace Coco.Business.ValidationStrategies
 {

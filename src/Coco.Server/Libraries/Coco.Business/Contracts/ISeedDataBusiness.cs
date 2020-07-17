@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.General;
+﻿using Coco.Business.Dtos.General;
 
 namespace Coco.Business.Contracts
 {
@@ -8,6 +8,6 @@ namespace Coco.Business.Contracts
         bool IsIdentityDatabaseExist();
         void SeedingIdentityDb(string sql);
         void SeedingContentDb(string sql);
-        void PrepareIdentityData(Setup installationDto);
+        void PrepareIdentityData(SetupDto installationDto);
     }
 }

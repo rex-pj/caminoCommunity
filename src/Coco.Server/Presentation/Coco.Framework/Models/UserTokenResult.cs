@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.Enums;
+﻿using Coco.Core.Enums;
 
 namespace Coco.Framework.Models
 {

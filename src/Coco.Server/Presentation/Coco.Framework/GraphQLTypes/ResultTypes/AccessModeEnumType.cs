@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.Enums;
+﻿using Coco.Core.Enums;
 using HotChocolate.Types;
 
 namespace Coco.Framework.GraphQLTypes.ResultTypes

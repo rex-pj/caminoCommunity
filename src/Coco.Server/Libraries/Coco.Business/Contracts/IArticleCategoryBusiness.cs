@@ -1,5 +1,5 @@
-﻿using Coco.Core.Dtos.Content;
-using Coco.Core.Entities.Content;
+﻿using Coco.Business.Dtos.Content;
+using Coco.Data.Entities.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

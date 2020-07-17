@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Core.Dtos.Content;
+using Coco.Business.Dtos.Content;
 using Coco.Framework.Attributes;
 using Coco.Framework.Controllers;
 using Coco.Management.Models;

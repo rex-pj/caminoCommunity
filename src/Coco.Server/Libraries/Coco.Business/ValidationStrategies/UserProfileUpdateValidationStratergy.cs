@@ -1,6 +1,6 @@
 ﻿using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Core.Dtos.Identity;
+using Coco.Business.Dtos.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

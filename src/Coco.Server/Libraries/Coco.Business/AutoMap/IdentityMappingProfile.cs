@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Entities.Identity;
+using Coco.Business.Dtos.Identity;
+using Coco.Data.Entities.Identity;
 
 namespace Coco.Business.AutoMap
 {

@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.Identity;
+﻿using Coco.Business.Dtos.Identity;
 using System.Threading.Tasks;
 
 namespace Coco.Business.Contracts

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
 using Coco.Core.Utils;
-using Coco.Core.Dtos.Identity;
+using Coco.Business.Dtos.Identity;
 using Coco.Framework.Controllers;
 using Coco.Management.Common.Enums;
 using Coco.Management.Models;

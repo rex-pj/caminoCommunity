@@ -1,5 +1,5 @@
-﻿using Coco.Core.Dtos.Identity;
-using Coco.Core.Entities.Identity;
+﻿using Coco.Business.Dtos.Identity;
+using Coco.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

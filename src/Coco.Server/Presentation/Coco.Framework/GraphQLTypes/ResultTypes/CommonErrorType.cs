@@ -1,4 +1,4 @@
-﻿using Coco.Core.Dtos.General;
+﻿using Coco.Core.Models;
 using HotChocolate.Types;
 
 namespace Coco.Framework.GraphQLTypes.ResultTypes

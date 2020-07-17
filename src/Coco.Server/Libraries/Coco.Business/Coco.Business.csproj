@@ -12,16 +12,16 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Coco.Contract\Coco.Contract.csproj" />
+    <ProjectReference Include="..\..\Data\Coco.DAL\Coco.DAL.csproj" />
+    <ProjectReference Include="..\..\Data\Coco.Data\Coco.Data.csproj" />
+    <ProjectReference Include="..\..\Data\Coco.IdentityDAL\Coco.IdentityDAL.csproj" />
     <ProjectReference Include="..\Coco.Core\Coco.Core.csproj" />
-    <ProjectReference Include="..\Coco.DAL\Coco.DAL.csproj" />
-    <ProjectReference Include="..\Coco.IdentityDAL\Coco.IdentityDAL.csproj" />
   </ItemGroup>
 
 </Project>

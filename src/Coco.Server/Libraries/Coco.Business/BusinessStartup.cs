@@ -1,15 +1,15 @@
 ﻿using Coco.Business.Contracts;
 using Coco.Business.Implementation;
-using Coco.Contract;
-using Coco.DAL;
-using Coco.DAL.Implementations;
-using Coco.Core.Entities.Content;
-using Coco.IdentityDAL;
-using Coco.IdentityDAL.Implementations;
+using Coco.Data.Contracts;
+using Coco.Data.Entities.Content;
 using Microsoft.Extensions.DependencyInjection;
 using Coco.Business.ValidationStrategies;
 using Coco.Business.Implementation.UserBusiness;
-using Coco.Core.Entities.Identity;
+using Coco.Data.Entities.Identity;
+using Coco.DAL;
+using Coco.IdentityDAL;
+using Coco.IdentityDAL.Implementations;
+using Coco.DAL.Implementations;
 
 namespace Coco.Business
 {

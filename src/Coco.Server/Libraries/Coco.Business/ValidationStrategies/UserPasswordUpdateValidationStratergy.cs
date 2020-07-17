@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Coco.Business.ValidationStrategies.Interfaces;
 using Coco.Business.ValidationStrategies.Models;
-using Coco.Core.Dtos.Identity;
+using Coco.Business.Dtos.Identity;
 
 namespace Coco.Business.ValidationStrategies
 {

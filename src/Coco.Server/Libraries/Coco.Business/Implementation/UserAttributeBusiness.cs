@@ -1,7 +1,7 @@
 ﻿using Coco.Business.Contracts;
-using Coco.Contract;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Entities.Identity;
+using Coco.Data.Contracts;
+using Coco.Business.Dtos.Identity;
+using Coco.Data.Entities.Identity;
 using Coco.IdentityDAL.Contracts;
 using System;
 using System.Collections.Generic;

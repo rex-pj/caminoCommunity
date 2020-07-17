@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Coco.Data\Coco.Data.csproj" />
     <ProjectReference Include="..\..\Libraries\Coco.Business\Coco.Business.csproj" />
-    <ProjectReference Include="..\..\Libraries\Coco.Contract\Coco.Contract.csproj" />
     <ProjectReference Include="..\Coco.Framework\Coco.Framework.csproj" />
   </ItemGroup>
 

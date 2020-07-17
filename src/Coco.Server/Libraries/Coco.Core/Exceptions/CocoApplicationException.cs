@@ -1,7 +1,7 @@
 ﻿using Coco.Core.Constants;
-using Coco.Core.Dtos.General;
 using System;
 using System.Collections.Generic;
+using Coco.Core.Models;
 
 namespace Coco.Core.Exceptions
 {

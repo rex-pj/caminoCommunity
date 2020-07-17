@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Coco.Business.Contracts;
-using Coco.Contract;
-using Coco.Core.Dtos.Identity;
-using Coco.Core.Entities.Identity;
+using Coco.Data.Contracts;
+using Coco.Business.Dtos.Identity;
+using Coco.Data.Entities.Identity;
 using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;
