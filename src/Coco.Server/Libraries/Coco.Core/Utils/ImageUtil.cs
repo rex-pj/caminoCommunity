@@ -44,7 +44,6 @@ namespace Coco.Core.Utils
                 memoryStream.Close();
 
                 base64String = Convert.ToBase64String(byteBuffer);
-                byteBuffer = null;
 
                 return base64String;
             }

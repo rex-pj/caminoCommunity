@@ -3,7 +3,6 @@ using Coco.Business.ValidationStrategies;
 using Coco.Core.Exceptions;
 using Coco.Core.Utils;
 using Coco.Contract;
-using Coco.Core.Entities.Enums;
 using Coco.Core.Dtos.General;
 using System;
 using System.Linq;
@@ -12,6 +11,7 @@ using Coco.Core.Entities.Content;
 using System.Collections.Generic;
 using Coco.Core.Entities.Identity;
 using Coco.Core.Dtos.Content;
+using UserPhotoType = Coco.Core.Entities.Enums.UserPhotoType;
 
 namespace Coco.Business.Implementation.UserBusiness
 {
@@ -49,27 +49,27 @@ namespace Coco.Business.Implementation.UserBusiness
                 throw new ArgumentException(model.PhotoUrl);
             }
 
-            if (model.UserPhotoType == Core.Entities.Enums.UserPhotoType.Avatar)
+            if (model.UserPhotoType == UserPhotoType.Avatar)
             {
                 _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(model);
             }
-            else if (model.UserPhotoType == Core.Entities.Enums.UserPhotoType.Cover)
+            else if (model.UserPhotoType == UserPhotoType.Cover)
             {
                 _validationStrategyContext.SetStrategy(new UserCoverValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(model);
             }
 
-            if (!canUpdate && model.UserPhotoType == Core.Entities.Enums.UserPhotoType.Avatar)
+            if (!canUpdate && model.UserPhotoType == UserPhotoType.Avatar)
             {
-                throw new PhotoSizeInvalidException($"{nameof(Core.Entities.Enums.UserPhotoType.Avatar)}Should larger than 100px X 100px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoType.Avatar)}Should larger than 100px X 100px");
             }
             else if (!canUpdate)
             {
-                throw new PhotoSizeInvalidException($"{nameof(Core.Entities.Enums.UserPhotoType.Cover)}Should larger than 1000px X 300px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPhotoType.Cover)}Should larger than 1000px X 300px");
             }
 
-            int maxSize = model.UserPhotoType == Core.Entities.Enums.UserPhotoType.Avatar ? 600 : 1000;
+            int maxSize = model.UserPhotoType == UserPhotoType.Avatar ? 600 : 1000;
             var newImage = ImageUtil
                 .Crop(model.PhotoUrl, model.XAxis, model.YAxis, model.Width, model.Height, model.Scale, maxSize);
 
@@ -105,7 +105,7 @@ namespace Coco.Business.Implementation.UserBusiness
             return model;
         }
 
-        public async Task DeleteUserPhotoAsync(long userId, Core.Entities.Enums.UserPhotoType userPhotoType)
+        public async Task DeleteUserPhotoAsync(long userId, UserPhotoType userPhotoType)
         {
             if (userId <= 0)
             {
@@ -125,7 +125,7 @@ namespace Coco.Business.Implementation.UserBusiness
             await _userPhotoRepository.DeleteAsync(userPhoto);
         }
 
-        public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, Core.Entities.Enums.UserPhotoType type)
+        public async Task<UserPhotoDto> GetUserPhotoByCodeAsync(string code, UserPhotoType type)
         {
             var photoType = (byte)type;
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
@@ -163,7 +163,7 @@ namespace Coco.Business.Implementation.UserBusiness
             });
         }
 
-        public UserPhotoDto GetUserPhotoByUserId(long userId, Core.Entities.Enums.UserPhotoType type)
+        public UserPhotoDto GetUserPhotoByUserId(long userId, UserPhotoType type)
         {
             var photoType = (byte)type;
             var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));

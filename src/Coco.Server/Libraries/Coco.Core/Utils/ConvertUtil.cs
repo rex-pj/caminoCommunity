@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 
-namespace Coco.Core.Helpers
+namespace Coco.Core.Utils
 {
-    public class ConvertHelper
+    public static class ConvertUtil
     {
         public static string BytesToString(byte[] bytes)
         {

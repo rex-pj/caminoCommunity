@@ -1,5 +1,5 @@
 ﻿using Coco.Framework.SessionManager.Contracts;
-using Coco.Core.Helpers;
+using Coco.Core.Utils;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -41,14 +41,14 @@ namespace Coco.Framework.SessionManager
                         memoryStream.Close();
                     }
 
-                    return ConvertHelper.BytesToString(cipherTextBytes);
+                    return ConvertUtil.BytesToString(cipherTextBytes);
                 }
             }
         }
 
         public string Decrypt(string encryptedText, string saltKey)
         {
-            var cipherTextBytes = ConvertHelper.StringToBytes(encryptedText);
+            var cipherTextBytes = ConvertUtil.StringToBytes(encryptedText);
             using (var bytesDerived = new Rfc2898DeriveBytes(_crypterSettings.PepperKey, Encoding.ASCII.GetBytes(saltKey)))
             {
                 var keyBytes = bytesDerived.GetBytes(256 / 8);

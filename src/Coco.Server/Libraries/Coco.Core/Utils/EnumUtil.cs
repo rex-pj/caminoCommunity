@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Coco.Core.Helpers
+namespace Coco.Core.Utils
 {
-    public static class EnumHelper
+    public static class EnumUtil
     {
         public static IEnumerable<SelectListItem> ToSelectListItems<TEnum>() where TEnum : struct, IConvertible, IFormattable
         {
@@ -44,8 +44,6 @@ namespace Coco.Core.Helpers
         public static IEnumerable<SelectOption> EnumToSelectList<TEnum>(string selectedId = "")
         {
             var enumsData = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
-
-            var enumType = (typeof(TEnum));
             var result = enumsData.Select(e => new SelectOption()
             {
                 Id = Convert.ChangeType(e, typeof(int)).ToString(),
