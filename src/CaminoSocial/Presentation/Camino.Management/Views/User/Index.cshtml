@@ -1,0 +1,84 @@
+﻿@using Camino.Management.Models
+@model PagerViewModel<UserViewModel>
+@{
+    ViewData["Title"] = "User management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card-header bg-secondary text-light">
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-light">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Email</th>
+                <th scope="col">Birthdate</th>
+                <th scope="col">Country</th>
+                <th scope="col">Email confirmed</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Actived</th>
+                <th scope="col">Status</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Collections.Any())
+            {
+                var index = 1;
+                foreach (var user in Model.Collections)
+                {
+                    <tr>
+                        <th>@index</th>
+                        <td>@user.Lastname @user.Firstname</td>
+                        <td>@user.Address</td>
+                        <td>@user.Email</td>
+
+                        <td>
+                            @if (user.BirthDate.HasValue)
+                            {
+                                @user.BirthDate.Value.ToShortDateString()
+                            }
+                        </td>
+                        <td>@user.CountryName</td>
+                        <td>
+                            @if (user.IsEmailConfirmed)
+                            {
+                                <span class="badge badge-primary">Confirmed</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-secondary">Confirmed</span>
+                            }
+                        </td>
+                        <td>
+                            @user.GenderLabel
+                        </td>
+                        <td>
+                            @if (user.IsActived)
+                            {
+                                <span class="badge badge-success">Actived</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-danger">Confirmed</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge badge-info">@user.StatusLabel</span>
+                        </td>
+                    </tr>
+                    index += 1;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

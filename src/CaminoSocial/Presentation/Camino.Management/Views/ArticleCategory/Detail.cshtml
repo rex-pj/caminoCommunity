@@ -1,0 +1,46 @@
+﻿@using Camino.Management.Models
+@model ArticleCategoryViewModel
+@{
+    ViewData["Title"] = "Article Category Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-header bg-secondary text-light">
+    <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-light">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    <a asp-action="Update" asp-controller="ArticleCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+        <i class="fa fa-edit"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <div class="form-group">
+        <label>Name</label>
+        <span class="form-control" readonly>@Model.Name</span>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <span class="form-control" readonly>@Model.Description</span>
+    </div>
+    <div class="form-group">
+        <label>Created by</label>
+        <span class="form-control" readonly>@Model.CreatedBy</span>
+    </div>
+    <div class="form-group">
+        <label>Created date</label>
+        <span class="form-control" readonly>@Model.CreatedDate.ToShortDateString()</span>
+    </div>
+    <div class="form-group">
+        <label>Updated by</label>
+        <span class="form-control" readonly>@Model.UpdatedBy</span>
+    </div>
+    <div class="form-group">
+        <label>Updated date</label>
+        <span class="form-control" readonly>@Model.UpdatedDate.ToShortDateString()</span>
+    </div>
+    <div class="form-group">
+        <label>Parent</label>
+        <span class="form-control" readonly>@Model.ParentCategoryName</span>
+    </div>
+</div>

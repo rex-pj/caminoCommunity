@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Create category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Camino.Management.Models
+@model ArticleCategoryViewModel
+
+<div class="card-header bg-secondary text-light">
+    <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-light">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <partial name="_CreateOrUpdateForm" />
+</div>
