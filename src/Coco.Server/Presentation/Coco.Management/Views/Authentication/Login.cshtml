@@ -1,0 +1,35 @@
+﻿@using Coco.Management.Models
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+@section DocumentHead
+{
+    <link rel="stylesheet" href="~/css/auth-layout.css" />
+}
+
+<div class="row justify-content-md-center">
+    <div class="col-lg-5 col-md-6 col-sm-10 col-12">
+        <form method="post" asp-action="Login" asp-controller="Authentication">
+            <div class="card main box-shadow auth-box">
+                <div class="card-header text-center bg-secondary">
+                    <i class="fa fa-user-alt"></i> Login
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="userName">User name</label>
+                        <input type="text" class="form-control" id="userName" name="UserName">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="Password">
+                    </div>
+                </div>
+                <div class="card-footer text-right bg-secondary">
+                    <button type="submit" class="btn btn-success">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
