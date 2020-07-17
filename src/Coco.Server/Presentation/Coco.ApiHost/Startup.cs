@@ -1,3 +1,5 @@
+using Coco.Framework.Infrastructure.Extensions;
+using Coco.Framework.Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,16 +10,18 @@ namespace Coco.ApiHost
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        private readonly string _extensionsPath;
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            _extensionsPath = $"{webHostEnvironment.ContentRootPath}{Configuration["Modulars:Path"]}";
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddModular(_extensionsPath);
             services.AddControllers();
         }
 
@@ -28,6 +32,8 @@ namespace Coco.ApiHost
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseModular();
 
             app.UseHttpsRedirection();
 

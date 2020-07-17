@@ -11,5 +11,9 @@
     <None Remove="Controllers\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Coco.Framework\Coco.Framework.csproj" />
+  </ItemGroup>
+
 
 </Project>

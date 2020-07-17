@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Coco.Framework.Infrastructure.Extensions
 {
-    public static class ApplicationServicesConfigure
+    public static class ApplicationServiceCollectionExtensions
     {
         public static void ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
