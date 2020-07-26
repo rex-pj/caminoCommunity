@@ -1,37 +1,32 @@
-﻿using Camino.Framework.Providers.Contracts;
-using Camino.Framework.Providers.Implementation;
+﻿using Camino.Core.Models;
+using Camino.Core.Modular.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Camino.Framework.Infrastructure.Extensions
 {
     public static class ModularServiceCollectionExtensions
     {
-        public static void AddExtCore(this IServiceCollection services)
+        public static IMvcBuilder AddModular(this IServiceCollection services, IList<ModuleInfo> modules)
         {
-            services.AddModular(null);
-        }
-
-        public static void AddModular(this IServiceCollection services, string extensionsPath)
-        {
-            services.AddModular(extensionsPath, false, new AssemblyProvider(services.BuildServiceProvider()));
-        }
-
-        public static void AddModular(this IServiceCollection services, string extensionsPath, bool includingSubpaths, IAssemblyProvider assemblyProvider)
-        {
-            DiscoverAssemblies(assemblyProvider, extensionsPath, includingSubpaths);
-
-            var serviceProvider = services.BuildServiceProvider();
-            foreach (var action in ModularManager.GetInstances<IConfigureServicesAction>().OrderBy(a => a.Priority))
+            var mvcBuilder = services.AddControllersWithViews().AddNewtonsoftJson();
+            modules = modules.Where(x => x.ShortName.Contains("Content")).ToList();
+            var pluginStartupInterfaceType = typeof(IPluginStartup);
+            foreach (var module in modules)
             {
-                action.Execute(services, serviceProvider);
-                serviceProvider = services.BuildServiceProvider();
-            }
-        }
+                mvcBuilder.AddApplicationPart(module.Assembly);
 
-        private static void DiscoverAssemblies(IAssemblyProvider assemblyProvider, string extensionsPath, bool includingSubpaths)
-        {
-            ModularManager.SetAssemblies(assemblyProvider.GetAssemblies(extensionsPath, includingSubpaths));
+                var pluginStartupType = module.Assembly.GetTypes().FirstOrDefault(x => pluginStartupInterfaceType.IsAssignableFrom(x));
+                if (pluginStartupType != null && pluginStartupType != pluginStartupInterfaceType)
+                {
+                    var moduleStartup = Activator.CreateInstance(pluginStartupType) as IPluginStartup;
+                    moduleStartup.ConfigureServices(services);
+                }
+            }
+
+            return mvcBuilder;
         }
     }
 }

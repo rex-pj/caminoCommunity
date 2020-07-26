@@ -2,12 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using UserPhotoKind = Camino.Data.Enums.UserPhotoKind;
+using Camino.Data.Enums;
 
 namespace Module.Api.Content.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
     public class PhotoController : ControllerBase
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;

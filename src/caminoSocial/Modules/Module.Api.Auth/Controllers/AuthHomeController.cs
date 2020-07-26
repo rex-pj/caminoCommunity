@@ -2,11 +2,8 @@
 
 namespace Module.Api.Auth.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class HomeController : ControllerBase
+    public class AuthHomeController : ControllerBase
     {
-        [HttpGet, Route("")]
         public IActionResult Index()
         {
             return Content("Auth Api");

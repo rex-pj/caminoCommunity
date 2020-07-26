@@ -1,29 +1,14 @@
-﻿using Camino.Framework.Models;
-using HotChocolate.AspNetCore;
+﻿using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-namespace  Module.Api.Auth.Infrastructure.Extensions
+namespace Module.Api.Auth.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder ConfigureContentAppBuilder(this IApplicationBuilder app)
+        public static IApplicationBuilder ConfigureAuthAppBuilder(this IApplicationBuilder app)
         {
-            var appSettings = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
-            // Config UseCors
-            app.UseHttpsRedirection()
-                .UseRouting()
-                .UseCors(appSettings.MyAllowSpecificOrigins)
-                .UseAuthentication()
-                .UseAuthorization()
-                .UseWebSockets()
-                .UseGraphQL("/api/graphql")
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
-
+            app.UseGraphQL("/graphql");
+            app.UsePlayground("/graphql", "/playground");
             return app;
         }
     }

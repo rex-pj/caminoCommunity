@@ -1,31 +1,39 @@
+using Camino.ApiHost.Infrastructure.Extensions;
+using Camino.Core.Models;
 using Camino.Framework.Infrastructure.Extensions;
-using Camino.Framework.Infrastructure.Middlewares;
+using Camino.Framework.Providers.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Camino.ApiHost
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private readonly string _extensionsPath;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private IList<ModuleInfo> _modules;
+
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
-            _extensionsPath = $"{webHostEnvironment.ContentRootPath}{Configuration["Modulars:Path"]}";
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddModular(_extensionsPath);
-            services.AddControllers();
+            var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
+            var modulesPath = $"{rootPath}{Configuration["Extensions:Path"]}";
+            _modules = new ModularManager().LoadModules(modulesPath);
+            
+            services.ConfigureApiHostServices(Configuration);
+            services.AddModular(_modules);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -33,18 +41,7 @@ namespace Camino.ApiHost
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseModular();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.ConfigureAppBuilder(env, _modules);
         }
     }
 }

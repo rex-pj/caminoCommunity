@@ -2,12 +2,8 @@
 
 namespace Module.Api.Content.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class HomeController : ControllerBase
+    public class ContentHomeController : ControllerBase
     {
-        // GET api/user
-        [HttpGet, Route("")]
         public IActionResult Index()
         {
             return Content("Content Api");

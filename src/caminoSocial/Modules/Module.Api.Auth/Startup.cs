@@ -4,26 +4,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Module.Api.Auth.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
+using Camino.Core.Modular.Contracts;
 
-namespace  Module.Api.Auth
+namespace Module.Api.Auth
 {
-    public class Startup
+    public class Startup : PluginStartupBase
     {
-        private readonly IConfiguration _configuration;
-        public Startup(IConfiguration configuration)
+        public override void ConfigureServices(IServiceCollection services)
         {
-            _configuration = configuration;
+            var serviceProvider = services.BuildServiceProvider();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            services.ConfigureAuthServices(configuration);
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.ConfigureAuthServices(_configuration);
-            services.AddControllers().AddNewtonsoftJson();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -31,7 +25,7 @@ namespace  Module.Api.Auth
             }
 
             // Config UseCors
-            app.ConfigureContentAppBuilder();
+            app.ConfigureAuthAppBuilder();
         }
     }
 }

@@ -1,84 +1,54 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using Camino.Core.Models;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Camino.Framework.Providers.Implementation
 {
-    public static class ModularManager
+    public class ModularManager
     {
-        private static ConcurrentDictionary<Type, IEnumerable<Type>> _types;
-
-        public static IEnumerable<Assembly> Assemblies { get; private set; }
-
-        public static void SetAssemblies(IEnumerable<Assembly> assemblies)
+        public List<ModuleInfo> LoadModules(string pluginsPath)
         {
-            Assemblies = assemblies;
-            _types = new ConcurrentDictionary<Type, IEnumerable<Type>>();
-        }
+            var moduleRootFolder = new DirectoryInfo(pluginsPath);
+            var moduleFolders = moduleRootFolder.GetDirectories();
 
-        public static IEnumerable<T> GetInstances<T>(bool useCaching = false)
-        {
-            return GetInstances<T>(null, useCaching, new object[] { });
-        }
+            var modules = new List<ModuleInfo>();
 
-        public static IEnumerable<T> GetInstances<T>(Func<Assembly, bool> predicate, bool useCaching = false, params object[] args)
-        {
-            List<T> instances = new List<T>();
-
-            foreach (Type implementation in GetImplementations<T>(predicate, useCaching))
+            foreach (var moduleFolder in moduleFolders)
             {
-                if (!implementation.GetTypeInfo().IsAbstract)
+                var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.FullName, "bin"));
+                if (!binFolder.Exists)
                 {
-                    T instance = (T)Activator.CreateInstance(implementation, args);
-
-                    instances.Add(instance);
+                    continue;
                 }
-            }
 
-            return instances;
-        }
-
-        public static IEnumerable<Type> GetImplementations<T>(Func<Assembly, bool> predicate, bool useCaching = false)
-        {
-            Type type = typeof(T);
-
-            if (useCaching && _types.ContainsKey(type))
-            {
-                return _types[type];
-            }
-
-            List<Type> implementations = new List<Type>();
-
-            foreach (Assembly assembly in GetAssemblies(predicate))
-            {
-                foreach (Type exportedType in assembly.GetExportedTypes())
+                var dllFiles = binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories);
+                foreach (var file in dllFiles)
                 {
-                    if (type.GetTypeInfo().IsAssignableFrom(exportedType) && exportedType.GetTypeInfo().IsClass)
+                    Assembly assembly = null;
+                    try
                     {
-                        implementations.Add(exportedType);
+                        assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
+                    }
+                    catch (FileLoadException)
+                    {
+                        assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(file.Name)));
+
+                        if (assembly == null)
+                        {
+                            throw;
+                        }
+                    }
+
+                    if (assembly.FullName.Contains(moduleFolder.Name))
+                    {
+                        modules.Add(new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName });
                     }
                 }
-                    
             }
 
-            if (useCaching)
-            {
-                _types[type] = implementations;
-            }
-
-            return implementations;
-        }
-
-        private static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> predicate)
-        {
-            if (predicate == null)
-            {
-                return Assemblies;
-            }
-                
-            return Assemblies.Where(predicate);
+            return modules;
         }
     }
 }
