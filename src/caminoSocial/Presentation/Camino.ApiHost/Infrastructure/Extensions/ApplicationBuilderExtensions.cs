@@ -1,4 +1,5 @@
-﻿using Camino.Core.Models;
+﻿using Camino.Core.Infrastructure;
+using Camino.Core.Models;
 using Camino.Framework.Infrastructure.Middlewares;
 using Camino.Framework.Models;
 using HotChocolate.AspNetCore;
@@ -12,8 +13,9 @@ namespace Camino.ApiHost.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder ConfigureAppBuilder(this IApplicationBuilder app, IWebHostEnvironment env, IList<ModuleInfo> modules)
+        public static IApplicationBuilder ConfigureAppBuilder(this IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var modules = Singleton<IList<ModuleInfo>>.Instance;
             var appSettings = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
             app.UseHttpsRedirection()
                 .UseRouting()
@@ -21,7 +23,9 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseWebSockets()
-                .UseModular(env, modules)
+                .UseModular(env)
+                .UseGraphQL("/graphql")
+                .UsePlayground()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute(

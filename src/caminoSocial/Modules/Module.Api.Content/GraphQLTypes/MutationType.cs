@@ -3,10 +3,11 @@ using Module.Api.Content.Resolvers.Contracts;
 using Camino.Framework.GraphQLTypes.DirectiveTypes;
 using Camino.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
+using Camino.Core.Modular.Contracts;
 
 namespace Module.Api.Content.GraphQLTypes
 {
-    public class MutationType : ObjectType
+    public class MutationType : BaseMutationType
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {

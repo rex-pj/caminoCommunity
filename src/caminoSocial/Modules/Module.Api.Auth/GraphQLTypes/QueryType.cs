@@ -4,10 +4,11 @@ using Module.Api.Auth.Resolvers.Contracts;
 using Camino.Framework.GraphQLTypes.DirectiveTypes;
 using Camino.Framework.GraphQLTypes.ResultTypes;
 using HotChocolate.Types;
+using Camino.Core.Modular.Contracts;
 
 namespace  Module.Api.Auth.GraphQLTypes
 {
-    public class QueryType : ObjectType
+    public class QueryType : BaseQueryType
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {

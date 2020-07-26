@@ -19,12 +19,12 @@ namespace Module.Api.Auth.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services
-                .AddGraphQL(sp => SchemaBuilder.New()
-                .AddServices(sp)
-                .AddQueryType<QueryType>()
-                .AddMutationType<MutationType>()
-                .Create());
+            //services
+            //    .AddGraphQL(sp => SchemaBuilder.New()
+            //    .AddServices(sp)
+            //    .AddQueryType<QueryType>()
+            //    .AddMutationType<MutationType>()
+            //    .Create());
 
             services.AddTransient<IUserResolver, UserResolver>();
             services.AddTransient<ICountryResolver, CountryResolver>();

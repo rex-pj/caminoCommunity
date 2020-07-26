@@ -21,8 +21,8 @@ namespace Module.Api.Content.Infrastructure.Extensions
             //    .AddMutationType<MutationType>()
             //    .Create());
 
-            //services.AddTransient<IImageResolver, ImageResolver>();
-            //services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+            services.AddTransient<IImageResolver, ImageResolver>();
+            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
 
             return services;
         }

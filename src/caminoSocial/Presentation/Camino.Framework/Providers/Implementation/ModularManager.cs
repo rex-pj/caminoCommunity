@@ -1,4 +1,5 @@
-﻿using Camino.Core.Models;
+﻿using Camino.Core.Infrastructure;
+using Camino.Core.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -48,6 +49,7 @@ namespace Camino.Framework.Providers.Implementation
                 }
             }
 
+            Singleton<IList<ModuleInfo>>.Instance = modules;
             return modules;
         }
     }

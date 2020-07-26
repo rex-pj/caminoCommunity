@@ -1,4 +1,5 @@
-﻿using Camino.Core.Models;
+﻿using Camino.Core.Infrastructure;
+using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,10 +14,11 @@ namespace Camino.Framework.Infrastructure.Middlewares
 {
     public static class ModularApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseModular(this IApplicationBuilder app, IWebHostEnvironment env, IList<ModuleInfo> plugins)
+        public static IApplicationBuilder UseModular(this IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var modules = Singleton<IList<ModuleInfo>>.Instance;
             var pluginStartupInterfaceType = typeof(IPluginStartup);
-            foreach (var module in plugins)
+            foreach (var module in modules)
             {
                 var pluginStartupType = module.Assembly.GetTypes().FirstOrDefault(x => pluginStartupInterfaceType.IsAssignableFrom(x));
                 if (pluginStartupType != null && pluginStartupType != pluginStartupInterfaceType)

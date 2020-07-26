@@ -1,5 +1,4 @@
 using Camino.ApiHost.Infrastructure.Extensions;
-using Camino.Core.Models;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Providers.Implementation;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Camino.ApiHost
@@ -16,7 +14,6 @@ namespace Camino.ApiHost
     {
         public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private IList<ModuleInfo> _modules;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
@@ -26,12 +23,12 @@ namespace Camino.ApiHost
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ModularManager>();
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{Configuration["Extensions:Path"]}";
-            _modules = new ModularManager().LoadModules(modulesPath);
             
             services.ConfigureApiHostServices(Configuration);
-            services.AddModular(_modules);
+            services.AddModular(modulesPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,7 +38,7 @@ namespace Camino.ApiHost
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ConfigureAppBuilder(env, _modules);
+            app.ConfigureAppBuilder(env);
         }
     }
 }

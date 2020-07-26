@@ -1,5 +1,9 @@
-﻿using Camino.Core.Models;
+﻿using Camino.Core.Infrastructure;
+using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
+using Camino.Core.Modular.Implementations;
+using Camino.Framework.Providers.Implementation;
+using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -9,10 +13,14 @@ namespace Camino.Framework.Infrastructure.Extensions
 {
     public static class ModularServiceCollectionExtensions
     {
-        public static IMvcBuilder AddModular(this IServiceCollection services, IList<ModuleInfo> modules)
+        public static IMvcBuilder AddModular(this IServiceCollection services, string modulesPath)
         {
+            var serviceProvider = services.BuildServiceProvider();
+            var modularManager = serviceProvider.GetRequiredService<ModularManager>();
+            modularManager.LoadModules(modulesPath);
+
+            var modules = Singleton<IList<ModuleInfo>>.Instance;
             var mvcBuilder = services.AddControllersWithViews().AddNewtonsoftJson();
-            modules = modules.Where(x => x.ShortName.Contains("Content")).ToList();
             var pluginStartupInterfaceType = typeof(IPluginStartup);
             foreach (var module in modules)
             {
@@ -26,7 +34,18 @@ namespace Camino.Framework.Infrastructure.Extensions
                 }
             }
 
+            AddGraphQlModules(services);
             return mvcBuilder;
+        }
+
+        public static void AddGraphQlModules(this IServiceCollection services)
+        {
+            services
+               .AddGraphQL(sp => SchemaBuilder.New()
+               .AddServices(sp)
+               .AddQueryType<QueryType>()
+               .AddMutationType<MutationType>()
+               .Create());
         }
     }
 }
