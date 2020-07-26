@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "ContentHome/Index",
+      "launchUrl": "Photo/Index",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,8 +20,8 @@
     "Camino.ApiHost": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "ContentHome/Index",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "launchUrl": "Photo/Index",
+      "applicationUrl": "http://localhost:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

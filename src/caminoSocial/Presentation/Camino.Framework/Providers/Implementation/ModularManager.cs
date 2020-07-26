@@ -2,6 +2,7 @@
 using Camino.Core.Models;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -9,13 +10,16 @@ namespace Camino.Framework.Providers.Implementation
 {
     public class ModularManager
     {
-        public List<ModuleInfo> LoadModules(string pluginsPath)
+        public IList<ModuleInfo> LoadModules(string pluginsPath, string prefix = null)
         {
             var moduleRootFolder = new DirectoryInfo(pluginsPath);
             var moduleFolders = moduleRootFolder.GetDirectories();
+            if (prefix != null)
+            {
+                moduleFolders = moduleFolders.Where(x => x.Name.Contains(prefix)).ToArray();
+            }
 
             var modules = new List<ModuleInfo>();
-
             foreach (var moduleFolder in moduleFolders)
             {
                 var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.FullName, "bin"));

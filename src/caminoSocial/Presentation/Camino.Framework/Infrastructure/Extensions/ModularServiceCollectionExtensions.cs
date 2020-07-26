@@ -13,11 +13,12 @@ namespace Camino.Framework.Infrastructure.Extensions
 {
     public static class ModularServiceCollectionExtensions
     {
-        public static IMvcBuilder AddModular(this IServiceCollection services, string modulesPath)
+        public static IMvcBuilder AddModular(this IServiceCollection services, string modulesPath, string prefix = null)
         {
+            services.AddSingleton<ModularManager>();
             var serviceProvider = services.BuildServiceProvider();
             var modularManager = serviceProvider.GetRequiredService<ModularManager>();
-            modularManager.LoadModules(modulesPath);
+            modularManager.LoadModules(modulesPath, prefix);
 
             var modules = Singleton<IList<ModuleInfo>>.Instance;
             var mvcBuilder = services.AddControllersWithViews().AddNewtonsoftJson();

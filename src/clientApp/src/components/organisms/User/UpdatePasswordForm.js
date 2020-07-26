@@ -2,11 +2,11 @@ import React, { Fragment, useState, useCallback } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../atoms/Panels";
-import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import passwordUpdateModel from "../../../models/passwordUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
-import { PanelFooter } from "../../../components/atoms/Panels";
+import { PanelFooter } from "../../atoms/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`

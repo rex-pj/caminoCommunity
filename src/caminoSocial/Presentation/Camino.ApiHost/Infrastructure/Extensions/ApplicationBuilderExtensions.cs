@@ -30,7 +30,7 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                 {
                     endpoints.MapControllerRoute(
                         name: "default",
-                        pattern: "{controller=ContentHome}/{action=Index}/{id?}");
+                        pattern: "{controller=Home}/{action=Index}/{id?}");
                 });
 
             return app;

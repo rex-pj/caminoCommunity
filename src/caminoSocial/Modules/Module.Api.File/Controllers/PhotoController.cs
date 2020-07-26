@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Camino.Data.Enums;
 
-namespace Module.Api.Content.Controllers
+namespace Module.Api.File.Controllers
 {
     public class PhotoController : ControllerBase
     {

@@ -1,6 +1,5 @@
 using Camino.ApiHost.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Extensions;
-using Camino.Framework.Providers.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,12 +22,11 @@ namespace Camino.ApiHost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ModularManager>();
-            var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
-            var modulesPath = $"{rootPath}{Configuration["Extensions:Path"]}";
-            
             services.ConfigureApiHostServices(Configuration);
-            services.AddModular(modulesPath);
+
+            var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
+            var modulesPath = $"{rootPath}{Configuration["Modular:Path"]}";
+            services.AddModular(modulesPath, Configuration["Modular:Prefix"]);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

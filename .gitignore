@@ -27,3 +27,5 @@ src/caminoSocial/Presentation/Camino.ApiHost/bin/
 src/caminoSocial/Libraries/Camino.Core/bin/
 src/caminoSocial/Data/Camino.Data/bin/
 src/caminoSocial/Data/Camino.Data/obj/
+src/caminoSocial/Modules/Module.Api.File/bin/
+src/caminoSocial/Modules/Module.Api.File/obj/

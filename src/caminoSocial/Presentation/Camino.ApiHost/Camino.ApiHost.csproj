@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
-    <Content Remove="Controllers\**" />
-    <EmbeddedResource Remove="Controllers\**" />
-    <None Remove="Controllers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="10.4.3" />
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="10.4.3" />
     <PackageReference Include="HotChocolate.AspNetCore.Playground" Version="10.4.3" />

@@ -19,13 +19,7 @@ namespace Module.Api.Auth
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            // Config UseCors
-            app.ConfigureAuthAppBuilder();
+            app.ConfigureAppBuilder();
         }
     }
 }

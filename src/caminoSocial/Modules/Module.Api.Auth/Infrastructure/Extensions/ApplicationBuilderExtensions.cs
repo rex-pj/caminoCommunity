@@ -4,7 +4,7 @@ namespace Module.Api.Auth.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder ConfigureAuthAppBuilder(this IApplicationBuilder app)
+        public static IApplicationBuilder ConfigureAppBuilder(this IApplicationBuilder app)
         {
             return app;
         }
