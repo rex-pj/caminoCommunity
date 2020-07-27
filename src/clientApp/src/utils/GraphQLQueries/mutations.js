@@ -44,7 +44,7 @@ export const UPDATE_USER_INFO_PER_ITEM = gql`
 `;
 
 export const UPDATE_USER_AVATAR = gql`
-  mutation UpdateAvatar($criterias: UserPhotoUpdateDtoInput!) {
+  mutation UpdateAvatar($criterias: UserPhotoUpdationInput!) {
     updateAvatar(criterias: $criterias) {
       isSucceed
       errors {
@@ -68,7 +68,7 @@ export const DELETE_USER_AVATAR = gql`
 `;
 
 export const UPDATE_USER_COVER = gql`
-  mutation UpdateCover($criterias: UserPhotoUpdateDtoInput!) {
+  mutation UpdateCover($criterias: UserPhotoUpdationInput!) {
     updateCover(criterias: $criterias) {
       isSucceed
       errors {

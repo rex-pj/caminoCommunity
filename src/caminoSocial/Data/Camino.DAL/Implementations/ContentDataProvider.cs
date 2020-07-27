@@ -14,7 +14,7 @@ namespace Camino.DAL.Implementations
 
         protected override void OnMappingSchemaCreating()
         {
-            FluentMappingBuilder.ApplyMappingBuilder<ArticleCategoryMap>()
+            FluentMapBuilder.ApplyMappingBuilder<ArticleCategoryMap>()
                 .ApplyMappingBuilder<UserPhotoMap>()
                 .ApplyMappingBuilder<UserPhotoTypeMap>();
         }

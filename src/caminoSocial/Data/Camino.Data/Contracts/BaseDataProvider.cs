@@ -21,7 +21,7 @@ namespace Camino.Data.Contracts
     {
         protected readonly DataConnection _dataConnection;
         private readonly IDataProvider _dataProvider;
-        protected FluentMappingBuilder FluentMappingBuilder { get; private set; }
+        protected FluentMappingBuilder FluentMapBuilder { get; private set; }
         protected BaseDataProvider(DataConnection dataConnection)
         {
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
@@ -38,8 +38,8 @@ namespace Camino.Data.Contracts
 
         protected void LoadMappingSchemaBuilder()
         {
-            var fluentMappingBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            FluentMappingBuilder = fluentMappingBuilder;
+            var fluentMapBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
+            FluentMapBuilder = fluentMapBuilder;
             OnMappingSchemaCreating();
             Singleton<MappingSchema>.Instance = _dataConnection.MappingSchema;
         }

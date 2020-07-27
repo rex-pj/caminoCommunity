@@ -13,8 +13,8 @@ namespace Camino.ApiHost.Infrastructure.Extensions
         public static IServiceCollection ConfigureApiHostServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication();
-            services.ConfigureApplicationServices(configuration);
-            services.ConfigureBusinessServices();
+            services.AddApplicationServices(configuration);
+            services.AddBusinessServices();
             services.AddHttpContextAccessor();
             services.ConfigureCorsServices(services.BuildServiceProvider());
 

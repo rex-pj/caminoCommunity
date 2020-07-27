@@ -9,6 +9,7 @@ using LinqToDB.Data;
 using System;
 using System.Data.SqlClient;
 using Camino.Data.Entities.Identity;
+using Camino.Data.Entities.Content;
 
 namespace Camino.Business.Implementation
 {
@@ -234,6 +235,36 @@ namespace Camino.Business.Implementation
                         {
                             transaction.Rollback();
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+        }
+
+        public void PrepareContentData(SetupDto installationDto)
+        {
+            using (var dataConnection = _contentDataProvider.CreateDataConnection())
+            {
+                using (var transaction = dataConnection.BeginTransaction())
+                {
+
+                    try
+                    {
+                        // Insert countries
+                        var userPhotoTypeTableName = nameof(UserPhotoType);
+                        foreach (var userPhotoType in installationDto.UserPhotoTypes)
+                        {
+                            dataConnection.Insert(new UserPhotoType()
+                            {
+                                Name = userPhotoType.Name,
+                                Description = userPhotoType.Description
+                            }, userPhotoTypeTableName);
+                        }
+
+                        transaction.Commit();
                     }
                     catch (Exception e)
                     {

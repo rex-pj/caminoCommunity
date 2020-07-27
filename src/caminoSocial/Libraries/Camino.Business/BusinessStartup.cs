@@ -15,10 +15,10 @@ namespace Camino.Business
 {
     public static class BusinessStartup
     {
-        public static void ConfigureBusinessServices(this IServiceCollection services)
+        public static void AddBusinessServices(this IServiceCollection services)
         {
-            services.ConfigureContentDataAccess("CaminoEntities");
-            services.ConfigureIdentityDataAccess("IdentityEntities");
+            services.AddContentDataAccessServices("CaminoEntities");
+            services.AddIdentityDataAccessServices("IdentityEntities");
 
             services.AddTransient<IRepository<User>, IdentityRepository<User>>()
                 .AddTransient<IRepository<UserInfo>, IdentityRepository<UserInfo>>()

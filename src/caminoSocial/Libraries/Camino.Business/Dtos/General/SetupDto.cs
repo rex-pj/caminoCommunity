@@ -1,4 +1,5 @@
-﻿using Camino.Business.Dtos.Identity;
+﻿using Camino.Business.Dtos.Content;
+using Camino.Business.Dtos.Identity;
 using System;
 using System.Collections.Generic;
 
@@ -18,5 +19,6 @@ namespace Camino.Business.Dtos.General
         public IEnumerable<StatusDto> Statuses { get; set; }
         public IEnumerable<RoleDto> Roles { get; set; }
         public IEnumerable<AuthorizationPolicyDto> AuthorizationPolicies { get; set; }
+        public IEnumerable<UserPhotoTypeDto> UserPhotoTypes { get; set; }
     }
 }

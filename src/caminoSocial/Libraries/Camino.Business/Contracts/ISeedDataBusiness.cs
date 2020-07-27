@@ -9,5 +9,6 @@ namespace Camino.Business.Contracts
         void SeedingIdentityDb(string sql);
         void SeedingContentDb(string sql);
         void PrepareIdentityData(SetupDto installationDto);
+        void PrepareContentData(SetupDto installationDto);
     }
 }

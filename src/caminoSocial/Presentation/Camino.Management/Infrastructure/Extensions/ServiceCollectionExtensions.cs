@@ -18,9 +18,9 @@ namespace Camino.Management.Infrastructure.Extensions
         public static IServiceCollection ConfigureManagementServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(typeof(FrameworkMappingProfile), typeof(ContentMappingProfile), typeof(IdentityMappingProfile), typeof(AuthMappingProfile));
-            services.ConfigureApplicationServices(configuration);
+            services.AddApplicationServices(configuration);
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA).AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
-            services.ConfigureBusinessServices();
+            services.AddBusinessServices();
 
             services.AddScoped<ISetupProvider, SetupProvider>();
             services.AddSingleton<SetupSettings>();

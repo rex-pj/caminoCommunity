@@ -88,10 +88,19 @@ namespace Camino.Management.Controllers
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-                var setupDto = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
-                setupDto.InitualUser = _mapper.Map<UserDto>(initialUser);
+                var identitySetup = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
+                identitySetup.InitualUser = _mapper.Map<UserDto>(initialUser);
 
-                _seedDataBusiness.PrepareIdentityData(setupDto);
+                // Initialize identity database
+                _seedDataBusiness.PrepareIdentityData(identitySetup);
+
+                // Get content json data
+                var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
+                var contentSetup = JsonConvert.DeserializeObject<SetupDto>(contentJson);
+
+                // Initialize content database
+                _seedDataBusiness.PrepareContentData(contentSetup);
+
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Login", "Authentication");
             }

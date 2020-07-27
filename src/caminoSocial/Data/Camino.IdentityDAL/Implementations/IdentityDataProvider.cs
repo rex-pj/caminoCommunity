@@ -14,7 +14,7 @@ namespace Camino.IdentityDAL.Implementations
 
         protected override void OnMappingSchemaCreating()
         {
-            FluentMappingBuilder.ApplyMappingBuilder<UserMap>()
+            FluentMapBuilder.ApplyMappingBuilder<UserMap>()
                 .ApplyMappingBuilder<UserInfoMap>()
                 .ApplyMappingBuilder<AuthorizationPolicyMap>()
                 .ApplyMappingBuilder<CountryMap>()

@@ -16,7 +16,7 @@ namespace Camino.Framework.Infrastructure.Extensions
 {
     public static class ApplicationServiceCollectionExtensions
     {
-        public static void ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AppSettings>(configuration.GetSection(AppSettings.Name));
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));

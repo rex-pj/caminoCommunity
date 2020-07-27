@@ -9,7 +9,7 @@ namespace Camino.IdentityDAL
 {
     public static class IdentityDalStartup
     {
-        public static void ConfigureIdentityDataAccess(this IServiceCollection services, string connectionName)
+        public static void AddIdentityDataAccessServices(this IServiceCollection services, string connectionName)
         {
             var configuration = services.BuildServiceProvider()
                 .GetRequiredService<IConfiguration>();

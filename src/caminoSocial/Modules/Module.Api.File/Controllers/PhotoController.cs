@@ -6,7 +6,8 @@ using Camino.Data.Enums;
 
 namespace Module.Api.File.Controllers
 {
-    public class PhotoController : ControllerBase
+    [Route("[controller]")]
+    public class PhotoController : Controller
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
 
@@ -15,7 +16,6 @@ namespace Module.Api.File.Controllers
             _userPhotoBusiness = userPhotoBusiness;
         }
 
-        // GET cdn/photo/avatar
         [HttpGet]
         [Route("avatar/{code}")]
         public async Task<IActionResult> Avatar(string code)
@@ -26,10 +26,9 @@ namespace Module.Api.File.Controllers
             return File(bytes, "image/jpeg");
         }
 
-        // GET cdn/photo/coverphoto
         [HttpGet]
         [Route("cover/{code}")]
-        public async Task<IActionResult> CoverPhoto(string code)
+        public async Task<IActionResult> Cover(string code)
         {
             var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
             var bytes = Convert.FromBase64String(avatar.ImageData);
