@@ -1,4 +1,5 @@
-﻿using Camino.Core.Infrastructure;
+﻿using AutoMapper;
+using Camino.Core.Infrastructure;
 using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
 using Camino.Core.Modular.Implementations;
@@ -23,6 +24,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             var modules = Singleton<IList<ModuleInfo>>.Instance;
             var mvcBuilder = services.AddControllersWithViews().AddNewtonsoftJson();
             var pluginStartupInterfaceType = typeof(IPluginStartup);
+
             foreach (var module in modules)
             {
                 mvcBuilder.AddApplicationPart(module.Assembly);
@@ -35,18 +37,38 @@ namespace Camino.Framework.Infrastructure.Extensions
                 }
             }
 
-            AddGraphQlModules(services);
             return mvcBuilder;
         }
 
-        public static void AddGraphQlModules(this IServiceCollection services)
+        public static void AddAutoMappingModular(this IServiceCollection services)
         {
-            services
-               .AddGraphQL(sp => SchemaBuilder.New()
-               .AddServices(sp)
-               .AddQueryType<QueryType>()
-               .AddMutationType<MutationType>()
-               .Create());
+            var modules = Singleton<IList<ModuleInfo>>.Instance;
+            var mapProfileType = typeof(Profile);
+            var mappingProfileTypes = new List<Type>();
+            if (modules != null && modules.Any())
+            {
+                foreach (var module in modules)
+                {
+                    var mapProfiles = module.Assembly.GetTypes().Where(x => mapProfileType.IsAssignableFrom(x));
+                    mappingProfileTypes.AddRange(mapProfiles);
+                }
+            }
+
+            services.AddAutoMapper(mappingProfileTypes.ToArray());
+        }
+
+        public static void AddGraphQlModular(this IServiceCollection services)
+        {
+            var modules = Singleton<IList<ModuleInfo>>.Instance;
+            if (modules != null && modules.Any())
+            {
+                services
+                   .AddGraphQL(sp => SchemaBuilder.New()
+                   .AddServices(sp)
+                   .AddQueryType<QueryType>()
+                   .AddMutationType<MutationType>()
+                   .Create());
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Camino.ApiHost
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{Configuration["Modular:Path"]}";
             services.AddModular(modulesPath, Configuration["Modular:Prefix"]);
+            services.AddGraphQlModular();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
