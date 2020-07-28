@@ -11,6 +11,7 @@ namespace Camino.Framework.Providers.Implementation
     {
         private readonly IFileProvider _fileProvider;
         private readonly SetupSettings _setupSettings;
+        
         public SetupProvider(IFileProvider fileProvider, SetupSettings setupSettings)
         {
             _fileProvider = fileProvider;

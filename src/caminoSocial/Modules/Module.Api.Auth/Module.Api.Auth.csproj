@@ -18,8 +18,4 @@
 		<ProjectReference Include="..\..\Presentation\Camino.Framework\Camino.Framework.csproj" />
 		<ProjectReference Include="..\..\Libraries\Camino.Business\Camino.Business.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
 </Project>

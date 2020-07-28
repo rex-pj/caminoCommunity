@@ -1,5 +1,4 @@
-﻿using Camino.Management.Infrastructure.Middlewares;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 
 namespace Camino.Management.Infrastructure.Extensions
 {
@@ -14,11 +13,6 @@ namespace Camino.Management.Infrastructure.Extensions
             app.UseAuthorization();
 
             return app;
-        }
-
-        public static IApplicationBuilder UseDatabaseSettingUp(this IApplicationBuilder app)
-        {
-            return app.UseMiddleware<DatabaseSettingUpMiddleware>();
         }
     }
 }

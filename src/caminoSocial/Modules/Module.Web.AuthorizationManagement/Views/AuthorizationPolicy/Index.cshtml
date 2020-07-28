@@ -1,0 +1,74 @@
+﻿@using Module.Web.AuthorizationManagement.Models
+@using Camino.Framework.Models
+@model PagerViewModel<AuthorizationPolicyViewModel>
+@{
+    ViewData["Title"] = "Authorization policies management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card-header bg-secondary text-light">
+    <a asp-action="Create" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-light">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Created</th>
+                <th scope="col">Updated</th>
+                <th scope="col" width="200">Tools</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Collections.Any())
+            {
+                foreach (var policy in Model.Collections)
+                {
+                    <tr>
+                        <th>@policy.Id</th>
+                        <td>
+                            <a asp-action="Detail" asp-controller="AuthorizationPolicy" asp-route-id="@policy.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@policy.Description">
+                                @policy.Name
+                            </a>
+                        </td>
+                        <td>
+                            <div>@policy.CreatedDate.ToLongDateString()</div>
+                            <p class="text-muted">by: @policy.CreatedByName</p>
+                        </td>
+                        <td>
+                            <div>@policy.UpdatedDate.ToLongDateString()</div>
+                            <p class="text-muted">by: @policy.UpdatedByName</p>
+                        </td>
+                        <td>
+                            <div class="mb-2">
+                                <a asp-action="Update" asp-controller="AuthorizationPolicy" asp-route-id="@policy.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                                   data-toggle="tooltip" data-placement="top" title="Edit authorization policy @policy.Name">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a asp-action="Index" asp-controller="UserAuthorizationPolicy" asp-route-id="@policy.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                                   data-toggle="tooltip" data-placement="top" title="View user authorization policy">
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-users"></i>
+                                </a>
+                                <a asp-action="Index" asp-controller="RoleAuthorizationPolicy" asp-route-id="@policy.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                                   data-toggle="tooltip" data-placement="top" title="View role authorization policy">
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-id-card"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

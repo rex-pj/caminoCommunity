@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewData["Title"] = $"Update authorization policy {Model.Name}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Module.Web.AuthorizationManagement.Models
+@model AuthorizationPolicyViewModel
+
+<div class="card-header bg-secondary text-light">
+    <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <partial name="_CreateOrUpdateForm" />
+</div>

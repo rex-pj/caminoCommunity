@@ -6,7 +6,7 @@ using Camino.Data.Enums;
 
 namespace Module.Api.File.Controllers
 {
-    [Route("[controller]")]
+    [Route("file-api/[controller]")]
     public class PhotoController : Controller
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
