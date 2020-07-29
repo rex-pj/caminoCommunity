@@ -1,0 +1,39 @@
+﻿.setup-panel {
+    position: relative;
+}
+
+.progress-screen,
+.success-screen {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    display: none;
+    border-radius: 3px;
+}
+
+.success-screen {
+    display: block;
+    height: 300px;
+}
+
+.setup-porgress,
+.setup-succeed {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    left: 15px;
+    right: 15px;
+    margin-top: -50px;
+}
+
+.setup-porgress .progress-bar {
+    width: 100%;
+}
+
+.succeed .fas {
+    font-size: 72px;
+}

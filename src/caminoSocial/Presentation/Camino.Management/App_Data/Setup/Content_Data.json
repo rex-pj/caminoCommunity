@@ -1,0 +1,12 @@
+{
+  "userPhotoTypes": [
+    {
+      "Name": "Avatar",
+      "Description": "The avatar of the user"
+    },
+    {
+      "Name": "Cover",
+      "Description": "The cover of the user porfile page"
+    }
+  ]
+}

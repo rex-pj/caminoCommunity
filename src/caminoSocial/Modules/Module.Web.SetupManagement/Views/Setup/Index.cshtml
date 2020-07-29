@@ -1,0 +1,22 @@
+﻿@model SetupViewModel
+@{
+    ViewData["Title"] = "Setup your account";
+    Layout = "~/Views/Shared/_SetupLayout.cshtml";
+}
+
+<div class="card mt-5 setup-panel">
+    <partial name="_SetupForm" />
+    <div class="progress-screen">
+        <div class="setup-porgress">
+            <label class="text-center">We are settingup your account, please take a while!</label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="@Url.Content("~/setupmanagement/js/setup.js")" asp-append-version="true"></script>
+}
