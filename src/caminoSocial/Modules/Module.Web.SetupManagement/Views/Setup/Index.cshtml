@@ -3,9 +3,6 @@
     ViewData["Title"] = "Setup your account";
     Layout = "~/Views/Shared/_SetupLayout.cshtml";
 }
-@section DocumentHead{
-    <link rel="stylesheet" href="@Url.Content("~/css/setup-layout.css")" type="text/css" />
-}
 
 <div class="card mt-5 setup-panel">
     <partial name="_SetupForm" />
@@ -19,6 +16,7 @@
     </div>
 </div>
 
-@section Scripts{
-    <script src="@Url.Content("~/js/setup.js")" asp-append-version="true"></script>
+@section Scripts
+{
+    <script src="@Url.Content("~/setupmanagement/js/setup.js")" asp-append-version="true"></script>
 }

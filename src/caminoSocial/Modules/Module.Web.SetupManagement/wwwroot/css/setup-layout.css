@@ -2,7 +2,8 @@
     position: relative;
 }
 
-.progress-screen {
+.progress-screen,
+.success-screen {
     position: absolute;
     z-index: 1;
     top: 0;
@@ -14,7 +15,13 @@
     border-radius: 3px;
 }
 
-.setup-porgress {
+.success-screen {
+    display: block;
+    height: 300px;
+}
+
+.setup-porgress,
+.setup-succeed {
     position: absolute;
     top: 50%;
     bottom: 50%;
@@ -25,4 +32,8 @@
 
 .setup-porgress .progress-bar {
     width: 100%;
+}
+
+.succeed .fas {
+    font-size: 72px;
 }

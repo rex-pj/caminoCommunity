@@ -20,6 +20,8 @@ namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
             CreateMap<RoleAuthorizationPoliciesDto, ApplicationRole>();
             CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
             CreateMap<ApplicationRole, RoleViewModel>();
+            CreateMap<UserDto, UserViewModel>();
+            CreateMap<UserViewModel, UserDto>();
         }
     }
 }

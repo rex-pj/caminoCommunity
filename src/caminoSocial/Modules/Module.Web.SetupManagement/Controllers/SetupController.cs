@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Module.Web.SetupManagement.Controllers
 {
@@ -102,13 +103,19 @@ namespace Module.Web.SetupManagement.Controllers
                 _seedDataBusiness.PrepareContentData(contentSetup);
 
                 _setupProvider.SetDatabaseHasBeenSetup();
-                return RedirectToAction("Login", "Authentication");
+                return RedirectToAction("Succeed");
             }
             catch(Exception e)
             {
                 _fileProvider.DeleteFile(settings.SetupUrl);
                 return View();
             }
+        }
+
+        [HttpGet]
+        public IActionResult Succeed()
+        {
+            return View();
         }
     }
 }

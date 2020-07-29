@@ -16,10 +16,6 @@ namespace Camino.Management.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureManagementServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAutoMapper(
-                typeof(FrameworkMappingProfile), 
-                typeof(IdentityMappingProfile));
-
             services.AddApplicationServices(configuration);
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA).AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
             services.AddBusinessServices();

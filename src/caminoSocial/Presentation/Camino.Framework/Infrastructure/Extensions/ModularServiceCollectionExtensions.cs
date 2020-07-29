@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Camino.Business.AutoMap;
 using Camino.Core.Infrastructure;
 using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
 using Camino.Core.Modular.Implementations;
+using Camino.Framework.Infrastructure.AutoMap;
 using Camino.Framework.Providers.Implementation;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +47,9 @@ namespace Camino.Framework.Infrastructure.Extensions
             var modules = Singleton<IList<ModuleInfo>>.Instance;
             var mapProfileType = typeof(Profile);
             var mappingProfileTypes = new List<Type>();
+            mappingProfileTypes.Add(typeof(FrameworkMappingProfile));
+            mappingProfileTypes.Add(typeof(IdentityMappingProfile));
+
             if (modules != null && modules.Any())
             {
                 foreach (var module in modules)

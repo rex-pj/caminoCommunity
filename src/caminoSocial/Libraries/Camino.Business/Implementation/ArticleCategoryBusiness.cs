@@ -28,22 +28,27 @@ namespace Camino.Business.Implementation
         public ArticleCategoryDto Find(int id)
         {
             var exist = (from child in _articleCategoryRepository.Table
-                        join parent in _articleCategoryRepository.Table
-                        on child.ParentId equals parent.Id into categories
-                        from cate in categories.DefaultIfEmpty()
-                        where cate.Id == id
-                        select new ArticleCategoryDto
-                        {
-                            Description = child.Description,
-                            CreatedDate = child.CreatedDate,
-                            CreatedById = child.CreatedById,
-                            Id = child.Id,
-                            Name = child.Name,
-                            ParentId = child.ParentId,
-                            UpdatedById = child.UpdatedById,
-                            UpdatedDate = child.UpdatedDate,
-                            ParentCategoryName = cate.Name
-                        }).FirstOrDefault();
+                         join parent in _articleCategoryRepository.Table
+                         on child.ParentId equals parent.Id into categories
+                         from cate in categories.DefaultIfEmpty()
+                         where child.Id == id
+                         select new ArticleCategoryDto
+                         {
+                             Description = child.Description,
+                             CreatedDate = child.CreatedDate,
+                             CreatedById = child.CreatedById,
+                             Id = child.Id,
+                             Name = child.Name,
+                             ParentId = child.ParentId,
+                             UpdatedById = child.UpdatedById,
+                             UpdatedDate = child.UpdatedDate,
+                             ParentCategoryName = cate != null ? cate.Name : null
+                         }).FirstOrDefault();
+
+            if (exist == null)
+            {
+                return null;
+            }
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
             var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
@@ -61,7 +66,7 @@ namespace Camino.Business.Implementation
                 .FirstOrDefault();
 
             var category = _mapper.Map<ArticleCategoryDto>(exist);
-            
+
             return category;
         }
 
