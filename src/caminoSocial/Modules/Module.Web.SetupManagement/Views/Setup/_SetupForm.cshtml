@@ -1,7 +1,7 @@
 ﻿@using Module.Web.SetupManagement.Models
 @model SetupViewModel
 
-<form asp-action="Index" asp-controller="Setup" method="post" class="setup-form">
+<form asp-action="Index" asp-controller="Setup" method="post" class="setup-form" id="setupForm">
     <div class="card-header bg-primary text-white">
         Setting up Admin account
     </div>
@@ -28,6 +28,6 @@
         </div>
     </div>
     <div class="card-footer text-center">
-        <button type="submit" class="btn btn-info">Setup</button>
+        <button type="submit" class="btn btn-info" id="submitSetup">Setup</button>
     </div>
 </form>
