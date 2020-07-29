@@ -1,0 +1,33 @@
+﻿@using Module.Web.SetupManagement.Models
+@model SetupViewModel
+
+<form asp-action="Index" asp-controller="Setup" method="post" class="setup-form">
+    <div class="card-header bg-primary text-white">
+        Setting up Admin account
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label for="AdminEmail">Email</label>
+            <input type="email" class="form-control" asp-for="AdminEmail">
+        </div>
+        <div class="form-group">
+            <label for="Firstname">First name</label>
+            <input type="text" class="form-control" asp-for="Firstname">
+        </div>
+        <div class="form-group">
+            <label for="Lastname">Last name</label>
+            <input type="text" class="form-control" asp-for="Lastname">
+        </div>
+        <div class="form-group">
+            <label for="AdminPassword">Password</label>
+            <input type="password" class="form-control" asp-for="AdminPassword">
+        </div>
+        <div class="form-group">
+            <label for="AdminConfirmPassword">Password</label>
+            <input type="password" class="form-control" asp-for="AdminConfirmPassword">
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <button type="submit" class="btn btn-info">Setup</button>
+    </div>
+</form>

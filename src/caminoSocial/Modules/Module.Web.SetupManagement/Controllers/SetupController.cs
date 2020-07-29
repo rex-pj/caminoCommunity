@@ -45,11 +45,11 @@ namespace Module.Web.SetupManagement.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View();
+            return View(new SetupViewModel());
         }
 
         [HttpPost]
-        public IActionResult Index(SetupViewModel setupModel)
+        public IActionResult Index(SetupViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -75,15 +75,15 @@ namespace Module.Web.SetupManagement.Controllers
 
                 var initialUser = new ApplicationUser()
                 {
-                    DisplayName = $"{setupModel.Lastname} {setupModel.Firstname}",
-                    Email = setupModel.AdminEmail,
-                    Firstname = setupModel.Firstname,
-                    Lastname = setupModel.Lastname,
+                    DisplayName = $"{model.Lastname} {model.Firstname}",
+                    Email = model.AdminEmail,
+                    Firstname = model.Firstname,
+                    Lastname = model.Lastname,
                     StatusId = (byte)UserStatus.Actived,
-                    UserName = setupModel.AdminEmail,
+                    UserName = model.AdminEmail,
                 };
 
-                initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, setupModel.AdminPassword);
+                initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, model.AdminPassword);
                 _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
 
                 // Get Identity json data
