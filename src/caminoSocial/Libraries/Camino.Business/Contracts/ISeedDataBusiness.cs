@@ -1,4 +1,5 @@
 ﻿using Camino.Business.Dtos.General;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Contracts
 {
@@ -8,7 +9,7 @@ namespace Camino.Business.Contracts
         bool IsIdentityDatabaseExist();
         void SeedingIdentityDb(string sql);
         void SeedingContentDb(string sql);
-        void PrepareIdentityData(SetupDto installationDto);
-        void PrepareContentData(SetupDto installationDto);
+        Task PrepareIdentityDataAsync(SetupDto installationDto);
+        Task PrepareContentDataAsync(SetupDto installationDto);
     }
 }

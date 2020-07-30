@@ -10,6 +10,7 @@ using System;
 using System.Data.SqlClient;
 using Camino.Data.Entities.Identity;
 using Camino.Data.Entities.Content;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Implementation
 {
@@ -84,7 +85,7 @@ namespace Camino.Business.Implementation
             }
         }
 
-        public void PrepareIdentityData(SetupDto installationDto)
+        public async Task PrepareIdentityDataAsync(SetupDto installationDto)
         {
             using (var dataConnection = _identityDataProvider.CreateDataConnection())
             {
@@ -229,22 +230,22 @@ namespace Camino.Business.Implementation
                                 }, userAuthorizationPolicyTableName);
                             }
 
-                            transaction.Commit();
+                            await transaction.CommitAsync();
                         }
                         else
                         {
-                            transaction.Rollback();
+                            await transaction.RollbackAsync();
                         }
                     }
                     catch (Exception e)
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                     }
                 }
             }
         }
 
-        public void PrepareContentData(SetupDto installationDto)
+        public async Task PrepareContentDataAsync(SetupDto installationDto)
         {
             using (var dataConnection = _contentDataProvider.CreateDataConnection())
             {
@@ -264,11 +265,11 @@ namespace Camino.Business.Implementation
                             }, userPhotoTypeTableName);
                         }
 
-                        transaction.Commit();
+                        await transaction.CommitAsync();
                     }
                     catch (Exception e)
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                     }
                 }
             }

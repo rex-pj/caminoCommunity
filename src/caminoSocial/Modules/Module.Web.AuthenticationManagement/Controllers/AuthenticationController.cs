@@ -4,6 +4,7 @@ using Camino.Framework.SessionManager.Contracts;
 using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -24,13 +25,20 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var result = await _loginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
-            if (!result.Succeeded)
+            try
             {
-                return RedirectToAction("Login", "Authentication");
-            }
+                var result = await _loginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
+                if (!result.Succeeded)
+                {
+                    return RedirectToAction("Login", "Authentication");
+                }
 
-            return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home");
+            }
+            catch(Exception e)
+            {
+                return await Login(model);
+            }
         }
 
         [HttpGet]

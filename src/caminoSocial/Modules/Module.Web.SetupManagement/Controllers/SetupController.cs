@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace Module.Web.SetupManagement.Controllers
 {
@@ -50,7 +51,7 @@ namespace Module.Web.SetupManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(SetupViewModel model)
+        public async Task<IActionResult> Index(SetupViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +86,7 @@ namespace Module.Web.SetupManagement.Controllers
                 };
 
                 initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, model.AdminPassword);
-                _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
+                await _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
@@ -93,14 +94,14 @@ namespace Module.Web.SetupManagement.Controllers
                 identitySetup.InitualUser = _mapper.Map<UserDto>(initialUser);
 
                 // Initialize identity database
-                _seedDataBusiness.PrepareIdentityData(identitySetup);
+                await _seedDataBusiness.PrepareIdentityDataAsync(identitySetup);
 
                 // Get content json data
                 var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
                 var contentSetup = JsonConvert.DeserializeObject<SetupDto>(contentJson);
 
                 // Initialize content database
-                _seedDataBusiness.PrepareContentData(contentSetup);
+                await _seedDataBusiness.PrepareContentDataAsync(contentSetup);
 
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Succeed");
