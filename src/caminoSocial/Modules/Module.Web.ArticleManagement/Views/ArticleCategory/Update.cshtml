@@ -12,5 +12,7 @@
     @ViewData["Title"]
 </div>
 <div class="card-body">
-    <partial name="_CreateOrUpdateForm" />
+    <form method="post" asp-action="Update" asp-controller="ArticleCategory">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
 </div>

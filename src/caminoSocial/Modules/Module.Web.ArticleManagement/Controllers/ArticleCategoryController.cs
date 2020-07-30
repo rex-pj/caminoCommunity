@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
+using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
@@ -18,6 +19,7 @@ namespace Module.Web.ArticleManagement.Controllers
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
+
         public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
@@ -25,7 +27,7 @@ namespace Module.Web.ArticleManagement.Controllers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(policy: "CanReadArticleCategory")]
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticleCategory)]
         public IActionResult Index()
         {
             var categories = _articleCategoryBusiness.GetFull();
@@ -35,6 +37,7 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(categoryPage);
         }
 
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticleCategory)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)
@@ -59,13 +62,14 @@ namespace Module.Web.ArticleManagement.Controllers
             }
         }
 
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticleCategory)]
         [HttpGet]
         public IActionResult Create()
         {
             var model = new ArticleCategoryViewModel()
             {
                 SelectCategories = _articleCategoryBusiness
-                .Get(x => !x.ParentId.HasValue)
+                .Get()
                 .Select(x => new SelectListItem()
                 {
                     Text = x.Name,
@@ -76,6 +80,7 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(model);
         }
 
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticleCategory)]
         [HttpGet]
         public IActionResult Update(int id)
         {
@@ -98,26 +103,42 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateOrUpdate(ArticleCategoryViewModel model)
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticleCategory)]
+        public IActionResult Create(ArticleCategoryViewModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
-            category.UpdatedById = LoggedUserId;
-            if (category.Id > 0)
-            {
-                _articleCategoryBusiness.Update(category);
-                return RedirectToAction("Detail", new { id = category.Id });
-            }
-
             var exist = _articleCategoryBusiness.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
+            category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var newId = _articleCategoryBusiness.Add(category);
+            var id = _articleCategoryBusiness.Add(category);
 
-            return RedirectToAction("Detail", new { id = newId });
+            return RedirectToAction("Detail", new { id });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticleCategory)]
+        public IActionResult Update(ArticleCategoryViewModel model)
+        {
+            var category = _mapper.Map<ArticleCategoryDto>(model);
+            if (category.Id <= 0)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var exist = _articleCategoryBusiness.Find(model.Id);
+            if (exist == null)
+            {
+                return RedirectToErrorPage();
+            }
+
+            category.UpdatedById = LoggedUserId;
+            _articleCategoryBusiness.Update(category);
+            return RedirectToAction("Detail", new { id = category.Id });
         }
     }
 }

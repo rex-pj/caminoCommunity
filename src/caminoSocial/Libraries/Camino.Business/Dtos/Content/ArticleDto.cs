@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Camino.Business.Dtos.Content
 {
-    public class ArticleCategoryDto
+    public class ArticleDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Content { get; set; }
         public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
-        public int? ParentId { get; set; }
-        public string ParentCategoryName { get; set; }
-
-        public IEnumerable<ArticleCategoryDto> ChildCategories { get; set; }
+        public int ArticleCategoryId { get; set; }
+        public string ArticleCategoryName { get; set; }
     }
 }

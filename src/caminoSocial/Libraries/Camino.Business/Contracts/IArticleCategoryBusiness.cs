@@ -10,6 +10,7 @@ namespace Camino.Business.Contracts
     {
         ArticleCategoryDto Find(int id);
         List<ArticleCategoryDto> GetFull();
+        List<ArticleCategoryDto> Get();
         List<ArticleCategoryDto> Get(Expression<Func<ArticleCategory, bool>> filter);
         public int Add(ArticleCategoryDto category);
         ArticleCategoryDto Update(ArticleCategoryDto category);

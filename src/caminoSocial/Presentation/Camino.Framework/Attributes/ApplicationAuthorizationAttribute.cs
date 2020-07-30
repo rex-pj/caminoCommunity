@@ -13,13 +13,8 @@ namespace Camino.Framework.Attributes
 {
     public class ApplicationAuthorizationAttribute : TypeFilterAttribute
     {
-        //public bool IgnoreFilter { get; set; }
-        //public string Policy { get; set; }
-        //public string Roles { get; set; }
-
         public ApplicationAuthorizationAttribute(bool ignoreFilter = false, string policy = "", string roles = "") : base(typeof(ApplicationAuthorizationFilter))
         {
-            //IgnoreFilter = ignoreFilter;
             Arguments = new object[] { ignoreFilter, policy, roles };
         }
 

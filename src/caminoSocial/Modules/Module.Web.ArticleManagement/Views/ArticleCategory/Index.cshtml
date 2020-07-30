@@ -25,27 +25,7 @@
             {
                 foreach (var cate in Model.Collections)
                 {
-                    <tr>
-                        <th>@cate.Id</th>
-                        <td>
-                            <a asp-action="Detail" asp-controller="ArticleCategory" asp-route-id="@cate.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@cate.Description">
-                                @cate.Name
-                            </a>
-                        </td>
-                        <td>
-                            <div>@cate.CreatedDate.ToLongDateString()</div>
-                            <p class="text-muted">by: @cate.CreatedBy</p>
-                        </td>
-                        <td>
-                            <div>@cate.UpdatedDate.ToLongDateString()</div>
-                            <p class="text-muted">by: @cate.UpdatedBy</p>
-                        </td>
-                        <td>
-                            <a asp-action="Update" asp-controller="ArticleCategory" asp-route-id="@cate.Id" class="btn btn-sm btn-outline-dark">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
+                    <partial name="_ArticleCategoryRow" model="cate" />
                 }
             }
             else

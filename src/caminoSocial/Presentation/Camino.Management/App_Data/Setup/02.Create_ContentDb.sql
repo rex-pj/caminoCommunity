@@ -339,8 +339,7 @@ CREATE TABLE dbo.Article
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ArticleCategoryId INT NOT NULL,
-	Viewed INT NOT NULL
+	ArticleCategoryId INT NOT NULL
 )
 
 GO

@@ -1,18 +1,18 @@
 ﻿@{
-    ViewData["Title"] = "Create category";
+    ViewData["Title"] = "Create article";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model ArticleCategoryViewModel
+@model ArticleViewModel
 
 
 <div class="card-header bg-secondary text-light">
-    <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-light">
+    <a asp-action="Index" asp-controller="Article" class="btn btn-sm btn-light">
         <i class="fa fa-arrow-left"></i>
     </a>
     @ViewData["Title"]
 </div>
 <div class="card-body">
-    <form method="post" asp-action="Create" asp-controller="ArticleCategory">
+    <form method="post" asp-action="Create" asp-controller="Article">
         <partial name="_CreateOrUpdateForm" />
     </form>
 </div>

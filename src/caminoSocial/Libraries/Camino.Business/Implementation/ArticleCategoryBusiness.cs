@@ -114,6 +114,39 @@ namespace Camino.Business.Implementation
             return categories;
         }
 
+        public List<ArticleCategoryDto> Get()
+        {
+            var parentCategories = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
+                .Select(a => new ArticleCategoryDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description
+                }).ToList();
+
+            var childCategories = _articleCategoryRepository.Get(x => x.ParentId.HasValue)
+                .OrderBy(x => x.ParentId).Select(a => new ArticleCategoryDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    ParentId = a.ParentId
+                }).ToList();
+
+            var categories = new List<ArticleCategoryDto>();
+            foreach(var category in parentCategories)
+            {
+                categories.Add(category);
+                var subCategories = childCategories.Where(x => x.ParentId == category.Id);
+                if(subCategories != null)
+                {
+                    categories.AddRange(subCategories);
+                }
+            }
+
+            return categories;
+        }
+
         public int Add(ArticleCategoryDto category)
         {
             var newCategory = _mapper.Map<ArticleCategory>(category);

@@ -1,4 +1,4 @@
-﻿@model ArticleCategoryViewModel
+﻿@model ArticleViewModel
 
 <input asp-for="Id" type="hidden" />
 <div class="form-group">
@@ -9,11 +9,15 @@
     <label for="description">Description</label>
     <textarea class="form-control" asp-for="Description"></textarea>
 </div>
+<div class="form-group">
+    <label for="description">Content</label>
+    <textarea class="form-control" asp-for="Content"></textarea>
+</div>
 @if (Model.SelectCategories.Any())
 {
     <div class="form-group">
-        <label>Parent</label>
-        <select class="form-control" asp-for="ParentId" asp-items="Model.SelectCategories">
+        <label>Category</label>
+        <select class="form-control" asp-for="ArticleCategoryId" asp-items="Model.SelectCategories">
             <option value="">--No Selected--</option>
         </select>
     </div>

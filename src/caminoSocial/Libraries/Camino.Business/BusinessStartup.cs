@@ -50,11 +50,13 @@ namespace Camino.Business
                 .AddTransient<IUserTokenBusiness, UserTokenBusiness>()
                 .AddTransient<IUserLoginBusiness, UserLoginBusiness>()
                 .AddTransient<IRoleClaimBusiness, RoleClaimBusiness>()
-                .AddTransient<ISeedDataBusiness, SeedDataBusiness>();
+                .AddTransient<ISeedDataBusiness, SeedDataBusiness>()
+                .AddTransient<IArticleBusiness, ArticleBusiness>();
 
             services.AddTransient<IRepository<Product>, ContentRepository<Product>>()
                 .AddTransient<IRepository<ArticleCategory>, ContentRepository<ArticleCategory>>()
                 .AddTransient<IRepository<UserPhoto>, ContentRepository<UserPhoto>>()
+                .AddTransient<IRepository<Article>, ContentRepository<Article>>()
                 .AddTransient<ValidationStrategyContext>();
         }
     }
