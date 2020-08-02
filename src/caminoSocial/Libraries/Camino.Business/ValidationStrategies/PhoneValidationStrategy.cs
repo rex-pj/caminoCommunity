@@ -1,5 +1,5 @@
-﻿using Camino.Business.ValidationStrategies.Interfaces;
-using Camino.Business.ValidationStrategies.Models;
+﻿using Camino.Business.Dtos.General;
+using Camino.Business.ValidationStrategies.Contracts;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ namespace Camino.Business.ValidationStrategies
         private const string ExtensionAbbreviationExt = "ext";
         private const string ExtensionAbbreviationX = "x";
 
-        public IEnumerable<ErrorObject> Errors { get; set; }
+        public IEnumerable<ErrorDto> Errors { get; set; }
 
         public bool IsValid<T>(T value)
         {
@@ -120,9 +120,9 @@ namespace Camino.Business.ValidationStrategies
             return true;
         }
 
-        public IEnumerable<ErrorObject> GetErrors(Exception exception)
+        public IEnumerable<ErrorDto> GetErrors(Exception exception)
         {
-            yield return new ErrorObject()
+            yield return new ErrorDto()
             {
                 Message = exception.Message
             };

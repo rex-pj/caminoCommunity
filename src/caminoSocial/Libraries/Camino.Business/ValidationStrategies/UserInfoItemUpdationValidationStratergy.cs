@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Business.ValidationStrategies.Interfaces;
-using Camino.Business.ValidationStrategies.Models;
-using Camino.Business.Dtos.Identity;
+using Camino.Business.ValidationStrategies.Contracts;
 using Camino.Business.Dtos.General;
 using Camino.Data.Entities.Identity;
 
@@ -11,7 +9,7 @@ namespace Camino.Business.ValidationStrategies
 {
     public class UserInfoItemUpdationValidationStratergy : IValidationStrategy
     {
-        public IEnumerable<ErrorObject> Errors { get; set; }
+        public IEnumerable<ErrorDto> Errors { get; set; }
         private readonly ValidationStrategyContext _validationStrategyContext;
         public UserInfoItemUpdationValidationStratergy(ValidationStrategyContext validationStrategyContext)
         {
@@ -50,9 +48,9 @@ namespace Camino.Business.ValidationStrategies
             return Errors == null || !Errors.Any();
         }
 
-        public IEnumerable<ErrorObject> GetErrors(Exception exception)
+        public IEnumerable<ErrorDto> GetErrors(Exception exception)
         {
-            yield return new ErrorObject()
+            yield return new ErrorDto()
             {
                 Message = exception.Message
             };

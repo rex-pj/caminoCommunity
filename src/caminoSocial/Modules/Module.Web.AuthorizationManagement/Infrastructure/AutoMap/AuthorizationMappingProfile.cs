@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Camino.Business.Dtos.Identity;
 using Camino.Framework.Models;
+using Camino.IdentityManager.Models;
 using Module.Web.AuthorizationManagement.Models;
 
 namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap

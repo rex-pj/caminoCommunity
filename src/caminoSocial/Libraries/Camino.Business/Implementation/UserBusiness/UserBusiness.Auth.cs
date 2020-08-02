@@ -6,6 +6,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Data.Entities.Identity;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Camino.Business.Implementation.UserBusiness
 {
@@ -83,45 +85,21 @@ namespace Camino.Business.Implementation.UserBusiness
         #endregion
 
         #region GET
-        public UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto userDto)
+        public IEnumerable<UserRoleDto> GetUserRoles(long userd)
         {
-            var users = _userRepository.Get(x => x.Id == userDto.Id);
-            var userAuthorizationPolicies = _userAuthorizationPolicyRepository.Get(x => x.UserId == userDto.Id);
-            var userRoles = _userRoleRepository.Get(x => x.UserId == userDto.Id);
+            var userRoles = (from user in _userRepository.Table
+                             join userRole in _userRoleRepository.Table
+                             on user.Id equals userRole.UserId into roles
+                             from userRole in roles.DefaultIfEmpty()
+                             where user.Id == userd
+                             select new UserRoleDto()
+                             {
+                                 UserId = user.Id,
+                                 RoleId = userRole.RoleId,
+                                 RoleName = userRole.Role.Name
+                             }).ToList();
 
-            var userRoleAuthorizationPolicy =
-                (from user in users
-                 join userAuthorizationPolicy in userAuthorizationPolicies
-                 on user.Id equals userAuthorizationPolicy.UserId into userAuthorizations
-                 from uap in userAuthorizations.DefaultIfEmpty()
-                 join userRole in userRoles
-                 on user.Id equals userRole.UserId into roles
-                 from ur in roles.DefaultIfEmpty()
-                 select new UserRoleAuthorizationPoliciesDto()
-                 {
-                     UserId = user.Id,
-                     Firstname = user.Firstname,
-                     Lastname = user.Lastname,
-                     AuthorizationPolicies = userAuthorizations.Select(a => new AuthorizationPolicyDto()
-                     {
-                         Id = a.AuthorizationPolicyId,
-                         Name = a.AuthorizationPolicy.Name,
-                         Description = a.AuthorizationPolicy.Description
-                     }),
-                     Roles = userRoles.Select(r => new RoleAuthorizationPoliciesDto()
-                     {
-                         Id = r.RoleId,
-                         Name = r.Role.Name,
-                         AuthorizationPolicies = r.Role.RoleAuthorizationPolicies.Select(ra => new AuthorizationPolicyDto()
-                         {
-                             Id = ra.AuthorizationPolicyId,
-                             Name = ra.AuthorizationPolicy.Name,
-                             Description = ra.AuthorizationPolicy.Description
-                         })
-                     })
-                 }).FirstOrDefault();
-
-            return userRoleAuthorizationPolicy;
+            return userRoles;
         }
 
         public UserDto GetLoggedIn(long id)

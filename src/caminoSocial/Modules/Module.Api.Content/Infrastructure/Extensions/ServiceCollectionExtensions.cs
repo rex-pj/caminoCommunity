@@ -1,6 +1,6 @@
 ﻿using Module.Api.Content.Infrastructure.AutoMap;
-using Module.Api.Content.Resolvers;
-using Module.Api.Content.Resolvers.Contracts;
+using Module.Api.Content.GraphQL.Resolvers;
+using Module.Api.Content.GraphQL.Resolvers.Contracts;
 using AutoMapper;
 using Camino.Business.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;

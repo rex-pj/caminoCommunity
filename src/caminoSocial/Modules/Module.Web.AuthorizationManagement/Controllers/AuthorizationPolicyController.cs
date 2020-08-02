@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Camino.Framework.Models;
 using Camino.Core.Enums;
+using System.Threading.Tasks;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -62,7 +63,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         {
             var model = new AuthorizationPolicyViewModel()
             {
-                SelectPermissionMethods = EnumUtil.ToSelectListItems<PermissionMethod>()
+                SelectPermissionMethods = EnumUtil.ToSelectListItems<PolicyMethod>()
             };
 
             return View(model);
@@ -74,7 +75,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var policy = _authorizationPolicyBusiness.Find(id);
             var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
 
-            var permissionMethod = EnumUtil.FilterEnumByName<PermissionMethod>(model.Name);
+            var permissionMethod = EnumUtil.FilterEnumByName<PolicyMethod>(model.Name);
             model.SelectPermissionMethods = EnumUtil.ToSelectListItems(permissionMethod);
             model.PermissionMethod = (int)permissionMethod;
             var permissionMethodName = permissionMethod.ToString();
@@ -84,11 +85,11 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateOrUpdate(AuthorizationPolicyViewModel model)
+        public async Task<IActionResult> CreateOrUpdate(AuthorizationPolicyViewModel model)
         {
             if (model.PermissionMethod > 0)
             {
-                var permissionMethod = (PermissionMethod)model.PermissionMethod;
+                var permissionMethod = (PolicyMethod)model.PermissionMethod;
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
@@ -100,7 +101,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToAction("Detail", new { id = policy.Id });
             }
 
-            var exist = _authorizationPolicyBusiness.FindByName(model.Name);
+            var exist = await _authorizationPolicyBusiness.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();

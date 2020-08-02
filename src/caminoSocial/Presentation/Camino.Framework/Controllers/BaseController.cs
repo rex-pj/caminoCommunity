@@ -7,6 +7,7 @@ namespace Camino.Framework.Controllers
     public class BaseController : Controller
     {
         protected long LoggedUserId { get; private set; }
+        protected string FeatureName { get; set; }
         public BaseController(IHttpContextAccessor httpContextAccessor)
         {
             var userPrincipalId = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);

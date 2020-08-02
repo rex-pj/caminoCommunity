@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Camino.Framework.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Module.Web.ArticleManagement.Models
 {
-    public class ArticleViewModel
+    public class ArticleViewModel : BaseViewModel
     {
         public ArticleViewModel()
         {

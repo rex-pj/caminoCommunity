@@ -45,3 +45,5 @@ src/caminoSocial/Modules/Module.Web.ProductManagement/obj/
 src/caminoSocial/Modules/Module.Web.SetupManagement/bin/
 src/caminoSocial/Modules/Module.Web.SetupManagement/obj/
 src/caminoSocial/Modules/Module.Web.ArticleManagement/bin/
+src/caminoSocial/Libraries/Camino.Identity/bin/
+src/caminoSocial/Libraries/Camino.Identity/obj/

@@ -33,6 +33,7 @@ namespace Camino.Business.AutoMap
             CreateMap<UserAttribute, UserAttributeDto>();
             CreateMap<AuthorizationPolicy, AuthorizationPolicyDto>();
             CreateMap<AuthorizationPolicyDto, AuthorizationPolicy>();
+            CreateMap<UserAuthorizationPolicy, UserAuthorizationPolicyDto>();
             CreateMap<Role, RoleDto>();
             CreateMap<RoleDto, Role>();
             CreateMap<UserClaimDto, UserClaim>();

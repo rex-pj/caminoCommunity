@@ -1,5 +1,6 @@
 ﻿using Camino.Business.Dtos.Identity;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Contracts
 {
@@ -9,6 +10,6 @@ namespace Camino.Business.Contracts
         List<AuthorizationPolicyDto> GetFull();
         AuthorizationPolicyDto Find(short id);
         AuthorizationPolicyDto Update(AuthorizationPolicyDto policy);
-        AuthorizationPolicyDto FindByName(string name);
+        Task<AuthorizationPolicyDto> FindByNameAsync(string name);
     }
 }

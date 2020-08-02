@@ -1,4 +1,5 @@
 ﻿using Camino.Business.Dtos.Identity;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Contracts
 {
@@ -7,5 +8,7 @@ namespace Camino.Business.Contracts
         bool Add(long userId, short authorizationPolicyId, long loggedUserId);
         bool Delete(long userId, short authorizationPolicyId);
         AuthorizationPolicyUsersDto GetAuthoricationPolicyUsers(short id);
+        Task<UserAuthorizationPolicyDto> GetUserAuthoricationPolicyAsync(long userId, long policyId);
+        Task<bool> IsUserHasAuthoricationPolicyAsync(long userId, long policyId);
     }
 }

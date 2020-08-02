@@ -35,19 +35,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.File", "Modules\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.ArticleManagement", "Modules\Module.Web.ArticleManagement\Module.Web.ArticleManagement.csproj", "{EE4DE461-1D13-48BD-817E-A26E096E6F0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.FarmManagement", "Modules\Module.Web.FarmManagement\Module.Web.FarmManagement.csproj", "{AD176F4B-EF72-4237-B1D8-682F2ABB675C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.FarmManagement", "Modules\Module.Web.FarmManagement\Module.Web.FarmManagement.csproj", "{AD176F4B-EF72-4237-B1D8-682F2ABB675C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.AssociationManagement", "Modules\Module.Web.AssociationManagement\Module.Web.AssociationManagement.csproj", "{718DE384-C548-4AE8-BB51-48D4E67B56ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.AssociationManagement", "Modules\Module.Web.AssociationManagement\Module.Web.AssociationManagement.csproj", "{718DE384-C548-4AE8-BB51-48D4E67B56ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.ProductManagement", "Modules\Module.Web.ProductManagement\Module.Web.ProductManagement.csproj", "{BC24217B-720C-4707-9BA0-0CEF67A1EFDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.ProductManagement", "Modules\Module.Web.ProductManagement\Module.Web.ProductManagement.csproj", "{BC24217B-720C-4707-9BA0-0CEF67A1EFDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.SetupManagement", "Modules\Module.Web.SetupManagement\Module.Web.SetupManagement.csproj", "{56197341-73F3-4F41-9D93-A07BD75E29F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.SetupManagement", "Modules\Module.Web.SetupManagement\Module.Web.SetupManagement.csproj", "{56197341-73F3-4F41-9D93-A07BD75E29F1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.AuthenticationManagement", "Modules\Module.Web.AuthenticationManagement\Module.Web.AuthenticationManagement.csproj", "{40D5A3C4-E663-40C9-A765-7252078B5B7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.AuthorizationManagement", "Modules\Module.Web.AuthorizationManagement\Module.Web.AuthorizationManagement.csproj", "{3CE71CCA-59AE-434E-AC81-A87318D1F63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.AuthorizationManagement", "Modules\Module.Web.AuthorizationManagement\Module.Web.AuthorizationManagement.csproj", "{3CE71CCA-59AE-434E-AC81-A87318D1F63C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.DashboardManagement", "Modules\Module.Web.DashboardManagement\Module.Web.DashboardManagement.csproj", "{5B86202B-3A9C-4171-814D-09B7CE7DE963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.DashboardManagement", "Modules\Module.Web.DashboardManagement\Module.Web.DashboardManagement.csproj", "{5B86202B-3A9C-4171-814D-09B7CE7DE963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camino.IdentityManager", "Libraries\Camino.Identity\Camino.IdentityManager.csproj", "{910081C4-F9E3-44E1-82D3-3A0B036583DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -287,6 +289,18 @@ Global
 		{5B86202B-3A9C-4171-814D-09B7CE7DE963}.Release|x64.Build.0 = Release|Any CPU
 		{5B86202B-3A9C-4171-814D-09B7CE7DE963}.Release|x86.ActiveCfg = Release|Any CPU
 		{5B86202B-3A9C-4171-814D-09B7CE7DE963}.Release|x86.Build.0 = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|x64.Build.0 = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Debug|x86.Build.0 = Debug|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x64.ActiveCfg = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x64.Build.0 = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x86.ActiveCfg = Release|Any CPU
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,6 +325,7 @@ Global
 		{40D5A3C4-E663-40C9-A765-7252078B5B7E} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{3CE71CCA-59AE-434E-AC81-A87318D1F63C} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{5B86202B-3A9C-4171-814D-09B7CE7DE963} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
+		{910081C4-F9E3-44E1-82D3-3A0B036583DF} = {4D9DA488-891F-47E3-A5CC-39A8CD19D30C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25AC110A-ABFF-4027-9235-AB85654B8FE8}

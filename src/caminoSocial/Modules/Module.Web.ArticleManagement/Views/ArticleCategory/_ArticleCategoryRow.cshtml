@@ -1,4 +1,5 @@
 ﻿@model ArticleCategoryViewModel
+
 <tr>
     <th>@Model.Id</th>
     <td>
@@ -15,9 +16,12 @@
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>
-        <a asp-action="Update" asp-controller="ArticleCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
-            <i class="fa fa-edit"></i>
-        </a>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="ArticleCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
         <a asp-action="Detail" asp-controller="ArticleCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
             <i class="fa fa-eye"></i>
         </a>

@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.Attributes;
-using Camino.Framework.Models;
-using Camino.Framework.SessionManager.Contracts;
 using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
+using Camino.IdentityManager.Contracts;
+using Camino.IdentityManager.Models;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {

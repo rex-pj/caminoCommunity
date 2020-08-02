@@ -1,7 +1,7 @@
 ﻿using Module.Api.Auth.Infrastructure.AutoMap;
 using Module.Api.Auth.Models;
-using Module.Api.Auth.Resolvers;
-using Module.Api.Auth.Resolvers.Contracts;
+using Module.Api.Auth.GraphQL.Resolvers;
+using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using AutoMapper;
 using Camino.Business.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;

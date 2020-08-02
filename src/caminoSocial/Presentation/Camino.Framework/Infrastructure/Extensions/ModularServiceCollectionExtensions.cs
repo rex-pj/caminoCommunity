@@ -5,7 +5,8 @@ using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
 using Camino.Core.Modular.Implementations;
 using Camino.Framework.Infrastructure.AutoMap;
-using Camino.Framework.Providers.Implementation;
+using Camino.Framework.Providers;
+using Camino.Framework.Providers.Contracts;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,9 +19,9 @@ namespace Camino.Framework.Infrastructure.Extensions
     {
         public static IMvcBuilder AddModular(this IServiceCollection services, string modulesPath, string prefix = null)
         {
-            services.AddSingleton<ModularManager>();
+            services.AddSingleton<IModularProvider, ModularProvider>();
             var serviceProvider = services.BuildServiceProvider();
-            var modularManager = serviceProvider.GetRequiredService<ModularManager>();
+            var modularManager = serviceProvider.GetRequiredService<IModularProvider>();
             modularManager.LoadModules(modulesPath, prefix);
 
             var modules = Singleton<IList<ModuleInfo>>.Instance;

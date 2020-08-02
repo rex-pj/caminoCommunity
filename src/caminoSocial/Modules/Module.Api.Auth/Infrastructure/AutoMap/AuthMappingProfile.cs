@@ -5,6 +5,7 @@ using Camino.Business.Dtos.Identity;
 using Camino.Framework.Models;
 using Camino.Business.Dtos.Content;
 using Camino.Data.Enums;
+using Camino.IdentityManager.Models;
 
 namespace  Module.Api.Auth.Infrastructure.AutoMap
 {

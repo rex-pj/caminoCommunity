@@ -2,6 +2,7 @@
 using Camino.Framework.Models;
 using Camino.Business.Dtos.Identity;
 using System.Security.Claims;
+using Camino.IdentityManager.Models;
 
 namespace Camino.Framework.Infrastructure.AutoMap
 {
@@ -26,6 +27,8 @@ namespace Camino.Framework.Infrastructure.AutoMap
             CreateMap<ApplicationUserLogin, UserLoginDto>();
             CreateMap<ApplicationRoleClaim, RoleClaimDto>();
             CreateMap<RoleClaimDto, ApplicationRoleClaim>();
+            CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
+            CreateMap<UserAuthorizationPolicyDto, ApplicationUserAuthorizationPolicy>();
         }
     }
 }

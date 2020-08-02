@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Camino.Business\Camino.Business.csproj" />
+    <ProjectReference Include="..\..\Libraries\Camino.Identity\Camino.IdentityManager.csproj" />
   </ItemGroup>
 
 </Project>

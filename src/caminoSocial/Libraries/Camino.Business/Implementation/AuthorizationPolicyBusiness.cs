@@ -6,6 +6,8 @@ using Camino.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using LinqToDB;
 
 namespace Camino.Business.Implementation
 {
@@ -51,9 +53,9 @@ namespace Camino.Business.Implementation
             return authorizationPolicy;
         }
 
-        public AuthorizationPolicyDto FindByName(string name)
+        public async Task<AuthorizationPolicyDto> FindByNameAsync(string name)
         {
-            var exist = _authorizationPolicyRepository.Get(x => x.Name == name).FirstOrDefault();
+            var exist = await _authorizationPolicyRepository.Get(x => x.Name == name).FirstOrDefaultAsync();
             if (exist == null)
             {
                 return null;

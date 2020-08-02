@@ -2,7 +2,7 @@
 
 namespace Camino.Framework.Models
 {
-    public class PagerViewModel<T> where T : class
+    public class PagerViewModel<T> : BaseViewModel where T : class
     {
         public PagerViewModel()
         {

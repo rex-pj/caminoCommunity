@@ -1,12 +1,17 @@
 ﻿@model PagerViewModel<ArticleViewModel>
+@inject IPageAuthorizeManager pageAuthorizeManager
 @{
     ViewData["Title"] = "Articles management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="card-header bg-secondary text-light">
-    <a asp-action="Create" asp-controller="Article" class="btn btn-sm btn-primary">
-        <i class="fa fa-plus"></i>
-    </a>
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Create" asp-controller="Article" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i>
+        </a>
+    }
     @ViewData["Title"]
 </div>
 <div class="card-body">
@@ -25,6 +30,7 @@
             {
                 foreach (var article in Model.Collections)
                 {
+                    pageAuthorizeManager.SetPageAuthorizationForModel(article, Model);
                     <partial name="_ArticleRow" model="article" />
                 }
             }

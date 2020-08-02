@@ -4,21 +4,34 @@ using Camino.Business.Dtos.Identity;
 using Camino.Data.Entities.Identity;
 using System;
 using System.Linq;
+using AutoMapper;
+using LinqToDB;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Implementation
 {
     public class UserAuthorizationPolicyBusiness : IUserAuthorizationPolicyBusiness
     {
         private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
+        private readonly IRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IMapper _mapper;
 
         public UserAuthorizationPolicyBusiness(IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
-            IRepository<AuthorizationPolicy> authorizationPolicyRepository, IRepository<User> userRepository)
+            IRepository<AuthorizationPolicy> authorizationPolicyRepository, IRepository<User> userRepository,
+            IRepository<UserRole> userRoleRepository, IRepository<Role> roleRepository, IMapper mapper,
+            IRepository<RoleAuthorizationPolicy> roleAuthorizationPolicyRepository)
         {
             _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
+            _roleRepository = roleRepository;
+            _mapper = mapper;
+            _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
         }
 
         public bool Add(long userId, short authorizationPolicyId, long loggedUserId)
@@ -88,6 +101,37 @@ namespace Camino.Business.Implementation
                 .FirstOrDefault();
 
             return authorizationUsers;
+        }
+
+        public async Task<UserAuthorizationPolicyDto> GetUserAuthoricationPolicyAsync(long userId, long policyId)
+        {
+            var userAuthoricationPolicy = await _userAuthorizationPolicyRepository
+                .Get(x => x.UserId == userId && x.AuthorizationPolicyId == policyId)
+                .FirstOrDefaultAsync();
+
+            var userAuthorizationPolicyDto = _mapper.Map<UserAuthorizationPolicyDto>(userAuthoricationPolicy);
+            return userAuthorizationPolicyDto;
+        }
+
+        public async Task<bool> IsUserHasAuthoricationPolicyAsync(long userId, long policyId)
+        {
+            var isUserHasPolicy = await _userAuthorizationPolicyRepository
+                .Get(x => x.UserId == userId && x.AuthorizationPolicyId == policyId)
+                .AnyAsync();
+
+            if (isUserHasPolicy)
+            {
+                return true;
+            }
+
+            return (from role in _roleRepository.Table
+                    join userRole in _userRoleRepository.Table
+                    on role.Id equals userRole.RoleId
+                    join roleAuthorization in _roleAuthorizationPolicyRepository.Table
+                    on role.Id equals roleAuthorization.RoleId
+                    where userRole.UserId == userId && roleAuthorization.AuthorizationPolicyId == policyId
+                    select role)
+                    .Any();
         }
     }
 }

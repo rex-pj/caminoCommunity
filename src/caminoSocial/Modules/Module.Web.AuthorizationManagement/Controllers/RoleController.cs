@@ -2,7 +2,6 @@
 using Camino.Business.Contracts;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
-using Camino.Framework.SessionManager.Contracts;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.IdentityManager.Contracts;
+using Camino.IdentityManager.Models;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {

@@ -2,6 +2,7 @@
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
 using Camino.Core.Constants;
+using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
@@ -30,7 +31,8 @@ namespace Module.Web.ArticleManagement.Controllers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
+        [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public IActionResult Index()
         {
             var articles = _articleBusiness.GetFull();
@@ -40,7 +42,8 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(articlePage);
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)
@@ -65,7 +68,7 @@ namespace Module.Web.ArticleManagement.Controllers
             }
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
         [HttpGet]
         public IActionResult Create()
         {
@@ -83,7 +86,7 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(model);
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         [HttpGet]
         public IActionResult Update(int id)
         {
@@ -103,7 +106,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
         public IActionResult Create(ArticleViewModel model)
         {
             if (!ModelState.IsValid)
@@ -126,7 +129,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public IActionResult Update(ArticleViewModel model)
         {
             if (!ModelState.IsValid)

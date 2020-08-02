@@ -1,14 +1,11 @@
-﻿using AutoMapper;
-using Camino.Business;
-using Camino.Business.AutoMap;
-using Camino.Framework.Infrastructure.AutoMap;
+﻿using Camino.Business;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Models;
 using Camino.Framework.Providers.Contracts;
-using Camino.Framework.Providers.Implementation;
-using Camino.Framework.SessionManager.Core;
+using Camino.Framework.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Camino.IdentityManager.Contracts.Core;
 
 namespace Camino.Management.Infrastructure.Extensions
 {

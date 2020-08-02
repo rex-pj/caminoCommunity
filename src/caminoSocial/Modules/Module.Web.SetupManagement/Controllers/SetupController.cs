@@ -3,17 +3,16 @@ using Camino.Business.Contracts;
 using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
 using Camino.Data.Enums;
-using Camino.Framework.Models;
 using Camino.Framework.Providers.Contracts;
-using Camino.Framework.SessionManager.Contracts;
 using Module.Web.SetupManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Camino.IdentityManager.Models;
+using Camino.IdentityManager.Contracts;
 
 namespace Module.Web.SetupManagement.Controllers
 {

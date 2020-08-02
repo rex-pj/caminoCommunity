@@ -21,6 +21,6 @@ namespace Camino.Business.Contracts
         Task<UserDto> UpdateAsync(UserDto user);
         List<UserFullDto> GetFull();
         List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10);
-        UserRoleAuthorizationPoliciesDto GetUserRolesAuthorizationPolicies(UserDto userDto);
+        IEnumerable<UserRoleDto> GetUserRoles(long userd);
     }
 }

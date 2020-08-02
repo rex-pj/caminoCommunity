@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Camino.Business.ValidationStrategies.Interfaces;
-using Camino.Business.ValidationStrategies.Models;
+using Camino.Business.Dtos.General;
+using Camino.Business.ValidationStrategies.Contracts;
 using Camino.Core.Utils;
 
 namespace Camino.Business.ValidationStrategies
 {
     public class Base64ImageValidationStrategy : IValidationStrategy
     {
-        public IEnumerable<ErrorObject> Errors { get; set; }
+        public IEnumerable<ErrorDto> Errors { get; set; }
 
         public bool IsValid<T>(T value)
         {
@@ -29,9 +29,9 @@ namespace Camino.Business.ValidationStrategies
             }
         }
 
-        public IEnumerable<ErrorObject> GetErrors(Exception exception)
+        public IEnumerable<ErrorDto> GetErrors(Exception exception)
         {
-            yield return new ErrorObject() {
+            yield return new ErrorDto() {
                 Message = exception.Message
             };
         }

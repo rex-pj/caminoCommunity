@@ -2,6 +2,7 @@
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
 using Camino.Core.Constants;
+using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
@@ -27,7 +28,8 @@ namespace Module.Web.ArticleManagement.Controllers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public IActionResult Index()
         {
             var categories = _articleCategoryBusiness.GetFull();
@@ -37,7 +39,8 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(categoryPage);
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanReadArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)
@@ -62,8 +65,7 @@ namespace Module.Web.ArticleManagement.Controllers
             }
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticleCategory)]
-        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create()
         {
             var model = new ArticleCategoryViewModel()
@@ -80,8 +82,7 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(model);
         }
 
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticleCategory)]
-        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public IActionResult Update(int id)
         {
             var category = _articleCategoryBusiness.Find(id);
@@ -103,7 +104,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanCreateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create(ArticleCategoryViewModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
@@ -121,7 +122,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorization(policy: AuthorizationPolicyConst.CanUpdateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public IActionResult Update(ArticleCategoryViewModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
