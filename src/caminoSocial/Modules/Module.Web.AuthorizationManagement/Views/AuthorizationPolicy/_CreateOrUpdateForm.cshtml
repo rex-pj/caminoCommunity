@@ -1,33 +1,31 @@
 ﻿@model AuthorizationPolicyViewModel
 
-<form method="post" asp-action="CreateOrUpdate" asp-controller="AuthorizationPolicy">
-    <input asp-for="Id" type="hidden" />
-    <div class="form-group">
-        <div class="form-row">
-            @if (Model.SelectPermissionMethods.Any())
-            {
-                <div class="form-group col-md-3">
-                    <label for="PermissionMethod">Permission method</label>
-                    <select class="form-control" asp-for="PermissionMethod" asp-items="Model.SelectPermissionMethods"></select>
-                </div>
-            }
-            <div class="form-group col-md-9">
-                <label for="name">Module</label>
-                <input class="form-control" type="text" asp-for="Name">
+<input asp-for="Id" type="hidden" />
+<div class="form-group">
+    <div class="form-row">
+        @if (Model.SelectPermissionMethods.Any())
+        {
+            <div class="form-group col-md-3">
+                <label for="PermissionMethod">Permission method</label>
+                <select class="form-control" asp-for="PermissionMethod" asp-items="Model.SelectPermissionMethods"></select>
             </div>
+        }
+        <div class="form-group col-md-9">
+            <label for="name">Module</label>
+            <input class="form-control" type="text" asp-for="Name">
         </div>
     </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea class="form-control" asp-for="Description"></textarea>
-    </div>
+</div>
+<div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" asp-for="Description"></textarea>
+</div>
 
-    @if (Model.Id <= 0)
-    {
-        <button type="submit" class="btn btn-primary">Create</button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-primary">Update</button>
-    }
-</form>
+@if (Model.Id <= 0)
+{
+    <button type="submit" class="btn btn-primary">Create</button>
+}
+else
+{
+    <button type="submit" class="btn btn-primary">Update</button>
+}

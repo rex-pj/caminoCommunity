@@ -26,50 +26,9 @@
         <tbody>
             @if (Model != null && Model.Collections.Any())
             {
-                var index = 1;
                 foreach (var user in Model.Collections)
                 {
-                    <tr>
-                        <th>@index</th>
-                        <td>@user.Lastname @user.Firstname</td>
-                        <td>@user.Address</td>
-                        <td>@user.Email</td>
-
-                        <td>
-                            @if (user.BirthDate.HasValue)
-                            {
-                                @user.BirthDate.Value.ToShortDateString()
-                            }
-                        </td>
-                        <td>@user.CountryName</td>
-                        <td>
-                            @if (user.IsEmailConfirmed)
-                            {
-                                <span class="badge badge-primary">Confirmed</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-secondary">Confirmed</span>
-                            }
-                        </td>
-                        <td>
-                            @user.GenderLabel
-                        </td>
-                        <td>
-                            @if (user.IsActived)
-                            {
-                                <span class="badge badge-success">Actived</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-danger">Confirmed</span>
-                            }
-                        </td>
-                        <td>
-                            <span class="badge badge-info">@user.StatusLabel</span>
-                        </td>
-                    </tr>
-                    index += 1;
+                    <partial name="_UserRow" model="user"/>
                 }
             }
             else

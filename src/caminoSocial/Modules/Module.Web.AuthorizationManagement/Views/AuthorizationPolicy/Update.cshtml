@@ -13,5 +13,7 @@
     @ViewData["Title"]
 </div>
 <div class="card-body">
-    <partial name="_CreateOrUpdateForm" />
+    <form method="post" asp-action="Update" asp-controller="AuthorizationPolicy">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
 </div>

@@ -8,9 +8,13 @@
     <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
         <i class="fa fa-arrow-left"></i>
     </a>
-    <a asp-action="Update" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
-        <i class="fa fa-edit"></i>
-    </a>
+    @if (Model.CanUpdate)
+    {
+        <a asp-action="Update" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+            <i class="fa fa-edit"></i>
+        </a>
+    }
+
     @ViewData["Title"]
 </div>
 <div class="card-body">

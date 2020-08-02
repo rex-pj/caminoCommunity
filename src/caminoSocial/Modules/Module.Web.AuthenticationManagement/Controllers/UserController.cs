@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using Camino.Framework.Attributes;
+using Camino.Core.Constants;
+using Camino.Core.Enums;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -22,7 +25,8 @@ namespace Module.Web.AuthenticationManagement.Controllers
             _userBusiness = userBusiness;
         }
 
-        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public IActionResult Index()
         {
             var users = _userBusiness.GetFull();
@@ -33,6 +37,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public IActionResult Search(string q)
         {
             var users = _userBusiness.Search(q);

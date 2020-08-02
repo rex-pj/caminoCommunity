@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using Camino.Framework.Models;
 using Camino.Core.Enums;
 using System.Threading.Tasks;
+using Camino.Framework.Attributes;
+using Camino.Core.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -20,11 +22,13 @@ namespace Module.Web.AuthorizationManagement.Controllers
         private readonly IMapper _mapper;
         public AuthorizationPolicyController(IMapper mapper, IAuthorizationPolicyBusiness authorizationPolicyBusiness, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
-        { 
+        {
             _mapper = mapper;
             _authorizationPolicyBusiness = authorizationPolicyBusiness;
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
+        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public IActionResult Index()
         {
             var policies = _authorizationPolicyBusiness.GetFull();
@@ -34,6 +38,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             return View(policiesPage);
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
+        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanUpdate)]
         public IActionResult Detail(short id)
         {
             if (id <= 0)
@@ -59,6 +65,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
         public IActionResult Create()
         {
             var model = new AuthorizationPolicyViewModel()
@@ -70,6 +77,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
         public IActionResult Update(short id)
         {
             var policy = _authorizationPolicyBusiness.Find(id);
@@ -85,20 +93,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(AuthorizationPolicyViewModel model)
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
+        public async Task<IActionResult> Create(AuthorizationPolicyViewModel model)
         {
-            if (model.PermissionMethod > 0)
+            if (model.Id > 0)
             {
-                var permissionMethod = (PolicyMethod)model.PermissionMethod;
-                model.Name = $"{permissionMethod}{model.Name}";
-            }
-
-            var policy = _mapper.Map<AuthorizationPolicyDto>(model);
-            policy.UpdatedById = LoggedUserId;
-            if(policy.Id > 0)
-            {
-                _authorizationPolicyBusiness.Update(policy);
-                return RedirectToAction("Detail", new { id = policy.Id });
+                return RedirectToErrorPage();
             }
 
             var exist = await _authorizationPolicyBusiness.FindByNameAsync(model.Name);
@@ -107,8 +107,44 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            if (model.PermissionMethod > 0)
+            {
+                var permissionMethod = (PolicyMethod)model.PermissionMethod;
+                model.Name = $"{permissionMethod}{model.Name}";
+            }
+
+            var policy = _mapper.Map<AuthorizationPolicyDto>(model);
+            policy.UpdatedById = LoggedUserId;
             policy.CreatedById = LoggedUserId;
             var newId = _authorizationPolicyBusiness.Add(policy);
+
+            return RedirectToAction("Detail", new { id = newId });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
+        public async Task<IActionResult> Update(AuthorizationPolicyViewModel model)
+        {
+            if (model.Id <= 0)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (model.PermissionMethod > 0)
+            {
+                var permissionMethod = (PolicyMethod)model.PermissionMethod;
+                model.Name = $"{permissionMethod}{model.Name}";
+            }
+
+            var exist = await _authorizationPolicyBusiness.FindByNameAsync(model.Name);
+            if (exist == null)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var policy = _mapper.Map<AuthorizationPolicyDto>(model);
+            policy.UpdatedById = LoggedUserId;
+            var newId = _authorizationPolicyBusiness.Update(policy);
 
             return RedirectToAction("Detail", new { id = newId });
         }

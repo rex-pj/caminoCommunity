@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Camino.Framework.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyViewModel
+    public class AuthorizationPolicyViewModel : BaseViewModel
     {
         public AuthorizationPolicyViewModel()
         {
@@ -13,11 +14,11 @@ namespace Module.Web.AuthorizationManagement.Models
         }
 
         public int Id { get; set; }
-        
+
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]
         public string Name { get; set; }
-        
+
         [MaxLength(1000)]
         public string Description { get; set; }
         public DateTime UpdatedDate { get; set; }

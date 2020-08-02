@@ -1,0 +1,41 @@
+﻿@model UserViewModel
+<tr>
+    <th>@Model.Id</th>
+    <td>@Model.Lastname @Model.Firstname</td>
+    <td>@Model.Address</td>
+    <td>@Model.Email</td>
+
+    <td>
+        @if (Model.BirthDate.HasValue)
+        {
+            @Model.BirthDate.Value.ToShortDateString()
+        }
+    </td>
+    <td>@Model.CountryName</td>
+    <td>
+        @if (Model.IsEmailConfirmed)
+        {
+            <span class="badge badge-primary">Confirmed</span>
+        }
+        else
+        {
+            <span class="badge badge-secondary">Confirmed</span>
+        }
+    </td>
+    <td>
+        @Model.GenderLabel
+    </td>
+    <td>
+        @if (Model.IsActived)
+        {
+            <span class="badge badge-success">Actived</span>
+        }
+        else
+        {
+            <span class="badge badge-danger">Confirmed</span>
+        }
+    </td>
+    <td>
+        <span class="badge badge-info">@Model.StatusLabel</span>
+    </td>
+</tr>
