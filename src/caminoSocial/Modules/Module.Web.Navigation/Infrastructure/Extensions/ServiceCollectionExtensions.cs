@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Module.Web.FarmManagement.Infrastructure.Extensions
+namespace Module.Web.Navigation.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {

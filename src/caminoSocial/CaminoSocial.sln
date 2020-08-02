@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.AuthorizationMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.DashboardManagement", "Modules\Module.Web.DashboardManagement\Module.Web.DashboardManagement.csproj", "{5B86202B-3A9C-4171-814D-09B7CE7DE963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camino.IdentityManager", "Libraries\Camino.Identity\Camino.IdentityManager.csproj", "{910081C4-F9E3-44E1-82D3-3A0B036583DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.IdentityManager", "Libraries\Camino.IdentityManager\Camino.IdentityManager.csproj", "{910081C4-F9E3-44E1-82D3-3A0B036583DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.Navigation", "Modules\Module.Web.Navigation\Module.Web.Navigation.csproj", "{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -301,6 +303,18 @@ Global
 		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x64.Build.0 = Release|Any CPU
 		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x86.ActiveCfg = Release|Any CPU
 		{910081C4-F9E3-44E1-82D3-3A0B036583DF}.Release|x86.Build.0 = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|x64.Build.0 = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Debug|x86.Build.0 = Debug|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|x64.ActiveCfg = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|x64.Build.0 = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -326,6 +340,7 @@ Global
 		{3CE71CCA-59AE-434E-AC81-A87318D1F63C} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{5B86202B-3A9C-4171-814D-09B7CE7DE963} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{910081C4-F9E3-44E1-82D3-3A0B036583DF} = {4D9DA488-891F-47E3-A5CC-39A8CD19D30C}
+		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25AC110A-ABFF-4027-9235-AB85654B8FE8}

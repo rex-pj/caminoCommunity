@@ -26,7 +26,9 @@ namespace Camino.ApiHost
 
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{Configuration["Modular:Path"]}";
-            services.AddModular(modulesPath, Configuration["Modular:Prefix"]);
+
+            var mvcBuilder = services.AddControllers().AddNewtonsoftJson();
+            mvcBuilder.AddModular(modulesPath, Configuration["Modular:Prefix"]);
             services.AddGraphQlModular();
         }
 

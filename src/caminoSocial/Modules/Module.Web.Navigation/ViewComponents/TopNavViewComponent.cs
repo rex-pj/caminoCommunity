@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Camino.Management.ViewComponents
+namespace Module.Web.Navigation.ViewComponents
 {
-    public class NavAccordionViewComponent : ViewComponent
+    public class TopNavViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke()
         {

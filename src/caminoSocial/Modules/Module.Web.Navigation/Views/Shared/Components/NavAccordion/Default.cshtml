@@ -1,4 +1,4 @@
-﻿@using Camino.Management.Common.Const;
+﻿@using Module.Web.Navigation.Common.Const;
 @{
     var routeData = ViewContext.RouteData;
     var controllerName = routeData.Values["controller"].ToString();
@@ -37,10 +37,9 @@
         RequestDomains.USER
     };
 
-    var roleAndPermissionDomains = new[]
+    var roleAndAuthorizationPolicyDomains = new[]
     {
         RequestDomains.ROLE,
-        RequestDomains.PERMISSION,
         RequestDomains.AUTHORIZATION_POLICY,
         RequestDomains.USER_AUTHORIZATION_POLICY,
         RequestDomains.ROLE_AUTHORIZATION_POLICY
@@ -61,13 +60,12 @@
     var isProductCategory = controllerName.Equals(RequestDomains.PRODUCT_CATEGORY);
 
     var isUserDomain = userDomains.Contains(controllerName);
-    var isRolePermissionDomain = roleAndPermissionDomains.Contains(controllerName);
+    var isRoleAndAuthorizationPolicyDomain = roleAndAuthorizationPolicyDomains.Contains(controllerName);
     var isUser = controllerName.Equals(RequestDomains.USER);
     var isRole = controllerName.Equals(RequestDomains.ROLE);
-    var isPermission = controllerName.Equals(RequestDomains.PERMISSION);
     var isAuthorizationPolicy = controllerName.Equals(RequestDomains.AUTHORIZATION_POLICY);
 
-    var isSecurityTabOpen = isUserDomain || isRolePermissionDomain;
+    var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain;
 }
 <ul class="nav nav-tabs" role="tablist" id="navTab">
     <li class="nav-item">
@@ -228,26 +226,22 @@
                 <div class="nav-tool-item">
                     <a asp-controller="Role"
                        asp-action="Index"
-                       class="text-dark @(isRolePermissionDomain ? "active" : "collapsed")"
+                       class="text-dark @(isRoleAndAuthorizationPolicyDomain ? "active" : "collapsed")"
                        data-toggle="collapse"
                        data-target="#collapseRole"
                        aria-expanded="true"
                        aria-controls="collapseRole">
-                        <i class="fa fa-user"></i> Roles & Permissions
+                        <i class="fa fa-user"></i> Roles & Authorization Policies
                     </a>
 
                     <div id="collapseRole"
-                         class="collapse @(isRolePermissionDomain ? "show" : "")"
+                         class="collapse @(isRoleAndAuthorizationPolicyDomain ? "show" : "")"
                          aria-labelledby="headingRole"
                          data-parent="#navSecurityAccordion">
                         <div class="list-group">
                             <a asp-controller="Role"
                                asp-action="Index" class="list-group-item text-dark @(isRole?"active":"")">
                                 <i class="fa fa-angle-right"></i> Roles
-                            </a>
-                            <a asp-controller="Permission"
-                               asp-action="Index" class="list-group-item text-dark @(isPermission?"active":"")">
-                                <i class="fa fa-angle-right"></i> Permissions
                             </a>
                             <a asp-controller="AuthorizationPolicy"
                                asp-action="Index" class="list-group-item text-dark @(isAuthorizationPolicy?"active":"")">

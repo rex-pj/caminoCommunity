@@ -28,7 +28,10 @@ namespace Camino.Management
 
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{_configuration["Modular:Path"]}";
-            services.AddModular(modulesPath, _configuration["Modular:Prefix"]);
+            var mvcBuilder = services.AddControllersWithViews()
+                .AddNewtonsoftJson();
+
+            mvcBuilder.AddModular(modulesPath, _configuration["Modular:Prefix"]);
             services.AddAutoMappingModular();
         }
 

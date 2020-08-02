@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Camino.Core.Modular.Contracts;
-using Module.Web.FarmManagement.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Module.Web.Navigation.Infrastructure.Extensions;
 
-namespace Module.Web.FarmManagement
+namespace Module.Web.Navigation
 {
     public class Startup : PluginStartupBase
     {

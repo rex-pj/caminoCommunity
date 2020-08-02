@@ -1,4 +1,4 @@
-﻿namespace Camino.Management.Common.Const
+﻿namespace Module.Web.Navigation.Common.Const
 {
     public static class RequestDomains
     {
@@ -13,7 +13,6 @@
         public const string PRODUCT_CATEGORY = "ProductCategory";
         public const string USER = "User";
         public const string ROLE = "Role";
-        public const string PERMISSION = "Permission";
         public const string AUTHORIZATION_POLICY = "AuthorizationPolicy";
         public const string USER_AUTHORIZATION_POLICY = "UserAuthorizationPolicy";
         public const string ROLE_AUTHORIZATION_POLICY = "RoleAuthorizationPolicy";

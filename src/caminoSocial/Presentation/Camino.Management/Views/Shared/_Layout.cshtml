@@ -1,5 +1,4 @@
-﻿@addTagHelper *, Camino.Management
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -13,14 +12,14 @@
     @RenderSection("DocumentHead", required: false)
 </head>
 <body>
-    <partial name="_TopNav" />
+    @await Component.InvokeAsync("TopNav")
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-2">
-                <vc:nav-accordion></vc:nav-accordion>
+                @await Component.InvokeAsync("NavAccordion")
             </div>
             <div class="col-sm-9 col-md-10">
-                <div class="card main box-shadow">
+                <div class="card main my-3 box-shadow">
                     @RenderBody()
                 </div>
             </div>

@@ -1,15 +1,15 @@
 ﻿using Camino.Core.Infrastructure;
 using Camino.Core.Models;
-using Camino.Framework.Providers.Contracts;
+using Camino.Core.Modular.Contracts;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Camino.Framework.Providers
+namespace Camino.Core.Modular
 {
-    public class ModularProvider : IModularProvider
+    public class ModularManager : IModularManager
     {
         public IList<ModuleInfo> LoadModules(string pluginsPath, string prefix = null)
         {

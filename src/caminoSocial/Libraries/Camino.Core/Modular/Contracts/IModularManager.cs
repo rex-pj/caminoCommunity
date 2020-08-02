@@ -1,9 +1,9 @@
 ﻿using Camino.Core.Models;
 using System.Collections.Generic;
 
-namespace Camino.Framework.Providers.Contracts
+namespace Camino.Core.Modular.Contracts
 {
-    public interface IModularProvider
+    public interface IModularManager
     {
         IList<ModuleInfo> LoadModules(string pluginsPath, string prefix = null);
     }

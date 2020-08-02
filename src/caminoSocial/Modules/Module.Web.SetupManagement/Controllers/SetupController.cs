@@ -25,6 +25,7 @@ namespace Module.Web.SetupManagement.Controllers
         private readonly IUserSecurityStampStore<ApplicationUser> _userSecurityStampStore;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IUserManager<ApplicationUser> _userManager;
+        
         public SetupController(ISeedDataBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
             IFileProvider fileProvider, IUserSecurityStampStore<ApplicationUser> userSecurityStampStore, 
             IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager)
