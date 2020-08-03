@@ -67,7 +67,7 @@
 
     var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain;
 }
-<ul class="nav nav-tabs" role="tablist" id="navTab">
+<ul class="nav nav-tabs bg-dark" role="tablist" id="navTab">
     <li class="nav-item">
         <a class="nav-link @(!isSecurityTabOpen?"active":"")" id="general-tab" data-toggle="tab" href="#generalTab" role="tab" aria-controls="general" aria-selected="true">General</a>
     </li>
@@ -76,7 +76,7 @@
     </li>
 </ul>
 <div class="tab-content" id="navTabContent">
-    <div class="tab-pane fade @(!isSecurityTabOpen?"show active":"")" id="generalTab" role="tabpanel" aria-labelledby="general-tab">
+    <div class="tab-pane mt-2 fade @(!isSecurityTabOpen?"show active":"")" id="generalTab" role="tabpanel" aria-labelledby="general-tab">
         <div class="nav-tool">
             <div class="accordion" id="navAccordion">
                 <div class="nav-tool-item">

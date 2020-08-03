@@ -1,12 +1,12 @@
-﻿@model PagerViewModel<RoleViewModel>
+﻿@model PageListViewModel<RoleViewModel>
 @{
     ViewData["Title"] = "Roles management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="card-header bg-secondary text-light">
+<div class="card-header bg-dark text-light">
     @if (Model.CanCreate)
     {
-        <a asp-action="Create" asp-controller="Role" class="btn btn-sm btn-primary">
+        <a asp-action="Create" asp-controller="Role" class="btn btn-sm btn-secondary">
             <i class="fa fa-plus"></i>
         </a>
     }

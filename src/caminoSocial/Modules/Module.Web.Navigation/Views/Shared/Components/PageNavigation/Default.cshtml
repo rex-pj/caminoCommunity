@@ -1,0 +1,66 @@
+﻿@model PagingViewModel
+
+@{
+    var baseUrl = Url.Action() + "?" + nameof(Model.Page) + "={0}";
+    var request = ViewContext.HttpContext.Request;
+    foreach (var key in request.Query.Keys)
+    {
+        if (!string.Equals(key, nameof(Model.Page), StringComparison.OrdinalIgnoreCase))
+        {
+            baseUrl += $"&{key}={request.Query[key]}";
+        }
+    }
+
+    var startpage = Math.Max(Model.Page - 5, 1);
+    var endPage = Math.Min(Model.Page + 5, Model.TotalPage);
+}
+
+<nav aria-label="Page navigation">
+    @if (Model.TotalPage > 1)
+    {
+        <ul class="pagination justify-content-center mb-5">
+            @if (Model.Page == 1)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&laquo;</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@string.Format(baseUrl, 1)">&laquo;</a>
+                </li>
+            }
+
+            @for (var i = startpage; i <= endPage; i++)
+            {
+                @if (i == Model.Page)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" href="#">@i<span class="sr-only">@i</span></a>
+                    </li>
+                }
+                else
+                {
+
+                    <li class="page-item">
+                        <a class="page-link" href="@string.Format(baseUrl, i)">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.Page == Model.TotalPage)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&raquo;</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@string.Format(baseUrl, Model.TotalPage)">&raquo;</a>
+                </li>
+            }
+        </ul>
+    }
+</nav>

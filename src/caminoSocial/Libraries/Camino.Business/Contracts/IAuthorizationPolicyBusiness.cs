@@ -1,5 +1,5 @@
-﻿using Camino.Business.Dtos.Identity;
-using System.Collections.Generic;
+﻿using Camino.Business.Dtos.General;
+using Camino.Business.Dtos.Identity;
 using System.Threading.Tasks;
 
 namespace Camino.Business.Contracts
@@ -7,7 +7,7 @@ namespace Camino.Business.Contracts
     public interface IAuthorizationPolicyBusiness
     {
         long Add(AuthorizationPolicyDto authorizationPolicy);
-        List<AuthorizationPolicyDto> GetFull();
+        PageListDto<AuthorizationPolicyDto> Get(int page, int pageSize);
         AuthorizationPolicyDto Find(short id);
         AuthorizationPolicyDto Update(AuthorizationPolicyDto policy);
         Task<AuthorizationPolicyDto> FindByNameAsync(string name);

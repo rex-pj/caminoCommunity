@@ -37,7 +37,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         {
             var roles = await _roleBusiness.GetAsync();
             var roleModels = _mapper.Map<List<RoleViewModel>>(roles);
-            var rolePage = new PagerViewModel<RoleViewModel>(roleModels);
+            var rolePage = new PageListViewModel<RoleViewModel>(roleModels);
 
             return View(rolePage);
         }

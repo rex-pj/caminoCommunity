@@ -1,11 +1,11 @@
-﻿@model PagerViewModel<ArticleCategoryViewModel>
+﻿@model PageListViewModel<ArticleCategoryViewModel>
 @inject IPageAuthorizeManager pageAuthorizeManager
 @{
     ViewData["Title"] = "Article categories management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card-header bg-secondary text-light">
+<div class="card-header bg-dark text-light">
     @if (Model.CanCreate)
     {
         <a asp-action="Create" asp-controller="ArticleCategory" class="btn btn-sm btn-primary">

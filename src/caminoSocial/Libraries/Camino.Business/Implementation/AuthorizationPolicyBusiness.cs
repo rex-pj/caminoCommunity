@@ -4,10 +4,10 @@ using Camino.Data.Contracts;
 using Camino.Business.Dtos.Identity;
 using Camino.Data.Entities.Identity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
+using Camino.Business.Dtos.General;
 
 namespace Camino.Business.Implementation
 {
@@ -66,27 +66,36 @@ namespace Camino.Business.Implementation
             return policy;
         }
 
-        public List<AuthorizationPolicyDto> GetFull()
+        public PageListDto<AuthorizationPolicyDto> Get(int page, int pageSize)
         {
-            var authorizationPolicies = (from policy in _authorizationPolicyRepository.Table
-                                         join createdBy in _userRepository.Table
-                                         on policy.CreatedById equals createdBy.Id
-                                         join updatedBy in _userRepository.Table
-                                         on policy.UpdatedById equals updatedBy.Id
-                                         select new AuthorizationPolicyDto()
-                                         {
-                                             CreatedById = policy.CreatedById,
-                                             CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
-                                             CreatedDate = policy.CreatedDate,
-                                             UpdatedById = policy.UpdatedById,
-                                             UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
-                                             UpdatedDate = policy.UpdatedDate,
-                                             Description = policy.Description,
-                                             Id = policy.Id,
-                                             Name = policy.Name
-                                         }).ToList();
+            var query = (from policy in _authorizationPolicyRepository.Table
+                         join createdBy in _userRepository.Table
+                         on policy.CreatedById equals createdBy.Id
+                         join updatedBy in _userRepository.Table
+                         on policy.UpdatedById equals updatedBy.Id
+                         select new AuthorizationPolicyDto()
+                         {
+                             CreatedById = policy.CreatedById,
+                             CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
+                             CreatedDate = policy.CreatedDate,
+                             UpdatedById = policy.UpdatedById,
+                             UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
+                             UpdatedDate = policy.UpdatedDate,
+                             Description = policy.Description,
+                             Id = policy.Id,
+                             Name = policy.Name
+                         });
+
+            var filteredNumber = query.Select(x => x.Id).Count();
             
-            return authorizationPolicies;
+            var authorizationPolicies = query.Skip(pageSize * (page - 1))
+                                         .Take(pageSize)
+                                         .ToList();
+
+            var result = new PageListDto<AuthorizationPolicyDto>(authorizationPolicies);
+            result.TotalResult = filteredNumber;
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / pageSize);
+            return result;
         }
 
         public long Add(AuthorizationPolicyDto authorizationPolicy)

@@ -32,12 +32,13 @@ namespace Module.Web.AuthorizationManagement.Controllers
             _authorizationPolicyBusiness = authorizationPolicyBusiness;
         }
 
+        [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PagingViewModel paging)
         {
-            var policies = _authorizationPolicyBusiness.GetFull();
-            var policyModels = _mapper.Map<List<AuthorizationPolicyViewModel>>(policies);
+            var policiesPageList = _authorizationPolicyBusiness.Get(paging.Page, paging.PageSize);
+            var policyModels = _mapper.Map<List<AuthorizationPolicyViewModel>>(policiesPageList.Collections);
             var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
             var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
             policyModels.ForEach(x => {
@@ -45,7 +46,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 x.CanViewUserAuthorizationPolicy = canViewUserAuthorizationPolicy;
             });
 
-            var policiesPage = new PagerViewModel<AuthorizationPolicyViewModel>(policyModels);
+            paging.TotalResult = policiesPageList.TotalResult;
+            paging.TotalPage = policiesPageList.TotalPage;
+            var policiesPage = new PageListViewModel<AuthorizationPolicyViewModel>(policyModels) { 
+                Paging = paging
+            };
+
             return View(policiesPage);
         }
 

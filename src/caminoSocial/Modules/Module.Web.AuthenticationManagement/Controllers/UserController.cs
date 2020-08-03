@@ -31,7 +31,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         {
             var users = _userBusiness.GetFull();
             var userModels = _mapper.Map<List<UserViewModel>>(users);
-            var userPage = new PagerViewModel<UserViewModel>(userModels);
+            var userPage = new PageListViewModel<UserViewModel>(userModels);
 
             return View(userPage);
         }

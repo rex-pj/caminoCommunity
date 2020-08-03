@@ -37,7 +37,7 @@ namespace Module.Web.ArticleManagement.Controllers
         {
             var articles = _articleBusiness.GetFull();
             var articleModels = _mapper.Map<List<ArticleViewModel>>(articles);
-            var articlePage = new PagerViewModel<ArticleViewModel>(articleModels);
+            var articlePage = new PageListViewModel<ArticleViewModel>(articleModels);
 
             return View(articlePage);
         }

@@ -29,6 +29,10 @@ body {
 
 /* Sticky header styles
 -------------------------------------------------- */
+.top-nav .navbar{
+    padding: 5px 0;
+}
+
 .site-logo {
     max-width: 35px;
     max-height: 35px;
@@ -38,7 +42,8 @@ body {
 .navbar-light .navbar-brand {
     font-weight: 600;
     font-size: 18px;
-    text-transform: uppercase
+    text-transform: uppercase;
+    padding: 0;
 }
 
 /* Nav tab
@@ -46,17 +51,23 @@ body {
 #navTab {
     margin-left: -15px;
     margin-right: -15px;
-    margin-top: 8px;
 }
 
     #navTab .nav-link {
         font-weight: 600;
-        color: #f68c1f;
-        color: #495057
+        color: #f4f7f6;
+        height: 51px;
+        line-height: 51px;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
     #navTab .nav-item:first-child .nav-link {
         border-top-left-radius: 0;
+    }
+
+    #navTab .nav-link:hover{
+        border: 0;
     }
 
     #navTab .nav-link.active {
@@ -64,16 +75,11 @@ body {
         border-bottom: 1px solid #f4f7f6;
         color: #f68c1f;
     }
-
-#navTabContent .tab-pane {
-    padding-top: 15px;
-}
 /* Nav tools
 -------------------------------------------------- */
 .nav-tool {
     height: 100%;
     margin-left: -15px;
-    margin-right: -15px;
 }
 
     .nav-tool .nav-tool-item > a {
@@ -134,6 +140,7 @@ body {
         .nav-tool .list-group-item.active {
             background-color: #FFFFFF;
             font-weight: 600;
+            color: #f68c1f !important;
         }
 /* Sticky footer styles
 -------------------------------------------------- */

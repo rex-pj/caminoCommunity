@@ -1,18 +1,18 @@
-﻿@model PagerViewModel<AuthorizationPolicyViewModel>
+﻿@model PageListViewModel<AuthorizationPolicyViewModel>
 @inject IPageAuthorizeManager pageAuthorizeManager
 @{
     ViewData["Title"] = "Authorization policies management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <div class="card-header bg-secondary text-light">
-        @if (Model.CanCreate)
-        {
-            <a asp-action="Create" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-primary">
-                <i class="fa fa-plus"></i>
-            </a>
-        }
-        @ViewData["Title"]
-    </div>
+<div class="card-header bg-dark text-light">
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Create" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i>
+        </a>
+    }
+    @ViewData["Title"]
+</div>
 <div class="card-body">
     <table class="table table-bordered">
         <thead>
@@ -42,3 +42,5 @@
         </tbody>
     </table>
 </div>
+
+@await Component.InvokeAsync("PageNavigation", Model.Paging)
