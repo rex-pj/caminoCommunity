@@ -29,5 +29,8 @@ namespace Module.Web.AuthorizationManagement.Models
         public string CreatedByName { get; set; }
         public IEnumerable<SelectListItem> SelectPermissionMethods { get; set; }
         public int PermissionMethod { get; set; }
+
+        public bool CanViewUserAuthorizationPolicy { get; set; }
+        public bool CanViewRoleAuthorizationPolicy { get; set; }
     }
 }

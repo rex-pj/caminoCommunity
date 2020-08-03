@@ -4,13 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card-header bg-secondary text-light">
-    <a asp-action="Index" asp-controller="Role" class="btn btn-sm btn-light">
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="Role" class="btn btn-sm btn-secondary">
         <i class="fa fa-arrow-left"></i>
     </a>
-    <a asp-action="Update" asp-controller="Role" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
-        <i class="fa fa-edit"></i>
-    </a>
+    @if (Model.CanUpdate)
+    {
+        <a asp-action="Update" asp-controller="Role" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+            <i class="fa fa-edit"></i>
+        </a>
+    }
+
     @ViewData["Title"]
 </div>
 <div class="card-body">

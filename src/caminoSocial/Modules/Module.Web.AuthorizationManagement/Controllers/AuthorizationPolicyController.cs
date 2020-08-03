@@ -13,28 +13,39 @@ using Camino.Core.Enums;
 using System.Threading.Tasks;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
+using Camino.IdentityManager.Contracts;
+using Camino.IdentityManager.Models;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class AuthorizationPolicyController : BaseAuthController
     {
         private readonly IAuthorizationPolicyBusiness _authorizationPolicyBusiness;
+        private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
-        public AuthorizationPolicyController(IMapper mapper, IAuthorizationPolicyBusiness authorizationPolicyBusiness, IHttpContextAccessor httpContextAccessor)
+        public AuthorizationPolicyController(IMapper mapper, IAuthorizationPolicyBusiness authorizationPolicyBusiness, IHttpContextAccessor httpContextAccessor,
+            IUserManager<ApplicationUser> userManager)
             : base(httpContextAccessor)
         {
+            _userManager = userManager;
             _mapper = mapper;
             _authorizationPolicyBusiness = authorizationPolicyBusiness;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var policies = _authorizationPolicyBusiness.GetFull();
             var policyModels = _mapper.Map<List<AuthorizationPolicyViewModel>>(policies);
-            var policiesPage = new PagerViewModel<AuthorizationPolicyViewModel>(policyModels);
+            var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
+            var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
+            policyModels.ForEach(x => {
+                x.CanViewRoleAuthorizationPolicy = canViewRoleAuthorizationPolicy;
+                x.CanViewUserAuthorizationPolicy = canViewUserAuthorizationPolicy;
+            });
 
+            var policiesPage = new PagerViewModel<AuthorizationPolicyViewModel>(policyModels);
             return View(policiesPage);
         }
 

@@ -11,6 +11,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
+using Camino.Core.Constants;
+using Camino.Framework.Attributes;
+using Camino.Core.Enums;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -28,6 +31,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
+        [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index()
         {
             var roles = await _roleBusiness.GetAsync();
@@ -38,6 +43,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         public IActionResult Search(string q)
         {
             var roles = _roleBusiness.Search(q);
@@ -59,6 +65,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             return Json(userModels);
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
+        [LoadResultAuthorizations("Role", PolicyMethod.CanUpdate)]
         public async Task<IActionResult> Detail(byte id)
         {
             if (id <= 0)
@@ -84,6 +92,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         public IActionResult Create()
         {
             var model = new RoleViewModel();
@@ -92,6 +101,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
         public async Task<IActionResult> Update(long id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -101,14 +111,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(RoleViewModel model)
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
+        public async Task<IActionResult> Create(RoleViewModel model)
         {
-            var role = _mapper.Map<ApplicationRole>(model);
-            role.UpdatedById = LoggedUserId;
-            if (role.Id > 0)
+            if (model.Id > 0)
             {
-                await _roleManager.UpdateAsync(role);
-                return RedirectToAction("Detail", new { id = role.Id });
+                return RedirectToErrorPage();
             }
 
             var exist = _roleBusiness.FindByName(model.Name);
@@ -117,8 +125,31 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            var role = _mapper.Map<ApplicationRole>(model);
+            role.UpdatedById = LoggedUserId;
             role.CreatedById = LoggedUserId;
             var newId = _roleManager.CreateAsync(role);
+            return RedirectToAction("Detail", new { id = newId });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
+        public async Task<IActionResult> Update(RoleViewModel model)
+        {
+            if (model.Id <= 0)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var exist = _roleBusiness.FindByName(model.Name);
+            if (exist == null)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var role = _mapper.Map<ApplicationRole>(model);
+            role.UpdatedById = LoggedUserId;
+            var newId = _roleManager.UpdateAsync(role);
             return RedirectToAction("Detail", new { id = newId });
         }
     }

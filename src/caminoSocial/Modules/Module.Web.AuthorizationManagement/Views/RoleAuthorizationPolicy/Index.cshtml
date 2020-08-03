@@ -4,9 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="card-header bg-secondary text-light">
-    <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
-        <i class="fa fa-arrow-left"></i>
-    </a>
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+    }
+
     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#grantRoleModal">
         <i class="fa fa-plus"></i>
     </button>
@@ -34,9 +38,12 @@
                                 <form asp-action="Ungrant" asp-controller="RoleAuthorizationPolicy" method="post">
                                     <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
                                     <input type="hidden" name="RoleId" value="@role.Id" />
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-times"></i>
-                                    </button>
+                                    @if (Model.CanDelete)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    }
                                 </form>
                             </div>
                         </div>
@@ -47,4 +54,7 @@
     </div>
 </div>
 
-<partial name="_GrantRoleAuthorizationPolicy" />
+@if (Model.CanCreate)
+{
+    <partial name="_GrantRoleAuthorizationPolicy" />
+}

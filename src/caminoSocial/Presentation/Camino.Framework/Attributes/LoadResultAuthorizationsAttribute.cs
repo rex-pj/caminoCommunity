@@ -45,27 +45,23 @@ namespace Camino.Framework.Attributes
             }
 
             var httpContext = context.HttpContext;
-            string[] policies = new string[] { };
             if (_moduleName != null && !_policyMethods.Any())
             {
                 _policyMethods = Enum.GetValues(typeof(PolicyMethod)).Cast<PolicyMethod>().ToArray();
             }
 
-            policies = _policyMethods.Select(x => $"{x}{_moduleName}").ToArray();
+            var policies = _policyMethods.Select(x => $"{x}{_moduleName}").ToArray();
 
             var requestServices = httpContext.RequestServices;
             var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
-            var user = await userManager.GetUserAsync(httpContext.User);
             var numberOfPolicies = policies.Length;
             var model = viewModel as BaseViewModel;
             for (int i = 0; i < numberOfPolicies; i++)
             {
-                var currentPolicy = policies[i];
-                
                 var policyMethod = _policyMethods[i].ToString();
                 var propertyInfo = model.GetType().GetProperty(policyMethod);
 
-                var hasPolicy = await userManager.HasPolicyAsync(user, policies[i]);
+                var hasPolicy = await userManager.HasPolicyAsync(httpContext.User, policies[i]);
                 propertyInfo.SetValue(model, hasPolicy, null);
             }
 

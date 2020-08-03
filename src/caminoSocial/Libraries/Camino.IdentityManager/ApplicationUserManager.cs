@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Camino.IdentityManager.Contracts.Stores.Contracts;
 using Camino.IdentityManager.Contracts.Core;
+using System.Security.Claims;
 
 namespace Camino.IdentityManager
 {
@@ -66,14 +67,26 @@ namespace Camino.IdentityManager
             return Base32.ToBase32(bytes);
         }
 
-        public async Task<bool> HasPolicyAsync(TUser user, string policy)
+        public async Task<bool> HasPolicyAsync(ClaimsPrincipal user, string policy)
         {
             ThrowIfDisposed();
-            var userPolicyStore = GetUserPolicyStore();
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
+            var appUser = await GetUserAsync(user);
+            return await HasPolicyAsync(appUser, policy);
+        }
+
+        public async Task<bool> HasPolicyAsync(TUser user, string policy)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            var userPolicyStore = GetUserPolicyStore();
             return await userPolicyStore.HasPolicyAsync(user, NormalizeName(policy), CancellationToken);
         }
     }

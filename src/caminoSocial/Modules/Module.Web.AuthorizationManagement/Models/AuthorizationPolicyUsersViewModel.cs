@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Camino.Framework.Models;
+using System.Collections.Generic;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyUsersViewModel
+    public class AuthorizationPolicyUsersViewModel : BaseViewModel
     {
         public AuthorizationPolicyUsersViewModel()
         {

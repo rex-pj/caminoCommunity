@@ -4,6 +4,9 @@ using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Camino.Framework.Attributes;
+using Camino.Core.Constants;
+using Camino.Core.Enums;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -18,6 +21,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             _mapper = mapper;
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRoleAuthorizationPolicy)]
+        [LoadResultAuthorizations("RoleAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
         public IActionResult Index(short id)
         {
             var result = _roleAuthorizationPolicyBusiness.GetAuthoricationPolicyRoles(id);
@@ -26,6 +31,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateRoleAuthorizationPolicy)]
         public IActionResult Grant(AuthorizationPolicyRolesViewModel model)
         {
             var isSucceed = _roleAuthorizationPolicyBusiness.Add(model.RoleId, model.Id, LoggedUserId);
@@ -37,6 +43,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteUserAuthorizationPolicy)]
         public IActionResult Ungrant(byte roleId, short authorizationPolicyId)
         {
             var isSucceed = _roleAuthorizationPolicyBusiness.Delete(roleId, authorizationPolicyId);

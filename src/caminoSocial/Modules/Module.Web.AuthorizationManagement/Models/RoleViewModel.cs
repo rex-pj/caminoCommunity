@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Camino.Framework.Models;
+using System;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class RoleViewModel
+    public class RoleViewModel : BaseViewModel
     {
         public long Id { get; set; }
         public string Name { get; set; }

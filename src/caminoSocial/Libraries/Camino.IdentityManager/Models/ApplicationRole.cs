@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace Camino.IdentityManager.Models
@@ -9,6 +10,8 @@ namespace Camino.IdentityManager.Models
         public long UpdatedById { get; set; }
         public string CreatedByName { get; set; }
         public string UpdatedByName { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public ApplicationRole()
         {

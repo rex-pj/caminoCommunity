@@ -4,9 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="card-header bg-secondary text-light">
-    <a asp-action="Create" asp-controller="Role" class="btn btn-sm btn-primary">
-        <i class="fa fa-plus"></i>
-    </a>
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Create" asp-controller="Role" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i>
+        </a>
+    }
+
     @ViewData["Title"]
 </div>
 <div class="card-body">
@@ -41,8 +45,14 @@
                             <p class="text-muted">by: @role.UpdatedByName</p>
                         </td>
                         <td>
-                            <a asp-action="Update" asp-controller="Role" asp-route-id="@role.Id" class="btn btn-sm btn-outline-dark">
-                                <i class="fa fa-edit"></i>
+                            @if (Model.CanUpdate)
+                            {
+                                <a asp-action="Update" asp-controller="Role" asp-route-id="@role.Id" class="btn btn-sm btn-outline-dark">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            }
+                            <a asp-action="Detail" asp-controller="Role" asp-route-id="@role.Id" class="btn btn-sm btn-outline-dark">
+                                <i class="fa fa-eye"></i>
                             </a>
                         </td>
                     </tr>

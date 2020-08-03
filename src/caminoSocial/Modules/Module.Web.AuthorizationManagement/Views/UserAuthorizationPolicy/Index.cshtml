@@ -7,9 +7,13 @@
     <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
         <i class="fa fa-arrow-left"></i>
     </a>
-    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#grantRoleModal">
-        <i class="fa fa-plus"></i>
-    </button>
+    @if (Model.CanCreate)
+    {
+        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#grantRoleModal">
+            <i class="fa fa-plus"></i>
+        </button>
+    }
+
     @ViewData["Title"]
 </div>
 <div class="card-body">
@@ -34,9 +38,12 @@
                                 <form asp-action="Ungrant" asp-controller="UserAuthorizationPolicy" method="post">
                                     <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
                                     <input type="hidden" name="UserId" value="@user.Id" />
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-times"></i>
-                                    </button>
+                                    @if (Model.CanDelete)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    }
                                 </form>
                             </div>
                         </div>
@@ -47,4 +54,7 @@
     </div>
 </div>
 
-<partial name="_GrantUserAuthorizationPolicy" />
+@if (Model.CanCreate)
+{
+    <partial name="_GrantUserAuthorizationPolicy" />
+}
