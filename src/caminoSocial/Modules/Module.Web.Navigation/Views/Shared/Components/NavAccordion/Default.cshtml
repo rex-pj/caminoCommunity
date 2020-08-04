@@ -67,7 +67,15 @@
 
     var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain;
 }
-<ul class="nav nav-tabs bg-dark" role="tablist" id="navTab">
+
+<div class="site-nav-logo bg-dark">
+    <a class="navbar-brand text-white" asp-action="Index" asp-controller="Home">
+        <img class="site-logo" src="~/img/logo.png" width="35" />
+        Management Center
+    </a>
+</div>
+
+<ul class="nav nav-tabs bg-white" role="tablist" id="navTab">
     <li class="nav-item">
         <a class="nav-link @(!isSecurityTabOpen?"active":"")" id="general-tab" data-toggle="tab" href="#generalTab" role="tab" aria-controls="general" aria-selected="true">General</a>
     </li>

@@ -18,7 +18,9 @@
                 @await Component.InvokeAsync("NavAccordion")
             </div>
             <div class="col-sm-9 col-md-10">
-                @await Component.InvokeAsync("TopNav")
+                <div class="row ml-0">
+                    @await Component.InvokeAsync("TopNav")
+                </div>
                 <div class="card main my-3 box-shadow">
                     @RenderBody()
                 </div>
