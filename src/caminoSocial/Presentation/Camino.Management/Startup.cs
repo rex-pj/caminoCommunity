@@ -1,3 +1,4 @@
+using Camino.Core.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Middlewares;
 using Camino.Management.Infrastructure.Extensions;

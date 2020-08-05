@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Module.Web.Navigation.ViewComponents
 {
-    public class PageNavigation : ViewComponent
+    public class PageNavigationViewComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(PagingViewModel paging)
         {

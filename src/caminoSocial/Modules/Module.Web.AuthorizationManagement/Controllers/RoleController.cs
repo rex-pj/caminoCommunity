@@ -112,7 +112,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public async Task<IActionResult> Create(RoleViewModel model)
+        public IActionResult Create(RoleViewModel model)
         {
             if (model.Id > 0)
             {
@@ -134,7 +134,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
-        public async Task<IActionResult> Update(RoleViewModel model)
+        public IActionResult Update(RoleViewModel model)
         {
             if (model.Id <= 0)
             {

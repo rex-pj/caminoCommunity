@@ -2,7 +2,7 @@
 
 namespace Module.Web.Navigation.ViewComponents
 {
-    public class NavAccordionViewComponent : ViewComponent
+    public class MainNavigationViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke()
         {

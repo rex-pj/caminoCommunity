@@ -35,8 +35,14 @@ body {
 
     .top-nav .navbar {
         padding: 5px 0;
+        margin-right: -15px;
     }
 
+    .top-nav .navbar-toggler {
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
 /* Nav tab
 -------------------------------------------------- */
 .site-nav-logo {
@@ -52,8 +58,8 @@ body {
 }
 
 .site-nav-logo .navbar-brand {
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 24px;
     padding: 0;
     margin-right: 0;
 }
@@ -87,7 +93,7 @@ body {
     #navTab .nav-link.active {
         background-color: #F5F9FC;
         border-bottom: 0;
-        color: #f68c1f;
+        color: #28a745;
     }
 
 /* Nav tools
@@ -110,7 +116,7 @@ body {
         display: block;
         padding: 0.75rem 0.75rem;
         position: relative;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
     }
 
@@ -132,7 +138,7 @@ body {
             bottom: 0;
             width: 3px;
             height: 100%;
-            background-color: #f68c1f;
+            background-color: #28a745;
         }
 
         .nav-tool .nav-tool-item > a.collapsed::after {
@@ -156,13 +162,8 @@ body {
 
         .nav-tool .list-group-item.active {
             background-color: #FFFFFF;
-            font-weight: 600;
+            font-weight: 700;
         }
-
-            .nav-tool .list-group-item.active .fa,
-            .nav-tool .list-group-item.active .fas {
-                color: #f68c1f;
-            }
 /* Sticky footer styles
 -------------------------------------------------- */
 .main {

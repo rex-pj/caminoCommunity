@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="@Url.Content("~/css/site.css")" type="text/css" />
     <link rel="icon" type="image/png" href="@Url.Content("~/img/favicon.ico")">
     <link rel="stylesheet" href="@Url.Content("~/setupmanagement/css/setup-layout.css")" type="text/css" />
-    @RenderSection("DocumentHead", required: false)
+    @RenderSection("Head", required: false)
 </head>
 <body>
     <div class="container">
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <partial name="_Footer" />
+    @await Component.InvokeAsync("Footer")
     <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
     <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
     <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>

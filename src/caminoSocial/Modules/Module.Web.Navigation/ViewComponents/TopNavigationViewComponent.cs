@@ -2,7 +2,7 @@
 
 namespace Module.Web.Navigation.ViewComponents
 {
-    public class TopNavViewComponent : ViewComponent
+    public class TopNavigationViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke()
         {

@@ -9,26 +9,31 @@
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
-    @RenderSection("DocumentHead", required: false)
+    @RenderSection("Head", required: false)
 </head>
 <body>
     <div class="container-fluid">
         <div class="row no-gutters">
-            <div class="col-sm-3 col-md-2">
-                @await Component.InvokeAsync("NavAccordion")
+            <div class="col-sm-3 col-md-2 collapse show" id="mainNavigation">
+                @await Component.InvokeAsync("MainNavigation")
             </div>
-            <div class="col-sm-9 col-md-10">
-                <div class="row ml-0">
-                    @await Component.InvokeAsync("TopNav")
+            <div class="col">
+                @await Component.InvokeAsync("TopNavigation")
+
+                <div class="mt-2 ml-2">
+                    <span class="text-secondary">
+                        @RenderSection("Title", required: false)
+                    </span>
                 </div>
-                <div class="card main my-3 box-shadow">
+
+                <div class="card main mt-2 mb-3 box-shadow">
                     @RenderBody()
                 </div>
             </div>
         </div>
     </div>
 
-    <partial name="_Footer" />
+    @await Component.InvokeAsync("Footer")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/select2/js/select2.full.min.js"></script>
