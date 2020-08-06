@@ -13,22 +13,25 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row no-gutters">
-            <div class="col-sm-3 col-md-2 collapse show" id="mainNavigation">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 px-0 collapse show" id="mainNavigation">
                 @await Component.InvokeAsync("MainNavigation")
             </div>
-            <div class="col">
+            <div class="col px-0">
                 @await Component.InvokeAsync("TopNavigation")
 
-                <div class="mt-3 mx-3">
-                    <span class="text-secondary">
+                <div class="mt-3 px-3">
+                    <span class="text-dark">
                         @RenderSection("Title", required: false)
                     </span>
                 </div>
 
-                <div class="card main mt-3 mb-3 box-shadow">
-                    @RenderBody()
+                <div class="px-3">
+                    <div class="card main mt-3 mb-3 px-0 box-shadow">
+                        @RenderBody()
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

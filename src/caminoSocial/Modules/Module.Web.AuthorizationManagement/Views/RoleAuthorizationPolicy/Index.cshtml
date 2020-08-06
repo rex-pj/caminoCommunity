@@ -16,42 +16,40 @@
     </button>
     @ViewData["Title"]
 </div>
-<div class="card-body">
-    <div class="card">
-        <div class="card-header">
-            <strong>@Model.Name</strong>
-        </div>
-        <div class="alert alert-light mb-0" role="alert">
-            <div>See the user role @Model.Description</div>
-        </div>
-        <ul class="list-group list-group-flush">
-            @if (Model != null && Model.AuthorizationPolicyRoles.Any())
-            {
-                foreach (var role in Model.AuthorizationPolicyRoles)
-                {
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col align-self-start">
-                                <span>@role.Name (@role.Description)</span>
-                            </div>
-                            <div class="col align-self-end text-right">
-                                <form asp-action="Ungrant" asp-controller="RoleAuthorizationPolicy" method="post">
-                                    <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
-                                    <input type="hidden" name="RoleId" value="@role.Id" />
-                                    @if (Model.CanDelete)
-                                    {
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    }
-                                </form>
-                            </div>
-                        </div>
-                    </li>
-                }
-            }
-        </ul>
+<div class="card">
+    <div class="card-header">
+        <strong>@Model.Name</strong>
     </div>
+    <div class="alert alert-light mb-0" role="alert">
+        <div>See the user role @Model.Description</div>
+    </div>
+    <ul class="list-group list-group-flush">
+        @if (Model != null && Model.AuthorizationPolicyRoles.Any())
+        {
+            foreach (var role in Model.AuthorizationPolicyRoles)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col align-self-start">
+                            <span>@role.Name (@role.Description)</span>
+                        </div>
+                        <div class="col align-self-end text-right">
+                            <form asp-action="Ungrant" asp-controller="RoleAuthorizationPolicy" method="post">
+                                <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
+                                <input type="hidden" name="RoleId" value="@role.Id" />
+                                @if (Model.CanDelete)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                }
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
 </div>
 
 @if (Model.CanCreate)

@@ -1,6 +1,7 @@
 ﻿using Camino.Business;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Models;
+using Camino.Framework.Models.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

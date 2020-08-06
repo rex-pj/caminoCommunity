@@ -1,5 +1,6 @@
 ﻿using Camino.Framework.Infrastructure.Middlewares;
 using Camino.Framework.Models;
+using Camino.Framework.Models.Settings;
 using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

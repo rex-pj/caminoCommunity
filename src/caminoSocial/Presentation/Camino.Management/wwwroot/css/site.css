@@ -14,7 +14,7 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: #F5F9FC;
+    background-color: #F1F9FF;
 }
 
 .box-shadow {
@@ -35,7 +35,6 @@ body {
 
     .top-nav .navbar {
         padding: 5px 0;
-        margin-right: -15px;
     }
 
     .top-nav .navbar-toggler {
@@ -46,10 +45,8 @@ body {
 /* Nav tab
 -------------------------------------------------- */
 .site-nav-logo {
-    height: 51px;
-    line-height: 51px;
-    margin-left: -15px;
-    padding-left: 15px;
+    height: 50px;
+    line-height: 50px;
 }
 
 .site-logo {
@@ -65,7 +62,6 @@ body {
 }
 
 #navTab {
-    margin-left: -15px;
     border-bottom: 0;
 }
 
@@ -98,70 +94,88 @@ body {
 
 /* Nav tools
 -------------------------------------------------- */
-.tab-content .tab-pane {
-    margin-left: -15px;
-}
-
 .nav-tool {
     height: 100%;
 }
 
-    .nav-tool .nav-tool-item > a {
-        border-right: 0;
-        border-left: 0;
-        background-color: transparent;
-        border: 0;
-        border-radius: 0;
-        font-size: 14px;
+    .nav-tool .nav-tool-item > span {
         display: block;
-        padding: 0.75rem 0.75rem;
         position: relative;
-        font-weight: 700;
-        text-decoration: none;
     }
 
-        .nav-tool .nav-tool-item > a.collapsed:hover {
-            background-color: transparent;
+        .nav-tool .nav-tool-item > span > a {
+            font-size: 14px;
+            display: block;
+            padding: 0.75rem 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
         }
 
-        .nav-tool .nav-tool-item > a.collapsed {
-            background-color: transparent;
+        .nav-tool .nav-tool-item > span :hover {
+            background-color: #CFF6FF;
+        }
+
+        .nav-tool .nav-tool-item > span > a.collapsed {
             font-weight: 400;
         }
 
-        .nav-tool .nav-tool-item > a::after {
-            content: " ";
-            display: block;
+        .nav-tool .nav-tool-item > span .fa-angle-up,
+        .nav-tool .nav-tool-item > span .fa-angle-down {
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            height: 100%;
-            background-color: #28a745;
+            top: 50%;
+            bottom: 50%;
+            margin: -5px auto 0  auto;
+            right: 5px;
         }
 
-        .nav-tool .nav-tool-item > a.collapsed::after {
+        .nav-tool .nav-tool-item > span .fa-angle-up {
+            display: inline-block;
+        }
+
+            .nav-tool .nav-tool-item > span .fa-angle-down {
+                display: none;
+            }
+
+            .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-up {
+                display: none;
+            }
+
+            .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-down{
+                display: inline-block;
+            }
+
+            .nav-tool .nav-tool-item > span a::after {
+                content: " ";
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                bottom: 50%;
+                width: 3px;
+                height: 15px;
+                margin: auto;
+                background-color: #28a745;
+            }
+
+        .nav-tool .nav-tool-item > span > a.collapsed::after {
             display: none;
         }
 
     .nav-tool .list-group-item {
         border-radius: 0;
-        border-left: 0;
-        border-right: 0;
-        border-color: #f1f1f1;
+        border: 0;
         font-size: 14px;
         padding: 0.75rem 0.75rem;
+        background-color: #E1F1FF;
     }
 
         .nav-tool .list-group-item:hover,
         .nav-tool .list-group-item.active:hover {
             text-decoration: none;
-            font-weight: 600;
+            background-color: #CFF6FF;
         }
 
         .nav-tool .list-group-item.active {
-            background-color: #FFFFFF;
             font-weight: 700;
         }
 /* Sticky footer styles

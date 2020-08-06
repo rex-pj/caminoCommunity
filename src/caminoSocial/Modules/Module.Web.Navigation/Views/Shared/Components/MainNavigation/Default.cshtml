@@ -68,7 +68,7 @@
     var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain;
 }
 
-<div class="site-nav-logo bg-dark">
+<div class="site-nav-logo bg-dark pl-2">
     <a class="navbar-brand text-white" asp-action="Index" asp-controller="Home">
         <img class="site-logo" src="~/img/logo.png" width="35" />
         camino<b>Social</b>
@@ -88,23 +88,35 @@
         <div class="nav-tool">
             <div class="accordion" id="navAccordion">
                 <div class="nav-tool-item">
-                    <a asp-controller="Home"
-                       asp-action="Index"
-                       class="text-dark @(isHomeDomain ? "active" : "collapsed")">
-                        <i class="fa fa-home"></i> Home
-                    </a>
+                    <span>
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="text-dark @(isHomeDomain ? "active" : "collapsed")">
+                            <span class="mr-2">
+                                <i class="fa fa-home"></i>
+                            </span>
+                            Home
+                        </a>
+                    </span>
                 </div>
                 <div class="nav-tool-item">
-                    <a asp-controller="Article"
-                       asp-action="Index"
-                       class="text-dark @(isArticleDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseArticle"
-                       aria-expanded="true"
-                       aria-controls="collapseArticle">
-                        <i class="fa fa-book"></i> Article Management
-                    </a>
-
+                    <span>
+                        <a asp-controller="Article"
+                           asp-action="Index"
+                           class="text-dark @(isArticleDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseArticle"
+                           aria-expanded="true"
+                           aria-controls="collapseArticle">
+                            <span class="mr-2">
+                                <i class="far fa-newspaper"></i>
+                            </span>
+                            Article Management
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
+                    
                     <div id="collapseArticle"
                          class="collapse @(isArticleDomain ? "show" : "")"
                          aria-labelledby="headingArticle"
@@ -112,25 +124,38 @@
                         <div class="list-group">
                             <a asp-controller="Article"
                                asp-action="Index" class="list-group-item text-dark @(isArticle?"active":"")">
-                                <i class="fa fa-angle-right"></i> Articles
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Articles
                             </a>
                             <a asp-controller="ArticleCategory"
                                asp-action="Index" class="list-group-item text-dark @(isArticleCategory?"active":"")">
-                                <i class="fa fa-angle-right"></i> Article Categories
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Article Categories
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="nav-tool-item">
-                    <a asp-controller="Farm"
-                       asp-action="Index"
-                       class="text-dark @(isFarmDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseFarm"
-                       aria-expanded="true"
-                       aria-controls="collapseFarm">
-                        <i class="fa fa-warehouse"></i> Farm Management
-                    </a>
+                    <span>
+                        <a asp-controller="Farm"
+                           asp-action="Index"
+                           class="text-dark @(isFarmDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseFarm"
+                           aria-expanded="true"
+                           aria-controls="collapseFarm">
+                            <span class="mr-2">
+                                <i class="fa fa-warehouse"></i>
+                            </span>
+                            Farm Management
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
 
                     <div id="collapseFarm"
                          class="collapse @(isFarmDomain ? "show" : "")"
@@ -139,25 +164,38 @@
                         <div class="list-group">
                             <a asp-controller="Farm"
                                asp-action="Index" class="list-group-item text-dark @(isFarm?"active":"")">
-                                <i class="fa fa-angle-right"></i> Farm
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Farm
                             </a>
                             <a asp-controller="FarmType"
                                asp-action="Index" class="list-group-item text-dark @(isFarmType?"active":"")">
-                                <i class="fa fa-angle-right"></i> Farm Types
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Farm Types
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="nav-tool-item">
-                    <a asp-controller="FarmGroup"
-                       asp-action="Index"
-                       class="text-dark @(isFarmGroupDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseFarmGroup"
-                       aria-expanded="true"
-                       aria-controls="collapseFarmGroup">
-                        <i class="fa fa-flag"></i> Farm Group Management
-                    </a>
+                    <span>
+                        <a asp-controller="FarmGroup"
+                           asp-action="Index"
+                           class="text-dark @(isFarmGroupDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseFarmGroup"
+                           aria-expanded="true"
+                           aria-controls="collapseFarmGroup">
+                            <span class="mr-2">
+                                <i class="far fa-flag"></i>
+                            </span>
+                            Farm Group Management
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
 
                     <div id="collapseFarmGroup"
                          class="collapse @(isFarmGroupDomain ? "show" : "")"
@@ -166,25 +204,38 @@
                         <div class="list-group">
                             <a asp-controller="FarmGroup"
                                asp-action="Index" class="list-group-item text-dark @(isFarmGroup?"active":"")">
-                                <i class="fa fa-angle-right"></i> Farm Group
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Farm Group
                             </a>
                             <a asp-controller="FarmGroupType"
                                asp-action="Index" class="list-group-item text-dark @(isFarmGroupType?"active":"")">
-                                <i class="fa fa-angle-right"></i> Farm Group Types
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Farm Group Types
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="nav-tool-item">
-                    <a asp-controller="Product"
-                       asp-action="Index"
-                       class="text-dark  @(isProductDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseProduct"
-                       aria-expanded="true"
-                       aria-controls="collapseProduct">
-                        <i class="fa fa-apple-alt"></i> Product Management
-                    </a>
+                    <span>
+                        <a asp-controller="Product"
+                           asp-action="Index"
+                           class="text-dark  @(isProductDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseProduct"
+                           aria-expanded="true"
+                           aria-controls="collapseProduct">
+                            <span class="mr-2">
+                                <i class="fa fa-apple-alt"></i>
+                            </span>
+                            Product Management
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
 
                     <div id="collapseProduct"
                          class="collapse @(isProductDomain ? "show" : "")"
@@ -193,11 +244,17 @@
                         <div class="list-group">
                             <a asp-controller="Product"
                                asp-action="Index" class="list-group-item text-dark @(isProduct?"active":"")">
-                                <i class="fa fa-angle-right"></i> Products
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Products
                             </a>
                             <a asp-controller="ProductCategory"
                                asp-action="Index" class="list-group-item text-dark @(isProductCategory?"active":"")">
-                                <i class="fa fa-angle-right"></i> Products Categories
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Products Categories
                             </a>
                         </div>
                     </div>
@@ -209,15 +266,22 @@
         <div class="nav-tool">
             <div class="accordion" id="navSecurityAccordion">
                 <div class="nav-tool-item">
-                    <a asp-controller="User"
-                       asp-action="Index"
-                       class="text-dark @(isUserDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseUser"
-                       aria-expanded="true"
-                       aria-controls="collapseUser">
-                        <i class="fa fa-user"></i> User Management
-                    </a>
+                    <span>
+                        <a asp-controller="User"
+                           asp-action="Index"
+                           class="text-dark @(isUserDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseUser"
+                           aria-expanded="true"
+                           aria-controls="collapseUser">
+                            <span class="mr-2">
+                                <i class="far fa-user"></i>
+                            </span>
+                            User Management
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
 
                     <div id="collapseUser"
                          class="collapse @(isUserDomain ? "show" : "")"
@@ -226,21 +290,32 @@
                         <div class="list-group">
                             <a asp-controller="User"
                                asp-action="Index" class="list-group-item text-dark @(isUser?"active":"")">
-                                <i class="fa fa-angle-right"></i> Users
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Users
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="nav-tool-item">
-                    <a asp-controller="Role"
-                       asp-action="Index"
-                       class="text-dark @(isRoleAndAuthorizationPolicyDomain ? "active" : "collapsed")"
-                       data-toggle="collapse"
-                       data-target="#collapseRole"
-                       aria-expanded="true"
-                       aria-controls="collapseRole">
-                        <i class="fa fa-user"></i> Roles & Authorization Policies
-                    </a>
+                    <span>
+                        <a asp-controller="Role"
+                           asp-action="Index"
+                           class="text-dark @(isRoleAndAuthorizationPolicyDomain ? "active" : "collapsed")"
+                           data-toggle="collapse"
+                           data-target="#collapseRole"
+                           aria-expanded="true"
+                           aria-controls="collapseRole">
+                            <span class="mr-2">
+                                <i class="far fa-user-circle"></i>
+                            </span>
+                            Roles & Authorization Policies
+                            <i class="fa fa-angle-up"></i>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                    </span>
+
 
                     <div id="collapseRole"
                          class="collapse @(isRoleAndAuthorizationPolicyDomain ? "show" : "")"
@@ -249,11 +324,17 @@
                         <div class="list-group">
                             <a asp-controller="Role"
                                asp-action="Index" class="list-group-item text-dark @(isRole?"active":"")">
-                                <i class="fa fa-angle-right"></i> Roles
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Roles
                             </a>
                             <a asp-controller="AuthorizationPolicy"
                                asp-action="Index" class="list-group-item text-dark @(isAuthorizationPolicy?"active":"")">
-                                <i class="fa fa-angle-right"></i> Authorization Policies
+                                <span class="mr-2">
+                                    <i class="fa fa-angle-right"></i>
+                                </span>
+                                Authorization Policies
                             </a>
                         </div>
                     </div>

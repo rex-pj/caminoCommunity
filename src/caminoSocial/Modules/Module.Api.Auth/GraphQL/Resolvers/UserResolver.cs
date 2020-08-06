@@ -22,6 +22,7 @@ using Camino.Core.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Core;
+using Camino.Framework.Models.Settings;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {

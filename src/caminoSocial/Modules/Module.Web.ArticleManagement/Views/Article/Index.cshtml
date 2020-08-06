@@ -14,32 +14,30 @@
     }
     @ViewData["Title"]
 </div>
-<div class="card-body">
-    <table class="table table-bordered">
-        <thead>
-            <tr class="bg-light">
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Created</th>
-                <th scope="col">Updated</th>
-                <th scope="col">Tools</th>
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Created</th>
+            <th scope="col">Updated</th>
+            <th scope="col">Tools</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var article in Model.Collections)
+            {
+                pageAuthorizeManager.SetPageAuthorizationForModel(article, Model);
+                <partial name="_ArticleRow" model="article" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">No data</td>
             </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Collections.Any())
-            {
-                foreach (var article in Model.Collections)
-                {
-                    pageAuthorizeManager.SetPageAuthorizationForModel(article, Model);
-                    <partial name="_ArticleRow" model="article" />
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="3">No data</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>
