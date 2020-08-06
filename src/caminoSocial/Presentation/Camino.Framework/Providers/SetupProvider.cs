@@ -1,5 +1,5 @@
 ﻿using Camino.Core.Constants;
-using Camino.Framework.Models;
+using Camino.Framework.Models.Settings;
 using Camino.Framework.Providers.Contracts;
 using Newtonsoft.Json;
 using System;

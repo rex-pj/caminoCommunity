@@ -1,4 +1,4 @@
-﻿namespace Camino.Framework.Models
+﻿namespace Camino.Framework.Models.Settings
 {
     public class AppSettings
     {

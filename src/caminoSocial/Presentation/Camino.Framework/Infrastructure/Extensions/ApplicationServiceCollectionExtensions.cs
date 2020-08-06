@@ -1,5 +1,5 @@
 ﻿using Camino.Framework.Infrastructure.Contracts;
-using Camino.Framework.Models;
+using Camino.Framework.Models.Settings;
 using Camino.Framework.Providers;
 using Camino.Framework.Providers.Contracts;
 using Camino.IdentityManager.Contracts.Core;

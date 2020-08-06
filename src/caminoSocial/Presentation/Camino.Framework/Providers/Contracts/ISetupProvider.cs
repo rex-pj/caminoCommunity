@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Framework.Models.Settings;
 
 namespace Camino.Framework.Providers.Contracts
 {

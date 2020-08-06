@@ -45,12 +45,12 @@ namespace Module.Web.AuthenticationManagement.Controllers
             {
                 return Json(new
                 {
-                    Items = new List<Select2Item>()
+                    Items = new List<Select2ItemViewModel>()
                 });
             }
 
             var userModels = _mapper.Map<List<UserViewModel>>(users)
-                .Select(x => new Select2Item
+                .Select(x => new Select2ItemViewModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Lastname + " " + x.Firstname

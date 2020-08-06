@@ -51,12 +51,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
             {
                 return Json(new
                 {
-                    Items = new List<Select2Item>()
+                    Items = new List<Select2ItemViewModel>()
                 });
             }
 
             var userModels = _mapper.Map<List<RoleViewModel>>(roles)
-                .Select(x => new Select2Item
+                .Select(x => new Select2ItemViewModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Name
@@ -100,16 +100,6 @@ namespace Module.Web.AuthorizationManagement.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
-        public async Task<IActionResult> Update(long id)
-        {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
-            var model = _mapper.Map<RoleViewModel>(role);
-
-            return View(model);
-        }
-
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
         public IActionResult Create(RoleViewModel model)
@@ -130,6 +120,16 @@ namespace Module.Web.AuthorizationManagement.Controllers
             role.CreatedById = LoggedUserId;
             var newId = _roleManager.CreateAsync(role);
             return RedirectToAction("Detail", new { id = newId });
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
+        public async Task<IActionResult> Update(long id)
+        {
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            var model = _mapper.Map<RoleViewModel>(role);
+
+            return View(model);
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Framework.Models.Settings;
+using Camino.Framework.Models;
 using Camino.Framework.Providers.Contracts;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
