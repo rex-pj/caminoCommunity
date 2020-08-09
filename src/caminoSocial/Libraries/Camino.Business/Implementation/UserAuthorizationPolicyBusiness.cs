@@ -7,6 +7,7 @@ using System.Linq;
 using AutoMapper;
 using LinqToDB;
 using System.Threading.Tasks;
+using Camino.Business.Dtos.General;
 
 namespace Camino.Business.Implementation
 {
@@ -34,7 +35,7 @@ namespace Camino.Business.Implementation
             _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
         }
 
-        public bool Add(long userId, short authorizationPolicyId, long loggedUserId)
+        public bool Add(long userId, long authorizationPolicyId, long loggedUserId)
         {
             if (userId <= 0 || authorizationPolicyId <= 0)
             {
@@ -80,27 +81,42 @@ namespace Camino.Business.Implementation
             return true;
         }
 
-        public AuthorizationPolicyUsersDto GetAuthoricationPolicyUsers(short id)
+        public AuthorizationPolicyUsersDto GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilterDto filter)
         {
-            var authorizationUsers = _authorizationPolicyRepository.Get(x => x.Id == id)
-                // TODO: include check
-                //.Include(x => x.AuthorizationPolicyUsers)
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var authorizationPolicy = _authorizationPolicyRepository.Get(x => x.Id == id)
                 .Select(x => new AuthorizationPolicyUsersDto
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description,
-                    AuthorizationPolicyUsers = x.AuthorizationPolicyUsers.Select(a => new UserDto()
-                    {
-                        DisplayName = a.User.DisplayName,
-                        Firstname = a.User.Firstname,
-                        Lastname = a.User.Lastname,
-                        Id = a.UserId
-                    })
+                    Description = x.Description
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Id == id);
 
-            return authorizationUsers;
+            var query = from userAuthorization in _userAuthorizationPolicyRepository.Get(x => x.AuthorizationPolicyId == id)
+                        join user in _userRepository.Table
+                        on userAuthorization.UserId equals user.Id
+                        where string.IsNullOrEmpty(search) 
+                        || user.Lastname.ToLower().Contains(search)
+                        || user.Firstname.ToLower().Contains(search)
+                        || (user.Lastname + " " + user.Firstname).ToLower().Contains(search)
+                        select new UserDto()
+                        {
+                            DisplayName = user.DisplayName,
+                            Firstname = user.Firstname,
+                            Lastname = user.Lastname,
+                            Id = user.Id
+                        };
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+            var roles = query.Skip(filter.PageSize * (filter.Page - 1))
+                            .Take(filter.PageSize).ToList();
+
+            authorizationPolicy.Collections = roles;
+            authorizationPolicy.TotalResult = filteredNumber;
+            authorizationPolicy.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+
+            return authorizationPolicy;
         }
 
         public async Task<UserAuthorizationPolicyDto> GetUserAuthoricationPolicyAsync(long userId, long policyId)

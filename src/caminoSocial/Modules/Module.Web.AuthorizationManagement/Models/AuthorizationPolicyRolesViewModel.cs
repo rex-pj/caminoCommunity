@@ -3,18 +3,16 @@ using System.Collections.Generic;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyRolesViewModel : BaseViewModel
+    public class AuthorizationPolicyRolesViewModel : PageListViewModel<RoleViewModel>
     {
-        public AuthorizationPolicyRolesViewModel()
+        public AuthorizationPolicyRolesViewModel(IEnumerable<RoleViewModel> collections) : base(collections)
         {
-            AuthorizationPolicyRoles = new List<RoleViewModel>();
+            Filter = new RoleAuthorizationPolicyFilterViewModel();
         }
 
         public short Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public byte RoleId { get; set; }
-
-        public IEnumerable<RoleViewModel> AuthorizationPolicyRoles { get; set; }
     }
 }

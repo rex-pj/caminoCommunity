@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
+using Camino.Business.Dtos.General;
+using Camino.Framework.Helpers.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -14,34 +16,44 @@ namespace Module.Web.AuthorizationManagement.Controllers
     {
         private readonly IUserAuthorizationPolicyBusiness _userAuthorizationPolicyBusiness;
         private readonly IMapper _mapper;
+        private readonly IHttpHelper _httpHelper;
         
         public UserAuthorizationPolicyController(IHttpContextAccessor httpContextAccessor, IUserAuthorizationPolicyBusiness userAuthorizationPolicyBusiness,
-            IMapper mapper) : base(httpContextAccessor)
+            IMapper mapper, IHttpHelper httpHelper) : base(httpContextAccessor)
         {
+            _httpHelper = httpHelper;
             _userAuthorizationPolicyBusiness = userAuthorizationPolicyBusiness;
             _mapper = mapper;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserAuthorizationPolicy)]
         [LoadResultAuthorizations("UserAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
-        public IActionResult Index(short id)
+        public IActionResult Index(UserAuthorizationPolicyFilterViewModel filter)
         {
-            var result = _userAuthorizationPolicyBusiness.GetAuthoricationPolicyUsers(id);
-            var authorizationUsers = _mapper.Map<AuthorizationPolicyUsersViewModel>(result);
+            var filterDto = _mapper.Map<UserAuthorizationPolicyFilterDto>(filter);
+            var authorizationUsers = _userAuthorizationPolicyBusiness.GetAuthoricationPolicyUsers(filter.Id, filterDto);
 
-            return View(authorizationUsers);
+            var authorizationUsersPage = _mapper.Map<AuthorizationPolicyUsersViewModel>(authorizationUsers);
+            authorizationUsersPage.Filter = filter;
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_UserAuthorizationPolicyTable", authorizationUsersPage);
+            }
+
+            return View(authorizationUsersPage);
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateUserAuthorizationPolicy)]
-        public IActionResult Grant(AuthorizationPolicyUsersViewModel model)
+        public IActionResult Grant(UserAuthorizationPolicyViewModel model)
         {
-            var isSucceed = _userAuthorizationPolicyBusiness.Add(model.UserId, model.Id, LoggedUserId);
+            var isSucceed = _userAuthorizationPolicyBusiness.Add(model.UserId, model.AuthorizationPolicyId, LoggedUserId);
             if (isSucceed)
             {
-                return RedirectToAction("Index", new { id = model.Id });
+                return RedirectToAction("Index", new { id = model.AuthorizationPolicyId });
             }
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.AuthorizationPolicyId });
         }
 
         [HttpPost]

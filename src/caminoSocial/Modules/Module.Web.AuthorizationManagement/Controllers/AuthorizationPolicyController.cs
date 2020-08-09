@@ -15,6 +15,8 @@ using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
+using Camino.Business.Dtos.General;
+using Camino.Framework.Helpers.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -23,34 +25,46 @@ namespace Module.Web.AuthorizationManagement.Controllers
         private readonly IAuthorizationPolicyBusiness _authorizationPolicyBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IHttpHelper _httpHelper;
+
         public AuthorizationPolicyController(IMapper mapper, IAuthorizationPolicyBusiness authorizationPolicyBusiness, IHttpContextAccessor httpContextAccessor,
-            IUserManager<ApplicationUser> userManager)
+            IUserManager<ApplicationUser> userManager, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _httpHelper = httpHelper;
             _authorizationPolicyBusiness = authorizationPolicyBusiness;
         }
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public async Task<IActionResult> Index(PagingViewModel paging)
+        public async Task<IActionResult> Index(AuthorizationPolicyFilterViewModel filter)
         {
-            var policiesPageList = _authorizationPolicyBusiness.Get(paging.Page, paging.PageSize);
+            var filterDto = _mapper.Map<AuthorizationPolicyFilterDto>(filter);
+            var policiesPageList = _authorizationPolicyBusiness.Get(filterDto);
+
             var policyModels = _mapper.Map<List<AuthorizationPolicyViewModel>>(policiesPageList.Collections);
             var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
             var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
-            policyModels.ForEach(x => {
+            policyModels.ForEach(x =>
+            {
                 x.CanViewRoleAuthorizationPolicy = canViewRoleAuthorizationPolicy;
                 x.CanViewUserAuthorizationPolicy = canViewUserAuthorizationPolicy;
             });
 
-            paging.TotalResult = policiesPageList.TotalResult;
-            paging.TotalPage = policiesPageList.TotalPage;
-            var policiesPage = new PageListViewModel<AuthorizationPolicyViewModel>(policyModels) { 
-                Paging = paging
+            var policiesPage = new PageListViewModel<AuthorizationPolicyViewModel>(policyModels)
+            {
+                Filter = filter,
+                TotalPage = policiesPageList.TotalPage,
+                TotalResult = policiesPageList.TotalResult
             };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_AuthorizationPolicyTable", policiesPage);
+            }
 
             return View(policiesPage);
         }

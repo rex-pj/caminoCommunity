@@ -66,13 +66,16 @@ namespace Camino.Business.Implementation
             return policy;
         }
 
-        public PageListDto<AuthorizationPolicyDto> Get(int page, int pageSize)
+        public PageListDto<AuthorizationPolicyDto> Get(AuthorizationPolicyFilterDto filter)
         {
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
             var query = (from policy in _authorizationPolicyRepository.Table
                          join createdBy in _userRepository.Table
                          on policy.CreatedById equals createdBy.Id
                          join updatedBy in _userRepository.Table
                          on policy.UpdatedById equals updatedBy.Id
+                         where string.IsNullOrEmpty(search) || policy.Name.ToLower().Contains(search)
+                         || (policy.Description != null && policy.Description.ToLower().Contains(search))
                          select new AuthorizationPolicyDto()
                          {
                              CreatedById = policy.CreatedById,
@@ -87,14 +90,14 @@ namespace Camino.Business.Implementation
                          });
 
             var filteredNumber = query.Select(x => x.Id).Count();
-            
-            var authorizationPolicies = query.Skip(pageSize * (page - 1))
-                                         .Take(pageSize)
+
+            var authorizationPolicies = query.Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize)
                                          .ToList();
 
             var result = new PageListDto<AuthorizationPolicyDto>(authorizationPolicies);
             result.TotalResult = filteredNumber;
-            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / pageSize);
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;
         }
 

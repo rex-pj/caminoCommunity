@@ -4,6 +4,7 @@ using Camino.Business.Dtos.Identity;
 using Camino.Data.Entities.Identity;
 using System;
 using System.Linq;
+using Camino.Business.Dtos.General;
 
 namespace Camino.Business.Implementation
 {
@@ -21,7 +22,7 @@ namespace Camino.Business.Implementation
             _roleRepository = userRepository;
         }
 
-        public bool Add(byte roleId, short authorizationPolicyId, long loggedUserId)
+        public bool Add(long roleId, long authorizationPolicyId, long loggedUserId)
         {
             if (roleId <= 0 || authorizationPolicyId <= 0)
             {
@@ -44,11 +45,10 @@ namespace Camino.Business.Implementation
                 AuthorizationPolicyId = authorizationPolicyId
             });
 
-            //_identityDbContext.SaveChanges();
             return true;
         }
 
-        public bool Delete(byte roleId, short authorizationPolicyId)
+        public bool Delete(long roleId, long authorizationPolicyId)
         {
             var role = _roleRepository.FirstOrDefault(x => x.Id == roleId);
             if (role == null)
@@ -65,30 +65,42 @@ namespace Camino.Business.Implementation
             var exist = _roleAuthorizationPolicyRepository.Get(x => x.RoleId == roleId && x.AuthorizationPolicyId == authorizationPolicyId);
 
             _roleAuthorizationPolicyRepository.Delete(exist);
-            //_identityDbContext.SaveChanges();
             return true;
         }
 
-        public AuthorizationPolicyRolesDto GetAuthoricationPolicyRoles(short id)
+        public AuthorizationPolicyRolesDto GetAuthoricationPolicyRoles(long id, RoleAuthorizationPolicyFilterDto filter)
         {
-            var authorizationUsers = _authorizationPolicyRepository.Get(x => x.Id == id)
-                // TODO: include check
-                //.Include(x => x.AuthorizationPolicyRoles)
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var authorizationPolicy = _authorizationPolicyRepository.Get(x => x.Id == id)
                 .Select(x => new AuthorizationPolicyRolesDto
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description,
-                    AuthorizationPolicyRoles = x.AuthorizationPolicyRoles.Select(a => new RoleDto()
-                    {
-                        Id = a.RoleId,
-                        Name = a.Role.Name,
-                        Description = a.Role.Description
-                    })
+                    Description = x.Description
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Id == id);
 
-            return authorizationUsers;
+            var query = from roleAuthorization in _roleAuthorizationPolicyRepository.Get(x => x.AuthorizationPolicyId == id)
+                join role in _roleRepository.Table
+                on roleAuthorization.RoleId equals role.Id
+                where string.IsNullOrEmpty(search) || role.Name.ToLower().Contains(search)
+                || (role.Description != null && role.Description.ToLower().Contains(search))
+                select new RoleDto()
+                {
+                    Id = role.Id,
+                    Name = role.Name,
+                    Description = role.Description
+                };
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+            var roles = query.Skip(filter.PageSize * (filter.Page - 1))
+                            .Take(filter.PageSize).ToList();
+
+            authorizationPolicy.Collections = roles;
+            authorizationPolicy.TotalResult = filteredNumber;
+            authorizationPolicy.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+
+            return authorizationPolicy;
         }
     }
 }

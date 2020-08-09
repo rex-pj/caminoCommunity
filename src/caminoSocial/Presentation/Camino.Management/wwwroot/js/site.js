@@ -9,9 +9,11 @@
         return;
     }
 
+    var method = select2.attr("method") ? select2.attr("method") : "get";
     select2.select2({
         ajax: {
             url: select2.data("url"),
+            type: method,
             dataType: 'json',
             processResults: function (data) {
                 if (data === null || data === undefined) {
@@ -30,7 +32,26 @@
     });
 }
 
-$(document).ready(function () {
+$.fn.filterDataTable = function () {
+    $(this).on('submit', function (e) {
+        e.preventDefault();
+        var filterForm = $(this);
+        var target = $(filterForm.data('target'));
+        var loading = target.find('.loading').clone();
+        loading.removeClass('d-none');
+
+        target.html(loading);
+        var data = filterForm.serializeArray();
+        var url = filterForm.attr('action');
+        $.get(url, data, function (response) {
+            loading.addClass('d-none');
+            target.append(response);
+            $(".common-tooltip").tooltip();
+        });
+    });
+}
+
+$(function () {
     $(".common-tooltip").tooltip();
-    $(".select2-remote-ajax").select2Ajax({ dropdownParent: $("#grantRoleModal") });
+    $('.filter-form').filterDataTable();
 });

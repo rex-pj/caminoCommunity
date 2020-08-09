@@ -1,4 +1,6 @@
-﻿using Camino.Framework.Infrastructure.Contracts;
+﻿using Camino.Framework.Helpers;
+using Camino.Framework.Helpers.Contracts;
+using Camino.Framework.Infrastructure.Contracts;
 using Camino.Framework.Models.Settings;
 using Camino.Framework.Providers;
 using Camino.Framework.Providers.Contracts;
@@ -20,7 +22,8 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
 
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>();
-            services.AddTransient<IPageAuthorizeManager, PageAuthorizeManager>();
+            services.AddTransient<IPageAuthorizeManager, PageAuthorizeManager>()
+                .AddTransient<IHttpHelper, HttpHelper>();
 
             services
                 .AddSingleton<IFileProvider, FileProvider>()

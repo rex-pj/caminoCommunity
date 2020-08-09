@@ -7,10 +7,10 @@ namespace Camino.Business.Dtos.General
         public PageListDto(IEnumerable<T> collections)
         {
             Collections = collections;
+            Filter = new BaseFilterDto();
         }
 
-        public int PageSize { get; set; }
-        public int CurrentPage { get; set; }
+        public BaseFilterDto Filter { get; set; }
         public int TotalResult { get; set; }
         public int TotalPage { get; set; }
         public IEnumerable<T> Collections { get; set; }

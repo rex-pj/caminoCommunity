@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
-using Camino.Framework.Models;
 using Camino.IdentityManager.Models;
 using Module.Web.AuthorizationManagement.Models;
 
@@ -23,6 +23,12 @@ namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
             CreateMap<ApplicationRole, RoleViewModel>();
             CreateMap<UserDto, UserViewModel>();
             CreateMap<UserViewModel, UserDto>();
+
+            CreateMap<AuthorizationPolicyFilterViewModel, AuthorizationPolicyFilterDto>();
+            CreateMap<RoleAuthorizationPolicyFilterViewModel, RoleAuthorizationPolicyFilterDto>();
+            CreateMap<RoleFilterViewModel, RoleFilterDto>();
+
+            CreateMap<UserAuthorizationPolicyFilterViewModel, UserAuthorizationPolicyFilterDto>();
         }
     }
 }

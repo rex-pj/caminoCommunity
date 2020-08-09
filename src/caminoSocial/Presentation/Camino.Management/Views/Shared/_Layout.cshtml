@@ -14,29 +14,30 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3 col-md-2 px-0 collapse show" id="mainNavigation">
+            <div class="col-12 col-sm-3 col-md-2 px-0 collapse show" id="mainNavigation">
                 @await Component.InvokeAsync("MainNavigation")
             </div>
-            <div class="col px-0">
+            <div class="col px-0 main-col">
                 @await Component.InvokeAsync("TopNavigation")
 
-                <div class="mt-3 px-3">
-                    <span class="text-dark">
-                        @RenderSection("Title", required: false)
-                    </span>
-                </div>
+                <div class="main-body">
+                    <div class="mt-3 px-3">
+                        <span class="text-dark">
+                            @RenderSection("BreadCrumb", required: false)
+                        </span>
+                    </div>
 
-                <div class="px-3">
-                    <div class="card main mt-3 mb-3 px-0 box-shadow">
-                        @RenderBody()
+                    <div class="px-3">
+                        <div class="card mt-3 mb-3 px-0 box-shadow">
+                            @RenderBody()
+                        </div>
                     </div>
                 </div>
-
+                
+                @await Component.InvokeAsync("Footer")
             </div>
         </div>
     </div>
-
-    @await Component.InvokeAsync("Footer")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/select2/js/select2.full.min.js"></script>

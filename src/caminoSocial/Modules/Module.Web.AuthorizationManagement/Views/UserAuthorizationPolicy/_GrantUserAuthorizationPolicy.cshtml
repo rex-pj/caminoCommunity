@@ -1,17 +1,17 @@
-﻿@model AuthorizationPolicyUsersViewModel
+﻿@model UserAuthorizationPolicyViewModel
 
-<div class="modal fade" id="grantRoleModal" tabindex="-1" role="dialog" aria-labelledby="grantRoleLabel" aria-hidden="true">
+<div class="modal fade" id="grantUserModal" tabindex="-1" role="dialog" aria-labelledby="grantUserLabel" aria-hidden="true">
     <form asp-action="Grant" asp-controller="UserAuthorizationPolicy" method="post">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="grantRoleLabel">Grant authorization policy @Model.Name for users</h5>
+                    <h5 class="modal-title" id="grantUserLabel">Grant authorization policy @Model.AuthorizationPolicyName for user</h5>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="AuthorizationPolicyId" />
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">User:</label>
-                        <select class="select2-remote-ajax" asp-for="UserId" data-url="@Url.Action("Search", "User")"></select>
+                        <select class="select2-remote-ajax" asp-for="UserId" data-url="@Url.Action("Search", "User", new { currentUserIds = Model.CurrentUserIds })"></select>
                     </div>
                 </div>
                 <div class="modal-footer">

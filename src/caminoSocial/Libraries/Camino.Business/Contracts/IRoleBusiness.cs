@@ -1,4 +1,5 @@
-﻿using Camino.Business.Dtos.Identity;
+﻿using Camino.Business.Dtos.General;
+using Camino.Business.Dtos.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,9 +12,9 @@ namespace Camino.Business.Contracts
         Task<RoleDto> FindAsync(long id);
         Task<RoleDto> GetByNameAsync(string name);
         Task<bool> UpdateAsync(RoleDto roleModel);
-        Task<List<RoleDto>> GetAsync();
+        Task<PageListDto<RoleDto>> GetAsync(RoleFilterDto filter);
         RoleDto FindByName(string name);
         Task<RoleDto> FindByNameAsync(string name);
-        List<RoleDto> Search(string query = "", int page = 1, int pageSize = 10);
+        List<RoleDto> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10);
     }
 }

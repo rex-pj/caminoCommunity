@@ -199,7 +199,7 @@ namespace Camino.Business.Implementation.UserBusiness
             return existUser;
         }
 
-        public List<UserFullDto> Search(string query = "", int page = 1, int pageSize = 10)
+        public List<UserFullDto> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -208,10 +208,11 @@ namespace Camino.Business.Implementation.UserBusiness
 
             query = query.ToLower();
 
+            var hasCurrentUserIds = currentUserIds != null && currentUserIds.Any();
             var data = _userRepository.Get(x => string.IsNullOrEmpty(query) || x.Lastname.ToLower().Contains(query)
-                || x.Firstname.ToLower().Contains(query) || x.DisplayName.ToLower().Contains(query));
+                || x.Firstname.ToLower().Contains(query) || x.DisplayName.ToLower().Contains(query))
+                .Where(x => !hasCurrentUserIds || !currentUserIds.Contains(x.Id));
 
-            data = data.Skip(0).Take(10);
             if (pageSize > 0)
             {
                 data = data.Skip((page - 1) * pageSize).Take(pageSize);

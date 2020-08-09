@@ -14,6 +14,8 @@ using Camino.IdentityManager.Models;
 using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Core.Enums;
+using Camino.Business.Dtos.General;
+using Camino.Framework.Helpers.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -22,10 +24,14 @@ namespace Module.Web.AuthorizationManagement.Controllers
         private readonly IRoleBusiness _roleBusiness;
         private readonly IMapper _mapper;
         private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
-        public RoleController(IMapper mapper, IRoleBusiness roleBusiness, IHttpContextAccessor httpContextAccessor, IApplicationRoleManager<ApplicationRole> roleManager)
+        private readonly IHttpHelper _httpHelper;
+
+        public RoleController(IMapper mapper, IRoleBusiness roleBusiness, IHttpContextAccessor httpContextAccessor,
+            IApplicationRoleManager<ApplicationRole> roleManager, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _mapper = mapper;
+            _httpHelper = httpHelper;
             _roleBusiness = roleBusiness;
             _roleManager = roleManager;
         }
@@ -33,20 +39,31 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(RoleFilterViewModel filter)
         {
-            var roles = await _roleBusiness.GetAsync();
-            var roleModels = _mapper.Map<List<RoleViewModel>>(roles);
-            var rolePage = new PageListViewModel<RoleViewModel>(roleModels);
+            var filterDto = _mapper.Map<RoleFilterDto>(filter);
+            var rolePageList = await _roleBusiness.GetAsync(filterDto);
+            var roleModels = _mapper.Map<List<RoleViewModel>>(rolePageList.Collections);
+            var rolePage = new PageListViewModel<RoleViewModel>(roleModels)
+            {
+                Filter = filter,
+                TotalPage = rolePageList.TotalPage,
+                TotalResult = rolePageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_RoleTable", rolePage);
+            }
 
             return View(rolePage);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
-        public IActionResult Search(string q)
+        public IActionResult Search(string q, List<long> currentRoleIds)
         {
-            var roles = _roleBusiness.Search(q);
+            var roles = _roleBusiness.Search(q, currentRoleIds);
             if (roles == null || !roles.Any())
             {
                 return Json(new

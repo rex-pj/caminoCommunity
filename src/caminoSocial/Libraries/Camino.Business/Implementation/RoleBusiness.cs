@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Business.Dtos.General;
 
 namespace Camino.Business.Implementation
 {
@@ -78,7 +79,7 @@ namespace Camino.Business.Implementation
             return existRole;
         }
 
-        public List<RoleDto> Search(string query = "", int page = 1, int pageSize = 10)
+        public List<RoleDto> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -87,9 +88,10 @@ namespace Camino.Business.Implementation
 
             query = query.ToLower();
 
-            var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query));
+            var hasCurrentRoleIds = currentRoleIds != null && currentRoleIds.Any();
+            var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query))
+                .Where(x => !hasCurrentRoleIds || !currentRoleIds.Contains(x.Id));
 
-            data = data.Skip(page).Take(pageSize);
             if (pageSize > 0)
             {
                 data = data.Skip((page - 1) * pageSize).Take(pageSize);
@@ -131,13 +133,17 @@ namespace Camino.Business.Implementation
             return _mapper.Map<RoleDto>(exist);
         }
 
-        public async Task<List<RoleDto>> GetAsync()
+        public async Task<PageListDto<RoleDto>> GetAsync(RoleFilterDto filter)
         {
-            var roles = await (from role in _roleRepository.Table
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var query = (from role in _roleRepository.Table
                          join createdBy in _userRepository.Table
                          on role.CreatedById equals createdBy.Id
                          join updatedBy in _userRepository.Table
-                         on role.UpdatedById equals updatedBy.Id select new RoleDto
+                         on role.UpdatedById equals updatedBy.Id
+                        where string.IsNullOrEmpty(search) || role.Name.ToLower().Contains(search)
+                        || (role.Description != null && role.Description.ToLower().Contains(search))
+                        select new RoleDto
                          {
                              Id = role.Id,
                              Name = role.Name,
@@ -148,9 +154,18 @@ namespace Camino.Business.Implementation
                              UpdatedById = role.UpdatedById,
                              UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
                              UpdatedDate = role.UpdatedDate
-                         }).ToListAsync();
+                         });
 
-            return roles;
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var roles = await query.Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize)
+                                         .ToListAsync();
+
+            var result = new PageListDto<RoleDto>(roles);
+            result.TotalResult = filteredNumber;
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+            return result;
         }
 
         public async Task<bool> UpdateAsync(RoleDto roleModel)

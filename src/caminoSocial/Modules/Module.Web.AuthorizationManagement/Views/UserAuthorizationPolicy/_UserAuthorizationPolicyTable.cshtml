@@ -1,0 +1,29 @@
+﻿@model AuthorizationPolicyUsersViewModel
+
+<ul class="list-group list-group-flush">
+    @if (Model != null && Model.Collections.Any())
+    {
+        foreach (var user in Model.Collections)
+        {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col align-self-start">
+                        <span>@user.Lastname @user.Firstname (@user.DisplayName)</span>
+                    </div>
+                    <div class="col align-self-end text-right">
+                        <form asp-action="Ungrant" asp-controller="UserAuthorizationPolicy" method="post">
+                            <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
+                            <input type="hidden" name="UserId" value="@user.Id" />
+                            @if (Model.CanDelete)
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </li>
+        }
+    }
+</ul>

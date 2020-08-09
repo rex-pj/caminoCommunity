@@ -38,9 +38,9 @@ namespace Module.Web.AuthenticationManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
-        public IActionResult Search(string q)
+        public IActionResult Search(string q, List<long> currentUserIds)
         {
-            var users = _userBusiness.Search(q);
+            var users = _userBusiness.Search(q, currentUserIds);
             if (users == null || !users.Any())
             {
                 return Json(new

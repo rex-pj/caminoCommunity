@@ -13,8 +13,7 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
-    background-color: #F1F9FF;
+    background-color: #f8f9fa;
 }
 
 .box-shadow {
@@ -61,6 +60,12 @@ body {
     margin-right: 0;
 }
 
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
 #navTab {
     border-bottom: 0;
 }
@@ -71,23 +76,17 @@ body {
 
     #navTab .nav-link {
         font-weight: 600;
-        color: #343a40;
+        color: #FFFFFF;
         height: 51px;
         line-height: 51px;
         padding-top: 0;
         padding-bottom: 0;
         border-radius: 0;
         border: 0;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-    }
-
-    #navTab .nav-item:first-child .nav-link {
-        border-top-left-radius: 0;
     }
 
     #navTab .nav-link.active {
-        background-color: #F5F9FC;
+        background-color: #343a40;
         border-bottom: 0;
         color: #28a745;
     }
@@ -112,7 +111,7 @@ body {
         }
 
         .nav-tool .nav-tool-item > span :hover {
-            background-color: #CFF6FF;
+            background-color: #212529;
         }
 
         .nav-tool .nav-tool-item > span > a.collapsed {
@@ -125,7 +124,7 @@ body {
             top: 50%;
             bottom: 50%;
             margin: -5px auto 0  auto;
-            right: 5px;
+            right: 15px;
         }
 
         .nav-tool .nav-tool-item > span .fa-angle-up {
@@ -161,18 +160,26 @@ body {
             display: none;
         }
 
+    .nav-tool .list-group {
+        border-radius: 0;
+    }
+
     .nav-tool .list-group-item {
         border-radius: 0;
         border: 0;
         font-size: 14px;
         padding: 0.75rem 0.75rem;
-        background-color: #E1F1FF;
+        background-color: transparent;
     }
 
         .nav-tool .list-group-item:hover,
         .nav-tool .list-group-item.active:hover {
             text-decoration: none;
-            background-color: #CFF6FF;
+            background-color: #212529;
+        }
+
+        .nav-tool .list-group-item:hover {
+            color: #6c757d !important;
         }
 
         .nav-tool .list-group-item.active {
@@ -184,11 +191,24 @@ body {
     border: 0;
 }
 
+.table-fixed-layout{
+    table-layout: fixed;
+}
+
+.data-table .spinner-grow{
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    display: block;
+}
+
+.main-body {
+    height: calc(100% - 100px - 2rem);
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 .footer {
-    position: absolute;
-    bottom: 0;
     width: 100%;
     white-space: nowrap;
     line-height: 45px;

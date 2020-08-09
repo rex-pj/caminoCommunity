@@ -7,7 +7,7 @@ namespace Camino.Business.Contracts
     public interface IAuthorizationPolicyBusiness
     {
         long Add(AuthorizationPolicyDto authorizationPolicy);
-        PageListDto<AuthorizationPolicyDto> Get(int page, int pageSize);
+        PageListDto<AuthorizationPolicyDto> Get(AuthorizationPolicyFilterDto filter);
         AuthorizationPolicyDto Find(short id);
         AuthorizationPolicyDto Update(AuthorizationPolicyDto policy);
         Task<AuthorizationPolicyDto> FindByNameAsync(string name);
