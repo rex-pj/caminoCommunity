@@ -1,4 +1,4 @@
-﻿@model AuthorizationPolicyUsersViewModel
+﻿@model AuthorizationPolicyUsersModel
 @{
     ViewData["Title"] = "Authorization policy users management";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -48,7 +48,7 @@
 
 @if (Model.CanCreate)
 {
-    var userAuthorizationPolicy = new UserAuthorizationPolicyViewModel
+    var userAuthorizationPolicy = new UserAuthorizationPolicyModel
     {
         AuthorizationPolicyId = Model.Id,
         AuthorizationPolicyName = Model.Name,

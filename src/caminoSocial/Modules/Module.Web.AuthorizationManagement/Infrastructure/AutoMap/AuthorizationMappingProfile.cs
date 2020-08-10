@@ -10,25 +10,25 @@ namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
     {
         public AuthorizationMappingProfile()
         {
-            CreateMap<RoleDto, RoleViewModel>();
-            CreateMap<RoleViewModel, RoleDto>();
-            CreateMap<AuthorizationPolicyDto, AuthorizationPolicyViewModel>();
-            CreateMap<AuthorizationPolicyViewModel, AuthorizationPolicyDto>();
-            CreateMap<AuthorizationPolicyUsersDto, AuthorizationPolicyUsersViewModel>();
-            CreateMap<AuthorizationPolicyRolesDto, AuthorizationPolicyRolesViewModel>();
+            CreateMap<RoleDto, RoleModel>();
+            CreateMap<RoleModel, RoleDto>();
+            CreateMap<AuthorizationPolicyDto, AuthorizationPolicyModel>();
+            CreateMap<AuthorizationPolicyModel, AuthorizationPolicyDto>();
+            CreateMap<AuthorizationPolicyUsersDto, AuthorizationPolicyUsersModel>();
+            CreateMap<AuthorizationPolicyRolesDto, AuthorizationPolicyRolesModel>();
 
             CreateMap<UserRoleAuthorizationPoliciesDto, ApplicationUserRoleAuthorizationPolicy>();
             CreateMap<RoleAuthorizationPoliciesDto, ApplicationRole>();
             CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
-            CreateMap<ApplicationRole, RoleViewModel>();
-            CreateMap<UserDto, UserViewModel>();
-            CreateMap<UserViewModel, UserDto>();
+            CreateMap<ApplicationRole, RoleModel>();
+            CreateMap<UserDto, UserModel>();
+            CreateMap<UserModel, UserDto>();
 
-            CreateMap<AuthorizationPolicyFilterViewModel, AuthorizationPolicyFilterDto>();
-            CreateMap<RoleAuthorizationPolicyFilterViewModel, RoleAuthorizationPolicyFilterDto>();
-            CreateMap<RoleFilterViewModel, RoleFilterDto>();
+            CreateMap<AuthorizationPolicyFilterModel, AuthorizationPolicyFilterDto>();
+            CreateMap<RoleAuthorizationPolicyFilterModel, RoleAuthorizationPolicyFilterDto>();
+            CreateMap<RoleFilterModel, RoleFilterDto>();
 
-            CreateMap<UserAuthorizationPolicyFilterViewModel, UserAuthorizationPolicyFilterDto>();
+            CreateMap<UserAuthorizationPolicyFilterModel, UserAuthorizationPolicyFilterDto>();
         }
     }
 }

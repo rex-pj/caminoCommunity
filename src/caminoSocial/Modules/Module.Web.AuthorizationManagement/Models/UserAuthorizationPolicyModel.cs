@@ -2,11 +2,11 @@
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class RoleAuthorizationPolicyViewModel
+    public class UserAuthorizationPolicyModel
     {
-        public long RoleId { get; set; }
+        public long UserId { get; set; }
         public string AuthorizationPolicyName { get; set; }
         public long AuthorizationPolicyId { get; set; }
-        public IEnumerable<long> CurrentRoleIds { get; set; }
+        public IEnumerable<long> CurrentUserIds { get; set; }
     }
 }

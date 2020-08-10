@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.ArticleManagement.Models
 {
-    public class ArticleViewModel : BaseViewModel
+    public class ArticleModel : BaseModel
     {
-        public ArticleViewModel()
+        public ArticleModel()
         {
 
         }

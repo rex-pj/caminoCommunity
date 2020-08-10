@@ -39,12 +39,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public async Task<IActionResult> Index(RoleFilterViewModel filter)
+        public async Task<IActionResult> Index(RoleFilterModel filter)
         {
             var filterDto = _mapper.Map<RoleFilterDto>(filter);
             var rolePageList = await _roleBusiness.GetAsync(filterDto);
-            var roleModels = _mapper.Map<List<RoleViewModel>>(rolePageList.Collections);
-            var rolePage = new PageListViewModel<RoleViewModel>(roleModels)
+            var roleModels = _mapper.Map<List<RoleModel>>(rolePageList.Collections);
+            var rolePage = new PageListModel<RoleModel>(roleModels)
             {
                 Filter = filter,
                 TotalPage = rolePageList.TotalPage,
@@ -68,12 +68,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
             {
                 return Json(new
                 {
-                    Items = new List<Select2ItemViewModel>()
+                    Items = new List<Select2ItemModel>()
                 });
             }
 
-            var userModels = _mapper.Map<List<RoleViewModel>>(roles)
-                .Select(x => new Select2ItemViewModel
+            var userModels = _mapper.Map<List<RoleModel>>(roles)
+                .Select(x => new Select2ItemModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Name
@@ -99,7 +99,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<RoleViewModel>(role);
+                var model = _mapper.Map<RoleModel>(role);
                 return View(model);
             }
             catch (Exception)
@@ -112,14 +112,14 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         public IActionResult Create()
         {
-            var model = new RoleViewModel();
+            var model = new RoleModel();
 
             return View(model);
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public IActionResult Create(RoleViewModel model)
+        public IActionResult Create(RoleModel model)
         {
             if (model.Id > 0)
             {
@@ -144,14 +144,14 @@ namespace Module.Web.AuthorizationManagement.Controllers
         public async Task<IActionResult> Update(long id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
-            var model = _mapper.Map<RoleViewModel>(role);
+            var model = _mapper.Map<RoleModel>(role);
 
             return View(model);
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
-        public IActionResult Update(RoleViewModel model)
+        public IActionResult Update(RoleModel model)
         {
             if (model.Id <= 0)
             {

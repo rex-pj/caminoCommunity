@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.ArticleManagement.Models
 {
-    public class ArticleCategoryViewModel : BaseViewModel
+    public class ArticleCategoryModel : BaseModel
     {
-        public ArticleCategoryViewModel()
+        public ArticleCategoryModel()
         {
             SelectCategories = new List<SelectListItem>();
         }

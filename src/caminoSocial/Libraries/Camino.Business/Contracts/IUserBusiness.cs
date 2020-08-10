@@ -19,7 +19,7 @@ namespace Camino.Business.Contracts
         Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model);
         Task<bool> ActiveAsync(long id);
         Task<UserDto> UpdateAsync(UserDto user);
-        List<UserFullDto> GetFull();
+        Task<PageListDto<UserFullDto>> GetAsync(UserFilterDto filter);
         List<UserFullDto> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10);
         IEnumerable<UserRoleDto> GetUserRoles(long userd);
     }

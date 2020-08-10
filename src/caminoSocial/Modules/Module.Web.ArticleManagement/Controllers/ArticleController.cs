@@ -36,8 +36,8 @@ namespace Module.Web.ArticleManagement.Controllers
         public IActionResult Index()
         {
             var articles = _articleBusiness.GetFull();
-            var articleModels = _mapper.Map<List<ArticleViewModel>>(articles);
-            var articlePage = new PageListViewModel<ArticleViewModel>(articleModels);
+            var articleModels = _mapper.Map<List<ArticleModel>>(articles);
+            var articlePage = new PageListModel<ArticleModel>(articleModels);
 
             return View(articlePage);
         }
@@ -59,7 +59,7 @@ namespace Module.Web.ArticleManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<ArticleViewModel>(article);
+                var model = _mapper.Map<ArticleModel>(article);
                 return View(model);
             }
             catch (Exception)
@@ -72,7 +72,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new ArticleViewModel()
+            var model = new ArticleModel()
             {
                 SelectCategories = _articleCategoryBusiness
                 .Get()
@@ -91,7 +91,7 @@ namespace Module.Web.ArticleManagement.Controllers
         public IActionResult Update(int id)
         {
             var article = _articleBusiness.Find(id);
-            var model = _mapper.Map<ArticleViewModel>(article);
+            var model = _mapper.Map<ArticleModel>(article);
 
             model.SelectCategories = _articleCategoryBusiness
                 .Get()
@@ -107,7 +107,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public IActionResult Create(ArticleViewModel model)
+        public IActionResult Create(ArticleModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
-        public IActionResult Update(ArticleViewModel model)
+        public IActionResult Update(ArticleModel model)
         {
             if (!ModelState.IsValid)
             {

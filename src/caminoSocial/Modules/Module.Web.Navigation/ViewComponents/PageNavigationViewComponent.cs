@@ -6,7 +6,7 @@ namespace Module.Web.Navigation.ViewComponents
 {
     public class PageNavigationViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(PageListViewModel paging)
+        public async Task<IViewComponentResult> InvokeAsync(PageListModel paging)
         {
             return await Task.FromResult(View(paging));
         }

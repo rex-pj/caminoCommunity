@@ -39,7 +39,7 @@ namespace Camino.Framework.Attributes
             var viewModel = isViewResult ? (context.Result as ViewResult).Model
                 : (context.Result as PartialViewResult).Model;
 
-            if (!(viewModel is BaseViewModel))
+            if (!(viewModel is BaseModel))
             {
                 await next();
             }
@@ -55,7 +55,7 @@ namespace Camino.Framework.Attributes
             var requestServices = httpContext.RequestServices;
             var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
             var numberOfPolicies = policies.Length;
-            var model = viewModel as BaseViewModel;
+            var model = viewModel as BaseModel;
             for (int i = 0; i < numberOfPolicies; i++)
             {
                 var policyMethod = _policyMethods[i].ToString();

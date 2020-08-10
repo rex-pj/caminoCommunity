@@ -33,8 +33,8 @@ namespace Module.Web.ArticleManagement.Controllers
         public IActionResult Index()
         {
             var categories = _articleCategoryBusiness.GetFull();
-            var categoryModels = _mapper.Map<List<ArticleCategoryViewModel>>(categories);
-            var categoryPage = new PageListViewModel<ArticleCategoryViewModel>(categoryModels);
+            var categoryModels = _mapper.Map<List<ArticleCategoryModel>>(categories);
+            var categoryPage = new PageListModel<ArticleCategoryModel>(categoryModels);
 
             return View(categoryPage);
         }
@@ -56,7 +56,7 @@ namespace Module.Web.ArticleManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<ArticleCategoryViewModel>(category);
+                var model = _mapper.Map<ArticleCategoryModel>(category);
                 return View(model);
             }
             catch (Exception)
@@ -68,7 +68,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create()
         {
-            var model = new ArticleCategoryViewModel()
+            var model = new ArticleCategoryModel()
             {
                 SelectCategories = _articleCategoryBusiness
                 .Get()
@@ -86,7 +86,7 @@ namespace Module.Web.ArticleManagement.Controllers
         public IActionResult Update(int id)
         {
             var category = _articleCategoryBusiness.Find(id);
-            var model = _mapper.Map<ArticleCategoryViewModel>(category);
+            var model = _mapper.Map<ArticleCategoryModel>(category);
 
             if (category.ParentId.HasValue)
             {
@@ -105,7 +105,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
-        public IActionResult Create(ArticleCategoryViewModel model)
+        public IActionResult Create(ArticleCategoryModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
             var exist = _articleCategoryBusiness.FindByName(model.Name);
@@ -123,7 +123,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
-        public IActionResult Update(ArticleCategoryViewModel model)
+        public IActionResult Update(ArticleCategoryModel model)
         {
             var category = _mapper.Map<ArticleCategoryDto>(model);
             if (category.Id <= 0)

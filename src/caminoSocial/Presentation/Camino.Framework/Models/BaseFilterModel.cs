@@ -1,8 +1,8 @@
 ﻿namespace Camino.Framework.Models
 {
-    public class BaseFilterViewModel
+    public class BaseFilterModel
     {
-        public BaseFilterViewModel()
+        public BaseFilterModel()
         {
             Page = 1;
             PageSize = 10;

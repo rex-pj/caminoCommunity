@@ -1,5 +1,4 @@
-﻿@model PageListViewModel<AuthorizationPolicyViewModel>
-@inject IPageAuthorizeManager pageAuthorizeManager
+﻿@model PageListModel<AuthorizationPolicyModel>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -16,7 +15,7 @@
         {
             foreach (var policy in Model.Collections)
             {
-                pageAuthorizeManager.SetPageAuthorizationForModel(policy, Model);
+                policy.SetPageAuthorizationForModel(Model);
                 <partial name="_AuthorizationPolicyRow" model="policy" />
             }
         }

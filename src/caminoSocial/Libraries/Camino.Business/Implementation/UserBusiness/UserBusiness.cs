@@ -232,27 +232,98 @@ namespace Camino.Business.Implementation.UserBusiness
             return users;
         }
 
-        public List<UserFullDto> GetFull()
+        public async Task<PageListDto<UserFullDto>> GetAsync(UserFilterDto filter)
         {
-            var users = _userRepository.Get()
-                .Select(x => new UserFullDto()
-                {
-                    Id = x.Id,
-                    Email = x.Email,
-                    Address = x.UserInfo.Address,
-                    Lastname = x.Lastname,
-                    Firstname = x.Firstname,
-                    BirthDate = x.UserInfo.BirthDate,
-                    IsEmailConfirmed = x.IsEmailConfirmed,
-                    PhoneNumber = x.UserInfo.PhoneNumber,
-                    GenderLabel = x.UserInfo.Gender.Name,
-                    IsActived = x.IsActived,
-                    StatusLabel = x.Status.Name,
-                    CountryName = x.UserInfo.Country.Name
-                })
-                .ToList();
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var query = (from user in _userRepository.Table
+                         join userInfo in _userInfoRepository.Table
+                         on user.Id equals userInfo.Id
+                         where (string.IsNullOrEmpty(search)
+                         || user.Lastname.ToLower().Contains(search)
+                         || user.Firstname.ToLower().Contains(search)
+                         || (user.Lastname + " " + user.Firstname).ToLower().Contains(search)
+                         || user.Email.Contains(search)
+                         || user.DisplayName.ToLower().Contains(search))
 
-            return users;
+                         && (!filter.CreatedById.HasValue || user.CreatedById == filter.CreatedById)
+                         && (!filter.UpdatedById.HasValue || user.UpdatedById == filter.UpdatedById)
+                         && (!filter.StatusId.HasValue || user.StatusId == filter.StatusId)
+                         && (!filter.IsActived.HasValue || user.IsActived == filter.IsActived)
+
+                         && (!filter.GenderId.HasValue || userInfo.GenderId == filter.GenderId)
+                         && (!filter.CountryId.HasValue || userInfo.CountryId == filter.CountryId)
+                         && (string.IsNullOrEmpty(filter.PhoneNumber) || userInfo.PhoneNumber.Contains(filter.PhoneNumber))
+                         && (string.IsNullOrEmpty(filter.Address) || userInfo.Address.Contains(filter.Address))
+                         select new UserFullDto()
+                         {
+                             Id = user.Id,
+                             Email = user.Email,
+                             Address = user.UserInfo.Address,
+                             Lastname = user.Lastname,
+                             Firstname = user.Firstname,
+                             CreatedDate = user.CreatedDate,
+                             UpdatedDate = user.UpdatedDate,
+                             BirthDate = user.UserInfo.BirthDate,
+                             IsEmailConfirmed = user.IsEmailConfirmed,
+                             PhoneNumber = user.UserInfo.PhoneNumber,
+                             GenderLabel = user.UserInfo.Gender.Name,
+                             IsActived = user.IsActived,
+                             StatusLabel = user.Status.Name,
+                             CountryName = user.UserInfo.Country.Name
+                         });
+
+            // Filter by birthdate
+            if (filter.BirthDateFrom.HasValue && filter.BirthDateTo.HasValue)
+            {
+                query = query.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= filter.BirthDateTo);
+            }
+            else if (filter.BirthDateTo.HasValue)
+            {
+                query = query.Where(x => x.BirthDate <= filter.BirthDateTo);
+            }
+            else if (filter.BirthDateFrom.HasValue)
+            {
+                query = query.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= DateTime.UtcNow);
+            }
+
+            // Filter by register date/ created date
+            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
+            {
+                query = query.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateTo.HasValue)
+            {
+                query = query.Where(x => x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateFrom.HasValue)
+            {
+                query = query.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+            }
+
+            // Filter by updated date
+            if (filter.UpdatedDateFrom.HasValue && filter.UpdatedDateTo.HasValue)
+            {
+                query = query.Where(x => x.UpdatedDate >= filter.UpdatedDateFrom && x.UpdatedDate <= filter.UpdatedDateTo);
+            }
+            else if (filter.UpdatedDateTo.HasValue)
+            {
+                query = query.Where(x => x.UpdatedDate <= filter.UpdatedDateTo);
+            }
+            else if (filter.UpdatedDateFrom.HasValue)
+            {
+                query = query.Where(x => x.UpdatedDate >= filter.UpdatedDateFrom && x.UpdatedDate <= DateTime.UtcNow);
+            }
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var users = await query.Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize)
+                                         .ToListAsync();
+
+            var result = new PageListDto<UserFullDto>(users);
+            result.TotalResult = filteredNumber;
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+            return result;
         }
         #endregion
     }

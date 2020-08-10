@@ -27,12 +27,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRoleAuthorizationPolicy)]
         [LoadResultAuthorizations("RoleAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
-        public IActionResult Index(RoleAuthorizationPolicyFilterViewModel filter)
+        public IActionResult Index(RoleAuthorizationPolicyFilterModel filter)
         {
             var filterDto = _mapper.Map<RoleAuthorizationPolicyFilterDto>(filter);
             var authorizationRoles = _roleAuthorizationPolicyBusiness.GetAuthoricationPolicyRoles(filter.Id, filterDto);
 
-            var authorizationRolesPage = _mapper.Map<AuthorizationPolicyRolesViewModel>(authorizationRoles);
+            var authorizationRolesPage = _mapper.Map<AuthorizationPolicyRolesModel>(authorizationRoles);
             authorizationRolesPage.Filter = filter;
 
             if (_httpHelper.IsAjaxRequest(Request))
@@ -45,7 +45,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateRoleAuthorizationPolicy)]
-        public IActionResult Grant(RoleAuthorizationPolicyViewModel model)
+        public IActionResult Grant(RoleAuthorizationPolicyModel model)
         {
             var isSucceed = _roleAuthorizationPolicyBusiness.Add(model.RoleId, model.AuthorizationPolicyId, LoggedUserId);
             if (isSucceed)

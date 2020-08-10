@@ -2,7 +2,7 @@
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyFilterViewModel : BaseFilterViewModel
+    public class AuthorizationPolicyFilterModel : BaseFilterModel
     {
     }
 }

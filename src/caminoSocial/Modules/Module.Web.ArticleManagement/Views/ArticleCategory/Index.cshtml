@@ -1,5 +1,4 @@
-﻿@model PageListViewModel<ArticleCategoryViewModel>
-@inject IPageAuthorizeManager pageAuthorizeManager
+﻿@model PageListModel<ArticleCategoryModel>
 @{
     ViewData["Title"] = "Article categories management";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -29,7 +28,7 @@
         {
             foreach (var cate in Model.Collections)
             {
-                pageAuthorizeManager.SetPageAuthorizationForModel(cate, Model);
+                cate.SetPageAuthorizationForModel(Model);
                 <partial name="_ArticleCategoryRow" model="cate" />
             }
         }

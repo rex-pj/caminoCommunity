@@ -1,9 +1,8 @@
-﻿using Camino.Framework.Models;
-using System;
+﻿using System;
 
-namespace Module.Web.AuthenticationManagement.Models
+namespace Module.Web.AuthorizationManagement.Models
 {
-    public class UserViewModel : BaseViewModel
+    public class UserModel
     {
         public long Id { get; set; }
         public string PhoneNumber { get; set; }

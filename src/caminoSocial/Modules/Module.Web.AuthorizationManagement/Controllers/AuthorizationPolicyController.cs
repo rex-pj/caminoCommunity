@@ -40,12 +40,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public async Task<IActionResult> Index(AuthorizationPolicyFilterViewModel filter)
+        public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
             var filterDto = _mapper.Map<AuthorizationPolicyFilterDto>(filter);
             var policiesPageList = _authorizationPolicyBusiness.Get(filterDto);
 
-            var policyModels = _mapper.Map<List<AuthorizationPolicyViewModel>>(policiesPageList.Collections);
+            var policyModels = _mapper.Map<List<AuthorizationPolicyModel>>(policiesPageList.Collections);
             var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
             var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
             policyModels.ForEach(x =>
@@ -54,7 +54,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 x.CanViewUserAuthorizationPolicy = canViewUserAuthorizationPolicy;
             });
 
-            var policiesPage = new PageListViewModel<AuthorizationPolicyViewModel>(policyModels)
+            var policiesPage = new PageListModel<AuthorizationPolicyModel>(policyModels)
             {
                 Filter = filter,
                 TotalPage = policiesPageList.TotalPage,
@@ -86,7 +86,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
+                var model = _mapper.Map<AuthorizationPolicyModel>(policy);
                 return View(model);
             }
             catch (Exception)
@@ -99,7 +99,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
         public IActionResult Create()
         {
-            var model = new AuthorizationPolicyViewModel()
+            var model = new AuthorizationPolicyModel()
             {
                 SelectPermissionMethods = EnumUtil.ToSelectListItems<PolicyMethod>()
             };
@@ -112,7 +112,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         public IActionResult Update(short id)
         {
             var policy = _authorizationPolicyBusiness.Find(id);
-            var model = _mapper.Map<AuthorizationPolicyViewModel>(policy);
+            var model = _mapper.Map<AuthorizationPolicyModel>(policy);
 
             var permissionMethod = EnumUtil.FilterEnumByName<PolicyMethod>(model.Name);
             model.SelectPermissionMethods = EnumUtil.ToSelectListItems(permissionMethod);
@@ -125,7 +125,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
-        public async Task<IActionResult> Create(AuthorizationPolicyViewModel model)
+        public async Task<IActionResult> Create(AuthorizationPolicyModel model)
         {
             if (model.Id > 0)
             {
@@ -154,7 +154,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
-        public async Task<IActionResult> Update(AuthorizationPolicyViewModel model)
+        public async Task<IActionResult> Update(AuthorizationPolicyModel model)
         {
             if (model.Id <= 0)
             {

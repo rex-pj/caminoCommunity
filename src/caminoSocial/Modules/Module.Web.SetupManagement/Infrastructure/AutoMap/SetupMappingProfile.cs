@@ -8,7 +8,7 @@ namespace Module.Web.SetupManagement.Infrastructure.AutoMap
     {
         public SetupMappingProfile()
         {
-            CreateMap<SetupViewModel, SetupDto>();
+            CreateMap<SetupModel, SetupDto>();
         }
     }
 }

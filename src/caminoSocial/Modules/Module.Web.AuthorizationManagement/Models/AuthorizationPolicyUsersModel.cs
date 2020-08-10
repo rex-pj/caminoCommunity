@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyUsersViewModel : PageListViewModel<UserViewModel>
+    public class AuthorizationPolicyUsersModel : PageListModel<UserModel>
     {
-        public AuthorizationPolicyUsersViewModel(IEnumerable<UserViewModel> collections):base(collections)
+        public AuthorizationPolicyUsersModel(IEnumerable<UserModel> collections):base(collections)
         {
         }
 

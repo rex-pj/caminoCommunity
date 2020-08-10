@@ -2,7 +2,7 @@
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class RoleAuthorizationPolicyFilterViewModel : BaseFilterViewModel
+    public class RoleAuthorizationPolicyFilterModel : BaseFilterModel
     {
         public long Id { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace Module.Web.SetupManagement.Models
 {
-    public class SetupViewModel
+    public class SetupModel
     {
         [Required]
         public string AdminEmail { get; set; }

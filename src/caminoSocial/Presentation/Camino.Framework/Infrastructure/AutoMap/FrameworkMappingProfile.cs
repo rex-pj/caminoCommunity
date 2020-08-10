@@ -30,7 +30,7 @@ namespace Camino.Framework.Infrastructure.AutoMap
             CreateMap<RoleClaimDto, ApplicationRoleClaim>();
             CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
             CreateMap<UserAuthorizationPolicyDto, ApplicationUserAuthorizationPolicy>();
-            CreateMap<BaseFilterDto, BaseFilterViewModel>();
+            CreateMap<BaseFilterDto, BaseFilterModel>();
         }
     }
 }

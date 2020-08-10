@@ -9,13 +9,13 @@ namespace Module.Web.ArticleManagement.Infrastructure.AutoMap
     {
         public ArticleMappingProfile()
         {
-            CreateMap<ArticleViewModel, ArticleDto>();
-            CreateMap<ArticleDto, ArticleViewModel>();
+            CreateMap<ArticleModel, ArticleDto>();
+            CreateMap<ArticleDto, ArticleModel>();
             CreateMap<ArticleDto, Article>();
             CreateMap<Article, ArticleDto>();
 
-            CreateMap<ArticleCategoryViewModel, ArticleCategoryDto>();
-            CreateMap<ArticleCategoryDto, ArticleCategoryViewModel>();
+            CreateMap<ArticleCategoryModel, ArticleCategoryDto>();
+            CreateMap<ArticleCategoryDto, ArticleCategoryModel>();
             CreateMap<ArticleCategoryDto, ArticleCategory>();
             CreateMap<ArticleCategory, ArticleCategoryDto>();
         }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyRolesViewModel : PageListViewModel<RoleViewModel>
+    public class AuthorizationPolicyRolesModel : PageListModel<RoleModel>
     {
-        public AuthorizationPolicyRolesViewModel(IEnumerable<RoleViewModel> collections) : base(collections)
+        public AuthorizationPolicyRolesModel(IEnumerable<RoleModel> collections) : base(collections)
         {
-            Filter = new RoleAuthorizationPolicyFilterViewModel();
+            Filter = new RoleAuthorizationPolicyFilterModel();
         }
 
         public short Id { get; set; }

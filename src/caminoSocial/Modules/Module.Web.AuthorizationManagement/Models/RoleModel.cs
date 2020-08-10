@@ -3,7 +3,7 @@ using System;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class RoleViewModel : BaseViewModel
+    public class RoleModel : BaseModel
     {
         public long Id { get; set; }
         public string Name { get; set; }

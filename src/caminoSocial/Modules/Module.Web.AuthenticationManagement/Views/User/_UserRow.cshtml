@@ -1,10 +1,8 @@
-﻿@model UserViewModel
+﻿@model UserModel
 <tr>
     <th>@Model.Id</th>
     <td>@Model.Lastname @Model.Firstname</td>
     <td>@Model.Address</td>
-    <td>@Model.Email</td>
-
     <td>
         @if (Model.BirthDate.HasValue)
         {
@@ -12,16 +10,6 @@
         }
     </td>
     <td>@Model.CountryName</td>
-    <td>
-        @if (Model.IsEmailConfirmed)
-        {
-            <span class="badge badge-primary">Confirmed</span>
-        }
-        else
-        {
-            <span class="badge badge-secondary">Confirmed</span>
-        }
-    </td>
     <td>
         @Model.GenderLabel
     </td>

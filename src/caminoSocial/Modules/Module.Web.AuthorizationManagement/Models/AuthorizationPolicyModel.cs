@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyViewModel : BaseViewModel
+    public class AuthorizationPolicyModel : BaseModel
     {
-        public AuthorizationPolicyViewModel()
+        public AuthorizationPolicyModel()
         {
             SelectPermissionMethods = new List<SelectListItem>();
         }

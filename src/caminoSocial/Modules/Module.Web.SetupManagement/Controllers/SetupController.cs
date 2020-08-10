@@ -47,11 +47,11 @@ namespace Module.Web.SetupManagement.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(new SetupViewModel());
+            return View(new SetupModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(SetupViewModel model)
+        public async Task<IActionResult> Index(SetupModel model)
         {
             if (!ModelState.IsValid)
             {
