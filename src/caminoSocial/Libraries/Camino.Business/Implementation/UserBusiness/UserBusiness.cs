@@ -21,8 +21,6 @@ namespace Camino.Business.Implementation.UserBusiness
         #region Fields/Properties
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly IRepository<User> _userRepository;
-        private readonly IRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly IMapper _mapper;
         private readonly IIdentityDataProvider _identityDbProvider;
@@ -32,22 +30,59 @@ namespace Camino.Business.Implementation.UserBusiness
         public UserBusiness(IRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
             IMapper mapper,
-            IRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository,
             IRepository<UserInfo> userInfoRepository,
-            IRepository<UserRole> userRoleRepository,
             IIdentityDataProvider identityDbProvider)
         {
             _identityDbProvider = identityDbProvider;
             _mapper = mapper;
-            _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
-            _userRoleRepository = userRoleRepository;
             _validationStrategyContext = validationStrategyContext;
         }
         #endregion
 
         #region CRUD
+        public async Task<UserDto> CreateAsync(UserDto userDto)
+        {
+            if (userDto == null)
+            {
+                throw new ArgumentNullException(nameof(userDto));
+            }
+
+            userDto.StatusId = 1;
+            userDto.IsActived = false;
+            userDto.CreatedDate = DateTime.UtcNow;
+            userDto.UpdatedDate = DateTime.UtcNow;
+
+            var user = _mapper.Map<User>(userDto);
+            var userInfo = _mapper.Map<UserInfo>(userDto);
+
+            using (var transaction = _identityDbProvider.BeginTransaction())
+            {
+                try
+                {
+                    var userId = await _userRepository.AddWithInt64EntityAsync(user);
+                    if (userId > 0)
+                    {
+                        userInfo.Id = userId;
+                        await _userInfoRepository.AddWithInt64EntityAsync(userInfo);
+                        transaction.Commit();
+                        userDto.Id = userId;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                    }
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+            return userDto;
+        }
+
         public async Task DeleteAsync(long id)
         {
             var user = _userRepository.FirstOrDefault(x => x.Id == id);
@@ -235,25 +270,89 @@ namespace Camino.Business.Implementation.UserBusiness
         public async Task<PageListDto<UserFullDto>> GetAsync(UserFilterDto filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var query = (from user in _userRepository.Table
-                         join userInfo in _userInfoRepository.Table
-                         on user.Id equals userInfo.Id
-                         where (string.IsNullOrEmpty(search)
-                         || user.Lastname.ToLower().Contains(search)
+            var userQuery = _userRepository.Table;
+            if (!string.IsNullOrEmpty(search))
+            {
+                userQuery = userQuery.Where(user => user.Lastname.ToLower().Contains(search)
                          || user.Firstname.ToLower().Contains(search)
                          || (user.Lastname + " " + user.Firstname).ToLower().Contains(search)
                          || user.Email.Contains(search)
-                         || user.DisplayName.ToLower().Contains(search))
+                         || user.DisplayName.ToLower().Contains(search));
+            }
 
-                         && (!filter.CreatedById.HasValue || user.CreatedById == filter.CreatedById)
-                         && (!filter.UpdatedById.HasValue || user.UpdatedById == filter.UpdatedById)
-                         && (!filter.StatusId.HasValue || user.StatusId == filter.StatusId)
-                         && (!filter.IsActived.HasValue || user.IsActived == filter.IsActived)
+            if (filter.CreatedById.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.CreatedById == filter.CreatedById);
+            }
 
-                         && (!filter.GenderId.HasValue || userInfo.GenderId == filter.GenderId)
-                         && (!filter.CountryId.HasValue || userInfo.CountryId == filter.CountryId)
-                         && (string.IsNullOrEmpty(filter.PhoneNumber) || userInfo.PhoneNumber.Contains(filter.PhoneNumber))
-                         && (string.IsNullOrEmpty(filter.Address) || userInfo.Address.Contains(filter.Address))
+            if (filter.UpdatedById.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.UpdatedById == filter.UpdatedById);
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
+            if (filter.IsActived.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.IsActived == filter.IsActived);
+            }
+
+            // Filter by register date/ created date
+            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateTo.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateFrom.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+            }
+
+            // Filter in UserInfo
+            var userInfoQuery = _userInfoRepository.Table;
+            if (filter.GenderId != 0)
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.GenderId == filter.GenderId);
+            }
+
+            if (filter.CountryId.HasValue)
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.CountryId == filter.CountryId);
+            }
+
+            if (!string.IsNullOrEmpty(filter.PhoneNumber))
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.PhoneNumber.Contains(filter.PhoneNumber));
+            }
+
+            if (!string.IsNullOrEmpty(filter.Address))
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.Address.Contains(filter.Address));
+            }
+
+            // Filter by birthdate
+            if (filter.BirthDateFrom.HasValue && filter.BirthDateTo.HasValue)
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= filter.BirthDateTo);
+            }
+            else if (filter.BirthDateTo.HasValue)
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.BirthDate <= filter.BirthDateTo);
+            }
+            else if (filter.BirthDateFrom.HasValue)
+            {
+                userInfoQuery = userInfoQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= DateTime.UtcNow);
+            }
+
+            var query = (from user in userQuery
+                         join userInfo in userInfoQuery
+                         on user.Id equals userInfo.Id
                          select new UserFullDto()
                          {
                              Id = user.Id,
@@ -271,48 +370,6 @@ namespace Camino.Business.Implementation.UserBusiness
                              StatusLabel = user.Status.Name,
                              CountryName = user.UserInfo.Country.Name
                          });
-
-            // Filter by birthdate
-            if (filter.BirthDateFrom.HasValue && filter.BirthDateTo.HasValue)
-            {
-                query = query.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= filter.BirthDateTo);
-            }
-            else if (filter.BirthDateTo.HasValue)
-            {
-                query = query.Where(x => x.BirthDate <= filter.BirthDateTo);
-            }
-            else if (filter.BirthDateFrom.HasValue)
-            {
-                query = query.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= DateTime.UtcNow);
-            }
-
-            // Filter by register date/ created date
-            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
-            {
-                query = query.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
-            }
-            else if (filter.CreatedDateTo.HasValue)
-            {
-                query = query.Where(x => x.CreatedDate <= filter.CreatedDateTo);
-            }
-            else if (filter.CreatedDateFrom.HasValue)
-            {
-                query = query.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
-            }
-
-            // Filter by updated date
-            if (filter.UpdatedDateFrom.HasValue && filter.UpdatedDateTo.HasValue)
-            {
-                query = query.Where(x => x.UpdatedDate >= filter.UpdatedDateFrom && x.UpdatedDate <= filter.UpdatedDateTo);
-            }
-            else if (filter.UpdatedDateTo.HasValue)
-            {
-                query = query.Where(x => x.UpdatedDate <= filter.UpdatedDateTo);
-            }
-            else if (filter.UpdatedDateFrom.HasValue)
-            {
-                query = query.Where(x => x.UpdatedDate >= filter.UpdatedDateFrom && x.UpdatedDate <= DateTime.UtcNow);
-            }
 
             var filteredNumber = query.Select(x => x.Id).Count();
 

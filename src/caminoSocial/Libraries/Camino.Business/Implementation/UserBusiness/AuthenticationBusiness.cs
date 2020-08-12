@@ -6,55 +6,43 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Data.Entities.Identity;
-using System.Collections;
 using System.Collections.Generic;
+using Camino.Data.Contracts;
+using AutoMapper;
+using Camino.IdentityDAL.Contracts;
 
 namespace Camino.Business.Implementation.UserBusiness
 {
-    public partial class UserBusiness : IUserBusiness
+    public partial class AuthenticationBusiness : IAuthenticationBusiness
     {
-        #region CRUD
-        public async Task<UserDto> CreateAsync(UserDto userDto)
+        #region Fields/Properties
+        private readonly IRepository<UserInfo> _userInfoRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly ValidationStrategyContext _validationStrategyContext;
+        private readonly IMapper _mapper;
+        private readonly IIdentityDataProvider _identityDbProvider;
+        #endregion
+
+        #region Ctor
+        public AuthenticationBusiness(IRepository<User> userRepository,
+            ValidationStrategyContext validationStrategyContext,
+            IMapper mapper,
+            IRepository<UserInfo> userInfoRepository,
+            IRepository<UserRole> userRoleRepository,
+            IIdentityDataProvider identityDbProvider)
         {
-            if (userDto == null)
-            {
-                throw new ArgumentNullException(nameof(userDto));
-            }
-
-            userDto.StatusId = 1;
-            userDto.IsActived = false;
-            userDto.CreatedDate = DateTime.UtcNow;
-            userDto.UpdatedDate = DateTime.UtcNow;
-
-            var user = _mapper.Map<User>(userDto);
-            var userInfo = _mapper.Map<UserInfo>(userDto);
-
-            using (var transaction = _identityDbProvider.BeginTransaction())
-            {
-                try
-                {
-                    var userId = await _userRepository.AddWithInt64EntityAsync(user);
-                    if (userId > 0)
-                    {
-                        userInfo.Id = userId;
-                        await _userInfoRepository.AddWithInt64EntityAsync(userInfo);
-                        transaction.Commit();
-                        userDto.Id = userId;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                    }
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                }
-            }
-
-            return userDto;
+            _identityDbProvider = identityDbProvider;
+            _mapper = mapper;
+            _userRepository = userRepository;
+            _userInfoRepository = userInfoRepository;
+            _userRoleRepository = userRoleRepository;
+            _validationStrategyContext = validationStrategyContext;
         }
+        #endregion
 
+        #region CRUD
+        
         public async Task<UserDto> UpdatePasswordAsync(UserPasswordUpdateDto model)
         {
             _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());

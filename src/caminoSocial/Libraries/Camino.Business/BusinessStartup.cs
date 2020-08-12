@@ -10,6 +10,7 @@ using Camino.DAL;
 using Camino.IdentityDAL;
 using Camino.IdentityDAL.Implementations;
 using Camino.DAL.Implementations;
+using Camino.Data.Enums;
 
 namespace Camino.Business
 {
@@ -34,9 +35,12 @@ namespace Camino.Business
                 .AddTransient<IRepository<UserClaim>, IdentityRepository<UserClaim>>()
                 .AddTransient<IRepository<UserToken>, IdentityRepository<UserToken>>()
                 .AddTransient<IRepository<UserLogin>, IdentityRepository<UserLogin>>()
-                .AddTransient<IRepository<RoleClaim>, IdentityRepository<RoleClaim>>();
+                .AddTransient<IRepository<RoleClaim>, IdentityRepository<RoleClaim>>()
+                .AddTransient<IRepository<Status>, IdentityRepository<Status>>();
 
             services.AddTransient<IUserBusiness, UserBusiness>()
+                .AddTransient<IAuthenticationBusiness, AuthenticationBusiness>()
+                .AddTransient<IUserStatusBusiness, UserStatusBusiness>()
                 .AddTransient<ICountryBusiness, CountryBusiness>()
                 .AddTransient<IUserPhotoBusiness, UserPhotoBusiness>()
                 .AddTransient<IRoleBusiness, RoleBusiness>()

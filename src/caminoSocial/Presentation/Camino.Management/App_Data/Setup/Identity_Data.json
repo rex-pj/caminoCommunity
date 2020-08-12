@@ -194,6 +194,22 @@
     {
       "Name": "CanDeleteRoleAuthorizationPolicy",
       "Description": "Can delete role authorization policy"
+    },
+    {
+      "Name": "CanCreateCountry",
+      "Description": "Can create new country"
+    },
+    {
+      "Name": "CanReadCountry",
+      "Description": "Can read country"
+    },
+    {
+      "Name": "CanUpdateCountry",
+      "Description": "Can update country"
+    },
+    {
+      "Name": "CanDeleteCountry",
+      "Description": "Can delete country"
     }
   ],
   "Countries": [

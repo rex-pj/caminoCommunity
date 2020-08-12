@@ -38,5 +38,9 @@
         public const string CanReadRoleAuthorizationPolicy = "CanReadRoleAuthorizationPolicy";
         public const string CanUpdateRoleAuthorizationPolicy = "CanUpdateRoleAuthorizationPolicy";
         public const string CanDeleteRoleAuthorizationPolicy = "CanDeleteRoleAuthorizationPolicy";
+        public const string CanCreateCountry = "CanCreateCountry";
+        public const string CanReadCountry = "CanReadCountry";
+        public const string CanUpdateCountry = "CanUpdateCountry";
+        public const string CanDeleteCountry = "CanDeleteCountry";
     }
 }

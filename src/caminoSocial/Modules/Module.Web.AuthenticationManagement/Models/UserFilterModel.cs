@@ -11,11 +11,9 @@ namespace Module.Web.AuthenticationManagement.Models
         public DateTime? BirthDateTo { get; set; }
         public DateTime? CreatedDateFrom { get; set; }
         public DateTime? CreatedDateTo { get; set; }
-        public DateTime? UpdatedDateFrom { get; set; }
-        public DateTime? UpdatedDateTo { get; set; }
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
-        public byte? GenderId { get; set; }
+        public byte GenderId { get; set; }
         public short? CountryId { get; set; }
         public bool? IsActived { get; set; }
         public int? StatusId { get; set; }

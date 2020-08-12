@@ -65,8 +65,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 });
             }
 
-            var userModels = _mapper.Map<List<UserModel>>(users)
-                .Select(x => new Select2ItemModel
+            var userModels = users.Select(x => new Select2ItemModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Lastname + " " + x.Firstname

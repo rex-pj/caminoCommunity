@@ -4,31 +4,38 @@
     };
 
     var settings = $.extend({}, defaults, options);
-    var select2 = $(this);
-    if (select2.length === 0) {
+    var select2s = $(this);
+    if (select2s.length === 0) {
         return;
     }
 
-    var method = select2.attr("method") ? select2.attr("method") : "get";
-    select2.select2({
-        ajax: {
-            url: select2.data("url"),
-            type: method,
-            dataType: 'json',
-            processResults: function (data) {
-                if (data === null || data === undefined) {
-                    return {
-                        results: []
-                    };
-                }
+    $.each(select2s, function (key, value) {
+        var select2 = $(value);
+        var method = select2.attr("method") ? select2.attr("method") : "get";
+        var url = select2.data("url");
 
-                return {
-                    results: data
-                };
+        select2.select2({
+            allowClear: true,
+            placeholder: 'select..',
+            ajax: {
+                url: url,
+                type: method,
+                dataType: 'json',
+                processResults: function (data) {
+                    if (data === null || data === undefined) {
+                        return {
+                            results: []
+                        };
+                    }
+
+                    return {
+                        results: data
+                    };
+                },
             },
-        },
-        minimumInputLength: settings.minimumInputLength,
-        dropdownParent: settings.dropdownParent
+            minimumInputLength: settings.minimumInputLength,
+            dropdownParent: settings.dropdownParent
+        });
     });
 }
 

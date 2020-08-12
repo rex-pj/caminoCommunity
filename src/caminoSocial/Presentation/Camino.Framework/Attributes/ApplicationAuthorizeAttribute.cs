@@ -56,7 +56,7 @@ namespace Camino.Framework.Attributes
 
                 var requestServices = httpContext.RequestServices;
                 var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
-                var userBusiness = requestServices.GetRequiredService<IUserBusiness>();
+                var authenticationBusiness = requestServices.GetRequiredService<IAuthenticationBusiness>();
                 var user = await userManager.GetUserAsync(httpContext.User);
 
                 // Authorize by authorization policies in current user or in current user's roles
@@ -66,7 +66,7 @@ namespace Camino.Framework.Attributes
                     return;
                 }
 
-                var userRoles = userBusiness.GetUserRoles(user.Id);
+                var userRoles = authenticationBusiness.GetUserRoles(user.Id);
                 if (userRoles == null || !userRoles.Any())
                 {
                     context.Result = new RedirectResult("/Authentication/Logout");

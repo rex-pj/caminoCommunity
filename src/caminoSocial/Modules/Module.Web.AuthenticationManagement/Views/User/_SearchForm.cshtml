@@ -7,18 +7,145 @@
     <div class="card-body">
         <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
             <div class="form-row">
-                <div class="col-md-6">
-                    <div class="form-group row">
-                        <label class="col-sm-12 col-lg-3 col-form-label" for="Name">Name</label>
-                        <div class="col-sm-12 col-lg-9">
-                            <input type="text" class="form-control" asp-for="Search">
-                        </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Search">Keyword</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" asp-for="Search">
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="CountryId">Country</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "Country")" asp-for="CountryId"></select>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-info">
-                <i class="fa fa-search mr-2"></i>Search
-            </button>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Address">Address</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" asp-for="Address">
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="PhoneNumber">Phone Number</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" asp-for="PhoneNumber">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedById">Created By</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="CreatedById"></select>
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="UpdatedById">Updated By</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="UpdatedById"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedDateFrom">Registered Date</label>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="CreatedDateFrom">
+                    </div>
+                </div>
+                <div class="col-1 col-sm-3 col-md-auto">
+                    <label class="col-form-label">
+                        -
+                    </label>
+                </div>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="CreatedDateTo">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="BirthDateFrom">Birthdate</label>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="BirthDateFrom">
+                    </div>
+                </div>
+                <div class="col-1 col-sm-3 col-md-auto">
+                    <label class="col-form-label">
+                        -
+                    </label>
+                </div>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="BirthDateTo">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="StatusId">Status</label>
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "UserStatus")" asp-for="StatusId"></select>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3 col-md-4 col-lg-3">
+                    <div class="form-check ml-lg-4 ml-0">
+                        @if (Model.IsActived.HasValue)
+                        {
+                            <input class="form-check-input" type="checkbox" name="IsActived" value="@Model.IsActived">
+                        }
+                        else
+                        {
+                            <input class="form-check-input" type="checkbox" name="IsActived" value="">
+                        }
+                        <label class="form-check-label" for="IsActived">
+                            Actived
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row mb-3">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="GenderId">Gender</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-check form-check-inline">
+                        @if (Model.GenderId == 1)
+                        {
+                            <input class="form-check-input" type="checkbox" name="GenderId" value="1" checked>
+                        }
+                        else
+                        {
+                            <input class="form-check-input" type="checkbox" name="GenderId" value="1">
+                        }
+                        <label class="form-check-label" for="GenderId">
+                            Male
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        @if (Model.GenderId == 2)
+                        {
+                            <input class="form-check-input" type="checkbox" name="GenderId" value="2" checked>
+                        }
+                        else
+                        {
+                            <input class="form-check-input" type="checkbox" name="GenderId" value="2">
+                        }
+                        <label class="form-check-label" for="GenderId">
+                            Female
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-info">
+                    <i class="fa fa-search mr-2"></i>Search
+                </button>
+                <button type="button" class="btn btn-light">
+                    <i class="fa fa-times mr-2"></i>Clear
+                </button>
+            </div>
         </form>
     </div>
 </div>

@@ -2,7 +2,6 @@
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Identity;
 using Camino.IdentityManager.Models;
-using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Contracts.Stores.Contracts;
 using LinqToDB;
 using Microsoft.AspNetCore.Identity;
@@ -43,8 +42,8 @@ namespace Camino.IdentityManager.Contracts.Stores
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserBusiness userBusiness,
             IUserClaimBusiness userClaimBusiness, IUserRoleBusiness userRoleBusiness, IRoleBusiness roleBusiness,
             IUserTokenBusiness userTokenBusiness, IUserLoginBusiness userLoginBusiness, IAuthorizationPolicyBusiness authorizationPolicyBusiness,
-            IUserAuthorizationPolicyBusiness userAuthorizationPolicyBusiness,
-            ITextEncryption textCrypter, IMapper mapper, IOptions<CrypterSettings> crypterSettings)
+            IUserAuthorizationPolicyBusiness userAuthorizationPolicyBusiness, ITextEncryption textCrypter, 
+            IMapper mapper, IOptions<CrypterSettings> crypterSettings)
             : base(describer)
         {
             _crypterSettings = crypterSettings.Value;
