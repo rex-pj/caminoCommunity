@@ -13,7 +13,7 @@
                         <input type="text" class="form-control form-control-sm" asp-for="Search">
                     </div>
                 </div>
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="CountryId">Country</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="CountryId">Country</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="form-group">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "Country")" asp-for="CountryId"></select>
@@ -27,7 +27,7 @@
                         <input type="text" class="form-control form-control-sm" asp-for="Address">
                     </div>
                 </div>
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="PhoneNumber">Phone Number</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="PhoneNumber">Phone Number</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="form-group">
                         <input type="text" class="form-control form-control-sm" asp-for="PhoneNumber">
@@ -41,7 +41,7 @@
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="CreatedById"></select>
                     </div>
                 </div>
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-4 ml-0" for="UpdatedById">Updated By</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="UpdatedById">Updated By</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="form-group">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="UpdatedById"></select>
@@ -49,10 +49,16 @@
                 </div>
             </div>
             <div class="form-row">
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedDateFrom">Registered Date</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label">Registered Date</label>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="CreatedDateFrom">
+                        <div class="input-group datetimepicker" id="createdDateFromPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#createdDateFromPicker" data-toggle="datetimepicker" asp-for="CreatedDateFrom">
+                            <div class="input-group-append" data-target="#createdDateFromPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-1 col-sm-3 col-md-auto">
@@ -62,15 +68,27 @@
                 </div>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="CreatedDateTo">
+                        <div class="input-group datetimepicker" id="createdDateToPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#createdDateToPicker" data-toggle="datetimepicker" asp-for="CreatedDateTo">
+                            <div class="input-group-append" data-target="#createdDateToPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="form-row">
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="BirthDateFrom">Birthdate</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label">Birthdate</label>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="BirthDateFrom">
+                        <div class="input-group datetimepicker" id="birthDateFromPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#birthDateFromPicker" data-toggle="datetimepicker" asp-for="BirthDateFrom">
+                            <div class="input-group-append" data-target="#birthDateFromPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-1 col-sm-3 col-md-auto">
@@ -80,7 +98,13 @@
                 </div>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-sm datepicker" data-date-format="dd/mm/yyyy" asp-for="BirthDateTo">
+                        <div class="input-group datetimepicker" id="birthDateToPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#birthDateToPicker" data-toggle="datetimepicker" asp-for="BirthDateTo">
+                            <div class="input-group-append" data-target="#birthDateToPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,7 +116,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-sm-3 col-md-4 col-lg-3">
-                    <div class="form-check ml-lg-4 ml-0">
+                    <div class="form-check ml-lg-3 ml-0">
                         @if (Model.IsActived.HasValue)
                         {
                             <input class="form-check-input" type="checkbox" name="IsActived" value="@Model.IsActived">

@@ -1,6 +1,7 @@
 using Camino.Core.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Middlewares;
+using Camino.Framework.Infrastructure.ModelBinders;
 using Camino.Management.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +30,11 @@ namespace Camino.Management
 
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{_configuration["Modular:Path"]}";
-            var mvcBuilder = services.AddControllersWithViews()
-                .AddNewtonsoftJson();
+            var mvcBuilder = services.AddControllersWithViews(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new ApplicationModelBinderProvider());
+            })
+            .AddNewtonsoftJson();
 
             mvcBuilder.AddModular(modulesPath, _configuration["Modular:Prefix"]);
             services.AddAutoMappingModular();
