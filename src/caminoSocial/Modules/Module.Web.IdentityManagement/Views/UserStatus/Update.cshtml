@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = $"Update user status {Model.Name}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model UserStatusModel
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="UserStatus" class="btn btn-sm btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <form method="post" asp-action="Update" asp-controller="UserStatus">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
+</div>

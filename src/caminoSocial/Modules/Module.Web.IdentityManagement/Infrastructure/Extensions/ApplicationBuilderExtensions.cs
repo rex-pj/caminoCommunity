@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Module.Web.DataSourceManagement.Infrastructure.Extensions
+namespace Module.Web.IdentityManagement.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {

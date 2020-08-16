@@ -1,6 +1,8 @@
-﻿namespace Camino.Business.Dtos.Identity
+﻿using Camino.Framework.Models;
+
+namespace Module.Web.IdentityManagement.Models
 {
-    public class StatusDto
+    public class UserStatusModel : BaseModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

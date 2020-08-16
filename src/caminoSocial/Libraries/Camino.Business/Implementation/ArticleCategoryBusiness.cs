@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Camino.Business.Dtos.General;
+using LinqToDB;
 
 namespace Camino.Business.Implementation
 {
@@ -70,9 +73,41 @@ namespace Camino.Business.Implementation
             return category;
         }
 
-        public List<ArticleCategoryDto> GetFull()
+        public async Task<PageListDto<ArticleCategoryDto>> GetAsync(ArticleCategoryFilterDto filter)
         {
-            var categories = _articleCategoryRepository.Get().Select(a => new ArticleCategoryDto
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var categoryQuery = _articleCategoryRepository.Table;
+            if (!string.IsNullOrEmpty(search))
+            {
+                categoryQuery = categoryQuery.Where(user => user.Name.ToLower().Contains(search)
+                         || user.Description.ToLower().Contains(search));
+            }
+
+            if (filter.CreatedById.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.CreatedById == filter.CreatedById);
+            }
+
+            if (filter.UpdatedById.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.UpdatedById == filter.UpdatedById);
+            }
+
+            // Filter by register date/ created date
+            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateTo.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateFrom.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+            }
+
+            var query = categoryQuery.Select(a => new ArticleCategoryDto
             {
                 CreatedById = a.CreatedById,
                 CreatedDate = a.CreatedDate,
@@ -82,7 +117,12 @@ namespace Camino.Business.Implementation
                 ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
                 UpdatedDate = a.UpdatedDate
-            }).ToList();
+            });
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var categories = await query.Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = categories.Select(x => x.CreatedById).ToArray();
             var updatedByIds = categories.Select(x => x.UpdatedById).ToArray();
@@ -99,7 +139,11 @@ namespace Camino.Business.Implementation
                 category.UpdatedBy = updatedBy.DisplayName;
             }
 
-            return categories;
+
+            var result = new PageListDto<ArticleCategoryDto>(categories);
+            result.TotalResult = filteredNumber;
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+            return result;
         }
 
         public List<ArticleCategoryDto> Get(Expression<Func<ArticleCategory, bool>> filter)
@@ -153,8 +197,8 @@ namespace Camino.Business.Implementation
             newCategory.UpdatedDate = DateTime.UtcNow;
             newCategory.CreatedDate = DateTime.UtcNow;
 
-            var id = _articleCategoryRepository.Add(newCategory);
-            return (int)id;
+            var id = _articleCategoryRepository.AddWithInt32Entity(newCategory);
+            return id;
         }
 
         public ArticleCategoryDto Update(ArticleCategoryDto category)

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
+using Camino.Business.Dtos.General;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using Module.Web.ArticleManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -20,21 +23,45 @@ namespace Module.Web.ArticleManagement.Controllers
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
+        private readonly IHttpHelper _httpHelper;
 
-        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
+        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness,
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
+            _httpHelper = httpHelper;
             _mapper = mapper;
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
         [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var categories = _articleCategoryBusiness.GetFull();
-            var categoryModels = _mapper.Map<List<ArticleCategoryModel>>(categories);
-            var categoryPage = new PageListModel<ArticleCategoryModel>(categoryModels);
+            var filterDto = new ArticleCategoryFilterDto()
+            {
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search,
+                UpdatedById = filter.UpdatedById
+            };
+
+            var categoryPageList = await _articleCategoryBusiness.GetAsync(filterDto);
+            var categories = _mapper.Map<List<ArticleCategoryModel>>(categoryPageList.Collections);
+            var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
+            {
+                Filter = filter,
+                TotalPage = categoryPageList.TotalPage,
+                TotalResult = categoryPageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_ArticleCategoryTable", categoryPage);
+            }
 
             return View(categoryPage);
         }

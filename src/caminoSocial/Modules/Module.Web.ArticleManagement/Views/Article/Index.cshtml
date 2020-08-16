@@ -5,38 +5,30 @@
 }
 
 <div class="card-header bg-dark text-light">
-    @if (Model.CanCreate)
-    {
-        <a asp-action="Create" asp-controller="Article" class="btn btn-sm btn-primary">
-            <i class="fa fa-plus"></i>
-        </a>
-    }
-    @ViewData["Title"]
-</div>
-<table class="table table-bordered">
-    <thead>
-        <tr class="bg-light">
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Created</th>
-            <th scope="col">Updated</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Collections.Any())
-        {
-            foreach (var article in Model.Collections)
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
+                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+                <i class="fa fa-search"></i>
+            </button>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanCreate)
             {
-                article.SetPageAuthorizationForModel(Model);
-                <partial name="_ArticleRow" model="article" />
+                <a asp-action="Create" asp-controller="Article" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-plus"></i>
+                </a>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="5">No data</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
+</div>
+
+<partial name="_SearchForm" model="Model.Filter" />
+
+<div class="data-table table-responsive">
+    <partial name="_ArticleTable" />
+    <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>

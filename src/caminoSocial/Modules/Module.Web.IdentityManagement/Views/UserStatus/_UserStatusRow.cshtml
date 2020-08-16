@@ -1,0 +1,23 @@
+﻿@model UserStatusModel
+<tr>
+    <td>@Model.Id</td>
+    <td>
+        <a asp-action="Detail" asp-controller="UserStatus" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@Model.Description">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.Description</div>
+    </td>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="UserStatus" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="UserStatus" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+</tr>

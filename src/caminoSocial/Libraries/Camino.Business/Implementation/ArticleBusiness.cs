@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
+using Camino.Business.Dtos.General;
 using Camino.Data.Contracts;
 using Camino.Data.Entities.Content;
 using Camino.Data.Entities.Identity;
+using LinqToDB;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Implementation
 {
@@ -71,19 +73,61 @@ namespace Camino.Business.Implementation
             return article;
         }
 
-        public List<ArticleDto> GetFull()
+        public async Task<PageListDto<ArticleDto>> GetAsync(ArticleFilterDto filter)
         {
-            var articles = _articleRepository.Get().Select(a => new ArticleDto
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var articleQuery = _articleRepository.Table;
+            if (!string.IsNullOrEmpty(search))
+            {
+                articleQuery = articleQuery.Where(user => user.Name.ToLower().Contains(search)
+                         || user.Description.ToLower().Contains(search));
+            }
+
+            var content = filter.Content != null ? filter.Content.ToLower() : "";
+            if (!string.IsNullOrEmpty(content))
+            {
+                articleQuery = articleQuery.Where(user => user.Content.ToLower().Contains(content));
+            }
+
+            if (filter.CreatedById.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.CreatedById == filter.CreatedById);
+            }
+
+            if (filter.UpdatedById.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.UpdatedById == filter.UpdatedById);
+            }
+
+            // Filter by register date/ created date
+            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateTo.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.CreatedDate <= filter.CreatedDateTo);
+            }
+            else if (filter.CreatedDateFrom.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+            }
+
+            var query = articleQuery.Select(a => new ArticleDto
             {
                 CreatedById = a.CreatedById,
                 CreatedDate = a.CreatedDate,
                 Description = a.Description,
                 Id = a.Id,
                 Name = a.Name,
-                ArticleCategoryId = a.ArticleCategoryId,
                 UpdatedById = a.UpdatedById,
                 UpdatedDate = a.UpdatedDate
-            }).ToList();
+            });
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var articles  = await query.Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = articles.Select(x => x.CreatedById).ToArray();
             var updatedByIds = articles.Select(x => x.UpdatedById).ToArray();
@@ -100,7 +144,11 @@ namespace Camino.Business.Implementation
                 category.UpdatedBy = updatedBy.DisplayName;
             }
 
-            return articles;
+
+            var result = new PageListDto<ArticleDto>(articles);
+            result.TotalResult = filteredNumber;
+            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+            return result;
         }
 
         public int Add(ArticleDto category)
@@ -109,7 +157,7 @@ namespace Camino.Business.Implementation
             newArticle.UpdatedDate = DateTime.UtcNow;
             newArticle.CreatedDate = DateTime.UtcNow;
 
-            var id = _articleRepository.Add(newArticle);
+            var id = _articleRepository.AddWithInt32Entity(newArticle);
             return (int)id;
         }
 

@@ -1,0 +1,41 @@
+﻿@model PageListModel<CountryModel>
+@{
+    ViewData["Title"] = "Countries management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-header bg-dark text-light">
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Create" asp-controller="Country" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i>
+        </a>
+    }
+    @ViewData["Title"]
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var country in Model.Collections)
+            {
+                country.SetPageAuthorizationForModel(Model);
+                <partial name="_CountryRow" model="country" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>

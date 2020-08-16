@@ -1,0 +1,41 @@
+﻿@model PageListModel<UserStatusModel>
+@{
+    ViewData["Title"] = "User status management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-header bg-dark text-light">
+    @if (Model.CanCreate)
+    {
+        <a asp-action="Create" asp-controller="UserStatus" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i>
+        </a>
+    }
+    @ViewData["Title"]
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var status in Model.Collections)
+            {
+                status.SetPageAuthorizationForModel(Model);
+                <partial name="_UserStatusRow" model="status" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -15,7 +15,7 @@ namespace Camino.Business.Implementation.UserBusiness
             _statusRepository = statusRepository;
         }
 
-        public IList<StatusDto> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<UserStatusDto> Search(string query = "", int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -33,7 +33,7 @@ namespace Camino.Business.Implementation.UserBusiness
             }
 
             var users = data
-                .Select(x => new StatusDto()
+                .Select(x => new UserStatusDto()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -42,6 +42,72 @@ namespace Camino.Business.Implementation.UserBusiness
                 .ToList();
 
             return users;
+        }
+
+        public List<UserStatusDto> GetAll()
+        {
+            return _statusRepository.Get()
+                .Select(x => new UserStatusDto()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description
+                })
+                .ToList();
+        }
+
+        public UserStatusDto Find(int id)
+        {
+            var status = _statusRepository.Get(x => x.Id == id)
+                .Select(x => new UserStatusDto()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Name = x.Name
+                })
+                .FirstOrDefault();
+
+            return status;
+        }
+
+        public UserStatusDto FindByName(string name)
+        {
+            var status = _statusRepository.Get(x => x.Name == name)
+                .Select(x => new UserStatusDto()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Name = x.Name
+                })
+                .FirstOrDefault();
+
+            return status;
+        }
+
+        public int Add(UserStatusDto statusDto)
+        {
+            var country = new Status()
+            {
+                Description = statusDto.Description,
+                Name = statusDto.Name
+            };
+
+            var id = _statusRepository.AddWithInt32Entity(country);
+            return id;
+        }
+
+        public UserStatusDto Update(UserStatusDto statusDto)
+        {
+            var exist = _statusRepository.FirstOrDefault(x => x.Id == statusDto.Id);
+            if (exist == null)
+            {
+                return null;
+            }
+            exist.Description = statusDto.Description;
+            exist.Name = statusDto.Name;
+
+            _statusRepository.Update(exist);
+            return statusDto;
         }
     }
 }

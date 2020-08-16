@@ -1,0 +1,29 @@
+﻿@model PageListModel<ArticleModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Created</th>
+            <th scope="col">Updated</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var article in Model.Collections)
+            {
+                article.SetPageAuthorizationForModel(Model);
+                <partial name="_ArticleRow" model="article" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>

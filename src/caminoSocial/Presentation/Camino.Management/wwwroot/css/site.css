@@ -86,14 +86,26 @@ body {
         border: 0;
     }
 
-    #navTab .nav-link.active {
-        background-color: #343a40;
-        border-bottom: 0;
-        color: #28a745;
-    }
+        #navTab .nav-link.active {
+            background-color: #343a40;
+            border-bottom: 0;
+            color: #28a745;
+        }
 
 /* Nav tools
 -------------------------------------------------- */
+#mainNavigation,
+#mainNavigation.d-none.show {
+    -webkit-transition: width 0s ease;
+    -moz-transition: width 0s ease;
+    -o-transition: width 0s ease;
+    transition: width 0s ease;
+}
+
+    #mainNavigation.collapse {
+        width: 0px;
+    }
+
 .nav-tool {
     height: 100%;
 }
@@ -103,12 +115,18 @@ body {
         position: relative;
     }
 
-        .nav-tool .nav-tool-item > span > a {
+        .nav-tool .nav-tool-item > span > a,
+        .nav-tool .nav-tool-item > span > button {
             font-size: 14px;
             display: block;
             padding: 0.75rem 0.75rem;
             font-weight: 700;
             text-decoration: none;
+            border: 0;
+            outline: none;
+            background-color: transparent;
+            width: 100%;
+            text-align: left;
         }
 
         .nav-tool .nav-tool-item > span :hover {
@@ -124,7 +142,7 @@ body {
             position: absolute;
             top: 50%;
             bottom: 50%;
-            margin: -5px auto 0  auto;
+            margin: -5px auto 0 auto;
             right: 15px;
         }
 
@@ -132,30 +150,30 @@ body {
             display: inline-block;
         }
 
-            .nav-tool .nav-tool-item > span .fa-angle-down {
-                display: none;
-            }
+        .nav-tool .nav-tool-item > span .fa-angle-down {
+            display: none;
+        }
 
-            .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-up {
-                display: none;
-            }
+        .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-up {
+            display: none;
+        }
 
-            .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-down{
-                display: inline-block;
-            }
+        .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-down {
+            display: inline-block;
+        }
 
-            .nav-tool .nav-tool-item > span a::after {
-                content: " ";
-                display: block;
-                position: absolute;
-                left: 0;
-                top: 50%;
-                bottom: 50%;
-                width: 3px;
-                height: 15px;
-                margin: auto;
-                background-color: #28a745;
-            }
+        .nav-tool .nav-tool-item > span a::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            bottom: 50%;
+            width: 3px;
+            height: 15px;
+            margin: auto;
+            background-color: #28a745;
+        }
 
         .nav-tool .nav-tool-item > span > a.collapsed::after {
             display: none;
@@ -192,11 +210,11 @@ body {
     border: 0;
 }
 
-.table-fixed-layout{
+.table-fixed-layout {
     table-layout: fixed;
 }
 
-.data-table .spinner-grow{
+.data-table .spinner-grow {
     width: 3rem;
     height: 3rem;
     text-align: center;

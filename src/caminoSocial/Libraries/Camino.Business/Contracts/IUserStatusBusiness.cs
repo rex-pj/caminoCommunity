@@ -5,6 +5,11 @@ namespace Camino.Business.Contracts
 {
     public interface IUserStatusBusiness
     {
-        IList<StatusDto> Search(string query = "", int page = 1, int pageSize = 10);
+        IList<UserStatusDto> Search(string query = "", int page = 1, int pageSize = 10);
+        List<UserStatusDto> GetAll();
+        UserStatusDto Find(int id);
+        UserStatusDto FindByName(string name);
+        int Add(UserStatusDto statusDto);
+        UserStatusDto Update(UserStatusDto statusDto);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Camino.Business.Dtos.Identity;
-using Camino.Data.Entities.Identity;
 using System.Collections.Generic;
 
 namespace Camino.Business.Contracts
@@ -8,5 +7,9 @@ namespace Camino.Business.Contracts
     {
         List<CountryDto> GetAll();
         IList<CountryDto> Search(string query = "", int page = 1, int pageSize = 10);
+        CountryDto Find(int id);
+        CountryDto FindByName(string name);
+        int Add(CountryDto countryDto);
+        CountryDto Update(CountryDto countryDto);
     }
 }

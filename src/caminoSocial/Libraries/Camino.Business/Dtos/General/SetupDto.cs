@@ -16,7 +16,7 @@ namespace Camino.Business.Dtos.General
         public UserDto InitualUser { get; set; }
         public IEnumerable<CountryDto> Countries { get; set; }
         public IEnumerable<GenderDto> Genders { get; set; }
-        public IEnumerable<StatusDto> Statuses { get; set; }
+        public IEnumerable<UserStatusDto> Statuses { get; set; }
         public IEnumerable<RoleDto> Roles { get; set; }
         public IEnumerable<AuthorizationPolicyDto> AuthorizationPolicies { get; set; }
         public IEnumerable<UserPhotoTypeDto> UserPhotoTypes { get; set; }

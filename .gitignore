@@ -49,3 +49,5 @@ src/caminoSocial/Libraries/Camino.IdentityManager/bin/
 src/caminoSocial/Libraries/Camino.IdentityManager/obj/
 src/caminoSocial/Modules/Module.Web.Navigation/bin/
 src/caminoSocial/Modules/Module.Web.Navigation/obj/
+src/caminoSocial/Modules/Module.Web.IdentityManagement/bin/
+src/caminoSocial/Modules/Module.Web.IdentityManagement/obj/

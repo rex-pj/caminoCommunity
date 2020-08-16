@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
 using Camino.Business.Dtos.Content;
+using Camino.Business.Dtos.General;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using Module.Web.ArticleManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -21,11 +24,13 @@ namespace Module.Web.ArticleManagement.Controllers
         private readonly IArticleBusiness _articleBusiness;
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
+        private readonly IHttpHelper _httpHelper;
 
-        public ArticleController(IMapper mapper, IArticleBusiness articleBusiness,
+        public ArticleController(IMapper mapper, IArticleBusiness articleBusiness, IHttpHelper httpHelper,
             IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
+            _httpHelper = httpHelper;
             _mapper = mapper;
             _articleBusiness = articleBusiness;
             _articleCategoryBusiness = articleCategoryBusiness;
@@ -33,11 +38,34 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
         [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
-            var articles = _articleBusiness.GetFull();
-            var articleModels = _mapper.Map<List<ArticleModel>>(articles);
-            var articlePage = new PageListModel<ArticleModel>(articleModels);
+            var filterDto = new ArticleFilterDto()
+            {
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search,
+                UpdatedById = filter.UpdatedById
+            };
+
+            var articlePageList = await _articleBusiness.GetAsync(filterDto);
+            var articles = _mapper.Map<List<ArticleModel>>(articlePageList.Collections);
+            var articlePage = new PageListModel<ArticleModel>(articles)
+            {
+                Filter = filter,
+                TotalPage = articlePageList.TotalPage,
+                TotalResult = articlePageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_ArticleTable", articlePage);
+            }
+
+            return View(articlePage);
 
             return View(articlePage);
         }

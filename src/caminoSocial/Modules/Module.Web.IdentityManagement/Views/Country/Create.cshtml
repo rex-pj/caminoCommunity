@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Create country";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model CountryModel
+
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="Country" class="btn btn-sm btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <form method="post" asp-action="Create" asp-controller="Country">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
+</div>

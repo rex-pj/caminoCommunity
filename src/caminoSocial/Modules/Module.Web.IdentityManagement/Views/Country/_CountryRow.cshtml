@@ -1,0 +1,24 @@
+﻿@model CountryModel
+
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        <div>@Model.Code</div>
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Country" asp-route-id="@Model.Id">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="Country" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="Country" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+</tr>

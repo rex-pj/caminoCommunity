@@ -45,6 +45,12 @@
         RequestDomains.ROLE_AUTHORIZATION_POLICY
     };
 
+    var identityDomains = new[]
+    {
+        RequestDomains.COUNTRY,
+        RequestDomains.USER_STATUS
+    };
+
     var isHomeDomain = homeDomains.Contains(controllerName);
     var isArticleDomain = articleDomains.Contains(controllerName);
     var isFarmDomain = farmDomains.Contains(controllerName);
@@ -61,11 +67,14 @@
 
     var isUserDomain = userDomains.Contains(controllerName);
     var isRoleAndAuthorizationPolicyDomain = roleAndAuthorizationPolicyDomains.Contains(controllerName);
+    var isIdentityDomain = identityDomains.Contains(controllerName);
     var isUser = controllerName.Equals(RequestDomains.USER);
     var isRole = controllerName.Equals(RequestDomains.ROLE);
     var isAuthorizationPolicy = controllerName.Equals(RequestDomains.AUTHORIZATION_POLICY);
+    var isCountry = controllerName.Equals(RequestDomains.COUNTRY);
+    var isUserStatus = controllerName.Equals(RequestDomains.USER_STATUS);
 
-    var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain;
+    var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain || isIdentityDomain;
 }
 
 <div class="sidebar bg-dark">
@@ -338,6 +347,46 @@
                                         <i class="fa fa-angle-right"></i>
                                     </span>
                                     Authorization Policies
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-tool-item">
+                        <span>
+                            <button type="button"
+                                    class="text-secondary @(isIdentityDomain ? "active" : "collapsed")"
+                                    data-toggle="collapse"
+                                    data-target="#collapseIdentity"
+                                    aria-expanded="true"
+                                    aria-controls="collapseIdentity">
+                                <span class="mr-2">
+                                    <i class="fas fa-fingerprint"></i>
+                                </span>
+                                Identities management
+                                <i class="fa fa-angle-up"></i>
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </span>
+
+
+                        <div id="collapseIdentity"
+                             class="collapse @(isIdentityDomain ? "show" : "")"
+                             aria-labelledby="headingIdentity"
+                             data-parent="#navSecurityAccordion">
+                            <div class="list-group bg-secondary">
+                                <a asp-controller="Country"
+                                   asp-action="Index" class="list-group-item text-dark @(isCountry?"active":"")">
+                                    <span class="mr-2">
+                                        <i class="fa fa-angle-right"></i>
+                                    </span>
+                                    Countries
+                                </a>
+                                <a asp-controller="UserStatus"
+                                   asp-action="Index" class="list-group-item text-dark @(isUserStatus?"active":"")">
+                                    <span class="mr-2">
+                                        <i class="fa fa-angle-right"></i>
+                                    </span>
+                                    User Statuses
                                 </a>
                             </div>
                         </div>
