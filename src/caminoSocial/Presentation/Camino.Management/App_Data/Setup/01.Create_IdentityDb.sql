@@ -14,7 +14,6 @@ CREATE TABLE dbo.[User]
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NULL,
 	CreatedById BIGINT NULL,
-	IsActived BIT NOT NULL,
 	StatusId INT NOT NULL,
 	SecurityStamp NVARCHAR(MAX) NOT NULL
 )

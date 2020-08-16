@@ -9,7 +9,7 @@
     <WebStackScaffolding_IsReferencingScriptLibrariesSelected>False</WebStackScaffolding_IsReferencingScriptLibrariesSelected>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
-    <ActiveDebugProfile>Coco.Management</ActiveDebugProfile>
+    <ActiveDebugProfile>IIS Express</ActiveDebugProfile>
     <ShowAllFiles>false</ShowAllFiles>
     <View_SelectedScaffolderID>RazorViewScaffolder</View_SelectedScaffolderID>
     <View_SelectedScaffolderCategoryPath>root/View</View_SelectedScaffolderCategoryPath>

@@ -25,7 +25,6 @@ namespace Camino.Framework.Models
             UpdatedDate = userInfo.UpdatedDate;
             GenderId = userInfo.GenderId;
             GenderLabel = userInfo.GenderLabel;
-            IsActived = userInfo.IsActived;
             StatusId = userInfo.StatusId;
             StatusLabel = userInfo.StatusLabel;
             CountryId = userInfo.CountryId;
@@ -46,7 +45,6 @@ namespace Camino.Framework.Models
         public DateTime? UpdatedDate { get; set; }
         public int? GenderId { get; set; }
         public string GenderLabel { get; set; }
-        public bool IsActived { get; set; }
         public int StatusId { get; set; }
         public string StatusLabel { get; set; }
         public short? CountryId { get; set; }

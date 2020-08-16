@@ -2,7 +2,8 @@
 <tr>
     <th>@Model.Id</th>
     <td>@Model.Lastname @Model.Firstname</td>
-    <td>@Model.Address</td>
+    <td>@Model.DisplayName</td>
+    <td>@Model.Email</td>
     <td>
         @if (Model.BirthDate.HasValue)
         {
@@ -14,16 +15,11 @@
         @Model.GenderLabel
     </td>
     <td>
-        @if (Model.IsActived)
-        {
-            <span class="badge badge-success">Actived</span>
-        }
-        else
-        {
-            <span class="badge badge-danger">Confirmed</span>
-        }
+        <span class="badge badge-info">@Model.StatusLabel</span>
     </td>
     <td>
-        <span class="badge badge-info">@Model.StatusLabel</span>
+        <a asp-action="Detail" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <i class="fa fa-eye"></i>
+        </a>
     </td>
 </tr>

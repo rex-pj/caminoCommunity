@@ -50,7 +50,7 @@ const ProfileImage = styled(ImageRound)`
     border-radius: 20px;
   `;
 
-function ProfileAvatar({ ...props }) {
+export default function ({ ...props }) {
   const { userInfo, canEdit, className } = props;
   const { userAvatar } = userInfo;
   const dispatch = useStore(true)[1];
@@ -91,5 +91,3 @@ function ProfileAvatar({ ...props }) {
     </Wrap>
   );
 }
-
-export default ProfileAvatar;

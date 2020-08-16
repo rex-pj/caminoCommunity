@@ -136,7 +136,7 @@ namespace Camino.Data.Contracts
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return _dbProvider.Insert(entity);
+            return _dbProvider.InsertWithIdentity(entity);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Camino.Data.Contracts
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return await _dbProvider.InsertAsync(entity);
+            return await _dbProvider.InsertWithIdentityAsync(entity);
         }
 
         /// <summary>
@@ -197,6 +197,34 @@ namespace Camino.Data.Contracts
             }
 
             return await _dbProvider.InsertWithInt64IdentityAsync(entity);
+        }
+
+        /// <summary>
+        /// Add with int32 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual int AddWithInt32Entity(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return _dbProvider.InsertWithInt32Identity(entity);
+        }
+
+        /// <summary>
+        /// Add with int32 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task<int> AddWithInt32EntityAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return await _dbProvider.InsertWithInt32IdentityAsync(entity);
         }
 
         /// <summary>

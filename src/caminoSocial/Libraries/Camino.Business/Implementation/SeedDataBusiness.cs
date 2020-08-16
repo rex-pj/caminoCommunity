@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using Camino.Data.Entities.Identity;
 using Camino.Data.Entities.Content;
 using System.Threading.Tasks;
+using Camino.Data.Enums;
 
 namespace Camino.Business.Implementation
 {
@@ -102,13 +103,13 @@ namespace Camino.Business.Implementation
                             Description = statusDto.Description
                         };
 
-                        if (status.Name != "Actived")
+                        if (status.Name == UserStatus.Actived.ToString())
                         {
-                            dataConnection.Insert(status, statusTableName);
+                            activedStatusId = dataConnection.InsertWithInt32Identity(status, statusTableName);
                         }
                         else
                         {
-                            activedStatusId = dataConnection.Insert(status, statusTableName);
+                            dataConnection.InsertWithInt32Identity(status, statusTableName);
                         }
                     }
 
@@ -145,7 +146,7 @@ namespace Camino.Business.Implementation
                     try
                     {
                         user.StatusId = activedStatusId;
-                        user.IsActived = true;
+                        user.IsEmailConfirmed = true;
                         user.CreatedDate = DateTime.UtcNow;
                         user.UpdatedDate = DateTime.UtcNow;
                         var userId = dataConnection.InsertWithInt64Identity(user, nameof(User));

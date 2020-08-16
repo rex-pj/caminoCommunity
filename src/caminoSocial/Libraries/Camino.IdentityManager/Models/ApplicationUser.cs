@@ -22,7 +22,6 @@ namespace Camino.IdentityManager.Models
         public short? CountryId { get; set; }
         public string CountryName { get; set; }
         public string CountryCode { get; set; }
-        public bool IsActived { get; set; }
         public int StatusId { get; set; }
         public string UserIdentityId { get; set; }
         public DateTime? Expiration { get; set; }

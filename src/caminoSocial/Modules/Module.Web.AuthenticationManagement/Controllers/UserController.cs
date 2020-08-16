@@ -52,6 +52,15 @@ namespace Module.Web.AuthenticationManagement.Controllers
             return View(userPage);
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        public async Task<IActionResult> Detail(long id)
+        {
+            var userDto = await _userBusiness.FindFullByIdAsync(id);
+            var user = _mapper.Map<UserModel>(userDto);
+            
+            return View(user);
+        }
+
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public IActionResult Search(string q, List<long> currentUserIds)

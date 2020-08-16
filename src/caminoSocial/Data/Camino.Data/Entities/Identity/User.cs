@@ -43,8 +43,6 @@ namespace Camino.Data.Entities.Identity
         [Required]
         public long UpdatedById { get; set; }
         [Required]
-        public bool IsActived { get; set; }
-        [Required]
         public int StatusId { get; set; }
         [Required]
         public string SecurityStamp { get; set; }

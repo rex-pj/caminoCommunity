@@ -14,6 +14,8 @@
         public const string CanReadUser = "CanReadUser";
         public const string CanUpdateUser = "CanUpdateUser";
         public const string CanDeleteUser = "CanDeleteUser";
+        public const string CanActiveUser = "CanActiveUser";
+        public const string CanDeactiveUser = "CanDeactiveUser";
         public const string CanCreateUserStatus = "CanCreateUserStatus";
         public const string CanReadUserStatus = "CanReadUserStatus";
         public const string CanUpdateUserStatus = "CanUpdateUserStatus";

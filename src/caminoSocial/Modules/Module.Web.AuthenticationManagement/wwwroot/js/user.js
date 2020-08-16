@@ -14,4 +14,5 @@
         format: 'DD/MM/YYYY HH:mm'
     });
     $(".select2-remote-ajax").select2Ajax({ dropdownParent: $("#searchForm") });
+    $('[checkbox-group]').checkboxGroup();
 });

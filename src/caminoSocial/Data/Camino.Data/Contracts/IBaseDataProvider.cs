@@ -11,8 +11,10 @@ namespace Camino.Data.Contracts
     {
         ITable<TEntity> GetTable<TEntity>() where TEntity : class;
         void InsertRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
-        object Insert<TEntity>(TEntity entity);
-        Task<object> InsertAsync<TEntity>(TEntity entity);
+        object InsertWithIdentity<TEntity>(TEntity entity);
+        Task<object> InsertWithIdentityAsync<TEntity>(TEntity entity);
+        int InsertWithInt32Identity<TEntity>(TEntity entity);
+        Task<int> InsertWithInt32IdentityAsync<TEntity>(TEntity entity);
         Task<long> InsertWithInt64IdentityAsync<TEntity>(TEntity entity);
         long InsertWithInt64Identity<TEntity>(TEntity entity);
         void Update<TEntity>(TEntity entity);

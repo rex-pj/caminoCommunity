@@ -5,12 +5,8 @@
       "Description": "New creating user"
     },
     {
-      "Name": "Pending",
-      "Description": "Waiting for verification"
-    },
-    {
       "Name": "Actived",
-      "Description": "Active user"
+      "Description": "Actived user"
     },
     {
       "Name": "Reported",
@@ -23,6 +19,10 @@
     {
       "Name": "Blocked",
       "Description": "The user is being blocked"
+    },
+    {
+      "Name": "Deleted",
+      "Description": "The user is being deleted"
     }
   ],
   "Genders": [
@@ -98,6 +98,14 @@
     {
       "Name": "CanDeleteUser",
       "Description": "Can delete user"
+    },
+    {
+      "Name": "CanActiveUser",
+      "Description": "Can active user"
+    },
+    {
+      "Name": "CanActiveUser",
+      "Description": "Can deactive user"
     },
     {
       "Name": "CanCreateUserStatus",

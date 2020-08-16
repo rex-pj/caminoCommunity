@@ -1,3 +1,10 @@
-﻿.auth-box{
+﻿.auth-body {
+    height: calc(100vh - 45px);
+}
+.auth-box {
     margin-top: 60px;
+}
+
+.footer {
+    height: 45px;
 }

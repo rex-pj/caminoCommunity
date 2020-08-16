@@ -15,7 +15,6 @@ namespace Module.Web.AuthorizationManagement.Models
         public long? UpdatedById { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
-        public bool IsActived { get; set; }
         public int StatusId { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }

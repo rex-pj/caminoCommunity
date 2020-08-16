@@ -76,14 +76,16 @@
         </a>
     </div>
 
-    <ul class="nav nav-tabs bg-secondary" role="tablist" id="navTab">
-        <li class="nav-item">
-            <a class="nav-link @(!isSecurityTabOpen?"active":"")" id="general-tab" data-toggle="tab" href="#generalTab" role="tab" aria-controls="general" aria-selected="true">General</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(isSecurityTabOpen?"active":"")" id="security-tab" data-toggle="tab" href="#securityTab" role="tab" aria-controls="security" aria-selected="true">Security</a>
-        </li>
-    </ul>
+    <div class="bg-secondary pt-1">
+        <ul class="nav nav-tabs" role="tablist" id="navTab">
+            <li class="nav-item ml-1">
+                <a class="nav-link @(!isSecurityTabOpen?"active":"")" id="general-tab" data-toggle="tab" href="#generalTab" role="tab" aria-controls="general" aria-selected="true">General</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(isSecurityTabOpen?"active":"")" id="security-tab" data-toggle="tab" href="#securityTab" role="tab" aria-controls="security" aria-selected="true">Security</a>
+            </li>
+        </ul>
+    </div>
     <div class="tab-content" id="navTabContent">
         <div class="tab-pane mt-2 fade @(!isSecurityTabOpen?"show active":"")" id="generalTab" role="tabpanel" aria-labelledby="general-tab">
             <div class="nav-tool">

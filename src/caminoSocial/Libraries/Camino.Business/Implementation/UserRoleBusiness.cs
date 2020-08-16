@@ -53,7 +53,6 @@ namespace Camino.Business.Implementation
                     Firstname = x.User.Firstname,
                     UserName = x.User.UserName,
                     Email = x.User.Email,
-                    IsActived = x.User.IsActived,
                     IsEmailConfirmed = x.User.IsEmailConfirmed,
                     StatusId = x.User.StatusId
                 }).ToListAsync();

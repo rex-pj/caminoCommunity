@@ -3,7 +3,8 @@
     public class DateTimeFormatConst
     {
         public const string DateHourMinusFormat = "dd/MM/yyyy hh:mm";
-        
+        public const string DateFormat = "dd/MM/yyyy";
+
         public static readonly string[] ParseableFormats = new string[] 
         {
             "dd/MM/yyyy HH:mm", 

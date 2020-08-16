@@ -13,7 +13,6 @@ namespace  Module.Api.Auth.GraphQL.ResultTypes
             descriptor.Field(x => x.Firstname).Type<StringType>();
             descriptor.Field(x => x.Email).Type<StringType>();
             descriptor.Field(x => x.DisplayName).Type<StringType>();
-            descriptor.Field(x => x.IsActived).Type<BooleanType>();
             descriptor.Field(x => x.UserIdentityId).Type<StringType>();
             descriptor.Field(x => x.Address).Type<StringType>();
             descriptor.Field(x => x.PhoneNumber).Type<StringType>();

@@ -50,7 +50,6 @@ namespace Camino.Business.Implementation.UserBusiness
             }
 
             userDto.StatusId = 1;
-            userDto.IsActived = false;
             userDto.CreatedDate = DateTime.UtcNow;
             userDto.UpdatedDate = DateTime.UtcNow;
 
@@ -86,22 +85,20 @@ namespace Camino.Business.Implementation.UserBusiness
         public async Task DeleteAsync(long id)
         {
             var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            user.IsActived = false;
-
+            user.StatusId = (int)UserStatus.Deleted;
             await _userRepository.UpdateAsync(user);
         }
 
         public async Task<bool> ActiveAsync(long id)
         {
             var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            if (user.IsActived)
+            if (user.IsEmailConfirmed)
             {
                 throw new InvalidOperationException($"User with email: {user.Email} is already actived");
             }
 
-            user.IsActived = true;
             user.IsEmailConfirmed = true;
-            user.StatusId = (byte)UserStatus.Actived;
+            user.StatusId = (int)UserStatus.Actived;
             await _userRepository.UpdateAsync(user);
 
             return true;
@@ -295,9 +292,9 @@ namespace Camino.Business.Implementation.UserBusiness
                 userQuery = userQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
-            if (filter.IsActived.HasValue)
+            if (filter.IsEmailConfirmed.HasValue)
             {
-                userQuery = userQuery.Where(x => x.IsActived == filter.IsActived);
+                userQuery = userQuery.Where(x => x.IsEmailConfirmed == filter.IsEmailConfirmed);
             }
 
             // Filter by register date/ created date
@@ -316,7 +313,7 @@ namespace Camino.Business.Implementation.UserBusiness
 
             // Filter in UserInfo
             var userInfoQuery = _userInfoRepository.Table;
-            if (filter.GenderId != 0)
+            if (filter.GenderId.HasValue)
             {
                 userInfoQuery = userInfoQuery.Where(x => x.GenderId == filter.GenderId);
             }
@@ -360,13 +357,13 @@ namespace Camino.Business.Implementation.UserBusiness
                              Address = user.UserInfo.Address,
                              Lastname = user.Lastname,
                              Firstname = user.Firstname,
+                             DisplayName = user.DisplayName,
                              CreatedDate = user.CreatedDate,
                              UpdatedDate = user.UpdatedDate,
                              BirthDate = user.UserInfo.BirthDate,
                              IsEmailConfirmed = user.IsEmailConfirmed,
                              PhoneNumber = user.UserInfo.PhoneNumber,
                              GenderLabel = user.UserInfo.Gender.Name,
-                             IsActived = user.IsActived,
                              StatusLabel = user.Status.Name,
                              CountryName = user.UserInfo.Country.Name
                          });

@@ -3,7 +3,6 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import {
   DefaultLayout,
   DetailLayout,
-  FarmPageLayout,
   ProductPageLayout,
   FrameLayout,
   AuthLayout,
@@ -95,7 +94,7 @@ export default () => {
               path={["/farms", "/farms/page/:pageNumber"]}
               component={() => <AsyncPage page="./pages/farms" />}
             />
-            <FarmPageLayout
+            <DetailLayout
               exact={true}
               path="/farms/:id"
               component={() => <AsyncPage page="./pages/farms/detail" />}

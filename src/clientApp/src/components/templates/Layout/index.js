@@ -1,7 +1,6 @@
 import DefaultLayout from "./DefaultLayout";
 import DetailLayout from "./DetailLayout";
 import FarmGroupLayout from "./FarmGroupLayout";
-import FarmPageLayout from "./FarmPageLayout";
 import ProductPageLayout from "./ProductPageLayout";
 import FrameLayout from "./FrameLayout";
 import AuthLayout from "./AuthLayout";
@@ -14,10 +13,9 @@ export {
   DefaultLayout,
   DetailLayout,
   FarmGroupLayout,
-  FarmPageLayout,
   ProductPageLayout,
   AuthLayout,
   ProfileLayout,
   MasterLayout,
-  PromptLayout
+  PromptLayout,
 };

@@ -1,27 +1,61 @@
 import React from "react";
-import PromptLayout from "./PromptLayout";
+import MasterLayout from "./MasterLayout";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import { getLocalStorageByKey } from "../../../services/StorageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
+import styled from "styled-components";
+
+const Root = styled.div`
+  background-color: ${(p) => p.theme.color.lighter};
+  height: 100%;
+`;
+
+const Container = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding-top: 50px;
+`;
+
+const Wrap = styled.div`
+  width: 750px;
+  max-width: 100%;
+  background-color: ${(p) => p.theme.color.primaryLight};
+  min-height: 500px;
+  border-radius: ${(p) => p.theme.borderRadius.medium};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  margin: auto;
+  overflow: hidden;
+
+  .row {
+    height: 100%;
+  }
+`;
 
 function AuthLayout({ component: Component, ...rest }) {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   return (
-    <PromptLayout
+    <MasterLayout
       {...rest}
-      component={matchProps =>
-        isLogin ? (
-          <AuthBanner
-            icon="exclamation-triangle"
-            title="Bạn đã đăng nhập rồi"
-            instruction="Hãy trở lại trang chủ để theo dõi nhiều nhà nông khác"
-            actionUrl="/"
-            actionText="Trở về trang chủ"
-          />
-        ) : (
-          <Component {...matchProps} />
-        )
-      }
+      component={(matchProps) => (
+        <Root>
+          <Container>
+            <Wrap>
+              {isLogin ? (
+                <AuthBanner
+                  icon="exclamation-triangle"
+                  title="Bạn đã đăng nhập rồi"
+                  instruction="Hãy trở lại trang chủ để theo dõi nhiều nhà nông khác"
+                  actionUrl="/"
+                  actionText="Trở về trang chủ"
+                />
+              ) : (
+                <Component {...matchProps} />
+              )}
+            </Wrap>
+          </Container>
+        </Root>
+      )}
     />
   );
 }

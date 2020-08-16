@@ -1,0 +1,93 @@
+﻿@model UserModel
+@{
+    ViewData["Title"] = "User Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="User" class="btn btn-sm btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @if (Model.CanUpdate)
+    {
+        <a asp-action="Update" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+            <i class="fa fa-edit"></i>
+        </a>
+    }
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <div class="form-group">
+        <label>Name</label>
+        <span class="form-control" readonly>@Model.Lastname @Model.Firstname</span>
+    </div>
+    <div class="form-group">
+        <label>Display Name</label>
+        <span class="form-control" readonly>@Model.DisplayName</span>
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <span class="form-control" readonly>@Model.Email</span>
+    </div>
+    <div class="form-group">
+        <label>Phone</label>
+        <span class="form-control" readonly>@Model.Address</span>
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <span class="form-control" readonly>@Model.Email</span>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <span class="form-control" readonly>@Model.Description</span>
+    </div>
+    <div class="form-group">
+        <label>Birthdate</label>
+        <span class="form-control" readonly>
+            @if (Model.BirthDate.HasValue)
+            {
+                Model.BirthDate.Value.ToString(DateTimeFormatConst.DateFormat);
+            }
+        </span>
+    </div>
+    <div class="form-group">
+        <label>Joined date</label>
+        <span class="form-control" readonly>
+            @Model.CreatedDate.ToString(DateTimeFormatConst.DateFormat)
+        </span>
+    </div>
+    <div class="form-group">
+        <label>Updated date</label>
+        <span class="form-control" readonly>
+            @Model.UpdatedDate.ToString(DateTimeFormatConst.DateFormat)
+        </span>
+    </div>
+    <div class="form-group">
+        <label>Gender</label>
+        <span class="form-control" readonly>@Model.GenderLabel</span>
+    </div>
+    <div class="form-group">
+        <label>Country</label>
+        <span class="form-control" readonly>
+            @if (Model.CountryCode != null)
+            {
+                @($"[{Model.CountryCode}] - {Model.CountryName}")
+            }
+        </span>
+    </div>
+    <div class="form-group">
+        <label>Status</label>
+        <span class="badge badge-info">@Model.StatusLabel</span>
+    </div>
+    <div class="form-group">
+        <label>Email Confirmed</label>
+        @if (Model.IsEmailConfirmed)
+        {
+            <span class="badge badge-success">Confirmed</span>
+        }
+        else
+        {
+            <span class="badge badge-danger">Unconfirmed</span>
+        }
+    </div>
+</div>

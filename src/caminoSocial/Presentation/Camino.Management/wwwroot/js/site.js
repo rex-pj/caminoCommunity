@@ -58,6 +58,24 @@ $.fn.filterDataTable = function () {
     });
 }
 
+$.fn.checkboxGroup = function () {
+    $(this).on('focusin', function (e) {
+        var checkbox = $(this);
+        var isChecked = checkbox.is(':checked');
+        checkbox.data('ischecked', isChecked);
+    }).on('change', function (e) {
+        var checkbox = $(this);
+        var checkboxGroup = checkbox.attr('checkbox-group');
+        if (checkboxGroup) {
+            $('[checkbox-group="' + checkboxGroup + '"]').prop("checked", '');
+            var isChecked = checkbox.data('ischecked');
+            if (!isChecked) {
+                checkbox.prop("checked", 'checked');
+            }
+        }
+    });
+}
+
 $(function () {
     $(".common-tooltip").tooltip();
     $('.filter-form').filterDataTable();

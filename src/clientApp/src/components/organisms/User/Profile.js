@@ -1,12 +1,15 @@
 import React, { Fragment } from "react";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
-
 import styled from "styled-components";
+import { Switch, withRouter } from "react-router-dom";
 import loadable from "@loadable/component";
+import Timeline from "./Timeline";
 
-import ProfileBody from "./ProfileBody";
+const AsyncTabContent = loadable((props) =>
+    import(`${"../../../pages/user/"}${props.page}`)
+  ),
+  UserProfileInfo = loadable(() => import("./UserProfileInfo"));
 
-import { withRouter } from "react-router-dom";
 const ProfileAvatar = loadable(() => import("./ProfileAvatar")),
   UserCoverPhoto = loadable(() => import("./UserCoverPhoto")),
   ProfileNavigation = loadable(() => import("./ProfileNavigation"));
@@ -58,14 +61,9 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
 `;
 
 export default withRouter((props) => {
-  const {
-    isEditCoverMode,
-    userId,
-    pageNumber,
-    baseUrl,
-    pages,
-    userInfo,
-  } = props;
+  const { isEditCoverMode, userId, baseUrl, pages, userInfo } = props;
+
+  const { canEdit } = userInfo;
 
   return (
     <Fragment>
@@ -77,14 +75,14 @@ export default withRouter((props) => {
         ) : null}
         <UserCoverPhoto
           userInfo={userInfo}
-          canEdit={userInfo.canEdit}
+          canEdit={canEdit}
           onUpdated={props.userCoverUpdated}
           onToggleEditMode={props.onToggleEditCoverMode}
           showValidationError={props.showValidationError}
         />
         <AvatarBlock
           userInfo={userInfo}
-          canEdit={userInfo.canEdit && !isEditCoverMode}
+          canEdit={canEdit && !isEditCoverMode}
         />
         <h2>
           <ProfileNameLink
@@ -97,12 +95,42 @@ export default withRouter((props) => {
       <CoverNav>
         <ProfileNavigation userId={userId} baseUrl={baseUrl} />
       </CoverNav>
-      <ProfileBody
-        userInfo={userInfo}
-        pageNumber={pageNumber}
-        baseUrl={baseUrl}
-        pages={pages}
-      />
+      <Fragment>
+        <div className="row">
+          <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
+            <Switch>
+              {pages
+                ? pages.map((item) => {
+                    return (
+                      <Timeline
+                        key={item.dir}
+                        path={item.path}
+                        component={(props) => (
+                          <AsyncTabContent
+                            {...props}
+                            userId={userId}
+                            canEdit={canEdit}
+                            userUrl={`${baseUrl}/${userId}`}
+                            page={item.dir}
+                          />
+                        )}
+                      />
+                    );
+                  })
+                : null}
+
+              <Timeline
+                path={[`${baseUrl}`]}
+                exact={true}
+                component={() => <div>NOT FOUND</div>}
+              />
+            </Switch>
+          </div>
+          <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
+            <UserProfileInfo userInfo={userInfo} />
+          </div>
+        </div>
+      </Fragment>
     </Fragment>
   );
 });
