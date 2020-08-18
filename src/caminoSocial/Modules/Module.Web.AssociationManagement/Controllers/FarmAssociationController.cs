@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Module.Web.AssociationManagement.Controllers
 {
-    public class FarmGroupTypeController : BaseAuthController
+    public class FarmAssociationController : BaseAuthController
     {
-        public FarmGroupTypeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public FarmAssociationController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
         }
 

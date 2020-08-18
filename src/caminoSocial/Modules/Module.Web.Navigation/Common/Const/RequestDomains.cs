@@ -7,8 +7,8 @@
         public const string ARTICLE_CATEGORY = "ArticleCategory";
         public const string FARM = "Farm";
         public const string FARM_TYPE = "FarmType";
-        public const string FARM_GROUP = "FarmGroup";
-        public const string FARM_GROUP_TYPE = "FarmGroupType";
+        public const string FARM_ASSOCIATION = "FarmAssociation";
+        public const string FARM_ASSOCIATION_TYPE = "FarmAssociationType";
         public const string PRODUCT = "Product";
         public const string PRODUCT_CATEGORY = "ProductCategory";
         public const string USER = "User";

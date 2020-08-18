@@ -20,10 +20,10 @@
         RequestDomains.FARM_TYPE
     };
 
-    var farmGroupDomains = new[]
+    var farmAssociationDomains = new[]
     {
-        RequestDomains.FARM_GROUP,
-        RequestDomains.FARM_GROUP_TYPE
+        RequestDomains.FARM_ASSOCIATION,
+        RequestDomains.FARM_ASSOCIATION_TYPE
     };
 
     var productDomains = new[]
@@ -54,14 +54,14 @@
     var isHomeDomain = homeDomains.Contains(controllerName);
     var isArticleDomain = articleDomains.Contains(controllerName);
     var isFarmDomain = farmDomains.Contains(controllerName);
-    var isFarmGroupDomain = farmGroupDomains.Contains(controllerName);
+    var isFarmAssociationDomain = farmAssociationDomains.Contains(controllerName);
     var isProductDomain = productDomains.Contains(controllerName);
     var isArticle = controllerName.Equals(RequestDomains.ARTICLE);
     var isArticleCategory = controllerName.Equals(RequestDomains.ARTICLE_CATEGORY);
     var isFarm = controllerName.Equals(RequestDomains.FARM);
     var isFarmType = controllerName.Equals(RequestDomains.FARM_TYPE);
-    var isFarmGroup = controllerName.Equals(RequestDomains.FARM_GROUP);
-    var isFarmGroupType = controllerName.Equals(RequestDomains.FARM_GROUP_TYPE);
+    var isFarmAssociation = controllerName.Equals(RequestDomains.FARM_ASSOCIATION);
+    var isFarmAssociationType = controllerName.Equals(RequestDomains.FARM_ASSOCIATION_TYPE);
     var isProduct = controllerName.Equals(RequestDomains.PRODUCT);
     var isProductCategory = controllerName.Equals(RequestDomains.PRODUCT_CATEGORY);
 
@@ -123,7 +123,7 @@
                                 <span class="mr-2">
                                     <i class="far fa-newspaper"></i>
                                 </span>
-                                Article Management
+                                Article
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -163,7 +163,7 @@
                                 <span class="mr-2">
                                     <i class="fa fa-warehouse"></i>
                                 </span>
-                                Farm Management
+                                Farm
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -179,7 +179,7 @@
                                     <span class="mr-2">
                                         <i class="fa fa-angle-right"></i>
                                     </span>
-                                    Farm
+                                    Farms
                                 </a>
                                 <a asp-controller="FarmType"
                                    asp-action="Index" class="list-group-item text-dark @(isFarmType?"active":"")">
@@ -193,40 +193,40 @@
                     </div>
                     <div class="nav-tool-item">
                         <span>
-                            <a asp-controller="FarmGroup"
+                            <a asp-controller="FarmAssociation"
                                asp-action="Index"
-                               class="text-secondary @(isFarmGroupDomain ? "active" : "collapsed")"
+                               class="text-secondary @(isFarmAssociationDomain ? "active" : "collapsed")"
                                data-toggle="collapse"
-                               data-target="#collapseFarmGroup"
+                               data-target="#collapseFarmAssociation"
                                aria-expanded="true"
-                               aria-controls="collapseFarmGroup">
+                               aria-controls="collapseFarmAssociation">
                                 <span class="mr-2">
                                     <i class="far fa-flag"></i>
                                 </span>
-                                Farm Group Management
+                                Farm Association
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
                         </span>
 
-                        <div id="collapseFarmGroup"
-                             class="collapse @(isFarmGroupDomain ? "show" : "")"
-                             aria-labelledby="headingFarmGroup"
+                        <div id="collapseFarmAssociation"
+                             class="collapse @(isFarmAssociationDomain ? "show" : "")"
+                             aria-labelledby="headingFarmAssociation"
                              data-parent="#navAccordion">
                             <div class="list-group bg-secondary">
-                                <a asp-controller="FarmGroup"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarmGroup?"active":"")">
+                                <a asp-controller="FarmAssociation"
+                                   asp-action="Index" class="list-group-item text-dark @(isFarmAssociation?"active":"")">
                                     <span class="mr-2">
                                         <i class="fa fa-angle-right"></i>
                                     </span>
-                                    Farm Group
+                                    Farm Associations
                                 </a>
-                                <a asp-controller="FarmGroupType"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarmGroupType?"active":"")">
+                                <a asp-controller="FarmAssociationType"
+                                   asp-action="Index" class="list-group-item text-dark @(isFarmAssociationType?"active":"")">
                                     <span class="mr-2">
                                         <i class="fa fa-angle-right"></i>
                                     </span>
-                                    Farm Group Types
+                                    Farm Association Types
                                 </a>
                             </div>
                         </div>
@@ -243,7 +243,7 @@
                                 <span class="mr-2">
                                     <i class="fa fa-apple-alt"></i>
                                 </span>
-                                Product Management
+                                Product
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -266,7 +266,7 @@
                                     <span class="mr-2">
                                         <i class="fa fa-angle-right"></i>
                                     </span>
-                                    Products Categories
+                                    Product Categories
                                 </a>
                             </div>
                         </div>
@@ -289,7 +289,7 @@
                                 <span class="mr-2">
                                     <i class="far fa-user"></i>
                                 </span>
-                                User Management
+                                Users
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -322,7 +322,7 @@
                                 <span class="mr-2">
                                     <i class="far fa-user-circle"></i>
                                 </span>
-                                Roles & Authorization Policies
+                                Authorization
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -362,7 +362,7 @@
                                 <span class="mr-2">
                                     <i class="fas fa-fingerprint"></i>
                                 </span>
-                                Identities management
+                                Identities
                                 <i class="fa fa-angle-up"></i>
                                 <i class="fa fa-angle-down"></i>
                             </button>
