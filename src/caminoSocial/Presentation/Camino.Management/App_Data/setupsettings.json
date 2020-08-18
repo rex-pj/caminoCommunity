@@ -1,9 +1,4 @@
 ﻿{
   "HasSetupDatabase": true,
-  "SetupUrl": null,
-  "IsInitialized": true,
-  "CreateIdentityPath": null,
-  "PrepareIdentityDataPath": null,
-  "CreateContentDbPath": null,
-  "PrepareContentDataPath": null
+  "IsInitialized": true
 }

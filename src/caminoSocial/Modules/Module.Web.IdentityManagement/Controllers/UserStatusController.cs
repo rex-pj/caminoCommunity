@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
+using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +14,55 @@ using Module.Web.IdentityManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
     public class UserStatusController : BaseController
     {
         private readonly IUserStatusBusiness _userStatusBusiness;
+        private readonly IHttpHelper _httpHelper;
 
-        public UserStatusController(IHttpContextAccessor httpContextAccessor, IUserStatusBusiness userStatusBusiness)
+        public UserStatusController(IHttpContextAccessor httpContextAccessor, IUserStatusBusiness userStatusBusiness,
+            IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _userStatusBusiness = userStatusBusiness;
+            _httpHelper = httpHelper;
+        }
+
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]
+        [LoadResultAuthorizations("UserStatus", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        public async Task<IActionResult> Index(UserStatusFilterModel filter)
+        {
+            var filterDto = new UserStatusFilterDto()
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search
+            };
+
+            var statusPageList = await _userStatusBusiness.GetAsync(filterDto);
+            var statuses = statusPageList.Collections.Select(x => new UserStatusModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description
+            });
+
+            var statusPage = new PageListModel<UserStatusModel>(statuses)
+            {
+                Filter = filter,
+                TotalPage = statusPageList.TotalPage,
+                TotalResult = statusPageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_UserStatusTable", statusPage);
+            }
+
+            return View(statusPage);
         }
 
         [HttpGet]
@@ -46,22 +86,6 @@ namespace Module.Web.IdentityManagement.Controllers
                 });
 
             return Json(userModels);
-        }
-
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]
-        [LoadResultAuthorizations("UserStatus", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public IActionResult Index()
-        {
-            var statuses = _userStatusBusiness.GetAll();
-            var statusModels = statuses.Select(x => new UserStatusModel()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description
-            });
-            var statusPage = new PageListModel<UserStatusModel>(statusModels);
-
-            return View(statusPage);
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]

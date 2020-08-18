@@ -1,9 +1,13 @@
 ﻿using Camino.Business.Contracts;
+using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
 using Camino.Data.Contracts;
 using Camino.Data.Entities.Identity;
+using LinqToDB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Implementation
 {
@@ -26,6 +30,36 @@ namespace Camino.Business.Implementation
                     Code = x.Code
                 })
                 .ToList();
+        }
+
+        public async Task<PageListDto<CountryDto>> GetAsync(CountryFilterDto filter)
+        {
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var query = _countryRepository.Table
+                .Select(x => new CountryDto()
+                {
+                    Code = x.Code,
+                    Id = x.Id,
+                    Name = x.Name
+                });
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Code.ToLower().Contains(search) || x.Name.ToLower().Contains(search));
+            }
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var countries = await query.OrderBy(x => x.Code).Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize)
+                                         .ToListAsync();
+
+            var result = new PageListDto<CountryDto>(countries)
+            {
+                TotalResult = filteredNumber,
+                TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
+            };
+            return result;
         }
 
         public IList<CountryDto> Search(string query = "", int page = 1, int pageSize = 10)

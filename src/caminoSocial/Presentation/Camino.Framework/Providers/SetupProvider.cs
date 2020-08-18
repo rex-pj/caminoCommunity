@@ -91,7 +91,12 @@ namespace Camino.Framework.Providers
         {
             _fileProvider.CreateFile(filePath);
 
-            var text = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            var serializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            var text = JsonConvert.SerializeObject(settings, Formatting.Indented, serializerSettings);
             _fileProvider.WriteText(filePath, text, Encoding.UTF8);
         }
     }

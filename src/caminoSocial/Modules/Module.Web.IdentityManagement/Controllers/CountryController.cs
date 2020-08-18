@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Camino.Business.Contracts;
+using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,31 +14,51 @@ using Module.Web.IdentityManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
     public class CountryController : BaseAuthController
     {
         private readonly ICountryBusiness _countryBusiness;
+        private readonly IHttpHelper _httpHelper;
 
-        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryBusiness countryBusiness) : base(httpContextAccessor)
+        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryBusiness countryBusiness,
+            IHttpHelper httpHelper) : base(httpContextAccessor)
         {
             _countryBusiness = countryBusiness;
+            _httpHelper = httpHelper;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
         [LoadResultAuthorizations("Country", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(CountryFilterModel filter)
         {
-            var countries = _countryBusiness.GetAll();
-            var countryModels = countries.Select(x => new CountryModel()
+            var filterDto = new CountryFilterDto()
             {
-                Id = x.Id,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search
+            };
+
+            var countryPageList = await _countryBusiness.GetAsync(filterDto);
+            var countries = countryPageList.Collections.Select(x => new CountryModel() { 
                 Code = x.Code,
+                Id = x.Id,
                 Name = x.Name
             });
 
-            var countryPage = new PageListModel<CountryModel>(countryModels);
+            var countryPage = new PageListModel<CountryModel>(countries)
+            {
+                Filter = filter,
+                TotalPage = countryPageList.TotalPage,
+                TotalResult = countryPageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_CountryTable", countryPage);
+            }
 
             return View(countryPage);
         }

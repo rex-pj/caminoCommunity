@@ -1,9 +1,13 @@
 ﻿using Camino.Business.Contracts;
+using Camino.Business.Dtos.General;
 using Camino.Business.Dtos.Identity;
 using Camino.Data.Contracts;
 using Camino.Data.Entities.Identity;
+using LinqToDB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Camino.Business.Implementation.UserBusiness
 {
@@ -44,16 +48,36 @@ namespace Camino.Business.Implementation.UserBusiness
             return users;
         }
 
-        public List<UserStatusDto> GetAll()
+        public async Task<PageListDto<UserStatusDto>> GetAsync(UserStatusFilterDto filter)
         {
-            return _statusRepository.Get()
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var query = _statusRepository.Table
                 .Select(x => new UserStatusDto()
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description
-                })
-                .ToList();
+                });
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+            }
+
+            var filteredNumber = query.Select(x => x.Id).Count();
+
+            var statuses = await query.OrderBy(x => x.Id)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                                         .Take(filter.PageSize)
+                                         .ToListAsync();
+
+            var result = new PageListDto<UserStatusDto>(statuses)
+            {
+                TotalResult = filteredNumber,
+                TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
+            };
+
+            return result;
         }
 
         public UserStatusDto Find(int id)

@@ -1,28 +1,26 @@
-﻿@model PageListModel<ArticleModel>
+﻿@model PageListModel<CountryModel>
 
 <table class="table table-bordered">
     <thead>
         <tr class="bg-light">
-            <th scope="col">#</th>
+            <th scope="col">Code</th>
             <th scope="col">Name</th>
-            <th scope="col">Created</th>
-            <th scope="col">Updated</th>
             <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
         @if (Model != null && Model.Collections.Any())
         {
-            foreach (var article in Model.Collections)
+            foreach (var country in Model.Collections)
             {
-                article.SetPageAuthorizationForModel(Model);
-                <partial name="_ArticleRow" model="article" />
+                country.SetPageAuthorizationForModel(Model);
+                <partial name="_CountryRow" model="country" />
             }
         }
         else
         {
             <tr>
-                <td colspan="5" class="text-center">No data</td>
+                <td colspan="3" class="text-center">No data</td>
             </tr>
         }
     </tbody>

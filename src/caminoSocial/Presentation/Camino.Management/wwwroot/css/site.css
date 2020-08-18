@@ -153,11 +153,11 @@ body {
             display: none;
         }
 
-        .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-up {
+        .nav-tool .nav-tool-item > span > .collapsed .fa-angle-up {
             display: none;
         }
 
-        .nav-tool .nav-tool-item > span > a.collapsed .fa-angle-down {
+        .nav-tool .nav-tool-item > span > .collapsed .fa-angle-down {
             display: inline-block;
         }
 

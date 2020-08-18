@@ -5,37 +5,30 @@
 }
 
 <div class="card-header bg-dark text-light">
-    @if (Model.CanCreate)
-    {
-        <a asp-action="Create" asp-controller="Country" class="btn btn-sm btn-primary">
-            <i class="fa fa-plus"></i>
-        </a>
-    }
-    @ViewData["Title"]
-</div>
-<table class="table table-bordered">
-    <thead>
-        <tr class="bg-light">
-            <th scope="col">#</th>
-            <th scope="col">Code</th>
-            <th scope="col">Name</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Collections.Any())
-        {
-            foreach (var country in Model.Collections)
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
+                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+                <i class="fa fa-search"></i>
+            </button>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanCreate)
             {
-                country.SetPageAuthorizationForModel(Model);
-                <partial name="_CountryRow" model="country" />
+                <a asp-action="Create" asp-controller="Country" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-plus"></i>
+                </a>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4" class="text-center">No data</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
+</div>
+
+<partial name="_SearchForm" model="Model.Filter" />
+
+<div class="data-table table-responsive">
+    <partial name="_CountryTable" />
+    <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>

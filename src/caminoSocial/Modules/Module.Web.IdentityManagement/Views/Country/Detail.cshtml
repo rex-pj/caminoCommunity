@@ -5,16 +5,22 @@
 }
 
 <div class="card-header bg-dark text-light">
-    <a asp-action="Index" asp-controller="Country" class="btn btn-sm btn-secondary">
-        <i class="fa fa-arrow-left"></i>
-    </a>
-    @if (Model.CanUpdate)
-    {
-        <a asp-action="Update" asp-controller="Country" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
-            <i class="fa fa-edit"></i>
-        </a>
-    }
-    @ViewData["Title"]
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <a asp-action="Index" asp-controller="Country" class="btn btn-sm btn-secondary">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanUpdate)
+            {
+                <a asp-action="Update" asp-controller="Country" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+            }
+        </div>
+    </div>
 </div>
 <div class="card-body">
     <div class="form-group">
