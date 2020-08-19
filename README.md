@@ -20,4 +20,4 @@ Hope to have your comments to build and improve Camino better.
 - Both **Camino.ApiHost** and **Camino.Management** is built on the Modular concept, please take a look at Modules directory to see their modules.
   + The modules have the prefix like *Module.Api.* is written for **Camino.ApiHost**
   + The modules have the prefix like *Module.Api.* is written for **Camino.Management**
-- On Visual Studio 2019, *to make sure all modules are built and their assemblies are created, before you run or debug please **build the solution** first to allow all DLLs are created.
+- On Visual Studio 2019, *to make sure all modules are built and their assemblies are created*, before you run or debug please **build the solution** first to allow all DLLs are created.
