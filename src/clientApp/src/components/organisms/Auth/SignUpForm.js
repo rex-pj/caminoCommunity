@@ -132,8 +132,8 @@ export default (props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
@@ -168,28 +168,28 @@ export default (props) => {
         <div className="col col-12 col-sm-7">
           <AuthBanner
             icon="signature"
-            title="Ghi Danh"
-            instruction="Ghi danh tại đây, cùng tham gia với nhiều nhà nông khác"
+            title="Sign Up"
+            instruction="Sign up here to join with other farmers"
           />
         </div>
         <div className="col col-12 col-sm-5">
           <AuthNavigation />
           <PanelBody>
             <FormRow>
-              <Label>Họ</Label>
+              <Label>Lastname</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Nhập họ của bạn vào đây"
+                placeholder="Your Lastname"
                 name="lastname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
-              <Label>Tên</Label>
+              <Label>Firstname</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Nhập tên của bạn vào đây"
+                placeholder="Your Firstname"
                 name="firstname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
@@ -199,7 +199,7 @@ export default (props) => {
               <Label>E-mail</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Nhập e-mail"
+                placeholder="Your e-mail"
                 type="email"
                 name="email"
                 onChange={(e) => handleInputChange(e)}
@@ -207,10 +207,10 @@ export default (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Mật khẩu</Label>
+              <Label>Password</Label>
               <Textbox
                 autoComplete="new-password"
-                placeholder="Nhập mật khẩu"
+                placeholder="Your password"
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}
@@ -218,10 +218,10 @@ export default (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Nhập lại mật khẩu</Label>
+              <Label>Confirm password</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Nhập lại mật khẩu"
+                placeholder="Confirm your password"
                 type="password"
                 name="confirmPassword"
                 onChange={(e) => handleInputChange(e)}
@@ -229,7 +229,7 @@ export default (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Sinh nhật</Label>
+              <Label>Date of Birth</Label>
               <BirthDateSelector
                 name="birthDate"
                 onDateChanged={(e) => handleInputChange(e)}
@@ -237,15 +237,15 @@ export default (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Giới tính</Label>
+              <Label>Sex</Label>
               <Selection
-                placeholder="Chọn giới tính Nam/Nữ"
+                placeholder="Male/Female"
                 name="genderId"
                 onChange={(e) => handleInputChange(e)}
                 defaultValue={1}
               >
-                <option value={1}>Nam</option>
-                <option value={2}>Nữ</option>
+                <option value={1}>Male</option>
+                <option value={2}>Female</option>
               </Selection>
             </FormRow>
             <FormFooter>
@@ -253,7 +253,7 @@ export default (props) => {
                 type="submit"
                 disabled={!props.isFormEnabled || !isFormCheckValid}
               >
-                Ghi danh
+                Sign Up
               </SubmitButton>
             </FormFooter>
           </PanelBody>

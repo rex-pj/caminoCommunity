@@ -70,7 +70,7 @@ export default withRouter((props) => {
       <CoverPageBlock>
         {!isEditCoverMode ? (
           <ConnectButton icon="user-plus" size="sm">
-            Kết nối
+            Connect
           </ConnectButton>
         ) : null}
         <UserCoverPhoto

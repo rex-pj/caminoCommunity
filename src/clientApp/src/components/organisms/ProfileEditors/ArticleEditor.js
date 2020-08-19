@@ -79,7 +79,7 @@ export default withRouter((props) => {
           value={title.value}
           autoComplete="off"
           onChange={(e) => handleInputChange(e)}
-          placeholder="Tiêu đề bài viết"
+          placeholder="Title"
         />
       </FormRow>
       <FormRow>
@@ -99,7 +99,7 @@ export default withRouter((props) => {
         height={height}
         convertImageCallback={convertImageCallback}
         onImageValidate={onImageValidate}
-        placeholder="Nội dung bài viết..."
+        placeholder="Enter the content here"
         onChanged={onContentChanged}
       />
     </Fragment>

@@ -6,10 +6,10 @@ import { FifthDarkHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  background-color: ${p => p.theme.color.white};
-  border-radius: ${p => p.theme.borderRadius.normal};
-  padding: ${p => p.theme.size.exSmall};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  background-color: ${(p) => p.theme.color.white};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  padding: ${(p) => p.theme.size.exSmall};
 
   ${FifthDarkHeading} {
     span {
@@ -18,7 +18,7 @@ const Root = styled.div`
 
     svg {
       float: right;
-      color: ${p => p.theme.color.neutral};
+      color: ${(p) => p.theme.color.neutral};
     }
 
     :after {
@@ -41,12 +41,12 @@ export default class AdsList extends Component {
         title: "Vựa dừa xiêm anh Ba Rô",
         photoUrl: `${process.env.PUBLIC_URL}/photos/coconut-farm.jpg`,
         url: "#",
-        icon: "bullhorn"
+        icon: "bullhorn",
       });
     }
 
     this.state = {
-      listAds: listAds
+      listAds: listAds,
     };
   }
 
@@ -55,7 +55,7 @@ export default class AdsList extends Component {
     return (
       <Root>
         <FifthDarkHeading>
-          <span>Gợi Ý</span>
+          <span>Suggestions</span>
           <FontAwesomeIcon icon="bullhorn" />
         </FifthDarkHeading>
         <div>

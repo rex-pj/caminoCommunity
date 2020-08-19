@@ -62,7 +62,7 @@ export default function ({ ...props }) {
           userAvatar && userAvatar.code
             ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${userAvatar.code}`
             : null,
-        title: "Đổi Ảnh Đại Diện",
+        title: "Update Avatar",
         canEdit: userInfo.canEdit,
       },
       options: {

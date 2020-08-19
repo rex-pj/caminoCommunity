@@ -14,7 +14,7 @@ const Root = styled(PanelDefault)`
 const Card = styled(UserCard)`
   box-shadow: none;
   border-radius: 0;
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
 `;
 
 export default class extends Component {
@@ -23,52 +23,52 @@ export default class extends Component {
 
     const infos = [
       {
-        name: "Công việc",
+        name: "Job",
         infos: [
           {
             icon: "user",
-            name: "Nông dân"
-          }
-        ]
+            name: "Farmer",
+          },
+        ],
       },
       {
-        name: "Nông trại",
+        name: "Farms",
         infos: [
           {
             icon: "warehouse",
             name: "Vườn chú Năm (Chợ Lách)",
-            url: `${UrlConstant.Farm.url}1`
+            url: `${UrlConstant.Farm.url}1`,
           },
           {
             icon: "warehouse",
             name: "Vườn chú Năm (Mỏ Cày Bắc)",
-            url: `${UrlConstant.Farm.url}2`
-          }
-        ]
+            url: `${UrlConstant.Farm.url}2`,
+          },
+        ],
       },
       {
-        name: "Địa chỉ",
+        name: "Address",
         infos: [
           {
             icon: "map-marker-alt",
-            name: "ấp Vĩnh Bình, xã Mỹ Thạnh, huyện Cần Thinh, tỉnh Bình Tuy"
-          }
-        ]
+            name: "ấp Vĩnh Bình, xã Mỹ Thạnh, huyện Cần Thinh, tỉnh Bình Tuy",
+          },
+        ],
       },
       {
-        name: "Liên lạc",
+        name: "Contact Information",
         infos: [
           {
             icon: "phone",
-            name: "+84.787.888.667"
+            name: "+84.787.888.667",
           },
           {
             icon: "envelope",
             name: "trungle.it@gmail.com",
-            url: "/profile/4976920d11d17ddb37cd40c54330ba8e"
-          }
-        ]
-      }
+            url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
+          },
+        ],
+      },
     ];
 
     this.state = {
@@ -76,15 +76,15 @@ export default class extends Component {
         {
           icon: faUserCheck,
           text: "800",
-          description: "Được theo Dõi"
+          description: "Following",
         },
         {
           icon: faComments,
           text: "350",
-          description: "Chủ Đề"
-        }
+          description: "Topics",
+        },
       ],
-      infos
+      infos,
     };
   }
 

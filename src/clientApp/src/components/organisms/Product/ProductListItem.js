@@ -14,7 +14,7 @@ import { PriceLabel } from "../../molecules/PriceAndCurrency";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -22,14 +22,14 @@ const PanelHeader = styled(PanelHeading)`
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const Title = styled(SecondaryTitleLink)`
   margin-bottom: 0;
 
   svg {
-    margin: 0 ${p => p.theme.size.exTiny};
+    margin: 0 ${(p) => p.theme.size.exTiny};
   }
 `;
 
@@ -42,22 +42,22 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
 `;
 
-export default function(props) {
+export default function (props) {
   const { product } = props;
   const { creator } = product;
 
   if (creator) {
-    creator.info = `Gửi bài lúc ${product.createdDate}`;
+    creator.info = `Created at ${product.createdDate}`;
   }
 
   return (
@@ -98,7 +98,7 @@ export default function(props) {
             <div className="panel-content">
               <Description>
                 {product.description}{" "}
-                <AnchorLink to={product.url}>Xem Thêm</AnchorLink>
+                <AnchorLink to={product.url}>Detail</AnchorLink>
               </Description>
             </div>
           </div>

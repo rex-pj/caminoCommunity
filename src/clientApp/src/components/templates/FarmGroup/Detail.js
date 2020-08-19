@@ -20,13 +20,13 @@ const BreadCrumbNav = styled(Breadcrumb)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
   z-index: 1;
 `;
 
@@ -36,7 +36,7 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default function(props) {
+export default function (props) {
   const { farmGroup, breadcrumbs } = props;
   return (
     <PanelDefault>
@@ -46,7 +46,7 @@ export default function(props) {
         </AnchorLink>
         <ThumbnailOverlay />
         <FollowButton icon="handshake" size="sm">
-          Tham gia
+          Join
         </FollowButton>
       </GroupThumbnail>
       <BreadCrumbNav list={breadcrumbs} />

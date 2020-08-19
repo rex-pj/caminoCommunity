@@ -112,8 +112,8 @@ export default (props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại",
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again",
           "error"
         );
       }
@@ -134,14 +134,14 @@ export default (props) => {
 
   return (
     <Fragment>
-      <Heading>Cập nhật thông tin cá nhân</Heading>
+      <Heading>Update personal information</Heading>
       <MainPanel>
         <form onSubmit={(e) => onUpdate(e)} method="POST">
           {userInfo ? (
             <Fragment>
               <FormGroup>
                 <LabelAndTextbox
-                  label="Họ"
+                  label="Lastname"
                   name="lastname"
                   value={lastname.value}
                   onChange={onTextboxChange}
@@ -149,7 +149,7 @@ export default (props) => {
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
-                  label="Tên"
+                  label="Firstname"
                   name="firstname"
                   value={firstname.value}
                   onChange={onTextboxChange}
@@ -157,7 +157,7 @@ export default (props) => {
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
-                  label="Tên hiển thị"
+                  label="Display Name"
                   name="displayName"
                   value={displayName.value}
                   onChange={onTextboxChange}
@@ -172,7 +172,7 @@ export default (props) => {
               disabled={!props.isFormEnabled || !isFormValid}
             >
               <FontAwesomeIcon icon="pencil-alt" />
-              Cập Nhật
+              Update
             </SubmitButton>
           </FormFooter>
         </form>

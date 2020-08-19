@@ -14,7 +14,7 @@ export default class extends Component {
       creator: {
         photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-        name: "Anh Sáu"
+        name: "Anh Sáu",
       },
       createdDate: "26/11/2018 9:28",
       updatedDate: "26/11/2018 9:28",
@@ -26,7 +26,7 @@ export default class extends Component {
       commentNumber: "14",
       name:
         "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
-      contentType: ContentType.Article
+      contentType: ContentType.Article,
     };
 
     const product = {
@@ -47,8 +47,8 @@ export default class extends Component {
       creator: {
         photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-        name: "Bác Chín"
-      }
+        name: "Bác Chín",
+      },
     };
 
     const farmItem = {
@@ -57,7 +57,7 @@ export default class extends Component {
         photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
         name: "Ông 5 Đất",
-        info: "Nông dân"
+        info: "Farm",
       },
       thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
       description:
@@ -68,7 +68,7 @@ export default class extends Component {
       createdDate: "4/12/2018",
       name: "Trang trại ông Năm Đất",
       address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-      contentType: 3
+      contentType: 3,
     };
 
     const farmGroupItem = {
@@ -79,7 +79,7 @@ export default class extends Component {
       url: `${UrlConstant.FarmGroup.url}1`,
       followingNumber: "14",
       name: "Hội trái cây sạch An Thạnh",
-      contentType: 4
+      contentType: 4,
     };
 
     feeds.push(articleItem);
@@ -96,7 +96,7 @@ export default class extends Component {
       feeds,
       totalPage: 10,
       baseUrl: "/",
-      currentPage: 1
+      currentPage: 1,
     };
   }
 

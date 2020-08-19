@@ -8,8 +8,8 @@ export default () => {
       <div className="col col-12">
         <AuthBanner
           imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-          title={`Bạn vừa rời khỏi ${PageInfo.BrandName}`}
-          instruction="Hẹn gặp lại bạn vào lần sau"
+          title={`Logout successfully ${PageInfo.BrandName}`}
+          instruction="See you again"
         />
       </div>
     </div>

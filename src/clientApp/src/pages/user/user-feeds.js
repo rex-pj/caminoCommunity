@@ -61,7 +61,7 @@ export default withRouter((props) => {
       photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
       profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
       name: "Ông 5 Đất",
-      info: "Nông dân",
+      info: "Farmer",
     },
     thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
     description:

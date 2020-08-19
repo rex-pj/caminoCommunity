@@ -221,11 +221,11 @@ export default (props) => {
     }
 
     if (!canEdit) {
-      message = "Bạn không được quyền sửa chữa thông tin này";
+      message = "Your are unauthorized to edit this information";
     }
 
     if (!isValid) {
-      message = "Hình ảnh phải lớn hơn 1000px x 300px";
+      message = "The image size must be bigger than 1000px x 300px";
     }
 
     setDisabled(!isValid);
@@ -290,7 +290,7 @@ export default (props) => {
       const validateResult = validateForSubmit();
       if (!validateResult.isSucceed) {
         showValidationError(
-          "Bạn không thể thay đổi ảnh cover",
+          "Your are unable to update your cover photo",
           validateResult.message
         );
         return;
@@ -411,7 +411,7 @@ export default (props) => {
             <DeletePopoverConfirm
               isShown={showDeletePopover}
               target="DeleteCover"
-              title="Bạn có muốn xóa ảnh không?"
+              title="Please confirm your cover photo deletion?"
               onExecute={(e) => onDelete()}
             />
             <ButtonOutlineSecondary id="DeleteCover" size="sm">

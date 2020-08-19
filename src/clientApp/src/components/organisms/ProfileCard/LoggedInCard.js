@@ -15,21 +15,21 @@ const Card = styled(UserCard)`
   border-radius: 0;
 `;
 
-export default props => {
+export default (props) => {
   var sessionContext = useContext(SessionContext);
   const menu = {
     menuList: [
       {
         icon: faUserCheck,
         text: "800",
-        description: "Được theo Dõi"
+        description: "Following",
       },
       {
         icon: faComments,
         text: "350",
-        description: "Chủ Đề"
-      }
-    ]
+        description: "Topics",
+      },
+    ],
   };
 
   const { menuList } = menu;

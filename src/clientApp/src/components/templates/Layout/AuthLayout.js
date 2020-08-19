@@ -44,10 +44,10 @@ function AuthLayout({ component: Component, ...rest }) {
               {isLogin ? (
                 <AuthBanner
                   icon="exclamation-triangle"
-                  title="Bạn đã đăng nhập rồi"
-                  instruction="Hãy trở lại trang chủ để theo dõi nhiều nhà nông khác"
+                  title="You are logged in"
+                  instruction="Please back to the homepage to follow other farms"
                   actionUrl="/"
-                  actionText="Trở về trang chủ"
+                  actionText="Go to homepage"
                 />
               ) : (
                 <Component {...matchProps} />

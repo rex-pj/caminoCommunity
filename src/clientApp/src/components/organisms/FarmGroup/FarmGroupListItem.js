@@ -13,7 +13,7 @@ import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -37,11 +37,11 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -59,13 +59,13 @@ const CoverImage = styled(ImageRound)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
   z-index: 1;
 `;
 
@@ -75,7 +75,7 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default props => {
+export default (props) => {
   const { farmGroup } = props;
 
   return (
@@ -87,7 +87,7 @@ export default props => {
         </AnchorLink>
 
         <FollowButton icon="handshake" size="sm">
-          Tham gia
+          Join
         </FollowButton>
       </Cover>
 
@@ -119,7 +119,7 @@ export default props => {
             <InteractiveItem>
               <FontButtonItem
                 icon="users"
-                title="Người Theo Dõi"
+                title="Followers"
                 dynamicText={farmGroup.followingNumber}
               />
             </InteractiveItem>

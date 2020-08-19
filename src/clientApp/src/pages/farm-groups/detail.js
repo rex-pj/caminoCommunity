@@ -7,7 +7,7 @@ import { ContentType } from "../../utils/Enums";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 export default class extends Component {
@@ -22,8 +22,8 @@ export default class extends Component {
         title: "Hội trái cây sạch An Thạnh",
         description:
           "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm, ngoài trái cây bạn còn có thể mua thêm tùm lum tà la ở đây",
-        followingNumber: "14"
-      }
+        followingNumber: "14",
+      },
     };
 
     this.state = {
@@ -32,20 +32,20 @@ export default class extends Component {
       baseUrl: "/",
       currentPage: 1,
       breadcrumbs: [],
-      farmGroup
+      farmGroup,
     };
   }
 
   componentDidMount() {
     const breadcrumbs = [
       {
-        title: "Nông hội",
-        url: "/farm-groups/"
+        title: "Associations",
+        url: "/farm-groups/",
       },
       {
         isActived: true,
-        title: "Hội trái cây sạch An Thạnh"
-      }
+        title: "Hội trái cây sạch An Thạnh",
+      },
     ];
 
     const feeds = [];
@@ -55,7 +55,7 @@ export default class extends Component {
       creator: {
         photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-        name: "Anh Sáu"
+        name: "Anh Sáu",
       },
       createdDate: "26/11/2018 9:28",
       updatedDate: "26/11/2018 9:28",
@@ -67,7 +67,7 @@ export default class extends Component {
       commentNumber: "14",
       name:
         "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
-      contentType: ContentType.Article
+      contentType: ContentType.Article,
     };
 
     const product = {
@@ -87,8 +87,8 @@ export default class extends Component {
       creator: {
         photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
         profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-        name: "Bác Chín"
-      }
+        name: "Bác Chín",
+      },
     };
 
     feeds.push(articleItem);
@@ -105,7 +105,7 @@ export default class extends Component {
 
     this.setState({
       breadcrumbs,
-      feeds
+      feeds,
     });
   }
 
@@ -116,7 +116,7 @@ export default class extends Component {
       feeds,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.state;
 
     return (

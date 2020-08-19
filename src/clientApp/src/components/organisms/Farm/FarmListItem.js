@@ -15,7 +15,7 @@ import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -39,11 +39,11 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -61,30 +61,30 @@ const CoverImage = styled(ImageRound)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
   z-index: 1;
 `;
 
 const ProfileBox = styled(ProfileAction)`
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  left: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  left: ${(p) => p.theme.size.distance};
   z-index: 1;
 
   a {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.neutral};
-  font-size: ${p => p.theme.fontSize.tiny};
+  color: ${(p) => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {
     color: inherit;
@@ -92,7 +92,7 @@ const TopBarInfo = styled.div`
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     color: inherit;
     vertical-align: middle;
   }
@@ -102,7 +102,7 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { farm } = props;
   const { creator } = farm;
 
@@ -116,7 +116,7 @@ export default props => {
 
         <ProfileBox profile={creator} />
         <FollowButton icon="user-plus" size="sm">
-          Theo dõi
+          Follow
         </FollowButton>
       </Cover>
 
@@ -146,7 +146,7 @@ export default props => {
       <PanelBody>
         <div className="panel-content">
           <Description>
-            {farm.description} <AnchorLink to={farm.url}>Xem Thêm</AnchorLink>
+            {farm.description} <AnchorLink to={farm.url}>Detail</AnchorLink>
           </Description>
         </div>
         <InteractiveToolbar>
@@ -158,7 +158,7 @@ export default props => {
             <InteractiveItem>
               <FontButtonItem
                 icon="comments"
-                title="Thảo luận"
+                title="Discussions"
                 dynamicText={farm.commentNumber}
               />
             </InteractiveItem>

@@ -10,7 +10,7 @@ const Root = styled.div`
   }
 `;
 
-export default props => {
+export default (props) => {
   let { yearFrom, yearTo } = props;
   const { className, name, value } = props;
   yearFrom = yearFrom ? yearFrom : 1900;
@@ -24,21 +24,21 @@ export default props => {
     birthdate = {
       year: getYear(value),
       month: getMonth(value) + 1,
-      date: getDate(value)
+      date: getDate(value),
     };
   } else if (strDate) {
     birthdate = {
       year: strDate.year,
       month: strDate.month,
-      date: strDate.date
+      date: strDate.date,
     };
   }
 
-  const onDateChanged = e => {
+  const onDateChanged = (e) => {
     if (props.onDateChanged) {
       const date = {
         ...birthdate,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       };
       const dateFormatted = generateDate(date);
       props.onDateChanged({
@@ -48,31 +48,31 @@ export default props => {
           ...e.target,
           name,
           value: dateFormatted,
-          classList: parentRef.current.classList
-        }
+          classList: parentRef.current.classList,
+        },
       });
     }
   };
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const date = {
       ...birthdate,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     };
 
     setStrDate(date);
     onDateChanged(event);
   };
 
-  const handleOnBlur = e => {
+  const handleOnBlur = (e) => {
     if (props.onBlur) {
       props.onBlur({
         ...e,
         target: {
           ...e.target,
           name,
-          classList: parentRef.current.classList
-        }
+          classList: parentRef.current.classList,
+        },
       });
     }
   };
@@ -91,8 +91,8 @@ export default props => {
         name="date"
         onBlur={handleOnBlur}
       >
-        <option value="">Ngày</option>
-        {createArray(1, daysInMonth).map(day => (
+        <option value="">Date</option>
+        {createArray(1, daysInMonth).map((day) => (
           <option value={day} key={day}>
             {day}
           </option>
@@ -104,8 +104,8 @@ export default props => {
         name="month"
         onBlur={handleOnBlur}
       >
-        <option value="">Tháng</option>
-        {createArray(1, 12).map(month => (
+        <option value="">Month</option>
+        {createArray(1, 12).map((month) => (
           <option value={month} key={month}>
             {month}
           </option>
@@ -117,8 +117,8 @@ export default props => {
         name="year"
         onBlur={handleOnBlur}
       >
-        <option value="">Năm</option>
-        {years.map(year => (
+        <option value="">Year</option>
+        {years.map((year) => (
           <option value={year} key={year}>
             {year}
           </option>

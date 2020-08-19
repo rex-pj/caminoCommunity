@@ -30,17 +30,17 @@ export default withRouter((props) => {
 
   const notifyError = (error, lang) => {
     dispatch("NOTIFY", {
-      title: "Có lỗi xảy ra khi thay đổi mật khẩu",
+      title: "Something went wrong when update your password",
       message:
-        "Có lỗi xảy ra khi thay đổi mật khẩu, hãy thử lại hoặc quay lại sau",
+        "Something went wrong when update your password, please check your input and try again or turn back after",
       type: "error",
     });
   };
 
   const notifyInfo = (error, lang) => {
     dispatch("NOTIFY", {
-      title: "Đổi mật khẩu thành công",
-      message: "Bạn đã đổi mật khẩu thành công, thử đăng nhập lại",
+      title: "Update your password successfully",
+      message: "Your password has changed successfully, please sign in again",
       type: "info",
     });
   };

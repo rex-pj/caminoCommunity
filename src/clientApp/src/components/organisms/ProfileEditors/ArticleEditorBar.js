@@ -57,10 +57,10 @@ export default withRouter((props) => {
           name="categoryId"
           value={categoryId}
           onChange={(e) => handleInputChange(e)}
-          placeholder="Danh mục bài viết"
+          placeholder="Category"
         >
           <option value={0} key={0} disabled={true}>
-            Danh mục bài viết
+            Category
           </option>
           {categories
             ? categories.map((cate) => (
@@ -70,7 +70,7 @@ export default withRouter((props) => {
               ))
             : null}
         </CategorySelection>
-        <ThumbnailUpload>Chọn hình đại diện bài viết</ThumbnailUpload>
+        <ThumbnailUpload>Upload the thumbnail</ThumbnailUpload>
       </FormRow>
     </Fragment>
   );

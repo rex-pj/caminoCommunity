@@ -1,7 +1,7 @@
 import React from "react";
 import { SuggestionPanel } from "../../molecules/SuggestionPanels";
 
-export default props => {
+export default (props) => {
   const { className, index } = props;
   let { group } = props;
 
@@ -9,7 +9,7 @@ export default props => {
     ...group,
     actionIcon: "handshake",
     infoIcon: "users",
-    actionText: "Tham Gia"
+    actionText: "Join",
   };
   return <SuggestionPanel data={group} className={className} index={index} />;
 };

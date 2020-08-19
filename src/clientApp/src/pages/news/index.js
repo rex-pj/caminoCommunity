@@ -13,7 +13,7 @@ export default class extends Component {
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
           profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Anh Sáu"
+          name: "Anh Sáu",
         },
         createdDate: "26/11/2018 9:28",
         updatedDate: "26/11/2018 9:28",
@@ -24,7 +24,7 @@ export default class extends Component {
         reactionNumber: "2.5k+",
         commentNumber: "14",
         name: "Hoa quả Việt muốn 'chinh phục' thế giới thì phải sạch",
-        contentType: 1
+        contentType: 1,
       };
 
       articles.push(articleItem);
@@ -33,8 +33,8 @@ export default class extends Component {
     const breadcrumbs = [
       {
         isActived: true,
-        title: "Bài viết"
-      }
+        title: "News",
+      },
     ];
 
     this.state = {
@@ -42,7 +42,7 @@ export default class extends Component {
       totalPage: 10,
       baseUrl: "/news",
       currentPage: 8,
-      breadcrumbs
+      breadcrumbs,
     };
   }
 
@@ -52,7 +52,7 @@ export default class extends Component {
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.state;
     return (
       <Article

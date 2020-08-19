@@ -54,7 +54,7 @@ export default (class extends Component {
                   userId={userId}
                   baseUrl={baseUrl}
                 >
-                  Tổng hợp
+                  Feed
                 </NavLinkActived>
               </ListItem>
               <ListItem>
@@ -64,7 +64,7 @@ export default (class extends Component {
                   userId={userId}
                   baseUrl={baseUrl}
                 >
-                  Bài Viết
+                  Articles
                 </NavLinkActived>
               </ListItem>
               <ListItem>
@@ -73,7 +73,7 @@ export default (class extends Component {
                   {...this.props}
                   userId={userId}
                 >
-                  Sản Phẩm
+                  Products
                 </NavLinkActived>
               </ListItem>
               <ListItem>
@@ -83,7 +83,7 @@ export default (class extends Component {
                   userId={userId}
                   baseUrl={baseUrl}
                 >
-                  Nông Trại
+                  Farms
                 </NavLinkActived>
               </ListItem>
               <ListItem>
@@ -92,7 +92,7 @@ export default (class extends Component {
                   {...this.props}
                   userId={userId}
                 >
-                  Được Theo Dõi
+                  Following
                 </NavLinkActived>
               </ListItem>
               <ListItem>
@@ -102,7 +102,7 @@ export default (class extends Component {
                   userId={userId}
                   baseUrl={baseUrl}
                 >
-                  Giới thiệu
+                  About Me
                 </NavLinkActived>
               </ListItem>
             </HorizontalList>
@@ -113,12 +113,12 @@ export default (class extends Component {
               dropdown={[
                 {
                   url: `${baseUrl}/${userId}/update`,
-                  name: "Cập nhật thông tin cá nhân",
+                  name: "Update My Information",
                   isNav: true,
                 },
                 {
                   url: `${baseUrl}/${userId}/security`,
-                  name: "Bảo mật",
+                  name: "Security",
                   isNav: true,
                 },
               ]}

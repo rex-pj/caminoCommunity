@@ -5,9 +5,9 @@ import { VerticalList } from "../../atoms/List";
 import { FifthDarkHeading } from "../../atoms/Heading";
 
 const Root = styled.div`
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  border-radius: ${p => p.theme.borderRadius.normal};
-  background-color: ${p => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  background-color: ${(p) => p.theme.color.white};
 `;
 
 export default class ConnectionSuggestions extends Component {
@@ -23,12 +23,12 @@ export default class ConnectionSuggestions extends Component {
         url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
 
         id: "1212234r5423",
-        ImageUrl: `${process.env.PUBLIC_URL}/photos/conn-farmer.png`
+        ImageUrl: `${process.env.PUBLIC_URL}/photos/conn-farmer.png`,
       });
     }
 
     this.state = {
-      connections: connections
+      connections: connections,
     };
   }
 
@@ -36,7 +36,7 @@ export default class ConnectionSuggestions extends Component {
     const { connections } = this.state;
     return (
       <div>
-        <FifthDarkHeading>Kết Nối Nhà Nông</FifthDarkHeading>
+        <FifthDarkHeading>Connect To Other Farmers</FifthDarkHeading>
         <Root>
           <VerticalList>
             {connections &&

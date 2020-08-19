@@ -71,11 +71,11 @@ export default function (props) {
   const userIdentityId = userInfo ? userInfo.userIdentityId : null;
   const profileDropdowns = [
     {
-      name: "Thông tin cá nhân",
+      name: "My Profile",
       url: userIdentityId ? `/profile/${userIdentityId}` : "",
     },
     {
-      name: "Thoát",
+      name: "Logout",
       url: "/auth/signout",
     },
   ];

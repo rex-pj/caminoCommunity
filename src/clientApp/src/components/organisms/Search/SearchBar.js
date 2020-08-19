@@ -7,11 +7,11 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const SearchForm = styled.div`
   position: relative;
-  border-radius: ${p => p.theme.size.normal};
-  border: 1px solid ${p => p.theme.rgbaColor.light};
-  background-color: ${p =>
+  border-radius: ${(p) => p.theme.size.normal};
+  border: 1px solid ${(p) => p.theme.rgbaColor.light};
+  background-color: ${(p) =>
     p.isOnFocus ? p.theme.rgbaColor.dark : p.theme.rgbaColor.darkLight};
-  height: ${p => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
   margin: 1px 0;
 `;
 
@@ -21,21 +21,21 @@ const SearchInput = styled(Textbox)`
   background: transparent;
   border: 0;
   width: 300px;
-  height: calc(${p => p.theme.size.normal} - 2px);
+  height: calc(${(p) => p.theme.size.normal} - 2px);
   float: left;
-  color: ${p => p.theme.color.lighter};
-  max-width: calc(100% - ${p => p.theme.size.normal});
+  color: ${(p) => p.theme.color.lighter};
+  max-width: calc(100% - ${(p) => p.theme.size.normal});
 
   ::placeholder {
-    color: ${p => p.theme.color.light};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.light};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 `;
 
 const SearchButton = styled(ButtonPrimaryDark)`
   border-radius: 100%;
-  height: calc(${p => p.theme.size.normal} - 6px);
-  width: calc(${p => p.theme.size.normal} - 6px);
+  height: calc(${(p) => p.theme.size.normal} - 6px);
+  width: calc(${(p) => p.theme.size.normal} - 6px);
   padding: 0;
   background-color: transparent;
   border: 0;
@@ -45,16 +45,16 @@ const SearchButton = styled(ButtonPrimaryDark)`
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.dark};
+    background-color: ${(p) => p.theme.rgbaColor.dark};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.light};
+    background-color: ${(p) => p.theme.rgbaColor.light};
   }
 
   svg,
   path {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 `;
 
@@ -63,19 +63,19 @@ export default class SearchBar extends Component {
     super(props);
 
     this.state = {
-      isOnFocus: false
+      isOnFocus: false,
     };
   }
 
   onFocus = () => {
     this.setState({
-      isOnFocus: true
+      isOnFocus: true,
     });
   };
 
   onBlur = () => {
     this.setState({
-      isOnFocus: false
+      isOnFocus: false,
     });
   };
 
@@ -90,7 +90,7 @@ export default class SearchBar extends Component {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           type="search"
-          placeholder="Tìm Kiếm"
+          placeholder="Search"
           aria-label="Search"
         />
       </SearchForm>

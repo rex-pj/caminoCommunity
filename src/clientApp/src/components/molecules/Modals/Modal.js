@@ -80,8 +80,8 @@ export default ({ ...props }) => {
       })
       .catch((error) => {
         dispatch("NOTIFY", {
-          title: "Có lỗi xảy ra trong quá trình xử lý",
-          mesage: "Có lỗi xảy ra khi cập nhật, vui lòng thử lại!",
+          title: "An error occured in processing",
+          mesage: "An error occured when updating, please try again!",
           type: "error",
         });
       });

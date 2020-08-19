@@ -16,7 +16,7 @@ export default class extends Component {
         url: `${UrlConstant.FarmGroup.url}1`,
         followingNumber: "14",
         name: "Hội trái cây sạch An Thạnh",
-        contentType: 4
+        contentType: 4,
       };
 
       farmGroups.push(farmGroupItem);
@@ -25,8 +25,8 @@ export default class extends Component {
     const breadcrumbs = [
       {
         isActived: true,
-        title: "Nông hội"
-      }
+        title: "Associations",
+      },
     ];
 
     this.state = {
@@ -35,7 +35,7 @@ export default class extends Component {
       totalPage: 10,
       currentPage: 8,
       baseUrl: "/farm-groups",
-      breadcrumbs
+      breadcrumbs,
     };
   }
 
@@ -45,7 +45,7 @@ export default class extends Component {
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.state;
     return (
       <FarmGroup

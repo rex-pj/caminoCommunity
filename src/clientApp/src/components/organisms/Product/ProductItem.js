@@ -15,11 +15,11 @@ import { PriceLabel } from "../../molecules/PriceAndCurrency";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -34,7 +34,7 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -70,25 +70,25 @@ const InteractRightItem = styled(InteractiveItem)`
 `;
 
 const RowItem = styled.div`
-  margin-bottom: ${p => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
 `;
 
 const FarmInfo = styled(RowItem)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${p => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.rgbaColor.small};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.fontSize.tiny};
-    color: ${p => p.theme.color.neutral};
+    margin-right: ${(p) => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.fontSize.tiny};
+    color: ${(p) => p.theme.color.neutral};
     vertical-align: middle;
   }
 
@@ -97,12 +97,12 @@ const FarmInfo = styled(RowItem)`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { product } = props;
   const { creator } = product;
 
   if (creator) {
-    creator.info = "Nông dân";
+    creator.info = "Farmer";
   }
 
   return (

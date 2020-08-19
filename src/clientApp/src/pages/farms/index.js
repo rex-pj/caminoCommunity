@@ -13,7 +13,7 @@ export default class extends Component {
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
           profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất"
+          name: "Ông 5 Đất",
         },
         thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
         description:
@@ -23,7 +23,7 @@ export default class extends Component {
         reactionNumber: "45+",
         name: "Trang trại ông Năm Đất",
         contentType: 3,
-        address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An"
+        address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
       };
 
       farms.push(farmItem);
@@ -32,8 +32,8 @@ export default class extends Component {
     const breadcrumbs = [
       {
         isActived: true,
-        title: "Nông trại"
-      }
+        title: "Farms",
+      },
     ];
 
     this.state = {
@@ -41,7 +41,7 @@ export default class extends Component {
       totalPage: 10,
       baseUrl: "/farms",
       currentPage: 8,
-      breadcrumbs
+      breadcrumbs,
     };
   }
 

@@ -15,28 +15,28 @@ import ProductItem from "../../organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../atoms/Heading";
 
 const Title = styled(PrimaryTitle)`
-  color: ${p => p.theme.color.primary};
+  color: ${(p) => p.theme.color.primary};
 `;
 
 const ContentBody = styled.div`
-  padding: ${p => p.theme.size.distance} 0 ${p => p.theme.size.distance} 0;
+  padding: ${(p) => p.theme.size.distance} 0 ${(p) => p.theme.size.distance} 0;
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.light};
-  font-size: ${p => p.theme.fontSize.tiny};
+  color: ${(p) => p.theme.color.light};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${p => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutral};
 
   button {
     vertical-align: middle;
@@ -44,20 +44,20 @@ const PostActions = styled.div`
 `;
 
 const RowItem = styled.div`
-  margin-bottom: ${p => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
 
   label {
     font-weight: 600;
     display: inline-block;
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.fontSize.small};
-    color: ${p => p.theme.color.neutral};
+    margin-right: ${(p) => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.neutral};
     min-width: 60px;
     margin-bottom: 0;
   }
 
   ${TypographyPrimary} {
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     display: inline-block;
     margin-bottom: 0;
     font-weight: 600;
@@ -69,18 +69,18 @@ const LabelPrice = styled(PriceLabel)`
 `;
 
 const FarmInfo = styled.div`
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.fontSize.tiny};
-    color: ${p => p.theme.color.neutral};
+    margin-right: ${(p) => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.fontSize.tiny};
+    color: ${(p) => p.theme.color.neutral};
     vertical-align: middle;
   }
 
@@ -90,7 +90,7 @@ const FarmInfo = styled.div`
 `;
 
 const RelationBox = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 export default class extends Component {
@@ -157,7 +157,7 @@ export default class extends Component {
           </PanelBody>
         </PanelDefault>
         <RelationBox>
-          <TertiaryHeading>Sản phẩm khác</TertiaryHeading>
+          <TertiaryHeading>Other Products</TertiaryHeading>
           <div className="row">
             {relationProducts
               ? relationProducts.map((item, index) => {

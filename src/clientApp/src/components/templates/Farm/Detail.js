@@ -14,25 +14,25 @@ import { TertiaryHeading } from "../../atoms/Heading";
 import ThumbnailSlider from "../../molecules/ThumbnailSlider";
 
 const Title = styled(PrimaryTitle)`
-  margin-bottom: ${p => p.theme.size.exTiny};
-  color: ${p => p.theme.color.primary};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
+  color: ${(p) => p.theme.color.primary};
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.light};
-  font-size: ${p => p.theme.fontSize.tiny};
-  margin-bottom: ${p => p.theme.size.distance};
+  color: ${(p) => p.theme.color.light};
+  font-size: ${(p) => p.theme.fontSize.tiny};
+  margin-bottom: ${(p) => p.theme.size.distance};
   position: relative;
 
   span {
@@ -41,7 +41,7 @@ const TopBarInfo = styled.div`
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     color: inherit;
     vertical-align: middle;
   }
@@ -53,7 +53,7 @@ const TopBarInfo = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${p => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutral};
 
   button {
     vertical-align: middle;
@@ -62,14 +62,14 @@ const PostActions = styled.div`
 
 const BreadCrumbNav = styled(Breadcrumb)`
   border: 0;
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
   border-radius: 0;
   margin-bottom: 0;
 `;
 
 const FollowButton = styled(ButtonIconOutline)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
@@ -79,7 +79,7 @@ const FollowButton = styled(ButtonIconOutline)`
 `;
 
 const FarmProductsBox = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 export default class extends Component {
@@ -100,7 +100,7 @@ export default class extends Component {
               <span>{farm.address}</span>
 
               <FollowButton icon="user-plus" size="sm">
-                Theo dõi
+                Follow
               </FollowButton>
             </TopBarInfo>
             <div className="clearfix">
@@ -118,7 +118,7 @@ export default class extends Component {
                       <InteractiveItem>
                         <FontButtonItem
                           icon="comments"
-                          title="Thảo luận"
+                          title="Discussions"
                           dynamicText={farm.commentNumber}
                         />
                       </InteractiveItem>
@@ -140,7 +140,7 @@ export default class extends Component {
           </PanelBody>
         </PanelDefault>
         <FarmProductsBox>
-          <TertiaryHeading>Sản phẩm của nông trại</TertiaryHeading>
+          <TertiaryHeading>{farm.title}'s products</TertiaryHeading>
           <div className="row">
             {farmProducts
               ? farmProducts.map((item, index) => {

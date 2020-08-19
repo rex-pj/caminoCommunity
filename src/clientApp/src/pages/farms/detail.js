@@ -20,44 +20,44 @@ export default class extends Component {
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
         },
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana2.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
         },
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana3.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
         },
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana4.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
         },
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana5.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
         },
         {
           name: "Image 1",
           url: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana6.jpg`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
         },
         {
           name: "Peach",
           url: `${process.env.PUBLIC_URL}/photos/peach.png`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
         },
         {
           name: "Fruit",
           url: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/fruit.jpg`
-        }
-      ]
+          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
+        },
+      ],
     };
 
     this.state = { breadcrumbs: [], farm, farmProducts: [] };
@@ -71,7 +71,7 @@ export default class extends Component {
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
           profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất"
+          name: "Ông 5 Đất",
         },
         thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
         farmUrl: `${UrlConstant.Farm.url}1`,
@@ -81,31 +81,31 @@ export default class extends Component {
         reactionNumber: "45+",
         name: "Chuối chính cây Đồng Nai",
         contentType: 2,
-        price: 100000
+        price: 100000,
       };
 
       farmProducts.push(productItem);
     }
 
     this.setState({
-      farmProducts
+      farmProducts,
     });
   };
 
   componentDidMount() {
     const breadcrumbs = [
       {
-        title: "Nông trại",
-        url: "/farms/"
+        title: "Farms",
+        url: "/farms/",
       },
       {
         isActived: true,
-        title: "Trang trại ông Năm Đất"
-      }
+        title: "Trang trại ông Năm Đất",
+      },
     ];
 
     this.setState({
-      breadcrumbs
+      breadcrumbs,
     });
   }
 

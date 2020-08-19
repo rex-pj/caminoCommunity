@@ -48,12 +48,12 @@ export default withRouter(
         <Root>
           <HorizontalList className={className}>
             <ListItem className={path === "/auth/signin" ? "actived" : ""}>
-              <NavButton to="/auth/signin">Đăng Nhập</NavButton>
+              <NavButton to="/auth/signin">Sign In</NavButton>
             </ListItem>
             <ListItem
               className={path === "/auth/forgot-password" ? "actived" : ""}
             >
-              <NavButton to="/auth/forgot-password">Quên Mật Khẩu</NavButton>
+              <NavButton to="/auth/forgot-password">Forgot Password</NavButton>
             </ListItem>
             <ListItem>
               <NavButton to="/">

@@ -13,7 +13,7 @@ export default class extends Component {
         creator: {
           photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
           profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất"
+          name: "Ông 5 Đất",
         },
         thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
         farmUrl: `${UrlConstant.Farm.url}1`,
@@ -23,7 +23,7 @@ export default class extends Component {
         reactionNumber: "45+",
         name: "Chuối chính cây Đồng Nai",
         contentType: 2,
-        price: 100000
+        price: 100000,
       };
 
       products.push(productItem);
@@ -32,8 +32,8 @@ export default class extends Component {
     const breadcrumbs = [
       {
         isActived: true,
-        title: "Sản phẩm"
-      }
+        title: "Products",
+      },
     ];
 
     this.state = {
@@ -41,7 +41,7 @@ export default class extends Component {
       totalPage: 10,
       baseUrl: "/products",
       currentPage: 8,
-      breadcrumbs
+      breadcrumbs,
     };
   }
 
@@ -51,7 +51,7 @@ export default class extends Component {
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.state;
     return (
       <Product

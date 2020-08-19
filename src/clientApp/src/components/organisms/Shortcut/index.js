@@ -18,35 +18,35 @@ export default class Shorcut extends Component {
       list: [
         {
           icon: "list-alt",
-          text: "Tổng hợp",
-          href: "/"
+          text: "Newsfeed",
+          href: "/",
         },
         {
           icon: "warehouse",
-          text: "Nông trại",
-          href: "/farms/"
+          text: "Farms",
+          href: "/farms/",
         },
         {
           icon: "flag",
-          text: "Nông hội",
-          href: "/farm-groups/"
+          text: "Associations",
+          href: "/farm-groups/",
         },
         {
           icon: "apple-alt",
-          text: "Sản phẩm",
-          href: "/products/"
+          text: "Products",
+          href: "/products/",
         },
         {
           icon: "book",
-          text: "Bài viết",
-          href: "/articles/"
+          text: "Articles",
+          href: "/articles/",
         },
         {
           icon: "newspaper",
-          text: "Thông báo",
-          href: "/news/"
-        }
-      ]
+          text: "News",
+          href: "/news/",
+        },
+      ],
     };
   }
 

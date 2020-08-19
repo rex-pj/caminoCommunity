@@ -13,11 +13,11 @@ import { AnchorLink } from "../../atoms/Links";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -29,7 +29,7 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
 `;
 
 const DetailLink = styled.span`
@@ -37,26 +37,26 @@ const DetailLink = styled.span`
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
 `;
 
 const PostThumbnail = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default props => {
+export default (props) => {
   const { article } = props;
   const { creator } = article;
 
   if (creator) {
-    creator.info = `Gửi bài lúc ${article.createdDate}`;
+    creator.info = `Created at ${article.createdDate}`;
   }
 
   return (
@@ -91,7 +91,7 @@ export default props => {
           <ContentBody>
             {article.description}
             <DetailLink>
-              <AnchorLink to={article.url}>Xem Thêm</AnchorLink>
+              <AnchorLink to={article.url}>Detail</AnchorLink>
             </DetailLink>
           </ContentBody>
         </div>
@@ -104,12 +104,12 @@ export default props => {
             <InteractiveItem>
               <FontButtonItem
                 icon="comments"
-                title="Thảo luận"
+                title="Discussions"
                 dynamicText={article.commentNumber}
               />
             </InteractiveItem>
             <InteractiveItem>
-              <FontButtonItem icon="bookmark" title="Đánh dấu" />
+              <FontButtonItem icon="bookmark" title="Save this article" />
             </InteractiveItem>
           </HorizontalList>
         </div>

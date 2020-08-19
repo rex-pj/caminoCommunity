@@ -46,7 +46,7 @@ export default (props) => {
     <Fragment>
       <Body>
         <PhotoUpload onChange={(e) => handleImageChange(e)} name="src">
-          Chọn ảnh để upload
+          Select image to upload
         </PhotoUpload>
 
         <EditorImageScalePreview imageData={imageData} />

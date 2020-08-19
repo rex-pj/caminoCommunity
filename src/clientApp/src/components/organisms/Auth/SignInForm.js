@@ -117,8 +117,8 @@ export default (props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
@@ -141,8 +141,8 @@ export default (props) => {
         <div className="col col-12 col-sm-7">
           <AuthBanner
             imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-            title="Đăng Nhập"
-            instruction="Tham gia để cùng kết nối với nhiều nhà nông khác"
+            title="Sign In"
+            instruction="Join with us to connect with many other farmers"
           />
         </div>
         <div className="col col-12 col-sm-5">
@@ -151,7 +151,7 @@ export default (props) => {
             <FormRow>
               <Label>E-mail</Label>
               <Textbox
-                placeholder="Nhập e-mail"
+                placeholder="Please input your e-mail"
                 type="email"
                 name="username"
                 onChange={(e) => handleInputChange(e)}
@@ -159,9 +159,9 @@ export default (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Mật khẩu</Label>
+              <Label>Password</Label>
               <Textbox
-                placeholder="Nhập mật khẩu"
+                placeholder="Password"
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}
@@ -173,11 +173,11 @@ export default (props) => {
                 disabled={!props.isFormEnabled || !isFormValid}
                 type="submit"
               >
-                Đăng Nhập
+                Sign In
               </SubmitButton>
             </FormFooter>
             <ForgotPasswordRow>
-              <Link to="/auth/forgot-password">Quên mật khẩu?</Link>
+              <Link to="/auth/forgot-password">Forgot your password?</Link>
             </ForgotPasswordRow>
           </PanelBody>
         </div>

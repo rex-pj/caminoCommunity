@@ -266,7 +266,7 @@ const UpdateAvatarModal = (props) => {
       <PanelBody>
         <Tools>
           <AvatarUpload onChange={(e) => onChangeImage(e)}>
-            Đổi ảnh đại diện
+            Upload your avatar
           </AvatarUpload>
           {src ? (
             <ButtonRemove size="sm" onClick={remove}>
@@ -308,12 +308,12 @@ const UpdateAvatarModal = (props) => {
             <AlertPopover
               isShown={showDeletePopover}
               target="DeleteAvatar"
-              title="Bạn có muốn xóa ảnh không?"
+              title="Please confirm your avatar deletion?"
               onExecute={(e) => onDelete(e)}
             />
             <ButtonOutlineDanger size="sm" id="DeleteAvatar">
               <FontAwesomeIcon icon="trash-alt" />
-              <span>Xóa Ảnh</span>
+              <span>Delete</span>
             </ButtonOutlineDanger>
           </LeftButtonFooter>
 
@@ -324,12 +324,12 @@ const UpdateAvatarModal = (props) => {
               onClick={(e) => onUpload(e)}
             >
               <FontAwesomeIcon icon="upload" />
-              <span>Tải Ảnh</span>
+              <span>Upload</span>
             </ButtonPrimary>
 
             <ButtonSecondary size="sm" onClick={() => props.closeModal()}>
               <FontAwesomeIcon icon="times" />
-              <span>Hủy</span>
+              <span>Cancel</span>
             </ButtonSecondary>
           </div>
         </FooterButtons>

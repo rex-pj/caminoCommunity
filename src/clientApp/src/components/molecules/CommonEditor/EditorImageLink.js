@@ -55,7 +55,7 @@ export default (props) => {
     <Fragment>
       <Body>
         <FormRow>
-          <LabelNormal>Đường dẫn tới hình ảnh</LabelNormal>
+          <LabelNormal>Url of your image</LabelNormal>
           <Textbox
             name="src"
             onKeyUp={handleKeyUp}

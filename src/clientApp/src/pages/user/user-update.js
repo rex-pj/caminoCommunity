@@ -42,14 +42,14 @@ export default (props) => {
         const { errors } = response;
         if (errors) {
           showNotification(
-            "Có lỗi xảy ra trong quá trình cập nhật",
-            "Kiểm tra lại thông tin và thử lại",
+            "An error occcured when updating your information",
+            "Please check your input and try again",
             "error"
           );
         } else {
           showNotification(
-            "Thay đổi thành công",
-            "Bạn đã cập nhật thông tin cá nhân thành công",
+            "The information is changed successfully",
+            "The information is changed successfully",
             "info"
           );
           refetch();
@@ -61,8 +61,8 @@ export default (props) => {
       })
       .catch(() => {
         showNotification(
-          "Có lỗi xảy ra trong quá trình cập nhật",
-          "Kiểm tra lại thông tin và thử lại",
+          "An error occured when updating your information",
+          "Please check your input and try again",
           "error"
         );
       });

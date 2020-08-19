@@ -11,7 +11,7 @@ import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const PostTitle = styled(SecondaryTitleLink)`
@@ -23,14 +23,14 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
   height: 75px;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -61,13 +61,13 @@ const InteractItem = styled(InteractiveItem)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.tiny};
-  right: ${p => p.theme.size.tiny};
+  bottom: ${(p) => p.theme.size.tiny};
+  right: ${(p) => p.theme.size.tiny};
 `;
 
 const ThumbnailOverlay = styled(Overlay)`
@@ -76,7 +76,7 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default props => {
+export default (props) => {
   const { farmGroup } = props;
 
   return (
@@ -87,7 +87,7 @@ export default props => {
           <ThumbnailOverlay />
         </AnchorLink>
         <FollowButton icon="handshake" size="sm">
-          Tham gia
+          Join
         </FollowButton>
       </ThumbnailBox>
       <PanelHeader>

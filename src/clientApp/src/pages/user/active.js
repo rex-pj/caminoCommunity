@@ -29,8 +29,8 @@ export default withRouter((props) => {
     return (
       <Active
         icon="check"
-        title="Đang chờ kích hoạt"
-        instruction="Sau khi kích hoạt thành công bạn sẽ được chuyển đến trang đăng nhập"
+        title="Waiting for activation"
+        instruction="After successful activation you will be redirected to the login page"
         actionUrl="/"
         actionText="Vào trang chủ"
       />
@@ -51,8 +51,8 @@ export default withRouter((props) => {
   return (
     <Active
       icon="check"
-      title="Kích hoạt thành công"
-      instruction="Bạn đã kích hoạt tài khoản thành công"
+      title="Successful activation"
+      instruction="You have successfully activated your account"
       actionUrl="/"
       actionText="Vào trang chủ"
     />

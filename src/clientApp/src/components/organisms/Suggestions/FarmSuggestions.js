@@ -5,14 +5,14 @@ import { VerticalList } from "../../atoms/List";
 import { FifthDarkHeading } from "../../atoms/Heading";
 
 const Root = styled.div`
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  border-radius: ${p => p.theme.borderRadius.normal};
-  background-color: ${p => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  background-color: ${(p) => p.theme.color.white};
 `;
 
 const List = styled(VerticalList)`
   li {
-    margin-bottom: ${p => p.theme.size.exSmall};
+    margin-bottom: ${(p) => p.theme.size.exSmall};
   }
 `;
 
@@ -30,12 +30,12 @@ export default class FarmSuggestions extends Component {
         url: "/farms/1",
 
         id: "1212234r5423",
-        photoUrl: `${process.env.PUBLIC_URL}/photos/fs.jpg`
+        photoUrl: `${process.env.PUBLIC_URL}/photos/fs.jpg`,
       });
     }
 
     this.state = {
-      farms: farms
+      farms: farms,
     };
   }
 
@@ -43,7 +43,7 @@ export default class FarmSuggestions extends Component {
     const { farms } = this.state;
     return (
       <div>
-        <FifthDarkHeading>Thăm Quan Nông Trại Khác?</FifthDarkHeading>
+        <FifthDarkHeading>Visit other farms</FifthDarkHeading>
         <Root>
           <List>
             {farms &&

@@ -15,11 +15,11 @@ import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -34,12 +34,12 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
   height: 160px;
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -75,18 +75,18 @@ const InteractRightItem = styled(InteractiveItem)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.tiny};
-  right: ${p => p.theme.size.tiny};
+  bottom: ${(p) => p.theme.size.tiny};
+  right: ${(p) => p.theme.size.tiny};
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.neutral};
-  font-size: ${p => p.theme.fontSize.tiny};
+  color: ${(p) => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {
     color: inherit;
@@ -94,7 +94,7 @@ const TopBarInfo = styled.div`
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     color: inherit;
     vertical-align: middle;
   }
@@ -104,12 +104,12 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { farm } = props;
   const { creator } = farm;
 
   if (creator) {
-    creator.info = "Nông dân";
+    creator.info = "Farmer";
   }
 
   return (
@@ -120,7 +120,7 @@ export default props => {
           <Overlay />
         </AnchorLink>
         <FollowButton icon="user-plus" size="sm">
-          Theo dõi
+          Follow
         </FollowButton>
       </ThumbnailBox>
       <PanelHeader>
