@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Dtos.Content;
-using Camino.Data.Entities.Content;
+using Camino.DAL.Entities;
+using Camino.Service.Data.Content;
 using Module.Web.ArticleManagement.Models;
 
 namespace Module.Web.ArticleManagement.Infrastructure.AutoMap
@@ -9,15 +9,15 @@ namespace Module.Web.ArticleManagement.Infrastructure.AutoMap
     {
         public ArticleMappingProfile()
         {
-            CreateMap<ArticleModel, ArticleDto>();
-            CreateMap<ArticleDto, ArticleModel>();
-            CreateMap<ArticleDto, Article>();
-            CreateMap<Article, ArticleDto>();
+            CreateMap<ArticleModel, ArticleResult>();
+            CreateMap<ArticleResult, ArticleModel>();
+            CreateMap<ArticleResult, Article>();
+            CreateMap<Article, ArticleResult>();
 
-            CreateMap<ArticleCategoryModel, ArticleCategoryDto>();
-            CreateMap<ArticleCategoryDto, ArticleCategoryModel>();
-            CreateMap<ArticleCategoryDto, ArticleCategory>();
-            CreateMap<ArticleCategory, ArticleCategoryDto>();
+            CreateMap<ArticleCategoryModel, ArticleCategoryResult>();
+            CreateMap<ArticleCategoryResult, ArticleCategoryModel>();
+            CreateMap<ArticleCategoryResult, ArticleCategory>();
+            CreateMap<ArticleCategory, ArticleCategoryResult>();
         }
     }
 }

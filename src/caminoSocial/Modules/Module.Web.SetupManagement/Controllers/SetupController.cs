@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Identity;
 using Camino.Data.Enums;
 using Camino.Framework.Providers.Contracts;
 using Module.Web.SetupManagement.Models;
@@ -13,12 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts;
+using Camino.Service.Business.Setup.Contracts;
+using Camino.Service.Data.Request;
 
 namespace Module.Web.SetupManagement.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly ISeedDataBusiness _seedDataBusiness;
+        private readonly ISetupBusiness _seedDataBusiness;
         private readonly ISetupProvider _setupProvider;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ namespace Module.Web.SetupManagement.Controllers
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IUserManager<ApplicationUser> _userManager;
         
-        public SetupController(ISeedDataBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
+        public SetupController(ISetupBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
             IFileProvider fileProvider, IUserSecurityStampStore<ApplicationUser> userSecurityStampStore, 
             IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager)
         {
@@ -90,15 +90,15 @@ namespace Module.Web.SetupManagement.Controllers
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-                var identitySetup = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
-                identitySetup.InitualUser = _mapper.Map<UserDto>(initialUser);
+                var identitySetup = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
+                identitySetup.InitualUser = _mapper.Map<UserResult>(initialUser);
 
                 // Initialize identity database
                 await _seedDataBusiness.PrepareIdentityDataAsync(identitySetup);
 
                 // Get content json data
                 var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
-                var contentSetup = JsonConvert.DeserializeObject<SetupDto>(contentJson);
+                var contentSetup = JsonConvert.DeserializeObject<SetupRequest>(contentJson);
 
                 // Initialize content database
                 await _seedDataBusiness.PrepareContentDataAsync(contentSetup);

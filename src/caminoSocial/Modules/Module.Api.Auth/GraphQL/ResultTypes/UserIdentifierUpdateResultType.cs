@@ -1,4 +1,4 @@
-﻿using Camino.Business.Dtos.Identity;
+﻿using Camino.Service.Data.Identity;
 using HotChocolate.Types;
 
 namespace  Module.Api.Auth.GraphQL.ResultTypes

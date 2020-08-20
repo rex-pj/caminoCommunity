@@ -1,6 +1,6 @@
-﻿using Camino.Business.Contracts;
-using Camino.IdentityManager.Contracts;
+﻿using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
+using Camino.Service.Business.Authentication.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;

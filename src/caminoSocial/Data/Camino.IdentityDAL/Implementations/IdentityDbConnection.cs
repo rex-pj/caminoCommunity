@@ -1,5 +1,5 @@
 ﻿using Camino.Data.Contracts;
-using Camino.Data.Entities.Identity;
+using Camino.IdentityDAL.Entities;
 using LinqToDB;
 using LinqToDB.Configuration;
 

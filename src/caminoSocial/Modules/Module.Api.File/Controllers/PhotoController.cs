@@ -1,8 +1,8 @@
-﻿using Camino.Business.Contracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Camino.Data.Enums;
+using Camino.Service.Business.Users.Contracts;
 
 namespace Module.Api.File.Controllers
 {

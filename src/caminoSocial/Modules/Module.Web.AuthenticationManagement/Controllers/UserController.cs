@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
+using Camino.Service.Data.Filters;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthenticationManagement.Models;
@@ -10,9 +10,9 @@ using System.Linq;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
-using Camino.Business.Dtos.General;
 using System.Threading.Tasks;
 using Camino.Framework.Helpers.Contracts;
+using Camino.Service.Business.Users.Contracts;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -35,7 +35,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var filterDto = _mapper.Map<UserFilterDto>(filter);
+            var filterDto = _mapper.Map<UserFilter>(filter);
             var userPageList = await _userBusiness.GetAsync(filterDto);
             var users = _mapper.Map<List<UserModel>>(userPageList.Collections);
             var userPage = new PageListModel<UserModel>(users) { 

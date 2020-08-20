@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+﻿using Camino.Service.Data.Filters;
+using Camino.Service.Data.Identity;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
@@ -15,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Service.Business.Identities.Contracts;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
@@ -34,7 +33,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [LoadResultAuthorizations("Country", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(CountryFilterModel filter)
         {
-            var filterDto = new CountryFilterDto()
+            var filterDto = new CountryFilter()
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
@@ -119,7 +118,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateCountry)]
         public IActionResult Create(CountryModel model)
         {
-            var country = new CountryDto()
+            var country = new CountryResult()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -152,7 +151,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var country = new CountryDto()
+            var country = new CountryResult()
             {
                 Id = model.Id,
                 Name = model.Name,

@@ -1,11 +1,11 @@
-﻿using Camino.Business.Dtos.General;
+﻿using Camino.Service.Data.Request;
 using HotChocolate.Types;
 
-namespace  Module.Api.Auth.GraphQL.ResultTypes
+namespace Module.Api.Auth.GraphQL.ResultTypes
 {
-    public class UserPhotoUpdatedResultType : ObjectType<UserPhotoUpdation>
+    public class UserPhotoUpdatedResultType : ObjectType<UserPhotoUpdateRequest>
     {
-        protected override void Configure(IObjectTypeDescriptor<UserPhotoUpdation> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<UserPhotoUpdateRequest> descriptor)
         {
             descriptor.Field(x => x.ContentType).Type<NonNullType<StringType>>();
             descriptor.Field(x => x.Height).Type<NonNullType<FloatType>>();

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Data.Entities.Content;
-using Camino.Business.Dtos.Content;
+using Camino.DAL.Entities;
+using Camino.Service.Data.Content;
 
 namespace Module.Api.Content.Infrastructure.AutoMap
 {
@@ -8,7 +8,7 @@ namespace Module.Api.Content.Infrastructure.AutoMap
     {
         public ContentMappingProfile()
         {
-            CreateMap<UserPhoto, UserPhotoDto>();
+            CreateMap<UserPhoto, UserPhotoResult>();
         }
     }
 }

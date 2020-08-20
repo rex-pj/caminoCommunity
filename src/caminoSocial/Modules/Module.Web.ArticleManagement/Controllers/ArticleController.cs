@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.Content;
-using Camino.Business.Dtos.General;
+using Camino.Service.Data.Content;
+using Camino.Service.Data.Filters;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
@@ -16,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Service.Business.Articles.Contracts;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -40,7 +40,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
-            var filterDto = new ArticleFilterDto()
+            var filterDto = new ArticleFilter()
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -142,7 +142,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var article = _mapper.Map<ArticleDto>(model);
+            var article = _mapper.Map<ArticleResult>(model);
             var exist = _articleBusiness.FindByName(model.Name);
             if (exist != null)
             {
@@ -165,7 +165,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var article = _mapper.Map<ArticleDto>(model);
+            var article = _mapper.Map<ArticleResult>(model);
             if (article.Id <= 0)
             {
                 return RedirectToErrorPage();

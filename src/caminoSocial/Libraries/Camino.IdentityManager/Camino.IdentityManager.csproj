@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Camino.Business\Camino.Business.csproj" />
+    <ProjectReference Include="..\Camino.Service\Camino.Service.csproj" />
   </ItemGroup>
 
 </Project>

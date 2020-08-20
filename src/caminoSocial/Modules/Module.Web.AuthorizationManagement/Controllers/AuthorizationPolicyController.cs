@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
 using Camino.Core.Utils;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Identity;
 using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
@@ -15,8 +14,9 @@ using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
-using Camino.Business.Dtos.General;
+using Camino.Service.Data.Filters;
 using Camino.Framework.Helpers.Contracts;
+using Camino.Service.Business.Authorization.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -42,7 +42,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
-            var filterDto = _mapper.Map<AuthorizationPolicyFilterDto>(filter);
+            var filterDto = _mapper.Map<AuthorizationPolicyFilter>(filter);
             var policiesPageList = _authorizationPolicyBusiness.Get(filterDto);
 
             var policyModels = _mapper.Map<List<AuthorizationPolicyModel>>(policiesPageList.Collections);
@@ -144,7 +144,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyDto>(model);
+            var policy = _mapper.Map<AuthorizationPolicyResult>(model);
             policy.UpdatedById = LoggedUserId;
             policy.CreatedById = LoggedUserId;
             var newId = _authorizationPolicyBusiness.Add(policy);
@@ -173,7 +173,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyDto>(model);
+            var policy = _mapper.Map<AuthorizationPolicyResult>(model);
             policy.UpdatedById = LoggedUserId;
             var newId = _authorizationPolicyBusiness.Update(policy);
 

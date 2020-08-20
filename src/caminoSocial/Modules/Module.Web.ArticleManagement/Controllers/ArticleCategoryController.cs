@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.Content;
-using Camino.Business.Dtos.General;
+using Camino.Service.Data.Content;
+using Camino.Service.Data.Filters;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
@@ -16,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Service.Business.Articles.Contracts;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -38,7 +38,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var filterDto = new ArticleCategoryFilterDto()
+            var filterDto = new ArticleCategoryFilter()
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -134,7 +134,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryDto>(model);
+            var category = _mapper.Map<ArticleCategoryResult>(model);
             var exist = _articleCategoryBusiness.FindByName(model.Name);
             if (exist != null)
             {
@@ -152,7 +152,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public IActionResult Update(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryDto>(model);
+            var category = _mapper.Map<ArticleCategoryResult>(model);
             if (category.Id <= 0)
             {
                 return RedirectToErrorPage();

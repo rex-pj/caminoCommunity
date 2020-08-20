@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+﻿using Camino.Service.Data.Filters;
+using Camino.Service.Data.Identity;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
@@ -15,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Service.Business.Users.Contracts;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
@@ -35,7 +34,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [LoadResultAuthorizations("UserStatus", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserStatusFilterModel filter)
         {
-            var filterDto = new UserStatusFilterDto()
+            var filterDto = new UserStatusFilter()
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
@@ -150,7 +149,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusDto()
+            var status = new UserStatusResult()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -176,7 +175,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusDto()
+            var status = new UserStatusResult()
             {
                 Id = model.Id,
                 Name = model.Name,

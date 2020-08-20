@@ -1,7 +1,6 @@
 ﻿using Module.Api.Auth.Models;
 using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.Content;
+using Camino.Service.Data.Content;
 using Camino.Data.Enums;
 using Camino.Framework.GraphQL.Resolvers;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Core;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
+using Camino.Service.Business.Users.Contracts;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -79,7 +79,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
         }
 
-        private UserPhotoDto GetUserPhoto(long userId, UserPhotoKind type)
+        private UserPhotoResult GetUserPhoto(long userId, UserPhotoKind type)
         {
             var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
             if (userPhoto != null)

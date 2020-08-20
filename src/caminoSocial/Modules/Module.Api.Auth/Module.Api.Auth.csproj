@@ -16,6 +16,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
 		<ProjectReference Include="..\..\Presentation\Camino.Framework\Camino.Framework.csproj" />
-		<ProjectReference Include="..\..\Libraries\Camino.Business\Camino.Business.csproj" />
+		<ProjectReference Include="..\..\Libraries\Camino.Service\Camino.Service.csproj" />
 	</ItemGroup>
 </Project>

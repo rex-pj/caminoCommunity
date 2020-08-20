@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Filters;
+using Camino.Service.Data.Identity;
 using Camino.IdentityManager.Models;
 using Module.Web.AuthorizationManagement.Models;
 
@@ -10,25 +10,25 @@ namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
     {
         public AuthorizationMappingProfile()
         {
-            CreateMap<RoleDto, RoleModel>();
-            CreateMap<RoleModel, RoleDto>();
-            CreateMap<AuthorizationPolicyDto, AuthorizationPolicyModel>();
-            CreateMap<AuthorizationPolicyModel, AuthorizationPolicyDto>();
-            CreateMap<AuthorizationPolicyUsersDto, AuthorizationPolicyUsersModel>();
-            CreateMap<AuthorizationPolicyRolesDto, AuthorizationPolicyRolesModel>();
+            CreateMap<RoleResult, RoleModel>();
+            CreateMap<RoleModel, RoleResult>();
+            CreateMap<AuthorizationPolicyResult, AuthorizationPolicyModel>();
+            CreateMap<AuthorizationPolicyModel, AuthorizationPolicyResult>();
+            CreateMap<AuthorizationPolicyUsersResult, AuthorizationPolicyUsersModel>();
+            CreateMap<AuthorizationPolicyRolesResult, AuthorizationPolicyRolesModel>();
 
-            CreateMap<UserRoleAuthorizationPoliciesDto, ApplicationUserRoleAuthorizationPolicy>();
-            CreateMap<RoleAuthorizationPoliciesDto, ApplicationRole>();
-            CreateMap<AuthorizationPolicyDto, ApplicationAuthorizationPolicy>();
+            CreateMap<UserRoleAuthorizationPoliciesResult, ApplicationUserRoleAuthorizationPolicy>();
+            CreateMap<RoleAuthorizationPoliciesResult, ApplicationRole>();
+            CreateMap<AuthorizationPolicyResult, ApplicationAuthorizationPolicy>();
             CreateMap<ApplicationRole, RoleModel>();
-            CreateMap<UserDto, UserModel>();
-            CreateMap<UserModel, UserDto>();
+            CreateMap<UserResult, UserModel>();
+            CreateMap<UserModel, UserResult>();
 
-            CreateMap<AuthorizationPolicyFilterModel, AuthorizationPolicyFilterDto>();
-            CreateMap<RoleAuthorizationPolicyFilterModel, RoleAuthorizationPolicyFilterDto>();
-            CreateMap<RoleFilterModel, RoleFilterDto>();
+            CreateMap<AuthorizationPolicyFilterModel, AuthorizationPolicyFilter>();
+            CreateMap<RoleAuthorizationPolicyFilterModel, RoleAuthorizationPolicyFilter>();
+            CreateMap<RoleFilterModel, RoleFilter>();
 
-            CreateMap<UserAuthorizationPolicyFilterModel, UserAuthorizationPolicyFilterDto>();
+            CreateMap<UserAuthorizationPolicyFilterModel, UserAuthorizationPolicyFilter>();
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using Module.Api.Content.Models;
 using Module.Api.Content.GraphQL.Resolvers.Contracts;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.General;
 using Camino.Data.Enums;
 using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
 using System;
 using System.Threading.Tasks;
 using Camino.IdentityManager.Contracts.Core;
+using Camino.Service.Business.Users.Contracts;
+using Camino.Service.Data.Request;
 
 namespace Module.Api.Content.GraphQL.Resolvers
 {
@@ -21,7 +21,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
             _userPhotoBusiness = userPhotoBusiness;
         }
 
-        public async Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdation criterias)
+        public async Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdateRequest criterias)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdation criterias)
+        public async Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdateRequest criterias)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
                 }
 
                 await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoKind.Avatar);
-                return CommonResult.Success(new UserPhotoUpdation());
+                return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
                 }
 
                 await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoKind.Cover);
-                return CommonResult.Success(new UserPhotoUpdation());
+                return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception ex)
             {

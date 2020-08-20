@@ -1,5 +1,5 @@
 ﻿using Camino.Core.Constants;
-using Camino.Data.Entities.Content;
+using Camino.DAL.Entities;
 using Camino.Data.MapBuilders;
 using LinqToDB.Mapping;
 

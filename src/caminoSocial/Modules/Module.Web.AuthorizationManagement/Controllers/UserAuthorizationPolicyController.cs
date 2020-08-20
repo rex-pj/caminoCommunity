@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
 using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
@@ -7,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
-using Camino.Business.Dtos.General;
+using Camino.Service.Data.Filters;
 using Camino.Framework.Helpers.Contracts;
+using Camino.Service.Business.Authorization.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -30,7 +30,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("UserAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
         public IActionResult Index(UserAuthorizationPolicyFilterModel filter)
         {
-            var filterDto = _mapper.Map<UserAuthorizationPolicyFilterDto>(filter);
+            var filterDto = _mapper.Map<UserAuthorizationPolicyFilter>(filter);
             var authorizationUsers = _userAuthorizationPolicyBusiness.GetAuthoricationPolicyUsers(filter.Id, filterDto);
 
             var authorizationUsersPage = _mapper.Map<AuthorizationPolicyUsersModel>(authorizationUsers);

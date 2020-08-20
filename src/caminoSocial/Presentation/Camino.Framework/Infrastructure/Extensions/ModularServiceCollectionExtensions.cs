@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.AutoMap;
+using Camino.Service.AutoMap;
 using Camino.Core.Infrastructure;
 using Camino.Core.Models;
 using Camino.Core.Modular.Implementations;

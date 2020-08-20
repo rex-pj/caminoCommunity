@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Filters;
+using Camino.Service.Data.Identity;
 using Module.Web.AuthenticationManagement.Models;
 
 namespace Module.Web.SetupManagement.Infrastructure.AutoMap
@@ -10,8 +10,8 @@ namespace Module.Web.SetupManagement.Infrastructure.AutoMap
         public AuthenticationMappingProfile()
         {
             CreateMap<UserFullDto, UserModel>();
-            CreateMap<UserDto, UserModel>();
-            CreateMap<UserFilterModel, UserFilterDto>();
+            CreateMap<UserResult, UserModel>();
+            CreateMap<UserFilterModel, UserFilter>();
         }
     }
 }

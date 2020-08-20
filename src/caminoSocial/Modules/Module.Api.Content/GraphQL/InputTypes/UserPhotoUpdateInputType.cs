@@ -1,11 +1,11 @@
-﻿using Camino.Business.Dtos.General;
+﻿using Camino.Service.Data.Request;
 using HotChocolate.Types;
 
 namespace Module.Api.Content.GraphQL.InputTypes
 {
-    public class UserPhotoUpdateInputType : InputObjectType<UserPhotoUpdation>
+    public class UserPhotoUpdateInputType : InputObjectType<UserPhotoUpdateRequest>
     {
-        protected override void Configure(IInputObjectTypeDescriptor<UserPhotoUpdation> descriptor)
+        protected override void Configure(IInputObjectTypeDescriptor<UserPhotoUpdateRequest> descriptor)
         {
             descriptor.Field(x => x.ContentType).Type<NonNullType<StringType>>();
             descriptor.Field(x => x.Height).Type<NonNullType<FloatType>>();

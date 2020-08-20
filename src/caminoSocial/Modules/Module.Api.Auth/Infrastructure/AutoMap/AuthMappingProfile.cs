@@ -1,11 +1,12 @@
 ﻿using Module.Api.Auth.Models;
 using AutoMapper;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Common;
+using Camino.Service.Data.Identity;
 using Camino.Framework.Models;
-using Camino.Business.Dtos.Content;
+using Camino.Service.Data.Content;
 using Camino.Data.Enums;
 using Camino.IdentityManager.Models;
+using Camino.Service.Data.Request;
 
 namespace  Module.Api.Auth.Infrastructure.AutoMap
 {
@@ -13,12 +14,12 @@ namespace  Module.Api.Auth.Infrastructure.AutoMap
     {
         public AuthMappingProfile()
         {
-            CreateMap<UpdatePerItemModel, UpdatePerItem>();
-            CreateMap<UpdatePerItem, UpdatePerItemModel>();
+            CreateMap<UpdatePerItemModel, UpdateItemRequest>();
+            CreateMap<UpdateItemRequest, UpdatePerItemModel>();
             CreateMap<UserFullDto, FullUserInfoModel>();
             CreateMap<ApplicationUser, FullUserInfoModel>();
-            CreateMap<UserPhotoDto, UserAvatarModel>();
-            CreateMap<UserPhotoDto, UserPhotoModel>()
+            CreateMap<UserPhotoResult, UserAvatarModel>();
+            CreateMap<UserPhotoResult, UserPhotoModel>()
                 .ForMember(dest => dest.PhotoType, opt => opt.MapFrom((src, dest) => { 
                     if(src.TypeId > 0)
                     {

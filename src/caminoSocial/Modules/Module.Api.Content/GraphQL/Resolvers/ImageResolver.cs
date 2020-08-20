@@ -1,7 +1,7 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Module.Api.Content.GraphQL.Resolvers.Contracts;
 using Module.Api.Content.Models;
-using Camino.Business.ValidationStrategies;
+using Camino.Service.Strategies.Validation;
 using Camino.Framework.Models;
 using Camino.Core.Models;
 using Camino.IdentityManager.Contracts.Core;

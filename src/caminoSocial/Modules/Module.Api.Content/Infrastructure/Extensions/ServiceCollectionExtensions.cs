@@ -2,7 +2,7 @@
 using Module.Api.Content.GraphQL.Resolvers;
 using Module.Api.Content.GraphQL.Resolvers.Contracts;
 using AutoMapper;
-using Camino.Business.AutoMap;
+using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Content", "Modul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Auth", "Modules\Module.Api.Auth\Module.Api.Auth.csproj", "{F1FA116A-D69A-46DF-97CA-BD49DB4874A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Business", "Libraries\Camino.Business\Camino.Business.csproj", "{A472821D-69DB-44BC-A2E7-58DD72D3DFA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Service", "Libraries\Camino.Service\Camino.Service.csproj", "{A472821D-69DB-44BC-A2E7-58DD72D3DFA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.DAL", "Data\Camino.DAL\Camino.DAL.csproj", "{C40DEF11-A164-4545-AD13-EC009AAC6437}"
 EndProject
@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.IdentityManager", "L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.Navigation", "Modules\Module.Web.Navigation\Module.Web.Navigation.csproj", "{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.IdentityManagement", "Modules\Module.Web.IdentityManagement\Module.Web.IdentityManagement.csproj", "{7A4D8107-9A3B-4769-BCED-10744CCFA7FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.IdentityManagement", "Modules\Module.Web.IdentityManagement\Module.Web.IdentityManagement.csproj", "{7A4D8107-9A3B-4769-BCED-10744CCFA7FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

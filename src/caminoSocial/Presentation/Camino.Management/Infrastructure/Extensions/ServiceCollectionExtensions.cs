@@ -1,11 +1,11 @@
-﻿using Camino.Business;
-using Camino.Framework.Infrastructure.Extensions;
+﻿using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Providers.Contracts;
 using Camino.Framework.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.Framework.Models.Settings;
+using Camino.Service.Infrastructure.Extensions;
 
 namespace Camino.Management.Infrastructure.Extensions
 {

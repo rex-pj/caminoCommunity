@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthorizationManagement.Models;
@@ -14,8 +13,9 @@ using Camino.IdentityManager.Models;
 using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Core.Enums;
-using Camino.Business.Dtos.General;
+using Camino.Service.Data.Filters;
 using Camino.Framework.Helpers.Contracts;
+using Camino.Service.Business.Authorization.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -41,7 +41,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(RoleFilterModel filter)
         {
-            var filterDto = _mapper.Map<RoleFilterDto>(filter);
+            var filterDto = _mapper.Map<RoleFilter>(filter);
             var rolePageList = await _roleBusiness.GetAsync(filterDto);
             var roleModels = _mapper.Map<List<RoleModel>>(rolePageList.Collections);
             var rolePage = new PageListModel<RoleModel>(roleModels)

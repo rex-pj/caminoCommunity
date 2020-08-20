@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Data.Identity;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Stores.Contracts;
 using LinqToDB;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Camino.Service.Business.Authorization.Contracts;
 
 namespace Camino.IdentityManager.Contracts.Stores
 {
@@ -58,7 +58,7 @@ namespace Camino.IdentityManager.Contracts.Stores
                 throw new ArgumentNullException(nameof(role));
             }
 
-            var applicationRole = _mapper.Map<RoleDto>(role);
+            var applicationRole = _mapper.Map<RoleResult>(role);
             await _roleBusiness.AddAsync(applicationRole);
             return IdentityResult.Success;
         }
@@ -143,7 +143,7 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                var roleDto = _mapper.Map<RoleDto>(role);
+                var roleDto = _mapper.Map<RoleResult>(role);
                 await _roleBusiness.UpdateAsync(roleDto);
             }
             // Todo: check DbUpdateConcurrencyException

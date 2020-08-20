@@ -3,7 +3,7 @@ using Module.Api.Auth.Models;
 using Module.Api.Auth.GraphQL.Resolvers;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using AutoMapper;
-using Camino.Business.AutoMap;
+using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

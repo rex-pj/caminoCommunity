@@ -1,10 +1,10 @@
 ﻿using Module.Api.Auth.Models;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
-using Camino.Business.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using Camino.Service.Business.Identities.Contracts;
 
-namespace  Module.Api.Auth.GraphQL.Resolvers
+namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class CountryResolver : ICountryResolver
     {
