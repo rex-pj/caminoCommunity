@@ -1,5 +1,6 @@
 ﻿using Camino.IdentityDAL.Entities;
 using Camino.Service.Data.Identity;
+using Camino.Service.Data.Request;
 using System;
 using System.Linq.Expressions;
 
@@ -7,7 +8,7 @@ namespace Camino.Service.AutoMap
 {
     public static class UserExpressionMapping
     {
-        public static Expression<Func<User, UserResult>> UserModelSelector { get; } = user => new UserResult
+        public static Expression<Func<User, UserProjection>> UserModelSelector { get; } = user => new UserProjection
         {
             DisplayName = user.DisplayName,
             Firstname = user.Firstname,
@@ -30,7 +31,7 @@ namespace Camino.Service.AutoMap
             PhoneNumber = user.UserInfo.PhoneNumber,
         };
 
-        public static Expression<Func<User, UserFullDto>> FullUserModelSelector { get; } = user => new UserFullDto
+        public static Expression<Func<User, UserFullProjection>> FullUserModelSelector { get; } = user => new UserFullProjection
         {
             CreatedDate = user.CreatedDate,
             DisplayName = user.DisplayName,

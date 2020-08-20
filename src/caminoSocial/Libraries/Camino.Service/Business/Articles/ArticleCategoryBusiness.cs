@@ -11,7 +11,7 @@ using LinqToDB;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Articles
 {
@@ -29,14 +29,14 @@ namespace Camino.Service.Business.Articles
             _userRepository = userRepository;
         }
 
-        public ArticleCategoryResult Find(int id)
+        public ArticleCategoryProjection Find(int id)
         {
             var exist = (from child in _articleCategoryRepository.Table
                          join parent in _articleCategoryRepository.Table
                          on child.ParentId equals parent.Id into categories
                          from cate in categories.DefaultIfEmpty()
                          where child.Id == id
-                         select new ArticleCategoryResult
+                         select new ArticleCategoryProjection
                          {
                              Description = child.Description,
                              CreatedDate = child.CreatedDate,
@@ -57,24 +57,24 @@ namespace Camino.Service.Business.Articles
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
             var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
-            var category = _mapper.Map<ArticleCategoryResult>(exist);
+            var category = _mapper.Map<ArticleCategoryProjection>(exist);
             category.CreatedBy = createdByUser.DisplayName;
             category.UpdatedBy = updatedByUser.DisplayName;
 
             return category;
         }
 
-        public ArticleCategoryResult FindByName(string name)
+        public ArticleCategoryProjection FindByName(string name)
         {
             var exist = _articleCategoryRepository.Get(x => x.Name == name)
                 .FirstOrDefault();
 
-            var category = _mapper.Map<ArticleCategoryResult>(exist);
+            var category = _mapper.Map<ArticleCategoryProjection>(exist);
 
             return category;
         }
 
-        public async Task<PageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
+        public async Task<BasePageList<ArticleCategoryProjection>> GetAsync(ArticleCategoryFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var categoryQuery = _articleCategoryRepository.Table;
@@ -108,7 +108,7 @@ namespace Camino.Service.Business.Articles
                 categoryQuery = categoryQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
-            var query = categoryQuery.Select(a => new ArticleCategoryResult
+            var query = categoryQuery.Select(a => new ArticleCategoryProjection
             {
                 CreatedById = a.CreatedById,
                 CreatedDate = a.CreatedDate,
@@ -141,15 +141,15 @@ namespace Camino.Service.Business.Articles
             }
 
 
-            var result = new PageList<ArticleCategoryResult>(categories);
+            var result = new BasePageList<ArticleCategoryProjection>(categories);
             result.TotalResult = filteredNumber;
             result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;
         }
 
-        public List<ArticleCategoryResult> Get(Expression<Func<ArticleCategory, bool>> filter)
+        public List<ArticleCategoryProjection> Get(Expression<Func<ArticleCategory, bool>> filter)
         {
-            var categories = _articleCategoryRepository.Get(filter).Select(a => new ArticleCategoryResult
+            var categories = _articleCategoryRepository.Get(filter).Select(a => new ArticleCategoryProjection
             {
                 Id = a.Id,
                 Name = a.Name,
@@ -159,10 +159,10 @@ namespace Camino.Service.Business.Articles
             return categories;
         }
 
-        public List<ArticleCategoryResult> Get()
+        public List<ArticleCategoryProjection> Get()
         {
             var parentCategories = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
-                .Select(a => new ArticleCategoryResult
+                .Select(a => new ArticleCategoryProjection
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -170,7 +170,7 @@ namespace Camino.Service.Business.Articles
                 }).ToList();
 
             var childCategories = _articleCategoryRepository.Get(x => x.ParentId.HasValue)
-                .OrderBy(x => x.ParentId).Select(a => new ArticleCategoryResult
+                .OrderBy(x => x.ParentId).Select(a => new ArticleCategoryProjection
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -178,7 +178,7 @@ namespace Camino.Service.Business.Articles
                     ParentId = a.ParentId
                 }).ToList();
 
-            var categories = new List<ArticleCategoryResult>();
+            var categories = new List<ArticleCategoryProjection>();
             foreach(var category in parentCategories)
             {
                 categories.Add(category);
@@ -192,7 +192,7 @@ namespace Camino.Service.Business.Articles
             return categories;
         }
 
-        public int Add(ArticleCategoryResult category)
+        public int Add(ArticleCategoryProjection category)
         {
             var newCategory = _mapper.Map<ArticleCategory>(category);
             newCategory.UpdatedDate = DateTime.UtcNow;
@@ -202,7 +202,7 @@ namespace Camino.Service.Business.Articles
             return id;
         }
 
-        public ArticleCategoryResult Update(ArticleCategoryResult category)
+        public ArticleCategoryProjection Update(ArticleCategoryProjection category)
         {
             var exist = _articleCategoryRepository.FirstOrDefault(x => x.Id == category.Id);
             exist.Description = category.Description;

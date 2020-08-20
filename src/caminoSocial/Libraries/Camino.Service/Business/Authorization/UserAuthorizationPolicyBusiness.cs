@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Camino.Service.Data.Filters;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.IdentityDAL.Entities;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Authorization
 {
@@ -81,11 +82,11 @@ namespace Camino.Service.Business.Authorization
             return true;
         }
 
-        public AuthorizationPolicyUsersResult GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilter filter)
+        public AuthorizationPolicyUsersPageList GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var authorizationPolicy = _authorizationPolicyRepository.Get(x => x.Id == id)
-                .Select(x => new AuthorizationPolicyUsersResult
+                .Select(x => new AuthorizationPolicyUsersPageList
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -100,7 +101,7 @@ namespace Camino.Service.Business.Authorization
                         || user.Lastname.ToLower().Contains(search)
                         || user.Firstname.ToLower().Contains(search)
                         || (user.Lastname + " " + user.Firstname).ToLower().Contains(search)
-                        select new UserResult()
+                        select new UserProjection()
                         {
                             DisplayName = user.DisplayName,
                             Firstname = user.Firstname,
@@ -119,14 +120,14 @@ namespace Camino.Service.Business.Authorization
             return authorizationPolicy;
         }
 
-        public async Task<UserAuthorizationPolicyResult> GetUserAuthoricationPolicyAsync(long userId, long policyId)
+        public async Task<UserAuthorizationPolicyProjection> GetUserAuthoricationPolicyAsync(long userId, long policyId)
         {
             var userAuthoricationPolicy = await _userAuthorizationPolicyRepository
                 .Get(x => x.UserId == userId && x.AuthorizationPolicyId == policyId)
                 .FirstOrDefaultAsync();
 
-            var userAuthorizationPolicyDto = _mapper.Map<UserAuthorizationPolicyResult>(userAuthoricationPolicy);
-            return userAuthorizationPolicyDto;
+            var userAuthorizationPolicyRequest = _mapper.Map<UserAuthorizationPolicyProjection>(userAuthoricationPolicy);
+            return userAuthorizationPolicyRequest;
         }
 
         public async Task<bool> IsUserHasAuthoricationPolicyAsync(long userId, long policyId)

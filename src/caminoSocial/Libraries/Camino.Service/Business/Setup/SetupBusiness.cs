@@ -86,7 +86,7 @@ namespace Camino.Service.Business.Setup
             }
         }
 
-        public async Task PrepareIdentityDataAsync(SetupRequest installationDto)
+        public async Task PrepareIdentityDataAsync(SetupRequest installationRequest)
         {
             using (var dataConnection = _identityDataProvider.CreateDataConnection())
             {
@@ -95,12 +95,12 @@ namespace Camino.Service.Business.Setup
                     var statusTableName = nameof(Status);
                     // Insert user statuses
                     int activedStatusId = 0;
-                    foreach (var statusDto in installationDto.Statuses)
+                    foreach (var statusRequest in installationRequest.Statuses)
                     {
                         var status = new Status()
                         {
-                            Name = statusDto.Name,
-                            Description = statusDto.Description
+                            Name = statusRequest.Name,
+                            Description = statusRequest.Description
                         };
 
                         if (status.Name == UserStatus.Actived.ToString())
@@ -120,7 +120,7 @@ namespace Camino.Service.Business.Setup
 
                     // Insert genders
                     var genderTableName = nameof(Gender);
-                    foreach (var gender in installationDto.Genders)
+                    foreach (var gender in installationRequest.Genders)
                     {
                         dataConnection.Insert(new Gender()
                         {
@@ -130,7 +130,7 @@ namespace Camino.Service.Business.Setup
 
                     // Insert countries
                     var countryTableName = nameof(Country);
-                    foreach (var country in installationDto.Countries)
+                    foreach (var country in installationRequest.Countries)
                     {
                         dataConnection.Insert(new Country()
                         {
@@ -140,9 +140,9 @@ namespace Camino.Service.Business.Setup
                     }
 
                     // Insert user
-                    var userDto = installationDto.InitualUser;
-                    var user = _mapper.Map<User>(userDto);
-                    var userInfo = _mapper.Map<UserInfo>(userDto);
+                    var userRequest = installationRequest.InitualUser;
+                    var user = _mapper.Map<User>(userRequest);
+                    var userInfo = _mapper.Map<UserInfo>(userRequest);
                     try
                     {
                         user.StatusId = activedStatusId;
@@ -158,7 +158,7 @@ namespace Camino.Service.Business.Setup
                             // Insert roles
                             var roleTableName = nameof(Role);
                             var adminRoleId = 0;
-                            foreach (var role in installationDto.Roles)
+                            foreach (var role in installationRequest.Roles)
                             {
                                 var newRole = new Role()
                                 {
@@ -198,7 +198,7 @@ namespace Camino.Service.Business.Setup
 
                             // Insert authorization policies
                             var authorizationPolicyTableName = nameof(AuthorizationPolicy);
-                            foreach (var authorizationPolicy in installationDto.AuthorizationPolicies)
+                            foreach (var authorizationPolicy in installationRequest.AuthorizationPolicies)
                             {
                                 var authorizationPolicyId = dataConnection.InsertWithInt64Identity(new AuthorizationPolicy()
                                 {
@@ -246,7 +246,7 @@ namespace Camino.Service.Business.Setup
             }
         }
 
-        public async Task PrepareContentDataAsync(SetupRequest installationDto)
+        public async Task PrepareContentDataAsync(SetupRequest installationRequest)
         {
             using (var dataConnection = _contentDataProvider.CreateDataConnection())
             {
@@ -257,7 +257,7 @@ namespace Camino.Service.Business.Setup
                     {
                         // Insert countries
                         var userPhotoTypeTableName = nameof(UserPhotoType);
-                        foreach (var userPhotoType in installationDto.UserPhotoTypes)
+                        foreach (var userPhotoType in installationRequest.UserPhotoTypes)
                         {
                             dataConnection.Insert(new UserPhotoType()
                             {

@@ -30,8 +30,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("UserAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
         public IActionResult Index(UserAuthorizationPolicyFilterModel filter)
         {
-            var filterDto = _mapper.Map<UserAuthorizationPolicyFilter>(filter);
-            var authorizationUsers = _userAuthorizationPolicyBusiness.GetAuthoricationPolicyUsers(filter.Id, filterDto);
+            var filterRequest = _mapper.Map<UserAuthorizationPolicyFilter>(filter);
+            var authorizationUsers = _userAuthorizationPolicyBusiness.GetAuthoricationPolicyUsers(filter.Id, filterRequest);
 
             var authorizationUsersPage = _mapper.Map<AuthorizationPolicyUsersModel>(authorizationUsers);
             authorizationUsersPage.Filter = filter;

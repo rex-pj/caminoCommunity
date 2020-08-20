@@ -38,7 +38,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var filterDto = new ArticleCategoryFilter()
+            var filterRequest = new ArticleCategoryFilter()
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -49,7 +49,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdatedById = filter.UpdatedById
             };
 
-            var categoryPageList = await _articleCategoryBusiness.GetAsync(filterDto);
+            var categoryPageList = await _articleCategoryBusiness.GetAsync(filterRequest);
             var categories = _mapper.Map<List<ArticleCategoryModel>>(categoryPageList.Collections);
             var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
             {
@@ -134,7 +134,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryResult>(model);
+            var category = _mapper.Map<ArticleCategoryProjection>(model);
             var exist = _articleCategoryBusiness.FindByName(model.Name);
             if (exist != null)
             {
@@ -152,7 +152,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public IActionResult Update(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryResult>(model);
+            var category = _mapper.Map<ArticleCategoryProjection>(model);
             if (category.Id <= 0)
             {
                 return RedirectToErrorPage();

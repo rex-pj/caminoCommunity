@@ -5,8 +5,8 @@ namespace Camino.Service.Business.Authentication.Contracts
 {
     public interface IUserTokenBusiness
     {
-        void Add(UserTokenResult userTokenDto);
-        void Remove(UserTokenResult userTokenDto);
-        Task<UserTokenResult> FindAsync(long userId, string loginProvider, string name);
+        void Add(UserTokenProjection userTokenRequest);
+        void Remove(UserTokenProjection userTokenRequest);
+        Task<UserTokenProjection> FindAsync(long userId, string loginProvider, string name);
     }
 }

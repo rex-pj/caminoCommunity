@@ -2,10 +2,10 @@
 
 namespace Camino.Service.Data.Identity
 {
-    public class RoleAuthorizationPoliciesResult
+    public class RoleAuthorizationPoliciesProjection
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<AuthorizationPolicyResult> AuthorizationPolicies { get; set; }
+        public IEnumerable<AuthorizationPolicyProjection> AuthorizationPolicies { get; set; }
     }
 }

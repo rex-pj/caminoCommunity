@@ -1,9 +1,9 @@
 ﻿namespace Camino.Service.Data.Identity
 {
-    public class RoleClaimDto
+    public class UserClaimProjection
     {
         public int Id { get; set; }
-        public long RoleId { get; set; }
+        public long UserId { get; set; }
         public string ClaimType { get; set; }
         public string ClaimValue { get; set; }
     }

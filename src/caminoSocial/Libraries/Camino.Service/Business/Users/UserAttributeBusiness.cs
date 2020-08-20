@@ -45,7 +45,7 @@ namespace Camino.Service.Business.Users
             return exists.ToList();
         }
 
-        public IEnumerable<UserAttribute> Create(IEnumerable<UserAttributeResult> attributes)
+        public IEnumerable<UserAttribute> Create(IEnumerable<UserAttributeProjection> attributes)
         {
             if (attributes == null || !attributes.Any())
             {
@@ -71,7 +71,7 @@ namespace Camino.Service.Business.Users
             return userAttributes;
         }
 
-        public async Task<IEnumerable<UserAttribute>> CreateOrUpdateAsync(IEnumerable<UserAttributeResult> userAttributes)
+        public async Task<IEnumerable<UserAttribute>> CreateOrUpdateAsync(IEnumerable<UserAttributeProjection> userAttributes)
         {
             if (userAttributes == null || !userAttributes.Any())
             {

@@ -91,7 +91,7 @@ namespace Module.Web.SetupManagement.Controllers
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
                 var identitySetup = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
-                identitySetup.InitualUser = _mapper.Map<UserResult>(initialUser);
+                identitySetup.InitualUser = _mapper.Map<UserProjection>(initialUser);
 
                 // Initialize identity database
                 await _seedDataBusiness.PrepareIdentityDataAsync(identitySetup);

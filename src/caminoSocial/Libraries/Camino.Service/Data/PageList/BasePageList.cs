@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Camino.Service.Data.Filters;
 
-namespace Camino.Service.Data.Page
+namespace Camino.Service.Data.PageList
 {
-    public class PageList<T> where T : class
+    public class BasePageList<T> where T : class
     {
-        public PageList(IEnumerable<T> collections)
+        public BasePageList(IEnumerable<T> collections)
         {
             Collections = collections;
             Filter = new BaseFilter();

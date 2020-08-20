@@ -8,7 +8,7 @@ using LinqToDB;
 using Camino.Service.Data.Filters;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Authorization
 {
@@ -25,7 +25,7 @@ namespace Camino.Service.Business.Authorization
             _userRepository = userRepository;
         }
 
-        public AuthorizationPolicyResult Find(short id)
+        public AuthorizationPolicyProjection Find(short id)
         {
             var authorizationPolicy = (from policy in _authorizationPolicyRepository.Table
                                        join createdBy in _userRepository.Table
@@ -33,7 +33,7 @@ namespace Camino.Service.Business.Authorization
                                        join updatedBy in _userRepository.Table
                                        on policy.UpdatedById equals updatedBy.Id
                                        where policy.Id == id
-                                       select new AuthorizationPolicyResult()
+                                       select new AuthorizationPolicyProjection()
                                        {
                                            CreatedById = policy.CreatedById,
                                            CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
@@ -54,7 +54,7 @@ namespace Camino.Service.Business.Authorization
             return authorizationPolicy;
         }
 
-        public async Task<AuthorizationPolicyResult> FindByNameAsync(string name)
+        public async Task<AuthorizationPolicyProjection> FindByNameAsync(string name)
         {
             var exist = await _authorizationPolicyRepository.Get(x => x.Name == name).FirstOrDefaultAsync();
             if (exist == null)
@@ -62,12 +62,12 @@ namespace Camino.Service.Business.Authorization
                 return null;
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyResult>(exist);
+            var policy = _mapper.Map<AuthorizationPolicyProjection>(exist);
 
             return policy;
         }
 
-        public PageList<AuthorizationPolicyResult> Get(AuthorizationPolicyFilter filter)
+        public BasePageList<AuthorizationPolicyProjection> Get(AuthorizationPolicyFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var query = (from policy in _authorizationPolicyRepository.Table
@@ -77,7 +77,7 @@ namespace Camino.Service.Business.Authorization
                          on policy.UpdatedById equals updatedBy.Id
                          where string.IsNullOrEmpty(search) || policy.Name.ToLower().Contains(search)
                          || (policy.Description != null && policy.Description.ToLower().Contains(search))
-                         select new AuthorizationPolicyResult()
+                         select new AuthorizationPolicyProjection()
                          {
                              CreatedById = policy.CreatedById,
                              CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
@@ -96,13 +96,13 @@ namespace Camino.Service.Business.Authorization
                                          .Take(filter.PageSize)
                                          .ToList();
 
-            var result = new PageList<AuthorizationPolicyResult>(authorizationPolicies);
+            var result = new BasePageList<AuthorizationPolicyProjection>(authorizationPolicies);
             result.TotalResult = filteredNumber;
             result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;
         }
 
-        public long Add(AuthorizationPolicyResult authorizationPolicy)
+        public long Add(AuthorizationPolicyProjection authorizationPolicy)
         {
             var newPolicy = _mapper.Map<AuthorizationPolicy>(authorizationPolicy);
             newPolicy.UpdatedDate = DateTime.UtcNow;
@@ -112,7 +112,7 @@ namespace Camino.Service.Business.Authorization
             return id;
         }
 
-        public AuthorizationPolicyResult Update(AuthorizationPolicyResult policy)
+        public AuthorizationPolicyProjection Update(AuthorizationPolicyProjection policy)
         {
             var exist = _authorizationPolicyRepository.FirstOrDefault(x => x.Id == policy.Id);
             exist.Description = policy.Description;

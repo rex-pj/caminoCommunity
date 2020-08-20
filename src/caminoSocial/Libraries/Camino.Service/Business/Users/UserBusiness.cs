@@ -14,7 +14,7 @@ using Camino.Service.Data.Filters;
 using Camino.Service.Business.Users.Contracts;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Data.Request;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Users
 {
@@ -44,19 +44,19 @@ namespace Camino.Service.Business.Users
         #endregion
 
         #region CRUD
-        public async Task<UserResult> CreateAsync(UserResult userDto)
+        public async Task<UserProjection> CreateAsync(UserProjection userRequest)
         {
-            if (userDto == null)
+            if (userRequest == null)
             {
-                throw new ArgumentNullException(nameof(userDto));
+                throw new ArgumentNullException(nameof(userRequest));
             }
 
-            userDto.StatusId = 1;
-            userDto.CreatedDate = DateTime.UtcNow;
-            userDto.UpdatedDate = DateTime.UtcNow;
+            userRequest.StatusId = 1;
+            userRequest.CreatedDate = DateTime.UtcNow;
+            userRequest.UpdatedDate = DateTime.UtcNow;
 
-            var user = _mapper.Map<User>(userDto);
-            var userInfo = _mapper.Map<UserInfo>(userDto);
+            var user = _mapper.Map<User>(userRequest);
+            var userInfo = _mapper.Map<UserInfo>(userRequest);
 
             using (var transaction = _identityDbProvider.BeginTransaction())
             {
@@ -68,7 +68,7 @@ namespace Camino.Service.Business.Users
                         userInfo.Id = userId;
                         await _userInfoRepository.AddWithInt64EntityAsync(userInfo);
                         transaction.Commit();
-                        userDto.Id = userId;
+                        userRequest.Id = userId;
                     }
                     else
                     {
@@ -81,7 +81,7 @@ namespace Camino.Service.Business.Users
                 }
             }
 
-            return userDto;
+            return userRequest;
         }
 
         public async Task DeleteAsync(long id)
@@ -145,7 +145,7 @@ namespace Camino.Service.Business.Users
             return model;
         }
 
-        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto model)
+        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest model)
         {
             _validationStrategyContext.SetStrategy(new UserProfileUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -170,7 +170,7 @@ namespace Camino.Service.Business.Users
             return model;
         }
 
-        public async Task<UserResult> UpdateAsync(UserResult user)
+        public async Task<UserProjection> UpdateAsync(UserProjection user)
         {
             var exist = await _userRepository.FirstOrDefaultAsync(x => x.Id == user.Id);
 
@@ -189,7 +189,7 @@ namespace Camino.Service.Business.Users
         #endregion
 
         #region GET
-        public async Task<UserResult> FindByEmailAsync(string email)
+        public async Task<UserProjection> FindByEmailAsync(string email)
         {
             email = email.ToLower();
 
@@ -201,7 +201,7 @@ namespace Camino.Service.Business.Users
             return user;
         }
 
-        public async Task<UserResult> FindByUsernameAsync(string username)
+        public async Task<UserProjection> FindByUsernameAsync(string username)
         {
             username = username.ToLower();
 
@@ -213,7 +213,7 @@ namespace Camino.Service.Business.Users
             return user;
         }
 
-        public async Task<UserResult> FindByIdAsync(long id)
+        public async Task<UserProjection> FindByIdAsync(long id)
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
@@ -223,7 +223,7 @@ namespace Camino.Service.Business.Users
             return existUser;
         }
 
-        public async Task<UserFullDto> FindFullByIdAsync(long id)
+        public async Task<UserFullProjection> FindFullByIdAsync(long id)
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
@@ -233,7 +233,7 @@ namespace Camino.Service.Business.Users
             return existUser;
         }
 
-        public List<UserFullDto> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10)
+        public List<UserFullProjection> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -253,7 +253,7 @@ namespace Camino.Service.Business.Users
             }
 
             var users = data
-                .Select(x => new UserFullDto()
+                .Select(x => new UserFullProjection()
                 {
                     Id = x.Id,
                     Email = x.Email,
@@ -266,7 +266,7 @@ namespace Camino.Service.Business.Users
             return users;
         }
 
-        public async Task<PageList<UserFullDto>> GetAsync(UserFilter filter)
+        public async Task<BasePageList<UserFullProjection>> GetAsync(UserFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var userQuery = _userRepository.Table;
@@ -352,7 +352,7 @@ namespace Camino.Service.Business.Users
             var query = (from user in userQuery
                          join userInfo in userInfoQuery
                          on user.Id equals userInfo.Id
-                         select new UserFullDto()
+                         select new UserFullProjection()
                          {
                              Id = user.Id,
                              Email = user.Email,
@@ -376,7 +376,7 @@ namespace Camino.Service.Business.Users
                                          .Take(filter.PageSize)
                                          .ToListAsync();
 
-            var result = new PageList<UserFullDto>(users);
+            var result = new BasePageList<UserFullProjection>(users);
             result.TotalResult = filteredNumber;
             result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;

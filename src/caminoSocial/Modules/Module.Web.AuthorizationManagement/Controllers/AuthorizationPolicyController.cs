@@ -42,8 +42,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
-            var filterDto = _mapper.Map<AuthorizationPolicyFilter>(filter);
-            var policiesPageList = _authorizationPolicyBusiness.Get(filterDto);
+            var filterRequest = _mapper.Map<AuthorizationPolicyFilter>(filter);
+            var policiesPageList = _authorizationPolicyBusiness.Get(filterRequest);
 
             var policyModels = _mapper.Map<List<AuthorizationPolicyModel>>(policiesPageList.Collections);
             var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
@@ -144,7 +144,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyResult>(model);
+            var policy = _mapper.Map<AuthorizationPolicyProjection>(model);
             policy.UpdatedById = LoggedUserId;
             policy.CreatedById = LoggedUserId;
             var newId = _authorizationPolicyBusiness.Add(policy);
@@ -173,7 +173,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyResult>(model);
+            var policy = _mapper.Map<AuthorizationPolicyProjection>(model);
             policy.UpdatedById = LoggedUserId;
             var newId = _authorizationPolicyBusiness.Update(policy);
 

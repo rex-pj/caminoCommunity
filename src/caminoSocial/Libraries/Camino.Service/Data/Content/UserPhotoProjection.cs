@@ -1,6 +1,6 @@
 ﻿namespace Camino.Service.Data.Content
 {
-    public class UserPhotoResult
+    public class UserPhotoProjection
     {
         public long Id { get; set; }
         public string Code { get; set; }

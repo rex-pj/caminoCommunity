@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Service.Strategies.Validation.Contracts;
-using Camino.Service.Data.Common;
+using Camino.Service.Data.Error;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Data.Request;
 
@@ -10,7 +10,7 @@ namespace Camino.Service.Strategies.Validation
 {
     public class UserInfoItemUpdationValidationStratergy : IValidationStrategy
     {
-        public IEnumerable<ErrorResult> Errors { get; set; }
+        public IEnumerable<BaseErrorResult> Errors { get; set; }
         private readonly ValidationStrategyContext _validationStrategyContext;
         public UserInfoItemUpdationValidationStratergy(ValidationStrategyContext validationStrategyContext)
         {
@@ -49,9 +49,9 @@ namespace Camino.Service.Strategies.Validation
             return Errors == null || !Errors.Any();
         }
 
-        public IEnumerable<ErrorResult> GetErrors(Exception exception)
+        public IEnumerable<BaseErrorResult> GetErrors(Exception exception)
         {
-            yield return new ErrorResult()
+            yield return new BaseErrorResult()
             {
                 Message = exception.Message
             };

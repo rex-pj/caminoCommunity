@@ -1,4 +1,5 @@
 ﻿using Camino.Service.Data.Identity;
+using Camino.Service.Data.Request;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,8 +7,8 @@ namespace Camino.Service.Business.Authentication.Contracts
 {
     public interface IAuthenticationBusiness
     {
-        Task<UserResult> UpdatePasswordAsync(UserPasswordUpdateDto model);
-        IEnumerable<UserRoleResult> GetUserRoles(long userd);
-        UserResult GetLoggedIn(long id);
+        Task<UserProjection> UpdatePasswordAsync(UserPasswordUpdateRequest model);
+        IEnumerable<UserRoleProjection> GetUserRoles(long userd);
+        UserProjection GetLoggedIn(long id);
     }
 }

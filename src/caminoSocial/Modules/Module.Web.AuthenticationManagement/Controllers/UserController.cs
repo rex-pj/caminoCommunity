@@ -35,8 +35,8 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var filterDto = _mapper.Map<UserFilter>(filter);
-            var userPageList = await _userBusiness.GetAsync(filterDto);
+            var filterRequest = _mapper.Map<UserFilter>(filter);
+            var userPageList = await _userBusiness.GetAsync(filterRequest);
             var users = _mapper.Map<List<UserModel>>(userPageList.Collections);
             var userPage = new PageListModel<UserModel>(users) { 
                 Filter = filter,
@@ -55,8 +55,8 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public async Task<IActionResult> Detail(long id)
         {
-            var userDto = await _userBusiness.FindFullByIdAsync(id);
-            var user = _mapper.Map<UserModel>(userDto);
+            var userRequest = await _userBusiness.FindFullByIdAsync(id);
+            var user = _mapper.Map<UserModel>(userRequest);
             
             return View(user);
         }

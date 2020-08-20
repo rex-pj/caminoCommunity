@@ -1,6 +1,6 @@
-﻿namespace Camino.Service.Data.Identity
+﻿namespace Camino.Service.Data.Request
 {
-    public class UserLoginDto
+    public class UserLoginRequest
     {
         public long Id { get; set; }
         public long UserId { get; set; }

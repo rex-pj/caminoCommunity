@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Identities.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Identities
 {
@@ -21,10 +21,10 @@ namespace Camino.Service.Business.Identities
             _countryRepository = countryRepository;
         }
 
-        public List<CountryResult> GetAll()
+        public List<CountryProjection> GetAll()
         {
             return _countryRepository.Get()
-                .Select(x => new CountryResult()
+                .Select(x => new CountryProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -33,11 +33,11 @@ namespace Camino.Service.Business.Identities
                 .ToList();
         }
 
-        public async Task<PageList<CountryResult>> GetAsync(CountryFilter filter)
+        public async Task<BasePageList<CountryProjection>> GetAsync(CountryFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var query = _countryRepository.Table
-                .Select(x => new CountryResult()
+                .Select(x => new CountryProjection()
                 {
                     Code = x.Code,
                     Id = x.Id,
@@ -55,7 +55,7 @@ namespace Camino.Service.Business.Identities
                                          .Take(filter.PageSize)
                                          .ToListAsync();
 
-            var result = new PageList<CountryResult>(countries)
+            var result = new BasePageList<CountryProjection>(countries)
             {
                 TotalResult = filteredNumber,
                 TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
@@ -63,7 +63,7 @@ namespace Camino.Service.Business.Identities
             return result;
         }
 
-        public IList<CountryResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<CountryProjection> Search(string query = "", int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -81,7 +81,7 @@ namespace Camino.Service.Business.Identities
             }
 
             var countries = data
-                .Select(x => new CountryResult()
+                .Select(x => new CountryProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -92,10 +92,10 @@ namespace Camino.Service.Business.Identities
             return countries;
         }
 
-        public CountryResult Find(int id)
+        public CountryProjection Find(int id)
         {
             var country = _countryRepository.Get(x => x.Id == id)
-                .Select(x => new CountryResult()
+                .Select(x => new CountryProjection()
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -106,10 +106,10 @@ namespace Camino.Service.Business.Identities
             return country;
         }
 
-        public CountryResult FindByName(string name)
+        public CountryProjection FindByName(string name)
         {
             var country = _countryRepository.Get(x => x.Name == name)
-                .Select(x => new CountryResult()
+                .Select(x => new CountryProjection()
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -120,30 +120,30 @@ namespace Camino.Service.Business.Identities
             return country;
         }
 
-        public int Add(CountryResult countryDto)
+        public int Add(CountryProjection countryRequest)
         {
             var country = new Country()
             {
-                Code = countryDto.Code,
-                Name = countryDto.Name
+                Code = countryRequest.Code,
+                Name = countryRequest.Name
             };
 
             var id = _countryRepository.AddWithInt32Entity(country);
             return id;
         }
 
-        public CountryResult Update(CountryResult countryDto)
+        public CountryProjection Update(CountryProjection countryRequest)
         {
-            var exist = _countryRepository.FirstOrDefault(x => x.Id == countryDto.Id);
+            var exist = _countryRepository.FirstOrDefault(x => x.Id == countryRequest.Id);
             if (exist == null)
             {
                 return null;
             }
-            exist.Code = countryDto.Code;
-            exist.Name = countryDto.Name;
+            exist.Code = countryRequest.Code;
+            exist.Name = countryRequest.Name;
 
             _countryRepository.Update(exist);
-            return countryDto;
+            return countryRequest;
         }
     }
 }

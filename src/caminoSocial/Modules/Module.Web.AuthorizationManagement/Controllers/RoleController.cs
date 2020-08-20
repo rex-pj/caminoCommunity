@@ -41,8 +41,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(RoleFilterModel filter)
         {
-            var filterDto = _mapper.Map<RoleFilter>(filter);
-            var rolePageList = await _roleBusiness.GetAsync(filterDto);
+            var filterRequest = _mapper.Map<RoleFilter>(filter);
+            var rolePageList = await _roleBusiness.GetAsync(filterRequest);
             var roleModels = _mapper.Map<List<RoleModel>>(rolePageList.Collections);
             var rolePage = new PageListModel<RoleModel>(roleModels)
             {

@@ -1,6 +1,6 @@
-﻿namespace Camino.Service.Data.Identity
+﻿namespace Camino.Service.Data.Request
 {
-    public class UserIdentifierUpdateDto
+    public class UserIdentifierUpdateRequest
     {
         public string Lastname { get; set; }
         public string Firstname { get; set; }

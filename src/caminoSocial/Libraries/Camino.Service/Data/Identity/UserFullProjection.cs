@@ -1,6 +1,8 @@
-﻿namespace Camino.Service.Data.Identity
+﻿using Camino.Service.Data.Identity;
+
+namespace Camino.Service.Data.Request
 {
-    public class UserFullDto : UserResult
+    public class UserFullProjection : UserProjection
     {
         public string CountryName { get; set; }
         public string CountryCode { get; set; }

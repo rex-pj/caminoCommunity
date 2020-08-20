@@ -12,7 +12,6 @@ using MimeKit.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
-using Camino.Service.Data.Identity;
 using Camino.Core.Exceptions;
 using Camino.Core.Enums;
 using Microsoft.Extensions.Options;
@@ -142,7 +141,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto criterias)
+        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest criterias)
         {
             try
             {
@@ -153,7 +152,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 var updatedUser = await _userManager.UpdateAsync(CurrentUser);
                 if (updatedUser.Succeeded)
                 {
-                    return new UserIdentifierUpdateDto()
+                    return new UserIdentifierUpdateRequest()
                     {
                         DisplayName = CurrentUser.DisplayName,
                         Firstname = CurrentUser.Firstname,
@@ -161,7 +160,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                         Lastname = CurrentUser.Lastname
                     };
                 }
-                return new UserIdentifierUpdateDto();
+                return new UserIdentifierUpdateRequest();
             }
             catch (Exception ex)
             {
@@ -169,7 +168,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<Camino.Framework.Models.UserTokenResult> UpdatePasswordAsync(UserPasswordUpdateDto criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync(UserPasswordUpdateRequest criterias)
         {
             try
             {
@@ -178,10 +177,10 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 var result = await _userManager.ChangePasswordAsync(CurrentUser, criterias.CurrentPassword, criterias.NewPassword);
                 if (!result.Succeeded)
                 {
-                    return new Camino.Framework.Models.UserTokenResult(false);
+                    return new UserTokenModel(false);
                 }
 
-                return new Camino.Framework.Models.UserTokenResult()
+                return new UserTokenModel()
                 {
                     AuthenticationToken = CurrentUser.AuthenticationToken,
                     AccessMode = AccessMode.CanEdit,
@@ -191,11 +190,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
             catch (Exception ex)
             {
-                return new Camino.Framework.Models.UserTokenResult(false);
+                return new UserTokenModel(false);
             }
         }
 
-        private void ComparePassword(UserPasswordUpdateDto criterias)
+        private void ComparePassword(UserPasswordUpdateRequest criterias)
         {
             if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
             {
@@ -203,7 +202,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<Camino.Framework.Models.UserTokenResult> SigninAsync(SigninModel criterias)
+        public async Task<UserTokenModel> SigninAsync(SigninModel criterias)
         {
             try
             {
@@ -218,7 +217,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 await _userManager.AddLoginAsync(user, new UserLoginInfo(ServiceProvidersNameConst.CAMINO_API_AUTH, token, IdentitySettings.AUTHENTICATION_TOKEN_PURPOSE));
 
                 var userIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
-                return new Camino.Framework.Models.UserTokenResult(true)
+                return new UserTokenModel(true)
                 {
                     AuthenticationToken = token,
                     UserInfo = new UserInfoModel()

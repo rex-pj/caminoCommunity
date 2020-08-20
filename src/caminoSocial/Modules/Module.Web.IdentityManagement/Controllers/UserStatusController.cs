@@ -34,14 +34,14 @@ namespace Module.Web.IdentityManagement.Controllers
         [LoadResultAuthorizations("UserStatus", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserStatusFilterModel filter)
         {
-            var filterDto = new UserStatusFilter()
+            var filterRequest = new UserStatusFilter()
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search
             };
 
-            var statusPageList = await _userStatusBusiness.GetAsync(filterDto);
+            var statusPageList = await _userStatusBusiness.GetAsync(filterRequest);
             var statuses = statusPageList.Collections.Select(x => new UserStatusModel()
             {
                 Id = x.Id,
@@ -149,7 +149,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusResult()
+            var status = new UserStatusProjection()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -175,7 +175,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusResult()
+            var status = new UserStatusProjection()
             {
                 Id = model.Id,
                 Name = model.Name,

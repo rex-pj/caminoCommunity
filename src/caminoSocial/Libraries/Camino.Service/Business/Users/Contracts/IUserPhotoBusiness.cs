@@ -10,8 +10,8 @@ namespace Camino.Service.Business.Users.Contracts
     {
         Task<UserPhotoUpdateRequest> UpdateUserPhotoAsync(UserPhotoUpdateRequest model, long userId);
         Task DeleteUserPhotoAsync(long userId, UserPhotoKind userPhotoType);
-        Task<UserPhotoResult> GetUserPhotoByCodeAsync(string code, UserPhotoKind type);
-        UserPhotoResult GetUserPhotoByUserId(long userId, UserPhotoKind type);
-        Task<IEnumerable<UserPhotoResult>> GetUserPhotosAsync(long userId);
+        Task<UserPhotoProjection> GetUserPhotoByCodeAsync(string code, UserPhotoKind type);
+        UserPhotoProjection GetUserPhotoByUserId(long userId, UserPhotoKind type);
+        Task<IEnumerable<UserPhotoProjection>> GetUserPhotosAsync(long userId);
     }
 }

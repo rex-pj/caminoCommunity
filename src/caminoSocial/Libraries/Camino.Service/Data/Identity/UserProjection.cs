@@ -2,7 +2,7 @@
 
 namespace Camino.Service.Data.Identity
 {
-    public class UserResult
+    public class UserProjection
     {
         public long Id { get; set; }
         public string PhoneNumber { get; set; }

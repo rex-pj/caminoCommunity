@@ -44,8 +44,8 @@ namespace Camino.IdentityManager.Contracts.Stores
             }
 
             var roleClaim = CreateRoleClaim(role, claim);
-            var roleClaimDto = _mapper.Map<RoleClaimDto>(roleClaim);
-            _roleClaimBusiness.Add(roleClaimDto);
+            var roleClaimRequest = _mapper.Map<RoleClaimProjection>(roleClaim);
+            _roleClaimBusiness.Add(roleClaimRequest);
             return Task.FromResult(false);
         }
 
@@ -58,7 +58,7 @@ namespace Camino.IdentityManager.Contracts.Stores
                 throw new ArgumentNullException(nameof(role));
             }
 
-            var applicationRole = _mapper.Map<RoleResult>(role);
+            var applicationRole = _mapper.Map<RoleProjection>(role);
             await _roleBusiness.AddAsync(applicationRole);
             return IdentityResult.Success;
         }
@@ -143,8 +143,8 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                var roleDto = _mapper.Map<RoleResult>(role);
-                await _roleBusiness.UpdateAsync(roleDto);
+                var roleRequest = _mapper.Map<RoleProjection>(role);
+                await _roleBusiness.UpdateAsync(roleRequest);
             }
             // Todo: check DbUpdateConcurrencyException
             catch (LinqToDBException)

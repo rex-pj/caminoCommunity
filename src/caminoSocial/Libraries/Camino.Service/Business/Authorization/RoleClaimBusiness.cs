@@ -21,32 +21,32 @@ namespace Camino.Service.Business.Authorization
             _mapper = mapper;
         }
 
-        public void Add(RoleClaimDto RoleClaim)
+        public void Add(RoleClaimProjection RoleClaim)
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Add(claim);
         }
 
-        public async Task<IList<RoleClaimDto>> GetByRoleIdAsync(long roleId)
+        public async Task<IList<RoleClaimProjection>> GetByRoleIdAsync(long roleId)
         {
             var RoleClaims = await _roleClaimRepository.GetAsync(x => x.RoleId == roleId);
-            return _mapper.Map<IList<RoleClaimDto>>(RoleClaims);
+            return _mapper.Map<IList<RoleClaimProjection>>(RoleClaims);
         }
 
-        public async Task<IList<RoleClaimDto>> GetByClaimAsync(long roleId, string claimValue, string claimType)
+        public async Task<IList<RoleClaimProjection>> GetByClaimAsync(long roleId, string claimValue, string claimType)
         {
             var RoleClaims = await _roleClaimRepository
                 .GetAsync(x => x.RoleId == roleId && x.ClaimValue == claimValue && x.ClaimType == claimType);
-            return _mapper.Map<IList<RoleClaimDto>>(RoleClaims);
+            return _mapper.Map<IList<RoleClaimProjection>>(RoleClaims);
         }
 
-        public void Remove(RoleClaimDto RoleClaim)
+        public void Remove(RoleClaimProjection RoleClaim)
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Delete(claim);
         }
 
-        public async Task ReplaceClaimAsync(long roleId, ClaimResult claim, ClaimResult newClaim)
+        public async Task ReplaceClaimAsync(long roleId, ClaimProjection claim, ClaimProjection newClaim)
         {
             var matchedClaims = await GetByClaimAsync(roleId, claim.Value, claim.Type);
             foreach (var matchedClaim in matchedClaims)
@@ -56,10 +56,10 @@ namespace Camino.Service.Business.Authorization
             }
         }
 
-        public async Task<IList<RoleResult>> GetRolesForClaimAsync(ClaimResult claim)
+        public async Task<IList<RoleProjection>> GetRolesForClaimAsync(ClaimProjection claim)
         {
             var existRoleClaims = await _roleClaimRepository.Get(x => x.ClaimValue == claim.Value && x.ClaimType == claim.Type)
-                .Select(x => new RoleResult()
+                .Select(x => new RoleProjection()
                 {
                     Id = x.RoleId,
                     CreatedById = x.Role.CreatedById,

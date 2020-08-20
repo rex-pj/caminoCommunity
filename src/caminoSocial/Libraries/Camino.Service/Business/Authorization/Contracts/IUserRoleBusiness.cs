@@ -6,10 +6,10 @@ namespace Camino.Service.Business.Authorization.Contracts
 {
     public interface IUserRoleBusiness
     {
-        Task<IList<UserRoleResult>> GetUserRolesAsync(long userId);
-        Task<UserRoleResult> FindUserRoleAsync(long userId, long roleId);
-        Task<IList<UserResult>> GetUsersInRoleAsync(long roleId);
-        void Remove(UserRoleResult userRoleDto);
-        void Add(UserRoleResult userRoleDto);
+        Task<IList<UserRoleProjection>> GetUserRolesAsync(long userId);
+        Task<UserRoleProjection> FindUserRoleAsync(long userId, long roleId);
+        Task<IList<UserProjection>> GetUsersInRoleAsync(long roleId);
+        void Remove(UserRoleProjection userRoleRequest);
+        void Add(UserRoleProjection userRoleRequest);
     }
 }

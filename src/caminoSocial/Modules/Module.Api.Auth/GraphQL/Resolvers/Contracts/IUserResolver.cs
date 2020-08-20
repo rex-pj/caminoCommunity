@@ -1,9 +1,9 @@
 ﻿using Module.Api.Auth.Models;
-using Camino.Service.Data.Identity;
 using Camino.Framework.Models;
 using System.Threading.Tasks;
+using Camino.Service.Data.Request;
 
-namespace  Module.Api.Auth.GraphQL.Resolvers.Contracts
+namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IUserResolver
     {
@@ -11,10 +11,10 @@ namespace  Module.Api.Auth.GraphQL.Resolvers.Contracts
         Task<FullUserInfoModel> GetFullUserInfoAsync(FindUserModel criterias);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(UpdatePerItemModel criterias);
         Task<ICommonResult> SignoutAsync();
-        Task<UserIdentifierUpdateDto> UpdateIdentifierAsync(UserIdentifierUpdateDto criterias);
-        Task<Camino.Framework.Models.UserTokenResult> UpdatePasswordAsync(UserPasswordUpdateDto criterias);
+        Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest criterias);
+        Task<UserTokenModel> UpdatePasswordAsync(UserPasswordUpdateRequest criterias);
 
-        Task<Camino.Framework.Models.UserTokenResult> SigninAsync(SigninModel criterias);
+        Task<UserTokenModel> SigninAsync(SigninModel criterias);
         Task<ICommonResult> SignupAsync(SignupModel criterias);
         Task<ICommonResult> ActiveAsync(ActiveUserModel criterias);
         Task<ICommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);

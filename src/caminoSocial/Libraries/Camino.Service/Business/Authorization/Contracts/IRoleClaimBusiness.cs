@@ -6,11 +6,11 @@ namespace Camino.Service.Business.Authorization.Contracts
 {
     public interface IRoleClaimBusiness
     {
-        void Add(RoleClaimDto RoleClaim);
-        Task<IList<RoleClaimDto>> GetByClaimAsync(long roleId, string claimValue, string claimType);
-        Task<IList<RoleClaimDto>> GetByRoleIdAsync(long roleId);
-        Task<IList<RoleResult>> GetRolesForClaimAsync(ClaimResult claim);
-        void Remove(RoleClaimDto RoleClaim);
-        Task ReplaceClaimAsync(long roleId, ClaimResult claim, ClaimResult newClaim);
+        void Add(RoleClaimProjection RoleClaim);
+        Task<IList<RoleClaimProjection>> GetByClaimAsync(long roleId, string claimValue, string claimType);
+        Task<IList<RoleClaimProjection>> GetByRoleIdAsync(long roleId);
+        Task<IList<RoleProjection>> GetRolesForClaimAsync(ClaimProjection claim);
+        void Remove(RoleClaimProjection RoleClaim);
+        Task ReplaceClaimAsync(long roleId, ClaimProjection claim, ClaimProjection newClaim);
     }
 }

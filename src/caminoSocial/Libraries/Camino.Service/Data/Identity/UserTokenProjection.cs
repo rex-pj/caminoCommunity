@@ -1,6 +1,6 @@
 ﻿namespace Camino.Service.Data.Identity
 {
-    public class UserTokenResult
+    public class UserTokenProjection
     {
         public virtual string LoginProvider { get; set; }
         public virtual string Name { get; set; }

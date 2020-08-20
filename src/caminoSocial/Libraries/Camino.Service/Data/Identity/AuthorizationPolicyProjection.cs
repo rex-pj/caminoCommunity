@@ -2,7 +2,7 @@
 
 namespace Camino.Service.Data.Identity
 {
-    public class RoleResult
+    public class AuthorizationPolicyProjection
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -13,6 +13,5 @@ namespace Camino.Service.Data.Identity
         public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string UpdatedByName { get; set; }
-        public string ConcurrencyStamp { get; set; }
     }
 }

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Service.Strategies.Validation.Contracts;
-using Camino.Service.Data.Identity;
-using Camino.Service.Data.Common;
+using Camino.Service.Data.Error;
+using Camino.Service.Data.Request;
 
 namespace Camino.Service.Strategies.Validation
 {
     public class UserPasswordUpdateValidationStratergy : IValidationStrategy
     {
-        public IEnumerable<ErrorResult> Errors { get; set; }
+        public IEnumerable<BaseErrorResult> Errors { get; set; }
 
-        public IEnumerable<ErrorResult> GetErrors(Exception e)
+        public IEnumerable<BaseErrorResult> GetErrors(Exception e)
         {
-            yield return new ErrorResult
+            yield return new BaseErrorResult
             {
                 Message = e.Message
             };
@@ -21,7 +21,7 @@ namespace Camino.Service.Strategies.Validation
 
         public bool IsValid<T>(T value)
         {
-            var data = value as UserPasswordUpdateDto;
+            var data = value as UserPasswordUpdateRequest;
 
             if (data == null)
             {

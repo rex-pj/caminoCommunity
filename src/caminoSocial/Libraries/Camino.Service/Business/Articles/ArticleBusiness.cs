@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Articles
 {
@@ -29,13 +29,13 @@ namespace Camino.Service.Business.Articles
             _userRepository = userRepository;
         }
 
-        public ArticleResult Find(int id)
+        public ArticleProjection Find(int id)
         {
             var exist = (from article in _articleRepository.Table
                          join category in _articleCategoryRepository.Table
                          on article.ArticleCategoryId equals category.Id
                          where article.Id == id
-                         select new ArticleResult
+                         select new ArticleProjection
                          {
                              Description = article.Description,
                              CreatedDate = article.CreatedDate,
@@ -57,24 +57,24 @@ namespace Camino.Service.Business.Articles
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
             var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
-            var articleResult = _mapper.Map<ArticleResult>(exist);
+            var articleResult = _mapper.Map<ArticleProjection>(exist);
             articleResult.CreatedBy = createdByUser.DisplayName;
             articleResult.UpdatedBy = updatedByUser.DisplayName;
 
             return articleResult;
         }
 
-        public ArticleResult FindByName(string name)
+        public ArticleProjection FindByName(string name)
         {
             var exist = _articleRepository.Get(x => x.Name == name)
                 .FirstOrDefault();
 
-            var article = _mapper.Map<ArticleResult>(exist);
+            var article = _mapper.Map<ArticleProjection>(exist);
 
             return article;
         }
 
-        public async Task<PageList<ArticleResult>> GetAsync(ArticleFilter filter)
+        public async Task<BasePageList<ArticleProjection>> GetAsync(ArticleFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var articleQuery = _articleRepository.Table;
@@ -114,7 +114,7 @@ namespace Camino.Service.Business.Articles
                 articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
-            var query = articleQuery.Select(a => new ArticleResult
+            var query = articleQuery.Select(a => new ArticleProjection
             {
                 CreatedById = a.CreatedById,
                 CreatedDate = a.CreatedDate,
@@ -146,13 +146,13 @@ namespace Camino.Service.Business.Articles
             }
 
 
-            var result = new PageList<ArticleResult>(articles);
+            var result = new BasePageList<ArticleProjection>(articles);
             result.TotalResult = filteredNumber;
             result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;
         }
 
-        public int Add(ArticleResult category)
+        public int Add(ArticleProjection category)
         {
             var newArticle = _mapper.Map<Article>(category);
             newArticle.UpdatedDate = DateTime.UtcNow;
@@ -162,7 +162,7 @@ namespace Camino.Service.Business.Articles
             return (int)id;
         }
 
-        public ArticleResult Update(ArticleResult article)
+        public ArticleProjection Update(ArticleProjection article)
         {
             var exist = _articleRepository.FirstOrDefault(x => x.Id == article.Id);
             exist.Description = article.Description;

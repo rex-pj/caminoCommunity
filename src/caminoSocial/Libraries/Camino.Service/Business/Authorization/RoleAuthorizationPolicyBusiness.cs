@@ -5,6 +5,7 @@ using System.Linq;
 using Camino.Service.Data.Filters;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.IdentityDAL.Entities;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Authorization
 {
@@ -68,11 +69,11 @@ namespace Camino.Service.Business.Authorization
             return true;
         }
 
-        public AuthorizationPolicyRolesResult GetAuthoricationPolicyRoles(long id, RoleAuthorizationPolicyFilter filter)
+        public AuthorizationPolicyRolesPageList GetAuthoricationPolicyRoles(long id, RoleAuthorizationPolicyFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var authorizationPolicy = _authorizationPolicyRepository.Get(x => x.Id == id)
-                .Select(x => new AuthorizationPolicyRolesResult
+                .Select(x => new AuthorizationPolicyRolesPageList
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -85,7 +86,7 @@ namespace Camino.Service.Business.Authorization
                 on roleAuthorization.RoleId equals role.Id
                 where string.IsNullOrEmpty(search) || role.Name.ToLower().Contains(search)
                 || (role.Description != null && role.Description.ToLower().Contains(search))
-                select new RoleResult()
+                select new RoleProjection()
                 {
                     Id = role.Id,
                     Name = role.Name,

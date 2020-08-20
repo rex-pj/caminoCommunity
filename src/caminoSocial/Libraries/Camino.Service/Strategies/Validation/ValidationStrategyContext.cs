@@ -1,4 +1,4 @@
-﻿using Camino.Service.Data.Common;
+﻿using Camino.Service.Data.Error;
 using Camino.Service.Strategies.Validation.Contracts;
 using System.Collections.Generic;
 
@@ -7,16 +7,16 @@ namespace Camino.Service.Strategies.Validation
     public class ValidationStrategyContext
     {
         private IValidationStrategy _validationStrategy;
-        public IEnumerable<ErrorResult> Errors { get; set; }
+        public IEnumerable<BaseErrorResult> Errors { get; set; }
 
         public ValidationStrategyContext()
         {
-            Errors = new List<ErrorResult>();
+            Errors = new List<BaseErrorResult>();
         }
 
         public ValidationStrategyContext(IValidationStrategy validationStrategy)
         {
-            Errors = new List<ErrorResult>();
+            Errors = new List<BaseErrorResult>();
             _validationStrategy = validationStrategy;
         }
 

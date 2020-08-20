@@ -8,7 +8,7 @@ namespace Module.Api.Content.Infrastructure.AutoMap
     {
         public ContentMappingProfile()
         {
-            CreateMap<UserPhoto, UserPhotoResult>();
+            CreateMap<UserPhoto, UserPhotoProjection>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Camino.Service.Data.Common;
+using Camino.Service.Data.Error;
 using Camino.Service.Strategies.Validation.Contracts;
 using Camino.Core.Utils;
 
@@ -8,7 +8,7 @@ namespace Camino.Service.Strategies.Validation
 {
     public class ImageUrlValidationStrategy : IValidationStrategy
     {
-        public IEnumerable<ErrorResult> Errors { get; set; }
+        public IEnumerable<BaseErrorResult> Errors { get; set; }
 
         public bool IsValid<T>(T value)
         {
@@ -28,9 +28,9 @@ namespace Camino.Service.Strategies.Validation
             }
         }
 
-        public IEnumerable<ErrorResult> GetErrors(Exception exception)
+        public IEnumerable<BaseErrorResult> GetErrors(Exception exception)
         {
-            yield return new ErrorResult() {
+            yield return new BaseErrorResult() {
                 Message = exception.Message
             };
         }

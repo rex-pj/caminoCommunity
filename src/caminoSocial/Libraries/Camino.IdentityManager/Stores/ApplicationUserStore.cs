@@ -16,6 +16,7 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.Service.Business.Authorization.Contracts;
+using Camino.Service.Data.Request;
 
 namespace Camino.IdentityManager.Contracts.Stores
 {
@@ -70,10 +71,10 @@ namespace Camino.IdentityManager.Contracts.Stores
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                var userDto = _mapper.Map<UserResult>(user);
-                userDto.PasswordHash = user.PasswordHash;
+                var userRequest = _mapper.Map<UserProjection>(user);
+                userRequest.PasswordHash = user.PasswordHash;
 
-                await _userBusiness.CreateAsync(userDto);
+                await _userBusiness.CreateAsync(userRequest);
 
                 return IdentityResult.Success;
             }
@@ -144,8 +145,8 @@ namespace Camino.IdentityManager.Contracts.Stores
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Role {0} does not exist.", normalizedRoleName));
             }
             var applicationUserRole = CreateUserRole(user, roleEntity);
-            var userRoleDto = _mapper.Map<UserRoleResult>(applicationUserRole);
-            _userRoleBusiness.Add(userRoleDto);
+            var userRoleRequest = _mapper.Map<UserRoleProjection>(applicationUserRole);
+            _userRoleBusiness.Add(userRoleRequest);
         }
 
         protected override async Task<ApplicationRole> FindRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
@@ -234,8 +235,8 @@ namespace Camino.IdentityManager.Contracts.Stores
                 var userRole = await FindUserRoleAsync(user.Id, roleEntity.Id, cancellationToken);
                 if (userRole != null)
                 {
-                    var userRoleDto = _mapper.Map<UserRoleResult>(userRole);
-                    _userRoleBusiness.Remove(userRoleDto);
+                    var userRoleRequest = _mapper.Map<UserRoleProjection>(userRole);
+                    _userRoleBusiness.Remove(userRoleRequest);
                 }
             }
         }
@@ -253,7 +254,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             }
             foreach (var claim in claims)
             {
-                var userClaim = _mapper.Map<UserClaimResult>(CreateUserClaim(user, claim));
+                var userClaim = _mapper.Map<UserClaimProjection>(CreateUserClaim(user, claim));
                 _userClaimBusiness.Add(userClaim);
             }
             return Task.FromResult(false);
@@ -292,21 +293,21 @@ namespace Camino.IdentityManager.Contracts.Stores
             }
 
             var userLogin = CreateUserLogin(user, login);
-            var userLoginDto = _mapper.Map<UserLoginDto>(userLogin);
-            _userLoginBusiness.Add(userLoginDto);
+            var userLoginRequest = _mapper.Map<UserLoginRequest>(userLogin);
+            _userLoginBusiness.Add(userLoginRequest);
             return Task.FromResult(false);
         }
 
         protected override async Task<ApplicationUserLogin> FindUserLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            var userLoginDto = await _userLoginBusiness.FindAsync(loginProvider, providerKey);
-            return _mapper.Map<ApplicationUserLogin>(userLoginDto);
+            var userLoginRequest = await _userLoginBusiness.FindAsync(loginProvider, providerKey);
+            return _mapper.Map<ApplicationUserLogin>(userLoginRequest);
         }
 
         protected override async Task<ApplicationUserLogin> FindUserLoginAsync(long userId, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            var userLoginDto = await _userLoginBusiness.FindAsync(userId, loginProvider, providerKey);
-            return _mapper.Map<ApplicationUserLogin>(userLoginDto);
+            var userLoginRequest = await _userLoginBusiness.FindAsync(userId, loginProvider, providerKey);
+            return _mapper.Map<ApplicationUserLogin>(userLoginRequest);
         }
 
         public override async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken = default)
@@ -329,7 +330,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             var entry = await FindUserLoginAsync(user.Id, loginProvider, providerKey, cancellationToken);
             if (entry != null)
             {
-                var userLogin = _mapper.Map<UserLoginDto>(entry);
+                var userLogin = _mapper.Map<UserLoginRequest>(entry);
                 _userLoginBusiness.Remove(userLogin);
             }
         }
@@ -356,8 +357,8 @@ namespace Camino.IdentityManager.Contracts.Stores
                 throw new ArgumentNullException(nameof(claim));
             }
 
-            var claimDto = _mapper.Map<ClaimResult>(claim);
-            var userClaims = await _userClaimBusiness.GetUsersForClaimAsync(claimDto);
+            var claimRequest = _mapper.Map<ClaimProjection>(claim);
+            var userClaims = await _userClaimBusiness.GetUsersForClaimAsync(claimRequest);
             var applicationUserClaims = _mapper.Map<IList<TUser>>(userClaims);
 
             return applicationUserClaims;
@@ -387,7 +388,7 @@ namespace Camino.IdentityManager.Contracts.Stores
 
         protected override Task AddUserTokenAsync(ApplicationUserToken token)
         {
-            var userToken = _mapper.Map<UserTokenResult>(token);
+            var userToken = _mapper.Map<UserTokenProjection>(token);
             _userTokenBusiness.Add(userToken);
             return Task.CompletedTask;
         }
@@ -400,7 +401,7 @@ namespace Camino.IdentityManager.Contracts.Stores
 
         protected override Task RemoveUserTokenAsync(ApplicationUserToken token)
         {
-            var userToken = _mapper.Map<UserTokenResult>(token);
+            var userToken = _mapper.Map<UserTokenProjection>(token);
             _userTokenBusiness.Remove(userToken);
             return Task.CompletedTask;
         }
@@ -421,9 +422,9 @@ namespace Camino.IdentityManager.Contracts.Stores
                 throw new ArgumentNullException(nameof(newClaim));
             }
 
-            var claimDto = _mapper.Map<ClaimResult>(claim);
-            var newClaimDto = _mapper.Map<ClaimResult>(newClaim);
-            await _userClaimBusiness.ReplaceClaimAsync(user.Id, claimDto, newClaimDto);
+            var claimRequest = _mapper.Map<ClaimProjection>(claim);
+            var newClaimRequest = _mapper.Map<ClaimProjection>(newClaim);
+            await _userClaimBusiness.ReplaceClaimAsync(user.Id, claimRequest, newClaimRequest);
         }
 
         public override async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default)
@@ -439,8 +440,8 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                var userDto = _mapper.Map<UserResult>(user);
-                await _userBusiness.UpdateAsync(userDto);
+                var userRequest = _mapper.Map<UserProjection>(user);
+                await _userBusiness.UpdateAsync(userRequest);
             }
             // todo: check DbUpdateConcurrencyException
             catch (LinqToDBException)
@@ -464,8 +465,8 @@ namespace Camino.IdentityManager.Contracts.Stores
 
         protected async Task<ApplicationAuthorizationPolicy> FindPolicyAsync(string policyName, CancellationToken cancellationToken)
         {
-            var policyDto = await _authorizationPolicyBusiness.FindByNameAsync(policyName); ;
-            var authorizationPolicy = _mapper.Map<ApplicationAuthorizationPolicy>(policyDto);
+            var policyRequest = await _authorizationPolicyBusiness.FindByNameAsync(policyName); ;
+            var authorizationPolicy = _mapper.Map<ApplicationAuthorizationPolicy>(policyRequest);
             return authorizationPolicy;
         }
 

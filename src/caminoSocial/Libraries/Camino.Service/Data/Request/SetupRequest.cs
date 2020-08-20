@@ -13,12 +13,12 @@ namespace Camino.Service.Data.Request
         public DateTime BirthDate { get; set; }
         public string AdminPassword { get; set; }
         public string AdminConfirmPassword { get; set; }
-        public UserResult InitualUser { get; set; }
-        public IEnumerable<CountryResult> Countries { get; set; }
-        public IEnumerable<GenderResult> Genders { get; set; }
-        public IEnumerable<UserStatusResult> Statuses { get; set; }
-        public IEnumerable<RoleResult> Roles { get; set; }
-        public IEnumerable<AuthorizationPolicyResult> AuthorizationPolicies { get; set; }
-        public IEnumerable<UserPhotoTypeResult> UserPhotoTypes { get; set; }
+        public UserProjection InitualUser { get; set; }
+        public IEnumerable<CountryProjection> Countries { get; set; }
+        public IEnumerable<GenderProjection> Genders { get; set; }
+        public IEnumerable<UserStatusProjection> Statuses { get; set; }
+        public IEnumerable<RoleProjection> Roles { get; set; }
+        public IEnumerable<AuthorizationPolicyProjection> AuthorizationPolicies { get; set; }
+        public IEnumerable<UserPhotoTypeProjection> UserPhotoTypes { get; set; }
     }
 }

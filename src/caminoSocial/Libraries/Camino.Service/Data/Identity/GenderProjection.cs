@@ -1,6 +1,6 @@
 ﻿namespace Camino.Service.Data.Identity
 {
-    public class GenderResult
+    public class GenderProjection
     {
         public string Name { get; set; }
     }

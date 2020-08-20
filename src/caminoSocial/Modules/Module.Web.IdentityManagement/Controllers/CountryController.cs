@@ -33,14 +33,14 @@ namespace Module.Web.IdentityManagement.Controllers
         [LoadResultAuthorizations("Country", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(CountryFilterModel filter)
         {
-            var filterDto = new CountryFilter()
+            var filterRequest = new CountryFilter()
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search
             };
 
-            var countryPageList = await _countryBusiness.GetAsync(filterDto);
+            var countryPageList = await _countryBusiness.GetAsync(filterRequest);
             var countries = countryPageList.Collections.Select(x => new CountryModel() { 
                 Code = x.Code,
                 Id = x.Id,
@@ -118,7 +118,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateCountry)]
         public IActionResult Create(CountryModel model)
         {
-            var country = new CountryResult()
+            var country = new CountryProjection()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -151,7 +151,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var country = new CountryResult()
+            var country = new CountryProjection()
             {
                 Id = model.Id,
                 Name = model.Name,

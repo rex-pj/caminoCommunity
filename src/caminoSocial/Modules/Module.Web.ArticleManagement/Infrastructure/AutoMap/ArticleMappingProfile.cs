@@ -9,15 +9,15 @@ namespace Module.Web.ArticleManagement.Infrastructure.AutoMap
     {
         public ArticleMappingProfile()
         {
-            CreateMap<ArticleModel, ArticleResult>();
-            CreateMap<ArticleResult, ArticleModel>();
-            CreateMap<ArticleResult, Article>();
-            CreateMap<Article, ArticleResult>();
+            CreateMap<ArticleModel, ArticleProjection>();
+            CreateMap<ArticleProjection, ArticleModel>();
+            CreateMap<ArticleProjection, Article>();
+            CreateMap<Article, ArticleProjection>();
 
-            CreateMap<ArticleCategoryModel, ArticleCategoryResult>();
-            CreateMap<ArticleCategoryResult, ArticleCategoryModel>();
-            CreateMap<ArticleCategoryResult, ArticleCategory>();
-            CreateMap<ArticleCategory, ArticleCategoryResult>();
+            CreateMap<ArticleCategoryModel, ArticleCategoryProjection>();
+            CreateMap<ArticleCategoryProjection, ArticleCategoryModel>();
+            CreateMap<ArticleCategoryProjection, ArticleCategory>();
+            CreateMap<ArticleCategory, ArticleCategoryProjection>();
         }
     }
 }

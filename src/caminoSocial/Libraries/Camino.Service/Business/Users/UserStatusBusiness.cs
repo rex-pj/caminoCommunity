@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Users.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Users
 {
@@ -20,7 +20,7 @@ namespace Camino.Service.Business.Users
             _statusRepository = statusRepository;
         }
 
-        public IList<UserStatusResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<UserStatusProjection> Search(string query = "", int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -38,7 +38,7 @@ namespace Camino.Service.Business.Users
             }
 
             var users = data
-                .Select(x => new UserStatusResult()
+                .Select(x => new UserStatusProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -49,11 +49,11 @@ namespace Camino.Service.Business.Users
             return users;
         }
 
-        public async Task<PageList<UserStatusResult>> GetAsync(UserStatusFilter filter)
+        public async Task<BasePageList<UserStatusProjection>> GetAsync(UserStatusFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var query = _statusRepository.Table
-                .Select(x => new UserStatusResult()
+                .Select(x => new UserStatusProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -72,7 +72,7 @@ namespace Camino.Service.Business.Users
                                          .Take(filter.PageSize)
                                          .ToListAsync();
 
-            var result = new PageList<UserStatusResult>(statuses)
+            var result = new BasePageList<UserStatusProjection>(statuses)
             {
                 TotalResult = filteredNumber,
                 TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
@@ -81,10 +81,10 @@ namespace Camino.Service.Business.Users
             return result;
         }
 
-        public UserStatusResult Find(int id)
+        public UserStatusProjection Find(int id)
         {
             var status = _statusRepository.Get(x => x.Id == id)
-                .Select(x => new UserStatusResult()
+                .Select(x => new UserStatusProjection()
                 {
                     Id = x.Id,
                     Description = x.Description,
@@ -95,10 +95,10 @@ namespace Camino.Service.Business.Users
             return status;
         }
 
-        public UserStatusResult FindByName(string name)
+        public UserStatusProjection FindByName(string name)
         {
             var status = _statusRepository.Get(x => x.Name == name)
-                .Select(x => new UserStatusResult()
+                .Select(x => new UserStatusProjection()
                 {
                     Id = x.Id,
                     Description = x.Description,
@@ -109,30 +109,30 @@ namespace Camino.Service.Business.Users
             return status;
         }
 
-        public int Add(UserStatusResult statusDto)
+        public int Add(UserStatusProjection statusRequest)
         {
             var country = new Status()
             {
-                Description = statusDto.Description,
-                Name = statusDto.Name
+                Description = statusRequest.Description,
+                Name = statusRequest.Name
             };
 
             var id = _statusRepository.AddWithInt32Entity(country);
             return id;
         }
 
-        public UserStatusResult Update(UserStatusResult statusDto)
+        public UserStatusProjection Update(UserStatusProjection statusRequest)
         {
-            var exist = _statusRepository.FirstOrDefault(x => x.Id == statusDto.Id);
+            var exist = _statusRepository.FirstOrDefault(x => x.Id == statusRequest.Id);
             if (exist == null)
             {
                 return null;
             }
-            exist.Description = statusDto.Description;
-            exist.Name = statusDto.Name;
+            exist.Description = statusRequest.Description;
+            exist.Name = statusRequest.Name;
 
             _statusRepository.Update(exist);
-            return statusDto;
+            return statusRequest;
         }
     }
 }

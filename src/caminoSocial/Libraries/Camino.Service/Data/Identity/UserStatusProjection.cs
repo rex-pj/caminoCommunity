@@ -1,6 +1,6 @@
 ﻿namespace Camino.Service.Data.Identity
 {
-    public class UserStatusResult
+    public class UserStatusProjection
     {
         public int Id { get; set; }
         public string Name { get; set; }

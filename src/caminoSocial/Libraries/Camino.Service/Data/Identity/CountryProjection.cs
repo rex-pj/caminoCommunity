@@ -1,6 +1,6 @@
 ﻿namespace Camino.Service.Data.Identity
 {
-    public class CountryResult
+    public class CountryProjection
     {
         public short Id { get; set; }
         public string Name { get; set; }

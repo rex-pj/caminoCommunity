@@ -1,20 +1,20 @@
 ﻿using Camino.Service.Strategies.Validation.Contracts;
-using Camino.Service.Data.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Service.Data.Common;
+using Camino.Service.Data.Error;
+using Camino.Service.Data.Request;
 
 namespace Camino.Service.Strategies.Validation
 {
     public class UserProfileUpdateValidationStratergy : IValidationStrategy
     {
-        public IEnumerable<ErrorResult> Errors { get; set; }
+        public IEnumerable<BaseErrorResult> Errors { get; set; }
         public UserProfileUpdateValidationStratergy() { }
 
         public bool IsValid<T>(T data)
         {
-            var model = data as UserIdentifierUpdateDto;
+            var model = data as UserIdentifierUpdateRequest;
             if (model == null)
             {
                 Errors = GetErrors(new ArgumentNullException(nameof(model)));
@@ -43,9 +43,9 @@ namespace Camino.Service.Strategies.Validation
             return Errors == null || !Errors.Any();
         }
 
-        public IEnumerable<ErrorResult> GetErrors(Exception e)
+        public IEnumerable<BaseErrorResult> GetErrors(Exception e)
         {
-            yield return new ErrorResult
+            yield return new BaseErrorResult
             {
                 Message = e.Message
             };

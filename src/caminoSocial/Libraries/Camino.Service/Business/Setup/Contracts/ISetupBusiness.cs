@@ -9,7 +9,7 @@ namespace Camino.Service.Business.Setup.Contracts
         bool IsIdentityDatabaseExist();
         void SeedingIdentityDb(string sql);
         void SeedingContentDb(string sql);
-        Task PrepareIdentityDataAsync(SetupRequest installationDto);
-        Task PrepareContentDataAsync(SetupRequest installationDto);
+        Task PrepareIdentityDataAsync(SetupRequest installationRequest);
+        Task PrepareContentDataAsync(SetupRequest installationRequest);
     }
 }

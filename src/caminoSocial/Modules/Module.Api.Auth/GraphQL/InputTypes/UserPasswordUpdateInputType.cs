@@ -1,11 +1,11 @@
-﻿using Camino.Service.Data.Identity;
+﻿using Camino.Service.Data.Request;
 using HotChocolate.Types;
 
-namespace  Module.Api.Auth.GraphQL.InputTypes
+namespace Module.Api.Auth.GraphQL.InputTypes
 {
-    public class UserPasswordUpdateInputType : InputObjectType<UserPasswordUpdateDto>
+    public class UserPasswordUpdateInputType : InputObjectType<UserPasswordUpdateRequest>
     {
-        protected override void Configure(IInputObjectTypeDescriptor<UserPasswordUpdateDto> descriptor)
+        protected override void Configure(IInputObjectTypeDescriptor<UserPasswordUpdateRequest> descriptor)
         {
             descriptor.Field(x => x.UserId).Ignore();
             descriptor.Field(x => x.ConfirmPassword).Type<NonNullType<StringType>>();

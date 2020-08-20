@@ -3,9 +3,9 @@ using HotChocolate.Types;
 
 namespace Camino.Framework.GraphQL.ResultTypes
 {
-    public class UserTokenResultType : ObjectType<UserTokenResult>
+    public class UserTokenResultType : ObjectType<UserTokenModel>
     {
-        protected override void Configure(IObjectTypeDescriptor<UserTokenResult> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<UserTokenModel> descriptor)
         {
             descriptor.Field(x => x.AuthenticationToken).Type<StringType>();
             descriptor.Field(x => x.IsSucceed).Type<BooleanType>();

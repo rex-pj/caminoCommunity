@@ -21,10 +21,10 @@ namespace Camino.Service.Business.Authorization
             _userRoleRepository = userRoleRepository;
         }
 
-        public async Task<IList<UserRoleResult>> GetUserRolesAsync(long userId)
+        public async Task<IList<UserRoleProjection>> GetUserRolesAsync(long userId)
         {
             var userRoles = await _userRoleRepository.Get(x => x.UserId == userId)
-                .Select(x => new UserRoleResult()
+                .Select(x => new UserRoleProjection()
                 {
                     RoleId = x.RoleId,
                     RoleName = x.Role.Name,
@@ -34,18 +34,18 @@ namespace Camino.Service.Business.Authorization
             return userRoles;
         }
 
-        public async Task<UserRoleResult> FindUserRoleAsync(long userId, long roleId)
+        public async Task<UserRoleProjection> FindUserRoleAsync(long userId, long roleId)
         {
             var userRole = (await _userRoleRepository.GetAsync(x => x.UserId == userId && x.RoleId == roleId))
                 .FirstOrDefault();
 
-            return _mapper.Map<UserRoleResult>(userRole);
+            return _mapper.Map<UserRoleProjection>(userRole);
         }
 
-        public async Task<IList<UserResult>> GetUsersInRoleAsync(long roleId)
+        public async Task<IList<UserProjection>> GetUsersInRoleAsync(long roleId)
         {
             var existUserRoles = await _userRoleRepository.Get(x => x.RoleId == roleId)
-                .Select(x => new UserResult()
+                .Select(x => new UserProjection()
                 {
                     Id = x.UserId,
                     DisplayName = x.User.DisplayName,
@@ -60,15 +60,15 @@ namespace Camino.Service.Business.Authorization
             return existUserRoles;
         }
 
-        public void Add(UserRoleResult userRoleDto)
+        public void Add(UserRoleProjection userRoleRequest)
         {
-            var userRole = _mapper.Map<UserRole>(userRoleDto);
+            var userRole = _mapper.Map<UserRole>(userRoleRequest);
             _userRoleRepository.Add(userRole);
         }
 
-        public void Remove(UserRoleResult userRoleDto)
+        public void Remove(UserRoleProjection userRoleRequest)
         {
-            var userRole = _mapper.Map<UserRole>(userRoleDto);
+            var userRole = _mapper.Map<UserRole>(userRoleRequest);
             _userRoleRepository.Delete(userRole);
         }
     }

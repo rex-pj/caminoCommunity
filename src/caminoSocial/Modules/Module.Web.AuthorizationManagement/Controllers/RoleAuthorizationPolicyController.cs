@@ -29,8 +29,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("RoleAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
         public IActionResult Index(RoleAuthorizationPolicyFilterModel filter)
         {
-            var filterDto = _mapper.Map<RoleAuthorizationPolicyFilter>(filter);
-            var authorizationRoles = _roleAuthorizationPolicyBusiness.GetAuthoricationPolicyRoles(filter.Id, filterDto);
+            var filterRequest = _mapper.Map<RoleAuthorizationPolicyFilter>(filter);
+            var authorizationRoles = _roleAuthorizationPolicyBusiness.GetAuthoricationPolicyRoles(filter.Id, filterRequest);
 
             var authorizationRolesPage = _mapper.Map<AuthorizationPolicyRolesModel>(authorizationRoles);
             authorizationRolesPage.Filter = filter;

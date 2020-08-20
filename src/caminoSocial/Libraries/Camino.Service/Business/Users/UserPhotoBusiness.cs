@@ -125,7 +125,7 @@ namespace Camino.Service.Business.Users
             await _userPhotoRepository.DeleteAsync(userPhoto);
         }
 
-        public async Task<UserPhotoResult> GetUserPhotoByCodeAsync(string code, UserPhotoKind type)
+        public async Task<UserPhotoProjection> GetUserPhotoByCodeAsync(string code, UserPhotoKind type)
         {
             var photoType = (byte)type;
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
@@ -135,7 +135,7 @@ namespace Camino.Service.Business.Users
                 return null;
             }
 
-            return userPhotos.Select(x => new UserPhotoResult()
+            return userPhotos.Select(x => new UserPhotoProjection()
             {
                 Code = x.Code,
                 Description = x.Description,
@@ -148,11 +148,11 @@ namespace Camino.Service.Business.Users
             }).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<UserPhotoResult>> GetUserPhotosAsync(long userId)
+        public async Task<IEnumerable<UserPhotoProjection>> GetUserPhotosAsync(long userId)
         {
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.UserId == userId);
             
-            return userPhotos.Select(x => new UserPhotoResult()
+            return userPhotos.Select(x => new UserPhotoProjection()
             {
                 Code = x.Code,
                 Description = x.Description,
@@ -163,7 +163,7 @@ namespace Camino.Service.Business.Users
             });
         }
 
-        public UserPhotoResult GetUserPhotoByUserId(long userId, UserPhotoKind type)
+        public UserPhotoProjection GetUserPhotoByUserId(long userId, UserPhotoKind type)
         {
             var photoType = (byte)type;
             var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));
@@ -172,7 +172,7 @@ namespace Camino.Service.Business.Users
                 return null;
             }
 
-            return userPhotos.Select(x => new UserPhotoResult()
+            return userPhotos.Select(x => new UserPhotoProjection()
             {
                 Code = x.Code,
                 Description = x.Description,

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Page;
+using Camino.Service.Data.PageList;
 
 namespace Camino.Service.Business.Authorization
 {
@@ -27,7 +27,7 @@ namespace Camino.Service.Business.Authorization
         }
 
         #region CRUD
-        public async Task<long> AddAsync(RoleResult roleModel)
+        public async Task<long> AddAsync(RoleProjection roleModel)
         {
             if (roleModel == null)
             {
@@ -50,7 +50,7 @@ namespace Camino.Service.Business.Authorization
             return true;
         }
 
-        public async Task<RoleResult> FindAsync(long id)
+        public async Task<RoleProjection> FindAsync(long id)
         {
             var existRole = await (from role in _roleRepository.Table
                                    join createdBy in _userRepository.Table
@@ -58,7 +58,7 @@ namespace Camino.Service.Business.Authorization
                                    join updatedBy in _userRepository.Table
                                    on role.UpdatedById equals updatedBy.Id
                                    where role.Id == id
-                                   select new RoleResult()
+                                   select new RoleProjection()
                                    {
                                        CreatedByName = createdBy.Lastname + " " + createdBy.Firstname,
                                        UpdatedByName = updatedBy.Lastname + " " + updatedBy.Firstname,
@@ -80,7 +80,7 @@ namespace Camino.Service.Business.Authorization
             return existRole;
         }
 
-        public List<RoleResult> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10)
+        public List<RoleProjection> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10)
         {
             if (query == null)
             {
@@ -99,7 +99,7 @@ namespace Camino.Service.Business.Authorization
             }
 
             var users = data
-                .Select(x => new RoleResult()
+                .Select(x => new RoleProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -110,7 +110,7 @@ namespace Camino.Service.Business.Authorization
             return users;
         }
 
-        public RoleResult FindByName(string name)
+        public RoleProjection FindByName(string name)
         {
             var exist = _roleRepository.Get(x => x.Name == name).FirstOrDefault();
             if (exist == null)
@@ -118,10 +118,10 @@ namespace Camino.Service.Business.Authorization
                 return null;
             }
 
-            return _mapper.Map<RoleResult>(exist);
+            return _mapper.Map<RoleProjection>(exist);
         }
 
-        public async Task<RoleResult> FindByNameAsync(string name)
+        public async Task<RoleProjection> FindByNameAsync(string name)
         {
             name = name.ToLower();
             var exist = await _roleRepository.Get(x => x.Name.ToLower() == name)
@@ -131,10 +131,10 @@ namespace Camino.Service.Business.Authorization
                 return null;
             }
 
-            return _mapper.Map<RoleResult>(exist);
+            return _mapper.Map<RoleProjection>(exist);
         }
 
-        public async Task<PageList<RoleResult>> GetAsync(RoleFilter filter)
+        public async Task<BasePageList<RoleProjection>> GetAsync(RoleFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
             var query = (from role in _roleRepository.Table
@@ -144,7 +144,7 @@ namespace Camino.Service.Business.Authorization
                          on role.UpdatedById equals updatedBy.Id
                         where string.IsNullOrEmpty(search) || role.Name.ToLower().Contains(search)
                         || (role.Description != null && role.Description.ToLower().Contains(search))
-                        select new RoleResult
+                        select new RoleProjection
                          {
                              Id = role.Id,
                              Name = role.Name,
@@ -163,13 +163,13 @@ namespace Camino.Service.Business.Authorization
                                          .Take(filter.PageSize)
                                          .ToListAsync();
 
-            var result = new PageList<RoleResult>(roles);
+            var result = new BasePageList<RoleProjection>(roles);
             result.TotalResult = filteredNumber;
             result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
             return result;
         }
 
-        public async Task<bool> UpdateAsync(RoleResult roleModel)
+        public async Task<bool> UpdateAsync(RoleProjection roleModel)
         {
             if (roleModel.Id <= 0)
             {
@@ -187,11 +187,11 @@ namespace Camino.Service.Business.Authorization
             return true;
         }
 
-        public async Task<RoleResult> GetByNameAsync(string name)
+        public async Task<RoleProjection> GetByNameAsync(string name)
         {
             var role = (await _roleRepository.GetAsync(x => x.Name.Equals(name))).FirstOrDefault();
 
-            var roleModel = _mapper.Map<RoleResult>(role);
+            var roleModel = _mapper.Map<RoleProjection>(role);
             return roleModel;
         }
         #endregion

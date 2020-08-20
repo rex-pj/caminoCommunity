@@ -21,32 +21,32 @@ namespace Camino.Service.Business.Authentication
             _mapper = mapper;
         }
 
-        public void Add(UserClaimResult userClaim)
+        public void Add(UserClaimProjection userClaim)
         {
             var claim = _mapper.Map<UserClaim>(userClaim);
             _userClaimRepository.Add(claim);
         }
 
-        public async Task<IList<UserClaimResult>> GetByUserIdAsync(long userId)
+        public async Task<IList<UserClaimProjection>> GetByUserIdAsync(long userId)
         {
             var userClaims = await _userClaimRepository.GetAsync(x => x.UserId == userId);
-            return _mapper.Map<IList<UserClaimResult>>(userClaims);
+            return _mapper.Map<IList<UserClaimProjection>>(userClaims);
         }
 
-        public async Task<IList<UserClaimResult>> GetByClaimAsync(long userId, string claimValue, string claimType)
+        public async Task<IList<UserClaimProjection>> GetByClaimAsync(long userId, string claimValue, string claimType)
         {
             var userClaims = await _userClaimRepository
                 .GetAsync(x => x.UserId == userId && x.ClaimValue == claimValue && x.ClaimType == claimType);
-            return _mapper.Map<IList<UserClaimResult>>(userClaims);
+            return _mapper.Map<IList<UserClaimProjection>>(userClaims);
         }
 
-        public void Remove(UserClaimResult userClaim)
+        public void Remove(UserClaimProjection userClaim)
         {
             var claim = _mapper.Map<UserClaim>(userClaim);
             _userClaimRepository.Delete(claim);
         }
 
-        public async Task ReplaceClaimAsync(long userId, ClaimResult claim, ClaimResult newClaim)
+        public async Task ReplaceClaimAsync(long userId, ClaimProjection claim, ClaimProjection newClaim)
         {
             var matchedClaims = await GetByClaimAsync(userId, claim.Value, claim.Type);
             foreach (var matchedClaim in matchedClaims)
@@ -56,10 +56,10 @@ namespace Camino.Service.Business.Authentication
             }
         }
 
-        public async Task<IList<UserResult>> GetUsersForClaimAsync(ClaimResult claim)
+        public async Task<IList<UserProjection>> GetUsersForClaimAsync(ClaimProjection claim)
         {
             var existUserClaims = await _userClaimRepository.Get(x => x.ClaimValue == claim.Value && x.ClaimType == claim.Type)
-                .Select(x => new UserResult() { 
+                .Select(x => new UserProjection() { 
                     Id = x.UserId,
                     DisplayName = x.User.DisplayName,
                     Lastname = x.User.Lastname,

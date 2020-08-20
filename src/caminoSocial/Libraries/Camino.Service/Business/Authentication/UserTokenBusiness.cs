@@ -19,24 +19,24 @@ namespace Camino.Service.Business.Authentication
             _userTokenRepository = userTokenRepository;
         }
 
-        public async Task<UserTokenResult> FindAsync(long userId, string loginProvider, string name)
+        public async Task<UserTokenProjection> FindAsync(long userId, string loginProvider, string name)
         {
             var userTokens = await _userTokenRepository.GetAsync(x => x.UserId == userId && x.Name == name);
             var userToken = userTokens.FirstOrDefault();
 
-            return _mapper.Map<UserTokenResult>(userToken);
+            return _mapper.Map<UserTokenProjection>(userToken);
         }
 
-        public void Add(UserTokenResult userTokenDto)
+        public void Add(UserTokenProjection userTokenRequest)
         {
-            var userToken = _mapper.Map<UserToken>(userTokenDto);
+            var userToken = _mapper.Map<UserToken>(userTokenRequest);
             _userTokenRepository.Add(userToken);
         }
 
-        public void Remove(UserTokenResult userTokenDto)
+        public void Remove(UserTokenProjection userTokenRequest)
         {
-            var userToken = _userTokenRepository.Get(x => x.LoginProvider == userTokenDto.LoginProvider
-                && x.Value == userTokenDto.Value && x.Name == userTokenDto.Name && x.UserId == userTokenDto.UserId);
+            var userToken = _userTokenRepository.Get(x => x.LoginProvider == userTokenRequest.LoginProvider
+                && x.Value == userTokenRequest.Value && x.Name == userTokenRequest.Name && x.UserId == userTokenRequest.UserId);
             _userTokenRepository.Delete(userToken);
         }
     }

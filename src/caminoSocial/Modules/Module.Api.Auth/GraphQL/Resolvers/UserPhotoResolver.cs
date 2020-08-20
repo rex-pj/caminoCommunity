@@ -79,7 +79,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
         }
 
-        private UserPhotoResult GetUserPhoto(long userId, UserPhotoKind type)
+        private UserPhotoProjection GetUserPhoto(long userId, UserPhotoKind type)
         {
             var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
             if (userPhoto != null)

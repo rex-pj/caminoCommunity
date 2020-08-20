@@ -10,6 +10,7 @@ using AutoMapper;
 using Camino.IdentityDAL.Contracts;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.IdentityDAL.Entities;
+using Camino.Service.Data.Request;
 
 namespace Camino.Service.Business.Authentication
 {
@@ -40,7 +41,7 @@ namespace Camino.Service.Business.Authentication
 
         #region CRUD
         
-        public async Task<UserResult> UpdatePasswordAsync(UserPasswordUpdateDto model)
+        public async Task<UserProjection> UpdatePasswordAsync(UserPasswordUpdateRequest model)
         {
             _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
             bool canUpdate = _validationStrategyContext.Validate(model);
@@ -58,11 +59,11 @@ namespace Camino.Service.Business.Authentication
             var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == model.UserId);
             if(user == null)
             {
-                return new UserResult();
+                return new UserProjection();
             }
             user.PasswordHash = model.NewPassword;
             await _userRepository.UpdateAsync(user);
-            return new UserResult()
+            return new UserProjection()
             {
                 Id = user.Id
             };
@@ -70,14 +71,14 @@ namespace Camino.Service.Business.Authentication
         #endregion
 
         #region GET
-        public IEnumerable<UserRoleResult> GetUserRoles(long userd)
+        public IEnumerable<UserRoleProjection> GetUserRoles(long userd)
         {
             var userRoles = (from user in _userRepository.Table
                              join userRole in _userRoleRepository.Table
                              on user.Id equals userRole.UserId into roles
                              from userRole in roles.DefaultIfEmpty()
                              where user.Id == userd
-                             select new UserRoleResult()
+                             select new UserRoleProjection()
                              {
                                  UserId = user.Id,
                                  RoleId = userRole.RoleId,
@@ -87,7 +88,7 @@ namespace Camino.Service.Business.Authentication
             return userRoles;
         }
 
-        public UserResult GetLoggedIn(long id)
+        public UserProjection GetLoggedIn(long id)
         {
             var user = _userRepository
                 .Get(x => x.Id == id)

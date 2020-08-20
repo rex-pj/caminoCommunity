@@ -40,7 +40,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
-            var filterDto = new ArticleFilter()
+            var filterRequest = new ArticleFilter()
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -51,7 +51,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdatedById = filter.UpdatedById
             };
 
-            var articlePageList = await _articleBusiness.GetAsync(filterDto);
+            var articlePageList = await _articleBusiness.GetAsync(filterRequest);
             var articles = _mapper.Map<List<ArticleModel>>(articlePageList.Collections);
             var articlePage = new PageListModel<ArticleModel>(articles)
             {
@@ -142,7 +142,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var article = _mapper.Map<ArticleResult>(model);
+            var article = _mapper.Map<ArticleProjection>(model);
             var exist = _articleBusiness.FindByName(model.Name);
             if (exist != null)
             {
@@ -165,7 +165,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var article = _mapper.Map<ArticleResult>(model);
+            var article = _mapper.Map<ArticleProjection>(model);
             if (article.Id <= 0)
             {
                 return RedirectToErrorPage();

@@ -2,19 +2,19 @@
 
 namespace Camino.Framework.Models
 {
-    public class UserTokenResult
+    public class UserTokenModel
     {
         public string AuthenticationToken { get; set; }
         public bool IsSucceed { get; set; }
         public UserInfoModel UserInfo { get; set; }
         public AccessMode AccessMode { get; set; }
 
-        public UserTokenResult()
+        public UserTokenModel()
         {
             IsSucceed = false;
         }
 
-        public UserTokenResult(bool isSucceed)
+        public UserTokenModel(bool isSucceed)
         {
             IsSucceed = isSucceed;
         }

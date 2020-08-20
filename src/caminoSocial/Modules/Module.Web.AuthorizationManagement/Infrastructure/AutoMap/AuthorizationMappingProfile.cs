@@ -3,6 +3,7 @@ using Camino.Service.Data.Filters;
 using Camino.Service.Data.Identity;
 using Camino.IdentityManager.Models;
 using Module.Web.AuthorizationManagement.Models;
+using Camino.Service.Data.PageList;
 
 namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
 {
@@ -10,19 +11,19 @@ namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
     {
         public AuthorizationMappingProfile()
         {
-            CreateMap<RoleResult, RoleModel>();
-            CreateMap<RoleModel, RoleResult>();
-            CreateMap<AuthorizationPolicyResult, AuthorizationPolicyModel>();
-            CreateMap<AuthorizationPolicyModel, AuthorizationPolicyResult>();
-            CreateMap<AuthorizationPolicyUsersResult, AuthorizationPolicyUsersModel>();
-            CreateMap<AuthorizationPolicyRolesResult, AuthorizationPolicyRolesModel>();
+            CreateMap<RoleProjection, RoleModel>();
+            CreateMap<RoleModel, RoleProjection>();
+            CreateMap<AuthorizationPolicyProjection, AuthorizationPolicyModel>();
+            CreateMap<AuthorizationPolicyModel, AuthorizationPolicyProjection>();
+            CreateMap<AuthorizationPolicyUsersPageList, AuthorizationPolicyUsersModel>();
+            CreateMap<AuthorizationPolicyRolesPageList, AuthorizationPolicyRolesModel>();
 
-            CreateMap<UserRoleAuthorizationPoliciesResult, ApplicationUserRoleAuthorizationPolicy>();
-            CreateMap<RoleAuthorizationPoliciesResult, ApplicationRole>();
-            CreateMap<AuthorizationPolicyResult, ApplicationAuthorizationPolicy>();
+            CreateMap<UserRoleAuthorizationPoliciesProjection, ApplicationUserRoleAuthorizationPolicy>();
+            CreateMap<RoleAuthorizationPoliciesProjection, ApplicationRole>();
+            CreateMap<AuthorizationPolicyProjection, ApplicationAuthorizationPolicy>();
             CreateMap<ApplicationRole, RoleModel>();
-            CreateMap<UserResult, UserModel>();
-            CreateMap<UserModel, UserResult>();
+            CreateMap<UserProjection, UserModel>();
+            CreateMap<UserModel, UserProjection>();
 
             CreateMap<AuthorizationPolicyFilterModel, AuthorizationPolicyFilter>();
             CreateMap<RoleAuthorizationPolicyFilterModel, RoleAuthorizationPolicyFilter>();
