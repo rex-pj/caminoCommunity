@@ -29,9 +29,9 @@ namespace Camino.Service.Infrastructure.Extensions
             services.AddContentDataAccessServices("CaminoEntities");
             services.AddIdentityDataAccessServices("IdentityEntities");
 
-            services.AddBusinessServices();
             services.AddIdentityRepositories();
             services.AddContentRepositories();
+            services.AddBusinessServices();
         }
 
         public static void AddBusinessServices(this IServiceCollection services)

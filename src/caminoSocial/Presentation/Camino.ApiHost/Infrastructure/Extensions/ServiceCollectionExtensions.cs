@@ -14,7 +14,7 @@ namespace Camino.ApiHost.Infrastructure.Extensions
         {
             services.AddAuthentication();
             services.AddApplicationServices(configuration);
-            services.AddBusinessServices();
+            services.AddServices();
             services.AddHttpContextAccessor();
             services.ConfigureCorsServices(services.BuildServiceProvider());
 
