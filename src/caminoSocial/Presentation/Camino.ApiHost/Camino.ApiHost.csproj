@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Camino.Framework\Camino.Framework.csproj" />
+    <ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
   </ItemGroup>
 
 
