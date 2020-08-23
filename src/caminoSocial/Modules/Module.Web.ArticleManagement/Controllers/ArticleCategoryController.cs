@@ -95,17 +95,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create()
         {
-            var model = new ArticleCategoryModel()
-            {
-                SelectCategories = _articleCategoryBusiness
-                .Get()
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                })
-            };
-
+            var model = new ArticleCategoryModel();
             return View(model);
         }
 
@@ -114,19 +104,6 @@ namespace Module.Web.ArticleManagement.Controllers
         {
             var category = _articleCategoryBusiness.Find(id);
             var model = _mapper.Map<ArticleCategoryModel>(category);
-
-            if (category.ParentId.HasValue)
-            {
-                model.SelectCategories = _articleCategoryBusiness
-                .Get(x => x.Id != id && !x.ParentId.HasValue)
-                .Where(x => x.Id != id)
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                });
-            }
-
             return View(model);
         }
 
@@ -167,6 +144,35 @@ namespace Module.Web.ArticleManagement.Controllers
             category.UpdatedById = LoggedUserId;
             _articleCategoryBusiness.Update(category);
             return RedirectToAction("Detail", new { id = category.Id });
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        public IActionResult Search(string q, long? currentId = null, bool isParentOnly = false)
+        {
+            IList<ArticleCategoryProjection> categories;
+            if (isParentOnly)
+            {
+                categories = _articleCategoryBusiness.SearchParents(q, currentId);
+            }
+            else
+            {
+                categories = _articleCategoryBusiness.Search(q, currentId);
+            }
+
+            if (categories == null || !categories.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = categories
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.ParentId.HasValue ? $"-- {x.Name}" : x.Name
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

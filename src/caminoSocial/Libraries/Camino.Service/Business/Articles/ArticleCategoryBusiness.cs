@@ -29,7 +29,7 @@ namespace Camino.Service.Business.Articles
             _userRepository = userRepository;
         }
 
-        public ArticleCategoryProjection Find(int id)
+        public ArticleCategoryProjection Find(long id)
         {
             var exist = (from child in _articleCategoryRepository.Table
                          join parent in _articleCategoryRepository.Table
@@ -159,33 +159,124 @@ namespace Camino.Service.Business.Articles
             return categories;
         }
 
-        public List<ArticleCategoryProjection> Get()
+        public IList<ArticleCategoryProjection> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
         {
-            var parentCategories = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
-                .Select(a => new ArticleCategoryProjection
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description
-                }).ToList();
+            if (search == null)
+            {
+                search = string.Empty;
+            }
 
-            var childCategories = _articleCategoryRepository.Get(x => x.ParentId.HasValue)
-                .OrderBy(x => x.ParentId).Select(a => new ArticleCategoryProjection
+            search = search.ToLower();
+            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
+                .Select(c => new ArticleCategoryProjection
                 {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    ParentId = a.ParentId
-                }).ToList();
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    ParentId = c.ParentId
+                });
+
+            if (currentId.HasValue)
+            {
+                query = query.Where(x => x.Id != currentId);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var categories = query
+                .Select(x => new ArticleCategoryProjection()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    ParentId = x.ParentId
+                })
+                .ToList();
+
+            return categories;
+        }
+
+        public IList<ArticleCategoryProjection> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        {
+            if (search == null)
+            {
+                search = string.Empty;
+            }
+
+            search = search.ToLower();
+            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue);
+            var queryChildrens = _articleCategoryRepository.Get(x => x.ParentId.HasValue);
+
+            var query = from parent in queryParents
+                        join child in queryChildrens
+                        on parent.Id equals child.ParentId into joined
+                        from j in joined.DefaultIfEmpty()
+                        orderby j.ParentId
+                        select new ArticleCategoryProjection
+                        {
+                            Id = j.Id,
+                            Name = j.Name,
+                            Description = j.Description,
+                            ParentId = j.ParentId,
+                            ParentCategory = new ArticleCategoryProjection()
+                            {
+                                Id = parent.Id,
+                                Name = parent.Name,
+                                Description = parent.Description,
+                            }
+                        };
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search)
+                        || x.Description.ToLower().Contains(search)
+                        || x.ParentCategory.Name.ToLower().Contains(search)
+                        || x.ParentCategory.Description.ToLower().Contains(search));
+            }
+
+            if (currentId.HasValue)
+            {
+                query = query.Where(x => x.Id != currentId);
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var data = query
+                .Select(x => new ArticleCategoryProjection()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    ParentId = x.ParentId,
+                    ParentCategory = new ArticleCategoryProjection()
+                    {
+                        Id = x.ParentCategory.Id,
+                        Name = x.ParentCategory.Name,
+                        Description = x.ParentCategory.Description,
+                    }
+                })
+                .ToList();
 
             var categories = new List<ArticleCategoryProjection>();
-            foreach(var category in parentCategories)
+            foreach (var category in data)
             {
-                categories.Add(category);
-                var subCategories = childCategories.Where(x => x.ParentId == category.Id);
-                if(subCategories != null)
+                if (!categories.Any(x => x.Id == category.ParentId))
                 {
-                    categories.AddRange(subCategories);
+                    categories.Add(category.ParentCategory);
+                }
+
+                if (category.Id != 0)
+                {
+                    categories.Add(category);
                 }
             }
 

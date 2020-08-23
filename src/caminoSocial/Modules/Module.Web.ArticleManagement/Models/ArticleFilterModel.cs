@@ -10,5 +10,6 @@ namespace Module.Web.ArticleManagement.Models
         public DateTimeOffset? CreatedDateTo { get; set; }
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
+        public long? CategoryId { get; set; }
     }
 }

@@ -1,9 +1,13 @@
-﻿@{
+﻿@model ArticleModel
+@{
     ViewData["Title"] = "Create article";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model ArticleModel
 
+@section Scripts {
+    <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
+    <script src="~/articlemanagement/js/article-update.js" asp-append-version="true"></script>
+}
 
 <div class="card-header bg-dark text-light">
     <a asp-action="Index" asp-controller="Article" class="btn btn-sm btn-secondary">

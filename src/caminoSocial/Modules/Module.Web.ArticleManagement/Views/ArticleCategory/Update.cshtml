@@ -1,9 +1,12 @@
-﻿@{
+﻿@model ArticleCategoryModel
+@{
     ViewData["Title"] = $"Update article category {Model.Name}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts {
+    <script src="~/articlemanagement/js/articlecategory-update.js" asp-append-version="true"></script>
+}
 
-@model ArticleCategoryModel
 
 <div class="card-header bg-dark text-light">
     <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-secondary">

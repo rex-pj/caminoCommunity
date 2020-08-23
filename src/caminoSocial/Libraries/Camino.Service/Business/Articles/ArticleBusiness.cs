@@ -100,6 +100,11 @@ namespace Camino.Service.Business.Articles
                 articleQuery = articleQuery.Where(x => x.UpdatedById == filter.UpdatedById);
             }
 
+            if (filter.CategoryId.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.ArticleCategoryId == filter.CategoryId);
+            }
+
             // Filter by register date/ created date
             if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
             {

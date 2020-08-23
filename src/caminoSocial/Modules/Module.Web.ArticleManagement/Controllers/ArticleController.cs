@@ -9,11 +9,9 @@ using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Module.Web.ArticleManagement.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Articles.Contracts;
 
@@ -48,7 +46,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                UpdatedById = filter.UpdatedById
+                UpdatedById = filter.UpdatedById,
+                CategoryId = filter.CategoryId
             };
 
             var articlePageList = await _articleBusiness.GetAsync(filterRequest);
@@ -100,36 +99,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new ArticleModel()
-            {
-                SelectCategories = _articleCategoryBusiness
-                .Get()
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.ParentId.HasValue ? $"--{x.Name}" : x.Name,
-                    Value = x.Id.ToString()
-                })
-            };
-
-            return View(model);
-        }
-
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
-        [HttpGet]
-        public IActionResult Update(int id)
-        {
-            var article = _articleBusiness.Find(id);
-            var model = _mapper.Map<ArticleModel>(article);
-
-            model.SelectCategories = _articleCategoryBusiness
-                .Get()
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.ParentId.HasValue ? $"--{x.Name}" : x.Name,
-                    Value = x.Id.ToString(),
-                    Selected = x.Id == article.ArticleCategoryId
-                });
-
+            var model = new ArticleModel();
             return View(model);
         }
 
@@ -154,6 +124,16 @@ namespace Module.Web.ArticleManagement.Controllers
             var id = _articleBusiness.Add(article);
 
             return RedirectToAction("Detail", new { id });
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public IActionResult Update(int id)
+        {
+            var article = _articleBusiness.Find(id);
+            var model = _mapper.Map<ArticleModel>(article);
+
+            return View(model);
         }
 
         [HttpPost]

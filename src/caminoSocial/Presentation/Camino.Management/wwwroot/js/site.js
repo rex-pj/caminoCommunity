@@ -9,27 +9,31 @@
         return;
     }
 
-    $.each(select2s, function (key, value) {
-        var select2 = $(value);
+    $.each(select2s, function (key, selection) {
+        var select2 = $(selection);
         var method = select2.attr("method") ? select2.attr("method") : "get";
         var url = select2.data("url");
-
+        var selected = selection.value;
+        var data = {
+            currentId: selected
+        };
         select2.select2({
             allowClear: true,
             placeholder: 'select..',
             ajax: {
                 url: url,
                 type: method,
+                data: data,
                 dataType: 'json',
-                processResults: function (data) {
-                    if (data === null || data === undefined) {
+                processResults: function (response) {
+                    if (response === null || response === undefined) {
                         return {
                             results: []
                         };
                     }
 
                     return {
-                        results: data
+                        results: response
                     };
                 },
             },
@@ -73,6 +77,42 @@ $.fn.checkboxGroup = function () {
                 checkbox.prop("checked", 'checked');
             }
         }
+    });
+}
+
+$.fn.tinymceEditor = function () {
+    var editor = $(this);
+    var id = editor[0].id;
+    tinymce.init({
+        selector: '#' + id,
+        height: 300,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table contextmenu paste code imagetools '
+        ],
+        toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+        file_picker_types: 'image',
+        file_picker_callback: function (callback, value, meta) {
+            if (meta.filetype == 'image') {
+                // creating input on-the-fly
+                var input = $(document.createElement('input'));
+                input.attr("type", "file");
+                input.trigger('click'); // opening dialog
+                $(input).on('change', function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        callback(e.target.result, {
+                            alt: ''
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        },
+        branding: false
     });
 }
 

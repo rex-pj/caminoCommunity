@@ -1,23 +1,47 @@
 ﻿@model ArticleCategoryModel
 
 <input asp-for="Id" type="hidden" />
-<div class="form-group">
-    <label for="name">Name</label>
-    <input class="form-control" type="text" asp-for="Name">
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" asp-for="Name">
+        </div>
+    </div>
 </div>
-<div class="form-group">
-    <label for="description">Description</label>
-    <textarea class="form-control" asp-for="Description"></textarea>
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" asp-for="Description"></textarea>
+        </div>
+    </div>
 </div>
-@if (Model.SelectCategories.Any())
+
+@if (Model.Id == 0 || Model.ParentId.HasValue)
 {
-    <div class="form-group">
-        <label>Parent</label>
-        <select class="form-control" asp-for="ParentId" asp-items="Model.SelectCategories">
-            <option value="">--No Selected--</option>
-        </select>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Parent</label>
+                @if (Model.Id > 0)
+                {
+                    <select class="form-control select2-remote-ajax"
+                            data-url="@Url.Action("Search", "ArticleCategory", new { isParentOnly = true })" asp-for="ParentId">
+                        <option value="@Model.ParentId" selected="selected">@Model.ParentCategoryName</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-control select2-remote-ajax"
+                            data-url="@Url.Action("Search", "ArticleCategory", new { isParentOnly = true })"
+                            asp-for="ParentId"></select>
+                }
+            </div>
+        </div>
     </div>
 }
+
 
 @if (Model.Id <= 0)
 {

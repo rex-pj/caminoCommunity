@@ -175,14 +175,14 @@ namespace Module.Web.IdentityManagement.Controllers
                 });
             }
 
-            var userModels = countries
+            var countrySelections = countries
                 .Select(x => new Select2ItemModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Name
                 });
 
-            return Json(userModels);
+            return Json(countrySelections);
         }
     }
 }

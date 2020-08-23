@@ -16,6 +16,7 @@ namespace Camino.Service.Data.Content
         public string CreatedBy { get; set; }
         public int? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
+        public ArticleCategoryProjection ParentCategory { get; set; }
 
         public IEnumerable<ArticleCategoryProjection> ChildCategories { get; set; }
     }

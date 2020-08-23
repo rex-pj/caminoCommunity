@@ -1,27 +1,43 @@
 ﻿@model ArticleModel
 
 <input asp-for="Id" type="hidden" />
-<div class="form-group">
-    <label for="name">Name</label>
-    <input class="form-control" type="text" asp-for="Name">
-</div>
-<div class="form-group">
-    <label for="description">Description</label>
-    <textarea class="form-control" asp-for="Description"></textarea>
-</div>
-<div class="form-group">
-    <label for="description">Content</label>
-    <textarea class="form-control" asp-for="Content"></textarea>
-</div>
-@if (Model.SelectCategories.Any())
-{
-    <div class="form-group">
-        <label>Category</label>
-        <select class="form-control" asp-for="ArticleCategoryId" asp-items="Model.SelectCategories">
-            <option value="">--No Selected--</option>
-        </select>
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" asp-for="Name">
+        </div>
     </div>
-}
+</div>
+
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="form-group">
+            <label>Category</label>
+            <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="ArticleCategoryId">
+                <option value="@Model.ArticleCategoryId" selected="selected">@Model.ArticleCategoryName</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <textarea class="form-control" asp-for="Description"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <div class="form-group">
+            <label for="Content">Content</label>
+            <textarea class="form-control" asp-for="Content"></textarea>
+        </div>
+    </div>
+</div>
 
 @if (Model.Id <= 0)
 {

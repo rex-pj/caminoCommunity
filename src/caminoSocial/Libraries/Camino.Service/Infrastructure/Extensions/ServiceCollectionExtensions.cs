@@ -31,10 +31,10 @@ namespace Camino.Service.Infrastructure.Extensions
 
             services.AddIdentityRepositories();
             services.AddContentRepositories();
-            services.AddBusinessServices();
+            services.AddBusinesses();
         }
 
-        public static void AddBusinessServices(this IServiceCollection services)
+        public static void AddBusinesses(this IServiceCollection services)
         {
             services.AddTransient<IUserBusiness, UserBusiness>()
                 .AddTransient<IAuthenticationBusiness, AuthenticationBusiness>()
