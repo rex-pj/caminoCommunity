@@ -53,3 +53,5 @@ src/caminoSocial/Libraries/Camino.Service/bin/
 src/caminoSocial/Libraries/Camino.Service/obj/
 src/caminoSocial/Libraries/Camino.Framework/bin/
 src/caminoSocial/Libraries/Camino.Framework/obj/
+src/caminoSocial/Modules/Module.Web.UploadManagement/bin/
+src/caminoSocial/Modules/Module.Web.UploadManagement/obj/

@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -25,14 +26,19 @@ namespace Module.Web.ArticleManagement.Models
 
         [Required(AllowEmptyStrings = false)]
         public string Content { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public long ThumbnailId { get; set; }
+        public string Thumbnail { get; set; }
+        public string ThumbnailFileType { get; set; }
+        public string ThumbnailFileName { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; }
         public long UpdateById { get; set; }
         public string UpdatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
+        public IFormFile File { get; set; }
 
         public IEnumerable<SelectListItem> SelectCategories { get; set; }
     }

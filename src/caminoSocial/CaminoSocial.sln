@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.IdentityManageme
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Framework", "Libraries\Camino.Framework\Camino.Framework.csproj", "{30EE5830-9273-4F4D-970D-0CC8D7FA1172}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.UploadManagement", "Modules\Module.Web.UploadManagement\Module.Web.UploadManagement.csproj", "{F9841DC3-763B-4551-BD4A-ABB27EB5C152}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -329,6 +331,18 @@ Global
 		{30EE5830-9273-4F4D-970D-0CC8D7FA1172}.Release|x64.Build.0 = Release|Any CPU
 		{30EE5830-9273-4F4D-970D-0CC8D7FA1172}.Release|x86.ActiveCfg = Release|Any CPU
 		{30EE5830-9273-4F4D-970D-0CC8D7FA1172}.Release|x86.Build.0 = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|x64.Build.0 = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Debug|x86.Build.0 = Debug|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|x64.ActiveCfg = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|x64.Build.0 = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -356,6 +370,7 @@ Global
 		{BCD9337B-8F1F-44B2-81A0-5A69AF939D82} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{7A4D8107-9A3B-4769-BCED-10744CCFA7FC} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{30EE5830-9273-4F4D-970D-0CC8D7FA1172} = {4D9DA488-891F-47E3-A5CC-39A8CD19D30C}
+		{F9841DC3-763B-4551-BD4A-ABB27EB5C152} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25AC110A-ABFF-4027-9235-AB85654B8FE8}

@@ -17,7 +17,9 @@ namespace Camino.DAL.Implementations
             FluentMapBuilder.ApplyMappingBuilder<ArticleCategoryMap>()
                 .ApplyMappingBuilder<UserPhotoMap>()
                 .ApplyMappingBuilder<UserPhotoTypeMap>()
-                .ApplyMappingBuilder<ArticleMap>();
+                .ApplyMappingBuilder<ArticleMap>()
+                .ApplyMappingBuilder<PictureMap>()
+                .ApplyMappingBuilder<ArticlePictureMap>();
         }
     }
 }

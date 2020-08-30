@@ -10,26 +10,59 @@ using Camino.Service.Business.Articles.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Data.PageList;
+using Camino.Data.Enums;
 
 namespace Camino.Service.Business.Articles
 {
     public class ArticleBusiness : IArticleBusiness
     {
         private readonly IRepository<Article> _articleRepository;
+        private readonly IRepository<ArticlePicture> _articlePictureRepository;
+        private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public ArticleBusiness(IMapper mapper, IRepository<Article> articleRepository,
-            IRepository<ArticleCategory> articleCategoryRepository, IRepository<User> userRepository)
+            IRepository<ArticleCategory> articleCategoryRepository, IRepository<User> userRepository,
+            IRepository<Picture> pictureRepository, IRepository<ArticlePicture> articlePictureRepository)
         {
             _mapper = mapper;
             _articleRepository = articleRepository;
             _articleCategoryRepository = articleCategoryRepository;
             _userRepository = userRepository;
+            _pictureRepository = pictureRepository;
+            _articlePictureRepository = articlePictureRepository;
         }
 
-        public ArticleProjection Find(int id)
+        public ArticleProjection Find(long id)
+        {
+            var exist = (from article in _articleRepository.Table
+                         join category in _articleCategoryRepository.Table
+                         on article.ArticleCategoryId equals category.Id
+                         where article.Id == id
+                         select new ArticleProjection
+                         {
+                             CreatedDate = article.CreatedDate,
+                             CreatedById = article.CreatedById,
+                             Id = article.Id,
+                             Name = article.Name,
+                             UpdatedById = article.UpdatedById,
+                             UpdatedDate = article.UpdatedDate,
+                             ArticleCategoryName = category.Name,
+                             ArticleCategoryId = article.ArticleCategoryId
+                         }).FirstOrDefault();
+
+            if (exist == null)
+            {
+                return null;
+            }
+
+            var articleResult = _mapper.Map<ArticleProjection>(exist);
+            return articleResult;
+        }
+
+        public ArticleProjection FindDetail(long id)
         {
             var exist = (from article in _articleRepository.Table
                          join category in _articleCategoryRepository.Table
@@ -46,12 +79,24 @@ namespace Camino.Service.Business.Articles
                              UpdatedDate = article.UpdatedDate,
                              ArticleCategoryName = category.Name,
                              ArticleCategoryId = article.ArticleCategoryId,
-                             Content = article.Content,
+                             Content = article.Content
                          }).FirstOrDefault();
 
             if (exist == null)
             {
                 return null;
+            }
+
+            var pictureTypeId = (int)ArticlePictureType.Thumbnail;
+            var articlePictureId = (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == id && x.PictureType == pictureTypeId)
+                                   join pic in _pictureRepository.Table
+                                   on articlePic.PictureId equals pic.Id
+                                   orderby pic.CreatedDate descending
+                                   select pic.Id).FirstOrDefault();
+
+            if (articlePictureId > 0)
+            {
+                exist.ThumbnailId = articlePictureId;
             }
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
@@ -121,18 +166,18 @@ namespace Camino.Service.Business.Articles
 
             var query = articleQuery.Select(a => new ArticleProjection
             {
+                Id = a.Id,
+                Name = a.Name,
                 CreatedById = a.CreatedById,
                 CreatedDate = a.CreatedDate,
                 Description = a.Description,
-                Id = a.Id,
-                Name = a.Name,
                 UpdatedById = a.UpdatedById,
                 UpdatedDate = a.UpdatedDate
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
 
-            var articles  = await query.Skip(filter.PageSize * (filter.Page - 1))
+            var articles = await query.Skip(filter.PageSize * (filter.Page - 1))
                                          .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = articles.Select(x => x.CreatedById).ToArray();
@@ -157,25 +202,69 @@ namespace Camino.Service.Business.Articles
             return result;
         }
 
-        public int Add(ArticleProjection category)
+        public int Add(ArticleProjection article)
         {
-            var newArticle = _mapper.Map<Article>(category);
-            newArticle.UpdatedDate = DateTime.UtcNow;
-            newArticle.CreatedDate = DateTime.UtcNow;
+            var modifiedDate = DateTimeOffset.UtcNow;
+            var newArticle = _mapper.Map<Article>(article);
+            newArticle.UpdatedDate = modifiedDate;
+            newArticle.CreatedDate = modifiedDate;
 
             var id = _articleRepository.AddWithInt32Entity(newArticle);
+            if (!string.IsNullOrEmpty(article.Thumbnail))
+            {
+                var pictureData = Convert.FromBase64String(article.Thumbnail);
+                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                {
+                    CreatedById = article.UpdatedById,
+                    CreatedDate = modifiedDate,
+                    FileName = article.ThumbnailFileName,
+                    MimeType = article.ThumbnailFileType,
+                    UpdatedById = article.UpdatedById,
+                    UpdatedDate = modifiedDate,
+                    BinaryData = pictureData
+                });
+
+                _articlePictureRepository.Add(new ArticlePicture()
+                {
+                    ArticleId = id,
+                    PictureId = pictureId,
+                    PictureType = (int)ArticlePictureType.Thumbnail
+                });
+            }
+
             return (int)id;
         }
 
         public ArticleProjection Update(ArticleProjection article)
         {
+            var updatedDate = DateTimeOffset.UtcNow;
             var exist = _articleRepository.FirstOrDefault(x => x.Id == article.Id);
             exist.Description = article.Description;
             exist.Name = article.Name;
             exist.ArticleCategoryId = article.ArticleCategoryId;
             exist.UpdatedById = article.UpdatedById;
-            exist.UpdatedDate = DateTime.UtcNow;
+            exist.UpdatedDate = updatedDate;
             exist.Content = article.Content;
+            if (!string.IsNullOrEmpty(article.Thumbnail))
+            {
+                var pictureData = Convert.FromBase64String(article.Thumbnail);
+                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture() { 
+                    CreatedById = article.UpdatedById,
+                    CreatedDate = updatedDate,
+                    FileName = article.ThumbnailFileName,
+                    MimeType = article.ThumbnailFileType,
+                    UpdatedById = article.UpdatedById,
+                    UpdatedDate = updatedDate,
+                    BinaryData = pictureData
+                });
+
+                _articlePictureRepository.Add(new ArticlePicture()
+                {
+                    ArticleId = exist.Id,
+                    PictureId = pictureId,
+                    PictureType = (int)ArticlePictureType.Thumbnail
+                });
+            }
 
             _articleRepository.Update(exist);
 

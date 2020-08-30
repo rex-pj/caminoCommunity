@@ -65,8 +65,6 @@ namespace Module.Web.ArticleManagement.Controllers
             }
 
             return View(articlePage);
-
-            return View(articlePage);
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
@@ -80,7 +78,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var article = _articleBusiness.Find(id);
+                var article = _articleBusiness.FindDetail(id);
                 if (article == null)
                 {
                     return RedirectToNotFoundPage();
@@ -130,7 +128,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public IActionResult Update(int id)
         {
-            var article = _articleBusiness.Find(id);
+            var article = _articleBusiness.FindDetail(id);
             var model = _mapper.Map<ArticleModel>(article);
 
             return View(model);

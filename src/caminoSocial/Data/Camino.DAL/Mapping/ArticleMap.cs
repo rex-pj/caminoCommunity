@@ -15,7 +15,8 @@ namespace Camino.DAL.Mapping
                 .HasIdentity(x => x.Id)
                 .HasPrimaryKey(x => x.Id)
                 .Association(x => x.ArticleCategory,
-                    (article, category) => article.ArticleCategoryId == category.Id);
+                    (article, category) => article.ArticleCategoryId == category.Id)
+                .Association(x => x.ArticlePictures, (article, articlePicture) => article.Id == articlePicture.ArticleId);
         }
     }
 }

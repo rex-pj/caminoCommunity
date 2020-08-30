@@ -116,6 +116,27 @@ $.fn.tinymceEditor = function () {
     });
 }
 
+function base64toBlob(dataURI, mineType) {
+    var urlSplitted = dataURI.split(',');
+    var byteString = null;
+    if (urlSplitted.length > 1) {
+        byteString = atob(dataURI.split(',')[1]);
+    }
+    else {
+        byteString = atob(dataURI);
+    }
+
+    var buffers = new ArrayBuffer(byteString.length);
+    var unitBuffers = new Uint8Array(buffers);
+
+    for (var i = 0; i < byteString.length; i++) {
+        unitBuffers[i] = byteString.charCodeAt(i);
+    }
+
+    mineType = mineType ? mineType : 'image/jpeg';
+    return new Blob([buffers], { type: mineType });
+}
+
 $(function () {
     $(".common-tooltip").tooltip();
     $('.filter-form').filterDataTable();

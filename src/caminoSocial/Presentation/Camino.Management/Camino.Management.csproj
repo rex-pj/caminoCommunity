@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.7" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.7" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
-    <ProjectReference Include="..\..\Libraries\Camino.Service\Camino.Service.csproj" />
-    <ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
+		<ProjectReference Include="..\..\Libraries\Camino.Service\Camino.Service.csproj" />
+		<ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+	</ItemGroup>
 </Project>

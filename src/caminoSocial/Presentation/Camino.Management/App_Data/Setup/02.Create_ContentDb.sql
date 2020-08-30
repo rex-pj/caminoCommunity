@@ -391,3 +391,47 @@ GO
 ALTER TABLE dbo.ArticleTag
 ADD CONSTRAINT PK_ArticleTag
 PRIMARY KEY (ArticleId, TagId);
+
+--PICTURE--
+GO
+CREATE TABLE dbo.[Picture](
+	[Id] BIGINT NOT NULL IDENTITY(1,1),
+    [MimeType] NVARCHAR(40) NOT NULL,
+    [Filename] NVARCHAR(300) NULL,
+	[Title] NVARCHAR(MAX) NULL,
+	[Alt] NVARCHAR(MAX) NULL,
+	[BinaryData] VARBINARY(MAX) NULL,
+	[RelativePath] NVARCHAR(MAX) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[Picture]
+ADD CONSTRAINT PK_Picture
+PRIMARY KEY (Id);
+
+--ARTICLE PICTURE--
+GO
+CREATE TABLE dbo.[ArticlePicture](
+	[ArticleId] BIGINT NOT NULL,
+    [PictureId] BIGINT NOT NULL,
+	[PictureType] INT NULL
+)
+
+GO
+ALTER TABLE dbo.[ArticlePicture]
+ADD CONSTRAINT FK_ArticlePicture_Article
+FOREIGN KEY (ArticleId) REFERENCES dbo.Article(Id);
+
+GO
+ALTER TABLE dbo.[ArticlePicture]
+ADD CONSTRAINT FK_ArticlePicture_Picture
+FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
+
+GO
+ALTER TABLE dbo.[ArticlePicture]
+ADD CONSTRAINT PK_ArticlePicture
+PRIMARY KEY (ArticleId, PictureId);

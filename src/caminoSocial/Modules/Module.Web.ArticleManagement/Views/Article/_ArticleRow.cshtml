@@ -7,11 +7,11 @@
         </a>
     </td>
     <td>
-        <div>@Model.CreatedDate.ToLongDateString()</div>
+        <div>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
         <p class="text-muted">by: @Model.CreatedBy</p>
     </td>
     <td>
-        <div>@Model.UpdatedDate.ToLongDateString()</div>
+        <div>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>
