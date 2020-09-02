@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.IdentityManageme
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Framework", "Libraries\Camino.Framework\Camino.Framework.csproj", "{30EE5830-9273-4F4D-970D-0CC8D7FA1172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Web.UploadManagement", "Modules\Module.Web.UploadManagement\Module.Web.UploadManagement.csproj", "{F9841DC3-763B-4551-BD4A-ABB27EB5C152}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.MediaManagement", "Modules\Module.Web.MediaManagement\Module.Web.MediaManagement.csproj", "{F9841DC3-763B-4551-BD4A-ABB27EB5C152}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

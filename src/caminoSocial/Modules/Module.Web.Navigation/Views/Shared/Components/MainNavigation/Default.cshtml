@@ -11,7 +11,8 @@
     var articleDomains = new[]
     {
         RequestDomains.ARTICLE,
-        RequestDomains.ARTICLE_CATEGORY
+        RequestDomains.ARTICLE_CATEGORY,
+        RequestDomains.ARTICLE_PICTURE
     };
 
     var farmDomains = new[]
@@ -57,6 +58,7 @@
     var isFarmAssociationDomain = farmAssociationDomains.Contains(controllerName);
     var isProductDomain = productDomains.Contains(controllerName);
     var isArticle = controllerName.Equals(RequestDomains.ARTICLE);
+    var isArticlePicture = controllerName.Equals(RequestDomains.ARTICLE);
     var isArticleCategory = controllerName.Equals(RequestDomains.ARTICLE_CATEGORY);
     var isFarm = controllerName.Equals(RequestDomains.FARM);
     var isFarmType = controllerName.Equals(RequestDomains.FARM_TYPE);
@@ -147,6 +149,13 @@
                                         <i class="fa fa-angle-right"></i>
                                     </span>
                                     Article Categories
+                                </a>
+                                <a asp-controller="ArticlePicture"
+                                   asp-action="Index" class="list-group-item text-dark @(isArticlePicture?"active":"")">
+                                    <span class="mr-2">
+                                        <i class="fa fa-angle-right"></i>
+                                    </span>
+                                    Article Pictures
                                 </a>
                             </div>
                         </div>

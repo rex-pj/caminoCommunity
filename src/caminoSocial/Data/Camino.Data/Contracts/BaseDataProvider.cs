@@ -14,6 +14,7 @@ using System.Text;
 using LinqToDB.Mapping;
 using Camino.Core.Infrastructure;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace Camino.Data.Contracts
 {
@@ -26,7 +27,7 @@ namespace Camino.Data.Contracts
         {
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
             _dataConnection = dataConnection;
-            
+
             if (Singleton<TMappingSchema>.Instance == null)
             {
                 LoadMappingSchemaBuilder();

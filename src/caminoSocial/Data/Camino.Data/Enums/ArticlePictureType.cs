@@ -1,8 +1,12 @@
-﻿namespace Camino.Data.Enums
+﻿using System.ComponentModel;
+
+namespace Camino.Data.Enums
 {
     public enum ArticlePictureType
     {
+        [Description("Thumbnail")]
         Thumbnail = 1,
-        ContentPicture = 2
+        [Description("Inline Content")]
+        InlineContent = 2
     }
 }

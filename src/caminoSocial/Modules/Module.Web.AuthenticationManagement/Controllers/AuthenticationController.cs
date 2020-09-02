@@ -48,5 +48,10 @@ namespace Module.Web.AuthenticationManagement.Controllers
             await _loginManager.SignOutAsync();
             return View("Login");
         }
+
+        public IActionResult NoAuthorization()
+        {
+            return View();
+        }
     }
 }

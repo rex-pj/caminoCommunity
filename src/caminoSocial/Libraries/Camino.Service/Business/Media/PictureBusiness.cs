@@ -2,7 +2,9 @@
 using Camino.Data.Contracts;
 using Camino.Service.Business.Media.Contracts;
 using Camino.Service.Data.Content;
+using LinqToDB;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Camino.Service.Business.Media
 {
@@ -31,6 +33,24 @@ namespace Camino.Service.Business.Media
                 RelativePath = pic.RelativePath,
                 Title = pic.Title
             }).FirstOrDefault();
+
+            if (picture == null)
+            {
+                return null;
+            }
+
+            return picture;
+        }
+
+        public async Task<PictureProjection> GetPicture(long id)
+        {
+            var picture = await _pictureRepository.Get(x => x.Id == id).Select(pic => new PictureProjection
+            {
+                Id = pic.Id,
+                FileName = pic.FileName,
+                BinaryData = pic.BinaryData,
+                MimeType = pic.MimeType
+            }).FirstOrDefaultAsync();
 
             if (picture == null)
             {

@@ -1,5 +1,6 @@
 ﻿using Camino.Core.Constants;
 using Camino.Service.FileStore;
+using Camino.Service.FileStore.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +14,8 @@ namespace Module.Web.UploadManagement.Infrastructure.Extensions
         public static IServiceCollection ConfigureFileServices(this IServiceCollection services)
         {
             services.TryAddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
-
-            services.AddSingleton(typeof(BaseFileStore), s =>
+            services.AddSingleton<IFileStore, Base64FileStore>();
+            services.AddSingleton(typeof(IMediaFileStore), s =>
             {
                 var webHostEnvironment = s.GetRequiredService<IWebHostEnvironment>();
                 var appDataPath = Path.Combine(webHostEnvironment.ContentRootPath, AppDataSettings.MediaPath);

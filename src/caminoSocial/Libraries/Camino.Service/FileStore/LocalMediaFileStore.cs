@@ -1,14 +1,16 @@
 ﻿using Camino.Core.Constants;
 using Camino.Core.Exceptions;
 using Camino.Service.Data.FileEntry;
+using Camino.Service.FileStore.Contracts;
 using Microsoft.Extensions.FileProviders.Physical;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Camino.Service.FileStore
 {
-    public class LocalMediaFileStore : BaseFileStore
+    public class LocalMediaFileStore : IMediaFileStore
     {
         private readonly string _mediaFullPath;
         private readonly string _mediaPath;
@@ -20,12 +22,12 @@ namespace Camino.Service.FileStore
             _mediaFullPath = Path.Combine(appDataFullPath, AppDataSettings.MediaPath);
         }
 
-        public override async Task<string> CreateFileAsync(string path, Stream inputStream, bool overwrite = false)
+        public async Task<string> CreateFileAsync(string path, Stream inputStream, bool overwrite = false)
         {
             return await CreateFileFromStreamAsync(path, inputStream, overwrite);
         }
 
-        public override async Task<string> CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
+        public async Task<string> CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
         {
             var physicalPath = GetPhysicalPath(path);
 
@@ -64,7 +66,7 @@ namespace Camino.Service.FileStore
             return physicalPath;
         }
 
-        public override async Task<FileEntryInfo> GetFileInfoAsync(string path)
+        public async Task<FileEntryInfo> GetFileInfoAsync(string path)
         {
             var physicalPath = GetPhysicalPath(path);
             var fileInfo = new PhysicalFileInfo(new FileInfo(physicalPath));
@@ -77,9 +79,40 @@ namespace Camino.Service.FileStore
             return null;
         }
 
-        public override string MapPathToPublicUrl(string path)
+        public string MapPathToPublicUrl(string path)
         {
             return _mediaPath + "/" + NormalizePath(path);
+        }
+
+        public virtual string Combine(params string[] paths)
+        {
+            if (!paths.Any())
+            {
+                return null;
+            }
+
+            var normalizedPaths = paths.Select(x => NormalizePath(x))
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToArray();
+
+            var combinedPaths = string.Join("/", normalizedPaths);
+
+            if (paths[0]?.StartsWith('/') is true)
+            {
+                combinedPaths = "/" + combinedPaths;
+            }
+
+            return combinedPaths;
+        }
+
+        public string NormalizePath(string path)
+        {
+            if (path == null)
+            {
+                return null;
+            }
+
+            return path.Replace('\\', '/').Trim('/');
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Camino.Service.Business.Articles.Contracts
         ArticleProjection Find(long id);
         ArticleProjection FindDetail(long id);
         ArticleProjection FindByName(string name);
-        ArticleProjection Update(ArticleProjection article);
+        Task<ArticleProjection> UpdateAsync(ArticleProjection article);
         Task<BasePageList<ArticleProjection>> GetAsync(ArticleFilter filter);
     }
 }

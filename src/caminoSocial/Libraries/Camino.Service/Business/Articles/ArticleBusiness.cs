@@ -89,10 +89,10 @@ namespace Camino.Service.Business.Articles
 
             var pictureTypeId = (int)ArticlePictureType.Thumbnail;
             var articlePictureId = (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == id && x.PictureType == pictureTypeId)
-                                   join pic in _pictureRepository.Table
-                                   on articlePic.PictureId equals pic.Id
-                                   orderby pic.CreatedDate descending
-                                   select pic.Id).FirstOrDefault();
+                                    join pic in _pictureRepository.Table
+                                    on articlePic.PictureId equals pic.Id
+                                    orderby pic.CreatedDate descending
+                                    select pic.Id).FirstOrDefault();
 
             if (articlePictureId > 0)
             {
@@ -164,18 +164,23 @@ namespace Camino.Service.Business.Articles
                 articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
-            var query = articleQuery.Select(a => new ArticleProjection
-            {
-                Id = a.Id,
-                Name = a.Name,
-                CreatedById = a.CreatedById,
-                CreatedDate = a.CreatedDate,
-                Description = a.Description,
-                UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
-            });
+            var filteredNumber = articleQuery.Select(x => x.Id).Count();
 
-            var filteredNumber = query.Select(x => x.Id).Count();
+            var query = from ar in articleQuery
+                        join pic in _articlePictureRepository.Table
+                        on ar.Id equals pic.ArticleId into pics
+                        from p in pics.DefaultIfEmpty()
+                        select new ArticleProjection
+                        {
+                            Id = ar.Id,
+                            Name = ar.Name,
+                            CreatedById = ar.CreatedById,
+                            CreatedDate = ar.CreatedDate,
+                            Description = ar.Description,
+                            UpdatedById = ar.UpdatedById,
+                            UpdatedDate = ar.UpdatedDate,
+                            ThumbnailId = p.PictureId
+                        };
 
             var articles = await query.Skip(filter.PageSize * (filter.Page - 1))
                                          .Take(filter.PageSize).ToListAsync();
@@ -186,19 +191,20 @@ namespace Camino.Service.Business.Articles
             var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
             var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
 
-            foreach (var category in articles)
+            foreach (var article in articles)
             {
-                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
-                category.CreatedBy = createdBy.DisplayName;
+                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);
+                article.CreatedBy = createdBy.DisplayName;
 
-                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
-                category.UpdatedBy = updatedBy.DisplayName;
+                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == article.UpdatedById);
+                article.UpdatedBy = updatedBy.DisplayName;
             }
 
-
-            var result = new BasePageList<ArticleProjection>(articles);
-            result.TotalResult = filteredNumber;
-            result.TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize);
+            var result = new BasePageList<ArticleProjection>(articles)
+            {
+                TotalResult = filteredNumber,
+                TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
+            };
             return result;
         }
 
@@ -235,7 +241,7 @@ namespace Camino.Service.Business.Articles
             return (int)id;
         }
 
-        public ArticleProjection Update(ArticleProjection article)
+        public async Task<ArticleProjection> UpdateAsync(ArticleProjection article)
         {
             var updatedDate = DateTimeOffset.UtcNow;
             var exist = _articleRepository.FirstOrDefault(x => x.Id == article.Id);
@@ -247,8 +253,23 @@ namespace Camino.Service.Business.Articles
             exist.Content = article.Content;
             if (!string.IsNullOrEmpty(article.Thumbnail))
             {
+                var thumbnailType = (int)ArticlePictureType.Thumbnail;
+                var articleThumbnails = _articlePictureRepository
+                    .Get(x => x.ArticleId == article.Id && x.PictureType == thumbnailType)
+                    .AsEnumerable();
+
+                if (articleThumbnails.Any())
+                {
+                    var pictureIds = articleThumbnails.Select(x => x.PictureId).ToList();
+                    await _articlePictureRepository.DeleteAsync(articleThumbnails.AsQueryable());
+
+                    var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+                    await _pictureRepository.DeleteAsync(currentThumbnails);
+                }
+
                 var pictureData = Convert.FromBase64String(article.Thumbnail);
-                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture() { 
+                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                {
                     CreatedById = article.UpdatedById,
                     CreatedDate = updatedDate,
                     FileName = article.ThumbnailFileName,
@@ -262,7 +283,7 @@ namespace Camino.Service.Business.Articles
                 {
                     ArticleId = exist.Id,
                     PictureId = pictureId,
-                    PictureType = (int)ArticlePictureType.Thumbnail
+                    PictureType = thumbnailType
                 });
             }
 

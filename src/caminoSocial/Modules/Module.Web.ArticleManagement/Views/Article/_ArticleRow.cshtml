@@ -2,7 +2,13 @@
 <tr>
     <th>@Model.Id</th>
     <td>
-        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@Model.Description">
+        @if (Model.ThumbnailId > 0)
+        {
+            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
+        }
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" title="@Model.Description">
             @Model.Name
         </a>
     </td>

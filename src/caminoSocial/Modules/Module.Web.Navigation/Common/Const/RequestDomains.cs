@@ -5,6 +5,7 @@
         public const string HOME = "Home";
         public const string ARTICLE = "Article";
         public const string ARTICLE_CATEGORY = "ArticleCategory";
+        public const string ARTICLE_PICTURE = "ArticlePicture";
         public const string FARM = "Farm";
         public const string FARM_TYPE = "FarmType";
         public const string FARM_ASSOCIATION = "FarmAssociation";

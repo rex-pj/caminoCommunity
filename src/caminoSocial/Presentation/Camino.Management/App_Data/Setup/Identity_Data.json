@@ -218,6 +218,22 @@
     {
       "Name": "CanDeleteCountry",
       "Description": "Can delete country"
+    },
+    {
+      "Name": "CanCreatePicture",
+      "Description": "Can create picture"
+    },
+    {
+      "Name": "CanReadPicture",
+      "Description": "Can read picture"
+    },
+    {
+      "Name": "CanUpdatePicture",
+      "Description": "Can update picture"
+    },
+    {
+      "Name": "CanDeletePicture",
+      "Description": "Can delete picture"
     }
   ],
   "Countries": [

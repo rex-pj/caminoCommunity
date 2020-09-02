@@ -46,6 +46,7 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IRoleBusiness, RoleBusiness>()
                 .AddTransient<IUserAttributeBusiness, UserAttributeBusiness>()
                 .AddTransient<IArticleCategoryBusiness, ArticleCategoryBusiness>()
+                .AddTransient<IArticlePictureBusiness, ArticlePictureBusiness>()
                 .AddTransient<IUserRoleBusiness, UserRoleBusiness>()
                 .AddTransient<IAuthorizationPolicyBusiness, AuthorizationPolicyBusiness>()
                 .AddTransient<IRoleAuthorizationPolicyBusiness, RoleAuthorizationPolicyBusiness>()

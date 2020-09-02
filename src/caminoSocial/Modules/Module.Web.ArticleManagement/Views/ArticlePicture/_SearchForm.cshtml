@@ -1,0 +1,68 @@
+﻿@model ArticlePictureFilterModel
+
+<div class="search-panel m-3 collapse card" id="searchPanel">
+    <div class="card-header">
+        <i class="fa fa-search mr-2"></i>Search
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Search">Keyword</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" asp-for="Search">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedById">Created By</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="CreatedById"></select>
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="Content">Content Type</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" asp-for="MimeType">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label">Created Date</label>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <div class="input-group datetimepicker" id="createdDateFromPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#createdDateFromPicker" data-toggle="datetimepicker" asp-for="CreatedDateFrom">
+                            <div class="input-group-append" data-target="#createdDateFromPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1 col-sm-3 col-md-auto">
+                    <label class="col-form-label">
+                        -
+                    </label>
+                </div>
+                <div class="col-5 col-sm-9 col-md-4 col-lg-3">
+                    <div class="form-group">
+                        <div class="input-group datetimepicker" id="createdDateToPicker" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
+                                   data-target="#createdDateToPicker" data-toggle="datetimepicker" asp-for="CreatedDateTo">
+                            <div class="input-group-append" data-target="#createdDateToPicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-info">
+                    <i class="fa fa-search mr-2"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

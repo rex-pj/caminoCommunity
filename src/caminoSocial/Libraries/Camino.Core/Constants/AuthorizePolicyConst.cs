@@ -44,5 +44,9 @@
         public const string CanReadCountry = "CanReadCountry";
         public const string CanUpdateCountry = "CanUpdateCountry";
         public const string CanDeleteCountry = "CanDeleteCountry";
+        public const string CanCreatePicture = "CanCreatePicture";
+        public const string CanReadPicture = "CanReadPicture";
+        public const string CanUpdatePicture = "CanUpdatePicture";
+        public const string CanDeletePicture = "CanDeletePicture";
     }
 }

@@ -20,18 +20,16 @@ namespace Module.Web.ArticleManagement.Controllers
     public class ArticleController : BaseAuthController
     {
         private readonly IArticleBusiness _articleBusiness;
-        private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
         private readonly IHttpHelper _httpHelper;
 
         public ArticleController(IMapper mapper, IArticleBusiness articleBusiness, IHttpHelper httpHelper,
-            IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _mapper = mapper;
             _articleBusiness = articleBusiness;
-            _articleCategoryBusiness = articleCategoryBusiness;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
@@ -136,7 +134,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
-        public IActionResult Update(ArticleModel model)
+        public async Task<IActionResult> Update(ArticleModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -156,7 +154,7 @@ namespace Module.Web.ArticleManagement.Controllers
             }
 
             article.UpdatedById = LoggedUserId;
-            _articleBusiness.Update(article);
+            await _articleBusiness.UpdateAsync(article);
             return RedirectToAction("Detail", new { id = article.Id });
         }
     }

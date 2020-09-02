@@ -51,7 +51,7 @@ namespace Camino.Framework.Attributes
                 var httpContext = context.HttpContext;
                 if (!httpContext.User.Identity.IsAuthenticated)
                 {
-                    context.Result = new RedirectResult("/Authentication/Login");
+                    context.Result = new RedirectResult("/Authentication/NoAuthorization");
                 }
 
                 var requestServices = httpContext.RequestServices;
@@ -69,7 +69,7 @@ namespace Camino.Framework.Attributes
                 var userRoles = authenticationBusiness.GetUserRoles(user.Id);
                 if (userRoles == null || !userRoles.Any())
                 {
-                    context.Result = new RedirectResult("/Authentication/Logout");
+                    context.Result = new RedirectResult("/Authentication/NoAuthorization");
                     return;
                 }
 
@@ -83,7 +83,7 @@ namespace Camino.Framework.Attributes
                 var hasRoles = roles.Join(userRoles, r => r, ur => ur.RoleName, (r, ur) => ur).Any();
                 if (!hasRoles)
                 {
-                    context.Result = new RedirectResult("/Authentication/Logout");
+                    context.Result = new RedirectResult("/Authentication/NoAuthorization");
                     return;
                 }
             }

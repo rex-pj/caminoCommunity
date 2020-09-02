@@ -1,8 +1,10 @@
 ﻿using LinqToDB;
 using LinqToDB.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Camino.Data.Contracts
