@@ -72,12 +72,12 @@ ALTER TABLE dbo.AssociationMember
 ADD CONSTRAINT FK_User_Association
 FOREIGN KEY (AssociationId) REFERENCES dbo.[Association](Id);
 
---FARM--
+--FARM TYPE--
 GO
-CREATE TABLE dbo.Farm
+CREATE TABLE dbo.FarmType
 (
-	Id BIGINT NOT NULL,
-	Title NVARCHAR(255) NULL,
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(255) NULL,
 	[Description] NVARCHAR(500) NULL,
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
@@ -86,10 +86,32 @@ CREATE TABLE dbo.Farm
 )
 
 GO
+ALTER TABLE dbo.FarmType
+ADD CONSTRAINT PK_FarmType
+PRIMARY KEY (Id)
+--FARM--
+GO
+CREATE TABLE dbo.Farm
+(
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(255) NULL,
+	[Description] NVARCHAR(500) NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	CreatedById BIGINT NOT NULL,
+	FarmTypeId BIGINT NOT NULL
+)
+
+GO
 ALTER TABLE dbo.Farm
 ADD CONSTRAINT PK_Farm
-PRIMARY KEY (Id);
+PRIMARY KEY (Id)
 
+GO
+ALTER TABLE dbo.Farm
+ADD CONSTRAINT FK_Farm_FarmType
+FOREIGN KEY (FarmTypeId) REFERENCES dbo.[FarmType](Id)
 -- FARM ROLE --
 GO
 CREATE TABLE dbo.[FarmRole]
@@ -103,9 +125,11 @@ GO
 ALTER TABLE dbo.[FarmRole]
 ADD CONSTRAINT PK_FarmRole
 PRIMARY KEY (Id);
+
 --User FARM--
 GO
 CREATE TABLE dbo.FarmMember(
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	UserId BIGINT NOT NULL,
 	FarmId BIGINT NOT NULL,
 	JoinedDate DATETIME2 NULL,
@@ -116,7 +140,7 @@ CREATE TABLE dbo.FarmMember(
 GO
 ALTER TABLE dbo.FarmMember
 ADD CONSTRAINT PK_UserFarm
-PRIMARY KEY (UserId, FarmId);
+PRIMARY KEY (Id);
 
 GO
 ALTER TABLE dbo.FarmMember
@@ -126,6 +150,7 @@ FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
 --GROUP FARM--
 GO
 CREATE TABLE dbo.FarmAssociation(
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	AssociationId BIGINT NOT NULL,
 	FarmId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -137,7 +162,7 @@ CREATE TABLE dbo.FarmAssociation(
 GO
 ALTER TABLE dbo.FarmAssociation
 ADD CONSTRAINT PK_FarmAssociation
-PRIMARY KEY (AssociationId, FarmId);
+PRIMARY KEY (Id);
 
 GO
 ALTER TABLE dbo.FarmAssociation
@@ -216,6 +241,7 @@ PRIMARY KEY (ProductId, ProductCategoryId);
 --FARM PRODUCT--
 GO
 CREATE TABLE dbo.FarmProduct(
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	FarmId BIGINT NOT NULL,
 	ProductId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -227,7 +253,7 @@ CREATE TABLE dbo.FarmProduct(
 GO
 ALTER TABLE dbo.FarmProduct
 ADD CONSTRAINT PK_FarmProduct
-PRIMARY KEY (FarmId, ProductId);
+PRIMARY KEY (Id);
 
 GO
 ALTER TABLE dbo.FarmProduct
@@ -242,6 +268,7 @@ FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
 --PRODUCT GROUP--
 GO
 CREATE TABLE dbo.ProductAssociation(
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	AssociationId BIGINT NOT NULL,
 	ProductId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
@@ -373,6 +400,7 @@ PRIMARY KEY (Id);
 GO
 CREATE TABLE dbo.ArticleTag
 (
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	ArticleId BIGINT NOT NULL,
 	TagId INT NOT NULL
 )
@@ -390,7 +418,7 @@ FOREIGN KEY (TagId) REFERENCES dbo.Tag(Id);
 GO
 ALTER TABLE dbo.ArticleTag
 ADD CONSTRAINT PK_ArticleTag
-PRIMARY KEY (ArticleId, TagId);
+PRIMARY KEY (Id);
 
 --PICTURE--
 GO
@@ -416,6 +444,7 @@ PRIMARY KEY (Id);
 --ARTICLE PICTURE--
 GO
 CREATE TABLE dbo.[ArticlePicture](
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	[ArticleId] BIGINT NOT NULL,
     [PictureId] BIGINT NOT NULL,
 	[PictureType] INT NULL
@@ -434,4 +463,28 @@ FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
 GO
 ALTER TABLE dbo.[ArticlePicture]
 ADD CONSTRAINT PK_ArticlePicture
-PRIMARY KEY (ArticleId, PictureId);
+PRIMARY KEY (Id);
+
+--FARM PICTURE--
+GO
+CREATE TABLE dbo.[FarmPicture](
+	[Id] BIGINT NOT NULL IDENTITY(1,1),
+	[FarmId] BIGINT NOT NULL,
+    [PictureId] BIGINT NOT NULL,
+	[PictureType] INT NULL
+)
+
+GO
+ALTER TABLE dbo.[FarmPicture]
+ADD CONSTRAINT FK_FarmPicture_Farm
+FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
+
+GO
+ALTER TABLE dbo.[FarmPicture]
+ADD CONSTRAINT FK_FarmPicture_Picture
+FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
+
+GO
+ALTER TABLE dbo.[FarmPicture]
+ADD CONSTRAINT PK_FarmPicture
+PRIMARY KEY (Id);

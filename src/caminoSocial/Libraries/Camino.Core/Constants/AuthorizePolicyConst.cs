@@ -48,5 +48,13 @@
         public const string CanReadPicture = "CanReadPicture";
         public const string CanUpdatePicture = "CanUpdatePicture";
         public const string CanDeletePicture = "CanDeletePicture";
+        public const string CanCreateFarm = "CanCreateFarm";
+        public const string CanReadFarm = "CanReadFarm";
+        public const string CanUpdateFarm = "CanUpdateFarm";
+        public const string CanDeleteFarm = "CanDeleteFarm";
+        public const string CanCreateFarmType = "CanCreateFarmType";
+        public const string CanReadFarmType = "CanReadFarmType";
+        public const string CanUpdateFarmType = "CanUpdateFarmType";
+        public const string CanDeleteFarmType = "CanDeleteFarmType";
     }
 }

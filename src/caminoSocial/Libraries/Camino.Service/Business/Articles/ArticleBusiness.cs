@@ -58,8 +58,7 @@ namespace Camino.Service.Business.Articles
                 return null;
             }
 
-            var articleResult = _mapper.Map<ArticleProjection>(exist);
-            return articleResult;
+            return exist;
         }
 
         public ArticleProjection FindDetail(long id)
@@ -102,11 +101,10 @@ namespace Camino.Service.Business.Articles
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
             var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
-            var articleResult = _mapper.Map<ArticleProjection>(exist);
-            articleResult.CreatedBy = createdByUser.DisplayName;
-            articleResult.UpdatedBy = updatedByUser.DisplayName;
+            exist.CreatedBy = createdByUser.DisplayName;
+            exist.UpdatedBy = updatedByUser.DisplayName;
 
-            return articleResult;
+            return exist;
         }
 
         public ArticleProjection FindByName(string name)
@@ -238,7 +236,7 @@ namespace Camino.Service.Business.Articles
                 });
             }
 
-            return (int)id;
+            return id;
         }
 
         public async Task<ArticleProjection> UpdateAsync(ArticleProjection article)

@@ -2,6 +2,7 @@
 {
     public class ArticlePicture
     {
+        public long Id { get; set; }
         public long ArticleId { get; set; }
         public long PictureId { get; set; }
         public int PictureType { get; set; }

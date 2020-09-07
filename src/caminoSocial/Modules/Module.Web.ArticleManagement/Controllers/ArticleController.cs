@@ -66,7 +66,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
-        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
+        [LoadResultAuthorizations("Article", PolicyMethod.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)

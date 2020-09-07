@@ -12,10 +12,7 @@ namespace Camino.DAL.Mapping
             builder.Entity<ArticlePicture>()
                 .HasTableName(nameof(ArticlePicture))
                 .HasSchemaName(TableSchemaConst.DBO)
-                .HasPrimaryKey(x => new { 
-                    x.ArticleId,
-                    x.PictureId
-                })
+                .HasPrimaryKey(x => x.Id)
                 .Association(x => x.Picture, 
                     (articlePicture, picture) => articlePicture.PictureId == picture.Id)
                 .Association(x => x.Article, 

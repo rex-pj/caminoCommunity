@@ -19,7 +19,10 @@ namespace Camino.DAL.Implementations
                 .ApplyMappingBuilder<UserPhotoTypeMap>()
                 .ApplyMappingBuilder<ArticleMap>()
                 .ApplyMappingBuilder<PictureMap>()
-                .ApplyMappingBuilder<ArticlePictureMap>();
+                .ApplyMappingBuilder<ArticlePictureMap>()
+                .ApplyMappingBuilder<FarmMap>()
+                .ApplyMappingBuilder<FarmTypeMap>()
+                .ApplyMappingBuilder<FarmPictureMap>();
         }
     }
 }

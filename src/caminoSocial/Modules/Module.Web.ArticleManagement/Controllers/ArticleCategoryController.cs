@@ -9,7 +9,6 @@ using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Module.Web.ArticleManagement.Models;
 using System;
 using System.Collections.Generic;

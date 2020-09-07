@@ -14,7 +14,7 @@ namespace Module.Web.ArticleManagement.Models
 
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]

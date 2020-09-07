@@ -234,6 +234,38 @@
     {
       "Name": "CanDeletePicture",
       "Description": "Can delete picture"
+    },
+    {
+      "Name": "CanCreateFarm",
+      "Description": "Can create farm"
+    },
+    {
+      "Name": "CanReadFarm",
+      "Description": "Can read farm"
+    },
+    {
+      "Name": "CanUpdateFarm",
+      "Description": "Can update farm"
+    },
+    {
+      "Name": "CanDeleteFarm",
+      "Description": "Can delete farm"
+    },
+    {
+      "Name": "CanCreateFarmType",
+      "Description": "Can create farm type"
+    },
+    {
+      "Name": "CanReadFarmType",
+      "Description": "Can read farm type"
+    },
+    {
+      "Name": "CanUpdateFarmType",
+      "Description": "Can update farm type"
+    },
+    {
+      "Name": "CanDeleteFarmType",
+      "Description": "Can delete farm type"
     }
   ],
   "Countries": [
