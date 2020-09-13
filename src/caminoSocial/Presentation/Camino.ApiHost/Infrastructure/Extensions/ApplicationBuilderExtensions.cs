@@ -2,6 +2,7 @@
 using Camino.Framework.Models;
 using Camino.Framework.Models.Settings;
 using HotChocolate.AspNetCore;
+using HotChocolate.AspNetCore.Playground;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,7 @@ namespace Camino.ApiHost.Infrastructure.Extensions
 
             app.UseWebSockets();
             app.UseGraphQL("/graphql");
-            app.UsePlayground();
+            app.UsePlayground(new PlaygroundOptions { QueryPath = "/graphql", Path = "/playground" });
 
             return app;
         }

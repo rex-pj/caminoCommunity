@@ -89,7 +89,7 @@ body {
         #navTab .nav-link.active {
             background-color: #343a40;
             border-bottom: 0;
-            color: #28a745;
+            color: #778B53;
         }
 
 /* Nav tools
@@ -175,7 +175,7 @@ body {
             width: 3px;
             height: 15px;
             margin: auto;
-            background-color: #28a745;
+            background-color: #778B53;
         }
 
         .nav-tool .nav-tool-item > span > a.collapsed::after {

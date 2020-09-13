@@ -90,7 +90,7 @@ namespace Camino.Service.Business.Setup
         {
             using (var dataConnection = _identityDataProvider.CreateDataConnection())
             {
-                using (var transaction = dataConnection.BeginTransaction())
+                using (var transaction = await dataConnection.BeginTransactionAsync())
                 {
                     var statusTableName = nameof(Status);
                     // Insert user statuses
@@ -105,11 +105,11 @@ namespace Camino.Service.Business.Setup
 
                         if (status.Name == UserStatus.Actived.ToString())
                         {
-                            activedStatusId = dataConnection.InsertWithInt32Identity(status, statusTableName);
+                            activedStatusId = await dataConnection.InsertWithInt32IdentityAsync(status, statusTableName);
                         }
                         else
                         {
-                            dataConnection.InsertWithInt32Identity(status, statusTableName);
+                            await dataConnection.InsertWithInt32IdentityAsync(status, statusTableName);
                         }
                     }
 
@@ -122,7 +122,7 @@ namespace Camino.Service.Business.Setup
                     var genderTableName = nameof(Gender);
                     foreach (var gender in installationRequest.Genders)
                     {
-                        dataConnection.Insert(new Gender()
+                        await dataConnection.InsertAsync(new Gender()
                         {
                             Name = gender.Name
                         }, genderTableName);
@@ -132,7 +132,7 @@ namespace Camino.Service.Business.Setup
                     var countryTableName = nameof(Country);
                     foreach (var country in installationRequest.Countries)
                     {
-                        dataConnection.Insert(new Country()
+                        await dataConnection.InsertAsync(new Country()
                         {
                             Name = country.Name,
                             Code = country.Code
@@ -149,11 +149,11 @@ namespace Camino.Service.Business.Setup
                         user.IsEmailConfirmed = true;
                         user.CreatedDate = DateTime.UtcNow;
                         user.UpdatedDate = DateTime.UtcNow;
-                        var userId = dataConnection.InsertWithInt64Identity(user, nameof(User));
+                        var userId = await dataConnection.InsertWithInt64IdentityAsync(user, nameof(User));
                         if (userId > 0)
                         {
                             userInfo.Id = userId;
-                            dataConnection.InsertWithInt64Identity(userInfo, nameof(UserInfo));
+                            await dataConnection.InsertWithInt64IdentityAsync(userInfo, nameof(UserInfo));
 
                             // Insert roles
                             var roleTableName = nameof(Role);
@@ -172,11 +172,11 @@ namespace Camino.Service.Business.Setup
 
                                 if (role.Name == "Admin")
                                 {
-                                    adminRoleId = dataConnection.Insert(newRole, roleTableName);
+                                    adminRoleId = await dataConnection.InsertAsync(newRole, roleTableName);
                                 }
                                 else
                                 {
-                                    dataConnection.Insert(newRole, roleTableName);
+                                    await dataConnection.InsertAsync(newRole, roleTableName);
                                 }
                             }
 
@@ -193,14 +193,14 @@ namespace Camino.Service.Business.Setup
                                 };
 
                                 var userRoleTableName = nameof(UserRole);
-                                dataConnection.Insert(adminUserRole, userRoleTableName);
+                                await dataConnection.InsertAsync(adminUserRole, userRoleTableName);
                             }
 
                             // Insert authorization policies
                             var authorizationPolicyTableName = nameof(AuthorizationPolicy);
                             foreach (var authorizationPolicy in installationRequest.AuthorizationPolicies)
                             {
-                                var authorizationPolicyId = dataConnection.InsertWithInt64Identity(new AuthorizationPolicy()
+                                var authorizationPolicyId = await dataConnection.InsertWithInt64IdentityAsync(new AuthorizationPolicy()
                                 {
                                     Name = authorizationPolicy.Name,
                                     Description = authorizationPolicy.Description,
@@ -211,7 +211,7 @@ namespace Camino.Service.Business.Setup
                                 }, authorizationPolicyTableName);
 
                                 var roleAuthorizationPolicyTableName = nameof(RoleAuthorizationPolicy);
-                                dataConnection.Insert(new RoleAuthorizationPolicy()
+                                await dataConnection.InsertAsync(new RoleAuthorizationPolicy()
                                 {
                                     GrantedById = userId,
                                     GrantedDate = DateTime.UtcNow,
@@ -221,7 +221,7 @@ namespace Camino.Service.Business.Setup
                                 }, roleAuthorizationPolicyTableName);
 
                                 var userAuthorizationPolicyTableName = nameof(UserAuthorizationPolicy);
-                                dataConnection.Insert(new UserAuthorizationPolicy()
+                                await dataConnection.InsertAsync(new UserAuthorizationPolicy()
                                 {
                                     GrantedById = userId,
                                     GrantedDate = DateTime.UtcNow,
@@ -259,7 +259,7 @@ namespace Camino.Service.Business.Setup
                         var userPhotoTypeTableName = nameof(UserPhotoType);
                         foreach (var userPhotoType in installationRequest.UserPhotoTypes)
                         {
-                            dataConnection.Insert(new UserPhotoType()
+                            await dataConnection.InsertAsync(new UserPhotoType()
                             {
                                 Name = userPhotoType.Name,
                                 Description = userPhotoType.Description

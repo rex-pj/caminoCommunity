@@ -25,7 +25,7 @@ export const SIGNIN = gql`
 `;
 
 export const UPDATE_USER_IDENTIFIER = gql`
-  mutation UpdateIdentifier($criterias: UserIdentifierUpdateDtoInput) {
+  mutation UpdateIdentifier($criterias: UserIdentifierUpdateRequestInput) {
     updateIdentifier(criterias: $criterias) {
       lastname
       firstname
@@ -93,7 +93,7 @@ export const DELETE_USER_COVER = gql`
 `;
 
 export const UPDATE_USER_PASSWORD = gql`
-  mutation UpdatePassword($criterias: UserPasswordUpdateDtoInput!) {
+  mutation UpdatePassword($criterias: UserPasswordUpdateRequestInput!) {
     updatePassword(criterias: $criterias) {
       authenticationToken
       isSucceed
