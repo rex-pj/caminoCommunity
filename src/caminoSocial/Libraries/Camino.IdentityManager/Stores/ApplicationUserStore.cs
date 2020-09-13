@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Stores.Contracts;
 using LinqToDB;
@@ -16,7 +16,7 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.Service.Business.Authorization.Contracts;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Camino.IdentityManager.Contracts.Stores
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Camino.Core.Utils;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +14,7 @@ using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Camino.Framework.Helpers.Contracts;
 using Camino.Service.Business.Authorization.Contracts;
 

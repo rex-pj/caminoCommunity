@@ -1,6 +1,6 @@
 ﻿using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Identity;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Identity;
+using Camino.Service.Projections.Request;
 using System;
 using System.Linq.Expressions;
 

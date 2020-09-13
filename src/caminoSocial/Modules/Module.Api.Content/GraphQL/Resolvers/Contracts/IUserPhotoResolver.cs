@@ -1,7 +1,7 @@
 ﻿using Module.Api.Content.Models;
 using Camino.Framework.Models;
 using System.Threading.Tasks;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Module.Api.Content.GraphQL.Resolvers.Contracts
 {

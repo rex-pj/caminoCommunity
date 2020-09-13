@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Camino.Data.Contracts;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;

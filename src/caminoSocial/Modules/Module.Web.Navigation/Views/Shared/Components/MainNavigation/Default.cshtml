@@ -1,407 +1,85 @@
-﻿@using Module.Web.Navigation.Common.Const;
-@{
-    var routeData = ViewContext.RouteData;
-    var controllerName = routeData.Values["controller"].ToString();
-    var actionName = routeData.Values["action"].ToString();
-    var homeDomains = new[]
-    {
-        RequestDomains.HOME
-    };
-
-    var articleDomains = new[]
-    {
-        RequestDomains.ARTICLE,
-        RequestDomains.ARTICLE_CATEGORY,
-        RequestDomains.ARTICLE_PICTURE
-    };
-
-    var farmDomains = new[]
-    {
-        RequestDomains.FARM,
-        RequestDomains.FARM_TYPE
-    };
-
-    var farmAssociationDomains = new[]
-    {
-        RequestDomains.FARM_ASSOCIATION,
-        RequestDomains.FARM_ASSOCIATION_TYPE
-    };
-
-    var productDomains = new[]
-    {
-        RequestDomains.PRODUCT,
-        RequestDomains.PRODUCT_CATEGORY
-    };
-
-    var userDomains = new[]
-    {
-        RequestDomains.USER
-    };
-
-    var roleAndAuthorizationPolicyDomains = new[]
-    {
-        RequestDomains.ROLE,
-        RequestDomains.AUTHORIZATION_POLICY,
-        RequestDomains.USER_AUTHORIZATION_POLICY,
-        RequestDomains.ROLE_AUTHORIZATION_POLICY
-    };
-
-    var identityDomains = new[]
-    {
-        RequestDomains.COUNTRY,
-        RequestDomains.USER_STATUS
-    };
-
-    var isHomeDomain = homeDomains.Contains(controllerName);
-    var isArticleDomain = articleDomains.Contains(controllerName);
-    var isFarmDomain = farmDomains.Contains(controllerName);
-    var isFarmAssociationDomain = farmAssociationDomains.Contains(controllerName);
-    var isProductDomain = productDomains.Contains(controllerName);
-    var isArticle = controllerName.Equals(RequestDomains.ARTICLE);
-    var isArticlePicture = controllerName.Equals(RequestDomains.ARTICLE_PICTURE);
-    var isArticleCategory = controllerName.Equals(RequestDomains.ARTICLE_CATEGORY);
-    var isFarm = controllerName.Equals(RequestDomains.FARM);
-    var isFarmType = controllerName.Equals(RequestDomains.FARM_TYPE);
-    var isFarmAssociation = controllerName.Equals(RequestDomains.FARM_ASSOCIATION);
-    var isFarmAssociationType = controllerName.Equals(RequestDomains.FARM_ASSOCIATION_TYPE);
-    var isProduct = controllerName.Equals(RequestDomains.PRODUCT);
-    var isProductCategory = controllerName.Equals(RequestDomains.PRODUCT_CATEGORY);
-
-    var isUserDomain = userDomains.Contains(controllerName);
-    var isRoleAndAuthorizationPolicyDomain = roleAndAuthorizationPolicyDomains.Contains(controllerName);
-    var isIdentityDomain = identityDomains.Contains(controllerName);
-    var isUser = controllerName.Equals(RequestDomains.USER);
-    var isRole = controllerName.Equals(RequestDomains.ROLE);
-    var isAuthorizationPolicy = controllerName.Equals(RequestDomains.AUTHORIZATION_POLICY);
-    var isCountry = controllerName.Equals(RequestDomains.COUNTRY);
-    var isUserStatus = controllerName.Equals(RequestDomains.USER_STATUS);
-
-    var isSecurityTabOpen = isUserDomain || isRoleAndAuthorizationPolicyDomain || isIdentityDomain;
-}
+﻿@model MainNavigationModel
 
 <div class="sidebar bg-dark">
     <div class="site-nav-logo bg-dark pl-2">
-        <a class="navbar-brand text-white" asp-action="Index" asp-controller="Home">
-            <img class="site-logo" src="~/img/logo.png" width="35" />
-            camino<b>Social</b>
+        <a class="navbar-brand text-white" href="@Model.Url">
+            <img class="site-logo" src="@Model.Logo" width="35" />
+            @Model.Name<b>@Model.SubName</b>
         </a>
     </div>
 
     <div class="bg-secondary pt-1">
         <ul class="nav nav-tabs" role="tablist" id="navTab">
-            <li class="nav-item ml-1">
-                <a class="nav-link @(!isSecurityTabOpen?"active":"")" id="general-tab" data-toggle="tab" href="#generalTab" role="tab" aria-controls="general" aria-selected="true">General</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(isSecurityTabOpen?"active":"")" id="security-tab" data-toggle="tab" href="#securityTab" role="tab" aria-controls="security" aria-selected="true">Security</a>
-            </li>
+            @foreach (var tab in Model.TabNavigations)
+            {
+                <li class="nav-item ml-1">
+                    <a class="nav-link @(tab.IsActived ? "active":"")" id="@tab.Name-tab" data-toggle="tab" href="#@tab.Code" role="tab" aria-controls="@tab.Name" aria-selected="true">@tab.Name</a>
+                </li>
+            }
         </ul>
     </div>
     <div class="tab-content" id="navTabContent">
-        <div class="tab-pane mt-2 fade @(!isSecurityTabOpen?"show active":"")" id="generalTab" role="tabpanel" aria-labelledby="general-tab">
-            <div class="nav-tool">
-                <div class="accordion" id="navAccordion">
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="Home"
-                               asp-action="Index"
-                               class="text-secondary @(isHomeDomain ? "active" : "collapsed")">
-                                <span class="mr-2">
-                                    <i class="fa fa-home"></i>
+        @foreach (var tab in Model.TabNavigations)
+        {
+            <div class="tab-pane mt-2 fade @(tab.IsActived ? "show active": "")" id="@tab.Code" role="tabpanel" aria-labelledby="@tab.Code-tab">
+                <div class="nav-tool">
+                    <div class="accordion" id="nav@(tab.Code)Accordion">
+                        @foreach (var navItem in tab.Navigations)
+                        {
+                            <div class="nav-tool-item">
+                                <span>
+                                    @if (navItem.SubNavigations.Any())
+                                    {
+                                        <a href="@navItem.Url"
+                                           class="text-secondary @(navItem.IsActived ? "active" : "collapsed")"
+                                           data-toggle="collapse"
+                                           data-target="#collapse@(navItem.Code)"
+                                           aria-expanded="true"
+                                           aria-controls="collapse@(navItem.Code)">
+                                            <span class="mr-2">
+                                                <i class="@navItem.Icon"></i>
+                                            </span>
+                                            @navItem.Name
+                                            <i class="fa fa-angle-up"></i>
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@navItem.Url"
+                                           class="text-secondary @(navItem.IsActived ? "active" : "")">
+                                            <span class="mr-2">
+                                                <i class="fa fa-home"></i>
+                                            </span>
+                                            Home
+                                        </a>
+                                    }
                                 </span>
-                                Home
-                            </a>
-                        </span>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="Article"
-                               asp-action="Index"
-                               class="text-secondary @(isArticleDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseArticle"
-                               aria-expanded="true"
-                               aria-controls="collapseArticle">
-                                <span class="mr-2">
-                                    <i class="far fa-newspaper"></i>
-                                </span>
-                                Article
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
 
-                        <div id="collapseArticle"
-                             class="collapse @(isArticleDomain ? "show" : "")"
-                             aria-labelledby="headingArticle"
-                             data-parent="#navAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="Article"
-                                   asp-action="Index" class="list-group-item text-dark @(isArticle?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Articles
-                                </a>
-                                <a asp-controller="ArticleCategory"
-                                   asp-action="Index" class="list-group-item text-dark @(isArticleCategory?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Article Categories
-                                </a>
-                                <a asp-controller="ArticlePicture"
-                                   asp-action="Index" class="list-group-item text-dark @(isArticlePicture?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Article Pictures
-                                </a>
+                                @if (navItem.SubNavigations.Any())
+                                {
+                                    <div id="collapse@(navItem.Code)"
+                                         class="collapse @(navItem.IsActived ? "show" : "collapsed")"
+                                         aria-labelledby="heading@(navItem.Code)"
+                                         data-parent="#nav@(tab.Code)Accordion">
+                                        <div class="list-group bg-secondary">
+                                            @foreach (var subNav in navItem.SubNavigations)
+                                            {
+                                                <a href="@subNav.Url" class="list-group-item text-dark @(subNav.IsActived ? "active" : "")">
+                                                    <span class="mr-2">
+                                                        <i class="fa fa-angle-right"></i>
+                                                    </span>
+                                                    @subNav.Name
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                        </div>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="Farm"
-                               asp-action="Index"
-                               class="text-secondary @(isFarmDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseFarm"
-                               aria-expanded="true"
-                               aria-controls="collapseFarm">
-                                <span class="mr-2">
-                                    <i class="fa fa-warehouse"></i>
-                                </span>
-                                Farm
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
-
-                        <div id="collapseFarm"
-                             class="collapse @(isFarmDomain ? "show" : "")"
-                             aria-labelledby="headingFarm"
-                             data-parent="#navAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="Farm"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarm?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Farms
-                                </a>
-                                <a asp-controller="FarmType"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarmType?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Farm Types
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="FarmAssociation"
-                               asp-action="Index"
-                               class="text-secondary @(isFarmAssociationDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseFarmAssociation"
-                               aria-expanded="true"
-                               aria-controls="collapseFarmAssociation">
-                                <span class="mr-2">
-                                    <i class="far fa-flag"></i>
-                                </span>
-                                Farm Association
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
-
-                        <div id="collapseFarmAssociation"
-                             class="collapse @(isFarmAssociationDomain ? "show" : "")"
-                             aria-labelledby="headingFarmAssociation"
-                             data-parent="#navAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="FarmAssociation"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarmAssociation?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Farm Associations
-                                </a>
-                                <a asp-controller="FarmAssociationType"
-                                   asp-action="Index" class="list-group-item text-dark @(isFarmAssociationType?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Farm Association Types
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="Product"
-                               asp-action="Index"
-                               class="text-secondary  @(isProductDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseProduct"
-                               aria-expanded="true"
-                               aria-controls="collapseProduct">
-                                <span class="mr-2">
-                                    <i class="fa fa-apple-alt"></i>
-                                </span>
-                                Product
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
-
-                        <div id="collapseProduct"
-                             class="collapse @(isProductDomain ? "show" : "")"
-                             aria-labelledby="headingProduct"
-                             data-parent="#navAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="Product"
-                                   asp-action="Index" class="list-group-item text-dark @(isProduct?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Products
-                                </a>
-                                <a asp-controller="ProductCategory"
-                                   asp-action="Index" class="list-group-item text-dark @(isProductCategory?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Product Categories
-                                </a>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="tab-pane fade @(isSecurityTabOpen?"show active":"")" id="securityTab" role="tabpanel" aria-labelledby="security-tab">
-            <div class="nav-tool">
-                <div class="accordion" id="navSecurityAccordion">
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="User"
-                               asp-action="Index"
-                               class="text-secondary @(isUserDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseUser"
-                               aria-expanded="true"
-                               aria-controls="collapseUser">
-                                <span class="mr-2">
-                                    <i class="far fa-user"></i>
-                                </span>
-                                Users
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
-
-                        <div id="collapseUser"
-                             class="collapse @(isUserDomain ? "show" : "")"
-                             aria-labelledby="headingUser"
-                             data-parent="#navSecurityAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="User"
-                                   asp-action="Index" class="list-group-item text-dark @(isUser?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Users
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <a asp-controller="Role"
-                               asp-action="Index"
-                               class="text-secondary @(isRoleAndAuthorizationPolicyDomain ? "active" : "collapsed")"
-                               data-toggle="collapse"
-                               data-target="#collapseRole"
-                               aria-expanded="true"
-                               aria-controls="collapseRole">
-                                <span class="mr-2">
-                                    <i class="far fa-user-circle"></i>
-                                </span>
-                                Authorization
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                        </span>
-
-
-                        <div id="collapseRole"
-                             class="collapse @(isRoleAndAuthorizationPolicyDomain ? "show" : "")"
-                             aria-labelledby="headingRole"
-                             data-parent="#navSecurityAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="Role"
-                                   asp-action="Index" class="list-group-item text-dark @(isRole?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Roles
-                                </a>
-                                <a asp-controller="AuthorizationPolicy"
-                                   asp-action="Index" class="list-group-item text-dark @(isAuthorizationPolicy?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Authorization Policies
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="nav-tool-item">
-                        <span>
-                            <button type="button"
-                                    class="text-secondary @(isIdentityDomain ? "active" : "collapsed")"
-                                    data-toggle="collapse"
-                                    data-target="#collapseIdentity"
-                                    aria-expanded="true"
-                                    aria-controls="collapseIdentity">
-                                <span class="mr-2">
-                                    <i class="fas fa-fingerprint"></i>
-                                </span>
-                                Identities
-                                <i class="fa fa-angle-up"></i>
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                        </span>
-
-
-                        <div id="collapseIdentity"
-                             class="collapse @(isIdentityDomain ? "show" : "")"
-                             aria-labelledby="headingIdentity"
-                             data-parent="#navSecurityAccordion">
-                            <div class="list-group bg-secondary">
-                                <a asp-controller="Country"
-                                   asp-action="Index" class="list-group-item text-dark @(isCountry?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    Countries
-                                </a>
-                                <a asp-controller="UserStatus"
-                                   asp-action="Index" class="list-group-item text-dark @(isUserStatus?"active":"")">
-                                    <span class="mr-2">
-                                        <i class="fa fa-angle-right"></i>
-                                    </span>
-                                    User Statuses
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>

@@ -1,6 +1,6 @@
-﻿using Camino.Service.Data.Farm;
-using Camino.Service.Data.Filters;
-using Camino.Service.Data.PageList;
+﻿using Camino.Service.Projections.Farm;
+using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.PageList;
 using System.Threading.Tasks;
 
 namespace Camino.Service.Business.Farms.Contracts

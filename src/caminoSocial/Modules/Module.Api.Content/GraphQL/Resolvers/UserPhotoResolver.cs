@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Module.Api.Content.GraphQL.Resolvers
 {

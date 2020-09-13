@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Content;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Filters;
 using Camino.Data.Contracts;
 using LinqToDB;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.PageList;
 using Camino.Data.Enums;
 
 namespace Camino.Service.Business.Articles

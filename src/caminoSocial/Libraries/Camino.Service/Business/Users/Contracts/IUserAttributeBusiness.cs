@@ -1,5 +1,5 @@
 ﻿using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,4 +1,4 @@
-﻿using Camino.Service.Data.Request;
+﻿using Camino.Service.Projections.Request;
 using HotChocolate.Types;
 
 namespace Module.Api.Auth.GraphQL.InputTypes

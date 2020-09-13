@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Stores.Contracts;
 using LinqToDB;

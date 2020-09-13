@@ -11,7 +11,7 @@ using Camino.Data.Enums;
 using Camino.Service.Business.Setup.Contracts;
 using Camino.IdentityDAL.Entities;
 using Camino.DAL.Entities;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Camino.Service.Business.Setup
 {

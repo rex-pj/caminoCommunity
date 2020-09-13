@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Filters;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Identity;
 using Camino.IdentityManager.Models;
 using Module.Web.AuthorizationManagement.Models;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.PageList;
 
 namespace Module.Web.AuthorizationManagement.Infrastructure.AutoMap
 {

@@ -1,5 +1,5 @@
-﻿using Camino.Service.Data.Filters;
-using Camino.Service.Data.PageList;
+﻿using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Authorization.Contracts
 {

@@ -4,8 +4,8 @@ using System.Linq;
 using Camino.Service.Strategies.Validation.Contracts;
 using Camino.Core.Exceptions;
 using Camino.Core.Utils;
-using Camino.Service.Data.Error;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Error;
+using Camino.Service.Projections.Request;
 
 namespace Camino.Service.Strategies.Validation
 {

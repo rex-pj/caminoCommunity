@@ -1,7 +1,7 @@
 ﻿using Camino.Service.AutoMap;
 using Camino.Service.Strategies.Validation;
 using Camino.Data.Contracts;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,11 +10,11 @@ using Camino.Data.Enums;
 using System.Collections.Generic;
 using LinqToDB;
 using Camino.IdentityDAL.Contracts;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Camino.Service.Business.Users.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Request;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.Request;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Users
 {

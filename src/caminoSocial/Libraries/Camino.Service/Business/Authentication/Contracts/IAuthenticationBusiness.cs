@@ -1,5 +1,5 @@
-﻿using Camino.Service.Data.Identity;
-using Camino.Service.Data.Request;
+﻿using Camino.Service.Projections.Identity;
+using Camino.Service.Projections.Request;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,6 +1,6 @@
 ﻿using Camino.Service.AutoMap;
 using Camino.Service.Strategies.Validation;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using AutoMapper;
 using Camino.IdentityDAL.Contracts;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Camino.Service.Business.Authentication
 {

@@ -1,11 +1,11 @@
 ﻿using Camino.Data.Contracts;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using System;
 using System.Linq;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Authorization
 {

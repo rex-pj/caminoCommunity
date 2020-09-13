@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Camino.Data.Contracts;
-using Camino.Service.Data.Content;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using LinqToDB;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Articles
 {

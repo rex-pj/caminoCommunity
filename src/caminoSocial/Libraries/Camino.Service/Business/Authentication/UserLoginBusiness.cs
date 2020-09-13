@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Camino.Service.Business.Authentication
 {

@@ -1,5 +1,5 @@
 ﻿using Camino.Data.Contracts;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using LinqToDB;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.PageList;
-using Camino.Service.Data.Farm;
+using Camino.Service.Projections.PageList;
+using Camino.Service.Projections.Farm;
 using Camino.Service.Business.Farms.Contracts;
 
 namespace Camino.Service.Business.Farms

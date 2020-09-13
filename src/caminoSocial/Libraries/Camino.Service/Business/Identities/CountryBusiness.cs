@@ -1,5 +1,5 @@
-﻿using Camino.Service.Data.Filters;
-using Camino.Service.Data.Identity;
+﻿using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Identity;
 using Camino.Data.Contracts;
 using LinqToDB;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Identities.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Identities
 {

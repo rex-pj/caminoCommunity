@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Camino.Framework.Helpers.Contracts;
 using Camino.Service.Business.Authorization.Contracts;
 

@@ -1,4 +1,4 @@
-﻿using Camino.Service.Data.Identity;
+﻿using Camino.Service.Projections.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

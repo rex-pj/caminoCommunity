@@ -1,5 +1,5 @@
-﻿using Camino.Service.Data.Filters;
-using Camino.Service.Data.Identity;
+﻿using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Identity;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Filters;
-using Camino.Service.Data.Identity;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Identity;
+using Camino.Service.Projections.Request;
 using Module.Web.AuthenticationManagement.Models;
 
 namespace Module.Web.SetupManagement.Infrastructure.AutoMap

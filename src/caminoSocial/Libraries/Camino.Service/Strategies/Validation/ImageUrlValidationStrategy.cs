@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Camino.Service.Data.Error;
+using Camino.Service.Projections.Error;
 using Camino.Service.Strategies.Validation.Contracts;
 using Camino.Core.Utils;
 

@@ -6,7 +6,7 @@ using Camino.Framework.Controllers;
 using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.ArticleManagement.Models;

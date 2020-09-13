@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.Data.Enums;
 using Camino.Framework.Providers.Contracts;
 using Module.Web.SetupManagement.Models;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.Service.Business.Setup.Contracts;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Module.Web.SetupManagement.Controllers
 {

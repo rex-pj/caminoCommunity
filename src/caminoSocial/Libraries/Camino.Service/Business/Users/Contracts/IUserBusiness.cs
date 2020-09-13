@@ -1,9 +1,9 @@
-﻿using Camino.Service.Data.Identity;
-using Camino.Service.Data.Filters;
+﻿using Camino.Service.Projections.Identity;
+using Camino.Service.Projections.Filters;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Camino.Service.Data.Request;
-using Camino.Service.Data.PageList;
+using Camino.Service.Projections.Request;
+using Camino.Service.Projections.PageList;
 
 namespace Camino.Service.Business.Users.Contracts
 {

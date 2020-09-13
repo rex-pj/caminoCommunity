@@ -1,4 +1,4 @@
-﻿using Camino.Service.Data.Error;
+﻿using Camino.Service.Projections.Error;
 using System;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
 ﻿using Camino.DAL.Entities;
 using Camino.Data.Contracts;
 using Camino.Service.Business.Media.Contracts;
-using Camino.Service.Data.Content;
+using Camino.Service.Projections.Content;
 using LinqToDB;
 using System.Linq;
 using System.Threading.Tasks;

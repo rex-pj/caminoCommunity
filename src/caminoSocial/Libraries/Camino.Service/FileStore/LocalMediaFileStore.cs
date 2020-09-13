@@ -1,6 +1,6 @@
 ﻿using Camino.Core.Constants;
 using Camino.Core.Exceptions;
-using Camino.Service.Data.FileEntry;
+using Camino.Service.Projections.FileEntry;
 using Camino.Service.FileStore.Contracts;
 using Microsoft.Extensions.FileProviders.Physical;
 using System;

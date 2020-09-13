@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Camino.Framework.Models;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using System.Security.Claims;
 using Camino.IdentityManager.Models;
-using Camino.Service.Data.Filters;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Request;
 
 namespace Camino.Framework.Infrastructure.AutoMap
 {

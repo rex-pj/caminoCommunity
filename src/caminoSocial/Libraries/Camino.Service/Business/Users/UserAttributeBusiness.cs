@@ -1,5 +1,5 @@
 ﻿using Camino.Data.Contracts;
-using Camino.Service.Data.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.IdentityDAL.Contracts;
 using System;
 using System.Collections.Generic;

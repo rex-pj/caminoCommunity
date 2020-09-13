@@ -1,10 +1,10 @@
 ﻿using Module.Api.Auth.Models;
 using AutoMapper;
 using Camino.Framework.Models;
-using Camino.Service.Data.Content;
+using Camino.Service.Projections.Content;
 using Camino.Data.Enums;
 using Camino.IdentityManager.Models;
-using Camino.Service.Data.Request;
+using Camino.Service.Projections.Request;
 
 namespace Module.Api.Auth.Infrastructure.AutoMap
 {

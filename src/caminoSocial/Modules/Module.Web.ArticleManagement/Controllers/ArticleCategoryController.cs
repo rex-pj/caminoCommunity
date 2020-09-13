@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Content;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Filters;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;

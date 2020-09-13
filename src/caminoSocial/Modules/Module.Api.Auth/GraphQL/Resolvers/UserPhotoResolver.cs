@@ -1,6 +1,6 @@
 ﻿using Module.Api.Auth.Models;
 using AutoMapper;
-using Camino.Service.Data.Content;
+using Camino.Service.Projections.Content;
 using Camino.Data.Enums;
 using Camino.Framework.GraphQL.Resolvers;
 using System.Collections.Generic;

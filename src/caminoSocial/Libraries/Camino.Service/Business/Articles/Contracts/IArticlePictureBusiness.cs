@@ -1,6 +1,6 @@
-﻿using Camino.Service.Data.Content;
-using Camino.Service.Data.Filters;
-using Camino.Service.Data.PageList;
+﻿using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.PageList;
 using System.Threading.Tasks;
 
 namespace Camino.Service.Business.Articles.Contracts

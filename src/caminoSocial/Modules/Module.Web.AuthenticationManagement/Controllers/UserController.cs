@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Service.Data.Filters;
+using Camino.Service.Projections.Filters;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthenticationManagement.Models;

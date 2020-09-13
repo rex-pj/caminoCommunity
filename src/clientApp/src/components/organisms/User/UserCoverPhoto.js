@@ -47,6 +47,7 @@ const Wrap = styled.div`
     right: 0;
     margin: auto;
     z-index: 0;
+    border-radius: 0;
     font-size: calc(${(p) => p.theme.fontSize.giant} * 2);
     color: ${(p) => p.theme.color.light};
     svg,
