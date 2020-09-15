@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/molecules/Breadcrumb";
 

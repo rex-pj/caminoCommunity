@@ -1,8 +1,8 @@
 import React from "react";
 // import Head from "next/head";
-// import { PageInfo } from "../../../utils/Constant";
+// import { PageInfo } from "../../../utils/Constants";
 
-export default props => {
+export default (props) => {
   return (
     <div />
     // <Head>

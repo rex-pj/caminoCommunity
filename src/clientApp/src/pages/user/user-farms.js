@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/molecules/Paging";
 import FarmItem from "../../components/organisms/Farm/FarmItem";
 
@@ -16,7 +16,7 @@ export default withRouter(
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
             profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-            name: "Ông 5 Đất"
+            name: "Ông 5 Đất",
           },
           thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
           description:
@@ -27,7 +27,7 @@ export default withRouter(
           name: "Trang trại ông Năm Đất",
           contentType: 3,
           address:
-            "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An"
+            "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
         };
 
         farms.push(farmItem);
@@ -40,7 +40,7 @@ export default withRouter(
         totalPage: 10,
         pageQuery: location.search,
         baseUrl: this.props.userUrl + "/farms",
-        currentPage: pageNumber ? pageNumber : 1
+        currentPage: pageNumber ? pageNumber : 1,
       };
     }
 

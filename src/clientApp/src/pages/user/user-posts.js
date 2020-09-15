@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/molecules/Paging";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 
@@ -16,7 +16,7 @@ export default withRouter(
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
             profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-            name: "Anh Sáu"
+            name: "Anh Sáu",
           },
           createdDate: "26/11/2018 9:28",
           updatedDate: "26/11/2018 9:28",
@@ -28,7 +28,7 @@ export default withRouter(
           commentNumber: "14",
           name:
             "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
-          contentType: 1
+          contentType: 1,
         };
 
         articles.push(articleItem);
@@ -41,7 +41,7 @@ export default withRouter(
         totalPage: 10,
         pageQuery: location.search,
         baseUrl: this.props.userUrl + "/posts",
-        currentPage: pageNumber ? pageNumber : 1
+        currentPage: pageNumber ? pageNumber : 1,
       };
     }
 
@@ -51,13 +51,13 @@ export default withRouter(
         totalPage,
         baseUrl,
         currentPage,
-        pageQuery
+        pageQuery,
       } = this.state;
 
       return (
         <Fragment>
           {articles
-            ? articles.map(item => (
+            ? articles.map((item) => (
                 <ArticleListItem key={item.id} article={item} />
               ))
             : null}

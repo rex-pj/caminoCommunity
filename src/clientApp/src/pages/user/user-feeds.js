@@ -1,12 +1,12 @@
 import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/client";
-import contentClient from "../../utils/GraphQLClient/contentClient";
+import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import { VALIDATE_IMAGE_URL } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 
@@ -108,7 +108,7 @@ export default withRouter((props) => {
   });
 
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL, {
-    client: contentClient,
+    client: graphqlClient,
   });
 
   const convertImagefile = async (file) => {

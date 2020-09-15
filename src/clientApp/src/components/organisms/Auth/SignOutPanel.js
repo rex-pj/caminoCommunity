@@ -1,5 +1,5 @@
 import React from "react";
-import { PageInfo } from "../../../utils/Constant";
+import { PageInfo } from "../../../utils/Constants";
 import AuthBanner from "../Banner/AuthBanner";
 
 export default () => {

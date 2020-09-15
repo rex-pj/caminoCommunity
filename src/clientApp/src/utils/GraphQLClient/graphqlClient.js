@@ -7,7 +7,7 @@ const preloadedState = window.__APOLLO_STORE__;
 delete window.__APOLLO_STORE__;
 
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_AUTH_API_URL,
+  uri: process.env.REACT_APP_API_URL,
 });
 
 const contextLink = setContext(async (_, { headers }) => {

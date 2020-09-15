@@ -1,0 +1,150 @@
+import {
+  DefaultLayout,
+  DetailLayout,
+  ProductPageLayout,
+  FrameLayout,
+  AuthLayout,
+  ProfileLayout,
+  PromptLayout,
+} from "../components/templates/Layout";
+
+export default [
+  {
+    path: ["/articles", "/articles/page/:pageNumber"],
+    exact: true,
+    page: "articles",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/articles/:id",
+    exact: true,
+    page: "articles/detail",
+    layout: DetailLayout,
+  },
+  {
+    path: ["/products", "/products/page/:pageNumber"],
+    exact: true,
+    page: "products",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/products/:id",
+    exact: true,
+    page: "products/detail",
+    layout: ProductPageLayout,
+  },
+  {
+    path: ["/farms", "/farms/page/:pageNumber"],
+    exact: true,
+    page: "farms",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/farms/:id",
+    exact: true,
+    page: "farms/detail",
+    layout: DetailLayout,
+  },
+  {
+    path: ["/farm-groups", "/farm-groups/page/:pageNumber"],
+    exact: true,
+    page: "farm-groups",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/farm-groups/:id",
+    exact: true,
+    page: "farm-groups/detail",
+    layout: FrameLayout,
+  },
+  {
+    path: ["/news", "/news/page/:pageNumber"],
+    exact: true,
+    page: "news",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/news/:id",
+    exact: true,
+    page: "news/detail",
+    layout: DefaultLayout,
+  },
+  {
+    path: "/auth/forgot-password",
+    exact: true,
+    page: "auth/forgot-password",
+    layout: AuthLayout,
+  },
+  {
+    path: "/auth/signin",
+    exact: true,
+    page: "auth/signin",
+    layout: AuthLayout,
+  },
+  {
+    path: "/auth/signup",
+    exact: true,
+    page: "auth/signup",
+    layout: AuthLayout,
+  },
+  {
+    path: "/auth/signout",
+    exact: true,
+    page: "auth/signout",
+    layout: AuthLayout,
+  },
+  {
+    path: "/auth/signout",
+    exact: true,
+    page: "auth/signout",
+    layout: PromptLayout,
+  },
+  {
+    path: [
+      "/profile/:userId",
+      "/profile/:userId/:pageName",
+      "/profile/:userId/:pageName/page/:pageNumber",
+    ],
+    exact: true,
+    page: "user/profile",
+    layout: ProfileLayout,
+  },
+  {
+    path: ["/", "/page/:pageNumber", "/feeds", "/feeds/page/:pageNumber"],
+    exact: true,
+    page: "feeds",
+    layout: DefaultLayout,
+  },
+  {
+    path: [
+      "/user/active/:email/:key",
+      "/user/active/:email/:key+",
+      "/user/active/:email/*",
+    ],
+    exact: true,
+    page: "user/active",
+    layout: PromptLayout,
+  },
+  {
+    path: [
+      "/user/reset-password/:email/:key",
+      "/user/reset-password/:email/:key+",
+      "/user/reset-password/:email/*",
+    ],
+    exact: true,
+    page: "user/reset-password",
+    layout: PromptLayout,
+  },
+  {
+    path: "/error",
+    exact: true,
+    page: "error/index",
+    layout: PromptLayout,
+  },
+  {
+    path: "*",
+    exact: true,
+    page: "not-found",
+    layout: PromptLayout,
+  },
+];

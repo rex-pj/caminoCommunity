@@ -12,7 +12,7 @@ import {
   UPDATE_USER_AVATAR,
   DELETE_USER_AVATAR,
 } from "../../../utils/GraphQLQueries/mutations";
-import contentClient from "../../../utils/GraphQLClient/contentClient";
+import graphqlClient from "../../../utils/GraphQLClient/graphqlClient";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
@@ -118,10 +118,10 @@ const UpdateAvatarModal = (props) => {
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
   const [updateAvatar] = useMutation(UPDATE_USER_AVATAR, {
-    client: contentClient,
+    client: graphqlClient,
   });
   const [deleteAvatar] = useMutation(DELETE_USER_AVATAR, {
-    client: contentClient,
+    client: graphqlClient,
   });
   var sessionContext = useContext(SessionContext);
 

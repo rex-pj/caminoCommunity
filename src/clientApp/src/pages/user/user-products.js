@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/molecules/Paging";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 
@@ -16,7 +16,7 @@ export default withRouter(
           creator: {
             photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
             profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-            name: "Ông 5 Đất"
+            name: "Ông 5 Đất",
           },
           thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
           farmUrl: `${UrlConstant.Farm.url}1`,
@@ -26,7 +26,7 @@ export default withRouter(
           reactionNumber: "45+",
           name: "Chuối chính cây Đồng Nai",
           contentType: 2,
-          price: 100000
+          price: 100000,
         };
 
         products.push(productItem);
@@ -39,7 +39,7 @@ export default withRouter(
         totalPage: 10,
         baseUrl: this.props.userUrl + "/products",
         pageQuery: location.search,
-        currentPage: pageNumber ? pageNumber : 1
+        currentPage: pageNumber ? pageNumber : 1,
       };
     }
 
@@ -49,14 +49,14 @@ export default withRouter(
         totalPage,
         baseUrl,
         currentPage,
-        pageQuery
+        pageQuery,
       } = this.state;
 
       return (
         <Fragment>
           <div className="row">
             {products
-              ? products.map(item => (
+              ? products.map((item) => (
                   <div
                     key={item.id}
                     className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"

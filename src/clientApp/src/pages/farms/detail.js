@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
 
 export default class extends Component {

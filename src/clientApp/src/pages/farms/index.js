@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Farm from "../../components/templates/Farm";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
   constructor(props) {

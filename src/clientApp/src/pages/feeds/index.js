@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Feeds from "../../components/templates/Feeds";
 import { ContentType } from "../../utils/Enums";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
   constructor(props) {

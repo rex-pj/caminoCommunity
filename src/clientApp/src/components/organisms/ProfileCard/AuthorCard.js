@@ -4,7 +4,7 @@ import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import ProfileCardInfo from "./ProfileCardInfo";
 import { PanelDefault } from "../../atoms/Panels";
-import { UrlConstant } from "../../../utils/Constant";
+import { UrlConstant } from "../../../utils/Constants";
 const UserCard = loadable(() => import("./UserCard"));
 
 const Root = styled(PanelDefault)`

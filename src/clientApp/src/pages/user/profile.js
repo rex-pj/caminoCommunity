@@ -8,6 +8,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
 import { parseUserInfo } from "../../services/UserService";
+import UserProfileRoutes from "../../routes/UserProfileRoutes";
 
 export default withRouter((props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
@@ -23,57 +24,6 @@ export default withRouter((props) => {
       },
     },
   });
-
-  const pages = [
-    {
-      path: [`${_baseUrl}/:userId/about`],
-      dir: "user-about",
-    },
-    {
-      path: [`${_baseUrl}/:userId/update`],
-      dir: "user-update",
-    },
-    {
-      path: [`${_baseUrl}/:userId/security`],
-      dir: "user-security",
-    },
-    {
-      path: [
-        `${_baseUrl}/:userId/posts`,
-        `${_baseUrl}/:userId/posts/page/:pageNumber`,
-      ],
-      dir: "user-posts",
-    },
-    {
-      path: [
-        `${_baseUrl}/:userId/products`,
-        `${_baseUrl}/:userId/products/page/:pageNumber`,
-      ],
-      dir: "user-products",
-    },
-    {
-      path: [
-        `${_baseUrl}/:userId/farms`,
-        `${_baseUrl}/:userId/farms/page/:pageNumber`,
-      ],
-      dir: "user-farms",
-    },
-    {
-      path: [
-        `${_baseUrl}/:userId/followings`,
-        `${_baseUrl}/:userId/followings/page/:pageNumber`,
-      ],
-      dir: "user-followings",
-    },
-    {
-      path: [
-        `${_baseUrl}/:userId`,
-        `${_baseUrl}/:userId/feeds`,
-        `${_baseUrl}/:userId/feeds/page/:pageNumber`,
-      ],
-      dir: "user-feeds",
-    },
-  ];
 
   const [state, dispatch] = useStore(false);
   useEffect(() => {
@@ -136,7 +86,7 @@ export default withRouter((props) => {
       onToggleEditCoverMode={onToggleEditCoverMode}
       userCoverUpdated={userCoverUpdated}
       showValidationError={showValidationError}
-      pages={pages}
+      pages={UserProfileRoutes}
       userInfo={fullUserInfo}
     />
   );

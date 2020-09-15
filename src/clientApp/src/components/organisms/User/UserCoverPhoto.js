@@ -18,7 +18,7 @@ import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER,
 } from "../../../utils/GraphQLQueries/mutations";
-import contentClient from "../../../utils/GraphQLClient/contentClient";
+import graphqlClient from "../../../utils/GraphQLClient/graphqlClient";
 
 const Wrap = styled.div`
     position: relative;
@@ -278,7 +278,7 @@ export default (props) => {
   };
 
   const [updateCover] = useMutation(UPDATE_USER_COVER, {
-    client: contentClient,
+    client: graphqlClient,
   });
   const onUpdate = async () => {
     const { src } = coverState;
@@ -319,7 +319,7 @@ export default (props) => {
   };
 
   const [deleteCover] = useMutation(DELETE_USER_COVER, {
-    client: contentClient,
+    client: graphqlClient,
   });
 
   const onDelete = async () => {

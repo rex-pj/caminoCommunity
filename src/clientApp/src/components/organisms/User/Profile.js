@@ -65,6 +65,7 @@ export default withRouter((props) => {
 
   const { canEdit } = userInfo;
 
+  console.log(baseUrl);
   return (
     <Fragment>
       <CoverPageBlock>
@@ -103,7 +104,7 @@ export default withRouter((props) => {
                 ? pages.map((item) => {
                     return (
                       <Timeline
-                        key={item.dir}
+                        key={item.page}
                         path={item.path}
                         component={(props) => (
                           <AsyncTabContent
@@ -111,7 +112,7 @@ export default withRouter((props) => {
                             userId={userId}
                             canEdit={canEdit}
                             userUrl={`${baseUrl}/${userId}`}
-                            page={item.dir}
+                            page={item.page}
                           />
                         )}
                       />

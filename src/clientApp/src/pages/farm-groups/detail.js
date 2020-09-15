@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FarmGroupLayout from "../../components/templates/Layout/FarmGroupLayout";
 import Detail from "../../components/templates/FarmGroup/Detail";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
 import Feeds from "../../components/templates/Feeds";
 import { ContentType } from "../../utils/Enums";
 import styled from "styled-components";

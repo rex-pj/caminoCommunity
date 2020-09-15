@@ -3,7 +3,7 @@ import styled from "styled-components";
 import GroupSuggestionItem from "./GroupSuggestionItem";
 import { VerticalList } from "../../atoms/List";
 import { FifthDarkHeading } from "../../atoms/Heading";
-import { UrlConstant } from "../../../utils/Constant";
+import { UrlConstant } from "../../../utils/Constants";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
