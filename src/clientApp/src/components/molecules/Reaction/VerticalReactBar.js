@@ -8,26 +8,22 @@ const ReactBar = styled.div`
 
 const ReactButton = styled.span`
   display: block;
-  font-size: ${p => p.theme.rgbaColor.large};
+  font-size: ${(p) => p.theme.rgbaColor.large};
   line-height: 1;
 
   &.smile > svg > path {
-    color: ${p => p.theme.color.warning};
-  }
-
-  &.confused > svg > path {
-    color: ${p => p.theme.color.dangerLight};
+    color: ${(p) => p.theme.color.warning};
   }
 `;
 
 const ReactionNumber = styled.div`
-  margin: ${p => p.theme.size.small} 0;
+  margin: ${(p) => p.theme.size.small} 0;
   font-weight: 700;
-  color: ${p => p.theme.color.primary};
-  font-size: ${p => p.theme.rgbaColor.small};
+  color: ${(p) => p.theme.color.primary};
+  font-size: ${(p) => p.theme.rgbaColor.small};
 `;
 
-export default props => {
+export default (props) => {
   const { reactionNumber } = props;
   return (
     <ReactBar>
@@ -35,9 +31,6 @@ export default props => {
         <FontAwesomeIcon icon="smile-beam" />
       </ReactButton>
       <ReactionNumber>{reactionNumber}</ReactionNumber>
-      <ReactButton className="confused">
-        <FontAwesomeIcon icon="frown" />
-      </ReactButton>
     </ReactBar>
   );
 };

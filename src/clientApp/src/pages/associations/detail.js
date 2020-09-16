@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import FarmGroupLayout from "../../components/templates/Layout/FarmGroupLayout";
-import Detail from "../../components/templates/FarmGroup/Detail";
+import AssociationLayout from "../../components/templates/Layout/AssociationLayout";
+import Detail from "../../components/templates/Association/Detail";
 import { UrlConstant } from "../../utils/Constants";
 import Feeds from "../../components/templates/Feeds";
 import { ContentType } from "../../utils/Enums";
@@ -13,12 +13,11 @@ const Wrapper = styled.div`
 export default class extends Component {
   constructor(props) {
     super(props);
-
-    const farmGroup = {
+    const association = {
       createdDate: "25/03/2019 00:00",
       thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
       info: {
-        url: `${UrlConstant.FarmGroup.url}1`,
+        url: `${UrlConstant.Association.url}1`,
         title: "Hội trái cây sạch An Thạnh",
         description:
           "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm, ngoài trái cây bạn còn có thể mua thêm tùm lum tà la ở đây",
@@ -32,7 +31,7 @@ export default class extends Component {
       baseUrl: "/",
       currentPage: 1,
       breadcrumbs: [],
-      farmGroup,
+      association,
     };
   }
 
@@ -40,7 +39,7 @@ export default class extends Component {
     const breadcrumbs = [
       {
         title: "Associations",
-        url: "/farm-groups/",
+        url: "/associations/",
       },
       {
         isActived: true,
@@ -112,7 +111,7 @@ export default class extends Component {
   render() {
     const {
       breadcrumbs,
-      farmGroup,
+      association,
       feeds,
       totalPage,
       baseUrl,
@@ -120,8 +119,8 @@ export default class extends Component {
     } = this.state;
 
     return (
-      <FarmGroupLayout info={farmGroup.info}>
-        <Detail farmGroup={farmGroup} breadcrumbs={breadcrumbs} />
+      <AssociationLayout info={association.info}>
+        <Detail association={association} breadcrumbs={breadcrumbs} />
         <Wrapper>
           <Feeds
             feeds={feeds}
@@ -130,7 +129,7 @@ export default class extends Component {
             currentPage={currentPage}
           />
         </Wrapper>
-      </FarmGroupLayout>
+      </AssociationLayout>
     );
   }
 }

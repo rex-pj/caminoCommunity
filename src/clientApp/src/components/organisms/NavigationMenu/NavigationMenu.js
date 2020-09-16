@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { RouterLinkButtonSecondary } from "../../atoms/RouterLinkButtons";
 import { SessionContext } from "../../../store/context/SessionContext";
-import ProfileDropdown from "./ProfileDropdown";
+import PersonalDropdown from "./PersonalDropdown";
 
 const List = styled.ul`
   list-style: none;
@@ -51,7 +51,7 @@ export default (props) => {
   }
 
   if (user && user.isLogin) {
-    return <ProfileDropdown userInfo={user} />;
+    return <PersonalDropdown userInfo={user} />;
   }
 
   return (

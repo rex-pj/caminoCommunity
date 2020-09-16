@@ -29,7 +29,7 @@ export default class Shorcut extends Component {
         {
           icon: "flag",
           text: "Associations",
-          href: "/farm-groups/",
+          href: "/associations/",
         },
         {
           icon: "apple-alt",

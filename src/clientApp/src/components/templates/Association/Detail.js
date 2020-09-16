@@ -37,12 +37,12 @@ const ThumbnailOverlay = styled(Overlay)`
 `;
 
 export default function (props) {
-  const { farmGroup, breadcrumbs } = props;
+  const { association, breadcrumbs } = props;
   return (
     <PanelDefault>
       <GroupThumbnail>
-        <AnchorLink to={farmGroup.info.url}>
-          <Thumbnail src={farmGroup.thumbnailUrl} alt="" />
+        <AnchorLink to={association.info.url}>
+          <Thumbnail src={association.thumbnailUrl} alt="" />
         </AnchorLink>
         <ThumbnailOverlay />
         <FollowButton icon="handshake" size="sm">

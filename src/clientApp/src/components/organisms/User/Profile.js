@@ -1,16 +1,14 @@
 import React, { Fragment } from "react";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import styled from "styled-components";
-import { Switch, withRouter } from "react-router-dom";
+import { Switch, withRouter, Route } from "react-router-dom";
 import loadable from "@loadable/component";
-import Timeline from "./Timeline";
 
 const AsyncTabContent = loadable((props) =>
     import(`${"../../../pages/user/"}${props.page}`)
   ),
-  UserProfileInfo = loadable(() => import("./UserProfileInfo"));
-
-const ProfileAvatar = loadable(() => import("./ProfileAvatar")),
+  UserProfileInfo = loadable(() => import("./UserProfileInfo")),
+  ProfileAvatar = loadable(() => import("./ProfileAvatar")),
   UserCoverPhoto = loadable(() => import("./UserCoverPhoto")),
   ProfileNavigation = loadable(() => import("./ProfileNavigation"));
 
@@ -62,10 +60,8 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
 
 export default withRouter((props) => {
   const { isEditCoverMode, userId, baseUrl, pages, userInfo } = props;
-
   const { canEdit } = userInfo;
 
-  console.log(baseUrl);
   return (
     <Fragment>
       <CoverPageBlock>
@@ -101,18 +97,21 @@ export default withRouter((props) => {
           <div className="col col-8 col-sm-8 col-md-8 col-lg-9">
             <Switch>
               {pages
-                ? pages.map((item) => {
+                ? pages.map((route) => {
+                    var paths = route.path.map((path) => {
+                      return `${baseUrl}${path}`;
+                    });
                     return (
-                      <Timeline
-                        key={item.page}
-                        path={item.path}
+                      <Route
+                        key={route.page}
+                        path={paths}
                         component={(props) => (
                           <AsyncTabContent
                             {...props}
                             userId={userId}
                             canEdit={canEdit}
                             userUrl={`${baseUrl}/${userId}`}
-                            page={item.page}
+                            page={route.page}
                           />
                         )}
                       />
@@ -120,7 +119,7 @@ export default withRouter((props) => {
                   })
                 : null}
 
-              <Timeline
+              <Route
                 path={[`${baseUrl}`]}
                 exact={true}
                 component={() => <div>NOT FOUND</div>}

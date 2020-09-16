@@ -2,10 +2,10 @@ import React from "react";
 import ArticleListItem from "../Article/ArticleListItem";
 import ProductListItem from "../Product/ProductListItem";
 import FarmListItem from "../Farm/FarmListItem";
-import FarmGroupListItem from "../FarmGroup/FarmGroupListItem";
+import AssociationListItem from "../Association/AssociationListItem";
 import { ContentType } from "../../../utils/Enums";
 
-export default function(props) {
+export default function (props) {
   const { feed } = props;
   let result = null;
 
@@ -15,8 +15,8 @@ export default function(props) {
     result = <ProductListItem key={feed.id} product={feed} />;
   } else if (feed.contentType === ContentType.Farm) {
     result = <FarmListItem key={feed.id} farm={feed} />;
-  } else if (feed.contentType === ContentType.FarmGroup) {
-    result = <FarmGroupListItem key={feed.id} farmGroup={feed} />;
+  } else if (feed.contentType === ContentType.Association) {
+    result = <AssociationListItem key={feed.id} association={feed} />;
   }
 
   return result;

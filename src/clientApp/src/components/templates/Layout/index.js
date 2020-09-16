@@ -1,6 +1,6 @@
 import DefaultLayout from "./DefaultLayout";
 import DetailLayout from "./DetailLayout";
-import FarmGroupLayout from "./FarmGroupLayout";
+import AssociationLayout from "./AssociationLayout";
 import ProductPageLayout from "./ProductPageLayout";
 import FrameLayout from "./FrameLayout";
 import AuthLayout from "./AuthLayout";
@@ -12,7 +12,7 @@ export {
   FrameLayout,
   DefaultLayout,
   DetailLayout,
-  FarmGroupLayout,
+  AssociationLayout,
   ProductPageLayout,
   AuthLayout,
   ProfileLayout,

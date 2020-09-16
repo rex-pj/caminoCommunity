@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import GroupSuggestionItem from "./GroupSuggestionItem";
+import AssociationSuggestionItem from "./AssociationSuggestionItem";
 import { VerticalList } from "../../atoms/List";
 import { FifthDarkHeading } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constants";
@@ -17,30 +17,30 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default class GroupSuggestions extends Component {
+export default class AssociationSuggestions extends Component {
   constructor(props) {
     super(props);
 
-    let groups = [];
+    let associations = [];
     for (let i = 0; i < 3; i++) {
-      groups.push({
+      associations.push({
         info: "125 participants",
         name: "Hội trái cây Mini",
         description:
           "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
-        url: `${UrlConstant.FarmGroup.url}1`,
+        url: `${UrlConstant.Association.url}1`,
         id: "1212234r5423",
         photoUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
       });
     }
 
     this.state = {
-      groups: groups,
+      associations: associations,
     };
   }
 
   render() {
-    const { groups } = this.state;
+    const { associations } = this.state;
     return (
       <div>
         <FifthDarkHeading>
@@ -48,9 +48,13 @@ export default class GroupSuggestions extends Component {
         </FifthDarkHeading>
         <Root>
           <List>
-            {groups &&
-              groups.map((group, index) => (
-                <GroupSuggestionItem key={index} group={group} index={index} />
+            {associations &&
+              associations.map((association, index) => (
+                <AssociationSuggestionItem
+                  key={index}
+                  association={association}
+                  index={index}
+                />
               ))}
           </List>
         </Root>

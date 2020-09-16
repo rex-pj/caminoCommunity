@@ -1,29 +1,29 @@
 import React, { Component, Fragment } from "react";
-import FarmGroupItem from "../../organisms/FarmGroup/FarmGroupItem";
+import AssociationItem from "../../organisms/Association/AssociationItem";
 import { Pagination } from "../../molecules/Paging";
 import Breadcrumb from "../../molecules/Breadcrumb";
 
 export default class extends Component {
   render() {
     const {
-      farmGroups,
+      associations,
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.props;
 
     return (
       <Fragment>
         <Breadcrumb list={breadcrumbs} />
         <div className="row">
-          {farmGroups
-            ? farmGroups.map((item, index) => (
+          {associations
+            ? associations.map((item, index) => (
                 <div
                   key={index}
                   className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
                 >
-                  <FarmGroupItem key={item.id} farmGroup={item} />
+                  <AssociationItem key={item.id} association={item} />
                 </div>
               ))
             : null}

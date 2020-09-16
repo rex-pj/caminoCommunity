@@ -3,13 +3,15 @@ import { SuggestionPanel } from "../../molecules/SuggestionPanels";
 
 export default (props) => {
   const { className, index } = props;
-  let { group } = props;
+  let { association } = props;
 
-  group = {
-    ...group,
+  association = {
+    ...association,
     actionIcon: "handshake",
     infoIcon: "users",
     actionText: "Join",
   };
-  return <SuggestionPanel data={group} className={className} index={index} />;
+  return (
+    <SuggestionPanel data={association} className={className} index={index} />
+  );
 };

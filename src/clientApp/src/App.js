@@ -60,11 +60,11 @@ export default () => {
       >
         <BrowserRouter>
           <Switch>
-            $
             {appRoutes.map((route) => {
               var { layout: ComponentLayout, exact, path, page } = route;
               return (
                 <ComponentLayout
+                  key={route.page}
                   exact={exact}
                   path={path}
                   component={() => <AsyncPage page={`./pages/${page}`} />}

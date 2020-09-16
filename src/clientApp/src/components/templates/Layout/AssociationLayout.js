@@ -2,10 +2,10 @@ import React from "react";
 import loadable from "@loadable/component";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../atoms/Panels";
-import FarmGroupInfo from "../FarmGroup/FarmGroupInfo";
+import AssociationInfo from "../Association/AssociationInfo";
 import {
   FarmSuggestions,
-  GroupSuggestions,
+  AssociationSuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
@@ -37,7 +37,7 @@ export default function (props) {
         <div className="col col-4 col-sm-4 col-md-2 col-lg-2">
           <Column>
             <PageColumnPanel>
-              <FarmGroupInfo info={info} />
+              <AssociationInfo info={info} />
             </PageColumnPanel>
             <PageColumnPanel>
               <Shortcut />
@@ -57,7 +57,7 @@ export default function (props) {
               <AdsList />
             </PageColumnPanel>
             <PageColumnPanel>
-              <GroupSuggestions />
+              <AssociationSuggestions />
             </PageColumnPanel>
             <PageColumnPanel>
               <AdsList />

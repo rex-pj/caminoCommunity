@@ -46,15 +46,15 @@ export default [
     layout: DetailLayout,
   },
   {
-    path: ["/farm-groups", "/farm-groups/page/:pageNumber"],
+    path: ["/associations", "/associations/page/:pageNumber"],
     exact: true,
-    page: "farm-groups",
+    page: "associations",
     layout: DefaultLayout,
   },
   {
-    path: "/farm-groups/:id",
+    path: "/associations/:id",
     exact: true,
-    page: "farm-groups/detail",
+    page: "associations/detail",
     layout: FrameLayout,
   },
   {

@@ -4,7 +4,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import ForgotAuthNavigation from "../../../components/organisms/NavigationMenu/ForgotAuthNavigation";
+import ForgotPasswordNavigation from "../../../components/organisms/NavigationMenu/ForgotPasswordNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import forgotPasswordModel from "../../../models/forgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
@@ -148,7 +148,7 @@ export default withRouter((props) => {
           <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
         </div>
         <div className="col col-12 col-sm-5">
-          <ForgotAuthNavigation />
+          <ForgotPasswordNavigation />
           <PanelBody>
             <FormRow>
               {isSubmitted ? (

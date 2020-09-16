@@ -75,12 +75,12 @@ export default withRouter((props) => {
     contentType: 3,
   };
 
-  const farmGroupItem = {
+  const associationItem = {
     id: "4",
     thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
     description:
       "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm",
-    url: `${UrlConstant.FarmGroup.url}1`,
+    url: `${UrlConstant.Association.url}1`,
     followingNumber: "14",
     name: "Hội trái cây sạch An Thạnh",
     contentType: 4,
@@ -89,12 +89,12 @@ export default withRouter((props) => {
   feedItems.push(articleItem);
   feedItems.push(product);
   feedItems.push(farmItem);
-  feedItems.push(farmGroupItem);
+  feedItems.push(associationItem);
 
   feedItems.push(articleItem);
   feedItems.push(product);
   feedItems.push(farmItem);
-  feedItems.push(farmGroupItem);
+  feedItems.push(associationItem);
 
   const [feeds] = useState(feedItems);
 

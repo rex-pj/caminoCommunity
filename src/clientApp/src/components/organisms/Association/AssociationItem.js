@@ -77,13 +77,13 @@ const ThumbnailOverlay = styled(Overlay)`
 `;
 
 export default (props) => {
-  const { farmGroup } = props;
+  const { association } = props;
 
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={farmGroup.thumbnailUrl}>
-          <PostThumbnail src={farmGroup.thumbnailUrl} alt="" />
+        <AnchorLink to={association.thumbnailUrl}>
+          <PostThumbnail src={association.thumbnailUrl} alt="" />
           <ThumbnailOverlay />
         </AnchorLink>
         <FollowButton icon="handshake" size="sm">
@@ -92,12 +92,12 @@ export default (props) => {
       </ThumbnailBox>
       <PanelHeader>
         <PostTitle>
-          <AnchorLink to={farmGroup.url}>{farmGroup.name}</AnchorLink>
+          <AnchorLink to={association.url}>{association.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
-          <ContentBody>{farmGroup.description}</ContentBody>
+          <ContentBody>{association.description}</ContentBody>
         </div>
 
         <div className="interactive-toolbar">
@@ -105,7 +105,7 @@ export default (props) => {
             <InteractItem>
               <FontButtonItem
                 icon="users"
-                dynamicText={farmGroup.followingNumber}
+                dynamicText={association.followingNumber}
               />
             </InteractItem>
           </HorizontalList>

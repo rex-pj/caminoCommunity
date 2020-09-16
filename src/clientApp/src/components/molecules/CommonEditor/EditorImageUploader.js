@@ -12,7 +12,7 @@ const PhotoUpload = styled(ImageUpload)`
   text-align: center;
   margin: 0 auto ${(p) => p.theme.size.tiny} auto;
   display: block;
-  width: 200px;
+  max-width: 235px;
 
   > span {
     color: ${(p) => p.theme.color.neutral};

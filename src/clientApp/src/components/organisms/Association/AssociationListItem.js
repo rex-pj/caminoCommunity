@@ -76,13 +76,13 @@ const ThumbnailOverlay = styled(Overlay)`
 `;
 
 export default (props) => {
-  const { farmGroup } = props;
+  const { association } = props;
 
   return (
     <Panel>
       <Cover>
-        <AnchorLink to={farmGroup.url}>
-          <CoverImage src={farmGroup.thumbnailUrl} alt="" />
+        <AnchorLink to={association.url}>
+          <CoverImage src={association.thumbnailUrl} alt="" />
           <ThumbnailOverlay />
         </AnchorLink>
 
@@ -96,7 +96,7 @@ export default (props) => {
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
               <Title>
-                <AnchorLink to={farmGroup.url}>{farmGroup.name}</AnchorLink>
+                <AnchorLink to={association.url}>{association.name}</AnchorLink>
               </Title>
             </div>
 
@@ -112,7 +112,7 @@ export default (props) => {
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
-          <Description>{farmGroup.description}</Description>
+          <Description>{association.description}</Description>
         </div>
         <InteractiveToolbar>
           <HorizontalList>
@@ -120,7 +120,7 @@ export default (props) => {
               <FontButtonItem
                 icon="users"
                 title="Followers"
-                dynamicText={farmGroup.followingNumber}
+                dynamicText={association.followingNumber}
               />
             </InteractiveItem>
           </HorizontalList>
