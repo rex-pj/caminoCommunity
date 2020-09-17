@@ -6,8 +6,8 @@ import ArticleListItem from "../../components/organisms/Article/ArticleListItem"
 
 export default withRouter(
   class extends Component {
-    constructor(props) {
-      super(props);
+    constructor() {
+      super();
 
       let articles = [];
       for (let i = 0; i < 8; i++) {

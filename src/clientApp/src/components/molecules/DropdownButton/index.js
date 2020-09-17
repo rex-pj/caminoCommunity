@@ -15,23 +15,23 @@ const DropdownGroup = styled.div`
 const ButtonCaret = styled(ButtonTransparent)`
   padding: 0;
   text-align: center;
-  width: ${p => p.theme.size.small};
-  height: ${p => p.theme.size.small};
+  width: ${(p) => p.theme.size.small};
+  height: ${(p) => p.theme.size.small};
 `;
 
 const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: calc(100% + ${p => p.theme.size.exTiny});
-  background: ${p => p.theme.color.white};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
-  min-width: calc(${p => p.theme.size.large} * 3);
-  border-radius: ${p => p.theme.borderRadius.normal};
-  padding: ${p => p.theme.size.exTiny} 0;
+  top: calc(100% + ${(p) => p.theme.size.exTiny});
+  background: ${(p) => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  min-width: calc(${(p) => p.theme.size.large} * 3);
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  padding: ${(p) => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
     margin-bottom: 0;
-    border-bottom: 1px solid ${p => p.theme.color.lighter};
+    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
 
     :last-child {
       border-bottom: 0;
@@ -39,30 +39,31 @@ const DropdownList = styled(Dropdown)`
   }
 
   ${ModuleMenuListItem} > a {
-    padding: ${p => p.theme.size.distance};
+    padding: ${(p) => p.theme.size.distance};
     border-radius: 0;
     font-weight: 600;
   }
 
   :after {
     position: absolute;
-    top: -${p => p.theme.size.exTiny};
-    right: ${p => p.theme.size.exTiny};
+    top: -${(p) => p.theme.size.exTiny};
+    right: ${(p) => p.theme.size.exTiny};
     content: " ";
     width: 0;
     height: 0;
-    border-left: ${p => p.theme.size.exTiny} solid transparent;
-    border-right: ${p => p.theme.size.exTiny} solid transparent;
-    border-bottom: ${p => p.theme.size.exTiny} solid ${p => p.theme.color.white};
+    border-left: ${(p) => p.theme.size.exTiny} solid transparent;
+    border-right: ${(p) => p.theme.size.exTiny} solid transparent;
+    border-bottom: ${(p) => p.theme.size.exTiny} solid
+      ${(p) => p.theme.color.white};
   }
 `;
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
-      isShown: false
+      isShown: false,
     };
 
     this.currentRef = React.createRef();
@@ -76,10 +77,10 @@ export default class extends Component {
     document.removeEventListener("click", this.onHide);
   }
 
-  onHide = e => {
+  onHide = (e) => {
     if (!this.currentRef.current.contains(e.target)) {
       this.setState({
-        isShown: false
+        isShown: false,
       });
     }
   };
@@ -87,7 +88,7 @@ export default class extends Component {
   show = () => {
     this.setState(() => {
       return {
-        isShown: !this.state.isShown
+        isShown: !this.state.isShown,
       };
     });
   };

@@ -6,8 +6,8 @@ import ProductItem from "../../components/organisms/Product/ProductItem";
 
 export default withRouter(
   class extends Component {
-    constructor(props) {
-      super(props);
+    constructor() {
+      super();
 
       let products = [];
       for (let i = 0; i < 9; i++) {

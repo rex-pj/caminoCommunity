@@ -18,8 +18,8 @@ const Card = styled(UserCard)`
 `;
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const infos = [
       {

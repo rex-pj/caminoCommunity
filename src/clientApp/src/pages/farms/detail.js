@@ -3,8 +3,8 @@ import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const farm = {
       title: "Trang trại ông Năm Đất",

@@ -3,8 +3,8 @@ import Product from "../../components/templates/Product";
 import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     let products = [];
     for (let i = 0; i < 9; i++) {

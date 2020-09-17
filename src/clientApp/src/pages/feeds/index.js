@@ -4,8 +4,8 @@ import { ContentType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const feeds = [];
 

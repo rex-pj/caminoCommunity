@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import FarmSuggestionItem from "./FarmSuggestionItem";
 import { VerticalList } from "../../atoms/List";
@@ -16,43 +16,32 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default class FarmSuggestions extends Component {
-  constructor(props) {
-    super(props);
+export default () => {
+  let farms = [];
+  for (let i = 0; i < 3; i++) {
+    farms.push({
+      info: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
+      name: "Trang trại ông Chín",
+      description:
+        "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
+      url: "/farms/1",
 
-    let farms = [];
-    for (let i = 0; i < 3; i++) {
-      farms.push({
-        info: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-        name: "Trang trại ông Chín",
-        description:
-          "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
-        url: "/farms/1",
-
-        id: "1212234r5423",
-        photoUrl: `${process.env.PUBLIC_URL}/photos/fs.jpg`,
-      });
-    }
-
-    this.state = {
-      farms: farms,
-    };
+      id: "1212234r5423",
+      photoUrl: `${process.env.PUBLIC_URL}/photos/fs.jpg`,
+    });
   }
 
-  render() {
-    const { farms } = this.state;
-    return (
-      <div>
-        <FifthDarkHeading>Visit other farms</FifthDarkHeading>
-        <Root>
-          <List>
-            {farms &&
-              farms.map((farm, index) => (
-                <FarmSuggestionItem key={index} farm={farm} index={index} />
-              ))}
-          </List>
-        </Root>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <FifthDarkHeading>Visit other farms</FifthDarkHeading>
+      <Root>
+        <List>
+          {farms &&
+            farms.map((farm, index) => (
+              <FarmSuggestionItem key={index} farm={farm} index={index} />
+            ))}
+        </List>
+      </Root>
+    </div>
+  );
+};

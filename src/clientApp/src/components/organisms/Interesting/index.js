@@ -15,7 +15,7 @@ const ListControl = styled(VerticalList)`
 `;
 
 const Heading = styled(FifthHeading)`
-  color: ${p => p.theme.color.dark};
+  color: ${(p) => p.theme.color.dark};
 `;
 
 const IconBlock = styled.span`
@@ -24,62 +24,62 @@ const IconBlock = styled.span`
 `;
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       list: [
         {
           icon: "seedling",
           text: "Vườn anh da đen",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "piggy-bank",
           text: "Chuồng bò ông Sáu",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "flag",
           text: "Đây là đâu tôi là ai Farm",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "apple-alt",
           text: "Ruộng của anh Ba",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "fish",
           text: "Ao cá bác Tư",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "tree",
           text: "Khu vườn hạnh phúc",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "flag",
           text: "Đây là đâu tôi là ai Farm",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "apple-alt",
           text: "Ruộng của anh Ba",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "fish",
           text: "Ao cá bác Tư",
-          href: "/farms/1"
+          href: "/farms/1",
         },
         {
           icon: "tree",
           text: "Khu vườn hạnh phúc",
-          href: "/farms/1"
-        }
-      ]
+          href: "/farms/1",
+        },
+      ],
     };
   }
 

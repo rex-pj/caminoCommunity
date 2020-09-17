@@ -4,8 +4,8 @@ import Detail from "../../components/templates/Article/Detail";
 import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const article = {
       title:

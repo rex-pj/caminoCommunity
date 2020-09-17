@@ -30,8 +30,8 @@ const Root = styled.div`
 `;
 
 export default class AdsList extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const listAds = [];
     for (let i = 0; i < 1; i++) {

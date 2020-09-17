@@ -3,45 +3,45 @@ import styled from "styled-components";
 import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
 import {
   ButtonOutlineNormal,
-  ButtonOutlineDanger
+  ButtonOutlineDanger,
 } from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled(PanelDefault)`
   position: absolute;
-  bottom: calc(100% + ${p => p.theme.size.tiny});
-  left: ${p => (p.left ? p.left + "px" : "auto")};
-  top: ${p => (p.top ? p.top + "px" : "auto")};
-  right: ${p => (p.right ? p.right + "px" : "auto")};
-  background-color: ${p => p.theme.color.warningLight};
+  bottom: calc(100% + ${(p) => p.theme.size.tiny});
+  left: ${(p) => (p.left ? p.left + "px" : "auto")};
+  top: ${(p) => (p.top ? p.top + "px" : "auto")};
+  right: ${(p) => (p.right ? p.right + "px" : "auto")};
+  background-color: ${(p) => p.theme.color.warningLight};
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${p => p.theme.rgbaColor.darkLight};
-    color: ${p => p.theme.color.warning};
+    border-bottom: 1px solid ${(p) => p.theme.rgbaColor.darkLight};
+    color: ${(p) => p.theme.color.warning};
   }
 
   ::after {
     content: " ";
     display: block;
     position: absolute;
-    left: ${p => p.theme.size.distance};
+    left: ${(p) => p.theme.size.distance};
     top: 100%;
     width: 0;
     height: 0;
-    border-left: ${p => p.theme.size.tiny} solid transparent;
-    border-right: ${p => p.theme.size.tiny} solid transparent;
-    border-top: ${p => p.theme.size.tiny} solid
-      ${p => p.theme.color.warningLight};
+    border-left: ${(p) => p.theme.size.tiny} solid transparent;
+    border-right: ${(p) => p.theme.size.tiny} solid transparent;
+    border-top: ${(p) => p.theme.size.tiny} solid
+      ${(p) => p.theme.color.warningLight};
   }
 `;
 
 class AlertPopover extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       isShown: false,
       left: null,
-      top: null
+      top: null,
     };
   }
 
@@ -53,7 +53,7 @@ class AlertPopover extends Component {
     document.removeEventListener("click", this.handleClickTarget);
   }
 
-  handleClickTarget = event => {
+  handleClickTarget = (event) => {
     const { target } = this.props;
 
     var currentTarget = document.getElementById(target);
@@ -62,7 +62,7 @@ class AlertPopover extends Component {
       this.setState(() => {
         return {
           isShown: !isShown,
-          left: currentTarget.offsetLeft
+          left: currentTarget.offsetLeft,
         };
       });
 
@@ -79,7 +79,7 @@ class AlertPopover extends Component {
   onClose = () => {
     this.setState(() => {
       return {
-        isShown: false
+        isShown: false,
       };
     });
     if (this.props.onClose) {

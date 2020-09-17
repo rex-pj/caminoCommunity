@@ -3,8 +3,8 @@ import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     let articles = [];
     for (let i = 0; i < 8; i++) {

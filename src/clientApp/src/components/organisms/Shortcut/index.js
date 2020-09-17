@@ -11,8 +11,8 @@ const IconBlock = styled.span`
 `;
 
 export default class Shorcut extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       list: [

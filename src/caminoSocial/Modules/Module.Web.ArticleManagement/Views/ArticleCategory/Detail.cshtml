@@ -36,7 +36,7 @@
     </div>
     <div class="form-group">
         <label>Created date</label>
-        <span class="form-control" readonly>@Model.CreatedDate.ToShortDateString()</span>
+        <span class="form-control" readonly>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
     </div>
     <div class="form-group">
         <label>Updated by</label>
@@ -44,7 +44,7 @@
     </div>
     <div class="form-group">
         <label>Updated date</label>
-        <span class="form-control" readonly>@Model.UpdatedDate.ToShortDateString()</span>
+        <span class="form-control" readonly>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
     </div>
     <div class="form-group">
         <label>Parent</label>

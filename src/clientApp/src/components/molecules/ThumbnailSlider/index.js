@@ -12,25 +12,25 @@ const PostThumbnail = styled.div`
 
 const MainThumbnail = styled.div`
   overflow: hidden;
-  background-color: ${p => p.theme.color.primary};
+  background-color: ${(p) => p.theme.color.primary};
   position: relative;
   outline: none;
 `;
 
 const HorizontalListScroll = styled(ListScroll)`
-  background-color: ${p => p.theme.color.primaryLight};
-  border-top: 1px solid ${p => p.theme.color.primary};
-  border-bottom: 1px solid ${p => p.theme.color.primary};
+  background-color: ${(p) => p.theme.color.primaryLight};
+  border-top: 1px solid ${(p) => p.theme.color.primary};
+  border-bottom: 1px solid ${(p) => p.theme.color.primary};
 
   li {
     height: 140px;
 
     .first-item {
-      padding-left: ${p => p.theme.size.exSmall};
+      padding-left: ${(p) => p.theme.size.exSmall};
     }
 
     .last-item {
-      padding-right: ${p => p.theme.size.exSmall};
+      padding-right: ${(p) => p.theme.size.exSmall};
     }
 
     img {
@@ -44,7 +44,7 @@ const ThumbnailItem = styled(Thumbnail)`
   border-radius: 0;
   position: relative;
   cursor: pointer;
-  padding: 0 ${p => p.theme.size.exTiny};
+  padding: 0 ${(p) => p.theme.size.exTiny};
 
   :before {
     content: " ";
@@ -55,7 +55,7 @@ const ThumbnailItem = styled(Thumbnail)`
 
   &.actived,
   :hover {
-    background-color: ${p => p.theme.color.primaryDark};
+    background-color: ${(p) => p.theme.color.primaryDark};
   }
 `;
 
@@ -63,7 +63,7 @@ const NavigateBar = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
-  width: ${p => p.theme.size.medium};
+  width: ${(p) => p.theme.size.medium};
   height: 100%;
   cursor: pointer;
 `;
@@ -80,28 +80,28 @@ const NavigateButton = styled(ButtonTransparent)`
   position: absolute;
   top: 50%;
   bottom: 50%;
-  margin-top: -${p => p.theme.size.normal};
-  height: ${p => p.theme.size.normal};
-  color: ${p => p.theme.color.light};
-  font-size: ${p => p.theme.fontSize.large};
+  margin-top: -${(p) => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
+  color: ${(p) => p.theme.color.light};
+  font-size: ${(p) => p.theme.fontSize.large};
   line-height: 1;
   padding: 0;
   text-align: center;
 `;
 
 const PrevButton = styled(NavigateButton)`
-  left: ${p => p.theme.size.exTiny};
+  left: ${(p) => p.theme.size.exTiny};
 `;
 
 const NextButton = styled(NavigateButton)`
-  right: ${p => p.theme.size.exTiny};
+  right: ${(p) => p.theme.size.exTiny};
 `;
 
 class ThumbnailSlider extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
-    const images = props.images;
+    const images = this.props.images;
     let currentImage = null,
       numberOfImages = 0;
     if (images) {
@@ -111,17 +111,17 @@ class ThumbnailSlider extends Component {
       numberOfImages = images.length;
     }
 
-    let { numberOfDisplay } = props;
+    let { numberOfDisplay } = this.props;
     this.state = {
       currentImage: currentImage,
       numberOfDisplay: numberOfDisplay ? numberOfDisplay : numberOfImages,
-      numberOfImages: numberOfImages
+      numberOfImages: numberOfImages,
     };
 
     this.currentRef = React.createRef();
   }
 
-  renderRelationImages = relationImages => {
+  renderRelationImages = (relationImages) => {
     const { numberOfDisplay, currentImage } = this.state;
 
     if (relationImages) {
@@ -137,7 +137,7 @@ class ThumbnailSlider extends Component {
       });
 
       relationImages = relationImages.filter(
-        data => data.groupIndex === currentImage.groupIndex
+        (data) => data.groupIndex === currentImage.groupIndex
       );
 
       return relationImages.map((item, index) => {
@@ -158,7 +158,7 @@ class ThumbnailSlider extends Component {
             key={index}
             src={item.url}
             alt={item.name}
-            onClick={e => this.onChangeThumbnail(item)}
+            onClick={(e) => this.onChangeThumbnail(item)}
           />
         );
       });
@@ -167,14 +167,14 @@ class ThumbnailSlider extends Component {
     }
   };
 
-  onChangeThumbnail = item => {
+  onChangeThumbnail = (item) => {
     const { images } = this.props;
-    images.map(item => {
+    images.map((item) => {
       return item;
     });
 
     this.setState({
-      currentImage: item
+      currentImage: item,
     });
   };
 
@@ -188,7 +188,7 @@ class ThumbnailSlider extends Component {
       image = images[0];
     }
     this.setState({
-      currentImage: image
+      currentImage: image,
     });
   };
 
@@ -203,7 +203,7 @@ class ThumbnailSlider extends Component {
       image = images[numberOfImages - 1];
     }
     this.setState({
-      currentImage: image
+      currentImage: image,
     });
   };
 
@@ -219,7 +219,7 @@ class ThumbnailSlider extends Component {
     this.currentRef.current.removeEventListener("keydown", this.onChangeImage);
   }
 
-  onChangeImage = e => {
+  onChangeImage = (e) => {
     var originator = e.keyCode || e.which;
 
     if (originator === 39) {
@@ -229,7 +229,7 @@ class ThumbnailSlider extends Component {
     }
   };
 
-  onMouseOvered = e => {
+  onMouseOvered = (e) => {
     this.currentRef.current.focus();
   };
 

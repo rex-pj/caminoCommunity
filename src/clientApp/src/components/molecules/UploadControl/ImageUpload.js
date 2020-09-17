@@ -21,8 +21,8 @@ const UploadButton = styled.span`
 `;
 
 class ImageUpload extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.fileRef = React.createRef();
   }

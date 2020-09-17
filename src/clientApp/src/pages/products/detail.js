@@ -4,8 +4,8 @@ import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/molecules/Breadcrumb";
 
 export default class extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const product = {
       title: "Chuối chính cây Đồng Nai",

@@ -6,8 +6,8 @@ import FarmItem from "../../components/organisms/Farm/FarmItem";
 
 export default withRouter(
   class extends Component {
-    constructor(props) {
-      super(props);
+    constructor() {
+      super();
 
       let farms = [];
       for (let i = 0; i < 9; i++) {
