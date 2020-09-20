@@ -7,7 +7,7 @@ namespace Camino.Service.Business.Articles.Contracts
 {
     public interface IArticleBusiness
     {
-        int Add(ArticleProjection category);
+        Task<int> CreateAsync(ArticleProjection category);
         ArticleProjection Find(long id);
         ArticleProjection FindDetail(long id);
         ArticleProjection FindByName(string name);

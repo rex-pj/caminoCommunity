@@ -98,14 +98,6 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(model);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
-        public IActionResult Update(int id)
-        {
-            var category = _articleCategoryBusiness.Find(id);
-            var model = _mapper.Map<ArticleCategoryModel>(category);
-            return View(model);
-        }
-
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create(ArticleCategoryModel model)
@@ -122,6 +114,14 @@ namespace Module.Web.ArticleManagement.Controllers
             var id = _articleCategoryBusiness.Add(category);
 
             return RedirectToAction("Detail", new { id });
+        }
+
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        public IActionResult Update(int id)
+        {
+            var category = _articleCategoryBusiness.Find(id);
+            var model = _mapper.Map<ArticleCategoryModel>(category);
+            return View(model);
         }
 
         [HttpPost]

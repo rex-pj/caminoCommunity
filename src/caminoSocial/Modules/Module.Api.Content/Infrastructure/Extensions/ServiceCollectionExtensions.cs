@@ -16,6 +16,7 @@ namespace Module.Api.Content.Infrastructure.Extensions
             services.AddTransient<IImageResolver, ImageResolver>();
             services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
             services.AddTransient<IArticleCategoryResolver, ArticleCategoryResolver>();
+            services.AddTransient<IArticleResolver, ArticleResolver>();
             return services;
         }
 

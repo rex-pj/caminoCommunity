@@ -206,14 +206,14 @@ namespace Camino.Service.Business.Articles
             return result;
         }
 
-        public int Add(ArticleProjection article)
+        public async Task<int> CreateAsync(ArticleProjection article)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             var newArticle = _mapper.Map<Article>(article);
             newArticle.UpdatedDate = modifiedDate;
             newArticle.CreatedDate = modifiedDate;
 
-            var id = _articleRepository.AddWithInt32Entity(newArticle);
+            var id = await _articleRepository.AddWithInt32EntityAsync(newArticle);
             if (!string.IsNullOrEmpty(article.Thumbnail))
             {
                 var pictureData = Convert.FromBase64String(article.Thumbnail);

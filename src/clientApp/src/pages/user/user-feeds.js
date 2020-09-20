@@ -6,8 +6,11 @@ import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/client";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
-import { VALIDATE_IMAGE_URL } from "../../utils/GraphQLQueries/mutations";
+import {
+  VALIDATE_IMAGE_URL,
+  FILTER_CATEGORIES,
+  CREATE_ARTICLE,
+} from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 
 export default withRouter((props) => {
@@ -107,9 +110,34 @@ export default withRouter((props) => {
     currentPage: pageNumber ? pageNumber : 1,
   });
 
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL, {
-    client: graphqlClient,
-  });
+  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
+  const [filterCategories] = useMutation(FILTER_CATEGORIES);
+  const [createArticle] = useMutation(CREATE_ARTICLE);
+
+  const searchCategories = async (inputValue) => {
+    return await filterCategories({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        var { data } = response;
+        var { categories } = data;
+        if (!categories) {
+          return [];
+        }
+        return categories.map((cat) => {
+          return {
+            value: cat.id,
+            label: cat.text,
+          };
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
+  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -129,6 +157,16 @@ export default withRouter((props) => {
     });
   };
 
+  const onArticlePost = async (data) => {
+    await createArticle({
+      variables: {
+        criterias: data,
+      },
+    }).then((response) => {
+      console.log(response);
+    });
+  };
+
   const { totalPage, currentPage, baseUrl, pageQuery } = pageOptions;
   return (
     <Fragment>
@@ -136,6 +174,8 @@ export default withRouter((props) => {
         height={230}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
+        filterCategories={searchCategories}
+        onPost={onArticlePost}
       />
       {feeds
         ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)

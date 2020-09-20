@@ -101,7 +101,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public IActionResult Create(ArticleModel model)
+        public async Task<IActionResult> Create(ArticleModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -117,7 +117,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             article.UpdatedById = LoggedUserId;
             article.CreatedById = LoggedUserId;
-            var id = _articleBusiness.Add(article);
+            var id = await _articleBusiness.CreateAsync(article);
 
             return RedirectToAction("Detail", new { id });
         }

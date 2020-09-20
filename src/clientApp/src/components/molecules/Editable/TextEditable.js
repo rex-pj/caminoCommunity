@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
 import {
   ButtonOutlinePrimary,
-  ButtonOutlineNormal
+  ButtonOutlineNormal,
 } from "../../atoms/Buttons/OutlineButtons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Wrap = styled.div`
   button {
-    margin-left: ${p => p.theme.size.exTiny};
+    margin-left: ${(p) => p.theme.size.exTiny};
   }
 `;
 
@@ -17,24 +17,24 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${p => p.theme.color.neutral};
-    line-height: ${p => p.theme.size.normal};
-    height: ${p => p.theme.size.normal};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    line-height: ${(p) => p.theme.size.normal};
+    height: ${(p) => p.theme.size.normal};
   }
 
   &.empty {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.danger};
     font-weight: 400;
   }
 `;
 
 const TextEditing = styled(Textbox)`
   border: 0;
-  border-bottom: 1px dashed ${p => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
   border-radius: 0;
 `;
 
-export default function(props) {
+export default function (props) {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(props.value ? props.value : "");
 
@@ -71,9 +71,9 @@ export default function(props) {
         .onUpdated({
           primaryKey: props.primaryKey,
           value: value,
-          propertyName: props.name
+          propertyName: props.name,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response) {
             const { data } = response;
             const { updateUserInfoItem } = data;
@@ -83,9 +83,8 @@ export default function(props) {
             setValue(currentValue);
           }
         })
-        .catch(function(errors) {
+        .catch(function (errors) {
           setValue(currentValue);
-          console.log(errors);
         });
     }
 

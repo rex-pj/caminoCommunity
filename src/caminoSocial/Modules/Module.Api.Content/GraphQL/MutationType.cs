@@ -4,6 +4,7 @@ using Camino.Framework.GraphQL.DirectiveTypes;
 using Camino.Framework.GraphQL.ResultTypes;
 using HotChocolate.Types;
 using Camino.Core.Modular.Contracts;
+using Module.Api.Content.GraphQL.ResultTypes;
 
 namespace Module.Api.Content.GraphQL
 {
@@ -34,6 +35,15 @@ namespace Module.Api.Content.GraphQL
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
+
+            descriptor.Field<IArticleCategoryResolver>(x => x.GetCategories(default))
+                .Type<ListType<SelectOptionType>>()
+                .Argument("criterias", a => a.Type<SelectFilterInputType>());
+
+            descriptor.Field<IArticleResolver>(x => x.CreateArticleAsync(default))
+                .Type<ArticleCreateResultType>()
+                .Directive<AuthenticationDirectiveType>()
+                .Argument("criterias", a => a.Type<NonNullType<ArticleInputType>>());
         }
     }
 }

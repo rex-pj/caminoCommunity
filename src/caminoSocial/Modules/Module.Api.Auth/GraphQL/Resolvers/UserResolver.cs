@@ -347,7 +347,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             catch (Exception ex)
             {
                 throw ex;
-                throw;
             }
         }
 

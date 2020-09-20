@@ -1,23 +1,12 @@
-﻿using Camino.Framework.Models;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 
-namespace Module.Web.ArticleManagement.Models
+namespace Module.Api.Content.Models
 {
-    public class ArticleModel : BaseModel
+    public class ArticleModel
     {
         public long Id { get; set; }
-
-        [Required(AllowEmptyStrings = false)]
-        [MaxLength(255)]
         public string Name { get; set; }
-
-        [Required(AllowEmptyStrings = false)]
-        [MaxLength(1000)]
         public string Description { get; set; }
-
-        [Required(AllowEmptyStrings = false)]
         public string Content { get; set; }
         public long ThumbnailId { get; set; }
         public string Thumbnail { get; set; }
@@ -31,6 +20,5 @@ namespace Module.Web.ArticleManagement.Models
         public string CreatedBy { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
-        public IFormFile File { get; set; }
     }
 }

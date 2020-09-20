@@ -132,3 +132,21 @@ export const VALIDATE_IMAGE_URL = gql`
     }
   }
 `;
+
+export const FILTER_CATEGORIES = gql`
+  mutation($criterias: SelectFilterModelInput) {
+    categories: categories(criterias: $criterias) {
+      id
+      isSelected
+      text
+    }
+  }
+`;
+
+export const CREATE_ARTICLE = gql`
+  mutation CreateArticle($criterias: ArticleModelInput!) {
+    createArticle(criterias: $criterias) {
+      id
+    }
+  }
+`;
