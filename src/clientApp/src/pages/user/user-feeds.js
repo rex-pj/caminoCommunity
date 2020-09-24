@@ -6,6 +6,7 @@ import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/molecules/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/client";
+import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import {
   VALIDATE_IMAGE_URL,
   FILTER_CATEGORIES,
@@ -112,7 +113,9 @@ export default withRouter((props) => {
 
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
   const [filterCategories] = useMutation(FILTER_CATEGORIES);
-  const [createArticle] = useMutation(CREATE_ARTICLE);
+  const [createArticle] = useMutation(CREATE_ARTICLE, {
+    client: graphqlClient,
+  });
 
   const searchCategories = async (inputValue) => {
     return await filterCategories({

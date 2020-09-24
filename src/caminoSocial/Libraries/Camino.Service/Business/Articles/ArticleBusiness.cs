@@ -209,9 +209,17 @@ namespace Camino.Service.Business.Articles
         public async Task<int> CreateAsync(ArticleProjection article)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
-            var newArticle = _mapper.Map<Article>(article);
-            newArticle.UpdatedDate = modifiedDate;
-            newArticle.CreatedDate = modifiedDate;
+            var newArticle = new Article()
+            {
+                ArticleCategoryId = article.ArticleCategoryId,
+                Content = article.Content,
+                CreatedById = article.CreatedById,
+                UpdatedById = article.UpdatedById,
+                CreatedDate = modifiedDate,
+                UpdatedDate = modifiedDate,
+                Description = article.Description,
+                Name = article.Name
+            };
 
             var id = await _articleRepository.AddWithInt32EntityAsync(newArticle);
             if (!string.IsNullOrEmpty(article.Thumbnail))

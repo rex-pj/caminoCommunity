@@ -13,8 +13,8 @@ namespace Module.Api.Content.GraphQL.InputTypes
             descriptor.Field(x => x.ThumbnailFileName).Type<StringType>();
             descriptor.Field(x => x.ThumbnailFileType).Type<StringType>();
             descriptor.Field(x => x.ArticleCategoryId).Type<LongType>();
-            descriptor.Field(x => x.Description).Ignore();
             descriptor.Field(x => x.Id).Ignore();
+            descriptor.Field(x => x.Description).Ignore();
             descriptor.Field(x => x.ThumbnailId).Ignore();
             descriptor.Field(x => x.UpdateById).Ignore();
             descriptor.Field(x => x.UpdatedDate).Ignore();

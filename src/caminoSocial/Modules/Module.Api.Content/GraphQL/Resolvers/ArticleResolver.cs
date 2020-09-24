@@ -11,7 +11,9 @@ namespace Module.Api.Content.GraphQL.Resolvers
     public class ArticleResolver : BaseResolver, IArticleResolver
     {
         private readonly IArticleBusiness _articleBusiness;
-        public ArticleResolver(SessionState sessionState, IArticleBusiness articleBusiness) : base(sessionState)
+        
+        public ArticleResolver(SessionState sessionState, IArticleBusiness articleBusiness) 
+            : base(sessionState)
         {
             _articleBusiness = articleBusiness;
         }

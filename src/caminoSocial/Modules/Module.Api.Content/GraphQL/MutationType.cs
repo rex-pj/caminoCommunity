@@ -12,10 +12,6 @@ namespace Module.Api.Content.GraphQL
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field<IImageResolver>(x => x.ValidateImageUrl(default))
-                .Type<CommonResultType>()
-                .Argument("criterias", a => a.Type<ImageValidationInputType>());
-
             descriptor.Field<IUserPhotoResolver>(x => x.UpdateAvatarAsync(default))
                 .Type<CommonResultType>()
                 .Directive<AuthenticationDirectiveType>()
@@ -36,14 +32,18 @@ namespace Module.Api.Content.GraphQL
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
 
+            descriptor.Field<IArticleResolver>(x => x.CreateArticleAsync(default))
+               .Type<ArticleCreateResultType>()
+               .Directive<AuthenticationDirectiveType>()
+               .Argument("criterias", a => a.Type<ArticleInputType>());
+
             descriptor.Field<IArticleCategoryResolver>(x => x.GetCategories(default))
                 .Type<ListType<SelectOptionType>>()
                 .Argument("criterias", a => a.Type<SelectFilterInputType>());
 
-            descriptor.Field<IArticleResolver>(x => x.CreateArticleAsync(default))
-                .Type<ArticleCreateResultType>()
-                .Directive<AuthenticationDirectiveType>()
-                .Argument("criterias", a => a.Type<NonNullType<ArticleInputType>>());
+            descriptor.Field<IImageResolver>(x => x.ValidateImageUrl(default))
+                 .Type<CommonResultType>()
+                 .Argument("criterias", a => a.Type<ImageValidationInputType>());
         }
     }
 }
