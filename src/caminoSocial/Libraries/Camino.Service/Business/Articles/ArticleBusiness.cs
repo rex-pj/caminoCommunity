@@ -178,7 +178,8 @@ namespace Camino.Service.Business.Articles
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            ThumbnailId = p.PictureId
+                            ThumbnailId = p.PictureId,
+                            Content = ar.Content
                         };
 
             var articles = await query

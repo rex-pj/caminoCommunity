@@ -33,7 +33,7 @@ namespace Module.Api.Content.GraphQL
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
 
             descriptor.Field<IArticleResolver>(x => x.CreateArticleAsync(default))
-               .Type<ArticleCreateResultType>()
+               .Type<ArticleResultType>()
                .Directive<AuthenticationDirectiveType>()
                .Argument("criterias", a => a.Type<ArticleInputType>());
 

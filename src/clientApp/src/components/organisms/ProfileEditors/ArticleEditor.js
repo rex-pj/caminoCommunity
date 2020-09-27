@@ -220,7 +220,7 @@ export default withRouter((props) => {
           </div>
         </FormRow>
         {thumbnail.value ? (
-          <FormRow class="row">
+          <FormRow className="row">
             <div className="col-3">
               <Thumbnail src={thumbnail.value}></Thumbnail>
             </div>

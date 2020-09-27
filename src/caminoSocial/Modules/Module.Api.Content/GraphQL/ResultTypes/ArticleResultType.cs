@@ -3,7 +3,7 @@ using Module.Api.Content.Models;
 
 namespace Module.Api.Content.GraphQL.ResultTypes
 {
-    public class ArticleCreateResultType : ObjectType<ArticleModel>
+    public class ArticleResultType : ObjectType<ArticleModel>
     {
         protected override void Configure(IObjectTypeDescriptor<ArticleModel> descriptor)
         {
@@ -14,15 +14,15 @@ namespace Module.Api.Content.GraphQL.ResultTypes
             descriptor.Field(x => x.ThumbnailFileName).Type<StringType>();
             descriptor.Field(x => x.ThumbnailFileType).Type<StringType>();
             descriptor.Field(x => x.ArticleCategoryId).Type<LongType>();
-            descriptor.Field(x => x.Description).Ignore();
-            descriptor.Field(x => x.ThumbnailId).Ignore();
-            descriptor.Field(x => x.UpdateById).Ignore();
-            descriptor.Field(x => x.UpdatedDate).Ignore();
-            descriptor.Field(x => x.CreatedById).Ignore();
-            descriptor.Field(x => x.CreatedDate).Ignore();
-            descriptor.Field(x => x.CreatedBy).Ignore();
-            descriptor.Field(x => x.UpdatedBy).Ignore();
-            descriptor.Field(x => x.ArticleCategoryName).Ignore();
+            descriptor.Field(x => x.Description).Type<StringType>();
+            descriptor.Field(x => x.ThumbnailId).Type<LongType>();
+            descriptor.Field(x => x.UpdateById).Type<LongType>();
+            descriptor.Field(x => x.UpdatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.CreatedById).Type<LongType>();
+            descriptor.Field(x => x.CreatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.CreatedBy).Type<StringType>();
+            descriptor.Field(x => x.UpdatedBy).Type<StringType>();
+            descriptor.Field(x => x.ArticleCategoryName).Type<StringType>();
         }
     }
 }
