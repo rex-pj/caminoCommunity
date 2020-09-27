@@ -21,15 +21,15 @@ export default {
     isValid: false,
   },
   thumbnail: {
-    value: null,
+    value: "",
     isValid: true,
   },
   thumbnailFileType: {
-    value: null,
+    value: "",
     isValid: true,
   },
   thumbnailFileName: {
-    value: null,
+    value: "",
     isValid: true,
   },
 };

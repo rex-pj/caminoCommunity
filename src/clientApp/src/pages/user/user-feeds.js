@@ -13,6 +13,7 @@ import {
   CREATE_ARTICLE,
 } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {
   const feedItems = [];
@@ -110,7 +111,7 @@ export default withRouter((props) => {
     baseUrl: userUrl + "/feeds",
     currentPage: pageNumber ? pageNumber : 1,
   });
-
+  const dispatch = useStore(false)[1];
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
   const [filterCategories] = useMutation(FILTER_CATEGORIES);
   const [createArticle] = useMutation(CREATE_ARTICLE, {
@@ -161,12 +162,18 @@ export default withRouter((props) => {
   };
 
   const onArticlePost = async (data) => {
-    await createArticle({
+    return await createArticle({
       variables: {
         criterias: data,
       },
-    }).then((response) => {
-      console.log(response);
+    });
+  };
+
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error",
     });
   };
 
@@ -178,7 +185,8 @@ export default withRouter((props) => {
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
         filterCategories={searchCategories}
-        onPost={onArticlePost}
+        onArticlePost={onArticlePost}
+        showValidationError={showValidationError}
       />
       {feeds
         ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)

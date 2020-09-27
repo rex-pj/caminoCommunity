@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../../molecules/CommonEditor";
 import { Textbox } from "../../atoms/Textboxes";
@@ -9,6 +9,7 @@ import { stateToHTML } from "draft-js-export-html";
 import ImageUpload from "../../molecules/UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
 import ArticleCreationModel from "../../../models/ArticleCreationModel";
+import { Thumbnail } from "../../molecules/Thumbnails";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -67,9 +68,8 @@ export default withRouter((props) => {
     filterCategories,
   } = props;
   const initialFormData = ArticleCreationModel;
-
   const [formData, setFormData] = useState(initialFormData);
-  const [, setInputValue] = useState(null);
+  const editorRef = useRef();
 
   const handleInputChange = (evt) => {
     let data = formData || {};
@@ -109,10 +109,6 @@ export default withRouter((props) => {
     }, 1000);
   };
 
-  const handleSelectInputChange = (newValue) => {
-    setInputValue(newValue);
-  };
-
   const handleSelectChange = (e) => {
     let data = formData || {};
     const name = "articleCategoryId";
@@ -142,19 +138,20 @@ export default withRouter((props) => {
     });
   };
 
-  const onPost = (e) => {
+  const onArticlePost = async (e) => {
     e.preventDefault();
 
     let isFormValid = true;
     for (let formIdentifier in formData) {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
+      break;
+    }
 
-      if (!isFormValid) {
-        props.showValidationError(
-          "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again"
-        );
-      }
+    if (!isFormValid) {
+      props.showValidationError(
+        "Something went wrong with your input",
+        "Something went wrong with your information, please check and input again"
+      );
     }
 
     if (!!isFormValid) {
@@ -163,14 +160,31 @@ export default withRouter((props) => {
         articleData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.onPost(articleData);
+      await props.onArticlePost(articleData).then((response) => {
+        var { data } = response;
+        var { createArticle } = data;
+        if (createArticle && createArticle.id) {
+          clearFormData();
+        }
+      });
     }
   };
 
-  const { name } = formData;
+  const clearFormData = () => {
+    for (let formIdentifier in formData) {
+      formData[formIdentifier].value = "";
+    }
+
+    editorRef.current.clearEditor();
+    setFormData({
+      ...formData,
+    });
+  };
+
+  const { name, articleCategoryId, thumbnail } = formData;
   return (
     <Fragment>
-      <form onSubmit={(e) => onPost(e)} method="POST">
+      <form onSubmit={(e) => onArticlePost(e)} method="POST">
         <FormRow className="row">
           <div className="col-12 col-lg-6 pr-lg-1">
             <Textbox
@@ -182,25 +196,43 @@ export default withRouter((props) => {
             />
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              onChange={handleSelectChange}
-              loadOptions={loadOptions}
-              onInputChange={handleSelectInputChange}
-            />
+            {articleCategoryId.value ? (
+              <AsyncSelect
+                cacheOptions
+                defaultOptions
+                onChange={handleSelectChange}
+                loadOptions={loadOptions}
+                isClearable={true}
+              />
+            ) : (
+              <AsyncSelect
+                value=""
+                cacheOptions
+                defaultOptions
+                onChange={handleSelectChange}
+                loadOptions={loadOptions}
+                isClearable={true}
+              />
+            )}
           </div>
           <div className="col-2 col-lg-2 pl-lg-1 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        <FormRow>{}</FormRow>
+        {thumbnail.value ? (
+          <FormRow class="row">
+            <div className="col-3">
+              <Thumbnail src={thumbnail.value}></Thumbnail>
+            </div>
+          </FormRow>
+        ) : null}
         <CommonEditor
           height={height}
           convertImageCallback={convertImageCallback}
           onImageValidate={onImageValidate}
           placeholder="Enter the content here"
           onChanged={onContentChanged}
+          ref={editorRef}
         />
         <Footer className="row mb-3">
           <div className="col-auto"></div>

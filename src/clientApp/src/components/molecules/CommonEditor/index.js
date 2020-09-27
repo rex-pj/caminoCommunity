@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import styled from "styled-components";
 import EditorToolbar from "./EditorToolbar";
 import EditorModal from "./EditorModal";
@@ -9,7 +15,13 @@ import {
   getSelectionEntity,
   getSelectionText,
 } from "draftjs-utils";
-import { Editor, EditorState, RichUtils, CompositeDecorator } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  CompositeDecorator,
+  ContentState,
+} from "draft-js";
 import {
   styleMap,
   STYLES,
@@ -67,7 +79,7 @@ const ImageComponent = (props) => {
   );
 };
 
-export default (props) => {
+export default forwardRef((props, ref) => {
   const decorator = new CompositeDecorator([
     {
       strategy: findLinkEntities,
@@ -221,6 +233,16 @@ export default (props) => {
     onChange(newEditorState);
   };
 
+  useImperativeHandle(ref, () => ({
+    clearEditor() {
+      const newEditorState = EditorState.push(
+        editorState,
+        ContentState.createFromText("")
+      );
+      setEditorState(newEditorState);
+    },
+  }));
+
   return (
     <Root className={className}>
       <Container onClick={focusEditor} height={height}>
@@ -266,4 +288,4 @@ export default (props) => {
       />
     </Root>
   );
-};
+});

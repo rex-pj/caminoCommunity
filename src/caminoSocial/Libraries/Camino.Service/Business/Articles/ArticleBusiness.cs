@@ -11,6 +11,7 @@ using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Projections.PageList;
 using Camino.Data.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Business.Articles
 {
@@ -180,8 +181,10 @@ namespace Camino.Service.Business.Articles
                             ThumbnailId = p.PictureId
                         };
 
-            var articles = await query.Skip(filter.PageSize * (filter.Page - 1))
-                                         .Take(filter.PageSize).ToListAsync();
+            var articles = await query
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = articles.Select(x => x.CreatedById).ToArray();
             var updatedByIds = articles.Select(x => x.UpdatedById).ToArray();
@@ -222,9 +225,11 @@ namespace Camino.Service.Business.Articles
             };
 
             var id = await _articleRepository.AddWithInt32EntityAsync(newArticle);
-            if (!string.IsNullOrEmpty(article.Thumbnail))
+
+            var thumbnail = ImageUtil.EncodeJavascriptBase64(article.Thumbnail);
+            if (!string.IsNullOrEmpty(thumbnail))
             {
-                var pictureData = Convert.FromBase64String(article.Thumbnail);
+                var pictureData = Convert.FromBase64String(thumbnail);
                 var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
                 {
                     CreatedById = article.UpdatedById,

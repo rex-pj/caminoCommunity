@@ -13,9 +13,10 @@ namespace Camino.DAL.Mapping
                 .HasTableName(nameof(ArticlePicture))
                 .HasSchemaName(TableSchemaConst.DBO)
                 .HasPrimaryKey(x => x.Id)
-                .Association(x => x.Picture, 
+                .HasIdentity(x => x.Id)
+                .Association(x => x.Picture,
                     (articlePicture, picture) => articlePicture.PictureId == picture.Id)
-                .Association(x => x.Article, 
+                .Association(x => x.Article,
                     (articlePicture, article) => articlePicture.ArticleId == article.Id);
         }
     }
