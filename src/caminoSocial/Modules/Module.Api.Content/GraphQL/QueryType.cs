@@ -11,7 +11,7 @@ namespace Module.Api.Content.GraphQL
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field<IArticleResolver>(x => x.GetArticlesAsync(default))
+            descriptor.Field<IArticleResolver>(x => x.GetUserArticlesAsync(default))
                 .Type<ArticlePageListType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<ArticleFilterInputType>());

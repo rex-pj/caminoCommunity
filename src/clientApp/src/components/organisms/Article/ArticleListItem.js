@@ -65,7 +65,7 @@ export default (props) => {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              {/* <ProfileAction profile={creator} /> */}
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
@@ -89,7 +89,7 @@ export default (props) => {
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            {article.description}
+            {article.content}
             <DetailLink>
               <AnchorLink to={article.url}>Detail</AnchorLink>
             </DetailLink>

@@ -104,3 +104,21 @@ export const ACTIVE = gql`
     }
   }
 `;
+
+export const GET_USER_ARTICLES = gql`
+  query($criterias: ArticleFilterModelInput) {
+    userArticles(criterias: $criterias) {
+      collections {
+        id
+        content
+        name
+        createdById
+        createdBy
+        createdDate
+        updatedDate
+        thumbnailId
+        createdByIdentityId
+      }
+    }
+  }
+`;

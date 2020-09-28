@@ -32,11 +32,6 @@ namespace Module.Api.Content.GraphQL
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<DeleteUserPhotoInputType>());
 
-            descriptor.Field<IArticleResolver>(x => x.CreateArticleAsync(default))
-               .Type<ArticleResultType>()
-               .Directive<AuthenticationDirectiveType>()
-               .Argument("criterias", a => a.Type<ArticleInputType>());
-
             descriptor.Field<IArticleCategoryResolver>(x => x.GetCategories(default))
                 .Type<ListType<SelectOptionType>>()
                 .Argument("criterias", a => a.Type<SelectFilterInputType>());

@@ -13,6 +13,7 @@ namespace Module.Api.Content.GraphQL.ResultTypes
             descriptor.Field(x => x.Thumbnail).Type<StringType>();
             descriptor.Field(x => x.ThumbnailFileName).Type<StringType>();
             descriptor.Field(x => x.ThumbnailFileType).Type<StringType>();
+            descriptor.Field(x => x.CreatedByIdentityId).Type<StringType>();
             descriptor.Field(x => x.ArticleCategoryId).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.ThumbnailId).Type<LongType>();

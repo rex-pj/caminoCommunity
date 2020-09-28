@@ -181,7 +181,6 @@ namespace Camino.Service.Business.Articles
                             ThumbnailId = p.PictureId,
                             Content = ar.Content
                         };
-
             var articles = await query
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))

@@ -10,6 +10,7 @@ namespace Module.Api.Content.GraphQL.InputTypes
             descriptor.Field(x => x.Page).Type<IntType>();
             descriptor.Field(x => x.PageSize).Type<IntType>();
             descriptor.Field(x => x.Search).Type<StringType>();
+            descriptor.Field(x => x.UserIdentityId).Type<StringType>();
         }
     }
 }
