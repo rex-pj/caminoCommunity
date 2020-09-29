@@ -19,6 +19,7 @@ namespace Camino.Service.Business.Articles
     {
         private readonly IRepository<Article> _articleRepository;
         private readonly IRepository<ArticlePicture> _articlePictureRepository;
+        private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IRepository<User> _userRepository;
@@ -26,7 +27,8 @@ namespace Camino.Service.Business.Articles
 
         public ArticleBusiness(IMapper mapper, IRepository<Article> articleRepository,
             IRepository<ArticleCategory> articleCategoryRepository, IRepository<User> userRepository,
-            IRepository<Picture> pictureRepository, IRepository<ArticlePicture> articlePictureRepository)
+            IRepository<Picture> pictureRepository, IRepository<ArticlePicture> articlePictureRepository,
+            IRepository<UserPhoto> userPhotoRepository)
         {
             _mapper = mapper;
             _articleRepository = articleRepository;
@@ -34,6 +36,7 @@ namespace Camino.Service.Business.Articles
             _userRepository = userRepository;
             _pictureRepository = pictureRepository;
             _articlePictureRepository = articlePictureRepository;
+            _userPhotoRepository = userPhotoRepository;
         }
 
         public ArticleProjection Find(long id)
@@ -165,10 +168,15 @@ namespace Camino.Service.Business.Articles
 
             var filteredNumber = articleQuery.Select(x => x.Id).Count();
 
+            var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var query = from ar in articleQuery
                         join pic in _articlePictureRepository.Table
                         on ar.Id equals pic.ArticleId into pics
                         from p in pics.DefaultIfEmpty()
+                        join pho in _userPhotoRepository.Table
+                        on ar.CreatedById equals pho.CreatedById into photos
+                        from photo in photos.DefaultIfEmpty()
+                        where photo != null && photo.TypeId == avatarTypeId
                         select new ArticleProjection
                         {
                             Id = ar.Id,
@@ -179,8 +187,10 @@ namespace Camino.Service.Business.Articles
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
                             ThumbnailId = p.PictureId,
-                            Content = ar.Content
+                            Content = ar.Content,
+                            CreatedByPhotoCode = photo.Code
                         };
+
             var articles = await query
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))

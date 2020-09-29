@@ -24,6 +24,7 @@ namespace Module.Api.Content.GraphQL.ResultTypes
             descriptor.Field(x => x.CreatedBy).Type<StringType>();
             descriptor.Field(x => x.UpdatedBy).Type<StringType>();
             descriptor.Field(x => x.ArticleCategoryName).Type<StringType>();
+            descriptor.Field(x => x.CreatedByPhotoCode).Type<StringType>();
         }
     }
 }

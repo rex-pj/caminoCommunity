@@ -118,6 +118,7 @@ export const GET_USER_ARTICLES = gql`
         updatedDate
         thumbnailId
         createdByIdentityId
+        createdByPhotoCode
       }
     }
   }

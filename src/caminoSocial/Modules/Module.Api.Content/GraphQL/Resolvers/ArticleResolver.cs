@@ -96,7 +96,8 @@ namespace Module.Api.Content.GraphQL.Resolvers
                     Name = x.Name,
                     ThumbnailId = x.ThumbnailId,
                     ThumbnailFileType = x.ThumbnailFileType,
-                    ThumbnailFileName = x.ThumbnailFileName
+                    ThumbnailFileName = x.ThumbnailFileName,
+                    CreatedByPhotoCode = x.CreatedByPhotoCode
                 }).ToList();
 
                 foreach (var article in articles)

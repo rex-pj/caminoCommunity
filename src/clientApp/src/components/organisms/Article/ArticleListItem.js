@@ -32,10 +32,6 @@ const ContentBody = styled.div`
   padding: 0 0 ${(p) => p.theme.size.distance} 0;
 `;
 
-const DetailLink = styled.span`
-  margin-left: 3px;
-`;
-
 const InteractiveItem = styled.li`
   margin-right: ${(p) => p.theme.size.small};
   :last-child {
@@ -65,7 +61,7 @@ export default (props) => {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              {/* <ProfileAction profile={creator} /> */}
+              <ProfileAction profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
@@ -81,18 +77,17 @@ export default (props) => {
           <AnchorLink to={article.url}>{article.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
-      <PostThumbnail>
-        <AnchorLink to={article.url}>
-          <Thumbnail src={article.thumbnailUrl} alt="" />
-        </AnchorLink>
-      </PostThumbnail>
+      {article.thumbnailUrl ? (
+        <PostThumbnail>
+          <AnchorLink to={article.url}>
+            <Thumbnail src={article.thumbnailUrl} alt="" />
+          </AnchorLink>
+        </PostThumbnail>
+      ) : null}
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            {article.content}
-            <DetailLink>
-              <AnchorLink to={article.url}>Detail</AnchorLink>
-            </DetailLink>
+            <p dangerouslySetInnerHTML={{ __html: article.content }}></p>
           </ContentBody>
         </div>
 
