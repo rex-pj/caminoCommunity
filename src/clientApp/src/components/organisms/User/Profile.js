@@ -59,7 +59,14 @@ const ConnectButton = styled(ButtonIconOutlineSecondary)`
 `;
 
 export default withRouter((props) => {
-  const { isEditCoverMode, userId, baseUrl, pages, userInfo } = props;
+  const {
+    isEditCoverMode,
+    userId,
+    baseUrl,
+    pages,
+    userInfo,
+    pageNumber,
+  } = props;
   const { canEdit } = userInfo;
 
   return (
@@ -112,6 +119,7 @@ export default withRouter((props) => {
                             canEdit={canEdit}
                             userUrl={`${baseUrl}/${userId}`}
                             page={route.page}
+                            pageNumber={pageNumber}
                           />
                         )}
                       />

@@ -161,6 +161,7 @@ export default withRouter((props) => {
       }
 
       await props.onArticlePost(articleData).then((response) => {
+        console.log(response);
         var { data } = response;
         var { createArticle } = data;
         if (createArticle && createArticle.id) {
@@ -192,7 +193,7 @@ export default withRouter((props) => {
               value={name.value}
               autoComplete="off"
               onChange={(e) => handleInputChange(e)}
-              placeholder="name"
+              placeholder="Title"
             />
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
@@ -212,6 +213,7 @@ export default withRouter((props) => {
                 onChange={handleSelectChange}
                 loadOptions={loadOptions}
                 isClearable={true}
+                placeholder="Select category"
               />
             )}
           </div>

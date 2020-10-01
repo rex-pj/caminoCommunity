@@ -4,6 +4,11 @@ namespace Module.Api.Content.Models
 {
     public class ArticleFilterModel : BaseFilterModel
     {
+        public ArticleFilterModel() : base()
+        {
+
+        }
+
         public string UserIdentityId { get; set; }
     }
 }

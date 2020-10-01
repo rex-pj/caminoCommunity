@@ -108,6 +108,13 @@ export const ACTIVE = gql`
 export const GET_USER_ARTICLES = gql`
   query($criterias: ArticleFilterModelInput) {
     userArticles(criterias: $criterias) {
+      totalPage
+      totalResult
+      filter {
+        page
+        pageSize
+        search
+      }
       collections {
         id
         content

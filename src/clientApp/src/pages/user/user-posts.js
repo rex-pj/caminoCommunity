@@ -7,8 +7,7 @@ import ArticleListItem from "../../components/organisms/Article/ArticleListItem"
 import { GET_USER_ARTICLES } from "../../utils/GraphQLQueries/queries";
 
 export default withRouter(function (props) {
-  const { location, pageNumber } = props;
-  const { match } = props;
+  const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
 
@@ -47,14 +46,10 @@ export default withRouter(function (props) {
     return article;
   });
 
-  var state = {
-    totalPage: 10,
-    pageQuery: location.search,
-    baseUrl: props.userUrl + "/posts",
-    currentPage: pageNumber ? pageNumber : 1,
-  };
-
-  const { totalPage, baseUrl, currentPage, pageQuery } = state;
+  const pageQuery = location.search;
+  const baseUrl = props.userUrl + "/posts";
+  const { totalPage, filter } = userArticles;
+  const { page } = filter;
 
   return (
     <Fragment>
@@ -67,7 +62,7 @@ export default withRouter(function (props) {
         totalPage={totalPage}
         baseUrl={baseUrl}
         pageQuery={pageQuery}
-        currentPage={currentPage}
+        currentPage={page}
       />
     </Fragment>
   );

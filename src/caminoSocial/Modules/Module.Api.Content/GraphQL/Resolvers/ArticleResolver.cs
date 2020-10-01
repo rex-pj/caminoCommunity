@@ -46,7 +46,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<PageListModel<ArticleModel>> GetUserArticlesAsync(ArticleFilterModel criterias)
+        public async Task<ArticlePageListModel> GetUserArticlesAsync(ArticleFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -55,7 +55,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
 
             if (string.IsNullOrEmpty(criterias.UserIdentityId))
             {
-                return new PageListModel<ArticleModel>(new List<ArticleModel>())
+                return new ArticlePageListModel(new List<ArticleModel>())
                 {
                     Filter = criterias
                 };
@@ -105,7 +105,7 @@ namespace Module.Api.Content.GraphQL.Resolvers
                     article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
                 }
 
-                var articlePage = new PageListModel<ArticleModel>(articles)
+                var articlePage = new ArticlePageListModel(articles)
                 {
                     Filter = criterias,
                     TotalPage = articlePageList.TotalPage,

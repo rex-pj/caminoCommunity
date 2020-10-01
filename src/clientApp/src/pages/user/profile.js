@@ -77,11 +77,16 @@ export default withRouter((props) => {
 
   const fullUserInfo = parseUserInfo(data);
 
+  let currentPage = 0;
+  if (pageNumber) {
+    currentPage = parseInt(pageNumber);
+  }
+
   return (
     <Profile
       isEditCoverMode={isEditCoverMode}
       userId={userId}
-      pageNumber={pageNumber}
+      pageNumber={currentPage}
       baseUrl={_baseUrl}
       onToggleEditCoverMode={onToggleEditCoverMode}
       userCoverUpdated={userCoverUpdated}
