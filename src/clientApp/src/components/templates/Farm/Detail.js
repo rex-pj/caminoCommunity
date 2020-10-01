@@ -7,11 +7,11 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelDefault } from "../../atoms/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Breadcrumb from "../../molecules/Breadcrumb";
+import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconOutline } from "../../molecules/ButtonIcons";
 import ProductItem from "../../organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../atoms/Heading";
-import ThumbnailSlider from "../../molecules/ThumbnailSlider";
+import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${(p) => p.theme.size.exTiny};

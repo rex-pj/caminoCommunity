@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { PanelBody } from "../../../components/atoms/Panels";
 import { VerticalList } from "../../atoms/List";
 import { format } from "date-fns";
-import TextEditable from "../../molecules/Editable/TextEditable";
-import SelectEditable from "../../molecules/Editable/SelectEditable";
-import DateTimeEditable from "../../molecules/Editable/DateTimeEditable";
-import TextAreaEditable from "../../molecules/Editable/TextAreaEditable";
+import TextEditable from "../Editable/TextEditable";
+import SelectEditable from "../Editable/SelectEditable";
+import DateTimeEditable from "../Editable/DateTimeEditable";
+import TextAreaEditable from "../Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
 
 const MainPanel = styled(PanelBody)`

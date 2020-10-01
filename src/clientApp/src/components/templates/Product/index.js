@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import ProductItem from "../../organisms/Product/ProductItem";
-import { Pagination } from "../../molecules/Paging";
-import Breadcrumb from "../../molecules/Breadcrumb";
+import { Pagination } from "../../organisms/Paging";
+import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 
 export default class extends Component {
   render() {
@@ -10,7 +10,7 @@ export default class extends Component {
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.props;
 
     return (

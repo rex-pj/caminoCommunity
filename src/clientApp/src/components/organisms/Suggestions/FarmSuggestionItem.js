@@ -1,5 +1,5 @@
 import React from "react";
-import { SuggestionPanel } from "../../molecules/SuggestionPanels";
+import { SuggestionPanel } from "../SuggestionPanels";
 
 export default (props) => {
   const { className, index } = props;

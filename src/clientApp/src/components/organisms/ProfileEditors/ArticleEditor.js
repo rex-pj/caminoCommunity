@@ -1,12 +1,13 @@
 import React, { Fragment, useState, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
-import CommonEditor from "../../molecules/CommonEditor";
+import CommonEditor from "../CommonEditor";
 import { Textbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
-import ImageUpload from "../../molecules/UploadControl/ImageUpload";
+import ImageUpload from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
 import ArticleCreationModel from "../../../models/ArticleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
@@ -52,6 +53,17 @@ const ThumbnailUpload = styled(ImageUpload)`
       margin: 10px auto 0 auto;
     }
   }
+`;
+
+const ImageEditBox = styled.div`
+  position: relative;
+`;
+
+const RemoveImageButton = styled.span`
+  position: absolute;
+  top: -${(p) => p.theme.size.exSmall};
+  right: -${(p) => p.theme.size.exTiny};
+  cursor: pointer;
 `;
 
 const Footer = styled.div`
@@ -112,10 +124,15 @@ export default withRouter((props) => {
   const handleSelectChange = (e) => {
     let data = formData || {};
     const name = "articleCategoryId";
-    const { value } = e;
 
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = parseFloat(value);
+    if (!e) {
+      data[name].isValid = false;
+      data[name].value = 0;
+    } else {
+      const { value } = e;
+      data[name].isValid = checkValidity(data, value, name);
+      data[name].value = parseFloat(value);
+    }
 
     setFormData({
       ...data,
@@ -182,6 +199,19 @@ export default withRouter((props) => {
     });
   };
 
+  const removeImage = () => {
+    let data = formData || {};
+    data["thumbnail"].isValid = false;
+    data["thumbnail"].value = "";
+
+    data["thumbnailFileType"].value = "";
+    data["thumbnailFileName"].value = "";
+
+    setFormData({
+      ...data,
+    });
+  };
+
   const { name, articleCategoryId, thumbnail } = formData;
   return (
     <Fragment>
@@ -224,7 +254,12 @@ export default withRouter((props) => {
         {thumbnail.value ? (
           <FormRow className="row">
             <div className="col-3">
-              <Thumbnail src={thumbnail.value}></Thumbnail>
+              <ImageEditBox>
+                <Thumbnail src={thumbnail.value}></Thumbnail>
+                <RemoveImageButton onClick={removeImage}>
+                  <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                </RemoveImageButton>
+              </ImageEditBox>
             </div>
           </FormRow>
         ) : null}

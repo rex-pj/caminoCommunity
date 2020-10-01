@@ -1,25 +1,25 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
-import { AnchorLink } from "../atoms/Links";
+import { AnchorLink } from "../../atoms/Links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.ol`
   padding: 0;
   margin-bottom: 1rem;
-  border: 1px solid ${p => p.theme.color.light};
-  border-radius: ${p => p.theme.borderRadius.normal};
+  border: 1px solid ${(p) => p.theme.color.light};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   line-height: 1;
 `;
 
 const ListItem = styled.li`
   display: inline-block;
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.primaryLight};
-  border-right: 1px solid ${p => p.theme.color.light};
-  border-top-right-radius: ${p => p.theme.borderRadius.large};
-  border-bottom-right-radius: ${p => p.theme.borderRadius.large};
-  padding: ${p => p.theme.size.tiny};
-  min-width: ${p => p.theme.size.normal};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.primaryLight};
+  border-right: 1px solid ${(p) => p.theme.color.light};
+  border-top-right-radius: ${(p) => p.theme.borderRadius.large};
+  border-bottom-right-radius: ${(p) => p.theme.borderRadius.large};
+  padding: ${(p) => p.theme.size.tiny};
+  min-width: ${(p) => p.theme.size.normal};
   position: relative;
 
   white-space: nowrap;
@@ -28,7 +28,7 @@ const ListItem = styled.li`
   max-width: 60%;
 
   &.actived {
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
     border-right: 0;
   }
 
@@ -45,11 +45,11 @@ const ListItem = styled.li`
   svg,
   path {
     color: inherit;
-    font-size: ${p => p.theme.rgbaColor.small};
+    font-size: ${(p) => p.theme.rgbaColor.small};
   }
 `;
 
-export default props => {
+export default (props) => {
   const { list, className } = props;
   return (
     <Root className={className}>

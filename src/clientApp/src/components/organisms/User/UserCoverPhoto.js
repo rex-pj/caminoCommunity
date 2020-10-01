@@ -4,7 +4,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../../molecules/UploadControl/ImageUpload";
+import ImageUpload from "../UploadControl/ImageUpload";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
 import NoImage from "../../atoms/NoImages/no-image";

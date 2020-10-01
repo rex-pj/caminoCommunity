@@ -5,7 +5,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
+import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import signinModel from "../../../models/signinModel";
 import { checkValidity } from "../../../utils/Validity";

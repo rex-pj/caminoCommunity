@@ -1,6 +1,6 @@
 import React from "react";
 import { Component, Fragment } from "react";
-import { Pagination } from "../../molecules/Paging";
+import { Pagination } from "../../organisms/Paging";
 import FeedItem from "../../organisms/Feeds/FeedItem";
 
 export default class extends Component {

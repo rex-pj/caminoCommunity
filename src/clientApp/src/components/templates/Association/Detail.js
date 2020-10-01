@@ -2,7 +2,7 @@ import React from "react";
 import { AnchorLink } from "../../atoms/Links";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
-import Breadcrumb from "../../molecules/Breadcrumb";
+import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 import { PanelDefault } from "../../atoms/Panels";

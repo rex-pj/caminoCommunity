@@ -8,7 +8,7 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelDefault } from "../../atoms/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ThumbnailSlider from "../../molecules/ThumbnailSlider";
+import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import { TypographyPrimary } from "../../atoms/Typographies";
 import ProductItem from "../../organisms/Product/ProductItem";

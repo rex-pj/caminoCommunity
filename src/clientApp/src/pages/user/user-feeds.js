@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { UrlConstant } from "../../utils/Constants";
 import { ContentType } from "../../utils/Enums";
-import { Pagination } from "../../components/molecules/Paging";
+import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/client";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";

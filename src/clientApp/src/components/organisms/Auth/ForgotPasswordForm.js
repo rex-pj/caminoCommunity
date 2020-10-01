@@ -4,7 +4,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import ForgotPasswordNavigation from "../../../components/organisms/NavigationMenu/ForgotPasswordNavigation";
+import ForgotPasswordNavigation from "../../../components/organisms/Navigation/ForgotPasswordNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import forgotPasswordModel from "../../../models/forgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";

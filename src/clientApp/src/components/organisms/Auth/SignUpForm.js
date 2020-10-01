@@ -5,9 +5,9 @@ import { SelectionSecondary } from "../../../components/atoms/Selections";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import AuthNavigation from "../../../components/organisms/NavigationMenu/AuthNavigation";
+import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import DateSelector from "../../../components/molecules/DateSelector";
+import DateSelector from "../../../components/organisms/DateSelector";
 import { checkValidity } from "../../../utils/Validity";
 import signupModel from "../../../models/signupModel";
 

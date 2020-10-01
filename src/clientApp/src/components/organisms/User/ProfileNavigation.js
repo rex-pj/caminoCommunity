@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { HorizontalList } from "../../atoms/List";
 import DropdownButton from "../../molecules/DropdownButton";
-import NavLinkActived from "../../molecules/Links/ProfileNavLink";
+import ProfileNavLink from "../../molecules/Links/ProfileNavLink";
 
 const Root = styled.div`
   position: relative;
@@ -49,61 +49,61 @@ export default (class extends Component {
           <div className="col-auto mr-auto">
             <HorizontalList className={className}>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   {...this.props}
                   userId={userId}
                   baseUrl={baseUrl}
                 >
                   Feed
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   pageNav="posts"
                   {...this.props}
                   userId={userId}
                   baseUrl={baseUrl}
                 >
                   Articles
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   pageNav="products"
                   {...this.props}
                   userId={userId}
                 >
                   Products
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   pageNav="farms"
                   {...this.props}
                   userId={userId}
                   baseUrl={baseUrl}
                 >
                   Farms
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   pageNav="followings"
                   {...this.props}
                   userId={userId}
                 >
                   Following
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
               <ListItem>
-                <NavLinkActived
+                <ProfileNavLink
                   pageNav="about"
                   {...this.props}
                   userId={userId}
                   baseUrl={baseUrl}
                 >
                   About Me
-                </NavLinkActived>
+                </ProfileNavLink>
               </ListItem>
             </HorizontalList>
           </div>

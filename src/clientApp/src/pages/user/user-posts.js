@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
-import { Pagination } from "../../components/molecules/Paging";
+import { Pagination } from "../../components/organisms/Paging";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import { GET_USER_ARTICLES } from "../../utils/GraphQLQueries/queries";
 
@@ -20,8 +20,8 @@ export default withRouter(function (props) {
     },
   });
 
-  if (loading) {
-    return <div></div>;
+  if (loading || !data) {
+    return <Fragment></Fragment>;
   }
 
   const { userArticles } = data;

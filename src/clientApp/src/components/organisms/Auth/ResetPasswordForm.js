@@ -4,7 +4,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import ResetPasswordNavigation from "../../../components/organisms/NavigationMenu/ResetPasswordNavigation";
+import ResetPasswordNavigation from "../../../components/organisms/Navigation/ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
 import resetPasswordModel from "../../../models/resetPasswordModel";

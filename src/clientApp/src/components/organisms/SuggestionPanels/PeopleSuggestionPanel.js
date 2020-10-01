@@ -2,14 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonOutlineNormal } from "../../atoms/Buttons/OutlineButtons";
-import { ThumbnailCircle } from "../Thumbnails";
+import { ThumbnailCircle } from "../../molecules/Thumbnails";
 import { TertiaryTitle } from "../../atoms/Titles";
 import { TypographySecondary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
-  padding: ${p => p.theme.size.distance};
-  border-top: 1px solid ${p => p.theme.color.lighter};
+  padding: ${(p) => p.theme.size.distance};
+  border-top: 1px solid ${(p) => p.theme.color.lighter};
 
   &.first-item {
     border-top: 0;
@@ -18,10 +18,10 @@ const ListItem = styled.li`
 
 const ActionButton = styled(ButtonOutlineNormal)`
   font-weight: 500;
-  font-size: ${p => p.theme.fontSize.small};
-  top: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
-  padding: ${p => p.theme.size.exTiny};
+  font-size: ${(p) => p.theme.fontSize.small};
+  top: ${(p) => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
+  padding: ${(p) => p.theme.size.exTiny};
   z-index: 1;
 
   svg > path {
@@ -31,11 +31,11 @@ const ActionButton = styled(ButtonOutlineNormal)`
 
 const Description = styled(TypographySecondary)`
   margin-bottom: 0;
-  padding-top: ${p => p.theme.size.exTiny};
+  padding-top: ${(p) => p.theme.size.exTiny};
 `;
 
 const Avatar = styled(ThumbnailCircle)`
-  border: 2px solid ${p => p.theme.color.light};
+  border: 2px solid ${(p) => p.theme.color.light};
   width: calc(100% + 4px);
   padding-top: 100%;
   position: relative;
@@ -49,7 +49,7 @@ const Avatar = styled(ThumbnailCircle)`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { data, className, index } = props;
   return (
     <ListItem

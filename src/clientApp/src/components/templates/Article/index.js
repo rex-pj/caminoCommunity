@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import ArticleListItem from "../../organisms/Article/ArticleListItem";
-import { Pagination } from "../../molecules/Paging";
-import Breadcrumb from "../../molecules/Breadcrumb";
+import { Pagination } from "../../organisms/Paging";
+import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 
 export default class Article extends Component {
   render() {
@@ -10,14 +10,14 @@ export default class Article extends Component {
       breadcrumbs,
       totalPage,
       baseUrl,
-      currentPage
+      currentPage,
     } = this.props;
 
     return (
       <Fragment>
         <Breadcrumb list={breadcrumbs} />
         {articles
-          ? articles.map(item => (
+          ? articles.map((item) => (
               <ArticleListItem key={item.id} article={item} />
             ))
           : null}

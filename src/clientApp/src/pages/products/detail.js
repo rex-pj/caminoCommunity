@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
-import Breadcrumb from "../../components/molecules/Breadcrumb";
+import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 
 export default class extends Component {
   constructor() {

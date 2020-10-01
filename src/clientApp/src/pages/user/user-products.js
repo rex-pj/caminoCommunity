@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
-import { Pagination } from "../../components/molecules/Paging";
+import { Pagination } from "../../components/organisms/Paging";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 
 export default withRouter(
   class extends Component {
-    constructor() {
-      super();
+    constructor(props) {
+      super(props);
 
       let products = [];
       for (let i = 0; i < 9; i++) {

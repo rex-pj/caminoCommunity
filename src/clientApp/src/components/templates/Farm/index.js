@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import FarmItem from "../../organisms/Farm/FarmItem";
-import { Pagination } from "../../molecules/Paging";
-import Breadcrumb from "../../molecules/Breadcrumb";
+import { Pagination } from "../../organisms/Paging";
+import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 
 export default class extends Component {
   render() {

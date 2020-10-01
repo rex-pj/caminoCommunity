@@ -18,7 +18,7 @@ import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
-import AlertPopover from "../Popovers/AlertPopover";
+import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { SessionContext } from "../../../store/context/SessionContext";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
 
