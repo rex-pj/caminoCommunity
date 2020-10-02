@@ -266,6 +266,38 @@
     {
       "Name": "CanDeleteFarmType",
       "Description": "Can delete farm type"
+    },
+    {
+      "Name": "CanCreateProduct",
+      "Description": "Can create product"
+    },
+    {
+      "Name": "CanReadProduct",
+      "Description": "Can read product"
+    },
+    {
+      "Name": "CanUpdateProduct",
+      "Description": "Can update product"
+    },
+    {
+      "Name": "CanDeleteProduct",
+      "Description": "Can delete product"
+    },
+    {
+      "Name": "CanCreateProductCategory",
+      "Description": "Can create product category"
+    },
+    {
+      "Name": "CanReadProductCategory",
+      "Description": "Can read product category"
+    },
+    {
+      "Name": "CanUpdateProductCategory",
+      "Description": "Can update product category"
+    },
+    {
+      "Name": "CanDeleteProductCategory",
+      "Description": "Can delete product category"
     }
   ],
   "Countries": [

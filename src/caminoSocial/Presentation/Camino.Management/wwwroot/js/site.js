@@ -14,16 +14,19 @@
         var method = select2.attr("method") ? select2.attr("method") : "get";
         var url = select2.data("url");
         var selected = selection.value;
-        var data = {
-            currentId: selected
-        };
         select2.select2({
             allowClear: true,
             placeholder: 'select..',
             ajax: {
                 url: url,
                 type: method,
-                data: data,
+                data: function (params) {
+                    var query = {
+                        q: params.term,
+                        currentId: selected
+                    }
+                    return query;
+                },
                 dataType: 'json',
                 processResults: function (response) {
                     if (response === null || response === undefined) {

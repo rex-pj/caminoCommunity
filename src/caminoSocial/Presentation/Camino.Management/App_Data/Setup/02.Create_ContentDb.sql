@@ -488,3 +488,27 @@ GO
 ALTER TABLE dbo.[FarmPicture]
 ADD CONSTRAINT PK_FarmPicture
 PRIMARY KEY (Id);
+
+--PRODUCT PICTURE--
+GO
+CREATE TABLE dbo.[ProductPicture](
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	[ProductId] BIGINT NOT NULL,
+    [PictureId] BIGINT NOT NULL,
+	[PictureType] INT NULL
+)
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT FK_ProductPicture_Product
+FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT FK_ProductPicture_Picture
+FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT PK_ProductPicture
+PRIMARY KEY (Id);

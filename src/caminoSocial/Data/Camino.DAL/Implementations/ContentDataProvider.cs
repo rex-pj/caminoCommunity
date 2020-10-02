@@ -14,15 +14,18 @@ namespace Camino.DAL.Implementations
 
         protected override void OnMappingSchemaCreating()
         {
-            FluentMapBuilder.ApplyMappingBuilder<ArticleCategoryMap>()
-                .ApplyMappingBuilder<UserPhotoMap>()
+            FluentMapBuilder.ApplyMappingBuilder<UserPhotoMap>()
                 .ApplyMappingBuilder<UserPhotoTypeMap>()
                 .ApplyMappingBuilder<ArticleMap>()
+                .ApplyMappingBuilder<ArticleCategoryMap>()
                 .ApplyMappingBuilder<PictureMap>()
                 .ApplyMappingBuilder<ArticlePictureMap>()
                 .ApplyMappingBuilder<FarmMap>()
                 .ApplyMappingBuilder<FarmTypeMap>()
-                .ApplyMappingBuilder<FarmPictureMap>();
+                .ApplyMappingBuilder<FarmPictureMap>()
+                .ApplyMappingBuilder<ProductMap>()
+                .ApplyMappingBuilder<ProductCategoryMap>()
+                .ApplyMappingBuilder<ProductPictureMap>();
         }
     }
 }

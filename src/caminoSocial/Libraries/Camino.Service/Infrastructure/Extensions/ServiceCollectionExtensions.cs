@@ -17,6 +17,8 @@ using Camino.Service.Business.Identities;
 using Camino.Service.Business.Identities.Contracts;
 using Camino.Service.Business.Media;
 using Camino.Service.Business.Media.Contracts;
+using Camino.Service.Business.Products;
+using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Business.Setup;
 using Camino.Service.Business.Setup.Contracts;
 using Camino.Service.Business.Users;
@@ -62,6 +64,9 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IPictureBusiness, PictureBusiness>()
                 .AddTransient<IFarmBusiness, FarmBusiness>()
                 .AddTransient<IFarmTypeBusiness, FarmTypeBusiness>()
+                .AddTransient<IProductBusiness, ProductBusiness>()
+                .AddTransient<IProductCategoryBusiness, ProductCategoryBusiness>()
+                .AddTransient<IProductPictureBusiness, ProductPictureBusiness>()
                 .AddTransient<ValidationStrategyContext>();
         }
 
@@ -95,7 +100,9 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IRepository<ArticlePicture>, ContentRepository<ArticlePicture>>()
                 .AddTransient<IRepository<Farm>, ContentRepository<Farm>>()
                 .AddTransient<IRepository<FarmType>, ContentRepository<FarmType>>()
-                .AddTransient<IRepository<FarmPicture>, ContentRepository<FarmPicture>>();
+                .AddTransient<IRepository<FarmPicture>, ContentRepository<FarmPicture>>()
+                .AddTransient<IRepository<ProductCategory>, ContentRepository<ProductCategory>>()
+                .AddTransient<IRepository<ProductPicture>, ContentRepository<ProductPicture>>();
         }
     }
 }

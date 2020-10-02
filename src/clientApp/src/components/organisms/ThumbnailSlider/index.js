@@ -98,8 +98,8 @@ const NextButton = styled(NavigateButton)`
 `;
 
 class ThumbnailSlider extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     const images = this.props.images;
     let currentImage = null,

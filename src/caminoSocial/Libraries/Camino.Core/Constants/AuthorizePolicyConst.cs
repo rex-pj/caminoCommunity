@@ -56,5 +56,13 @@
         public const string CanReadFarmType = "CanReadFarmType";
         public const string CanUpdateFarmType = "CanUpdateFarmType";
         public const string CanDeleteFarmType = "CanDeleteFarmType";
+        public const string CanCreateProductCategory = "CanCreateProductCategory";
+        public const string CanReadProductCategory = "CanReadProductCategory";
+        public const string CanUpdateProductCategory = "CanUpdateProductCategory";
+        public const string CanDeleteProductCategory = "CanDeleteProductCategory";
+        public const string CanCreateProduct = "CanCreateProduct";
+        public const string CanReadProduct = "CanReadProduct";
+        public const string CanUpdateProduct = "CanUpdateProduct";
+        public const string CanDeleteProduct = "CanDeleteProduct";
     }
 }

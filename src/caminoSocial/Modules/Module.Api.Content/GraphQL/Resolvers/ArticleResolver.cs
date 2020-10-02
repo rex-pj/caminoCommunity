@@ -61,16 +61,6 @@ namespace Module.Api.Content.GraphQL.Resolvers
                 };
             }
 
-            if (criterias.Page == 0)
-            {
-                criterias.Page = 1;
-            }
-
-            if (criterias.PageSize == 0)
-            {
-                criterias.PageSize = 10;
-            }
-
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
             var filterRequest = new ArticleFilter()
             {

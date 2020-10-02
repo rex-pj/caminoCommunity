@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { Thumbnail } from "../../molecules/Thumbnails";
+import Overlay from "../../atoms/Overlay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -10,6 +11,7 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -39,8 +41,22 @@ const InteractiveItem = styled.li`
   }
 `;
 
-const PostThumbnail = styled.div`
+const CollapsedThumbnail = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
+  overflow-y: hidden;
+  max-height: 300px;
+  position: relative;
+`;
+
+const ExpandedThumbnail = styled.div`
+  margin-top: ${(p) => p.theme.size.distance};
+`;
+
+const ThumbnailOverlay = styled(Overlay)`
+  height: 80px;
+  top: auto;
+  bottom: 0;
+  cursor: pointer;
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -50,9 +66,31 @@ const PanelHeader = styled(PanelHeading)`
 export default (props) => {
   const { article } = props;
   const { creator } = article;
+  const [isShowFullImage, setShowFullImage] = useState(false);
 
   if (creator) {
-    creator.info = `Created at ${article.createdDate}`;
+    var datePeriod = convertDateTimeToPeriod(article.createdDate);
+    creator.info = `${datePeriod}`;
+  }
+
+  function showFullImage() {
+    setShowFullImage(!isShowFullImage);
+  }
+
+  let thumbnailBox = null;
+  if (!isShowFullImage && article.thumbnailUrl) {
+    thumbnailBox = (
+      <CollapsedThumbnail>
+        <Thumbnail src={article.thumbnailUrl} alt="" />
+        <ThumbnailOverlay onClick={showFullImage}></ThumbnailOverlay>
+      </CollapsedThumbnail>
+    );
+  } else if (isShowFullImage) {
+    thumbnailBox = (
+      <ExpandedThumbnail>
+        <Thumbnail src={article.thumbnailUrl} alt="" />
+      </ExpandedThumbnail>
+    );
   }
 
   return (
@@ -77,13 +115,7 @@ export default (props) => {
           <AnchorLink to={article.url}>{article.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
-      {article.thumbnailUrl ? (
-        <PostThumbnail>
-          <AnchorLink to={article.url}>
-            <Thumbnail src={article.thumbnailUrl} alt="" />
-          </AnchorLink>
-        </PostThumbnail>
-      ) : null}
+      {article.thumbnailUrl ? thumbnailBox : null}
       <PanelBody>
         <div className="panel-content">
           <ContentBody>

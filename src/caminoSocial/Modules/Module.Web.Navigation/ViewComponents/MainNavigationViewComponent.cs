@@ -119,7 +119,7 @@ namespace Module.Web.Navigation.ViewComponents
                                     new NavigationModel()
                                     {
                                         Name = "Products",
-                                        Code = "products",
+                                        Code = "product",
                                         Url = "/Product"
                                     },
                                     new NavigationModel()
@@ -127,6 +127,12 @@ namespace Module.Web.Navigation.ViewComponents
                                         Name = "Product Categories",
                                         Code = "productCategory",
                                         Url = "/ProductCategory"
+                                    },
+                                    new NavigationModel()
+                                    {
+                                        Name = "Product Pictures",
+                                        Code = "productPicture",
+                                        Url = "/ProductPicture"
                                     }
                                 }
                             }

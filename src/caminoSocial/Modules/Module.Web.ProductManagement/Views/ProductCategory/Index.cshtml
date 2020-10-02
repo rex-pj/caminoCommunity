@@ -1,8 +1,39 @@
-﻿
+﻿@model PageListModel<ProductCategoryModel>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Product categories management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
 
+@section Scripts {
+    <script src="~/productmanagement/js/productcategory.js" asp-append-version="true"></script>
+}
+
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
+                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+                <i class="fa fa-search"></i>
+            </button>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanCreate)
+            {
+                <a asp-action="Create" asp-controller="ProductCategory" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-plus"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<partial name="_SearchForm" model="Model.Filter" />
+
+<div class="data-table table-responsive">
+    <partial name="_ProductCategoryTable" />
+    <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>

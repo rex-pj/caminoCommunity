@@ -137,7 +137,7 @@ export default withRouter((props) => {
   const userInfo = parseUserInfo(data);
   const { canEdit } = userInfo;
 
-  let currentPage = 0;
+  let currentPage;
   if (pageNumber) {
     currentPage = parseInt(pageNumber);
   }
