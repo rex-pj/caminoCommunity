@@ -6,6 +6,7 @@ import { ContentType } from "../../utils/Enums";
 import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation } from "@apollo/client";
+import styled from "styled-components";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import {
   VALIDATE_IMAGE_URL,
@@ -13,7 +14,26 @@ import {
   CREATE_ARTICLE,
 } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
 import { useStore } from "../../store/hook-store";
+import Tabs from "../../components/organisms/Tabs/Tabs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const EditorTabs = styled(Tabs)`
+  margin-bottom: ${(p) => p.theme.size.exTiny};
+  ul.tabs-bar {
+    border-bottom: 1px solid ${(p) => p.theme.rgbaColor.cyanLight};
+  }
+  ul.tabs-bar li button {
+    border-radius: ${(p) => p.theme.borderRadius.large};
+    color: ${(p) => p.theme.color.light};
+    background-color: transparent;
+  }
+  ul.tabs-bar li.actived button {
+    color: ${(p) => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.light};
+  }
+`;
 
 export default withRouter((props) => {
   const feedItems = [];
@@ -177,9 +197,39 @@ export default withRouter((props) => {
     });
   };
 
+  const onTabClicked = (e) => {};
+
   const { totalPage, currentPage, baseUrl, pageQuery } = pageOptions;
   return (
     <Fragment>
+      <EditorTabs
+        onTabClicked={onTabClicked}
+        tabs={[
+          {
+            title: (
+              <span>
+                <FontAwesomeIcon
+                  icon="newspaper"
+                  className="mr-1"
+                ></FontAwesomeIcon>
+                Gửi Bài Viết
+              </span>
+            ),
+          },
+          {
+            title: (
+              <span>
+                <FontAwesomeIcon
+                  icon="apple-alt"
+                  className="mr-1"
+                ></FontAwesomeIcon>
+                Đăng Sản Phẩm
+              </span>
+            ),
+          },
+        ]}
+      />
+
       <ArticleEditor
         height={230}
         convertImageCallback={convertImagefile}
@@ -188,6 +238,16 @@ export default withRouter((props) => {
         onArticlePost={onArticlePost}
         showValidationError={showValidationError}
       />
+
+      <ProductEditor
+        height={230}
+        convertImageCallback={convertImagefile}
+        onImageValidate={onImageValidate}
+        filterCategories={searchCategories}
+        onArticlePost={onArticlePost}
+        showValidationError={showValidationError}
+      />
+
       {feeds
         ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
         : null}

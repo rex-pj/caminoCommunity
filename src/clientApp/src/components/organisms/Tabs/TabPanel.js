@@ -1,6 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 
-export default props => {
+export default (props) => {
   const { tabComponent: TabComponent } = props;
+  if (!TabComponent) {
+    return <Fragment />;
+  }
   return <TabComponent {...props} />;
 };

@@ -148,20 +148,45 @@ export default (props) => {
     };
   });
 
-  const items = styles.map((item) => {
+  const items = styles.map((item, index) => {
     if (item.type === "divide") {
-      return <Divide />;
+      return <Divide key={item.type + index} />;
     } else if (item.type === "image") {
-      return <EditorButton icon="image" onToggle={onImageModalOpen} />;
+      return (
+        <EditorButton
+          icon="image"
+          onToggle={onImageModalOpen}
+          key={item.type + index}
+        />
+      );
     } else if (item.type === "link") {
-      return <EditorButton icon="link" onToggle={onLinkModalOpen} />;
+      return (
+        <EditorButton
+          icon="link"
+          onToggle={onLinkModalOpen}
+          key={item.type + index}
+        />
+      );
     } else if (item.type === "unlink") {
-      return <EditorButton icon="unlink" onToggle={onRemoveLink} />;
+      return (
+        <EditorButton
+          icon="unlink"
+          onToggle={onRemoveLink}
+          key={item.type + index}
+        />
+      );
     } else if (item.type === "eraser") {
-      return <EditorButton icon="eraser" onToggle={clearFormat} />;
+      return (
+        <EditorButton
+          icon="eraser"
+          onToggle={clearFormat}
+          key={item.type + index}
+        />
+      );
     } else if (item.type === "headingStyle") {
       return (
         <SelectHeading
+          key={item.type + index}
           options={HEADING_TYPES}
           actived={blockType}
           onToggle={toggleBlockType}
@@ -171,7 +196,7 @@ export default (props) => {
     } else if (item.type && item.type === "inline") {
       return (
         <EditorButton
-          key={item.style}
+          key={item.type + index}
           actived={item.style === blockType}
           label={item.label}
           icon={item.icon}
@@ -183,7 +208,7 @@ export default (props) => {
 
     return (
       <EditorButton
-        key={item.style}
+        key={item.type + index}
         actived={currentStyle.has(item.style)}
         label={item.label}
         icon={item.icon}
