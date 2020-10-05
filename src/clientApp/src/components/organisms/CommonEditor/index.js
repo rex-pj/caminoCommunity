@@ -22,13 +22,7 @@ import {
   CompositeDecorator,
   ContentState,
 } from "draft-js";
-import {
-  styleMap,
-  STYLES,
-  HEADING_TYPES,
-  findLinkEntities,
-  findImageEntities,
-} from "./Utils";
+import { styleMap, STYLES, findLinkEntities, findImageEntities } from "./Utils";
 
 const Root = styled.div`
   position: relative;
@@ -251,7 +245,6 @@ export default forwardRef((props, ref) => {
           toggleBlockType={toggleBlockType}
           toggleInlineStyle={toggleInlineStyle}
           styles={STYLES}
-          headingTypes={HEADING_TYPES}
           focusEditor={focus}
           clearFormat={clearFormat}
           onRemoveLink={removeLink}

@@ -19,6 +19,12 @@ export const STYLES = [
   { icon: "quote-left", style: "blockquote", type: "block" },
   { icon: "list-ul", style: "unordered-list-item", type: "block" },
   { icon: "list-ol", style: "ordered-list-item", type: "block" },
+  { type: "divide" },
+  { icon: "image", type: "image" },
+  { icon: "link", type: "link" },
+  { icon: "unlinked", type: "unlink" },
+  { type: "headingStyle" },
+  { icon: "eraser", type: "eraser" },
 ];
 
 export const HEADING_TYPES = [
