@@ -223,7 +223,7 @@ export default withRouter((props) => {
               value={name.value}
               autoComplete="off"
               onChange={(e) => handleInputChange(e)}
-              placeholder="Title"
+              placeholder="Post title"
             />
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
@@ -243,7 +243,7 @@ export default withRouter((props) => {
                 onChange={handleSelectChange}
                 loadOptions={loadOptions}
                 isClearable={true}
-                placeholder="Select category"
+                placeholder="Post category"
               />
             )}
           </div>
