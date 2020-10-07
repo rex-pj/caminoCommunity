@@ -1,5 +1,5 @@
-﻿using Module.Api.Content.Models;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Media.Models;
+using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using Camino.Data.Enums;
 using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
@@ -9,7 +9,7 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
 
-namespace Module.Api.Content.GraphQL.Resolvers
+namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class UserPhotoResolver : BaseResolver, IUserPhotoResolver
     {

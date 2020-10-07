@@ -1,7 +1,7 @@
 ﻿using Camino.Service.Projections.Request;
 using HotChocolate.Types;
 
-namespace Module.Api.Content.GraphQL.InputTypes
+namespace Module.Api.Media.GraphQL.InputTypes
 {
     public class UserPhotoUpdateInputType : InputObjectType<UserPhotoUpdateRequest>
     {

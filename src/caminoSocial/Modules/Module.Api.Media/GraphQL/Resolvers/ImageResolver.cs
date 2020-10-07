@@ -1,12 +1,12 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
-using Module.Api.Content.Models;
+using Module.Api.Media.GraphQL.Resolvers.Contracts;
+using Module.Api.Media.Models;
 using Camino.Service.Strategies.Validation;
 using Camino.Framework.Models;
 using Camino.Core.Models;
 using Camino.IdentityManager.Contracts.Core;
 
-namespace Module.Api.Content.GraphQL.Resolvers
+namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class ImageResolver : BaseResolver, IImageResolver
     {

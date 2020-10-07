@@ -1,9 +1,9 @@
-﻿using Module.Api.Content.Models;
+﻿using Module.Api.Media.Models;
 using Camino.Framework.Models;
 using System.Threading.Tasks;
 using Camino.Service.Projections.Request;
 
-namespace Module.Api.Content.GraphQL.Resolvers.Contracts
+namespace Module.Api.Media.GraphQL.Resolvers.Contracts
 {
     public interface IUserPhotoResolver
     {

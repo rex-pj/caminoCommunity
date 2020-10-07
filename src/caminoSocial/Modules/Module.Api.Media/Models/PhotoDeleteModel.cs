@@ -1,4 +1,4 @@
-﻿namespace Module.Api.Content.Models
+﻿namespace Module.Api.Media.Models
 {
     public class PhotoDeleteModel
     {

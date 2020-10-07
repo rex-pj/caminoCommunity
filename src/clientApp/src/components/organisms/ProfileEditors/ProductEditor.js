@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import ArticleCreationModel from "../../../models/ArticleCreationModel";
+import ProductCreationModel from "../../../models/ProductCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 
 const FormRow = styled.div`
@@ -17,7 +17,7 @@ const FormRow = styled.div`
 
   ${Textbox} {
     max-width: 100%;
-    width: 500px;
+    width: 100%;
   }
 
   ${AsyncSelect} {
@@ -79,7 +79,7 @@ export default withRouter((props) => {
     height,
     filterCategories,
   } = props;
-  const initialFormData = ArticleCreationModel;
+  const initialFormData = ProductCreationModel;
   const [formData, setFormData] = useState(initialFormData);
   const editorRef = useRef();
 
@@ -95,14 +95,14 @@ export default withRouter((props) => {
     });
   };
 
-  const onContentChanged = (editorState) => {
+  const onDescriptionChanged = (editorState) => {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState);
 
     let data = formData || {};
 
-    data["content"].isValid = checkValidity(data, html, "content");
-    data["content"].value = html;
+    data["description"].isValid = checkValidity(data, html, "description");
+    data["description"].value = html;
 
     setFormData({
       ...data,
@@ -123,15 +123,17 @@ export default withRouter((props) => {
 
   const handleSelectChange = (e) => {
     let data = formData || {};
-    const name = "articleCategoryId";
-
+    const name = "productCategoryIds";
     if (!e) {
+      data[name].value = [];
+
       data[name].isValid = false;
-      data[name].value = 0;
     } else {
-      const { value } = e;
-      data[name].isValid = checkValidity(data, value, name);
-      data[name].value = parseFloat(value);
+      data[name].value = e.map((item) => {
+        return { id: parseInt(item.value) };
+      });
+
+      data[name].isValid = data[name].value && data[name].value.length > 0;
     }
 
     setFormData({
@@ -144,18 +146,18 @@ export default withRouter((props) => {
     const { preview, file } = e;
     const { name, type } = file;
 
-    data["thumbnail"].isValid = checkValidity(data, preview, "thumbnail");
-    data["thumbnail"].value = preview;
-
-    data["thumbnailFileType"].value = type;
-    data["thumbnailFileName"].value = name;
+    data.thumbnails.value.push({
+      base64Data: preview,
+      fileName: name,
+      contentType: type,
+    });
 
     setFormData({
       ...data,
     });
   };
 
-  const onArticlePost = async (e) => {
+  const onProductPost = async (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -172,16 +174,16 @@ export default withRouter((props) => {
     }
 
     if (!!isFormValid) {
-      const articleData = {};
+      const productData = {};
       for (const formIdentifier in formData) {
-        articleData[formIdentifier] = formData[formIdentifier].value;
+        productData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      await props.onArticlePost(articleData).then((response) => {
+      await props.onProductPost(productData).then((response) => {
         console.log(response);
         var { data } = response;
-        var { createArticle } = data;
-        if (createArticle && createArticle.id) {
+        var { createProduct } = data;
+        if (createProduct && createProduct.id) {
           clearFormData();
         }
       });
@@ -199,25 +201,23 @@ export default withRouter((props) => {
     });
   };
 
-  const removeImage = () => {
+  const removeImage = (e) => {
     let data = formData || {};
-    data["thumbnail"].isValid = false;
-    data["thumbnail"].value = "";
 
-    data["thumbnailFileType"].value = "";
-    data["thumbnailFileName"].value = "";
+    var index = data.thumbnails.value.indexOf(e);
+    data.thumbnails.value.splice(index, 1);
 
     setFormData({
       ...data,
     });
   };
 
-  const { name, articleCategoryId, thumbnail } = formData;
+  const { name, productCategoryIds, thumbnails } = formData;
   return (
     <Fragment>
-      <form onSubmit={(e) => onArticlePost(e)} method="POST">
+      <form onSubmit={(e) => onProductPost(e)} method="POST">
         <FormRow className="row">
-          <div className="col-12 col-lg-6 pr-lg-1">
+          <div className="col-12 col-lg-12">
             <Textbox
               name="name"
               value={name.value}
@@ -226,11 +226,14 @@ export default withRouter((props) => {
               placeholder="Product title"
             />
           </div>
-          <div className="col-10 col-lg-4 px-lg-1 pr-1">
-            {articleCategoryId.value ? (
+        </FormRow>
+        <FormRow className="row">
+          <div className="col-10 col-lg-10 pr-1">
+            {productCategoryIds.value ? (
               <AsyncSelect
                 cacheOptions
                 defaultOptions
+                isMulti
                 onChange={handleSelectChange}
                 loadOptions={loadOptions}
                 isClearable={true}
@@ -240,6 +243,7 @@ export default withRouter((props) => {
                 value=""
                 cacheOptions
                 defaultOptions
+                isMulti
                 onChange={handleSelectChange}
                 loadOptions={loadOptions}
                 isClearable={true}
@@ -247,28 +251,32 @@ export default withRouter((props) => {
               />
             )}
           </div>
-          <div className="col-2 col-lg-2 pl-lg-1 pl-1">
+          <div className="col-2 col-lg-2 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {thumbnail.value ? (
+        {thumbnails.value ? (
           <FormRow className="row">
-            <div className="col-3">
-              <ImageEditBox>
-                <Thumbnail src={thumbnail.value}></Thumbnail>
-                <RemoveImageButton onClick={removeImage}>
-                  <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                </RemoveImageButton>
-              </ImageEditBox>
-            </div>
+            {thumbnails.value.map((item, index) => {
+              return (
+                <div className="col-3" key={index}>
+                  <ImageEditBox>
+                    <Thumbnail src={item.base64Data}></Thumbnail>
+                    <RemoveImageButton onClick={removeImage}>
+                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                    </RemoveImageButton>
+                  </ImageEditBox>
+                </div>
+              );
+            })}
           </FormRow>
         ) : null}
         <CommonEditor
           height={height}
           convertImageCallback={convertImageCallback}
           onImageValidate={onImageValidate}
-          placeholder="Enter the content here"
-          onChanged={onContentChanged}
+          placeholder="Enter the description here"
+          onChanged={onDescriptionChanged}
           ref={editorRef}
         />
         <Footer className="row mb-3">

@@ -7,7 +7,7 @@ namespace Camino.Service.Business.Products.Contracts
 {
     public interface IProductBusiness
     {
-        Task<int> CreateAsync(ProductProjection category);
+        Task<long> CreateAsync(ProductProjection product);
         ProductProjection Find(long id);
         ProductProjection FindDetail(long id);
         ProductProjection FindByName(string name);

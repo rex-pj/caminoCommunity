@@ -1,7 +1,7 @@
-﻿using HotChocolate.Types;
-using Module.Api.Content.Models;
+﻿using Camino.Framework.Models;
+using HotChocolate.Types;
 
-namespace Module.Api.Content.GraphQL.InputTypes
+namespace Camino.Framework.GraphQL.InputTypes
 {
     public class SelectFilterInputType : InputObjectType<SelectFilterModel>
     {

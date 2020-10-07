@@ -8,8 +8,10 @@ import styled from "styled-components";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import {
   VALIDATE_IMAGE_URL,
-  FILTER_CATEGORIES,
+  FILTER_ARTICLE_CATEGORIES,
+  FILTER_PRODUCT_CATEGORIES,
   CREATE_ARTICLE,
+  CREATE_PRODUCT,
 } from "../../utils/GraphQLQueries/mutations";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
@@ -47,13 +49,42 @@ export default withRouter((props) => {
 
   const dispatch = useStore(false)[1];
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [filterCategories] = useMutation(FILTER_CATEGORIES);
+  const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
+  const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
   const [createArticle] = useMutation(CREATE_ARTICLE, {
     client: graphqlClient,
   });
+  const [createProduct] = useMutation(CREATE_PRODUCT, {
+    client: graphqlClient,
+  });
 
-  const searchCategories = async (inputValue) => {
-    return await filterCategories({
+  const searchArticleCategories = async (inputValue) => {
+    return await articleCategories({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        var { data } = response;
+        var { categories } = data;
+        if (!categories) {
+          return [];
+        }
+        return categories.map((cat) => {
+          return {
+            value: cat.id,
+            label: cat.text,
+          };
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
+  };
+
+  const searchProductCategories = async (inputValue) => {
+    return await productCategories({
       variables: {
         criterias: { query: inputValue },
       },
@@ -103,6 +134,14 @@ export default withRouter((props) => {
     });
   };
 
+  const onProductPost = async (data) => {
+    return await createProduct({
+      variables: {
+        criterias: data,
+      },
+    });
+  };
+
   const showValidationError = (title, message) => {
     dispatch("NOTIFY", {
       title,
@@ -126,7 +165,7 @@ export default withRouter((props) => {
         height={230}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={searchCategories}
+        filterCategories={searchArticleCategories}
         onArticlePost={onArticlePost}
         showValidationError={showValidationError}
       />
@@ -137,8 +176,8 @@ export default withRouter((props) => {
         height={230}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={searchCategories}
-        onArticlePost={onArticlePost}
+        filterCategories={searchProductCategories}
+        onProductPost={onProductPost}
         showValidationError={showValidationError}
       />
     );

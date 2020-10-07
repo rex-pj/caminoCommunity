@@ -25,7 +25,8 @@ namespace Camino.DAL.Implementations
                 .ApplyMappingBuilder<FarmPictureMap>()
                 .ApplyMappingBuilder<ProductMap>()
                 .ApplyMappingBuilder<ProductCategoryMap>()
-                .ApplyMappingBuilder<ProductPictureMap>();
+                .ApplyMappingBuilder<ProductPictureMap>()
+                .ApplyMappingBuilder< ProductCategoryProductMap>();
         }
     }
 }

@@ -2,7 +2,7 @@
 using Camino.DAL.Entities;
 using Camino.Service.Projections.Content;
 
-namespace Module.Api.Content.Infrastructure.AutoMap
+namespace Module.Api.Media.Infrastructure.AutoMap
 {
     public class ContentMappingProfile : Profile
     {

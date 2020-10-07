@@ -1,36 +1,36 @@
 ﻿using Camino.Core.Models;
 using Camino.Framework.Models;
-using Camino.Service.Business.Articles.Contracts;
+using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Projections.Content;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
+using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Module.Api.Content.GraphQL.Resolvers
+namespace Module.Api.Product.GraphQL.Resolvers
 {
-    public class ArticleCategoryResolver : IArticleCategoryResolver
+    public class ProductCategoryResolver : IProductCategoryResolver
     {
-        private readonly IArticleCategoryBusiness _articleCategoryBusiness;
-        public ArticleCategoryResolver(IArticleCategoryBusiness articleCategoryBusiness)
+        private readonly IProductCategoryBusiness _productCategoryBusiness;
+        public ProductCategoryResolver(IProductCategoryBusiness productCategoryBusiness)
         {
-            _articleCategoryBusiness = articleCategoryBusiness;
+            _productCategoryBusiness = productCategoryBusiness;
         }
 
-        public IEnumerable<ISelectOption> GetArticleCategories(SelectFilterModel criterias)
+        public IEnumerable<ISelectOption> GetProductCategories(SelectFilterModel criterias)
         {
             if (criterias == null)
             {
                 criterias = new SelectFilterModel();
             }
 
-            IList<ArticleCategoryProjection> categories;
+            IList<ProductCategoryProjection> categories;
             if (criterias.IsParentOnly)
             {
-                categories = _articleCategoryBusiness.SearchParents(criterias.Query, criterias.CurrentId);
+                categories = _productCategoryBusiness.SearchParents(criterias.Query, criterias.CurrentId);
             }
             else
             {
-                categories = _articleCategoryBusiness.Search(criterias.Query, criterias.CurrentId);
+                categories = _productCategoryBusiness.Search(criterias.Query, criterias.CurrentId);
             }
 
             if (categories == null || !categories.Any())

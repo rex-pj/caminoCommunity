@@ -23,18 +23,18 @@ namespace Camino.Service.Business.Products
         private readonly IRepository<ProductPicture> _productPictureRepository;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
-        private readonly IRepository<ProductCategory> _productCategoryRepository;
+        private readonly IRepository<ProductCategoryProduct> _productCategoryProductRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public ProductBusiness(IMapper mapper, IRepository<Product> productRepository,
-            IRepository<ProductCategory> productCategoryRepository, IRepository<User> userRepository,
+            IRepository<ProductCategoryProduct> productCategoryProductRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
             IRepository<UserPhoto> userPhotoRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
-            _productCategoryRepository = productCategoryRepository;
+            _productCategoryProductRepository = productCategoryProductRepository;
             _userRepository = userRepository;
             _pictureRepository = pictureRepository;
             _productPictureRepository = productPictureRepository;
@@ -44,8 +44,8 @@ namespace Camino.Service.Business.Products
         public ProductProjection Find(long id)
         {
             var exist = (from product in _productRepository.Table
-                         join category in _productCategoryRepository.Table
-                         on product.ProductCategoryId equals category.Id
+                             //join category in _productCategoryRepository.Table
+                             //on product.ProductCategoryId equals category.Id
                          where product.Id == id
                          select new ProductProjection
                          {
@@ -55,8 +55,8 @@ namespace Camino.Service.Business.Products
                              Name = product.Name,
                              UpdatedById = product.UpdatedById,
                              UpdatedDate = product.UpdatedDate,
-                             ProductCategoryName = category.Name,
-                             ProductCategoryId = product.ProductCategoryId
+                             //ProductCategoryName = category.Name,
+                             //ProductCategoryId = product.ProductCategoryId
                          }).FirstOrDefault();
 
             if (exist == null)
@@ -70,8 +70,8 @@ namespace Camino.Service.Business.Products
         public ProductProjection FindDetail(long id)
         {
             var product = (from p in _productRepository.Table
-                           join c in _productCategoryRepository.Table
-                           on p.ProductCategoryId equals c.Id
+                               //join c in _productCategoryRepository.Table
+                               //on p.ProductCategoryId equals c.Id
                            where p.Id == id
                            select new ProductProjection
                            {
@@ -82,8 +82,8 @@ namespace Camino.Service.Business.Products
                                Name = p.Name,
                                UpdatedById = p.UpdatedById,
                                UpdatedDate = p.UpdatedDate,
-                               ProductCategoryName = c.Name,
-                               ProductCategoryId = p.ProductCategoryId,
+                               //ProductCategoryName = c.Name,
+                               //ProductCategoryId = p.ProductCategoryId,
                            }).FirstOrDefault();
 
             if (product == null)
@@ -150,7 +150,7 @@ namespace Camino.Service.Business.Products
 
             if (filter.CategoryId.HasValue)
             {
-                productQuery = productQuery.Where(x => x.ProductCategoryId == filter.CategoryId);
+                productQuery = productQuery.Where(x => x.ProductCategories.Any(c => c.ProductCategoryId == filter.CategoryId));
             }
 
             // Filter by register date/ created date
@@ -226,12 +226,11 @@ namespace Camino.Service.Business.Products
             return result;
         }
 
-        public async Task<int> CreateAsync(ProductProjection product)
+        public async Task<long> CreateAsync(ProductProjection product)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             var newProduct = new Product()
             {
-                ProductCategoryId = product.ProductCategoryId,
                 CreatedById = product.CreatedById,
                 UpdatedById = product.UpdatedById,
                 CreatedDate = modifiedDate,
@@ -241,7 +240,25 @@ namespace Camino.Service.Business.Products
             };
 
             var index = 0;
-            var id = await _productRepository.AddWithInt32EntityAsync(newProduct);
+            long id = 0;
+            try
+            {
+                id = await _productRepository.AddWithInt64EntityAsync(newProduct);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            if (id > 0)
+            {
+                _productCategoryProductRepository.Add(new ProductCategoryProduct()
+                {
+                    ProductCategoryId = product.ProductCategoryId,
+                    ProductId = id
+                });
+            }
+
             foreach (var picture in product.Thumbnails)
             {
                 var thumbnail = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
@@ -276,7 +293,7 @@ namespace Camino.Service.Business.Products
             var product = _productRepository.FirstOrDefault(x => x.Id == request.Id);
             product.Description = request.Description;
             product.Name = request.Name;
-            product.ProductCategoryId = request.ProductCategoryId;
+            //product.ProductCategoryId = request.ProductCategoryId;
             product.UpdatedById = request.UpdatedById;
             product.UpdatedDate = updatedDate;
 

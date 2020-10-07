@@ -1,26 +1,21 @@
-﻿using Module.Api.Content.GraphQL.Resolvers;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
-using AutoMapper;
-using Camino.Service.AutoMap;
-using Camino.Framework.Infrastructure.AutoMap;
+﻿using Module.Api.Product.GraphQL.Resolvers;
+using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Module.Api.Content.Infrastructure.Extensions
+namespace Module.Api.Product.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IArticleCategoryResolver, ArticleCategoryResolver>();
-            services.AddTransient<IArticleResolver, ArticleResolver>();
+            services.AddTransient<IProductCategoryResolver, ProductCategoryResolver>();
+            services.AddTransient<IProductResolver, ProductResolver>();
             return services;
         }
 
         public static IServiceCollection ConfigureContentServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services
-                .AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
             services.ConfigureGraphQlServices();
             return services;
         }

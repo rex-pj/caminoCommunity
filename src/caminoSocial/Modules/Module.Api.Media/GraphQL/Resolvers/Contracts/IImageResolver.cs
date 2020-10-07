@@ -1,7 +1,7 @@
-﻿using Module.Api.Content.Models;
+﻿using Module.Api.Media.Models;
 using Camino.Framework.Models;
 
-namespace Module.Api.Content.GraphQL.Resolvers.Contracts
+namespace Module.Api.Media.GraphQL.Resolvers.Contracts
 {
     public interface IImageResolver
     {

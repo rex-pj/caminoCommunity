@@ -57,3 +57,7 @@ src/caminoSocial/Modules/Module.Web.UploadManagement/bin/
 src/caminoSocial/Modules/Module.Web.UploadManagement/obj/
 src/caminoSocial/Modules/Module.Web.MediaManagement/bin/
 src/caminoSocial/Modules/Module.Web.MediaManagement/obj/
+src/caminoSocial/Modules/Module.Api.Media/bin/
+src/caminoSocial/Modules/Module.Api.Media/obj/
+src/caminoSocial/Modules/Module.Api.Product/bin/
+src/caminoSocial/Modules/Module.Api.Product/obj/

@@ -1,4 +1,4 @@
-﻿namespace Module.Api.Content.Models
+﻿namespace Camino.Framework.Models
 {
     public class SelectFilterModel
     {
