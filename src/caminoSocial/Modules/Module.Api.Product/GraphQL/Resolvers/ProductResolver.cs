@@ -42,7 +42,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     FileName = x.FileName,
                     ContentType = x.ContentType,
                 }),
-                ProductCategoryId = criterias.ProductCategoryId
+                ProductCategoryId = criterias.ProductCategoryId,
+                ProductCategories = criterias.ProductCategories.Select(x => new ProductCategoryProjection()
+                {
+                    Id = x.Id
+                })
             };
 
             var id = await _productBusiness.CreateAsync(product);

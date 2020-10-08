@@ -1,7 +1,7 @@
-﻿using Module.Api.Content.Models;
+﻿using Module.Api.Article.Models;
 using System.Threading.Tasks;
 
-namespace Module.Api.Content.GraphQL.Resolvers.Contracts
+namespace Module.Api.Article.GraphQL.Resolvers.Contracts
 {
     public interface IArticleResolver
     {

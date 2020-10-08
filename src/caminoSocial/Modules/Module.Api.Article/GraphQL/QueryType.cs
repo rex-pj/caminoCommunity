@@ -1,11 +1,11 @@
 ﻿using Camino.Core.Modular.Contracts;
 using Camino.Framework.GraphQL.DirectiveTypes;
 using HotChocolate.Types;
-using Module.Api.Content.GraphQL.InputTypes;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
-using Module.Api.Content.GraphQL.ResultTypes;
+using Module.Api.Article.GraphQL.InputTypes;
+using Module.Api.Article.GraphQL.Resolvers.Contracts;
+using Module.Api.Article.GraphQL.ResultTypes;
 
-namespace Module.Api.Content.GraphQL
+namespace Module.Api.Article.GraphQL
 {
     public class QueryType : BaseQueryType
     {

@@ -1,11 +1,11 @@
-﻿using Module.Api.Content.Infrastructure.Extensions;
+﻿using Module.Api.Article.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Core.Modular.Contracts;
 
-namespace Module.Api.Content
+namespace Module.Api.Article
 {
     public class Startup : PluginStartupBase
     {

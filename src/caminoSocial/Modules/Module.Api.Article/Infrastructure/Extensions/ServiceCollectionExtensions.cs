@@ -1,12 +1,12 @@
-﻿using Module.Api.Content.GraphQL.Resolvers;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Article.GraphQL.Resolvers;
+using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using AutoMapper;
 using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Module.Api.Content.Infrastructure.Extensions
+namespace Module.Api.Article.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using Camino.Framework.Models;
 
-namespace Module.Api.Content.Models
+namespace Module.Api.Article.Models
 {
     public class ArticleFilterModel : BaseFilterModel
     {

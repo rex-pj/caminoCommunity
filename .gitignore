@@ -61,3 +61,5 @@ src/caminoSocial/Modules/Module.Api.Media/bin/
 src/caminoSocial/Modules/Module.Api.Media/obj/
 src/caminoSocial/Modules/Module.Api.Product/bin/
 src/caminoSocial/Modules/Module.Api.Product/obj/
+src/caminoSocial/Modules/Module.Api.Article/bin/Debug/
+src/caminoSocial/Modules/Module.Api.Article/obj/

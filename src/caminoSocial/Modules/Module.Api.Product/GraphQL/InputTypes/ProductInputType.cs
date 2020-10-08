@@ -19,6 +19,7 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.CreatedBy).Ignore();
             descriptor.Field(x => x.UpdatedBy).Ignore();
             descriptor.Field(x => x.ProductCategoryName).Ignore();
+            descriptor.Field(x => x.ProductCategoryId).Ignore();
         }
     }
 }

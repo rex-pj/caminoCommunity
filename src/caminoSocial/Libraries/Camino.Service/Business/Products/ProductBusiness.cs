@@ -239,49 +239,44 @@ namespace Camino.Service.Business.Products
                 Name = product.Name
             };
 
-            var index = 0;
-            long id = 0;
-            try
-            {
-                id = await _productRepository.AddWithInt64EntityAsync(newProduct);
-            }
-            catch (Exception e)
-            {
-
-            }
+            var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
 
             if (id > 0)
             {
-                _productCategoryProductRepository.Add(new ProductCategoryProduct()
+                foreach (var category in product.ProductCategories)
                 {
-                    ProductCategoryId = product.ProductCategoryId,
-                    ProductId = id
-                });
-            }
+                    _productCategoryProductRepository.Add(new ProductCategoryProduct()
+                    {
+                        ProductCategoryId = category.Id,
+                        ProductId = id
+                    });
+                }
 
-            foreach (var picture in product.Thumbnails)
-            {
-                var thumbnail = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
-                var pictureData = Convert.FromBase64String(thumbnail);
-                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                var index = 0;
+                foreach (var picture in product.Thumbnails)
                 {
-                    CreatedById = product.UpdatedById,
-                    CreatedDate = modifiedDate,
-                    FileName = picture.FileName,
-                    MimeType = picture.ContentType,
-                    UpdatedById = product.UpdatedById,
-                    UpdatedDate = modifiedDate,
-                    BinaryData = pictureData
-                });
+                    var thumbnail = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
+                    var pictureData = Convert.FromBase64String(thumbnail);
+                    var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                    {
+                        CreatedById = product.UpdatedById,
+                        CreatedDate = modifiedDate,
+                        FileName = picture.FileName,
+                        MimeType = picture.ContentType,
+                        UpdatedById = product.UpdatedById,
+                        UpdatedDate = modifiedDate,
+                        BinaryData = pictureData
+                    });
 
-                var productPictureType = index == 0 ? (int)ProductPictureType.Thumbnail : (int)ProductPictureType.Secondary;
-                _productPictureRepository.Add(new ProductPicture()
-                {
-                    ProductId = id,
-                    PictureId = pictureId,
-                    PictureType = productPictureType
-                });
-                index += 1;
+                    var productPictureType = index == 0 ? (int)ProductPictureType.Thumbnail : (int)ProductPictureType.Secondary;
+                    _productPictureRepository.Add(new ProductPicture()
+                    {
+                        ProductId = id,
+                        PictureId = pictureId,
+                        PictureType = productPictureType
+                    });
+                    index += 1;
+                }
             }
 
             return id;

@@ -2,11 +2,11 @@
 using Camino.Framework.Models;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.Service.Projections.Content;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
+using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Module.Api.Content.GraphQL.Resolvers
+namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleCategoryResolver : IArticleCategoryResolver
     {

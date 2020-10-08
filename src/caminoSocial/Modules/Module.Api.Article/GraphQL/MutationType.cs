@@ -1,13 +1,13 @@
-﻿using Module.Api.Content.GraphQL.InputTypes;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Article.GraphQL.InputTypes;
+using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Camino.Framework.GraphQL.DirectiveTypes;
 using Camino.Framework.GraphQL.ResultTypes;
 using HotChocolate.Types;
 using Camino.Core.Modular.Contracts;
-using Module.Api.Content.GraphQL.ResultTypes;
+using Module.Api.Article.GraphQL.ResultTypes;
 using Camino.Framework.GraphQL.InputTypes;
 
-namespace Module.Api.Content.GraphQL
+namespace Module.Api.Article.GraphQL
 {
     public class MutationType : BaseMutationType
     {

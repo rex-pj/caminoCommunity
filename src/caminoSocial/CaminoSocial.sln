@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Content", "Modules\Module.Api.Content\Module.Api.Content.csproj", "{07451B52-2E44-4C62-975D-8DE4721E043F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Article", "Modules\Module.Api.Article\Module.Api.Article.csproj", "{07451B52-2E44-4C62-975D-8DE4721E043F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Auth", "Modules\Module.Api.Auth\Module.Api.Auth.csproj", "{F1FA116A-D69A-46DF-97CA-BD49DB4874A3}"
 EndProject
@@ -57,9 +57,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Framework", "Librari
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.MediaManagement", "Modules\Module.Web.MediaManagement\Module.Web.MediaManagement.csproj", "{F9841DC3-763B-4551-BD4A-ABB27EB5C152}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Api.Product", "Modules\Module.Api.Product\Module.Api.Product.csproj", "{4056B217-E851-487E-9A16-A172274C9C71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Product", "Modules\Module.Api.Product\Module.Api.Product.csproj", "{4056B217-E851-487E-9A16-A172274C9C71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Api.Media", "Modules\Module.Api.Media\Module.Api.Media.csproj", "{3774A674-1890-49A9-AB9C-311DD3C3C9F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Media", "Modules\Module.Api.Media\Module.Api.Media.csproj", "{3774A674-1890-49A9-AB9C-311DD3C3C9F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

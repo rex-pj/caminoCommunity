@@ -123,7 +123,7 @@ export default withRouter((props) => {
 
   const handleSelectChange = (e) => {
     let data = formData || {};
-    const name = "productCategoryIds";
+    const name = "productCategories";
     if (!e) {
       data[name].value = [];
 
@@ -212,7 +212,7 @@ export default withRouter((props) => {
     });
   };
 
-  const { name, productCategoryIds, thumbnails } = formData;
+  const { name, productCategories, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -229,7 +229,7 @@ export default withRouter((props) => {
         </FormRow>
         <FormRow className="row">
           <div className="col-10 col-lg-10 pr-1">
-            {productCategoryIds.value ? (
+            {productCategories.value ? (
               <AsyncSelect
                 cacheOptions
                 defaultOptions

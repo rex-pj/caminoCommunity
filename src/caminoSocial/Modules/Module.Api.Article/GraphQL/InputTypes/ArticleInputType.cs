@@ -1,7 +1,7 @@
 ﻿using HotChocolate.Types;
-using Module.Api.Content.Models;
+using Module.Api.Article.Models;
 
-namespace Module.Api.Content.GraphQL.InputTypes
+namespace Module.Api.Article.GraphQL.InputTypes
 {
     public class ArticleInputType : InputObjectType<ArticleModel>
     {

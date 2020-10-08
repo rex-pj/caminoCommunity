@@ -1,7 +1,7 @@
 ﻿using Camino.Framework.Models;
 using System.Collections.Generic;
 
-namespace Module.Api.Content.Models
+namespace Module.Api.Article.Models
 {
     public class ArticlePageListModel : PageListModel<ArticleModel>
     {

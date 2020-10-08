@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Module.Api.Content.Models
+namespace Module.Api.Article.Models
 {
     public class ArticleCategoryModel : BaseModel
     {

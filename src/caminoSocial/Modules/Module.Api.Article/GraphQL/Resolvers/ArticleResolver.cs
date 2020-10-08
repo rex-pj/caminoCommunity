@@ -6,14 +6,14 @@ using Camino.IdentityManager.Models;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.Service.Projections.Content;
 using Camino.Service.Projections.Filters;
-using Module.Api.Content.GraphQL.Resolvers.Contracts;
-using Module.Api.Content.Models;
+using Module.Api.Article.GraphQL.Resolvers.Contracts;
+using Module.Api.Article.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Module.Api.Content.GraphQL.Resolvers
+namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleResolver : BaseResolver, IArticleResolver
     {

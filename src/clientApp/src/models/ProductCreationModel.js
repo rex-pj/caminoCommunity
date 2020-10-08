@@ -13,7 +13,7 @@ export default {
     },
     isValid: false,
   },
-  productCategoryIds: {
+  productCategories: {
     value: [],
     validation: {
       isRequired: true,
