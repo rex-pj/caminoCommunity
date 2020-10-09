@@ -130,3 +130,31 @@ export const GET_USER_ARTICLES = gql`
     }
   }
 `;
+
+export const GET_USER_PRODUCTS = gql`
+  query($criterias: ProductFilterModelInput) {
+    userProducts(criterias: $criterias) {
+      totalPage
+      totalResult
+      filter {
+        page
+        pageSize
+        search
+      }
+      collections {
+        id
+        description
+        name
+        createdById
+        createdBy
+        createdDate
+        updatedDate
+        createdByIdentityId
+        createdByPhotoCode
+        thumbnails {
+          id
+        }
+      }
+    }
+  }
+`;

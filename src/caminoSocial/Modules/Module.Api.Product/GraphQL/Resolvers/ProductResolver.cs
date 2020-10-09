@@ -93,9 +93,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     Name = x.Name,
                     Thumbnails = x.Thumbnails.Select(y => new PictureLoadModel()
                     {
-                        Base64Data = y.Base64Data,
-                        FileName = y.FileName,
-                        ContentType = y.ContentType,
+                        Id = y.Id
                     }),
                     CreatedByPhotoCode = x.CreatedByPhotoCode
                 }).ToList();

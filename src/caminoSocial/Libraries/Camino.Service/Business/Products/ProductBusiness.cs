@@ -14,6 +14,7 @@ using Camino.Data.Enums;
 using Camino.Core.Utils;
 using System.Collections.Generic;
 using Camino.Service.Projections.Media;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Camino.Service.Business.Products
 {
@@ -170,30 +171,29 @@ namespace Camino.Service.Business.Products
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
-            var productPicTypeId = (byte)ProductPictureType.Thumbnail;
-            var query = from ar in productQuery
-                        join pic in _productPictureRepository.Table
-                        on ar.Id equals pic.ProductId into pics
+            var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
+            var query = from pr in productQuery
+                        join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
+                        on pr.Id equals productPic.ProductId into pics
                         from p in pics.DefaultIfEmpty()
-                        join pho in _userPhotoRepository.Table
-                        on ar.CreatedById equals pho.CreatedById into photos
-                        from photo in photos.DefaultIfEmpty()
-                        where photo != null && photo.TypeId == avatarTypeId && p.PictureType == productPicTypeId
+                        join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
+                        on pr.CreatedById equals pho.CreatedById into photos
+                        from userPhoto in photos.DefaultIfEmpty()
                         select new ProductProjection
                         {
-                            Id = ar.Id,
-                            Name = ar.Name,
-                            CreatedById = ar.CreatedById,
-                            CreatedDate = ar.CreatedDate,
-                            Description = ar.Description,
-                            UpdatedById = ar.UpdatedById,
-                            UpdatedDate = ar.UpdatedDate,
-                            CreatedByPhotoCode = photo.Code,
+                            Id = pr.Id,
+                            Name = pr.Name,
+                            CreatedById = pr.CreatedById,
+                            CreatedDate = pr.CreatedDate,
+                            Description = pr.Description,
+                            UpdatedById = pr.UpdatedById,
+                            UpdatedDate = pr.UpdatedDate,
+                            CreatedByPhotoCode = userPhoto.Code,
                             Thumbnails = new List<PictureLoadProjection>()
                             {
                                 new PictureLoadProjection()
                                 {
-                                    Id = photo.Id
+                                    Id = p.Id
                                 }
                             }
                         };
@@ -240,7 +240,6 @@ namespace Camino.Service.Business.Products
             };
 
             var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
-
             if (id > 0)
             {
                 foreach (var category in product.ProductCategories)

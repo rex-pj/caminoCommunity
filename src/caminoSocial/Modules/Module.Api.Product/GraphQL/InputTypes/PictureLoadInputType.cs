@@ -11,7 +11,7 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.ContentType).Type<StringType>();
             descriptor.Field(x => x.FileName).Type<StringType>();
             descriptor.Field(x => x.BinaryData).Ignore();
-            descriptor.Field(x => x.Id).Ignore();
+            descriptor.Field(x => x.Id).Type<LongType>();
         }
     }
 }

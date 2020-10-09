@@ -107,12 +107,15 @@ export default (props) => {
 
   return (
     <Panel>
-      <ThumbnailBox>
-        <AnchorLink to={product.url}>
-          <PostThumbnail src={product.thumbnailUrl} alt="" />
-          <Overlay />
-        </AnchorLink>
-      </ThumbnailBox>
+      {product.thumbnailUrl ? (
+        <ThumbnailBox>
+          <AnchorLink to={product.url}>
+            <PostThumbnail src={product.thumbnailUrl} alt="" />
+            <Overlay />
+          </AnchorLink>
+        </ThumbnailBox>
+      ) : null}
+
       <PanelHeader>
         <ContentTopbar>
           <div className="row no-gutters">
