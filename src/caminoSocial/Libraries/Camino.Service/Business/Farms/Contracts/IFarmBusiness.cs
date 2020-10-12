@@ -11,7 +11,7 @@ namespace Camino.Service.Business.Farms.Contracts
         FarmProjection FindDetail(long id);
         FarmProjection FindByName(string name);
         Task<BasePageList<FarmProjection>> GetAsync(FarmFilter filter);
-        int Add(FarmProjection farm);
+        Task<long> CreateAsync(FarmProjection farm);
         Task<FarmProjection> UpdateAsync(FarmProjection farm);
     }
 }

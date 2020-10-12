@@ -36,6 +36,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 UpdatedById = CurrentUser.Id,
                 Name = criterias.Name,
                 Description = criterias.Description,
+                Price = criterias.Price,
                 Thumbnails = criterias.Thumbnails.Select(x => new PictureLoadProjection()
                 {
                     Base64Data = x.Base64Data,
@@ -91,6 +92,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
                     Name = x.Name,
+                    Price = x.Price,
                     Thumbnails = x.Thumbnails.Select(y => new PictureLoadModel()
                     {
                         Id = y.Id

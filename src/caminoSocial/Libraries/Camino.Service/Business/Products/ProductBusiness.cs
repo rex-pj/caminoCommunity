@@ -14,7 +14,6 @@ using Camino.Data.Enums;
 using Camino.Core.Utils;
 using System.Collections.Generic;
 using Camino.Service.Projections.Media;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Camino.Service.Business.Products
 {
@@ -24,6 +23,7 @@ namespace Camino.Service.Business.Products
         private readonly IRepository<ProductPicture> _productPictureRepository;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
+        private readonly IRepository<ProductPrice> _productPriceRepository;
         private readonly IRepository<ProductCategoryProduct> _productCategoryProductRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Camino.Service.Business.Products
         public ProductBusiness(IMapper mapper, IRepository<Product> productRepository,
             IRepository<ProductCategoryProduct> productCategoryProductRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
-            IRepository<UserPhoto> userPhotoRepository)
+            IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
@@ -40,6 +40,7 @@ namespace Camino.Service.Business.Products
             _pictureRepository = pictureRepository;
             _productPictureRepository = productPictureRepository;
             _userPhotoRepository = userPhotoRepository;
+            _productPriceRepository = productPriceRepository;
         }
 
         public ProductProjection Find(long id)
@@ -172,28 +173,32 @@ namespace Camino.Service.Business.Products
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
-            var query = from pr in productQuery
+            var query = from product in productQuery
                         join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
-                        on pr.Id equals productPic.ProductId into pics
+                        on product.Id equals productPic.ProductId into pics
                         from p in pics.DefaultIfEmpty()
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
-                        on pr.CreatedById equals pho.CreatedById into photos
+                        on product.CreatedById equals pho.CreatedById into photos
                         from userPhoto in photos.DefaultIfEmpty()
+                        join pr in _productPriceRepository.Get(x => x.IsCurrent)
+                        on product.Id equals pr.ProductId into prices
+                        from price in prices.DefaultIfEmpty()
                         select new ProductProjection
                         {
-                            Id = pr.Id,
-                            Name = pr.Name,
-                            CreatedById = pr.CreatedById,
-                            CreatedDate = pr.CreatedDate,
-                            Description = pr.Description,
-                            UpdatedById = pr.UpdatedById,
-                            UpdatedDate = pr.UpdatedDate,
+                            Id = product.Id,
+                            Name = product.Name,
+                            Price = price != null ? price.Price : 0,
+                            CreatedById = product.CreatedById,
+                            CreatedDate = product.CreatedDate,
+                            Description = product.Description,
+                            UpdatedById = product.UpdatedById,
+                            UpdatedDate = product.UpdatedDate,
                             CreatedByPhotoCode = userPhoto.Code,
                             Thumbnails = new List<PictureLoadProjection>()
                             {
                                 new PictureLoadProjection()
                                 {
-                                    Id = p.Id
+                                    Id = p.PictureId
                                 }
                             }
                         };
@@ -276,6 +281,14 @@ namespace Camino.Service.Business.Products
                     });
                     index += 1;
                 }
+
+                _productPriceRepository.Add(new ProductPrice()
+                {
+                    PricedDate = modifiedDate,
+                    ProductId = id,
+                    Price = product.Price,
+                    IsCurrent = true
+                });
             }
 
             return id;

@@ -8,7 +8,8 @@ namespace Module.Api.Product.GraphQL.InputTypes
         protected override void Configure(IInputObjectTypeDescriptor<ProductModel> descriptor)
         {
             descriptor.Field(x => x.Name).Type<StringType>();
-            descriptor.Field(x => x.Id).Ignore();
+            descriptor.Field(x => x.Price).Type<IntType>();
+            descriptor.Field(x => x.Id).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.ProductCategories).Type<ListType<ProductCategoryProductInputType>>();
             descriptor.Field(x => x.Thumbnails).Type<ListType<PictureLoadInputType>>();

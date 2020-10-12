@@ -103,7 +103,8 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IRepository<FarmPicture>, ContentRepository<FarmPicture>>()
                 .AddTransient<IRepository<ProductCategory>, ContentRepository<ProductCategory>>()
                 .AddTransient<IRepository<ProductPicture>, ContentRepository<ProductPicture>>()
-                .AddTransient<IRepository<ProductCategoryProduct>, ContentRepository<ProductCategoryProduct>>();
+                .AddTransient<IRepository<ProductCategoryProduct>, ContentRepository<ProductCategoryProduct>>()
+                .AddTransient<IRepository<ProductPrice>, ContentRepository<ProductPrice>>();
         }
     }
 }

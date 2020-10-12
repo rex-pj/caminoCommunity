@@ -6,6 +6,13 @@ export default {
     },
     isValid: false,
   },
+  price: {
+    value: "",
+    validation: {
+      isRequired: true,
+    },
+    isValid: false,
+  },
   description: {
     value: "",
     validation: {

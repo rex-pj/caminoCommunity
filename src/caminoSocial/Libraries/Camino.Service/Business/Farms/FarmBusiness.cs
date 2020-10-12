@@ -1,4 +1,5 @@
-﻿using Camino.DAL.Entities;
+﻿using Camino.Core.Utils;
+using Camino.DAL.Entities;
 using Camino.Data.Contracts;
 using Camino.Data.Enums;
 using Camino.IdentityDAL.Entities;
@@ -9,6 +10,7 @@ using Camino.Service.Projections.Media;
 using Camino.Service.Projections.PageList;
 using LinqToDB;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -88,16 +90,14 @@ namespace Camino.Service.Business.Farms
                                 join farm in _farmRepository.Table
                                 on farmPic.PictureId equals farm.Id
                                 orderby farm.CreatedDate descending
-                                select farmPic).ToList();
+                                select new PictureLoadProjection()
+                                {
+                                    Id = farmPic.PictureId
+                                }).ToList();
 
             if (farmPictures.Any())
             {
-                var thumbnailType = (int)FarmPictureType.Thumbnail;
-                exist.ThumbnailId = farmPictures.FirstOrDefault(x => x.PictureType == thumbnailType).Id;
-                exist.Pictures = farmPictures.Where(x => x.PictureType != thumbnailType).Select(x => new PictureLoadProjection()
-                {
-                    Id = x.Id
-                });
+                exist.Pictures = farmPictures;
             }
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
@@ -184,7 +184,13 @@ namespace Camino.Service.Business.Farms
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            ThumbnailId = p.PictureId
+                            Pictures = new List<PictureLoadProjection>()
+                            {
+                                new PictureLoadProjection()
+                                {
+                                    Id = p.PictureId
+                                }
+                            }
                         };
 
             var farms = await query.Skip(filter.PageSize * (filter.Page - 1))
@@ -213,7 +219,7 @@ namespace Camino.Service.Business.Farms
             return result;
         }
 
-        public int Add(FarmProjection farm)
+        public async Task<long> CreateAsync(FarmProjection farm)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             var newFarm = new Farm()
@@ -229,109 +235,94 @@ namespace Camino.Service.Business.Farms
             newFarm.UpdatedDate = modifiedDate;
             newFarm.CreatedDate = modifiedDate;
 
-            var id = _farmRepository.AddWithInt32Entity(newFarm);
-            if (!string.IsNullOrEmpty(farm.Thumbnail.Base64Data))
+            var id = await _farmRepository.AddWithInt64EntityAsync(newFarm);
+            if (id > 0)
             {
-                var pictureData = Convert.FromBase64String(farm.Thumbnail.Base64Data);
-                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
-                {
-                    CreatedById = farm.UpdatedById,
-                    CreatedDate = modifiedDate,
-                    FileName = farm.Thumbnail.FileName,
-                    MimeType = farm.Thumbnail.ContentType,
-                    UpdatedById = farm.UpdatedById,
-                    UpdatedDate = modifiedDate,
-                    BinaryData = pictureData
-                });
-
-                _farmPictureRepository.Add(new FarmPicture()
-                {
-                    FarmId = id,
-                    PictureId = pictureId,
-                    PictureType = (int)FarmPictureType.Thumbnail
-                });
-            }
-
-            if (farm.Pictures.Any())
-            {
+                var index = 0;
                 foreach (var picture in farm.Pictures)
                 {
-                    if (!string.IsNullOrEmpty(picture.Base64Data))
+                    var thumbnail = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
+                    var pictureData = Convert.FromBase64String(thumbnail);
+                    var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
                     {
-                        var pictureData = Convert.FromBase64String(picture.Base64Data);
-                        var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
-                        {
-                            CreatedById = farm.UpdatedById,
-                            CreatedDate = modifiedDate,
-                            FileName = picture.FileName,
-                            MimeType = picture.ContentType,
-                            UpdatedById = farm.UpdatedById,
-                            UpdatedDate = modifiedDate,
-                            BinaryData = pictureData
-                        });
+                        CreatedById = farm.UpdatedById,
+                        CreatedDate = modifiedDate,
+                        FileName = picture.FileName,
+                        MimeType = picture.ContentType,
+                        UpdatedById = farm.UpdatedById,
+                        UpdatedDate = modifiedDate,
+                        BinaryData = pictureData
+                    });
 
-                        _farmPictureRepository.Add(new FarmPicture()
-                        {
-                            FarmId = id,
-                            PictureId = pictureId,
-                            PictureType = (int)FarmPictureType.Secondary
-                        });
-                    }
+                    var farmPictureType = index == 0 ? (int)FarmPictureType.Thumbnail : (int)FarmPictureType.Secondary;
+                    _farmPictureRepository.Add(new FarmPicture()
+                    {
+                        FarmId = id,
+                        PictureId = pictureId,
+                        PictureType = farmPictureType
+                    });
+                    index += 1;
                 }
             }
 
             return id;
         }
 
-        public async Task<FarmProjection> UpdateAsync(FarmProjection farm)
+        public async Task<FarmProjection> UpdateAsync(FarmProjection request)
         {
             var updatedDate = DateTimeOffset.UtcNow;
-            var exist = _farmRepository.FirstOrDefault(x => x.Id == farm.Id);
-            exist.Description = farm.Description;
-            exist.Name = farm.Name;
-            exist.FarmTypeId = farm.FarmTypeId;
-            exist.UpdatedById = farm.UpdatedById;
-            exist.UpdatedDate = updatedDate;
-            if (!string.IsNullOrEmpty(farm.Thumbnail.Base64Data))
+            var farm = _farmRepository.FirstOrDefault(x => x.Id == request.Id);
+            farm.Description = request.Description;
+            farm.Name = request.Name;
+            farm.FarmTypeId = request.FarmTypeId;
+            farm.UpdatedById = request.UpdatedById;
+            farm.UpdatedDate = updatedDate;
+
+            int index = 0;
+            foreach (var picture in request.Pictures)
             {
-                var thumbnailType = (int)FarmPictureType.Thumbnail;
-                var farmThumbnails = _farmPictureRepository
-                    .Get(x => x.FarmId == farm.Id && x.PictureType == thumbnailType)
-                    .AsEnumerable();
-
-                if (farmThumbnails.Any())
+                if (!string.IsNullOrEmpty(picture.Base64Data))
                 {
-                    var pictureIds = farmThumbnails.Select(x => x.PictureId).ToList();
-                    await _farmPictureRepository.DeleteAsync(farmThumbnails.AsQueryable());
+                    var farmPictures = _farmPictureRepository
+                        .Get(x => x.FarmId == request.Id)
+                        .AsEnumerable();
 
-                    var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-                    await _pictureRepository.DeleteAsync(currentThumbnails);
+                    if (farmPictures.Any())
+                    {
+                        var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
+                        await _farmPictureRepository.DeleteAsync(farmPictures.AsQueryable());
+
+                        var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+                        await _pictureRepository.DeleteAsync(currentThumbnails);
+                    }
+
+                    var pictureData = Convert.FromBase64String(picture.Base64Data);
+                    var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                    {
+                        CreatedById = request.UpdatedById,
+                        CreatedDate = updatedDate,
+                        FileName = picture.FileName,
+                        MimeType = picture.ContentType,
+                        UpdatedById = request.UpdatedById,
+                        UpdatedDate = updatedDate,
+                        BinaryData = pictureData
+                    });
+
+                    var farmPictureType = index == 0 ? (int)FarmPictureType.Thumbnail : (int)FarmPictureType.Secondary;
+                    _farmPictureRepository.Add(new FarmPicture()
+                    {
+                        FarmId = farm.Id,
+                        PictureId = pictureId,
+                        PictureType = farmPictureType
+                    });
+                    index += 1;
                 }
 
-                var pictureData = Convert.FromBase64String(farm.Thumbnail.Base64Data);
-                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
-                {
-                    CreatedById = farm.UpdatedById,
-                    CreatedDate = updatedDate,
-                    FileName = farm.Thumbnail.FileName,
-                    MimeType = farm.Thumbnail.ContentType,
-                    UpdatedById = farm.UpdatedById,
-                    UpdatedDate = updatedDate,
-                    BinaryData = pictureData
-                });
-
-                _farmPictureRepository.Add(new FarmPicture()
-                {
-                    FarmId = exist.Id,
-                    PictureId = pictureId,
-                    PictureType = thumbnailType
-                });
+                _farmRepository.Update(farm);
             }
 
-            _farmRepository.Update(exist);
-
-            farm.UpdatedDate = exist.UpdatedDate;
-            return farm;
+            request.UpdatedDate = farm.UpdatedDate;
+            return request;
         }
     }
 }

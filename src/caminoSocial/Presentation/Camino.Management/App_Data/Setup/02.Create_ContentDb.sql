@@ -511,3 +511,23 @@ GO
 ALTER TABLE dbo.[ProductPicture]
 ADD CONSTRAINT PK_ProductPicture
 PRIMARY KEY (Id);
+
+--PRODUCT PRICE--
+CREATE TABLE [dbo].[ProductPrice](
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	[ProductId] BIGINT NOT NULL,
+	[Price] INT NOT NULL,
+	[PricedDate] DATETIME2 NOT NULL,
+	[IsCurrent] BIT NOT NULL,
+	[IsDiscounted] BIT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[ProductPrice]
+ADD CONSTRAINT PK_ProductPrice
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE dbo.[ProductPrice]
+ADD CONSTRAINT FK_ProductPrice_Product
+FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);

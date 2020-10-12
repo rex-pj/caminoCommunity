@@ -93,6 +93,19 @@ export default withRouter((props) => {
     });
   };
 
+  const handlePriceChange = (evt) => {
+    let data = formData || {};
+    const { value } = evt.target;
+    const name = "price";
+
+    data[name].isValid = checkValidity(data, value, name);
+    data[name].value = parseInt(value);
+
+    setFormData({
+      ...data,
+    });
+  };
+
   const onDescriptionChanged = (editorState) => {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState);
@@ -210,12 +223,12 @@ export default withRouter((props) => {
     });
   };
 
-  const { name, productCategories, thumbnails } = formData;
+  const { name, price, productCategories, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
         <FormRow className="row">
-          <div className="col-12 col-lg-12">
+          <div className="col-9 col-lg-10 pr-1">
             <Textbox
               name="name"
               value={name.value}
@@ -224,9 +237,18 @@ export default withRouter((props) => {
               placeholder="Product title"
             />
           </div>
+          <div className="col-3 col-lg-2 pl-1">
+            <Textbox
+              name="price"
+              value={price.value}
+              autoComplete="off"
+              onChange={(e) => handlePriceChange(e)}
+              placeholder="Price"
+            />
+          </div>
         </FormRow>
         <FormRow className="row">
-          <div className="col-10 col-lg-10 pr-1">
+          <div className="col-9 col-lg-10 pr-1">
             {productCategories.value ? (
               <AsyncSelect
                 cacheOptions
@@ -249,7 +271,7 @@ export default withRouter((props) => {
               />
             )}
           </div>
-          <div className="col-2 col-lg-2 pl-1">
+          <div className="col-3 col-lg-2 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>

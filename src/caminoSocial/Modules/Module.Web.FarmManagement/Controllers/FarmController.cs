@@ -54,7 +54,7 @@ namespace Module.Web.FarmManagement.Controllers
                 Description = x.Description,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                ThumbnailId = x.ThumbnailId,
+                //ThumbnailId = x.ThumbnailId,
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
             });
@@ -103,7 +103,7 @@ namespace Module.Web.FarmManagement.Controllers
                     FarmTypeName = farm.FarmTypeName,
                     Name = farm.Name,
                     Id = farm.Id,
-                    ThumbnailId = farm.ThumbnailId
+                    //ThumbnailId = farm.ThumbnailId
                 };
                 return View(model);
             }
@@ -142,15 +142,15 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = LoggedUserId,
                 Name = model.Name,
                 Description = model.Description,
-                Thumbnail = new PictureLoadProjection()
-                {
-                    FileName = model.ThumbnailFileName,
-                    ContentType = model.ThumbnailFileType,
-                    Base64Data = model.Thumbnail
-                },
+                //Pictures = new PictureLoadProjection()
+                //{
+                //    FileName = model.ThumbnailFileName,
+                //    ContentType = model.ThumbnailFileType,
+                //    Base64Data = model.Thumbnail
+                //},
                 FarmTypeId = model.FarmTypeId
             };
-            var id = _farmBusiness.Add(farm);
+            var id = _farmBusiness.CreateAsync(farm);
 
             return RedirectToAction("Detail", new { id });
         }
@@ -173,7 +173,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeName = farm.FarmTypeName,
                 Name = farm.Name,
                 Id = farm.Id,
-                ThumbnailId = farm.ThumbnailId
+                //ThumbnailId = farm.ThumbnailId
             };
 
             return View(model);
@@ -200,12 +200,12 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = LoggedUserId,
                 Name = model.Name,
                 Description = model.Description,
-                Thumbnail = new PictureLoadProjection()
-                {
-                    FileName = model.ThumbnailFileName,
-                    ContentType = model.ThumbnailFileType,
-                    Base64Data = model.Thumbnail
-                },
+                //Thumbnail = new PictureLoadProjection()
+                //{
+                //    FileName = model.ThumbnailFileName,
+                //    ContentType = model.ThumbnailFileType,
+                //    Base64Data = model.Thumbnail
+                //},
                 FarmTypeId = model.FarmTypeId
             };
 

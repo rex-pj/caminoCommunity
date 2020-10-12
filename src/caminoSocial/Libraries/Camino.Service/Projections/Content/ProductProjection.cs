@@ -24,6 +24,7 @@ namespace Camino.Service.Projections.Content
         public string CreatedByPhotoCode { get; set; }
         public int ProductCategoryId { get; set; }
         public string ProductCategoryName { get; set; }
+        public int Price { get; set; }
         public IEnumerable<ProductCategoryProjection> ProductCategories { get; set; }
         public IEnumerable<PictureLoadProjection> Thumbnails { get; set; }
     }

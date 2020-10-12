@@ -149,6 +149,7 @@ export const GET_USER_PRODUCTS = gql`
         createdBy
         createdDate
         updatedDate
+        price
         createdByIdentityId
         createdByPhotoCode
         thumbnails {
