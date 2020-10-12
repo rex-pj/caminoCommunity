@@ -8,7 +8,7 @@ namespace Camino.Service.Projections.Farm
     {
         public FarmProjection()
         {
-            Pictures = new List<PictureLoadProjection>();
+            Pictures = new List<PictureRequestProjection>();
         }
 
         public long Id { get; set; }
@@ -22,6 +22,6 @@ namespace Camino.Service.Projections.Farm
         public string CreatedBy { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
-        public IEnumerable<PictureLoadProjection> Pictures { get; set; }
+        public IEnumerable<PictureRequestProjection> Pictures { get; set; }
     }
 }

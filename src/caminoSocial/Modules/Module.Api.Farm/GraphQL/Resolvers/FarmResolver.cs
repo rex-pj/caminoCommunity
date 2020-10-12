@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
+using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
@@ -36,7 +37,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Description = criterias.Description,
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
-                Pictures = criterias.Thumbnails.Select(x => new PictureLoadProjection()
+                Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
                 {
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
@@ -86,7 +87,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     CreatedById = x.CreatedById,
                     CreatedDate = x.CreatedDate,
                     Name = x.Name,
-                    Thumbnails = x.Pictures.Select(y => new PictureLoadModel()
+                    Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
                     {
                         Id = y.Id
                     }),

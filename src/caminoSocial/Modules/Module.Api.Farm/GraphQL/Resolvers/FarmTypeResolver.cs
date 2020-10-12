@@ -16,7 +16,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             _farmTypeBusiness = farmTypeBusiness;
         }
 
-        public IEnumerable<ISelectOption> GetFarmCategories(SelectFilterModel criterias)
+        public IEnumerable<ISelectOption> GetFarmTypes(SelectFilterModel criterias)
         {
             if (criterias == null)
             {

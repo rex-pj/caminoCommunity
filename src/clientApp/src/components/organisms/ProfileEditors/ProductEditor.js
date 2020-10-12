@@ -20,6 +20,10 @@ const FormRow = styled.div`
     width: 100%;
   }
 
+  .select {
+    z-index: 10;
+  }
+
   ${AsyncSelect} {
     max-width: 100%;
   }
@@ -251,6 +255,7 @@ export default withRouter((props) => {
           <div className="col-9 col-lg-10 pr-1">
             {productCategories.value ? (
               <AsyncSelect
+                className="select"
                 cacheOptions
                 defaultOptions
                 isMulti
@@ -260,6 +265,7 @@ export default withRouter((props) => {
               />
             ) : (
               <AsyncSelect
+                className="select"
                 value=""
                 cacheOptions
                 defaultOptions

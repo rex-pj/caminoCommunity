@@ -18,7 +18,7 @@ namespace Module.Api.Farm.GraphQL
                .Directive<AuthenticationDirectiveType>()
                .Argument("criterias", a => a.Type<FarmInputType>());
 
-            descriptor.Field<IFarmTypeResolver>(x => x.GetFarmCategories(default))
+            descriptor.Field<IFarmTypeResolver>(x => x.GetFarmTypes(default))
                 .Type<ListType<SelectOptionType>>()
                 .Argument("criterias", a => a.Type<SelectFilterInputType>());
         }

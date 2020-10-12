@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Camino.Framework.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Module.Api.Farm.Models
@@ -7,7 +8,7 @@ namespace Module.Api.Farm.Models
     {
         public FarmModel()
         {
-            Thumbnails = new List<PictureLoadModel>();
+            Thumbnails = new List<PictureRequestModel>();
         }
 
         public long Id { get; set; }
@@ -23,6 +24,6 @@ namespace Module.Api.Farm.Models
         public string CreatedByIdentityId { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
-        public IEnumerable<PictureLoadModel> Thumbnails { get; set; }
+        public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
     }
 }

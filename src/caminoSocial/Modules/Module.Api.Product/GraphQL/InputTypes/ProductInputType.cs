@@ -1,4 +1,5 @@
-﻿using HotChocolate.Types;
+﻿using Camino.Framework.GraphQL.InputTypes;
+using HotChocolate.Types;
 using Module.Api.Product.Models;
 
 namespace Module.Api.Product.GraphQL.InputTypes
@@ -12,7 +13,7 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.Id).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.ProductCategories).Type<ListType<ProductCategoryProductInputType>>();
-            descriptor.Field(x => x.Thumbnails).Type<ListType<PictureLoadInputType>>();
+            descriptor.Field(x => x.Thumbnails).Type<ListType<PictureRequestInputType>>();
             descriptor.Field(x => x.UpdatedById).Ignore();
             descriptor.Field(x => x.UpdatedDate).Ignore();
             descriptor.Field(x => x.CreatedById).Ignore();

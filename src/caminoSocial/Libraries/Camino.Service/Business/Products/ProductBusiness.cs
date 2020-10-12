@@ -100,10 +100,10 @@ namespace Camino.Service.Business.Products
                                     orderby pic.CreatedDate descending
                                     select pic.Id).FirstOrDefault();
 
-            var thumbnails = new List<PictureLoadProjection>();
+            var thumbnails = new List<PictureRequestProjection>();
             if (productPictureId > 0)
             {
-                thumbnails.Add(new PictureLoadProjection()
+                thumbnails.Add(new PictureRequestProjection()
                 {
                     Id = productPictureId
                 });
@@ -194,9 +194,9 @@ namespace Camino.Service.Business.Products
                             UpdatedById = product.UpdatedById,
                             UpdatedDate = product.UpdatedDate,
                             CreatedByPhotoCode = userPhoto.Code,
-                            Thumbnails = new List<PictureLoadProjection>()
+                            Thumbnails = new List<PictureRequestProjection>()
                             {
-                                new PictureLoadProjection()
+                                new PictureRequestProjection()
                                 {
                                     Id = p.PictureId
                                 }

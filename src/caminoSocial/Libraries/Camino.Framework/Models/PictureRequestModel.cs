@@ -1,6 +1,6 @@
-﻿namespace Module.Api.Product.Models
+﻿namespace Camino.Framework.Models
 {
-    public class PictureLoadModel
+    public class PictureRequestModel
     {
         public long Id { get; set; }
         public string Base64Data { get; set; }

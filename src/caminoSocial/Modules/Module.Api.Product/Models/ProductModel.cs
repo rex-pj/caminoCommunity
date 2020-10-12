@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Camino.Framework.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Module.Api.Product.Models
@@ -7,7 +8,7 @@ namespace Module.Api.Product.Models
     {
         public ProductModel()
         {
-            Thumbnails = new List<PictureLoadModel>();
+            Thumbnails = new List<PictureRequestModel>();
         }
 
         public long Id { get; set; }
@@ -25,6 +26,6 @@ namespace Module.Api.Product.Models
         public int ProductCategoryId { get; set; }
         public string ProductCategoryName { get; set; }
         public int Price { get; set; }
-        public IEnumerable<PictureLoadModel> Thumbnails { get; set; }
+        public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
     }
 }

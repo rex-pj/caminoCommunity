@@ -8,7 +8,7 @@ namespace Camino.Service.Projections.Content
     {
         public ProductProjection()
         {
-            Thumbnails = new List<PictureLoadProjection>();
+            Thumbnails = new List<PictureRequestProjection>();
         }
 
         public long Id { get; set; }
@@ -26,6 +26,6 @@ namespace Camino.Service.Projections.Content
         public string ProductCategoryName { get; set; }
         public int Price { get; set; }
         public IEnumerable<ProductCategoryProjection> ProductCategories { get; set; }
-        public IEnumerable<PictureLoadProjection> Thumbnails { get; set; }
+        public IEnumerable<PictureRequestProjection> Thumbnails { get; set; }
     }
 }

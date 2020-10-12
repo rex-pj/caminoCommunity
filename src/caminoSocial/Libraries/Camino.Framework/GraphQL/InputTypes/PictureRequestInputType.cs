@@ -1,11 +1,11 @@
-﻿using HotChocolate.Types;
-using Module.Api.Product.Models;
+﻿using Camino.Framework.Models;
+using HotChocolate.Types;
 
-namespace Module.Api.Product.GraphQL.InputTypes
+namespace Camino.Framework.GraphQL.InputTypes
 {
-    public class PictureLoadInputType : InputObjectType<PictureLoadModel>
+    public class PictureRequestInputType : InputObjectType<PictureRequestModel>
     {
-        protected override void Configure(IInputObjectTypeDescriptor<PictureLoadModel> descriptor)
+        protected override void Configure(IInputObjectTypeDescriptor<PictureRequestModel> descriptor)
         {
             descriptor.Field(x => x.Base64Data).Type<StringType>();
             descriptor.Field(x => x.ContentType).Type<StringType>();

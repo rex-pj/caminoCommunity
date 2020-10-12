@@ -6,6 +6,6 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
 {
     public interface IFarmTypeResolver
     {
-        IEnumerable<ISelectOption> GetFarmCategories(SelectFilterModel criterias);
+        IEnumerable<ISelectOption> GetFarmTypes(SelectFilterModel criterias);
     }
 }

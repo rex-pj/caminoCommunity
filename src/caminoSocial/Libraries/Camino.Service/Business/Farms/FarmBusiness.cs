@@ -90,7 +90,7 @@ namespace Camino.Service.Business.Farms
                                 join farm in _farmRepository.Table
                                 on farmPic.PictureId equals farm.Id
                                 orderby farm.CreatedDate descending
-                                select new PictureLoadProjection()
+                                select new PictureRequestProjection()
                                 {
                                     Id = farmPic.PictureId
                                 }).ToList();
@@ -184,9 +184,9 @@ namespace Camino.Service.Business.Farms
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            Pictures = new List<PictureLoadProjection>()
+                            Pictures = new List<PictureRequestProjection>()
                             {
-                                new PictureLoadProjection()
+                                new PictureRequestProjection()
                                 {
                                     Id = p.PictureId
                                 }

@@ -172,11 +172,10 @@ namespace Camino.Service.Business.Articles
             var query = from ar in articleQuery
                         join pic in _articlePictureRepository.Table
                         on ar.Id equals pic.ArticleId into pics
-                        from p in pics.DefaultIfEmpty()
-                        join pho in _userPhotoRepository.Table
+                        from picture in pics.DefaultIfEmpty()
+                        join pho in _userPhotoRepository.Get(x =>  x.TypeId == avatarTypeId)
                         on ar.CreatedById equals pho.CreatedById into photos
                         from photo in photos.DefaultIfEmpty()
-                        where photo != null && photo.TypeId == avatarTypeId
                         select new ArticleProjection
                         {
                             Id = ar.Id,
@@ -186,7 +185,7 @@ namespace Camino.Service.Business.Articles
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            ThumbnailId = p.PictureId,
+                            ThumbnailId = picture.PictureId,
                             Content = ar.Content,
                             CreatedByPhotoCode = photo.Code
                         };

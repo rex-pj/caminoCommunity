@@ -37,7 +37,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = criterias.Name,
                 Description = criterias.Description,
                 Price = criterias.Price,
-                Thumbnails = criterias.Thumbnails.Select(x => new PictureLoadProjection()
+                Thumbnails = criterias.Thumbnails.Select(x => new PictureRequestProjection()
                 {
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
@@ -93,7 +93,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     Description = x.Description,
                     Name = x.Name,
                     Price = x.Price,
-                    Thumbnails = x.Thumbnails.Select(y => new PictureLoadModel()
+                    Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
                     {
                         Id = y.Id
                     }),
