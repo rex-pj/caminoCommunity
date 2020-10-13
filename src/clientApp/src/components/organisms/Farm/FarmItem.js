@@ -149,7 +149,9 @@ export default (props) => {
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
-          <ContentBody>{farm.description}</ContentBody>
+          <ContentBody>
+          <p dangerouslySetInnerHTML={{ __html: farm.description }}></p>
+          </ContentBody>
         </div>
 
         <div className="interactive-toolbar">

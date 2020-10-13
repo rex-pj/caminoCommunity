@@ -22,17 +22,19 @@ namespace Camino.Service.Business.Farms
         private readonly IRepository<FarmType> _farmTypeRepository;
         private readonly IRepository<FarmPicture> _farmPictureRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
 
         public FarmBusiness(IRepository<Farm> farmRepository, IRepository<FarmType> farmTypeRepository,
             IRepository<FarmPicture> farmPictureRepository, IRepository<User> userRepository,
-            IRepository<Picture> pictureRepository)
+            IRepository<Picture> pictureRepository, IRepository<UserPhoto> userPhotoRepository)
         {
             _farmRepository = farmRepository;
             _farmTypeRepository = farmTypeRepository;
             _farmPictureRepository = farmPictureRepository;
             _userRepository = userRepository;
             _pictureRepository = pictureRepository;
+            _userPhotoRepository = userPhotoRepository;
         }
 
         public FarmProjection Find(long id)
@@ -169,21 +171,25 @@ namespace Camino.Service.Business.Farms
 
             var filteredNumber = farmQuery.Select(x => x.Id).Count();
 
-            var thumbnailType = (int)FarmPictureType.Thumbnail;
-            var query = from ar in farmQuery
-                        join pic in _farmPictureRepository.Table
-                        on ar.Id equals pic.FarmId into pics
+            var avatarTypeId = (byte)UserPhotoKind.Avatar;
+            var thumbnailTypeId = (int)FarmPictureType.Thumbnail;
+            var query = from farm in farmQuery
+                        join pic in _farmPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
+                        on farm.Id equals pic.FarmId into pics
                         from p in pics.DefaultIfEmpty()
-                        where p == null || p.PictureType == thumbnailType
+                        join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
+                        on farm.CreatedById equals pho.CreatedById into photos
+                        from userPhoto in photos.DefaultIfEmpty()
                         select new FarmProjection
                         {
-                            Id = ar.Id,
-                            Name = ar.Name,
-                            CreatedById = ar.CreatedById,
-                            CreatedDate = ar.CreatedDate,
-                            Description = ar.Description,
-                            UpdatedById = ar.UpdatedById,
-                            UpdatedDate = ar.UpdatedDate,
+                            Id = farm.Id,
+                            Name = farm.Name,
+                            CreatedById = farm.CreatedById,
+                            CreatedDate = farm.CreatedDate,
+                            Description = farm.Description,
+                            UpdatedById = farm.UpdatedById,
+                            UpdatedDate = farm.UpdatedDate,
+                            CreatedByPhotoCode = userPhoto.Code,
                             Pictures = new List<PictureRequestProjection>()
                             {
                                 new PictureRequestProjection()
@@ -232,8 +238,6 @@ namespace Camino.Service.Business.Farms
                 UpdatedDate = modifiedDate,
                 Description = farm.Description
             };
-            newFarm.UpdatedDate = modifiedDate;
-            newFarm.CreatedDate = modifiedDate;
 
             var id = await _farmRepository.AddWithInt64EntityAsync(newFarm);
             if (id > 0)

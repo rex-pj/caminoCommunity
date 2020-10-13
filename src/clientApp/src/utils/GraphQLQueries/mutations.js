@@ -153,6 +153,16 @@ export const FILTER_PRODUCT_CATEGORIES = gql`
   }
 `;
 
+export const FILTER_FARM_TYPES = gql`
+  mutation($criterias: SelectFilterModelInput) {
+    categories: farmTypes(criterias: $criterias) {
+      id
+      isSelected
+      text
+    }
+  }
+`;
+
 export const CREATE_ARTICLE = gql`
   mutation($criterias: ArticleModelInput!) {
     createArticle(criterias: $criterias) {
@@ -164,6 +174,14 @@ export const CREATE_ARTICLE = gql`
 export const CREATE_PRODUCT = gql`
   mutation($criterias: ProductModelInput!) {
     createProduct(criterias: $criterias) {
+      id
+    }
+  }
+`;
+
+export const CREATE_FARM = gql`
+  mutation($criterias: FarmModelInput!) {
+    createFarm(criterias: $criterias) {
       id
     }
   }

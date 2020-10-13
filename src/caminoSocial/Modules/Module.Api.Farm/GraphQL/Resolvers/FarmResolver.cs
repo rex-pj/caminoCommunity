@@ -87,6 +87,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     CreatedById = x.CreatedById,
                     CreatedDate = x.CreatedDate,
                     Name = x.Name,
+                    CreatedByPhotoCode = x.CreatedByPhotoCode,
                     Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
                     {
                         Id = y.Id

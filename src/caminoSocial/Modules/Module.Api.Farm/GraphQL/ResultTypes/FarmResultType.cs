@@ -11,6 +11,7 @@ namespace Module.Api.Farm.GraphQL.ResultTypes
             descriptor.Field(x => x.Name).Type<StringType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.CreatedByIdentityId).Type<StringType>();
+            descriptor.Field(x => x.CreatedByPhotoCode).Type<StringType>();
             descriptor.Field(x => x.FarmTypeId).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.UpdateById).Type<LongType>();
