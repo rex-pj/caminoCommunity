@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { ThumbnailRound } from "../../molecules/Thumbnails";
@@ -143,14 +143,18 @@ export default (props) => {
           <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
         </PostTitle>
         <TopBarInfo>
-          <FontAwesomeIcon icon="map-marker-alt" />
-          <span>{farm.address}</span>
+          {farm.address ? (
+            <Fragment>
+              <FontAwesomeIcon icon="map-marker-alt" />
+              <span>{farm.address}</span>
+            </Fragment>
+          ) : null}
         </TopBarInfo>
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-          <p dangerouslySetInnerHTML={{ __html: farm.description }}></p>
+            <p dangerouslySetInnerHTML={{ __html: farm.description }}></p>
           </ContentBody>
         </div>
 

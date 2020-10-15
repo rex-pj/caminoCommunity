@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Camino.Service.Projections.Content
+namespace Camino.Service.Projections.Product
 {
-    public class ArticlePictureProjection
+    public class ProductPictureProjection
     {
-        public long ArticleId { get; set; }
-        public string ArticleName { get; set; }
-        public int ArticlePictureType { get; set; }
+        public long ProductId { get; set; }
+        public string ProductName { get; set; }
+        public int ProductPictureType { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

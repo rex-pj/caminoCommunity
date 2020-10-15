@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Camino.Service.Projections.Content
+namespace Camino.Service.Projections.Article
 {
     public class ArticleCategoryProjection
     {

@@ -1,4 +1,4 @@
-﻿using Camino.Service.Projections.Content;
+﻿using Camino.Service.Projections.Media;
 using System.Threading.Tasks;
 
 namespace Camino.Service.Business.Media.Contracts

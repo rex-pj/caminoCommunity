@@ -1,7 +1,7 @@
-﻿using Camino.Service.Projections.Content;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Service.Projections.Filters;
 using System.Threading.Tasks;
 using Camino.Service.Projections.PageList;
+using Camino.Service.Projections.Article;
 
 namespace Camino.Service.Business.Articles.Contracts
 {

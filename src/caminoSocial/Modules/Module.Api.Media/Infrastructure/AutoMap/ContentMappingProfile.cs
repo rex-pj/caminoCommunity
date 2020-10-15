@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Camino.DAL.Entities;
-using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Media;
 
 namespace Module.Api.Media.Infrastructure.AutoMap
 {

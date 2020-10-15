@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Camino.DAL.Entities;
-using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Article;
 using Module.Web.ArticleManagement.Models;
 
 namespace Module.Web.ArticleManagement.Infrastructure.AutoMap

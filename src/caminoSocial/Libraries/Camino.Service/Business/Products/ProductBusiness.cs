@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Camino.Service.Projections.Content;
 using Camino.Service.Projections.Filters;
 using Camino.Data.Contracts;
 using LinqToDB;
@@ -14,6 +13,7 @@ using Camino.Data.Enums;
 using Camino.Core.Utils;
 using System.Collections.Generic;
 using Camino.Service.Projections.Media;
+using Camino.Service.Projections.Product;
 
 namespace Camino.Service.Business.Products
 {

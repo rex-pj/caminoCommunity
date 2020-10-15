@@ -24,6 +24,7 @@ namespace Module.Api.Farm.Models
         public string CreatedByIdentityId { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
+        public string Address { get; set; }
         public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
     }
 }

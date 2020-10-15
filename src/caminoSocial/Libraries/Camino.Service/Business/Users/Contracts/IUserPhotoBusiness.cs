@@ -1,8 +1,8 @@
 ﻿using Camino.Data.Enums;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Camino.Service.Projections.Content;
 using Camino.Service.Projections.Request;
+using Camino.Service.Projections.Media;
 
 namespace Camino.Service.Business.Users.Contracts
 {

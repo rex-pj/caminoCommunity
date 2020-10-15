@@ -1,4 +1,4 @@
-﻿namespace Camino.Service.Projections.Content
+﻿namespace Camino.Service.Projections.Media
 {
     public class UserPhotoTypeProjection
     {

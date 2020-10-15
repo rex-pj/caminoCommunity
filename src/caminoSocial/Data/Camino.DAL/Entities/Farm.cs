@@ -12,6 +12,7 @@ namespace Camino.DAL.Entities
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public long FarmTypeId { get; set; }
+        public string Address { get; set; }
         public virtual FarmType FarmType { get; set; }
     }
 }

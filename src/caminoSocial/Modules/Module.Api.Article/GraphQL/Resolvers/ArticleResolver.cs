@@ -1,10 +1,9 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
 using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Article;
 using Camino.Service.Projections.Filters;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;

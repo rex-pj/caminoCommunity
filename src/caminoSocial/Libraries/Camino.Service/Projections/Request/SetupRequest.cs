@@ -1,5 +1,5 @@
-﻿using Camino.Service.Projections.Content;
-using Camino.Service.Projections.Identity;
+﻿using Camino.Service.Projections.Identity;
+using Camino.Service.Projections.Media;
 using System;
 using System.Collections.Generic;
 

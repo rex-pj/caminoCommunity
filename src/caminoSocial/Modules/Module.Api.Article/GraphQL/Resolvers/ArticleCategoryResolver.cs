@@ -1,7 +1,7 @@
 ﻿using Camino.Core.Models;
 using Camino.Framework.Models;
 using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Projections.Content;
+using Camino.Service.Projections.Article;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;

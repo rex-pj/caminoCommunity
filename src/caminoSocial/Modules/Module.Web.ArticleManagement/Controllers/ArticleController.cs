@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Camino.Service.Projections.Content;
 using Camino.Service.Projections.Filters;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Camino.Service.Business.Articles.Contracts;
+using Camino.Service.Projections.Article;
 
 namespace Module.Web.ArticleManagement.Controllers
 {

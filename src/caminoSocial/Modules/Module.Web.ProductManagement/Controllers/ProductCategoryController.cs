@@ -1,5 +1,4 @@
-﻿using Camino.Service.Projections.Content;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Service.Projections.Filters;
 using Camino.Core.Constants;
 using Camino.Core.Enums;
 using Camino.Framework.Attributes;
@@ -14,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Products.Contracts;
+using Camino.Service.Projections.Product;
 
 namespace Module.Web.ProductManagement.Controllers
 {

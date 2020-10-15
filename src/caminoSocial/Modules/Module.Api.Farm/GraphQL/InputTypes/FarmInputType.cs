@@ -9,6 +9,7 @@ namespace Module.Api.Farm.GraphQL.InputTypes
         protected override void Configure(IInputObjectTypeDescriptor<FarmModel> descriptor)
         {
             descriptor.Field(x => x.Name).Type<StringType>();
+            descriptor.Field(x => x.Address).Type<StringType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.FarmTypeId).Type<LongType>();
             descriptor.Field(x => x.Thumbnails).Type<ListType<PictureRequestInputType>>();

@@ -1,6 +1,5 @@
 ﻿using Module.Api.Auth.Models;
 using AutoMapper;
-using Camino.Service.Projections.Content;
 using Camino.Data.Enums;
 using Camino.Framework.GraphQL.Resolvers;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts.Core;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Camino.Service.Business.Users.Contracts;
+using Camino.Service.Projections.Media;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {

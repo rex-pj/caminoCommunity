@@ -49,6 +49,7 @@ namespace Camino.Service.Business.Farms
                              CreatedById = farm.CreatedById,
                              Id = farm.Id,
                              Name = farm.Name,
+                             Address = farm.Address,
                              UpdatedById = farm.UpdatedById,
                              UpdatedDate = farm.UpdatedDate,
                              Description = farm.Description,
@@ -72,15 +73,16 @@ namespace Camino.Service.Business.Farms
                          where farm.Id == id
                          select new FarmProjection
                          {
+                             Id = farm.Id,
+                             Name = farm.Name,
+                             Address = farm.Address,
                              Description = farm.Description,
                              CreatedDate = farm.CreatedDate,
                              CreatedById = farm.CreatedById,
-                             Id = farm.Id,
-                             Name = farm.Name,
                              UpdatedById = farm.UpdatedById,
                              UpdatedDate = farm.UpdatedDate,
                              FarmTypeName = farmType.Name,
-                             FarmTypeId = farm.FarmTypeId
+                             FarmTypeId = farm.FarmTypeId,
                          }).FirstOrDefault();
 
             if (exist == null)
@@ -184,6 +186,7 @@ namespace Camino.Service.Business.Farms
                         {
                             Id = farm.Id,
                             Name = farm.Name,
+                            Address = farm.Address,
                             CreatedById = farm.CreatedById,
                             CreatedDate = farm.CreatedDate,
                             Description = farm.Description,
@@ -232,11 +235,12 @@ namespace Camino.Service.Business.Farms
             {
                 FarmTypeId = farm.FarmTypeId,
                 Name = farm.Name,
+                Address = farm.Address,
                 UpdatedById = farm.UpdatedById,
                 CreatedById = farm.CreatedById,
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
-                Description = farm.Description
+                Description = farm.Description,
             };
 
             var id = await _farmRepository.AddWithInt64EntityAsync(newFarm);
@@ -281,6 +285,7 @@ namespace Camino.Service.Business.Farms
             farm.FarmTypeId = request.FarmTypeId;
             farm.UpdatedById = request.UpdatedById;
             farm.UpdatedDate = updatedDate;
+            farm.Address = farm.Address;
 
             int index = 0;
             foreach (var picture in request.Pictures)

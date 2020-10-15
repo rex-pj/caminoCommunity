@@ -180,6 +180,7 @@ export const GET_USER_FARMS = gql`
         updatedDate
         createdByIdentityId
         createdByPhotoCode
+        address
         thumbnails {
           id
         }

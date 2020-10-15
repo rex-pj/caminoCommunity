@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Camino.Service.Projections.Content
+namespace Camino.Service.Projections.Article
 {
     public class ArticleProjection
     {

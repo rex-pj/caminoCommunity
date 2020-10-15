@@ -6,12 +6,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Camino.Service.Projections.Content;
 using Camino.Data.Enums;
 using Camino.Service.Business.Users.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Projections.Request;
+using Camino.Service.Projections.Media;
 
 namespace Camino.Service.Business.Users
 {

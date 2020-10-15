@@ -1,11 +1,11 @@
-﻿using Camino.Service.Projections.Content;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Service.Projections.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Camino.DAL.Entities;
 using Camino.Service.Projections.PageList;
+using Camino.Service.Projections.Product;
 
 namespace Camino.Service.Business.Products.Contracts
 {

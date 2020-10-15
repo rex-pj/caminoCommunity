@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Camino.Data.Contracts;
-using Camino.Service.Projections.Content;
+﻿using Camino.Data.Contracts;
 using Camino.Service.Projections.Filters;
 using System;
 using System.Collections.Generic;
@@ -12,6 +10,7 @@ using Camino.Service.Business.Products.Contracts;
 using Camino.DAL.Entities;
 using Camino.IdentityDAL.Entities;
 using Camino.Service.Projections.PageList;
+using Camino.Service.Projections.Product;
 
 namespace Camino.Service.Business.Products
 {

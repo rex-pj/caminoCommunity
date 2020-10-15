@@ -23,6 +23,7 @@ namespace Camino.Service.Projections.Farm
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
         public string CreatedByPhotoCode { get; set; }
+        public string Address { get; set; }
         public IEnumerable<PictureRequestProjection> Pictures { get; set; }
     }
 }

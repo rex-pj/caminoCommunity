@@ -20,12 +20,8 @@ const FormRow = styled.div`
     width: 100%;
   }
 
-  .select{
+  .select {
     z-index: 10;
-  }
-
-  ${AsyncSelect} {
-    max-width: 100%;
   }
 `;
 
@@ -211,13 +207,13 @@ export default withRouter((props) => {
     });
   };
 
-  const { name, farmTypeId, thumbnails } = formData;
+  const { name, address, farmTypeId, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
         <FormRow className="row">
-        <div className="col-12 col-lg-6 pr-lg-1">
-        <Textbox
+          <div className="col-6 col-lg-6 pr-lg-1">
+            <Textbox
               name="name"
               value={name.value}
               autoComplete="off"
@@ -225,8 +221,8 @@ export default withRouter((props) => {
               placeholder="Farm title"
             />
           </div>
-          <div className="col-10 col-lg-4 px-lg-1 pr-1">
-          {farmTypeId.value ? (
+          <div className="col-6 col-lg-6 pl-lg-1">
+            {farmTypeId.value ? (
               <AsyncSelect
                 className="select"
                 cacheOptions
@@ -248,7 +244,18 @@ export default withRouter((props) => {
               />
             )}
           </div>
-          <div className="col-2 col-lg-2 pl-lg-1 pl-1">
+        </FormRow>
+        <FormRow className="row">
+          <div className="col-9 col-lg-10 pr-lg-1">
+            <Textbox
+              name="address"
+              value={address.value}
+              autoComplete="off"
+              onChange={(e) => handleInputChange(e)}
+              placeholder="Address"
+            />
+          </div>
+          <div className="col-3 col-lg-2 pl-lg-1 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>

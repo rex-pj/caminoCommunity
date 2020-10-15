@@ -37,6 +37,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Description = criterias.Description,
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
+                Address = criterias.Address,
                 Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
                 {
                     Base64Data = x.Base64Data,
@@ -87,6 +88,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     CreatedById = x.CreatedById,
                     CreatedDate = x.CreatedDate,
                     Name = x.Name,
+                    Address = x.Address,
                     CreatedByPhotoCode = x.CreatedByPhotoCode,
                     Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
                     {
@@ -97,6 +99,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 foreach (var farm in farms)
                 {
                     farm.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(farm.CreatedById);
+                    if (farm.Description.Length >= 150)
+                    {
+                        farm.Description = $"{farm.Description.Substring(0, 150)}...";
+                    }
                 }
 
                 var farmPage = new FarmPageListModel(farms)

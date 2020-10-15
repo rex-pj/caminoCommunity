@@ -13,6 +13,13 @@ export default {
     },
     isValid: false,
   },
+  address: {
+    value: "",
+    validation: {
+      isRequired: false,
+    },
+    isValid: true,
+  },
   farmTypeId: {
     value: [],
     validation: {
