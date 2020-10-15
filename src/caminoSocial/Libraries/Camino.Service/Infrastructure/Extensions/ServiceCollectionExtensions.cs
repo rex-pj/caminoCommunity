@@ -13,6 +13,8 @@ using Camino.Service.Business.Authorization;
 using Camino.Service.Business.Authorization.Contracts;
 using Camino.Service.Business.Farms;
 using Camino.Service.Business.Farms.Contracts;
+using Camino.Service.Business.Feeds;
+using Camino.Service.Business.Feeds.Contracts;
 using Camino.Service.Business.Identities;
 using Camino.Service.Business.Identities.Contracts;
 using Camino.Service.Business.Media;
@@ -67,6 +69,7 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IProductBusiness, ProductBusiness>()
                 .AddTransient<IProductCategoryBusiness, ProductCategoryBusiness>()
                 .AddTransient<IProductPictureBusiness, ProductPictureBusiness>()
+                .AddTransient<IFeedBusiness, FeedBusiness>()
                 .AddTransient<ValidationStrategyContext>();
         }
 
