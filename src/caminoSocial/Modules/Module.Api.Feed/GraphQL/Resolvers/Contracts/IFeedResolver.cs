@@ -6,5 +6,6 @@ namespace Module.Api.Feed.GraphQL.Resolvers.Contracts
     public interface IFeedResolver
     {
         Task<FeedPageListModel> GetUserFeedsAsync(FeedFilterModel criterias);
+        Task<FeedPageListModel> GetFeedsAsync(FeedFilterModel criterias);
     }
 }

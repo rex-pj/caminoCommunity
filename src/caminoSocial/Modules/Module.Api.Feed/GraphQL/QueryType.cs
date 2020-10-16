@@ -13,7 +13,11 @@ namespace Module.Api.Feed.GraphQL
         {
             descriptor.Field<IFeedResolver>(x => x.GetUserFeedsAsync(default))
                 .Type<FeedPageListType>()
-                //.Directive<AuthenticationDirectiveType>()
+                .Directive<AuthenticationDirectiveType>()
+                .Argument("criterias", a => a.Type<FeedFilterInputType>());
+
+            descriptor.Field<IFeedResolver>(x => x.GetFeedsAsync(default))
+                .Type<FeedPageListType>()
                 .Argument("criterias", a => a.Type<FeedFilterInputType>());
         }
     }

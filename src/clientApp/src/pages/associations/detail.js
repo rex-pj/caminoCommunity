@@ -3,7 +3,7 @@ import AssociationLayout from "../../components/templates/Layout/AssociationLayo
 import Detail from "../../components/templates/Association/Detail";
 import { UrlConstant } from "../../utils/Constants";
 import Feeds from "../../components/templates/Feeds";
-import { ContentType } from "../../utils/Enums";
+import { FeedType } from "../../utils/Enums";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -58,7 +58,7 @@ export default () => {
     commentNumber: "14",
     name:
       "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
-    contentType: ContentType.Article,
+    feedType: FeedType.Article,
   };
 
   const product = {
@@ -71,7 +71,7 @@ export default () => {
     price: 100000,
     farmUrl: `${UrlConstant.Farm.url}1`,
     farmName: "Trang trại ông Chín Sớm",
-    contentType: ContentType.Product,
+    feedType: FeedType.Product,
     updatedDate: "4/12/2018",
     reactionNumber: "45+",
     url: `${UrlConstant.Product.url}1`,

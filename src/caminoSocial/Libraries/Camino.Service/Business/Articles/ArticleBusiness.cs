@@ -174,7 +174,7 @@ namespace Camino.Service.Business.Articles
                         on ar.Id equals pic.ArticleId into pics
                         from picture in pics.DefaultIfEmpty()
                         join pho in _userPhotoRepository.Get(x =>  x.TypeId == avatarTypeId)
-                        on ar.CreatedById equals pho.CreatedById into photos
+                        on ar.CreatedById equals pho.UserId into photos
                         from photo in photos.DefaultIfEmpty()
                         select new ArticleProjection
                         {

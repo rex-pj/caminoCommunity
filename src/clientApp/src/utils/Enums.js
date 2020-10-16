@@ -1,8 +1,8 @@
-const ContentType = {
+const FeedType = {
   Article: 1,
   Product: 2,
   Farm: 3,
   Association: 4,
 };
 
-export { ContentType };
+export { FeedType };

@@ -88,7 +88,9 @@ export default (props) => {
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            {article.description}
+            <span
+              dangerouslySetInnerHTML={{ __html: article.description }}
+            ></span>
             <DetailLink>
               <AnchorLink to={article.url}>Detail</AnchorLink>
             </DetailLink>

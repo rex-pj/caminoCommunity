@@ -12,6 +12,7 @@ namespace Camino.Service.Projections.Feed
         public long PictureId { get; set; }
         public long CreatedById { get; set; }
         public string CreatedByName { get; set; }
+        public string CreatedByPhotoCode { get; set; }
         public string Address { get; set; }
         public int Price { get; set; }
         public FeedType FeedType { get; set; }

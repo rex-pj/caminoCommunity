@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
@@ -12,6 +12,7 @@ import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -127,9 +128,18 @@ export default (props) => {
               <Title>
                 <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
               </Title>
+
               <TopBarInfo>
-                <FontAwesomeIcon icon="map-marker-alt" />
-                <span>{farm.address}</span>
+                <span className="mr-3">
+                  <FontAwesomeIcon icon="calendar-alt" />
+                  <span>{convertDateTimeToPeriod(farm.createdDate)}</span>
+                </span>
+                {farm.address ? (
+                  <Fragment>
+                    <FontAwesomeIcon icon="map-marker-alt" />
+                    <span>{farm.address}</span>
+                  </Fragment>
+                ) : null}
               </TopBarInfo>
             </div>
 
@@ -146,7 +156,8 @@ export default (props) => {
       <PanelBody>
         <div className="panel-content">
           <Description>
-            {farm.description} <AnchorLink to={farm.url}>Detail</AnchorLink>
+            <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>{" "}
+            <AnchorLink to={farm.url}>Detail</AnchorLink>
           </Description>
         </div>
         <InteractiveToolbar>

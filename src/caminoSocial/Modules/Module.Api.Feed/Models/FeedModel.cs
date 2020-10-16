@@ -14,7 +14,8 @@ namespace Module.Api.Feed.Models
         public string CreatedByName { get; set; }
         public string Address { get; set; }
         public int Price { get; set; }
-        public FeedType FeedType { get; set; }
+        public int FeedType { get; set; }
+        public string CreatedByPhotoCode { get; set; }
         public string CreatedByIdentityId { get; set; }
     }
 }

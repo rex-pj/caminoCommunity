@@ -32,6 +32,9 @@ const cache = new InMemoryCache({
     FullUserInfoModel: {
       keyFields: ["userIdentityId"],
     },
+    FeedModel: {
+      keyFields: ["feedType", "id"],
+    },
   },
 });
 

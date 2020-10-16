@@ -15,9 +15,11 @@ namespace Module.Api.Feed.GraphQL.ResultTypes
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.CreatedById).Type<LongType>();
             descriptor.Field(x => x.CreatedDate).Type<DateTimeType>();
+            descriptor.Field(x => x.CreatedByName).Type<StringType>();
             descriptor.Field(x => x.Price).Type<IntType>();
             descriptor.Field(x => x.PictureId).Type<LongType>();
-            descriptor.Field(x => x.FeedType).Ignore();
+            descriptor.Field(x => x.FeedType).Type<IntType>();
+            descriptor.Field(x => x.CreatedByPhotoCode).Type<StringType>();
         }
     }
 }

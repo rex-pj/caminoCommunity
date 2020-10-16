@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import {
@@ -13,14 +13,17 @@ import {
   CREATE_ARTICLE,
   CREATE_PRODUCT,
   FILTER_FARM_TYPES,
-  CREATE_FARM
+  CREATE_FARM,
 } from "../../utils/GraphQLQueries/mutations";
+import { GET_USER_FEEDS } from "../../utils/GraphQLQueries/queries";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
 import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
 import { useStore } from "../../store/hook-store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonSecondary } from "../../components/atoms/Buttons/Buttons";
+import { UrlConstant } from "../../utils/Constants";
+import { FeedType } from "../../utils/Enums";
 
 const EditorTabs = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
@@ -38,16 +41,19 @@ const EditorTabs = styled.div`
 `;
 
 export default withRouter((props) => {
-  const feeds = [];
   const [editorMode, setEditorMode] = useState("ARTICLE");
 
-  const { location, pageNumber, userUrl } = props;
+  const { location, pageNumber, match } = props;
+  const { params } = match;
+  const { userId } = params;
 
-  const [pageOptions] = useState({
-    totalPage: 10,
-    pageQuery: location.search,
-    baseUrl: userUrl + "/feeds",
-    currentPage: pageNumber ? pageNumber : 1,
+  const { loading, data } = useQuery(GET_USER_FEEDS, {
+    variables: {
+      criterias: {
+        userIdentityId: userId,
+        page: pageNumber,
+      },
+    },
   });
 
   const dispatch = useStore(false)[1];
@@ -194,6 +200,10 @@ export default withRouter((props) => {
     setEditorMode(name);
   };
 
+  if (loading || !data) {
+    return <Fragment></Fragment>;
+  }
+
   let editor = null;
   if (editorMode === "ARTICLE") {
     editor = (
@@ -206,7 +216,7 @@ export default withRouter((props) => {
         showValidationError={showValidationError}
       />
     );
-  } else if(editorMode === "PRODUCT") {
+  } else if (editorMode === "PRODUCT") {
     editor = (
       <ProductEditor
         height={230}
@@ -217,8 +227,7 @@ export default withRouter((props) => {
         showValidationError={showValidationError}
       />
     );
-  }
-  else{
+  } else {
     editor = (
       <FarmEditor
         height={230}
@@ -231,7 +240,39 @@ export default withRouter((props) => {
     );
   }
 
-  const { totalPage, currentPage, baseUrl, pageQuery } = pageOptions;
+  const { userFeeds } = data;
+  const { totalPage, filter, collections } = userFeeds;
+
+  const feeds = collections.map((item) => {
+    let feed = { ...item };
+    if (feed.feedType === FeedType.Farm) {
+      feed.url = `${UrlConstant.Farm.url}${feed.id}`;
+    } else if (feed.feedType === FeedType.Article) {
+      feed.url = `${UrlConstant.Article.url}${feed.id}`;
+    } else if (feed.feedType === FeedType.Product) {
+      feed.url = `${UrlConstant.Product.url}${feed.id}`;
+    }
+
+    if (feed.pictureId > 0) {
+      feed.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+    }
+
+    feed.creator = {
+      createdDate: item.createdDate,
+      profileUrl: `/profile/${item.createdByIdentityId}`,
+      name: item.createdByName,
+    };
+
+    if (item.createdByPhotoCode) {
+      feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+    }
+
+    return feed;
+  });
+
+  const pageQuery = location.search;
+  const { page } = filter;
+  const baseUrl = props.userUrl + "/feeds";
   return (
     <Fragment>
       <EditorTabs>
@@ -239,7 +280,7 @@ export default withRouter((props) => {
           <ButtonSecondary
             size="sm"
             className={`mr-1${editorMode === "ARTICLE" ? " actived" : ""}`}
-            onClick={()=> onToggleCreateMode("ARTICLE")}
+            onClick={() => onToggleCreateMode("ARTICLE")}
           >
             <span>
               <FontAwesomeIcon
@@ -251,7 +292,7 @@ export default withRouter((props) => {
           </ButtonSecondary>
           <ButtonSecondary
             size="sm"
-            onClick={()=> onToggleCreateMode("PRODUCT")}
+            onClick={() => onToggleCreateMode("PRODUCT")}
             className={`mr-1${editorMode === "PRODUCT" ? " actived" : ""}`}
           >
             <span>
@@ -264,7 +305,7 @@ export default withRouter((props) => {
           </ButtonSecondary>
           <ButtonSecondary
             size="sm"
-            onClick={()=> onToggleCreateMode("FARM")}
+            onClick={() => onToggleCreateMode("FARM")}
             className={`mr-1${editorMode === "FARM" ? " actived" : ""}`}
           >
             <span>
@@ -281,13 +322,16 @@ export default withRouter((props) => {
       {editor}
 
       {feeds
-        ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
+        ? feeds.map((item) => {
+            const key = `${item.feedType}_${item.id}`;
+            return <FeedItem key={key} feed={item} />;
+          })
         : null}
       <Pagination
         totalPage={totalPage}
         baseUrl={baseUrl}
         pageQuery={pageQuery}
-        currentPage={currentPage}
+        currentPage={page}
       />
     </Fragment>
   );

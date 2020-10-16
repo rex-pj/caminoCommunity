@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
@@ -11,6 +11,7 @@ import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -57,7 +58,8 @@ export default function (props) {
   const { creator } = product;
 
   if (creator) {
-    creator.info = `Created at ${product.createdDate}`;
+    var datePeriod = convertDateTimeToPeriod(product.createdDate);
+    creator.info = `${datePeriod}`;
   }
 
   return (
@@ -80,8 +82,13 @@ export default function (props) {
         </ContentTopbar>
 
         <Title>
-          <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
-          <FontAwesomeIcon icon="angle-right" />
+          {product.farmUrl ? (
+            <Fragment>
+              <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
+              <FontAwesomeIcon icon="angle-right" />
+            </Fragment>
+          ) : null}
+
           <AnchorLink to={product.url}>{product.name}</AnchorLink>
         </Title>
       </PanelHeader>
@@ -97,7 +104,9 @@ export default function (props) {
             <PriceLabel price={product.price} currency="vnđ" />
             <div className="panel-content">
               <Description>
-                {product.description}{" "}
+                <span
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                ></span>{" "}
                 <AnchorLink to={product.url}>Detail</AnchorLink>
               </Description>
             </div>
