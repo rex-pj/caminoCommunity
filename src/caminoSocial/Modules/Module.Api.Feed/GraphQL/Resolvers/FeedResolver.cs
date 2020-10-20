@@ -4,6 +4,7 @@ using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
 using Camino.Service.Business.Feeds.Contracts;
+using Camino.Service.Projections.Feed;
 using Camino.Service.Projections.Filters;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
@@ -53,29 +54,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             try
             {
                 var feedPageList = await _feedBusiness.GetAsync(filterRequest);
-                var feeds = feedPageList.Collections.Select(x => new FeedModel()
-                {
-                    Address = x.Address,
-                    CreatedById = x.CreatedById,
-                    CreatedByName = x.CreatedByName,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    FeedType = (int)x.FeedType,
-                    Id = x.Id,
-                    Name = x.Name,
-                    PictureId = x.PictureId,
-                    Price = x.Price,
-                    CreatedByPhotoCode = x.CreatedByPhotoCode
-                }).ToList();
-
-                foreach (var feed in feeds)
-                {
-                    feed.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(feed.CreatedById);
-                    if (!string.IsNullOrEmpty(feed.Description) && feed.Description.Length >= 150)
-                    {
-                        feed.Description = $"{feed.Description.Substring(0, 150)}...";
-                    }
-                }
+                var feeds = await MapFeedsProjectionToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -109,28 +88,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             try
             {
                 var feedPageList = await _feedBusiness.GetAsync(filterRequest);
-                var feeds = feedPageList.Collections.Select(x => new FeedModel()
-                {
-                    Address = x.Address,
-                    CreatedById = x.CreatedById,
-                    CreatedByName = x.CreatedByName,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    FeedType = (int)x.FeedType,
-                    Id = x.Id,
-                    Name = x.Name,
-                    PictureId = x.PictureId,
-                    Price = x.Price,
-                    CreatedByPhotoCode = x.CreatedByPhotoCode
-                }).ToList();
-
-                foreach (var feed in feeds)
-                {
-                    if (!string.IsNullOrEmpty(feed.Description) && feed.Description.Length >= 150)
-                    {
-                        feed.Description = $"{feed.Description.Substring(0, 150)}...";
-                    }
-                }
+                var feeds = await MapFeedsProjectionToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -145,6 +103,35 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             {
                 throw;
             }
+        }
+
+        private async Task<IList<FeedModel>> MapFeedsProjectionToModelAsync(IEnumerable<FeedProjection> feedProjections)
+        {
+            var feeds = feedProjections.Select(x => new FeedModel()
+            {
+                Address = x.Address,
+                CreatedById = x.CreatedById,
+                CreatedByName = x.CreatedByName,
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                FeedType = (int)x.FeedType,
+                Id = x.Id,
+                Name = x.Name,
+                PictureId = x.PictureId,
+                Price = x.Price,
+                CreatedByPhotoCode = x.CreatedByPhotoCode
+            }).ToList();
+
+            foreach (var feed in feeds)
+            {
+                feed.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(feed.CreatedById);
+                if (!string.IsNullOrEmpty(feed.Description) && feed.Description.Length >= 150)
+                {
+                    feed.Description = $"{feed.Description.Substring(0, 150)}...";
+                }
+            }
+
+            return feeds;
         }
     }
 }

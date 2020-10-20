@@ -82,28 +82,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             try
             {
                 var productPageList = await _productBusiness.GetAsync(filterRequest);
-                var products = productPageList.Collections.Select(x => new ProductModel()
-                {
-                    ProductCategoryId = x.ProductCategoryId,
-                    ProductCategoryName = x.ProductCategoryName,
-                    Id = x.Id,
-                    CreatedBy = x.CreatedBy,
-                    CreatedById = x.CreatedById,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Name = x.Name,
-                    Price = x.Price,
-                    Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
-                    {
-                        Id = y.Id
-                    }),
-                    CreatedByPhotoCode = x.CreatedByPhotoCode
-                }).ToList();
-
-                foreach (var product in products)
-                {
-                    product.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(product.CreatedById);
-                }
+                var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
                 {
@@ -118,6 +97,114 @@ namespace Module.Api.Product.GraphQL.Resolvers
             {
                 throw;
             }
+        }
+
+        public async Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new ProductFilterModel();
+            }
+
+            var filterRequest = new ProductFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            try
+            {
+                var productPageList = await _productBusiness.GetAsync(filterRequest);
+                var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
+
+                var productPage = new ProductPageListModel(products)
+                {
+                    Filter = criterias,
+                    TotalPage = productPageList.TotalPage,
+                    TotalResult = productPageList.TotalResult
+                };
+
+                return productPage;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<IList<ProductModel>> MapProductsProjectionToModelAsync(IEnumerable<ProductProjection> productProjections)
+        {
+            var products = productProjections.Select(x => new ProductModel()
+            {
+                ProductCategoryId = x.ProductCategoryId,
+                ProductCategoryName = x.ProductCategoryName,
+                Id = x.Id,
+                CreatedBy = x.CreatedBy,
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                Name = x.Name,
+                Price = x.Price,
+                Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
+                {
+                    Id = y.Id
+                }),
+                CreatedByPhotoCode = x.CreatedByPhotoCode
+            }).ToList();
+
+            foreach (var product in products)
+            {
+                product.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(product.CreatedById);
+            }
+
+            return products;
+        }
+
+        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new ProductFilterModel();
+            }
+
+            try
+            {
+                var productProjection = await _productBusiness.FindDetailAsync(criterias.Id);
+
+                var product = await MapProductProjectionToModelAsync(productProjection);
+
+                return product;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<ProductModel> MapProductProjectionToModelAsync(ProductProjection productProjection)
+        {
+            var product =  new ProductModel()
+            {
+                ProductCategoryId = productProjection.ProductCategoryId,
+                ProductCategoryName = productProjection.ProductCategoryName,
+                Id = productProjection.Id,
+                CreatedBy = productProjection.CreatedBy,
+                CreatedById = productProjection.CreatedById,
+                CreatedDate = productProjection.CreatedDate,
+                Description = productProjection.Description,
+                Name = productProjection.Name,
+                Price = productProjection.Price,
+                Thumbnails = productProjection.Thumbnails.Select(y => new PictureRequestModel()
+                {
+                    Id = y.Id
+                }),
+                CreatedByPhotoCode = productProjection.CreatedByPhotoCode
+            };
+
+            product.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(product.CreatedById);
+
+            return product;
         }
     }
 }

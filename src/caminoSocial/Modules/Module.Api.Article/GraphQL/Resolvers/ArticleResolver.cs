@@ -72,27 +72,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             try
             {
                 var articlePageList = await _articleBusiness.GetAsync(filterRequest);
-                var articles = articlePageList.Collections.Select(x => new ArticleModel()
-                {
-                    ArticleCategoryId = x.ArticleCategoryId,
-                    ArticleCategoryName = x.ArticleCategoryName,
-                    Content = x.Content,
-                    Id = x.Id,
-                    CreatedBy = x.CreatedBy,
-                    CreatedById = x.CreatedById,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Name = x.Name,
-                    ThumbnailId = x.ThumbnailId,
-                    ThumbnailFileType = x.ThumbnailFileType,
-                    ThumbnailFileName = x.ThumbnailFileName,
-                    CreatedByPhotoCode = x.CreatedByPhotoCode
-                }).ToList();
-
-                foreach (var article in articles)
-                {
-                    article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
-                }
+                var articles = await MapArticlesProjectionToModelAsync(articlePageList.Collections);
 
                 var articlePage = new ArticlePageListModel(articles)
                 {
@@ -107,6 +87,71 @@ namespace Module.Api.Article.GraphQL.Resolvers
             {
                 throw;
             }
+        }
+
+        public async Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new ArticleFilterModel();
+            }
+
+            var filterRequest = new ArticleFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            try
+            {
+                var articlePageList = await _articleBusiness.GetAsync(filterRequest);
+                var articles = await MapArticlesProjectionToModelAsync(articlePageList.Collections);
+
+                var articlePage = new ArticlePageListModel(articles)
+                {
+                    Filter = criterias,
+                    TotalPage = articlePageList.TotalPage,
+                    TotalResult = articlePageList.TotalResult
+                };
+
+                return articlePage;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<IList<ArticleModel>> MapArticlesProjectionToModelAsync(IEnumerable<ArticleProjection> articleProjections)
+        {
+            var articles = articleProjections.Select(x => new ArticleModel()
+            {
+                ArticleCategoryId = x.ArticleCategoryId,
+                ArticleCategoryName = x.ArticleCategoryName,
+                Content = x.Content,
+                Id = x.Id,
+                CreatedBy = x.CreatedBy,
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                Name = x.Name,
+                ThumbnailId = x.ThumbnailId,
+                ThumbnailFileType = x.ThumbnailFileType,
+                ThumbnailFileName = x.ThumbnailFileName,
+                CreatedByPhotoCode = x.CreatedByPhotoCode
+            }).ToList();
+
+            foreach (var article in articles)
+            {
+                article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
+                if (!string.IsNullOrEmpty(article.Content) && article.Content.Length >= 150)
+                {
+                    article.Description = $"{article.Content.Substring(0, 150)}...";
+                }
+            }
+
+            return articles;
         }
     }
 }

@@ -15,6 +15,14 @@ namespace Module.Api.Product.GraphQL
                 .Type<ProductPageListType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<ProductFilterInputType>());
+
+            descriptor.Field<IProductResolver>(x => x.GetProductsAsync(default))
+                .Type<ProductPageListType>()
+                .Argument("criterias", a => a.Type<ProductFilterInputType>());
+
+            descriptor.Field<IProductResolver>(x => x.GetProductAsync(default))
+                .Type<ProductResultType>()
+                .Argument("criterias", a => a.Type<ProductFilterInputType>());
         }
     }
 }

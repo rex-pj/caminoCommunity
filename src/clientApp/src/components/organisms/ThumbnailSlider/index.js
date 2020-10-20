@@ -97,7 +97,7 @@ const NextButton = styled(NavigateButton)`
   right: ${(p) => p.theme.size.exTiny};
 `;
 
-class ThumbnailSlider extends Component {
+export default class extends Component {
   constructor(props) {
     super(props);
 
@@ -272,5 +272,3 @@ class ThumbnailSlider extends Component {
     );
   }
 }
-
-export default ThumbnailSlider;

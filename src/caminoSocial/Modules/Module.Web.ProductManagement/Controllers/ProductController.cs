@@ -67,7 +67,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
         [LoadResultAuthorizations("Product", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -76,7 +76,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var product = _productBusiness.FindDetail(id);
+                var product = await _productBusiness.FindDetailAsync(id);
                 if (product == null)
                 {
                     return RedirectToNotFoundPage();
@@ -124,9 +124,9 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var product = _productBusiness.FindDetail(id);
+            var product = await _productBusiness.FindDetailAsync(id);
             var model = _mapper.Map<ProductModel>(product);
 
             return View(model);

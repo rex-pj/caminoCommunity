@@ -7,5 +7,6 @@ namespace Module.Api.Article.GraphQL.Resolvers.Contracts
     {
         Task<ArticleModel> CreateArticleAsync(ArticleModel criterias);
         Task<ArticlePageListModel> GetUserArticlesAsync(ArticleFilterModel criterias);
+        Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias);
     }
 }

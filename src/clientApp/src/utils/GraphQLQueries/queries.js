@@ -244,3 +244,107 @@ export const GET_FEEDS = gql`
     }
   }
 `;
+
+export const GET_ARTICLES = gql`
+  query($criterias: ArticleFilterModelInput) {
+    articles(criterias: $criterias) {
+      totalPage
+      totalResult
+      filter {
+        page
+        pageSize
+        search
+      }
+      collections {
+        id
+        content
+        name
+        createdById
+        createdBy
+        createdDate
+        updatedDate
+        thumbnailId
+        createdByIdentityId
+        createdByPhotoCode
+      }
+    }
+  }
+`;
+
+export const GET_PRODUCTS = gql`
+  query($criterias: ProductFilterModelInput) {
+    products(criterias: $criterias) {
+      totalPage
+      totalResult
+      filter {
+        page
+        pageSize
+        search
+      }
+      collections {
+        id
+        description
+        name
+        createdById
+        createdBy
+        createdDate
+        updatedDate
+        price
+        createdByIdentityId
+        createdByPhotoCode
+        thumbnails {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const GET_PRODUCT = gql`
+  query($criterias: ProductFilterModelInput) {
+    product(criterias: $criterias) {
+      id
+      description
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      price
+      createdByIdentityId
+      createdByPhotoCode
+      thumbnails {
+        id
+      }
+    }
+  }
+`;
+
+export const GET_FARMS = gql`
+  query($criterias: FarmFilterModelInput) {
+    farms(criterias: $criterias) {
+      totalPage
+      totalResult
+      filter {
+        page
+        pageSize
+        search
+      }
+      collections {
+        id
+        description
+        name
+        createdById
+        createdBy
+        createdDate
+        updatedDate
+        createdByIdentityId
+        createdByPhotoCode
+        address
+        thumbnails {
+          id
+        }
+      }
+    }
+  }
+`;

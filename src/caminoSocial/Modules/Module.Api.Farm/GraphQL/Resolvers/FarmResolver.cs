@@ -78,32 +78,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             try
             {
                 var farmPageList = await _farmBusiness.GetAsync(filterRequest);
-                var farms = farmPageList.Collections.Select(x => new FarmModel()
-                {
-                    FarmTypeId = x.FarmTypeId,
-                    FarmTypeName = x.FarmTypeName,
-                    Description = x.Description,
-                    Id = x.Id,
-                    CreatedBy = x.CreatedBy,
-                    CreatedById = x.CreatedById,
-                    CreatedDate = x.CreatedDate,
-                    Name = x.Name,
-                    Address = x.Address,
-                    CreatedByPhotoCode = x.CreatedByPhotoCode,
-                    Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
-                    {
-                        Id = y.Id
-                    }),
-                }).ToList();
-
-                foreach (var farm in farms)
-                {
-                    farm.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(farm.CreatedById);
-                    if (farm.Description.Length >= 150)
-                    {
-                        farm.Description = $"{farm.Description.Substring(0, 150)}...";
-                    }
-                }
+                var farms = await MapFarmsProjectionToModelAsync(farmPageList.Collections);
 
                 var farmPage = new FarmPageListModel(farms)
                 {
@@ -118,6 +93,72 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             {
                 throw;
             }
+        }
+
+        public async Task<FarmPageListModel> GetFarmsAsync(FarmFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new FarmFilterModel();
+            }
+
+            var filterRequest = new FarmFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            try
+            {
+                var farmPageList = await _farmBusiness.GetAsync(filterRequest);
+                var farms = await MapFarmsProjectionToModelAsync(farmPageList.Collections);
+
+                var farmPage = new FarmPageListModel(farms)
+                {
+                    Filter = criterias,
+                    TotalPage = farmPageList.TotalPage,
+                    TotalResult = farmPageList.TotalResult
+                };
+
+                return farmPage;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<IList<FarmModel>> MapFarmsProjectionToModelAsync(IEnumerable<FarmProjection> farmProjections)
+        {
+            var farms = farmProjections.Select(x => new FarmModel()
+            {
+                FarmTypeId = x.FarmTypeId,
+                FarmTypeName = x.FarmTypeName,
+                Description = x.Description,
+                Id = x.Id,
+                CreatedBy = x.CreatedBy,
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                Name = x.Name,
+                Address = x.Address,
+                CreatedByPhotoCode = x.CreatedByPhotoCode,
+                Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
+                {
+                    Id = y.Id
+                }),
+            }).ToList();
+
+            foreach (var farm in farms)
+            {
+                farm.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(farm.CreatedById);
+                if (farm.Description.Length >= 150)
+                {
+                    farm.Description = $"{farm.Description.Substring(0, 150)}...";
+                }
+            }
+
+            return farms;
         }
     }
 }

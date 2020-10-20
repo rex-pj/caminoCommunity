@@ -69,11 +69,12 @@ namespace Camino.Service.Business.Products
             return exist;
         }
 
-        public ProductProjection FindDetail(long id)
+        public async Task<ProductProjection> FindDetailAsync(long id)
         {
             var product = (from p in _productRepository.Table
-                               //join c in _productCategoryRepository.Table
-                               //on p.ProductCategoryId equals c.Id
+                           join pr in _productPriceRepository.Get(x => x.IsCurrent)
+                           on p.Id equals pr.ProductId into prices
+                           from price in prices.DefaultIfEmpty()
                            where p.Id == id
                            select new ProductProjection
                            {
@@ -84,8 +85,7 @@ namespace Camino.Service.Business.Products
                                Name = p.Name,
                                UpdatedById = p.UpdatedById,
                                UpdatedDate = p.UpdatedDate,
-                               //ProductCategoryName = c.Name,
-                               //ProductCategoryId = p.ProductCategoryId,
+                               Price = price.Price
                            }).FirstOrDefault();
 
             if (product == null)
@@ -93,29 +93,28 @@ namespace Camino.Service.Business.Products
                 return null;
             }
 
-            var pictureTypeId = (int)ProductPictureType.Thumbnail;
-            var productPictureId = (from productPic in _productPictureRepository.Get(x => x.ProductId == id && x.PictureType == pictureTypeId)
-                                    join pic in _pictureRepository.Table
-                                    on productPic.PictureId equals pic.Id
-                                    orderby pic.CreatedDate descending
-                                    select pic.Id).FirstOrDefault();
+            var productPictureIds = await (from productPic in _productPictureRepository.Get(x => x.ProductId == id)
+                                           join pic in _pictureRepository.Table
+                                           on productPic.PictureId equals pic.Id
+                                           orderby pic.CreatedDate descending
+                                           select pic.Id).ToListAsync();
 
             var thumbnails = new List<PictureRequestProjection>();
-            if (productPictureId > 0)
+            if (productPictureIds.Any())
             {
-                thumbnails.Add(new PictureRequestProjection()
+                foreach (var productPictureId in productPictureIds)
                 {
-                    Id = productPictureId
-                });
+                    thumbnails.Add(new PictureRequestProjection()
+                    {
+                        Id = productPictureId
+                    });
+                }
             }
 
             product.Thumbnails = thumbnails;
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == product.CreatedById);
-            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == product.UpdatedById);
-
             product.CreatedBy = createdByUser.DisplayName;
-            product.UpdatedBy = updatedByUser.DisplayName;
 
             return product;
         }

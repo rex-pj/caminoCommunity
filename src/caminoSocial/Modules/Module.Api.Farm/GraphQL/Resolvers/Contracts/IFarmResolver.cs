@@ -7,5 +7,6 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
     {
         Task<FarmModel> CreateFarmAsync(FarmModel criterias);
         Task<FarmPageListModel> GetUserFarmsAsync(FarmFilterModel criterias);
+        Task<FarmPageListModel> GetFarmsAsync(FarmFilterModel criterias);
     }
 }

@@ -1,78 +1,17 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCT } from "../../utils/GraphQLQueries/queries";
+import { withRouter } from "react-router-dom";
 
-export default class extends Component {
-  constructor() {
-    super();
+export default withRouter(function (props) {
+  const { match } = props;
+  const { params } = match;
+  const { id } = params;
 
-    const product = {
-      title: "Chuối chính cây Đồng Nai",
-      createdDate: "25/03/2019 00:00",
-      thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-      content:
-        "Chúng ta đã nghe nói quá nhiều về những tác dụng tuyệt vời của chuối đối với sức khỏe, nhưng để duy trì việc ăn chuối thành thói quen tự nhiên hàng ngày thì vẫn rất ít người thực hiện được. Có thể bạn đã biết rõ tác dụng tốt của chuối, nhưng bạn vẫn chưa đủ động lực để ăn chuối hàng ngày, trong khi thói quen này lại có thể mang đến 5 thay đổi lớn đến các bộ phận cơ thể. Hãy tạo thói quen ăn chuối càng sớm càng tốt.",
-      commentNumber: "40+",
-      reactionNumber: "2.5+",
-      url: `${UrlConstant.Farm.url}1`,
-      address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-      price: 100000,
-      origin: "Đồng Nai",
-      farmUrl: `${UrlConstant.Farm.url}1`,
-      farmName: "Trang trại ông năm đất",
-      images: [
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-        },
-        {
-          name: "Peach",
-          url: `${process.env.PUBLIC_URL}/photos/peach.png`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
-        },
-        {
-          name: "Fruit",
-          url: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-        },
-      ],
-    };
-
-    this.state = {
-      product,
-      breadcrumbs: [],
-      relationProducts: [],
-    };
-  }
-
-  fetchRelationProducts = () => {
+  const fetchRelationProducts = () => {
     let relationProducts = [];
     for (let i = 0; i < 6; i++) {
       const productItem = {
@@ -95,41 +34,54 @@ export default class extends Component {
 
       relationProducts.push(productItem);
     }
-
-    this.setState({
-      relationProducts,
-    });
   };
 
-  componentDidMount() {
-    const breadcrumbs = [
-      {
-        title: "Products",
-        url: "/products/",
+  const { loading, data } = useQuery(GET_PRODUCT, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
       },
-      {
-        isActived: true,
-        title: "Chuối chính cây Đồng Nai",
-      },
-    ];
+    },
+  });
 
-    this.setState({
-      breadcrumbs,
-    });
+  if (loading || !data) {
+    return <Fragment></Fragment>;
   }
 
-  render() {
-    const { breadcrumbs, product, relationProducts } = this.state;
-    return (
-      <Fragment>
-        <Breadcrumb list={breadcrumbs} />
-        <Detail
-          product={product}
-          breadcrumbs={breadcrumbs}
-          fetchRelationProducts={this.fetchRelationProducts}
-          relationProducts={relationProducts}
-        />
-      </Fragment>
-    );
-  }
-}
+  const { product: productResponse } = data;
+  const relationProducts = [];
+  let product = { ...productResponse };
+
+  const breadcrumbs = [
+    {
+      title: "Products",
+      url: "/products/",
+    },
+    {
+      isActived: true,
+      title: product.name,
+    },
+  ];
+
+  product.images = product.thumbnails.map((item) => {
+    let image = { ...item };
+
+    if (image.id > 0) {
+      image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+      image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+    }
+    return image;
+  });
+
+  return (
+    <Fragment>
+      <Breadcrumb list={breadcrumbs} />
+      <Detail
+        product={product}
+        breadcrumbs={breadcrumbs}
+        fetchRelationProducts={fetchRelationProducts}
+        relationProducts={relationProducts}
+      />
+    </Fragment>
+  );
+});

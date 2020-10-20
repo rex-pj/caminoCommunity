@@ -9,7 +9,7 @@ namespace Camino.Service.Business.Products.Contracts
     {
         Task<long> CreateAsync(ProductProjection product);
         ProductProjection Find(long id);
-        ProductProjection FindDetail(long id);
+        Task<ProductProjection> FindDetailAsync(long id);
         ProductProjection FindByName(string name);
         Task<ProductProjection> UpdateAsync(ProductProjection article);
         Task<BasePageList<ProductProjection>> GetAsync(ProductFilter filter);
