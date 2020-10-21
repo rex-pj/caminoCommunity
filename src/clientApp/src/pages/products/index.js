@@ -6,11 +6,13 @@ import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
 
 export default withRouter(function (props) {
-  const { pageNumber } = props;
+  const { match } = props;
+  const { params } = match;
+  const { pageNumber } = params;
   const { loading, data } = useQuery(GET_PRODUCTS, {
     variables: {
       criterias: {
-        page: pageNumber,
+        page: pageNumber ? parseInt(pageNumber) : 1,
       },
     },
   });
@@ -39,6 +41,14 @@ export default withRouter(function (props) {
 
     if (item.createdByPhotoCode) {
       product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+    }
+
+    if (product.productFarms) {
+      product.productFarms = product.productFarms.map((pf) => {
+        let productFarm = { ...pf };
+        productFarm.url = `/farms/${pf.farmId}`;
+        return productFarm;
+      });
     }
 
     return product;

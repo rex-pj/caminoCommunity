@@ -140,10 +140,21 @@ export default (props) => {
         <RowItem>
           <PriceLabel price={product.price} currency="vnđ" />
         </RowItem>
-        <FarmInfo>
-          <FontAwesomeIcon icon="warehouse" />
-          <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
-        </FarmInfo>
+        {product.productFarms
+          ? product.productFarms.map((pf) => {
+              if (!pf.id) {
+                return null;
+              }
+
+              return (
+                <FarmInfo key={pf.id}>
+                  <FontAwesomeIcon icon="warehouse" />
+                  <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                </FarmInfo>
+              );
+            })
+          : null}
+
         <HorizontalList className="clearfix">
           <InteractItem>
             <HorizontalReactBar reactionNumber={product.reactionNumber} />

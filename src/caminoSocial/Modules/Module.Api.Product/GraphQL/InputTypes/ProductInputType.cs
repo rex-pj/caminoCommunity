@@ -13,6 +13,7 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.Id).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.ProductCategories).Type<ListType<ProductCategoryProductInputType>>();
+            descriptor.Field(x => x.ProductFarms).Type<ListType<ProductFarmInputType>>();
             descriptor.Field(x => x.Thumbnails).Type<ListType<PictureRequestInputType>>();
             descriptor.Field(x => x.UpdatedById).Ignore();
             descriptor.Field(x => x.UpdatedDate).Ignore();
@@ -20,8 +21,6 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.CreatedDate).Ignore();
             descriptor.Field(x => x.CreatedBy).Ignore();
             descriptor.Field(x => x.UpdatedBy).Ignore();
-            descriptor.Field(x => x.ProductCategoryName).Ignore();
-            descriptor.Field(x => x.ProductCategoryId).Ignore();
         }
     }
 }

@@ -22,10 +22,9 @@ namespace Camino.Service.Projections.Product
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }
-        public int ProductCategoryId { get; set; }
-        public string ProductCategoryName { get; set; }
         public int Price { get; set; }
         public IEnumerable<ProductCategoryProjection> ProductCategories { get; set; }
+        public IEnumerable<ProductFarmProjection> ProductFarms { get; set; }
         public IEnumerable<PictureRequestProjection> Thumbnails { get; set; }
     }
 }

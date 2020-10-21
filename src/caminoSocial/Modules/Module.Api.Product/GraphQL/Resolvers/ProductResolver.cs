@@ -43,10 +43,13 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     FileName = x.FileName,
                     ContentType = x.ContentType,
                 }),
-                ProductCategoryId = criterias.ProductCategoryId,
                 ProductCategories = criterias.ProductCategories.Select(x => new ProductCategoryProjection()
                 {
                     Id = x.Id
+                }),
+                ProductFarms = criterias.ProductFarms.Select(x => new ProductFarmProjection()
+                {
+                    FarmId = x.Id
                 })
             };
 
@@ -137,8 +140,6 @@ namespace Module.Api.Product.GraphQL.Resolvers
         {
             var products = productProjections.Select(x => new ProductModel()
             {
-                ProductCategoryId = x.ProductCategoryId,
-                ProductCategoryName = x.ProductCategoryName,
                 Id = x.Id,
                 CreatedBy = x.CreatedBy,
                 CreatedById = x.CreatedById,
@@ -146,11 +147,17 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Description = x.Description,
                 Name = x.Name,
                 Price = x.Price,
+                CreatedByPhotoCode = x.CreatedByPhotoCode,
                 Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
                 {
                     Id = y.Id
                 }),
-                CreatedByPhotoCode = x.CreatedByPhotoCode
+                ProductFarms = x.ProductFarms.Select(x => new ProductFarmModel()
+                {
+                    FarmName = x.FarmName,
+                    Id = x.Id,
+                    FarmId = x.FarmId
+                })
             }).ToList();
 
             foreach (var product in products)
@@ -184,10 +191,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
         private async Task<ProductModel> MapProductProjectionToModelAsync(ProductProjection productProjection)
         {
-            var product =  new ProductModel()
+            var product = new ProductModel()
             {
-                ProductCategoryId = productProjection.ProductCategoryId,
-                ProductCategoryName = productProjection.ProductCategoryName,
                 Id = productProjection.Id,
                 CreatedBy = productProjection.CreatedBy,
                 CreatedById = productProjection.CreatedById,
@@ -199,7 +204,13 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 {
                     Id = y.Id
                 }),
-                CreatedByPhotoCode = productProjection.CreatedByPhotoCode
+                CreatedByPhotoCode = productProjection.CreatedByPhotoCode,
+                ProductFarms = productProjection.ProductFarms.Select(x => new ProductFarmModel()
+                {
+                    FarmName = x.FarmName,
+                    Id = x.Id,
+                    FarmId = x.FarmId
+                })
             };
 
             product.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(product.CreatedById);

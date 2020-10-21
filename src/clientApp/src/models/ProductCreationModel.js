@@ -27,6 +27,13 @@ export default {
     },
     isValid: false,
   },
+  productFarms: {
+    value: [],
+    validation: {
+      isRequired: true,
+    },
+    isValid: false,
+  },
   thumbnails: {
     value: [],
     isValid: true,

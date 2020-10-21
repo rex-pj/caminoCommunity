@@ -20,6 +20,8 @@ namespace Camino.Service.Business.Products
     public class ProductBusiness : IProductBusiness
     {
         private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<FarmProduct> _farmProductRepository;
+        private readonly IRepository<Farm> _farmRepository;
         private readonly IRepository<ProductPicture> _productPictureRepository;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
@@ -31,7 +33,8 @@ namespace Camino.Service.Business.Products
         public ProductBusiness(IMapper mapper, IRepository<Product> productRepository,
             IRepository<ProductCategoryProduct> productCategoryProductRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
-            IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository)
+            IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository,
+            IRepository<FarmProduct> farmProductRepository, IRepository<Farm> farmRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
@@ -41,13 +44,13 @@ namespace Camino.Service.Business.Products
             _productPictureRepository = productPictureRepository;
             _userPhotoRepository = userPhotoRepository;
             _productPriceRepository = productPriceRepository;
+            _farmProductRepository = farmProductRepository;
+            _farmRepository = farmRepository;
         }
 
         public ProductProjection Find(long id)
         {
             var exist = (from product in _productRepository.Table
-                             //join category in _productCategoryRepository.Table
-                             //on product.ProductCategoryId equals category.Id
                          where product.Id == id
                          select new ProductProjection
                          {
@@ -57,8 +60,6 @@ namespace Camino.Service.Business.Products
                              Name = product.Name,
                              UpdatedById = product.UpdatedById,
                              UpdatedDate = product.UpdatedDate,
-                             //ProductCategoryName = category.Name,
-                             //ProductCategoryId = product.ProductCategoryId
                          }).FirstOrDefault();
 
             if (exist == null)
@@ -75,6 +76,12 @@ namespace Camino.Service.Business.Products
                            join pr in _productPriceRepository.Get(x => x.IsCurrent)
                            on p.Id equals pr.ProductId into prices
                            from price in prices.DefaultIfEmpty()
+                           join fp in _farmProductRepository.Table
+                           on p.Id equals fp.ProductId into farmProducts
+                           from farmProduct in farmProducts.DefaultIfEmpty()
+                           join f in _farmRepository.Table
+                           on farmProduct.FarmId equals f.Id into farms
+                           from farm in farms.DefaultIfEmpty()
                            where p.Id == id
                            select new ProductProjection
                            {
@@ -85,7 +92,16 @@ namespace Camino.Service.Business.Products
                                Name = p.Name,
                                UpdatedById = p.UpdatedById,
                                UpdatedDate = p.UpdatedDate,
-                               Price = price.Price
+                               Price = price.Price,
+                               ProductFarms = new List<ProductFarmProjection>()
+                               {
+                                   new ProductFarmProjection()
+                                   {
+                                        Id = farmProduct.Id,
+                                       FarmId = farmProduct.FarmId,
+                                       FarmName = farm.Name
+                                   }
+                               }
                            }).FirstOrDefault();
 
             if (product == null)
@@ -182,6 +198,12 @@ namespace Camino.Service.Business.Products
                         join pr in _productPriceRepository.Get(x => x.IsCurrent)
                         on product.Id equals pr.ProductId into prices
                         from price in prices.DefaultIfEmpty()
+                        join fp in _farmProductRepository.Table
+                        on p.Id equals fp.ProductId into farmProducts
+                        from farmProduct in farmProducts.DefaultIfEmpty()
+                        join f in _farmRepository.Table
+                        on farmProduct.FarmId equals f.Id into farms
+                        from farm in farms.DefaultIfEmpty()
                         select new ProductProjection
                         {
                             Id = product.Id,
@@ -198,6 +220,15 @@ namespace Camino.Service.Business.Products
                                 new PictureRequestProjection()
                                 {
                                     Id = p.PictureId
+                                }
+                            },
+                            ProductFarms = new List<ProductFarmProjection>()
+                            {
+                                new ProductFarmProjection()
+                                {
+                                    Id = farmProduct.Id,
+                                    FarmId = farmProduct.FarmId,
+                                    FarmName = farm.Name
                                 }
                             }
                         };
@@ -240,7 +271,7 @@ namespace Camino.Service.Business.Products
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
                 Description = product.Description,
-                Name = product.Name
+                Name = product.Name,
             };
 
             var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
@@ -254,6 +285,26 @@ namespace Camino.Service.Business.Products
                         ProductId = id
                     });
                 }
+
+                foreach (var farm in product.ProductFarms)
+                {
+                    _farmProductRepository.Add(new FarmProduct()
+                    {
+                        FarmId = farm.FarmId,
+                        ProductId = id,
+                        IsLinked = true,
+                        LinkedById = product.CreatedById,
+                        LinkedDate = modifiedDate
+                    });
+                }
+
+                _productPriceRepository.Add(new ProductPrice()
+                {
+                    PricedDate = modifiedDate,
+                    ProductId = id,
+                    Price = product.Price,
+                    IsCurrent = true
+                });
 
                 var index = 0;
                 foreach (var picture in product.Thumbnails)
@@ -280,14 +331,6 @@ namespace Camino.Service.Business.Products
                     });
                     index += 1;
                 }
-
-                _productPriceRepository.Add(new ProductPrice()
-                {
-                    PricedDate = modifiedDate,
-                    ProductId = id,
-                    Price = product.Price,
-                    IsCurrent = true
-                });
             }
 
             return id;
@@ -299,7 +342,6 @@ namespace Camino.Service.Business.Products
             var product = _productRepository.FirstOrDefault(x => x.Id == request.Id);
             product.Description = request.Description;
             product.Name = request.Name;
-            //product.ProductCategoryId = request.ProductCategoryId;
             product.UpdatedById = request.UpdatedById;
             product.UpdatedDate = updatedDate;
 

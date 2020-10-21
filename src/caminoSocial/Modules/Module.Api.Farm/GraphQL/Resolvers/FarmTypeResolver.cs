@@ -4,6 +4,7 @@ using Camino.Service.Business.Farms.Contracts;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Api.Farm.GraphQL.Resolvers
 {
@@ -15,14 +16,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             _farmTypeBusiness = farmTypeBusiness;
         }
 
-        public IEnumerable<ISelectOption> GetFarmTypes(SelectFilterModel criterias)
+        public async Task<IEnumerable<ISelectOption>> GetFarmTypesAsync(SelectFilterModel criterias)
         {
             if (criterias == null)
             {
                 criterias = new SelectFilterModel();
             }
 
-            var categories = _farmTypeBusiness.Search(criterias.Query);
+            var categories = await _farmTypeBusiness.SearchAsync(criterias.Query);
             if (categories == null || !categories.Any())
             {
                 return new List<SelectOption>();

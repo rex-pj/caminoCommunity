@@ -187,9 +187,9 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
-        public IActionResult Search(string q)
+        public async Task<IActionResult> Search(string q)
         {
-            var farmTypes = _farmTypeBusiness.Search(q);
+            var farmTypes = await _farmTypeBusiness.SearchAsync(q);
             if (farmTypes == null || !farmTypes.Any())
             {
                 return Json(new List<Select2ItemModel>());

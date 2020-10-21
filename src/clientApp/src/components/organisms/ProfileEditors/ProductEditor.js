@@ -80,6 +80,7 @@ export default withRouter((props) => {
     onImageValidate,
     height,
     filterCategories,
+    filterFarms,
   } = props;
   const initialFormData = ProductCreationModel;
   const [formData, setFormData] = useState(initialFormData);
@@ -130,15 +131,26 @@ export default withRouter((props) => {
     });
   };
 
+  const fetchFarms = async (value) => {
+    return await filterFarms(value).then((response) => {
+      return response;
+    });
+  };
+
   const loadOptions = (value, callback) => {
     setTimeout(async () => {
       callback(await fetchCategories(value));
     }, 1000);
   };
 
-  const handleSelectChange = (e) => {
+  const loadFarmOptions = (value, callback) => {
+    setTimeout(async () => {
+      callback(await fetchFarms(value));
+    }, 1000);
+  };
+
+  const handleSelectChange = (e, name) => {
     let data = formData || {};
-    const name = "productCategories";
     if (!e) {
       data[name].value = [];
 
@@ -252,14 +264,14 @@ export default withRouter((props) => {
           </div>
         </FormRow>
         <FormRow className="row">
-          <div className="col-9 col-lg-10 pr-1">
+          <div className="col-4 col-lg-5 pr-1">
             {productCategories.value ? (
               <AsyncSelect
                 className="select"
                 cacheOptions
                 defaultOptions
                 isMulti
-                onChange={handleSelectChange}
+                onChange={(e) => handleSelectChange(e, "productCategories")}
                 loadOptions={loadOptions}
                 isClearable={true}
               />
@@ -270,14 +282,39 @@ export default withRouter((props) => {
                 cacheOptions
                 defaultOptions
                 isMulti
-                onChange={handleSelectChange}
+                onChange={(e) => handleSelectChange(e, "productCategories")}
                 loadOptions={loadOptions}
                 isClearable={true}
                 placeholder="Product category"
               />
             )}
           </div>
-          <div className="col-3 col-lg-2 pl-1">
+          <div className="col-4 col-lg-5 pr-1">
+            {productCategories.value ? (
+              <AsyncSelect
+                className="select"
+                cacheOptions
+                defaultOptions
+                isMulti
+                onChange={(e) => handleSelectChange(e, "productFarms")}
+                loadOptions={loadFarmOptions}
+                isClearable={true}
+              />
+            ) : (
+              <AsyncSelect
+                className="select"
+                value=""
+                cacheOptions
+                defaultOptions
+                isMulti
+                onChange={(e) => handleSelectChange(e, "productFarms")}
+                loadOptions={loadFarmOptions}
+                isClearable={true}
+                placeholder="Farms"
+              />
+            )}
+          </div>
+          <div className="col-4 col-lg-2 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>

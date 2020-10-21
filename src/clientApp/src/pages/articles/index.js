@@ -6,11 +6,13 @@ import { useQuery } from "@apollo/client";
 import { GET_ARTICLES } from "../../utils/GraphQLQueries/queries";
 
 export default withRouter(function (props) {
-  const { pageNumber } = props;
+  const { match } = props;
+  const { params } = match;
+  const { pageNumber } = params;
   const { loading, data } = useQuery(GET_ARTICLES, {
     variables: {
       criterias: {
-        page: pageNumber,
+        page: pageNumber ? parseInt(pageNumber) : 1,
       },
     },
   });

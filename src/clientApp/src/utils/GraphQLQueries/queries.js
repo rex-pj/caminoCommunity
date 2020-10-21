@@ -155,6 +155,11 @@ export const GET_USER_PRODUCTS = gql`
         thumbnails {
           id
         }
+        productFarms {
+          id
+          farmId
+          farmName
+        }
       }
     }
   }
@@ -295,6 +300,11 @@ export const GET_PRODUCTS = gql`
         thumbnails {
           id
         }
+        productFarms {
+          id
+          farmId
+          farmName
+        }
       }
     }
   }
@@ -315,6 +325,11 @@ export const GET_PRODUCT = gql`
       createdByPhotoCode
       thumbnails {
         id
+      }
+      productFarms {
+        id
+        farmId
+        farmName
       }
     }
   }

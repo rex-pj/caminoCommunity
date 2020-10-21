@@ -1,4 +1,5 @@
-﻿using Camino.Framework.GraphQL.Resolvers;
+﻿using Camino.Core.Models;
+using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Contracts.Core;
@@ -28,6 +29,28 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             _userManager = userManager;
         }
 
+        public async Task<IEnumerable<ISelectOption>> SelectFarmsAsync(SelectFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new SelectFilterModel();
+            }
+
+            var farms = await _farmBusiness.SearchAsync(criterias.Query);
+            if (farms == null || !farms.Any())
+            {
+                return new List<SelectOption>();
+            }
+
+            var farmSeletions = farms
+                .Select(x => new SelectOption
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Name
+                });
+
+            return farmSeletions;
+        }
         public async Task<FarmModel> CreateFarmAsync(FarmModel criterias)
         {
             var farm = new FarmProjection()

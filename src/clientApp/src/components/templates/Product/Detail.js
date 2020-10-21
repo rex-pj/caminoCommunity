@@ -112,12 +112,20 @@ export default withRouter(function (props) {
                 <label>Xuất xứ:</label>
                 <TypographyPrimary>{product.origin}</TypographyPrimary>
               </RowItem> */}
-            {product.farmUrl ? (
-              <FarmInfo>
-                <FontAwesomeIcon icon="warehouse" />
-                <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
-              </FarmInfo>
-            ) : null}
+            {product.productFarms
+              ? product.productFarms.map((pf) => {
+                  if (!pf.id) {
+                    return null;
+                  }
+
+                  return (
+                    <FarmInfo>
+                      <FontAwesomeIcon icon="warehouse" />
+                      <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                    </FarmInfo>
+                  );
+                })
+              : null}
 
             <ContentBody>
               <span

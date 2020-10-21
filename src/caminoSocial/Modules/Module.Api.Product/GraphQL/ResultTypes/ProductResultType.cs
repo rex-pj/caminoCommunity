@@ -10,14 +10,12 @@ namespace Module.Api.Product.GraphQL.ResultTypes
             descriptor.Field(x => x.Id).Type<LongType>();
             descriptor.Field(x => x.Name).Type<StringType>();
             descriptor.Field(x => x.CreatedByIdentityId).Type<StringType>();
-            descriptor.Field(x => x.ProductCategoryId).Type<LongType>();
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.UpdatedDate).Type<DateTimeType>();
             descriptor.Field(x => x.CreatedById).Type<LongType>();
             descriptor.Field(x => x.CreatedDate).Type<DateTimeType>();
             descriptor.Field(x => x.CreatedBy).Type<StringType>();
             descriptor.Field(x => x.UpdatedBy).Type<StringType>();
-            descriptor.Field(x => x.ProductCategoryName).Type<StringType>();
             descriptor.Field(x => x.Price).Type<IntType>();
             descriptor.Field(x => x.CreatedByPhotoCode).Type<StringType>();
         }

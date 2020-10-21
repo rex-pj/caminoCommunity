@@ -73,6 +73,14 @@ export default withRouter(function (props) {
     return image;
   });
 
+  if (product.productFarms) {
+    product.productFarms = product.productFarms.map((pf) => {
+      let productFarm = { ...pf };
+      productFarm.url = `/farms/${pf.farmId}`;
+      return productFarm;
+    });
+  }
+
   return (
     <Fragment>
       <Breadcrumb list={breadcrumbs} />

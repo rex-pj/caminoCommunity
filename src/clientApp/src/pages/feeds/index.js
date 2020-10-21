@@ -4,13 +4,16 @@ import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
 import { GET_FEEDS } from "../../utils/GraphQLQueries/queries";
+import { withRouter } from "react-router-dom";
 
-export default (props) => {
-  const { pageNumber } = props;
+export default withRouter((props) => {
+  const { match } = props;
+  const { params } = match;
+  const { pageNumber } = params;
   const { loading, data } = useQuery(GET_FEEDS, {
     variables: {
       criterias: {
-        page: pageNumber,
+        page: pageNumber ? parseInt(pageNumber) : 1,
       },
     },
   });
@@ -50,7 +53,7 @@ export default (props) => {
     return feed;
   });
 
-  const baseUrl = "/";
+  const baseUrl = "/feeds";
   return (
     <Feeds
       feeds={feeds}
@@ -59,4 +62,4 @@ export default (props) => {
       currentPage={page}
     />
   );
-};
+});

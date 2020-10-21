@@ -65,6 +65,43 @@ namespace Camino.Service.Business.Farms
             return exist;
         }
 
+        public async Task<IList<FarmProjection>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        {
+            if (search == null)
+            {
+                search = string.Empty;
+            }
+
+            search = search.ToLower();
+            var query = _farmRepository.Table
+                .Select(c => new FarmProjection
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description
+                });
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var farms = await query
+                .Select(x => new FarmProjection()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
+
+            return farms;
+        }
+
         public FarmProjection FindDetail(long id)
         {
             var exist = (from farm in _farmRepository.Table

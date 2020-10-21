@@ -152,7 +152,7 @@ namespace Camino.Service.Business.Farms
             return farmTypes;
         }
 
-        public IList<FarmTypeProjection> Search(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmTypeProjection>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -178,13 +178,13 @@ namespace Camino.Service.Business.Farms
                 query = query.Skip((page - 1) * pageSize).Take(pageSize);
             }
 
-            var farmTypes = query
+            var farmTypes = await query
                 .Select(x => new FarmTypeProjection()
                 {
                     Id = x.Id,
                     Name = x.Name
                 })
-                .ToList();
+                .ToListAsync();
 
             return farmTypes;
         }

@@ -14,6 +14,7 @@ import {
   CREATE_PRODUCT,
   FILTER_FARM_TYPES,
   CREATE_FARM,
+  FILTER_FARMS,
 } from "../../utils/GraphQLQueries/mutations";
 import { GET_USER_FEEDS } from "../../utils/GraphQLQueries/queries";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
@@ -61,6 +62,7 @@ export default withRouter((props) => {
   const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
   const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
   const [farmTypes] = useMutation(FILTER_FARM_TYPES);
+  const [farms] = useMutation(FILTER_FARMS);
   const [createArticle] = useMutation(CREATE_ARTICLE, {
     client: graphqlClient,
   });
@@ -109,6 +111,31 @@ export default withRouter((props) => {
           return [];
         }
         return categories.map((cat) => {
+          return {
+            value: cat.id,
+            label: cat.text,
+          };
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
+  };
+
+  const searchFarms = async (inputValue) => {
+    return await farms({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        var { data } = response;
+        var { farms } = data;
+        if (!farms) {
+          return [];
+        }
+        return farms.map((cat) => {
           return {
             value: cat.id,
             label: cat.text,
@@ -225,6 +252,7 @@ export default withRouter((props) => {
         filterCategories={searchProductCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}
+        filterFarms={searchFarms}
       />
     );
   } else {

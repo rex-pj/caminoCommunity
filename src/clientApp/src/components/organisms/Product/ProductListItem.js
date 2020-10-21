@@ -82,12 +82,20 @@ export default function (props) {
         </ContentTopbar>
 
         <Title>
-          {product.farmUrl ? (
-            <Fragment>
-              <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
-              <FontAwesomeIcon icon="angle-right" />
-            </Fragment>
-          ) : null}
+          {product.productFarms
+            ? product.productFarms.map((pf) => {
+                if (!pf.id) {
+                  return null;
+                }
+
+                return (
+                  <Fragment>
+                    <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                    <FontAwesomeIcon icon="angle-right" />
+                  </Fragment>
+                );
+              })
+            : null}
 
           <AnchorLink to={product.url}>{product.name}</AnchorLink>
         </Title>

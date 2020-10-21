@@ -247,7 +247,7 @@ CREATE TABLE dbo.FarmProduct(
 	LinkedDate DATETIME2 NOT NULL,
 	IsLinked BIT NOT NULL,
 	LinkedById BIGINT NOT NULL,
-	ApprovedById BIGINT NOT NULL
+	ApprovedById BIGINT NULL
 )
 
 GO
