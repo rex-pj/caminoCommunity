@@ -13,7 +13,7 @@ namespace Module.Api.Product.GraphQL
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field<IProductResolver>(x => x.CreateProductAsync(default))
+            descriptor.Field<IProductResolver>(x => x.CreateProductAsync(default, default))
                .Type<ProductResultType>()
                .Directive<AuthenticationDirectiveType>()
                .Argument("criterias", a => a.Type<ProductInputType>());

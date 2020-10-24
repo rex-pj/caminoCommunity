@@ -35,6 +35,15 @@ const cache = new InMemoryCache({
     FeedModel: {
       keyFields: ["feedType", "id"],
     },
+    ProductModel: {
+      fields: {
+        thumbnails: {
+          merge(existing = [], incoming = []) {
+            return [...existing, ...incoming];
+          },
+        },
+      },
+    },
   },
 });
 

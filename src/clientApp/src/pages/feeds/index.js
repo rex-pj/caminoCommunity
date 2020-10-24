@@ -5,6 +5,7 @@ import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
 import { GET_FEEDS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
+import Loading from "../../components/atoms/Loading";
 
 export default withRouter((props) => {
   const { match } = props;
@@ -19,7 +20,7 @@ export default withRouter((props) => {
   });
 
   if (loading || !data) {
-    return <Fragment></Fragment>;
+    return <Loading>Loading</Loading>;
   }
 
   const { feeds: dataFeeds } = data;

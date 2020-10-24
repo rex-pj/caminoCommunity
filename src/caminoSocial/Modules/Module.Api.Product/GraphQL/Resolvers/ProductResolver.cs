@@ -7,6 +7,7 @@ using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Projections.Filters;
 using Camino.Service.Projections.Media;
 using Camino.Service.Projections.Product;
+using HotChocolate;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Module.Api.Product.Models;
 using System;
@@ -18,17 +19,15 @@ namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductResolver : BaseResolver, IProductResolver
     {
-        private readonly IProductBusiness _productBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public ProductResolver(SessionState sessionState, IProductBusiness productBusiness, IUserManager<ApplicationUser> userManager)
+        public ProductResolver(SessionState sessionState, IUserManager<ApplicationUser> userManager)
             : base(sessionState)
         {
-            _productBusiness = productBusiness;
             _userManager = userManager;
         }
 
-        public async Task<ProductModel> CreateProductAsync(ProductModel criterias)
+        public async Task<ProductModel> CreateProductAsync(ProductModel criterias, [Service] IProductBusiness productBusiness)
         {
             var product = new ProductProjection()
             {
@@ -53,12 +52,12 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 })
             };
 
-            var id = await _productBusiness.CreateAsync(product);
+            var id = await productBusiness.CreateAsync(product);
             criterias.Id = id;
             return criterias;
         }
 
-        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias)
+        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
         {
             if (criterias == null)
             {
@@ -84,7 +83,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await _productBusiness.GetAsync(filterRequest);
+                var productPageList = await productBusiness.GetAsync(filterRequest);
                 var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -102,7 +101,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
-        public async Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias)
+        public async Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
         {
             if (criterias == null)
             {
@@ -118,7 +117,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await _productBusiness.GetAsync(filterRequest);
+                var productPageList = await productBusiness.GetAsync(filterRequest);
                 var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -129,6 +128,33 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 };
 
                 return productPage;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
+        {
+            if (criterias == null)
+            {
+                criterias = new ProductFilterModel();
+            }
+
+            var filterRequest = new ProductFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            try
+            {
+                var relevantProducts = await productBusiness.GetRelevantsAsync(criterias.Id, filterRequest);
+                var products = await MapProductsProjectionToModelAsync(relevantProducts);
+
+                return products;
             }
             catch (Exception e)
             {
@@ -168,7 +194,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias)
+        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
         {
             if (criterias == null)
             {
@@ -177,7 +203,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productProjection = await _productBusiness.FindDetailAsync(criterias.Id);
+                var productProjection = await productBusiness.FindDetailAsync(criterias.Id);
 
                 var product = await MapProductProjectionToModelAsync(productProjection);
 

@@ -11,16 +11,20 @@ namespace Module.Api.Product.GraphQL
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field<IProductResolver>(x => x.GetUserProductsAsync(default))
+            descriptor.Field<IProductResolver>(x => x.GetUserProductsAsync(default, default))
                 .Type<ProductPageListType>()
                 .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<ProductFilterInputType>());
 
-            descriptor.Field<IProductResolver>(x => x.GetProductsAsync(default))
+            descriptor.Field<IProductResolver>(x => x.GetProductsAsync(default, default))
                 .Type<ProductPageListType>()
                 .Argument("criterias", a => a.Type<ProductFilterInputType>());
 
-            descriptor.Field<IProductResolver>(x => x.GetProductAsync(default))
+            descriptor.Field<IProductResolver>(x => x.GetRelevantProductsAsync(default, default))
+                .Type<ListType<ProductResultType>>()
+                .Argument("criterias", a => a.Type<ProductFilterInputType>());
+
+            descriptor.Field<IProductResolver>(x => x.GetProductAsync(default, default))
                 .Type<ProductResultType>()
                 .Argument("criterias", a => a.Type<ProductFilterInputType>());
         }

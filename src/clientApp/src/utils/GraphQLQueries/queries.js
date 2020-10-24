@@ -335,6 +335,31 @@ export const GET_PRODUCT = gql`
   }
 `;
 
+export const GET_RELEVANT_PRODUCTS = gql`
+  query($criterias: ProductFilterModelInput) {
+    relevantProducts(criterias: $criterias) {
+      id
+      description
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      price
+      createdByIdentityId
+      createdByPhotoCode
+      thumbnails {
+        id
+      }
+      productFarms {
+        id
+        farmId
+        farmName
+      }
+    }
+  }
+`;
+
 export const GET_FARMS = gql`
   query($criterias: FarmFilterModelInput) {
     farms(criterias: $criterias) {

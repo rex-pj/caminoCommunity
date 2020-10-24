@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Camino.Service.Projections.PageList;
 using Camino.Service.Projections.Product;
+using System.Collections.Generic;
 
 namespace Camino.Service.Business.Products.Contracts
 {
@@ -13,5 +14,6 @@ namespace Camino.Service.Business.Products.Contracts
         ProductProjection FindByName(string name);
         Task<ProductProjection> UpdateAsync(ProductProjection article);
         Task<BasePageList<ProductProjection>> GetAsync(ProductFilter filter);
+        Task<IList<ProductProjection>> GetRelevantsAsync(long id, ProductFilter filter);
     }
 }

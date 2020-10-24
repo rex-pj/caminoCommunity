@@ -11,8 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import { TypographyPrimary } from "../../atoms/Typographies";
-import ProductItem from "../../organisms/Product/ProductItem";
-import { TertiaryHeading } from "../../atoms/Heading";
 import { withRouter } from "react-router-dom";
 
 const Title = styled(PrimaryTitle)`
@@ -89,12 +87,8 @@ const FarmInfo = styled.div`
   }
 `;
 
-const RelationBox = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
-`;
-
 export default withRouter(function (props) {
-  const { product, relationProducts } = props;
+  const { product } = props;
   return (
     <Fragment>
       <PanelDefault>
@@ -108,10 +102,6 @@ export default withRouter(function (props) {
               <label>Giá:</label>
               <LabelPrice price={product.price} currency="vnđ" />
             </RowItem>
-            {/* <RowItem>
-                <label>Xuất xứ:</label>
-                <TypographyPrimary>{product.origin}</TypographyPrimary>
-              </RowItem> */}
             {product.productFarms
               ? product.productFarms.map((pf) => {
                   if (!pf.id) {
@@ -119,7 +109,7 @@ export default withRouter(function (props) {
                   }
 
                   return (
-                    <FarmInfo>
+                    <FarmInfo key={pf.id}>
                       <FontAwesomeIcon icon="warehouse" />
                       <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
                     </FarmInfo>
@@ -166,23 +156,6 @@ export default withRouter(function (props) {
           </div>
         </PanelBody>
       </PanelDefault>
-      <RelationBox>
-        <TertiaryHeading>Other Products</TertiaryHeading>
-        <div className="row">
-          {relationProducts
-            ? relationProducts.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                  >
-                    <ProductItem product={item} />
-                  </div>
-                );
-              })
-            : null}
-        </div>
-      </RelationBox>
     </Fragment>
   );
 });
