@@ -9,6 +9,7 @@ import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { AnchorLink } from "../../atoms/Links";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -55,7 +56,8 @@ export default (props) => {
   const { creator } = article;
 
   if (creator) {
-    creator.info = `Created at ${article.createdDate}`;
+    var datePeriod = convertDateTimeToPeriod(article.createdDate);
+    creator.info = `${datePeriod}`;
   }
 
   return (

@@ -75,7 +75,7 @@ namespace Module.Web.FarmManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
         [LoadResultAuthorizations("Farm", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -84,7 +84,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             try
             {
-                var farm = _farmBusiness.FindDetail(id);
+                var farm = await _farmBusiness.FindDetailAsync(id);
                 if (farm == null)
                 {
                     return RedirectToNotFoundPage();
@@ -157,9 +157,9 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var farm = _farmBusiness.FindDetail(id);
+            var farm = await _farmBusiness.FindDetailAsync(id);
             var model = new FarmModel()
             {
                 Description = farm.Description,

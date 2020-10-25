@@ -123,6 +123,76 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
+        public async Task<ArticleModel> GetArticleAsync(ArticleFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new ArticleFilterModel();
+            }
+
+            try
+            {
+                var productProjection = await _articleBusiness.FindDetailAsync(criterias.Id);
+                var product = await MapArticleProjectionToModelAsync(productProjection);
+                return product;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new ArticleFilterModel();
+            }
+
+            var filterRequest = new ArticleFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            try
+            {
+                var relevantArticles = await _articleBusiness.GetRelevantsAsync(criterias.Id, filterRequest);
+                var products = await MapArticlesProjectionToModelAsync(relevantArticles);
+
+                return products;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<ArticleModel> MapArticleProjectionToModelAsync(ArticleProjection articleProjection)
+        {
+            var article = new ArticleModel()
+            {
+                ArticleCategoryId = articleProjection.ArticleCategoryId,
+                ArticleCategoryName = articleProjection.ArticleCategoryName,
+                Content = articleProjection.Content,
+                Id = articleProjection.Id,
+                CreatedBy = articleProjection.CreatedBy,
+                CreatedById = articleProjection.CreatedById,
+                CreatedDate = articleProjection.CreatedDate,
+                Description = articleProjection.Description,
+                Name = articleProjection.Name,
+                ThumbnailId = articleProjection.ThumbnailId,
+                ThumbnailFileType = articleProjection.ThumbnailFileType,
+                ThumbnailFileName = articleProjection.ThumbnailFileName,
+                CreatedByPhotoCode = articleProjection.CreatedByPhotoCode
+            };
+
+            article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
+
+            return article;
+        }
+
         private async Task<IList<ArticleModel>> MapArticlesProjectionToModelAsync(IEnumerable<ArticleProjection> articleProjections)
         {
             var articles = articleProjections.Select(x => new ArticleModel()

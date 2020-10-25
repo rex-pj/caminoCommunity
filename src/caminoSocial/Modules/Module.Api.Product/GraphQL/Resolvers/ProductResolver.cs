@@ -112,7 +112,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             {
                 Page = criterias.Page,
                 PageSize = criterias.PageSize,
-                Search = criterias.Search
+                Search = criterias.Search,
+                FarmId = criterias.FarmId
             };
 
             try
@@ -204,9 +205,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             try
             {
                 var productProjection = await productBusiness.FindDetailAsync(criterias.Id);
-
                 var product = await MapProductProjectionToModelAsync(productProjection);
-
                 return product;
             }
             catch (Exception e)

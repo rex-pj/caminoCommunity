@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";

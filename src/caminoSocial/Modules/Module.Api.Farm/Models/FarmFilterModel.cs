@@ -9,6 +9,7 @@ namespace Module.Api.Farm.Models
 
         }
 
+        public long Id { get; set; }
         public string UserIdentityId { get; set; }
     }
 }

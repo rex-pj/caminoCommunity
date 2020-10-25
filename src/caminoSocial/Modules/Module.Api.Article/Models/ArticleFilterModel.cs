@@ -9,6 +9,7 @@ namespace Module.Api.Article.Models
 
         }
 
+        public long Id { get; set; }
         public string UserIdentityId { get; set; }
     }
 }

@@ -67,7 +67,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
         [LoadResultAuthorizations("Article", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -76,7 +76,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var article = _articleBusiness.FindDetail(id);
+                var article = await _articleBusiness.FindDetailAsync(id);
                 if (article == null)
                 {
                     return RedirectToNotFoundPage();
@@ -126,7 +126,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public IActionResult Update(int id)
         {
-            var article = _articleBusiness.FindDetail(id);
+            var article = _articleBusiness.FindDetailAsync(id);
             var model = _mapper.Map<ArticleModel>(article);
 
             return View(model);

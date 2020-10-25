@@ -10,6 +10,7 @@ namespace Module.Api.Farm.GraphQL.InputTypes
             descriptor.Field(x => x.Page).Type<IntType>().DefaultValue(1);
             descriptor.Field(x => x.PageSize).Type<IntType>().DefaultValue(10);
             descriptor.Field(x => x.Search).Type<StringType>();
+            descriptor.Field(x => x.Id).Type<LongType>();
             descriptor.Field(x => x.UserIdentityId).Type<StringType>();
         }
     }

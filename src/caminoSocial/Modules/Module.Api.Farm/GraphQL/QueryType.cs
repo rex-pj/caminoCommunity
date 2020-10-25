@@ -19,6 +19,10 @@ namespace Module.Api.Farm.GraphQL
             descriptor.Field<IFarmResolver>(x => x.GetFarmsAsync(default))
                 .Type<FarmPageListType>()
                 .Argument("criterias", a => a.Type<FarmFilterInputType>());
+
+            descriptor.Field<IFarmResolver>(x => x.GetFarmAsync(default))
+                .Type<FarmResultType>()
+                .Argument("criterias", a => a.Type<FarmFilterInputType>());
         }
     }
 }

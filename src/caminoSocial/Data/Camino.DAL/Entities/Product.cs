@@ -14,5 +14,6 @@ namespace Camino.DAL.Entities
         public long UpdatedById { get; set; }
         public virtual ICollection<ProductCategoryProduct> ProductCategories { get; set; }
         public virtual ICollection<ProductPicture> ProductPictures { get; set; }
+        public virtual ICollection<FarmProduct> ProductFarms { get; set; }
     }
 }

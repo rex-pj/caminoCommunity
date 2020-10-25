@@ -10,6 +10,7 @@ namespace Module.Api.Product.Models
         }
 
         public long Id { get; set; }
+        public long? FarmId { get; set; }
         public string UserIdentityId { get; set; }
     }
 }

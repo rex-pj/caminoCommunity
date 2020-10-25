@@ -170,6 +170,11 @@ namespace Camino.Service.Business.Products
                 productQuery = productQuery.Where(x => x.ProductCategories.Any(c => c.ProductCategoryId == filter.CategoryId));
             }
 
+            if (filter.FarmId.HasValue)
+            {
+                productQuery = productQuery.Where(x => x.ProductFarms.Any(c => c.FarmId == filter.FarmId));
+            }
+
             // Filter by register date/ created date
             if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
             {

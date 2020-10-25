@@ -152,6 +152,50 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
+        public async Task<FarmModel> GetFarmAsync(FarmFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new FarmFilterModel();
+            }
+
+            try
+            {
+                var farmProjection = await _farmBusiness.FindDetailAsync(criterias.Id);
+                var farm = await MapFarmProjectionToModelAsync(farmProjection);
+                return farm;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private async Task<FarmModel> MapFarmProjectionToModelAsync(FarmProjection farmProjection)
+        {
+            var farm = new FarmModel()
+            {
+                FarmTypeId = farmProjection.FarmTypeId,
+                FarmTypeName = farmProjection.FarmTypeName,
+                Description = farmProjection.Description,
+                Id = farmProjection.Id,
+                CreatedBy = farmProjection.CreatedBy,
+                CreatedById = farmProjection.CreatedById,
+                CreatedDate = farmProjection.CreatedDate,
+                Name = farmProjection.Name,
+                Address = farmProjection.Address,
+                CreatedByPhotoCode = farmProjection.CreatedByPhotoCode,
+                Thumbnails = farmProjection.Pictures.Select(y => new PictureRequestModel()
+                {
+                    Id = y.Id
+                }),
+            };
+
+            farm.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(farm.CreatedById);
+
+            return farm;
+        }
+
         private async Task<IList<FarmModel>> MapFarmsProjectionToModelAsync(IEnumerable<FarmProjection> farmProjections)
         {
             var farms = farmProjections.Select(x => new FarmModel()

@@ -12,6 +12,7 @@ using Camino.Service.Projections.PageList;
 using Camino.Data.Enums;
 using Camino.Core.Utils;
 using Camino.Service.Projections.Article;
+using System.Collections.Generic;
 
 namespace Camino.Service.Business.Articles
 {
@@ -65,7 +66,7 @@ namespace Camino.Service.Business.Articles
             return exist;
         }
 
-        public ArticleProjection FindDetail(long id)
+        public async Task<ArticleProjection> FindDetailAsync(long id)
         {
             var exist = (from article in _articleRepository.Table
                          join category in _articleCategoryRepository.Table
@@ -103,10 +104,8 @@ namespace Camino.Service.Business.Articles
             }
 
             var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
-            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
 
             exist.CreatedBy = createdByUser.DisplayName;
-            exist.UpdatedBy = updatedByUser.DisplayName;
 
             return exist;
         }
@@ -311,6 +310,59 @@ namespace Camino.Service.Business.Articles
 
             article.UpdatedDate = exist.UpdatedDate;
             return article;
+        }
+
+        public async Task<IList<ArticleProjection>> GetRelevantsAsync(long id, ArticleFilter filter)
+        {
+            var exist = (from ar in _articleRepository.Get(x => x.Id == id)
+                         select new ArticleProjection
+                         {
+                             Id = ar.Id,
+                             CreatedById = ar.CreatedById,
+                             UpdatedById = ar.UpdatedById,
+                             ArticleCategoryId = ar.ArticleCategoryId
+                         }).FirstOrDefault();
+
+            var avatarTypeId = (byte)UserPhotoKind.Avatar;
+            var relevantArticleQuery = (from ar in _articleRepository.Get(x => x.Id != exist.Id)
+                                        join pic in _articlePictureRepository.Table
+                                        on ar.Id equals pic.ArticleId into pics
+                                        from picture in pics.DefaultIfEmpty()
+                                        join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
+                                        on ar.CreatedById equals pho.UserId into photos
+                                        from photo in photos.DefaultIfEmpty()
+                                        where ar.CreatedById == exist.CreatedById
+                                        || ar.ArticleCategoryId == exist.ArticleCategoryId
+                                        || ar.UpdatedById == exist.UpdatedById
+                                        select new ArticleProjection
+                                        {
+                                            Id = ar.Id,
+                                            Name = ar.Name,
+                                            CreatedById = ar.CreatedById,
+                                            CreatedDate = ar.CreatedDate,
+                                            Description = ar.Description,
+                                            UpdatedById = ar.UpdatedById,
+                                            UpdatedDate = ar.UpdatedDate,
+                                            ThumbnailId = picture.PictureId,
+                                            Content = ar.Content,
+                                            CreatedByPhotoCode = photo.Code
+                                        });
+
+            var relevantArticles = await relevantArticleQuery
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize).ToListAsync();
+
+            var createdByIds = relevantArticles.Select(x => x.CreatedById).ToArray();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
+
+            foreach (var article in relevantArticles)
+            {
+                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);
+                article.CreatedBy = createdBy.DisplayName;
+            }
+
+            return relevantArticles;
         }
     }
 }

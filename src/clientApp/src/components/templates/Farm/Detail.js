@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PrimaryTitle } from "../../atoms/Titles";
 import { HorizontalList } from "../../atoms/List";
@@ -9,8 +9,6 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconOutline } from "../../molecules/ButtonIcons";
-import ProductItem from "../../organisms/Product/ProductItem";
-import { TertiaryHeading } from "../../atoms/Heading";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 
 const Title = styled(PrimaryTitle)`
@@ -78,17 +76,8 @@ const FollowButton = styled(ButtonIconOutline)`
   z-index: 1;
 `;
 
-const FarmProductsBox = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
-`;
-
 export default (props) => {
-  const { fetchFarmProducts } = props;
-  useEffect(() => {
-    fetchFarmProducts();
-  }, [fetchFarmProducts]);
-
-  const { farm, breadcrumbs, farmProducts } = props;
+  const { farm, breadcrumbs } = props;
   return (
     <Fragment>
       <PanelDefault>
@@ -96,7 +85,7 @@ export default (props) => {
         <BreadCrumbNav list={breadcrumbs} />
         <PanelBody>
           <TopBarInfo>
-            <Title>{farm.title}</Title>
+            <Title>{farm.name}</Title>
             <FontAwesomeIcon icon="map-marker-alt" />
             <span>{farm.address}</span>
 
@@ -105,7 +94,11 @@ export default (props) => {
             </FollowButton>
           </TopBarInfo>
           <div className="clearfix">
-            <ContentBody>{farm.content}</ContentBody>
+            <ContentBody>
+              <span
+                dangerouslySetInnerHTML={{ __html: farm.description }}
+              ></span>
+            </ContentBody>
 
             <div className="interactive-toolbar">
               <div className="row">
@@ -140,23 +133,6 @@ export default (props) => {
           </div>
         </PanelBody>
       </PanelDefault>
-      <FarmProductsBox>
-        <TertiaryHeading>{farm.title}'s products</TertiaryHeading>
-        <div className="row">
-          {farmProducts
-            ? farmProducts.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                  >
-                    <ProductItem product={item} />
-                  </div>
-                );
-              })
-            : null}
-        </div>
-      </FarmProductsBox>
     </Fragment>
   );
 };

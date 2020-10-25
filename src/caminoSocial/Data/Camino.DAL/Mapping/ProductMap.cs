@@ -17,7 +17,9 @@ namespace Camino.DAL.Mapping
                 .Association(x => x.ProductCategories,
                     (product, productCategory) => product.Id == productCategory.ProductId)
                 .Association(x => x.ProductPictures, 
-                    (product, articlePicture) => product.Id == articlePicture.ProductId);
+                    (product, articlePicture) => product.Id == articlePicture.ProductId)
+                .Association(x => x.ProductFarms,
+                    (product, farmProduct) => product.Id == farmProduct.ProductId);
         }
     }
 }

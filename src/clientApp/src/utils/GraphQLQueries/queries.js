@@ -276,6 +276,40 @@ export const GET_ARTICLES = gql`
   }
 `;
 
+export const GET_RELEVANT_ARTICLES = gql`
+  query($criterias: ArticleFilterModelInput) {
+    relevantArticles(criterias: $criterias) {
+      id
+      content
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      thumbnailId
+      createdByIdentityId
+      createdByPhotoCode
+    }
+  }
+`;
+
+export const GET_ARTICLE = gql`
+  query($criterias: ArticleFilterModelInput) {
+    article(criterias: $criterias) {
+      id
+      content
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      thumbnailId
+      createdByIdentityId
+      createdByPhotoCode
+    }
+  }
+`;
+
 export const GET_PRODUCTS = gql`
   query($criterias: ProductFilterModelInput) {
     products(criterias: $criterias) {
@@ -384,6 +418,26 @@ export const GET_FARMS = gql`
         thumbnails {
           id
         }
+      }
+    }
+  }
+`;
+
+export const GET_FARM = gql`
+  query($criterias: FarmFilterModelInput) {
+    farm(criterias: $criterias) {
+      id
+      description
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      address
+      createdByIdentityId
+      createdByPhotoCode
+      thumbnails {
+        id
       }
     }
   }

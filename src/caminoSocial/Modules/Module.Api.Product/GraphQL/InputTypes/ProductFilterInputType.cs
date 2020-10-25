@@ -12,6 +12,7 @@ namespace Module.Api.Product.GraphQL.InputTypes
             descriptor.Field(x => x.Search).Type<StringType>();
             descriptor.Field(x => x.UserIdentityId).Type<StringType>();
             descriptor.Field(x => x.Id).Type<LongType>();
+            descriptor.Field(x => x.FarmId).Type<LongType>();
         }
     }
 }

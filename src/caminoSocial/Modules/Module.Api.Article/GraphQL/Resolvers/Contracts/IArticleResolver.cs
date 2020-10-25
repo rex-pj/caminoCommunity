@@ -1,4 +1,5 @@
 ﻿using Module.Api.Article.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Module.Api.Article.GraphQL.Resolvers.Contracts
@@ -8,5 +9,7 @@ namespace Module.Api.Article.GraphQL.Resolvers.Contracts
         Task<ArticleModel> CreateArticleAsync(ArticleModel criterias);
         Task<ArticlePageListModel> GetUserArticlesAsync(ArticleFilterModel criterias);
         Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias);
+        Task<ArticleModel> GetArticleAsync(ArticleFilterModel criterias);
+        Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias);
     }
 }

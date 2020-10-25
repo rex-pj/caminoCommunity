@@ -9,7 +9,7 @@ namespace Camino.Service.Business.Farms.Contracts
     public interface IFarmBusiness
     {
         FarmProjection Find(long id);
-        FarmProjection FindDetail(long id);
+        Task<FarmProjection> FindDetailAsync(long id);
         FarmProjection FindByName(string name);
         Task<BasePageList<FarmProjection>> GetAsync(FarmFilter filter);
         Task<long> CreateAsync(FarmProjection farm);

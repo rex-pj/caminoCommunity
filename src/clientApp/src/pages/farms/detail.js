@@ -1,123 +1,134 @@
-import React, { Component } from "react";
+import React, { Fragment } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
+import { GET_FARM } from "../../utils/GraphQLQueries/queries";
+import { useQuery } from "@apollo/client";
+import styled from "styled-components";
+import { withRouter } from "react-router-dom";
+import Loading from "../../components/atoms/Loading";
+import ProductItem from "../../components/organisms/Product/ProductItem";
+import { TertiaryHeading } from "../../components/atoms/Heading";
+import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 
-export default class extends Component {
-  constructor() {
-    super();
+const FarmProductsBox = styled.div`
+  margin-top: ${(p) => p.theme.size.distance};
+`;
 
-    const farm = {
-      title: "Trang trại ông Năm Đất",
-      createdDate: "25/03/2019 00:00",
-      thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
-      content:
-        "Trang trại nổi tiếng này từ lâu đã có mặt trong thành ngữ của người Long An, bất cứ cái gì to khủng khiếp, đều được ví với Waggoner, bởi vì nó rộng gần gấp đôi thành phố New York với 2000 cây số vuông nằm trải trên 9 hạt của bang Texas, điểm đặc biết nhất của Waggoner là nó thuộc sở hữu tư nhân kể từ ngày khai hoang năm 1849 đến nay. Trước đây, Waggoner chỉ về nhì trong cuộc đua diện tích trang trại, giữ ngôi quán quân là trang trại King, thuộc sở hữu của ông Richard King từ năm 1853, nhưng đến năm 1961, khối bất động sản rộng 3340 cây số vuông này trở thành tài sản lịch sử quốc gia Mỹ chứ không thuộc sở hữu tư nhân nữa. Với diện tích bằng 2/3 thành phố Hà Nội (3328 cây số vuông) trang trại Waggoner đang là bất động sản tư nhân lớn và đắt nhất thế giới với giá 725 triệu USD (15,7 nghìn tỷ đồng) , chủ nhân trang trại này hy vọng sẽ thu hút được các đại gia ở thung lũng Sillicon hoặc những ông trùm dầu mỏ Ả Rập. Ai mà không thích sở hữu mảnh đất to bằng cả một thành phố cơ chứ?",
-      commentNumber: "40+",
-      reactionNumber: "2.5+",
-      url: `${UrlConstant.Farm.url}1`,
-      address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-      images: [
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-        },
-        {
-          name: "Peach",
-          url: `${process.env.PUBLIC_URL}/photos/peach.png`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
-        },
-        {
-          name: "Fruit",
-          url: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-        },
-      ],
-    };
+export default withRouter(function (props) {
+  const { match } = props;
+  const { params } = match;
+  const { id } = params;
 
-    this.state = { breadcrumbs: [], farm, farmProducts: [] };
+  const { loading, data } = useQuery(GET_FARM, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
+      },
+    },
+  });
+
+  const { productLoading, data: productData } = useQuery(GET_PRODUCTS, {
+    variables: {
+      criterias: {
+        farmId: parseFloat(id),
+      },
+    },
+  });
+
+  if (loading || !data) {
+    return <Loading>Loading...</Loading>;
   }
 
-  fetchFarmProducts = () => {
-    let farmProducts = [];
-    for (let i = 0; i < 6; i++) {
-      const productItem = {
-        id: i + 1,
-        creator: {
-          photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất",
-        },
-        thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-        farmUrl: `${UrlConstant.Farm.url}1`,
-        farmName: "Trang trại ông năm đất",
-        url: `${UrlConstant.Product.url}1`,
-        commentNumber: "14",
-        reactionNumber: "45+",
-        name: "Chuối chính cây Đồng Nai",
-        contentType: 2,
-        price: 100000,
-      };
+  const { farm: farmResponse } = data;
+  let farm = { ...farmResponse };
 
-      farmProducts.push(productItem);
+  const breadcrumbs = [
+    {
+      title: "Farms",
+      url: "/farms/",
+    },
+    {
+      isActived: true,
+      title: farm.name,
+    },
+  ];
+
+  if (farm.thumbnails && farm.thumbnails.length > 0) {
+    farm.images = farm.thumbnails.map((item) => {
+      let image = { ...item };
+
+      if (image.id > 0) {
+        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+      }
+      return image;
+    });
+  }
+
+  const renderProducts = (productLoading, productData) => {
+    if (productLoading || !productData) {
+      return <Loading>Loading...</Loading>;
     }
 
-    this.setState({
-      farmProducts,
+    const { products: ProductCollections } = productData;
+    const { collections } = ProductCollections;
+
+    const products = collections.map((item) => {
+      let product = { ...item };
+      product.url = `${UrlConstant.Product.url}${product.id}`;
+      if (product.thumbnails && product.thumbnails.length > 0) {
+        const thumbnail = product.thumbnails[0];
+        if (thumbnail.id > 0) {
+          product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.id}`;
+        }
+      }
+
+      product.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
+      };
+
+      if (item.createdByPhotoCode) {
+        product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      if (product.productFarms) {
+        product.productFarms = product.productFarms.map((pf) => {
+          let productFarm = { ...pf };
+          productFarm.url = `/farms/${pf.farmId}`;
+          return productFarm;
+        });
+      }
+
+      return product;
     });
+
+    return (
+      <div className="row">
+        {products
+          ? products.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
+                >
+                  <ProductItem product={item} />
+                </div>
+              );
+            })
+          : null}
+      </div>
+    );
   };
 
-  componentDidMount() {
-    const breadcrumbs = [
-      {
-        title: "Farms",
-        url: "/farms/",
-      },
-      {
-        isActived: true,
-        title: "Trang trại ông Năm Đất",
-      },
-    ];
-
-    this.setState({
-      breadcrumbs,
-    });
-  }
-
-  render() {
-    const { breadcrumbs, farm, farmProducts } = this.state;
-    return (
-      <Detail
-        farm={farm}
-        breadcrumbs={breadcrumbs}
-        fetchFarmProducts={this.fetchFarmProducts}
-        farmProducts={farmProducts}
-      />
-    );
-  }
-}
+  return (
+    <Fragment>
+      <Detail farm={farm} breadcrumbs={breadcrumbs} />
+      <FarmProductsBox>
+        <TertiaryHeading>{farm.name}'s products</TertiaryHeading>
+        {renderProducts(productLoading, productData)}
+      </FarmProductsBox>
+    </Fragment>
+  );
+});

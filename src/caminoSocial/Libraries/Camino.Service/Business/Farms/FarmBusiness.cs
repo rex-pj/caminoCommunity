@@ -102,9 +102,9 @@ namespace Camino.Service.Business.Farms
             return farms;
         }
 
-        public FarmProjection FindDetail(long id)
+        public async Task<FarmProjection> FindDetailAsync(long id)
         {
-            var exist = (from farm in _farmRepository.Table
+            var exist = await (from farm in _farmRepository.Table
                          join farmType in _farmTypeRepository.Table
                          on farm.FarmTypeId equals farmType.Id
                          where farm.Id == id
@@ -120,32 +120,29 @@ namespace Camino.Service.Business.Farms
                              UpdatedDate = farm.UpdatedDate,
                              FarmTypeName = farmType.Name,
                              FarmTypeId = farm.FarmTypeId,
-                         }).FirstOrDefault();
+                         }).FirstOrDefaultAsync();
 
             if (exist == null)
             {
                 return null;
             }
 
-            var farmPictures = (from farmPic in _farmPictureRepository.Get(x => x.FarmId == id)
+            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == id)
                                 join farm in _farmRepository.Table
-                                on farmPic.PictureId equals farm.Id
+                                on farmPic.FarmId equals farm.Id
                                 orderby farm.CreatedDate descending
                                 select new PictureRequestProjection()
                                 {
                                     Id = farmPic.PictureId
-                                }).ToList();
+                                }).ToListAsync();
 
             if (farmPictures.Any())
             {
                 exist.Pictures = farmPictures;
             }
 
-            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
-            var updatedByUser = _userRepository.FirstOrDefault(x => x.Id == exist.UpdatedById);
-
-            exist.CreatedBy = createdByUser.DisplayName;
-            exist.UpdatedBy = updatedByUser.DisplayName;
+            var createdByUserName = await _userRepository.Get(x => x.Id == exist.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
+            exist.CreatedBy = createdByUserName;
 
             return exist;
         }
