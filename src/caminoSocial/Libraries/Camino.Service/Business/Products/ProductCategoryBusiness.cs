@@ -159,7 +159,7 @@ namespace Camino.Service.Business.Products
             return categories;
         }
 
-        public IList<ProductCategoryProjection> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryProjection>> SearchParentsAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -191,19 +191,19 @@ namespace Camino.Service.Business.Products
                 query = query.Skip((page - 1) * pageSize).Take(pageSize);
             }
 
-            var categories = query
+            var categories = await query
                 .Select(x => new ProductCategoryProjection()
                 {
                     Id = x.Id,
                     Name = x.Name,
                     ParentId = x.ParentId
                 })
-                .ToList();
+                .ToListAsync();
 
             return categories;
         }
 
-        public IList<ProductCategoryProjection> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryProjection>> SearchAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -251,7 +251,7 @@ namespace Camino.Service.Business.Products
                 query = query.Skip((page - 1) * pageSize).Take(pageSize);
             }
 
-            var data = query
+            var data = await query
                 .Select(x => new ProductCategoryProjection()
                 {
                     Id = x.Id,
@@ -264,7 +264,7 @@ namespace Camino.Service.Business.Products
                         Description = x.ParentCategory.Description,
                     }
                 })
-                .ToList();
+                .ToListAsync();
 
             var categories = new List<ProductCategoryProjection>();
             foreach (var category in data)

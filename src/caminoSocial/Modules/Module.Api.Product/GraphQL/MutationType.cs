@@ -18,7 +18,7 @@ namespace Module.Api.Product.GraphQL
                .Directive<AuthenticationDirectiveType>()
                .Argument("criterias", a => a.Type<ProductInputType>());
 
-            descriptor.Field<IProductCategoryResolver>(x => x.GetProductCategories(default))
+            descriptor.Field<IProductCategoryResolver>(x => x.GetProductCategoriesAsync(default))
                 .Type<ListType<SelectOptionType>>()
                 .Argument("criterias", a => a.Type<SelectFilterInputType>());
         }

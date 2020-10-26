@@ -13,7 +13,7 @@ namespace Module.Web.ProductManagement.Models
             SelectCategories = new List<SelectListItem>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]

@@ -12,7 +12,7 @@ namespace Camino.DAL.Entities
         public long CreatedById { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
-        public virtual ICollection<ProductCategoryProduct> ProductCategories { get; set; }
+        public virtual ICollection<ProductCategoryRelation> ProductCategories { get; set; }
         public virtual ICollection<ProductPicture> ProductPictures { get; set; }
         public virtual ICollection<FarmProduct> ProductFarms { get; set; }
     }

@@ -1,11 +1,12 @@
 ﻿using Camino.Core.Models;
 using Camino.Framework.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Module.Api.Product.GraphQL.Resolvers.Contracts
 {
     public interface IProductCategoryResolver
     {
-        IEnumerable<ISelectOption> GetProductCategories(SelectFilterModel criterias);
+        Task<IEnumerable<ISelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias);
     }
 }

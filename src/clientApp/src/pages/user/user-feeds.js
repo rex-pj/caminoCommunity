@@ -4,7 +4,6 @@ import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation, useQuery } from "@apollo/client";
-import styled from "styled-components";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import {
   VALIDATE_IMAGE_URL,
@@ -21,25 +20,10 @@ import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEdit
 import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
 import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
 import { useStore } from "../../store/hook-store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonSecondary } from "../../components/atoms/Buttons/Buttons";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
-
-const EditorTabs = styled.div`
-  margin-bottom: ${(p) => p.theme.size.exTiny};
-  .tabs-bar button {
-    border-radius: ${(p) => p.theme.borderRadius.large};
-    color: ${(p) => p.theme.color.light};
-    background-color: transparent;
-    font-weight: normal;
-    border-color: transparent;
-  }
-  .tabs-bar button.actived {
-    color: ${(p) => p.theme.color.neutral};
-    background-color: ${(p) => p.theme.color.light};
-  }
-`;
+import EditorTabs from "../../components/organisms/User/EditorTabs";
+import Loading from "../../components/atoms/Loading";
 
 export default withRouter((props) => {
   const [editorMode, setEditorMode] = useState("ARTICLE");
@@ -227,10 +211,6 @@ export default withRouter((props) => {
     setEditorMode(name);
   };
 
-  if (loading || !data) {
-    return <Fragment></Fragment>;
-  }
-
   let editor = null;
   if (editorMode === "ARTICLE") {
     editor = (
@@ -265,6 +245,19 @@ export default withRouter((props) => {
         onFarmPost={onFarmPost}
         showValidationError={showValidationError}
       />
+    );
+  }
+
+  if (loading || !data) {
+    return (
+      <Fragment>
+        <EditorTabs
+          onToggleCreateMode={onToggleCreateMode}
+          editorMode={editorMode}
+        ></EditorTabs>
+        {editor}
+        <Loading>Loading...</Loading>
+      </Fragment>
     );
   }
 
@@ -303,49 +296,10 @@ export default withRouter((props) => {
   const baseUrl = props.userUrl + "/feeds";
   return (
     <Fragment>
-      <EditorTabs>
-        <div className="tabs-bar">
-          <ButtonSecondary
-            size="sm"
-            className={`mr-1${editorMode === "ARTICLE" ? " actived" : ""}`}
-            onClick={() => onToggleCreateMode("ARTICLE")}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon="newspaper"
-                className="mr-1"
-              ></FontAwesomeIcon>
-              Create Post
-            </span>
-          </ButtonSecondary>
-          <ButtonSecondary
-            size="sm"
-            onClick={() => onToggleCreateMode("PRODUCT")}
-            className={`mr-1${editorMode === "PRODUCT" ? " actived" : ""}`}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon="apple-alt"
-                className="mr-1"
-              ></FontAwesomeIcon>
-              Create Product
-            </span>
-          </ButtonSecondary>
-          <ButtonSecondary
-            size="sm"
-            onClick={() => onToggleCreateMode("FARM")}
-            className={`mr-1${editorMode === "FARM" ? " actived" : ""}`}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon="warehouse"
-                className="mr-1"
-              ></FontAwesomeIcon>
-              Create Farm
-            </span>
-          </ButtonSecondary>
-        </div>
-      </EditorTabs>
+      <EditorTabs
+        onToggleCreateMode={onToggleCreateMode}
+        editorMode={editorMode}
+      ></EditorTabs>
 
       {editor}
 

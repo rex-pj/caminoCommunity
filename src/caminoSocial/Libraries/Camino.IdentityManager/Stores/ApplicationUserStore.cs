@@ -91,7 +91,13 @@ namespace Camino.IdentityManager.Contracts.Stores
         public override async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
         {
             var id = long.Parse(userId);
-            var user = await _userBusiness.FindByIdAsync(id);
+            var user = await FindUserAsync(id, cancellationToken);
+            return user;
+        }
+
+        protected override async Task<TUser> FindUserAsync(long userId, CancellationToken cancellationToken)
+        {
+            var user = await _userBusiness.FindByIdAsync(userId);
             return _mapper.Map<TUser>(user);
         }
 
@@ -273,11 +279,6 @@ namespace Camino.IdentityManager.Contracts.Stores
             return _mapper.Map<TUser>(user);
         }
 
-        protected override async Task<TUser> FindUserAsync(long userId, CancellationToken cancellationToken)
-        {
-            var user = await _userBusiness.FindByIdAsync(userId);
-            return _mapper.Map<TUser>(user);
-        }
 
         public override Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken = default)
         {

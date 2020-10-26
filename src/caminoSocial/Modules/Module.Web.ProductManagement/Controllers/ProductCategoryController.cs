@@ -192,16 +192,16 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
-        public IActionResult Search(string q, long? currentId = null, bool isParentOnly = false)
+        public async Task<IActionResult> Search(string q, long? currentId = null, bool isParentOnly = false)
         {
             IList<ProductCategoryProjection> categories;
             if (isParentOnly)
             {
-                categories = _productCategoryBusiness.SearchParents(q, currentId);
+                categories = await _productCategoryBusiness.SearchParentsAsync(q, currentId);
             }
             else
             {
-                categories = _productCategoryBusiness.Search(q, currentId);
+                categories = await _productCategoryBusiness.SearchAsync(q, currentId);
             }
 
             if (categories == null || !categories.Any())

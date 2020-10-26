@@ -26,19 +26,19 @@ namespace Camino.Service.Business.Products
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<ProductPrice> _productPriceRepository;
-        private readonly IRepository<ProductCategoryProduct> _productCategoryProductRepository;
+        private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public ProductBusiness(IMapper mapper, IRepository<Product> productRepository,
-            IRepository<ProductCategoryProduct> productCategoryProductRepository, IRepository<User> userRepository,
+            IRepository<ProductCategoryRelation> productCategoryRelationRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
             IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository,
             IRepository<FarmProduct> farmProductRepository, IRepository<Farm> farmRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
-            _productCategoryProductRepository = productCategoryProductRepository;
+            _productCategoryRelationRepository = productCategoryRelationRepository;
             _userRepository = userRepository;
             _pictureRepository = pictureRepository;
             _productPictureRepository = productPictureRepository;
@@ -272,7 +272,7 @@ namespace Camino.Service.Business.Products
                          join fp in _farmProductRepository.Table
                          on pr.Id equals fp.ProductId into farmProducts
                          from farmProduct in farmProducts.DefaultIfEmpty()
-                         join productCategoryRelation in _productCategoryProductRepository.Table
+                         join productCategoryRelation in _productCategoryRelationRepository.Table
                          on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
                          from categoryRelation in categoriesRelation.DefaultIfEmpty()
                          select new ProductProjection
@@ -308,7 +308,7 @@ namespace Camino.Service.Business.Products
                                         on farmProduct.FarmId equals f.Id into farms
                                         from farm in farms.DefaultIfEmpty()
 
-                                        join productCategoryRelation in _productCategoryProductRepository.Table
+                                        join productCategoryRelation in _productCategoryRelationRepository.Table
                                         on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
                                         from categoryRelation in categoriesRelation.DefaultIfEmpty()
 
@@ -397,7 +397,7 @@ namespace Camino.Service.Business.Products
             {
                 foreach (var category in product.ProductCategories)
                 {
-                    _productCategoryProductRepository.Add(new ProductCategoryProduct()
+                    _productCategoryRelationRepository.Add(new ProductCategoryRelation()
                     {
                         ProductCategoryId = category.Id,
                         ProductId = id

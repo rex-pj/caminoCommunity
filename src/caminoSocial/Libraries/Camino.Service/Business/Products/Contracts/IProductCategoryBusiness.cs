@@ -13,8 +13,8 @@ namespace Camino.Service.Business.Products.Contracts
     {
         ProductCategoryProjection Find(long id);
         Task<BasePageList<ProductCategoryProjection>> GetAsync(ProductCategoryFilter filter);
-        IList<ProductCategoryProjection> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
-        IList<ProductCategoryProjection> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
+        Task<IList<ProductCategoryProjection>> SearchAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
+        Task<IList<ProductCategoryProjection>> SearchParentsAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
         List<ProductCategoryProjection> Get(Expression<Func<ProductCategory, bool>> filter);
         public int Add(ProductCategoryProjection category);
         ProductCategoryProjection Update(ProductCategoryProjection category);

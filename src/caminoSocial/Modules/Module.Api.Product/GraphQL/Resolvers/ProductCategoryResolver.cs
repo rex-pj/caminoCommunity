@@ -5,6 +5,7 @@ using Camino.Service.Projections.Product;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
@@ -16,7 +17,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             _productCategoryBusiness = productCategoryBusiness;
         }
 
-        public IEnumerable<ISelectOption> GetProductCategories(SelectFilterModel criterias)
+        public async Task<IEnumerable<ISelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -26,11 +27,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
             IList<ProductCategoryProjection> categories;
             if (criterias.IsParentOnly)
             {
-                categories = _productCategoryBusiness.SearchParents(criterias.Query, criterias.CurrentId);
+                categories = await _productCategoryBusiness.SearchParentsAsync(criterias.Query, criterias.CurrentId);
             }
             else
             {
-                categories = _productCategoryBusiness.Search(criterias.Query, criterias.CurrentId);
+                categories = await _productCategoryBusiness.SearchAsync(criterias.Query, criterias.CurrentId);
             }
 
             if (categories == null || !categories.Any())

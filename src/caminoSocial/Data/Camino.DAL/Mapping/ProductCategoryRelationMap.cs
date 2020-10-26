@@ -5,19 +5,19 @@ using LinqToDB.Mapping;
 
 namespace Camino.DAL.Mapping
 {
-    public class ProductCategoryProductMap : EntityMapBuilder<ProductCategoryProduct>
+    public class ProductCategoryRelationMap : EntityMapBuilder<ProductCategoryRelation>
     {
         public override void Map(FluentMappingBuilder builder)
         {
-            builder.Entity<ProductCategoryProduct>()
-                .HasTableName(nameof(ProductCategoryProduct))
+            builder.Entity<ProductCategoryRelation>()
+                .HasTableName(nameof(ProductCategoryRelation))
                 .HasSchemaName(TableSchemaConst.DBO)
                 .HasIdentity(x => x.Id)
                 .HasPrimaryKey(x => x.Id)
                 .Association(x => x.Product,
-                    (productCategoryProduct, product) => productCategoryProduct.ProductId == product.Id)
+                    (productCategoryRelation, product) => productCategoryRelation.ProductId == product.Id)
                 .Association(x => x.ProductCategory,
-                    (productCategoryProduct, productCategory) => productCategoryProduct.ProductCategoryId == productCategory.Id);
+                    (productCategoryRelation, productCategory) => productCategoryRelation.ProductCategoryId == productCategory.Id);
         }
     }
 }

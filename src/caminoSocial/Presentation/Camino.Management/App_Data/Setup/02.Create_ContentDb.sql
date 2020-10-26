@@ -217,25 +217,25 @@ PRIMARY KEY (Id);
 
 -- PRODUCT CATEGORY --
 GO
-CREATE TABLE dbo.ProductCategoryProduct
+CREATE TABLE dbo.ProductCategoryRelation
 (
 	ProductId BIGINT NOT NULL,
 	ProductCategoryId INT NOT NULL
 )
 
 GO
-ALTER TABLE dbo.ProductCategoryProduct
-ADD CONSTRAINT FK_ProductCategoryProduct_ProductCategory
+ALTER TABLE dbo.ProductCategoryRelation
+ADD CONSTRAINT FK_ProductCategoryRelation_ProductCategory
 FOREIGN KEY (ProductCategoryId) REFERENCES dbo.[ProductCategory](Id);
 
 GO
-ALTER TABLE dbo.ProductCategoryProduct
-ADD CONSTRAINT FK_ProductCategoryProduct_Product
+ALTER TABLE dbo.ProductCategoryRelation
+ADD CONSTRAINT FK_ProductCategoryRelation_Product
 FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
 
 GO
-ALTER TABLE dbo.ProductCategoryProduct
-ADD CONSTRAINT PK_ProductCategoryProduct
+ALTER TABLE dbo.ProductCategoryRelation
+ADD CONSTRAINT PK_ProductCategoryRelation
 PRIMARY KEY (ProductId, ProductCategoryId);
 
 --FARM PRODUCT--

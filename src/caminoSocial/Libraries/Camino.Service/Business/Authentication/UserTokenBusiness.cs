@@ -1,35 +1,45 @@
-﻿using AutoMapper;
-using Camino.Data.Contracts;
+﻿using Camino.Data.Contracts;
 using Camino.Service.Projections.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Service.Business.Authentication.Contracts;
 using Camino.IdentityDAL.Entities;
+using LinqToDB;
 
 namespace Camino.Service.Business.Authentication
 {
     public class UserTokenBusiness : IUserTokenBusiness
     {
         private readonly IRepository<UserToken> _userTokenRepository;
-        private readonly IMapper _mapper;
 
-        public UserTokenBusiness(IRepository<UserToken> userTokenRepository, IMapper mapper)
+        public UserTokenBusiness(IRepository<UserToken> userTokenRepository)
         {
-            _mapper = mapper;
             _userTokenRepository = userTokenRepository;
         }
 
         public async Task<UserTokenProjection> FindAsync(long userId, string loginProvider, string name)
         {
-            var userTokens = await _userTokenRepository.GetAsync(x => x.UserId == userId && x.Name == name);
-            var userToken = userTokens.FirstOrDefault();
+            var userTokens = _userTokenRepository.Get(x => x.UserId == userId && x.Name == name).Select(x => new UserTokenProjection()
+            {
+                UserId = x.UserId,
+                LoginProvider = x.LoginProvider,
+                Name = x.Name,
+                Value = x.Value
+            });
 
-            return _mapper.Map<UserTokenProjection>(userToken);
+            var userToken = await userTokens.FirstOrDefaultAsync();
+            return userToken;
         }
 
         public void Add(UserTokenProjection userTokenRequest)
         {
-            var userToken = _mapper.Map<UserToken>(userTokenRequest);
+            var userToken = new UserToken()
+            {
+                LoginProvider = userTokenRequest.LoginProvider,
+                Name = userTokenRequest.Name,
+                Value = userTokenRequest.Value,
+                UserId = userTokenRequest.UserId
+            };
             _userTokenRepository.Add(userToken);
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Module.Api.Product.Models
 {
-    public class ProductCategoryProductModel
+    public class ProductCategoryRelationModel
     {
         public int Id { get; set; }
     }

@@ -45,19 +45,12 @@ namespace Camino.IdentityManager
             }
 
             var userId = await _userManager.DecryptUserIdAsync(AuthorizationHeaders.UserIdentityId);
-            var currentUser = await _userManager.FindByIdAsync(userId.ToString());
-            if (currentUser == null)
-            {
-                return new ApplicationUser();
-            }
-
             var user = await _userManager.FindByLoginAsync(ServiceProvidersNameConst.CAMINO_API_AUTH, AuthenticationToken);
-            if(user == null || user.Id != currentUser.Id)
+            if(user == null || user.Id != userId)
             {
                 return new ApplicationUser();
             }
 
-            user.Id = userId;
             UpdateAuthenticate(user);
             return user;
         }

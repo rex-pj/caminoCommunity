@@ -217,7 +217,23 @@ namespace Camino.Service.Business.Users
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
-                .Select(UserExpressionMapping.UserModelSelector)
+                .Select(x => new UserProjection()
+                {
+                    DisplayName = x.DisplayName,
+                    Firstname = x.Firstname,
+                    Lastname = x.Lastname,
+                    UserName = x.UserName,
+                    UpdatedDate = x.UpdatedDate,
+                    CreatedDate = x.CreatedDate,
+                    UpdatedById = x.UpdatedById,
+                    CreatedById = x.CreatedById,
+                    StatusId = x.StatusId,
+                    Email = x.Email,
+                    PasswordHash = x.PasswordHash,
+                    SecurityStamp = x.SecurityStamp,
+                    Id = x.Id,
+                    IsEmailConfirmed = x.IsEmailConfirmed
+                })
                 .FirstOrDefaultAsync();
 
             return existUser;
@@ -227,7 +243,27 @@ namespace Camino.Service.Business.Users
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
-                .Select(UserExpressionMapping.FullUserModelSelector)
+                .Select(x => new UserFullProjection()
+                {
+                    CreatedDate = x.CreatedDate,
+                    DisplayName = x.DisplayName,
+                    Firstname = x.Firstname,
+                    Lastname = x.Lastname,
+                    UserName = x.UserName,
+                    Email = x.Email,
+                    PhoneNumber = x.UserInfo.PhoneNumber,
+                    Description = x.UserInfo.Description,
+                    Address = x.UserInfo.Address,
+                    BirthDate = x.UserInfo.BirthDate,
+                    GenderId = x.UserInfo.GenderId,
+                    GenderLabel = x.UserInfo.Gender.Name,
+                    StatusId = x.StatusId,
+                    StatusLabel = x.Status.Name,
+                    Id = x.Id,
+                    CountryId = x.UserInfo.CountryId,
+                    CountryCode = x.UserInfo.Country.Code,
+                    CountryName = x.UserInfo.Country.Name
+                })
                 .FirstOrDefaultAsync();
 
             return existUser;

@@ -24,7 +24,7 @@ namespace Module.Api.Product.Models
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }
         public int Price { get; set; }
-        public IEnumerable<ProductCategoryProductModel> ProductCategories { get; set; }
+        public IEnumerable<ProductCategoryRelationModel> ProductCategories { get; set; }
         public IEnumerable<ProductFarmModel> ProductFarms { get; set; }
         public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
     }

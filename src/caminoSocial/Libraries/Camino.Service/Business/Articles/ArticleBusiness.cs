@@ -68,7 +68,7 @@ namespace Camino.Service.Business.Articles
 
         public async Task<ArticleProjection> FindDetailAsync(long id)
         {
-            var exist = (from article in _articleRepository.Table
+            var exist = await (from article in _articleRepository.Table
                          join category in _articleCategoryRepository.Table
                          on article.ArticleCategoryId equals category.Id
                          where article.Id == id
@@ -84,7 +84,7 @@ namespace Camino.Service.Business.Articles
                              ArticleCategoryName = category.Name,
                              ArticleCategoryId = article.ArticleCategoryId,
                              Content = article.Content
-                         }).FirstOrDefault();
+                         }).FirstOrDefaultAsync();
 
             if (exist == null)
             {
