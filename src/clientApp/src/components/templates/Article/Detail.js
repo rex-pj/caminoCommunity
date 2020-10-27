@@ -48,9 +48,12 @@ export default function (props) {
             <span>{convertDateTimeToPeriod(article.createdDate)}</span>
           </ContentTopBar>
         </PanelHeading>
-        <PostThumbnail>
-          <Thumbnail src={article.thumbnailUrl} alt="" />
-        </PostThumbnail>
+        {article.thumbnailUrl ? (
+          <PostThumbnail>
+            <Thumbnail src={article.thumbnailUrl} alt="" />
+          </PostThumbnail>
+        ) : null}
+
         <PanelBody>
           <div className="clearfix">
             <div>

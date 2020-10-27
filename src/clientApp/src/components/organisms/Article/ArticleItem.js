@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { Thumbnail } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -14,6 +14,11 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+    border-radius: 0;
+  }
 `;
 
 const ContentTopbar = styled.div`
@@ -84,7 +89,7 @@ export default (props) => {
       </PanelHeader>
       <PostThumbnail>
         <AnchorLink to={article.url}>
-          <Thumbnail src={article.thumbnailUrl} alt="" />
+          <ImageThumb src={article.thumbnailUrl} alt="" />
         </AnchorLink>
       </PostThumbnail>
       <PanelBody>

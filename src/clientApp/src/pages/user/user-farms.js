@@ -5,8 +5,9 @@ import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
 import FarmItem from "../../components/organisms/Farm/FarmItem";
 import { GET_USER_FARMS } from "../../utils/GraphQLQueries/queries";
+import Loading from "../../components/atoms/Loading";
 
-export default withRouter(function (props){
+export default withRouter(function (props) {
   const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
@@ -21,7 +22,7 @@ export default withRouter(function (props){
   });
 
   if (loading || !data) {
-    return <Fragment></Fragment>;
+    return <Loading>Loading...</Loading>;
   }
 
   const { userFarms } = data;
@@ -76,5 +77,4 @@ export default withRouter(function (props){
       />
     </Fragment>
   );
-  }
-);
+});

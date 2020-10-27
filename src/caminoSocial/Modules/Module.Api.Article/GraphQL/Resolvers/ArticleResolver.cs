@@ -215,9 +215,9 @@ namespace Module.Api.Article.GraphQL.Resolvers
             foreach (var article in articles)
             {
                 article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
-                if (!string.IsNullOrEmpty(article.Content) && article.Content.Length >= 150)
+                if (!string.IsNullOrEmpty(article.Description) && article.Description.Length >= 150)
                 {
-                    article.Description = $"{article.Content.Substring(0, 150)}...";
+                    article.Description = $"{article.Description.Substring(0, 150)}...";
                 }
             }
 

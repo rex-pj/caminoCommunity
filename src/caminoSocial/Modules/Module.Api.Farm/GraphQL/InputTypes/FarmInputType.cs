@@ -1,4 +1,5 @@
-﻿using HotChocolate.Types;
+﻿using Camino.Framework.GraphQL.InputTypes;
+using HotChocolate.Types;
 using Module.Api.Farm.Models;
 
 namespace Module.Api.Farm.GraphQL.InputTypes
@@ -12,7 +13,7 @@ namespace Module.Api.Farm.GraphQL.InputTypes
             descriptor.Field(x => x.Description).Type<StringType>();
             descriptor.Field(x => x.FarmTypeId).Type<LongType>();
             descriptor.Field(x => x.Id).Type<LongType>();
-            descriptor.Field(x => x.Thumbnails).Ignore();
+            descriptor.Field(x => x.Thumbnails).Type<ListType<PictureRequestInputType>>();
             descriptor.Field(x => x.UpdateById).Ignore();
             descriptor.Field(x => x.UpdatedDate).Ignore();
             descriptor.Field(x => x.CreatedById).Ignore();

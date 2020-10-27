@@ -1,4 +1,5 @@
-﻿using Camino.DAL.Entities;
+﻿using Camino.Core.Utils;
+using Camino.DAL.Entities;
 using Camino.Data.Contracts;
 using Camino.Data.Enums;
 using Camino.IdentityDAL.Entities;
@@ -87,13 +88,13 @@ namespace Camino.Service.Business.Feeds
                                 {
                                     CreatedById = article.CreatedById,
                                     CreatedDate = article.CreatedDate,
-                                    Description = article.Description,
+                                    Description = string.IsNullOrEmpty(article.Description) ? article.Content : article.Description,
                                     Id = article.Id,
                                     Name = article.Name,
                                     PictureId = ap.PictureId,
                                     FeedType = FeedType.Article,
                                     CreatedByPhotoCode = photo.Code
-                                });
+                                }).Take(filter.PageSize);
 
 
             var productPictureType = (int)ProductPictureType.Thumbnail;
@@ -118,7 +119,7 @@ namespace Camino.Service.Business.Feeds
                                     FeedType = FeedType.Product,
                                     Price = price != null ? price.Price : 0,
                                     CreatedByPhotoCode = photo.Code
-                                });
+                                }).Take(filter.PageSize);
 
             var farmPictureType = (int)FarmPictureType.Thumbnail;
             var farmFeeds = (from farm in farmQuery
@@ -139,7 +140,7 @@ namespace Camino.Service.Business.Feeds
                                  FeedType = FeedType.Farm,
                                  Address = farm.Address,
                                  CreatedByPhotoCode = photo.Code
-                             });
+                             }).Take(filter.PageSize);
 
             var feedQuery = articleFeeds
                 .UnionAll(productFeeds)
@@ -159,6 +160,7 @@ namespace Camino.Service.Business.Feeds
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == feed.CreatedById);
                 feed.CreatedByName = createdBy.DisplayName;
+                feed.Description = HtmlUtil.TrimHtml(feed.Description);
             }
 
             var result = new BasePageList<FeedProjection>(feeds)

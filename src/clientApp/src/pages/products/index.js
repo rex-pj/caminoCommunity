@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Product from "../../components/templates/Product";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
+import Loading from "../../components/atoms/Loading";
 
 export default withRouter(function (props) {
   const { match } = props;
@@ -18,7 +19,7 @@ export default withRouter(function (props) {
   });
 
   if (loading || !data) {
-    return <Fragment></Fragment>;
+    return <Loading>Loading</Loading>;
   }
 
   const { products: productsResponse } = data;

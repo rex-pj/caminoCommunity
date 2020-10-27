@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ImageRound } from "../../atoms/Images";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
@@ -17,6 +17,10 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 200px;
+  }
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -54,11 +58,6 @@ const Cover = styled.div`
   position: relative;
   max-height: 250px;
   overflow: hidden;
-`;
-
-const CoverImage = styled(ImageRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
@@ -111,7 +110,7 @@ export default (props) => {
     <Panel>
       <Cover>
         <AnchorLink to={farm.url}>
-          <CoverImage src={farm.thumbnailUrl} alt="" />
+          <ImageThumb src={farm.thumbnailUrl} alt="" />
           <Overlay />
         </AnchorLink>
 

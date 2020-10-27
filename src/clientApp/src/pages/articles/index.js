@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_ARTICLES } from "../../utils/GraphQLQueries/queries";
+import Loading from "../../components/atoms/Loading";
 
 export default withRouter(function (props) {
   const { match } = props;
@@ -18,7 +19,7 @@ export default withRouter(function (props) {
   });
 
   if (loading || !data) {
-    return <Fragment></Fragment>;
+    return <Loading>Loading</Loading>;
   }
 
   const { articles: articlesResponse } = data;

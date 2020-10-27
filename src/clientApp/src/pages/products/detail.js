@@ -81,7 +81,7 @@ export default withRouter(function (props) {
 
   const renderRelevants = (relevantLoading, relevantData) => {
     if (relevantLoading || !relevantData) {
-      return <Loading>Loading...</Loading>;
+      return <Loading className="mt-3">Loading...</Loading>;
     }
     const { relevantProducts } = relevantData;
     const relevants = relevantProducts.map((item) => {
@@ -116,7 +116,7 @@ export default withRouter(function (props) {
     });
 
     return (
-      <RelationBox>
+      <RelationBox className="mt-3">
         <TertiaryHeading>Other Products</TertiaryHeading>
         <div className="row">
           {relevants

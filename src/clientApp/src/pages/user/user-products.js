@@ -5,6 +5,7 @@ import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { GET_USER_PRODUCTS } from "../../utils/GraphQLQueries/queries";
+import Loading from "../../components/atoms/Loading";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber } = props;
@@ -21,7 +22,7 @@ export default withRouter(function (props) {
   });
 
   if (loading || !data) {
-    return <Fragment></Fragment>;
+    return <Loading>Loading...</Loading>;
   }
 
   const { userProducts } = data;

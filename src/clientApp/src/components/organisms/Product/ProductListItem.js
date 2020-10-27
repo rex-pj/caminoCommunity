@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ImageRound } from "../../atoms/Images";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
@@ -16,6 +16,10 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 100%;
+  }
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -104,12 +108,15 @@ export default function (props) {
         <div className="row">
           <div className="col col-6 col-sm-6 col-md-5 col-lg-5">
             <AnchorLink to={product.url}>
-              <ImageRound src={product.thumbnailUrl} alt="" />
+              <ImageThumb src={product.thumbnailUrl} alt="" />
             </AnchorLink>
           </div>
 
           <div className="col col-6 col-sm-6 col-md-7 col-lg-7">
-            <PriceLabel price={product.price} currency="vnđ" />
+            {product.price > 0 ? (
+              <PriceLabel price={product.price} currency="vnđ" />
+            ) : null}
+
             <div className="panel-content">
               <Description>
                 <span

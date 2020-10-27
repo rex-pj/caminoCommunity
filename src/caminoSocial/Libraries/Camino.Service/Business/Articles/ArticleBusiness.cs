@@ -207,6 +207,9 @@ namespace Camino.Service.Business.Articles
 
                 var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == article.UpdatedById);
                 article.UpdatedBy = updatedBy.DisplayName;
+                article.Description = string.IsNullOrEmpty(article.Description) 
+                    ? HtmlUtil.TrimHtml(article.Content) 
+                    : article.Description;
             }
 
             var result = new BasePageList<ArticleProjection>(articles)

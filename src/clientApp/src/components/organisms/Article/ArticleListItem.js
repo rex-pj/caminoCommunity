@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { Thumbnail } from "../../molecules/Thumbnails";
+import NoImage from "../../atoms/NoImages/no-image";
 import Overlay from "../../atoms/Overlay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
@@ -16,6 +17,11 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 200px;
+    border-radius: 0;
+  }
 `;
 
 const ContentTopbar = styled.div`
@@ -78,7 +84,9 @@ export default (props) => {
   }
 
   let thumbnailBox = null;
-  if (!isShowFullImage && article.thumbnailUrl) {
+  if (!article.thumbnailUrl) {
+    thumbnailBox = <NoImage className="no-image mt-2"></NoImage>;
+  } else if (!isShowFullImage) {
     thumbnailBox = (
       <CollapsedThumbnail>
         <Thumbnail src={article.thumbnailUrl} alt="" />
@@ -115,11 +123,11 @@ export default (props) => {
           <AnchorLink to={article.url}>{article.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
-      {article.thumbnailUrl ? thumbnailBox : null}
+      {thumbnailBox}
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            <p dangerouslySetInnerHTML={{ __html: article.content }}></p>
+            <p>{article.description}</p>
           </ContentBody>
         </div>
 

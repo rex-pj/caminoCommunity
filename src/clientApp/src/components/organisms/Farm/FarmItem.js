@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { ThumbnailRound } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -16,6 +16,10 @@ import Overlay from "../../atoms/Overlay";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+  }
 `;
 
 const ContentTopbar = styled.div`
@@ -42,18 +46,6 @@ const InteractiveItem = styled.li`
   margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
-  }
-`;
-
-const PostThumbnail = styled(ThumbnailRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  max-height: 150px;
-  overflow: hidden;
-
-  img {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
   }
 `;
 
@@ -116,7 +108,7 @@ export default (props) => {
     <Panel>
       <ThumbnailBox>
         <AnchorLink to={farm.thumbnailUrl}>
-          <PostThumbnail src={farm.thumbnailUrl} alt="" />
+          <ImageThumb src={farm.thumbnailUrl} alt="" />
           <Overlay />
         </AnchorLink>
         <FollowButton icon="user-plus" size="sm">

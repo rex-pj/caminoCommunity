@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { ThumbnailRound } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfileAction from "../ProfileCard/ProfileAction";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -16,6 +16,15 @@ import { PriceLabel } from "../../molecules/PriceAndCurrency";
 const Panel = styled(PanelDefault)`
   position: relative;
   margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+  }
+`;
+
+const ContentBody = styled.div`
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
+  height: 160px;
 `;
 
 const ContentTopbar = styled.div`
@@ -37,18 +46,6 @@ const InteractiveItem = styled.li`
   margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
-  }
-`;
-
-const PostThumbnail = styled(ThumbnailRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  max-height: 150px;
-  overflow: hidden;
-
-  img {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
   }
 `;
 
@@ -105,16 +102,19 @@ export default (props) => {
     creator.info = "Farmer";
   }
 
+  let description = null;
+  if (product.description && product.description.length >= 120) {
+    description = `${product.description.substring(0, 120)}...`;
+  }
+
   return (
     <Panel>
-      {product.thumbnailUrl ? (
-        <ThumbnailBox>
-          <AnchorLink to={product.url}>
-            <PostThumbnail src={product.thumbnailUrl} alt="" />
-            <Overlay />
-          </AnchorLink>
-        </ThumbnailBox>
-      ) : null}
+      <ThumbnailBox>
+        <AnchorLink to={product.url}>
+          <ImageThumb src={product.thumbnailUrl} alt="" />
+          <Overlay />
+        </AnchorLink>
+      </ThumbnailBox>
 
       <PanelHeader>
         <ContentTopbar>
@@ -138,7 +138,9 @@ export default (props) => {
       </PanelHeader>
       <PanelBody>
         <RowItem>
-          <PriceLabel price={product.price} currency="vnđ" />
+          {product.price > 0 ? (
+            <PriceLabel price={product.price} currency="vnđ" />
+          ) : null}
         </RowItem>
         {product.productFarms
           ? product.productFarms.map((pf) => {
@@ -155,6 +157,11 @@ export default (props) => {
             })
           : null}
 
+        <div className="panel-content">
+          <ContentBody>
+            <p dangerouslySetInnerHTML={{ __html: description }}></p>
+          </ContentBody>
+        </div>
         <HorizontalList className="clearfix">
           <InteractItem>
             <HorizontalReactBar reactionNumber={product.reactionNumber} />

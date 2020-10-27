@@ -117,7 +117,7 @@ export const GET_USER_ARTICLES = gql`
       }
       collections {
         id
-        content
+        description
         name
         createdById
         createdBy

@@ -92,7 +92,10 @@ export default withRouter(function (props) {
   return (
     <Fragment>
       <PanelDefault>
-        <ThumbnailSlider images={product.images} numberOfDisplay={5} />
+        {product.images ? (
+          <ThumbnailSlider images={product.images} numberOfDisplay={5} />
+        ) : null}
+
         <PanelBody>
           <div className="clearfix">
             <TopBarInfo>

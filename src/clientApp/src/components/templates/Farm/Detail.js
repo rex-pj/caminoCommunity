@@ -81,7 +81,10 @@ export default (props) => {
   return (
     <Fragment>
       <PanelDefault>
-        <ThumbnailSlider images={farm.images} numberOfDisplay={5} />
+        {farm.images ? (
+          <ThumbnailSlider images={farm.images} numberOfDisplay={5} />
+        ) : null}
+
         <BreadCrumbNav list={breadcrumbs} />
         <PanelBody>
           <TopBarInfo>
