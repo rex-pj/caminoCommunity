@@ -21,6 +21,12 @@ const Panel = styled(PanelDefault)`
   .no-image {
     height: 200px;
   }
+
+  ${ImageThumb} img {
+    width: 100%;
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
+  }
 `;
 
 const PanelHeader = styled(PanelHeading)`

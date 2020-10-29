@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { Thumbnail } from "../../molecules/Thumbnails";
@@ -76,7 +76,12 @@ export default (props) => {
 
   if (creator) {
     var datePeriod = convertDateTimeToPeriod(article.createdDate);
-    creator.info = `${datePeriod}`;
+    creator.info = (
+      <Fragment>
+        <FontAwesomeIcon icon="calendar-alt" />
+        {datePeriod}
+      </Fragment>
+    );
   }
 
   function showFullImage() {

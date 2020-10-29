@@ -9,6 +9,7 @@ import Loading from "../../components/atoms/Loading";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
 import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 const FarmProductsBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -19,7 +20,7 @@ export default withRouter(function (props) {
   const { params } = match;
   const { id } = params;
 
-  const { loading, data } = useQuery(GET_FARM, {
+  const { loading, data, error } = useQuery(GET_FARM, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -27,16 +28,21 @@ export default withRouter(function (props) {
     },
   });
 
-  const { productLoading, data: productData } = useQuery(GET_PRODUCTS, {
-    variables: {
-      criterias: {
-        farmId: parseFloat(id),
+  const { productLoading, data: productData, error: productError } = useQuery(
+    GET_PRODUCTS,
+    {
+      variables: {
+        criterias: {
+          farmId: parseFloat(id),
+        },
       },
-    },
-  });
+    }
+  );
 
   if (loading || !data) {
     return <Loading>Loading...</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
   }
 
   const { farm: farmResponse } = data;
@@ -65,9 +71,11 @@ export default withRouter(function (props) {
     });
   }
 
-  const renderProducts = (productLoading, productData) => {
+  const renderProducts = (productLoading, productData, productError) => {
     if (productLoading || !productData) {
       return <Loading>Loading...</Loading>;
+    } else if (productError) {
+      return <ErrorBlock>Error!</ErrorBlock>;
     }
 
     const { products: ProductCollections } = productData;
@@ -127,7 +135,7 @@ export default withRouter(function (props) {
       <Detail farm={farm} breadcrumbs={breadcrumbs} />
       <FarmProductsBox>
         <TertiaryHeading>{farm.name}'s products</TertiaryHeading>
-        {renderProducts(productLoading, productData)}
+        {renderProducts(productLoading, productData, productError)}
       </FarmProductsBox>
     </Fragment>
   );

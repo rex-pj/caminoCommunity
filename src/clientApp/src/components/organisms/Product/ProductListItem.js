@@ -63,7 +63,12 @@ export default function (props) {
 
   if (creator) {
     var datePeriod = convertDateTimeToPeriod(product.createdDate);
-    creator.info = `${datePeriod}`;
+    creator.info = (
+      <Fragment>
+        <FontAwesomeIcon icon="calendar-alt" />
+        {datePeriod}
+      </Fragment>
+    );
   }
 
   return (
@@ -136,7 +141,7 @@ export default function (props) {
               <FontButtonItem
                 icon="comments"
                 dynamicText={product.commentNumber}
-                title="Thảo luận"
+                title="Discussions"
               />
             </InteractiveItem>
           </HorizontalList>

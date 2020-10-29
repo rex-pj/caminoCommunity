@@ -24,15 +24,21 @@ import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
 import EditorTabs from "../../components/organisms/User/EditorTabs";
 import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 export default withRouter((props) => {
   const [editorMode, setEditorMode] = useState("ARTICLE");
-
   const { location, pageNumber, match } = props;
   const { params } = match;
   const { userId } = params;
 
-  const { loading, data } = useQuery(GET_USER_FEEDS, {
+  const {
+    loading,
+    data,
+    error,
+    refetch: feedsRefetch,
+    networkStatus,
+  } = useQuery(GET_USER_FEEDS, {
     variables: {
       criterias: {
         userIdentityId: userId,
@@ -157,6 +163,10 @@ export default withRouter((props) => {
       });
   };
 
+  const refetchNewsFeed = () => {
+    feedsRefetch();
+  };
+
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
     return {
@@ -220,6 +230,7 @@ export default withRouter((props) => {
         onImageValidate={onImageValidate}
         filterCategories={searchArticleCategories}
         onArticlePost={onArticlePost}
+        refetchNews={refetchNewsFeed}
         showValidationError={showValidationError}
       />
     );
@@ -232,6 +243,7 @@ export default withRouter((props) => {
         filterCategories={searchProductCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}
+        refetchNews={refetchNewsFeed}
         filterFarms={searchFarms}
       />
     );
@@ -243,12 +255,13 @@ export default withRouter((props) => {
         onImageValidate={onImageValidate}
         filterCategories={searchFarmTypes}
         onFarmPost={onFarmPost}
+        refetchNews={refetchNewsFeed}
         showValidationError={showValidationError}
       />
     );
   }
 
-  if (loading || !data) {
+  if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
         <EditorTabs
@@ -257,6 +270,17 @@ export default withRouter((props) => {
         ></EditorTabs>
         {editor}
         <Loading>Loading...</Loading>
+      </Fragment>
+    );
+  } else if (error) {
+    return (
+      <Fragment>
+        <EditorTabs
+          onToggleCreateMode={onToggleCreateMode}
+          editorMode={editorMode}
+        ></EditorTabs>
+        {editor}
+        <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
   }

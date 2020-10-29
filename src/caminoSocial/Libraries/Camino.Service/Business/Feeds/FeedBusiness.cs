@@ -94,7 +94,7 @@ namespace Camino.Service.Business.Feeds
                                     PictureId = ap.PictureId,
                                     FeedType = FeedType.Article,
                                     CreatedByPhotoCode = photo.Code
-                                }).Take(filter.PageSize);
+                                });
 
 
             var productPictureType = (int)ProductPictureType.Thumbnail;
@@ -119,7 +119,7 @@ namespace Camino.Service.Business.Feeds
                                     FeedType = FeedType.Product,
                                     Price = price != null ? price.Price : 0,
                                     CreatedByPhotoCode = photo.Code
-                                }).Take(filter.PageSize);
+                                });
 
             var farmPictureType = (int)FarmPictureType.Thumbnail;
             var farmFeeds = (from farm in farmQuery
@@ -140,21 +140,33 @@ namespace Camino.Service.Business.Feeds
                                  FeedType = FeedType.Farm,
                                  Address = farm.Address,
                                  CreatedByPhotoCode = photo.Code
-                             }).Take(filter.PageSize);
+                             });
 
             var feedQuery = articleFeeds
+                .UnionAll(productFeeds)
+                .UnionAll(farmFeeds);
+
+            var filteredNumber = await feedQuery.CountAsync();
+
+            articleFeeds = articleFeeds.Take(filter.PageSize);
+            productFeeds = productFeeds.Take(filter.PageSize);
+            farmFeeds = farmFeeds.Take(filter.PageSize);
+            
+            feedQuery = articleFeeds
                 .UnionAll(productFeeds)
                 .UnionAll(farmFeeds)
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))
                 .Take(filter.PageSize);
 
-            var filteredNumber = await feedQuery.CountAsync();
             var feeds = await feedQuery.ToListAsync();
 
             var createdByIds = feeds.Select(x => x.CreatedById).ToArray();
-
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var feed in feeds)
             {

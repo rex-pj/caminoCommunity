@@ -219,6 +219,7 @@ PRIMARY KEY (Id);
 GO
 CREATE TABLE dbo.ProductCategoryRelation
 (
+	Id BIGINT NOT NULL IDENTITY(1,1),
 	ProductId BIGINT NOT NULL,
 	ProductCategoryId INT NOT NULL
 )
@@ -236,7 +237,7 @@ FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
 GO
 ALTER TABLE dbo.ProductCategoryRelation
 ADD CONSTRAINT PK_ProductCategoryRelation
-PRIMARY KEY (ProductId, ProductCategoryId);
+PRIMARY KEY (Id);
 
 --FARM PRODUCT--
 GO

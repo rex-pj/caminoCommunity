@@ -78,6 +78,7 @@ export default withRouter((props) => {
     onImageValidate,
     height,
     filterCategories,
+    refetchNews,
   } = props;
   const initialFormData = ArticleCreationModel;
   const [formData, setFormData] = useState(initialFormData);
@@ -178,11 +179,11 @@ export default withRouter((props) => {
       }
 
       await props.onArticlePost(articleData).then((response) => {
-        console.log(response);
         var { data } = response;
         var { createArticle } = data;
         if (createArticle && createArticle.id) {
           clearFormData();
+          refetchNews();
         }
       });
     }

@@ -5,12 +5,13 @@ import { useQuery } from "@apollo/client";
 import { GET_FARMS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber } = params;
-  const { loading, data } = useQuery(GET_FARMS, {
+  const { loading, data, error } = useQuery(GET_FARMS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
@@ -20,6 +21,8 @@ export default withRouter(function (props) {
 
   if (loading || !data) {
     return <Loading>Loading</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
   }
 
   const { farms: farmsResponse } = data;

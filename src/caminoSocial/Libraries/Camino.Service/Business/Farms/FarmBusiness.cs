@@ -107,6 +107,8 @@ namespace Camino.Service.Business.Farms
             var exist = await (from farm in _farmRepository.Table
                          join farmType in _farmTypeRepository.Table
                          on farm.FarmTypeId equals farmType.Id
+                         join farmPic in _farmPictureRepository.Table
+                         on farm.Id equals farmPic.FarmId into pics
                          where farm.Id == id
                          select new FarmProjection
                          {
@@ -120,25 +122,15 @@ namespace Camino.Service.Business.Farms
                              UpdatedDate = farm.UpdatedDate,
                              FarmTypeName = farmType.Name,
                              FarmTypeId = farm.FarmTypeId,
+                             Pictures = pics.Select(x => new PictureRequestProjection
+                             {
+                                 Id = x.PictureId
+                             }),
                          }).FirstOrDefaultAsync();
 
             if (exist == null)
             {
                 return null;
-            }
-
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == id)
-                                join farm in _farmRepository.Table
-                                on farmPic.FarmId equals farm.Id
-                                orderby farm.CreatedDate descending
-                                select new PictureRequestProjection()
-                                {
-                                    Id = farmPic.PictureId
-                                }).ToListAsync();
-
-            if (farmPictures.Any())
-            {
-                exist.Pictures = farmPictures;
             }
 
             var createdByUserName = await _userRepository.Get(x => x.Id == exist.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
@@ -236,14 +228,24 @@ namespace Camino.Service.Business.Farms
                             }
                         };
 
-            var farms = await query.Skip(filter.PageSize * (filter.Page - 1))
-                                         .Take(filter.PageSize).ToListAsync();
+            var farms = await query
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = farms.Select(x => x.CreatedById).ToArray();
             var updatedByIds = farms.Select(x => x.UpdatedById).ToArray();
 
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
+            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var article in farms)
             {

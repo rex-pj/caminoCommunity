@@ -11,7 +11,6 @@ using Camino.Core.Resources;
 using MimeKit.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
-using AutoMapper;
 using Camino.Core.Exceptions;
 using Camino.Core.Enums;
 using Microsoft.Extensions.Options;
@@ -31,30 +30,47 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserBusiness _userBusiness;
         private readonly IEmailProvider _emailSender;
-        private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender, 
-            IMapper mapper, IUserBusiness userBusiness, SessionState sessionState, IOptions<AppSettings> appSettings, 
+        public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender,
+            IUserBusiness userBusiness, SessionState sessionState, IOptions<AppSettings> appSettings,
             IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<ResetPasswordSettings> resetPasswordSettings)
             : base(sessionState)
         {
             _userManager = userManager;
             _loginManager = loginManager;
-            _mapper = mapper;
             _userBusiness = userBusiness;
             _appSettings = appSettings.Value;
             _registerConfirmationSettings = registerConfirmationSettings.Value;
             _resetPasswordSettings = resetPasswordSettings.Value;
-
             _emailSender = emailSender;
         }
 
         public FullUserInfoModel GetLoggedUser()
         {
-            return _mapper.Map<FullUserInfoModel>(CurrentUser);
+            return new FullUserInfoModel
+            {
+                Address = CurrentUser.Address,
+                BirthDate = CurrentUser.BirthDate,
+                CountryCode = CurrentUser.CountryCode,
+                CountryId = CurrentUser.CountryId,
+                CountryName = CurrentUser.CountryName,
+                Email = CurrentUser.Email,
+                CreatedDate = CurrentUser.CreatedDate,
+                Description = CurrentUser.Description,
+                DisplayName = CurrentUser.DisplayName,
+                Firstname = CurrentUser.Firstname,
+                GenderId = CurrentUser.GenderId,
+                GenderLabel = CurrentUser.GenderLabel,
+                Lastname = CurrentUser.Lastname,
+                PhoneNumber = CurrentUser.PhoneNumber,
+                StatusId = CurrentUser.StatusId,
+                StatusLabel = CurrentUser.StatusLabel,
+                UpdatedDate = CurrentUser.UpdatedDate,
+                UserIdentityId = CurrentUser.UserIdentityId
+            };
         }
 
         public async Task<FullUserInfoModel> GetFullUserInfoAsync(FindUserModel criterias)
@@ -66,15 +82,33 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
 
             var user = await _userBusiness.FindFullByIdAsync(userId);
-
             if (user == null)
             {
                 return null;
             }
 
-            var userInfo = _mapper.Map<FullUserInfoModel>(user);
-            userInfo.UserIdentityId = CurrentUser.UserIdentityId;
-            userInfo.CanEdit = userId == CurrentUser.Id;
+            var userInfo = new FullUserInfoModel
+            {
+                Address = user.Address,
+                BirthDate = user.BirthDate,
+                CountryCode = user.CountryCode,
+                CountryId = user.CountryId,
+                CountryName = user.CountryName,
+                Email = user.Email,
+                CreatedDate = user.CreatedDate,
+                Description = user.Description,
+                DisplayName = user.DisplayName,
+                Firstname = user.Firstname,
+                GenderId = user.GenderId,
+                GenderLabel = user.GenderLabel,
+                Lastname = user.Lastname,
+                PhoneNumber = user.PhoneNumber,
+                StatusId = user.StatusId,
+                StatusLabel = user.StatusLabel,
+                UpdatedDate = user.UpdatedDate,
+                UserIdentityId = CurrentUser.UserIdentityId,
+                CanEdit = userId == CurrentUser.Id
+            };
 
             return userInfo;
         }
@@ -91,15 +125,25 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var updatePerItem = _mapper.Map<UpdateItemRequest>(criterias);
+                var updatePerItem = new UpdateItemRequest()
+                {
+                    Key = criterias.Key,
+                    PropertyName = criterias.PropertyName,
+                    Value = criterias.Value
+                };
                 updatePerItem.Key = userId;
                 var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
-                return _mapper.Map<UpdatePerItemModel>(updatedItem);
+                return new UpdatePerItemModel()
+                {
+                    Key = updatedItem.Key,
+                    PropertyName = updatedItem.PropertyName,
+                    Value = updatedItem.Value
+                };
             }
             catch (Exception ex)
             {
                 throw ex;
-            }            
+            }
         }
 
         private void ValidateUserInfoItem(UpdatePerItemModel criterias)
@@ -185,7 +229,27 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     AuthenticationToken = CurrentUser.AuthenticationToken,
                     AccessMode = AccessMode.CanEdit,
                     IsSucceed = true,
-                    UserInfo = _mapper.Map<UserInfoModel>(CurrentUser)
+                    UserInfo = new UserInfoModel()
+                    {
+                        Address = CurrentUser.Address,
+                        BirthDate = CurrentUser.BirthDate,
+                        CountryCode = CurrentUser.CountryCode,
+                        CountryId = CurrentUser.CountryId,
+                        CountryName = CurrentUser.CountryName,
+                        Email = CurrentUser.Email,
+                        CreatedDate = CurrentUser.CreatedDate,
+                        Description = CurrentUser.Description,
+                        DisplayName = CurrentUser.DisplayName,
+                        Firstname = CurrentUser.Firstname,
+                        GenderId = CurrentUser.GenderId,
+                        GenderLabel = CurrentUser.GenderLabel,
+                        Lastname = CurrentUser.Lastname,
+                        PhoneNumber = CurrentUser.PhoneNumber,
+                        StatusId = CurrentUser.StatusId,
+                        StatusLabel = CurrentUser.StatusLabel,
+                        UpdatedDate = CurrentUser.UpdatedDate,
+                        UserIdentityId = CurrentUser.UserIdentityId
+                    }
                 };
             }
             catch (Exception ex)
@@ -258,7 +322,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 }
                 else
                 {
-                    return CommonResult.Failed(result.Errors.Select(x => new CommonError() { 
+                    return CommonResult.Failed(result.Errors.Select(x => new CommonError()
+                    {
                         Code = x.Code,
                         Message = x.Description
                     }));

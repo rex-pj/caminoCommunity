@@ -76,6 +76,7 @@ export default withRouter((props) => {
     onImageValidate,
     height,
     filterCategories,
+    refetchNews,
   } = props;
   const initialFormData = FarmCreationModel;
   const [formData, setFormData] = useState(initialFormData);
@@ -175,11 +176,11 @@ export default withRouter((props) => {
       }
 
       await props.onFarmPost(farmData).then((response) => {
-        console.log(response);
         var { data } = response;
         var { createFarm } = data;
         if (createFarm && createFarm.id) {
           clearFormData();
+          refetchNews();
         }
       });
     }

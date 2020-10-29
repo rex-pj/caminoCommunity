@@ -138,7 +138,7 @@ export default withRouter(function (props) {
                     <InteractiveItem>
                       <FontButtonItem
                         icon="comments"
-                        title="Thảo luận"
+                        title="Discussions"
                         dynamicText={product.commentNumber}
                       />
                     </InteractiveItem>

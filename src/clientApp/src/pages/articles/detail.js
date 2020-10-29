@@ -12,6 +12,7 @@ import Loading from "../../components/atoms/Loading";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
 import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -22,7 +23,7 @@ export default withRouter(function (props) {
   const { params } = match;
   const { id } = params;
 
-  const { loading, data } = useQuery(GET_ARTICLE, {
+  const { loading, data, error } = useQuery(GET_ARTICLE, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -30,19 +31,22 @@ export default withRouter(function (props) {
     },
   });
 
-  const { relevantLoading, data: relevantData } = useQuery(
-    GET_RELEVANT_ARTICLES,
-    {
-      variables: {
-        criterias: {
-          id: parseFloat(id),
-        },
+  const {
+    relevantLoading,
+    data: relevantData,
+    error: relevantError,
+  } = useQuery(GET_RELEVANT_ARTICLES, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
       },
-    }
-  );
+    },
+  });
 
   if (loading || !data) {
     return <Loading>Loading...</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
   }
 
   const { article: articleResponse } = data;
@@ -63,9 +67,11 @@ export default withRouter(function (props) {
     article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnailId}`;
   }
 
-  const renderRelevants = (relevantLoading, relevantData) => {
+  const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
       return <Loading>Loading...</Loading>;
+    } else if (relevantError) {
+      return <ErrorBlock>Error!</ErrorBlock>;
     }
     const { relevantArticles } = relevantData;
     const relevants = relevantArticles.map((item) => {
@@ -113,7 +119,7 @@ export default withRouter(function (props) {
     <Fragment>
       <Breadcrumb list={breadcrumbs} />
       <Detail article={article} />
-      {renderRelevants(relevantLoading, relevantData)}
+      {renderRelevants(relevantLoading, relevantData, relevantError)}
     </Fragment>
   );
 });

@@ -81,6 +81,7 @@ export default withRouter((props) => {
     height,
     filterCategories,
     filterFarms,
+    refetchNews,
   } = props;
   const initialFormData = ProductCreationModel;
   const [formData, setFormData] = useState(initialFormData);
@@ -207,11 +208,11 @@ export default withRouter((props) => {
       }
 
       await props.onProductPost(productData).then((response) => {
-        console.log(response);
         var { data } = response;
         var { createProduct } = data;
         if (createProduct && createProduct.id) {
           clearFormData();
+          refetchNews();
         }
       });
     }
@@ -244,7 +245,7 @@ export default withRouter((props) => {
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
         <FormRow className="row">
-          <div className="col-9 col-lg-10 pr-1">
+          <div className="col-9 col-lg-9 pr-1">
             <Textbox
               name="name"
               value={name.value}
@@ -253,7 +254,7 @@ export default withRouter((props) => {
               placeholder="Product title"
             />
           </div>
-          <div className="col-3 col-lg-2 pl-1">
+          <div className="col-3 col-lg-3 pl-1">
             <Textbox
               name="price"
               value={price.value}

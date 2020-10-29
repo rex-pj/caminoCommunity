@@ -8,6 +8,7 @@ import { FontButtonItem } from "../../molecules/ActionIcons";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelHeading } from "../../atoms/Panels";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primary};
@@ -18,6 +19,16 @@ const ContentTopBar = styled.div`
   color: ${(p) => p.theme.color.neutral};
 
   span {
+    color: inherit;
+  }
+
+  svg {
+    margin-right: ${(p) => p.theme.size.exTiny};
+    color: inherit;
+    vertical-align: middle;
+  }
+
+  path {
     color: inherit;
   }
 `;
@@ -45,6 +56,7 @@ export default function (props) {
         <PanelHeading>
           <Title>{article.name}</Title>
           <ContentTopBar>
+            <FontAwesomeIcon icon="calendar-alt" />
             <span>{convertDateTimeToPeriod(article.createdDate)}</span>
           </ContentTopBar>
         </PanelHeading>
@@ -73,7 +85,7 @@ export default function (props) {
                   <InteractiveItem>
                     <FontButtonItem
                       icon="comments"
-                      title="Thảo luận"
+                      title="Discussions"
                       dynamicText={article.commentNumber}
                     />
                   </InteractiveItem>

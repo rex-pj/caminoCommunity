@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
@@ -62,7 +62,12 @@ export default (props) => {
 
   if (creator) {
     var datePeriod = convertDateTimeToPeriod(article.createdDate);
-    creator.info = `${datePeriod}`;
+    creator.info = (
+      <Fragment>
+        <FontAwesomeIcon icon="calendar-alt" />
+        {datePeriod}
+      </Fragment>
+    );
   }
 
   return (

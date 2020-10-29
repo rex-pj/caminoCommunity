@@ -1,15 +1,12 @@
 const PageInfo = {
   BrandName: "Camino",
   BrandDescription: "Farm",
-  Slogan: "Ta gặt những gì ta gieo",
+  Slogan: "We reap what we sow",
 };
 
 const UrlConstant = {
   Article: {
     url: "/articles/",
-  },
-  News: {
-    url: "/news/",
   },
   Farm: {
     url: "/farms/",

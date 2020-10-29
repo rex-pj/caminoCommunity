@@ -41,11 +41,6 @@ export default class Shorcut extends Component {
           text: "Articles",
           href: "/articles/",
         },
-        {
-          icon: "newspaper",
-          text: "News",
-          href: "/news/",
-        },
       ],
     };
   }

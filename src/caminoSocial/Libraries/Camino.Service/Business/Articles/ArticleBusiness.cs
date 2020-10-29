@@ -68,9 +68,12 @@ namespace Camino.Service.Business.Articles
 
         public async Task<ArticleProjection> FindDetailAsync(long id)
         {
+            var pictureTypeId = (int)ArticlePictureType.Thumbnail;
             var exist = await (from article in _articleRepository.Table
                          join category in _articleCategoryRepository.Table
                          on article.ArticleCategoryId equals category.Id
+                         join articlePic in _articlePictureRepository.Get(x=>x.PictureType == pictureTypeId)
+                         on article.Id equals articlePic.ArticleId
                          where article.Id == id
                          select new ArticleProjection
                          {
@@ -83,7 +86,8 @@ namespace Camino.Service.Business.Articles
                              UpdatedDate = article.UpdatedDate,
                              ArticleCategoryName = category.Name,
                              ArticleCategoryId = article.ArticleCategoryId,
-                             Content = article.Content
+                             Content = article.Content,
+                             ThumbnailId = articlePic.PictureId
                          }).FirstOrDefaultAsync();
 
             if (exist == null)
@@ -91,21 +95,8 @@ namespace Camino.Service.Business.Articles
                 return null;
             }
 
-            var pictureTypeId = (int)ArticlePictureType.Thumbnail;
-            var articlePictureId = (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == id && x.PictureType == pictureTypeId)
-                                    join pic in _pictureRepository.Table
-                                    on articlePic.PictureId equals pic.Id
-                                    orderby pic.CreatedDate descending
-                                    select pic.Id).FirstOrDefault();
-
-            if (articlePictureId > 0)
-            {
-                exist.ThumbnailId = articlePictureId;
-            }
-
-            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == exist.CreatedById);
-
-            exist.CreatedBy = createdByUser.DisplayName;
+            var createdByUserName = await _userRepository.Get(x => x.Id == exist.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
+            exist.CreatedBy = createdByUserName;
 
             return exist;
         }
@@ -197,8 +188,16 @@ namespace Camino.Service.Business.Articles
             var createdByIds = articles.Select(x => x.CreatedById).ToArray();
             var updatedByIds = articles.Select(x => x.UpdatedById).ToArray();
 
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
+            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var article in articles)
             {
@@ -357,7 +356,11 @@ namespace Camino.Service.Business.Articles
                 .Take(filter.PageSize).ToListAsync();
 
             var createdByIds = relevantArticles.Select(x => x.CreatedById).ToArray();
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var article in relevantArticles)
             {

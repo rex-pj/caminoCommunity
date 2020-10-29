@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
 import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -22,7 +23,7 @@ export default withRouter(function (props) {
   const { params } = match;
   const { id } = params;
 
-  const { loading, data } = useQuery(GET_PRODUCT, {
+  const { loading, data, error } = useQuery(GET_PRODUCT, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -30,19 +31,22 @@ export default withRouter(function (props) {
     },
   });
 
-  const { relevantLoading, data: relevantData } = useQuery(
-    GET_RELEVANT_PRODUCTS,
-    {
-      variables: {
-        criterias: {
-          id: parseFloat(id),
-        },
+  const {
+    relevantLoading,
+    data: relevantData,
+    error: relevantError,
+  } = useQuery(GET_RELEVANT_PRODUCTS, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
       },
-    }
-  );
+    },
+  });
 
   if (loading || !data) {
     return <Loading>Loading...</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
   }
 
   const { product: productResponse } = data;
@@ -79,9 +83,11 @@ export default withRouter(function (props) {
     });
   }
 
-  const renderRelevants = (relevantLoading, relevantData) => {
+  const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
       return <Loading className="mt-3">Loading...</Loading>;
+    } else if (relevantError) {
+      return <ErrorBlock>Error!</ErrorBlock>;
     }
     const { relevantProducts } = relevantData;
     const relevants = relevantProducts.map((item) => {
@@ -140,7 +146,7 @@ export default withRouter(function (props) {
     <Fragment>
       <Breadcrumb list={breadcrumbs} />
       <Detail product={product} breadcrumbs={breadcrumbs} />
-      {renderRelevants(relevantLoading, relevantData)}
+      {renderRelevants(relevantLoading, relevantData, relevantError)}
     </Fragment>
   );
 });

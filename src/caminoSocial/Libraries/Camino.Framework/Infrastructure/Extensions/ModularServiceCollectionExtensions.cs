@@ -39,6 +39,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             var modules = Singleton<IList<ModuleInfo>>.Instance;
             if (modules != null && modules.Any())
             {
+                services.AddDataLoaderRegistry();
                 services
                    .AddGraphQL(sp => SchemaBuilder.New()
                    .AddServices(sp)

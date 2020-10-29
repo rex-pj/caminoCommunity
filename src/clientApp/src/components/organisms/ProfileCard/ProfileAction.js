@@ -16,6 +16,16 @@ const CreatorAvatar = styled(AnchorLink)`
 
 const CreatorDetail = styled.div`
   line-height: 1;
+
+  svg {
+    margin-right: ${(p) => p.theme.size.exTiny};
+    color: inherit;
+    vertical-align: middle;
+  }
+
+  path {
+    color: inherit;
+  }
 `;
 
 const CreatorName = styled(AnchorLink)`

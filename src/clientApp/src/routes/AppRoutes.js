@@ -58,18 +58,6 @@ export default [
     layout: FrameLayout,
   },
   {
-    path: ["/news", "/news/page/:pageNumber"],
-    exact: true,
-    page: "news",
-    layout: DefaultLayout,
-  },
-  {
-    path: "/news/:id",
-    exact: true,
-    page: "news/detail",
-    layout: DefaultLayout,
-  },
-  {
     path: "/auth/forgot-password",
     exact: true,
     page: "auth/forgot-password",

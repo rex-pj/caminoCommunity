@@ -72,65 +72,57 @@ namespace Camino.Service.Business.Products
 
         public async Task<ProductProjection> FindDetailAsync(long id)
         {
-            var product = (from p in _productRepository.Table
-                           join pr in _productPriceRepository.Get(x => x.IsCurrent)
-                           on p.Id equals pr.ProductId into prices
-                           from price in prices.DefaultIfEmpty()
-                           join fp in _farmProductRepository.Table
-                           on p.Id equals fp.ProductId into farmProducts
-                           from farmProduct in farmProducts.DefaultIfEmpty()
-                           join f in _farmRepository.Table
-                           on farmProduct.FarmId equals f.Id into farms
-                           from farm in farms.DefaultIfEmpty()
-                           where p.Id == id
-                           select new ProductProjection
-                           {
-                               Description = p.Description,
-                               CreatedDate = p.CreatedDate,
-                               CreatedById = p.CreatedById,
-                               Id = p.Id,
-                               Name = p.Name,
-                               UpdatedById = p.UpdatedById,
-                               UpdatedDate = p.UpdatedDate,
-                               Price = price.Price,
-                               ProductFarms = farmProduct != null ? new List<ProductFarmProjection>()
-                               {
-                                   new ProductFarmProjection()
-                                   {
-                                        Id = farmProduct.Id,
-                                       FarmId = farmProduct.FarmId,
-                                       FarmName = farm.Name
-                                   }
-                               } : new List<ProductFarmProjection>()
-                           }).FirstOrDefault();
+            var farmQuery = from farm in _farmRepository.Table
+                            join farmProduct in _farmProductRepository.Table
+                            on farm.Id equals farmProduct.FarmId
+                            select new
+                            {
+                                Id = farmProduct.Id,
+                                FarmId = farm.Id,
+                                ProductId = farmProduct.ProductId,
+                                Name = farm.Name
+                            };
+
+            var product = await (from p in _productRepository.Table
+                                 join pr in _productPriceRepository.Get(x => x.IsCurrent)
+                                 on p.Id equals pr.ProductId into prices
+                                 from price in prices.DefaultIfEmpty()
+
+                                 join productPic in _productPictureRepository.Table
+                                 on p.Id equals productPic.ProductId into pics
+
+                                 join fp in farmQuery
+                                 on p.Id equals fp.ProductId into farmProducts
+                                 where p.Id == id
+                                 select new ProductProjection
+                                 {
+                                     Description = p.Description,
+                                     CreatedDate = p.CreatedDate,
+                                     CreatedById = p.CreatedById,
+                                     Id = p.Id,
+                                     Name = p.Name,
+                                     UpdatedById = p.UpdatedById,
+                                     UpdatedDate = p.UpdatedDate,
+                                     Price = price.Price,
+                                     ProductFarms = farmProducts.Select(x => new ProductFarmProjection()
+                                     {
+                                         Id = x.Id,
+                                         FarmId = x.FarmId,
+                                         FarmName = x.Name
+                                     }),
+                                     Thumbnails = pics.Select(x => new PictureRequestProjection
+                                     {
+                                         Id = x.PictureId
+                                     }),
+                                 }).FirstOrDefaultAsync();
 
             if (product == null)
             {
                 return null;
             }
 
-            var productPictureIds = await (from productPic in _productPictureRepository.Get(x => x.ProductId == id)
-                                           join pic in _pictureRepository.Table
-                                           on productPic.PictureId equals pic.Id
-                                           orderby pic.CreatedDate descending
-                                           select pic.Id).ToListAsync();
-
-            var thumbnails = new List<PictureRequestProjection>();
-            if (productPictureIds.Any())
-            {
-                foreach (var productPictureId in productPictureIds)
-                {
-                    thumbnails.Add(new PictureRequestProjection()
-                    {
-                        Id = productPictureId
-                    });
-                }
-            }
-
-            product.Thumbnails = thumbnails;
-
-            var createdByUser = _userRepository.FirstOrDefault(x => x.Id == product.CreatedById);
-            product.CreatedBy = createdByUser.DisplayName;
+            var createdByUserName = await _userRepository.Get(x => x.Id == product.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
+            product.CreatedBy = createdByUserName;
 
             return product;
         }
@@ -191,24 +183,30 @@ namespace Camino.Service.Business.Products
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
+            var farmQuery = from farm in _farmRepository.Table
+                            join farmProduct in _farmProductRepository.Table
+                            on farm.Id equals farmProduct.FarmId
+                            select new
+                            {
+                                Id = farmProduct.Id,
+                                FarmId = farm.Id,
+                                ProductId = farmProduct.ProductId,
+                                Name = farm.Name
+                            };
+
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
             var query = from product in productQuery
                         join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
                         on product.Id equals productPic.ProductId into pics
-                        from pic in pics.DefaultIfEmpty()
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                         on product.CreatedById equals pho.CreatedById into photos
                         from userPhoto in photos.DefaultIfEmpty()
                         join pr in _productPriceRepository.Get(x => x.IsCurrent)
                         on product.Id equals pr.ProductId into prices
                         from price in prices.DefaultIfEmpty()
-                        join fp in _farmProductRepository.Table
+                        join fp in farmQuery
                         on product.Id equals fp.ProductId into farmProducts
-                        from farmProduct in farmProducts.DefaultIfEmpty()
-                        join f in _farmRepository.Table
-                        on farmProduct.FarmId equals f.Id into farms
-                        from farm in farms.DefaultIfEmpty()
                         select new ProductProjection
                         {
                             Id = product.Id,
@@ -220,22 +218,16 @@ namespace Camino.Service.Business.Products
                             UpdatedById = product.UpdatedById,
                             UpdatedDate = product.UpdatedDate,
                             CreatedByPhotoCode = userPhoto.Code,
-                            Thumbnails = pic != null ? new List<PictureRequestProjection>()
+                            Thumbnails = pics.Select(x => new PictureRequestProjection
                             {
-                                new PictureRequestProjection()
-                                {
-                                    Id = pic.PictureId
-                                }
-                            } : new List<PictureRequestProjection>(),
-                            ProductFarms = farmProduct != null ? new List<ProductFarmProjection>()
+                                Id = x.PictureId
+                            }),
+                            ProductFarms = farmProducts.Select(x => new ProductFarmProjection
                             {
-                                new ProductFarmProjection()
-                                {
-                                    Id = farmProduct.Id,
-                                    FarmId = farmProduct.FarmId,
-                                    FarmName = farm.Name
-                                }
-                            } : new List<ProductFarmProjection>()
+                                Id = x.Id,
+                                FarmId = x.FarmId,
+                                FarmName = x.Name
+                            })
                         };
 
             var products = await query
@@ -246,8 +238,16 @@ namespace Camino.Service.Business.Products
             var createdByIds = products.Select(x => x.CreatedById).ToArray();
             var updatedByIds = products.Select(x => x.UpdatedById).ToArray();
 
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
+            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var product in products)
             {
@@ -271,42 +271,42 @@ namespace Camino.Service.Business.Products
             var exist = (from pr in _productRepository.Get(x => x.Id == id)
                          join fp in _farmProductRepository.Table
                          on pr.Id equals fp.ProductId into farmProducts
-                         from farmProduct in farmProducts.DefaultIfEmpty()
                          join productCategoryRelation in _productCategoryRelationRepository.Table
                          on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
-                         from categoryRelation in categoriesRelation.DefaultIfEmpty()
                          select new ProductProjection
                          {
                              Id = pr.Id,
                              CreatedById = pr.CreatedById,
                              UpdatedById = pr.UpdatedById,
-                             ProductCategories = new List<ProductCategoryProjection>() {
-                                new ProductCategoryProjection()
-                                {
-                                    Id = categoryRelation.ProductCategoryId
-                                }
-                             },
-                             ProductFarms = farmProduct != null ? new List<ProductFarmProjection>()
-                            {
-                                new ProductFarmProjection()
-                                {
-                                    FarmId = farmProduct.FarmId
-                                }
-                            } : new List<ProductFarmProjection>()
+                             ProductCategories = categoriesRelation.Select(x => new ProductCategoryProjection()
+                             {
+                                 Id = x.ProductCategoryId
+                             }),
+                             ProductFarms = farmProducts.Select(x => new ProductFarmProjection()
+                             {
+                                 FarmId = x.FarmId
+                             })
                          }).FirstOrDefault();
 
             var farmIds = exist.ProductFarms.Select(x => x.FarmId);
             var categoryIds = exist.ProductCategories.Select(x => x.Id);
 
+            var farmQuery = from farm in _farmRepository.Get(x => farmIds.Contains(x.Id))
+                            join farmProduct in _farmProductRepository.Table
+                            on farm.Id equals farmProduct.FarmId
+                            select new
+                            {
+                                Id = farmProduct.Id,
+                                FarmId = farm.Id,
+                                ProductId = farmProduct.ProductId,
+                                Name = farm.Name
+                            };
+
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
             var relevantProductQuery = (from pr in _productRepository.Get(x => x.Id != exist.Id)
-                                        join fp in _farmProductRepository.Table
+                                        join fp in farmQuery
                                         on pr.Id equals fp.ProductId into farmProducts
-                                        from farmProduct in farmProducts.DefaultIfEmpty()
-                                        join f in _farmRepository.Table
-                                        on farmProduct.FarmId equals f.Id into farms
-                                        from farm in farms.DefaultIfEmpty()
 
                                         join productCategoryRelation in _productCategoryRelationRepository.Table
                                         on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
@@ -314,7 +314,6 @@ namespace Camino.Service.Business.Products
 
                                         join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
                                         on pr.Id equals productPic.ProductId into pics
-                                        from pic in pics.DefaultIfEmpty()
                                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                                         on pr.CreatedById equals pho.CreatedById into photos
                                         from userPhoto in photos.DefaultIfEmpty()
@@ -324,7 +323,6 @@ namespace Camino.Service.Business.Products
                                         from price in prices.DefaultIfEmpty()
 
                                         where pr.CreatedById == exist.CreatedById
-                                        || farmIds.Contains(farmProduct.FarmId)
                                         || categoryIds.Contains(categoryRelation.ProductCategoryId)
                                         || pr.UpdatedById == exist.UpdatedById
                                         select new ProductProjection
@@ -338,22 +336,16 @@ namespace Camino.Service.Business.Products
                                             UpdatedById = pr.UpdatedById,
                                             UpdatedDate = pr.UpdatedDate,
                                             CreatedByPhotoCode = userPhoto.Code,
-                                            Thumbnails = pic != null ? new List<PictureRequestProjection>()
+                                            Thumbnails = pics.Select(x => new PictureRequestProjection
                                             {
-                                                new PictureRequestProjection()
-                                                {
-                                                    Id = pic.PictureId
-                                                }
-                                            } : new List<PictureRequestProjection>(),
-                                            ProductFarms = farmProduct != null ? new List<ProductFarmProjection>()
+                                                Id = x.PictureId
+                                            }),
+                                            ProductFarms = farmProducts.Select(x => new ProductFarmProjection
                                             {
-                                                new ProductFarmProjection()
-                                                {
-                                                    Id = farmProduct.Id,
-                                                    FarmId = farmProduct.FarmId,
-                                                    FarmName = farm.Name
-                                                }
-                                            } : new List<ProductFarmProjection>()
+                                                Id = x.Id,
+                                                FarmId = x.FarmId,
+                                                FarmName = x.Name
+                                            })
                                         });
 
             var relevantProducts = await relevantProductQuery
@@ -364,8 +356,16 @@ namespace Camino.Service.Business.Products
             var createdByIds = relevantProducts.Select(x => x.CreatedById).ToArray();
             var updatedByIds = relevantProducts.Select(x => x.UpdatedById).ToArray();
 
-            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).ToList();
-            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).ToList();
+            var createdByUsers = _userRepository.Get(x => createdByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
+            var updatedByUsers = _userRepository.Get(x => updatedByIds.Contains(x.Id)).Select(x => new
+            {
+                x.DisplayName,
+                x.Id
+            }).ToList();
 
             foreach (var product in relevantProducts)
             {
