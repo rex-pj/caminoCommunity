@@ -147,7 +147,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var policy = _mapper.Map<AuthorizationPolicyProjection>(model);
             policy.UpdatedById = LoggedUserId;
             policy.CreatedById = LoggedUserId;
-            var newId = _authorizationPolicyBusiness.Add(policy);
+            var newId = _authorizationPolicyBusiness.Create(policy);
 
             return RedirectToAction("Detail", new { id = newId });
         }

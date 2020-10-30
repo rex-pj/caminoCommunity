@@ -283,7 +283,7 @@ namespace Camino.Service.Business.Products
             return categories;
         }
 
-        public int Add(ProductCategoryProjection category)
+        public int Create(ProductCategoryProjection category)
         {
             var newCategory = new ProductCategory()
             {
@@ -291,11 +291,10 @@ namespace Camino.Service.Business.Products
                 Name = category.Name,
                 ParentId = category.ParentId,
                 CreatedById = category.CreatedById,
-                UpdatedById = category.UpdatedById
+                UpdatedById = category.UpdatedById,
+                UpdatedDate = DateTimeOffset.UtcNow,
+                CreatedDate = DateTimeOffset.UtcNow
             };
-
-            newCategory.UpdatedDate = DateTime.UtcNow;
-            newCategory.CreatedDate = DateTime.UtcNow;
 
             var id = _productCategoryRepository.AddWithInt32Entity(newCategory);
             return id;
@@ -308,7 +307,7 @@ namespace Camino.Service.Business.Products
             exist.Name = category.Name;
             exist.ParentId = category.ParentId;
             exist.UpdatedById = category.UpdatedById;
-            exist.UpdatedDate = DateTime.UtcNow;
+            exist.UpdatedDate = DateTimeOffset.UtcNow;
 
             _productCategoryRepository.Update(exist);
 

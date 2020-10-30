@@ -155,7 +155,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 Name = model.Name,
                 Description = model.Description
             };
-            var id = _userStatusBusiness.Add(status);
+            var id = _userStatusBusiness.Create(status);
 
             return RedirectToAction("Detail", new { id });
         }

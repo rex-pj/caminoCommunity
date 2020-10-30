@@ -120,7 +120,7 @@ namespace Camino.Service.Business.Identities
             return country;
         }
 
-        public int Add(CountryProjection countryRequest)
+        public int Create(CountryProjection countryRequest)
         {
             var country = new Country()
             {

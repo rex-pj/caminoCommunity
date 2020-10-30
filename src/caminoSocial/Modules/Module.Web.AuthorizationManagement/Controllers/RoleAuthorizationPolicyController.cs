@@ -47,7 +47,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateRoleAuthorizationPolicy)]
         public IActionResult Grant(RoleAuthorizationPolicyModel model)
         {
-            var isSucceed = _roleAuthorizationPolicyBusiness.Add(model.RoleId, model.AuthorizationPolicyId, LoggedUserId);
+            var isSucceed = _roleAuthorizationPolicyBusiness.Create(model.RoleId, model.AuthorizationPolicyId, LoggedUserId);
             if (isSucceed)
             {
                 return RedirectToAction("Index", new { id = model.AuthorizationPolicyId });

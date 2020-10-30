@@ -36,7 +36,7 @@ namespace Camino.Service.Business.Authorization
             _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
         }
 
-        public bool Add(long userId, long authorizationPolicyId, long loggedUserId)
+        public bool Create(long userId, long authorizationPolicyId, long loggedUserId)
         {
             if (userId <= 0 || authorizationPolicyId <= 0)
             {

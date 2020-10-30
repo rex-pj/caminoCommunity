@@ -136,7 +136,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = _productCategoryBusiness.Add(category);
+            var id = _productCategoryBusiness.Create(category);
 
             return RedirectToAction("Detail", new { id });
         }

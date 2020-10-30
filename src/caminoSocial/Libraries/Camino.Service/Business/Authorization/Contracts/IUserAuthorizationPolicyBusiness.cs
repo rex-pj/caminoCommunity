@@ -7,7 +7,7 @@ namespace Camino.Service.Business.Authorization.Contracts
 {
     public interface IUserAuthorizationPolicyBusiness
     {
-        bool Add(long userId, long authorizationPolicyId, long loggedUserId);
+        bool Create(long userId, long authorizationPolicyId, long loggedUserId);
         bool Delete(long userId, short authorizationPolicyId);
         AuthorizationPolicyUsersPageList GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilter filter);
         Task<UserAuthorizationPolicyProjection> GetUserAuthoricationPolicyAsync(long userId, long policyId);

@@ -21,7 +21,7 @@ namespace Camino.Service.Business.Authentication
             _mapper = mapper;
         }
 
-        public void Add(UserClaimProjection userClaim)
+        public void Create(UserClaimProjection userClaim)
         {
             var claim = _mapper.Map<UserClaim>(userClaim);
             _userClaimRepository.Add(claim);

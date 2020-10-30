@@ -16,7 +16,7 @@ namespace Camino.Service.Business.Farms.Contracts
         Task<BasePageList<FarmTypeProjection>> GetAsync(FarmTypeFilter filter);
         List<FarmTypeProjection> Get(Expression<Func<FarmType, bool>> filter);
         Task<IList<FarmTypeProjection>> SearchAsync(string search = "", int page = 1, int pageSize = 10);
-        int Add(FarmTypeProjection farmType);
+        int Create(FarmTypeProjection farmType);
         FarmTypeProjection Update(FarmTypeProjection farmType);
     }
 }

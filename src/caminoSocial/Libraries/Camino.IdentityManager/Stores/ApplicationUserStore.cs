@@ -152,7 +152,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             }
             var applicationUserRole = CreateUserRole(user, roleEntity);
             var userRoleRequest = _mapper.Map<UserRoleProjection>(applicationUserRole);
-            _userRoleBusiness.Add(userRoleRequest);
+            _userRoleBusiness.Create(userRoleRequest);
         }
 
         protected override async Task<ApplicationRole> FindRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
@@ -261,7 +261,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             foreach (var claim in claims)
             {
                 var userClaim = _mapper.Map<UserClaimProjection>(CreateUserClaim(user, claim));
-                _userClaimBusiness.Add(userClaim);
+                _userClaimBusiness.Create(userClaim);
             }
             return Task.FromResult(false);
         }
@@ -295,7 +295,7 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             var userLogin = CreateUserLogin(user, login);
             var userLoginRequest = _mapper.Map<UserLoginRequest>(userLogin);
-            _userLoginBusiness.Add(userLoginRequest);
+            _userLoginBusiness.Create(userLoginRequest);
             return Task.FromResult(false);
         }
 
@@ -390,7 +390,7 @@ namespace Camino.IdentityManager.Contracts.Stores
         protected override Task AddUserTokenAsync(ApplicationUserToken token)
         {
             var userToken = _mapper.Map<UserTokenProjection>(token);
-            _userTokenBusiness.Add(userToken);
+            _userTokenBusiness.Create(userToken);
             return Task.CompletedTask;
         }
 

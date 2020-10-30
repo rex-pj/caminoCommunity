@@ -31,7 +31,7 @@ namespace Camino.Service.Business.Authentication
             return userToken;
         }
 
-        public void Add(UserTokenProjection userTokenRequest)
+        public void Create(UserTokenProjection userTokenRequest)
         {
             var userToken = new UserToken()
             {

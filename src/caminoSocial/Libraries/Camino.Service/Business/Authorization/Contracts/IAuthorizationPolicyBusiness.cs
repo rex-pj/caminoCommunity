@@ -7,7 +7,7 @@ namespace Camino.Service.Business.Authorization.Contracts
 {
     public interface IAuthorizationPolicyBusiness
     {
-        long Add(AuthorizationPolicyProjection authorizationPolicy);
+        long Create(AuthorizationPolicyProjection authorizationPolicy);
         BasePageList<AuthorizationPolicyProjection> Get(AuthorizationPolicyFilter filter);
         AuthorizationPolicyProjection Find(short id);
         AuthorizationPolicyProjection Update(AuthorizationPolicyProjection policy);

@@ -283,7 +283,7 @@ namespace Camino.Service.Business.Articles
             return categories;
         }
 
-        public int Add(ArticleCategoryProjection category)
+        public int Create(ArticleCategoryProjection category)
         {
             var newCategory = _mapper.Map<ArticleCategory>(category);
             newCategory.UpdatedDate = DateTime.UtcNow;

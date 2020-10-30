@@ -21,7 +21,7 @@ namespace Camino.Service.Business.Authorization
             _mapper = mapper;
         }
 
-        public void Add(RoleClaimProjection RoleClaim)
+        public void Create(RoleClaimProjection RoleClaim)
         {
             var claim = _mapper.Map<RoleClaim>(RoleClaim);
             _roleClaimRepository.Add(claim);

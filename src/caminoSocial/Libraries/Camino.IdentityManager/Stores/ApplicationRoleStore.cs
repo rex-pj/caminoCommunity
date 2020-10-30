@@ -45,7 +45,7 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             var roleClaim = CreateRoleClaim(role, claim);
             var roleClaimRequest = _mapper.Map<RoleClaimProjection>(roleClaim);
-            _roleClaimBusiness.Add(roleClaimRequest);
+            _roleClaimBusiness.Create(roleClaimRequest);
             return Task.FromResult(false);
         }
 

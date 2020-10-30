@@ -131,7 +131,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var id = _countryBusiness.Add(country);
+            var id = _countryBusiness.Create(country);
 
             return RedirectToAction("Detail", new { id });
         }

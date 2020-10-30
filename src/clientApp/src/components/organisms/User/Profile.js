@@ -2,10 +2,14 @@ import React from "react";
 import { Switch, withRouter, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
-const AsyncTabContent = loadable((props) =>
-    import(`${"../../../pages/user/"}${props.page}`)
-  ),
-  UserProfileInfo = loadable(() => import("./UserProfileInfo"));
+const AsyncPage = loadable(
+  (props) => import(`${"../../../pages/user/"}${props.page}`),
+  {
+    cacheKey: (props) => props.page,
+  }
+);
+
+const UserProfileInfo = loadable(() => import("./UserProfileInfo"));
 
 export default withRouter((props) => {
   const { userId, baseUrl, pages, userInfo, pageNumber } = props;
@@ -25,7 +29,7 @@ export default withRouter((props) => {
                     key={route.page}
                     path={paths}
                     component={(props) => (
-                      <AsyncTabContent
+                      <AsyncPage
                         {...props}
                         userId={userId}
                         canEdit={canEdit}

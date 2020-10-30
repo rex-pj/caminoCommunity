@@ -111,7 +111,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = _articleCategoryBusiness.Add(category);
+            var id = _articleCategoryBusiness.Create(category);
 
             return RedirectToAction("Detail", new { id });
         }

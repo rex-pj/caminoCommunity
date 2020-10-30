@@ -13,7 +13,7 @@ namespace Camino.Service.Business.Identities.Contracts
         IList<CountryProjection> Search(string query = "", int page = 1, int pageSize = 10);
         CountryProjection Find(int id);
         CountryProjection FindByName(string name);
-        int Add(CountryProjection countryRequest);
+        int Create(CountryProjection countryRequest);
         CountryProjection Update(CountryProjection countryRequest);
     }
 }

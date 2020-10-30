@@ -109,7 +109,7 @@ namespace Camino.Service.Business.Users
             return status;
         }
 
-        public int Add(UserStatusProjection statusRequest)
+        public int Create(UserStatusProjection statusRequest)
         {
             var country = new Status()
             {

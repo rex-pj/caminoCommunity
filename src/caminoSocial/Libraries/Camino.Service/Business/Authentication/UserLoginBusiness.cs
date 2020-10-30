@@ -75,7 +75,7 @@ namespace Camino.Service.Business.Authentication
             return userLogins;
         }
 
-        public void Add(UserLoginRequest userLoginRequest)
+        public void Create(UserLoginRequest userLoginRequest)
         {
             var userLogin = new UserLogin()
             {

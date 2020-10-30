@@ -12,7 +12,7 @@ namespace Camino.Service.Business.Users.Contracts
         Task<BasePageList<UserStatusProjection>> GetAsync(UserStatusFilter filter);
         UserStatusProjection Find(int id);
         UserStatusProjection FindByName(string name);
-        int Add(UserStatusProjection statusRequest);
+        int Create(UserStatusProjection statusRequest);
         UserStatusProjection Update(UserStatusProjection statusRequest);
     }
 }

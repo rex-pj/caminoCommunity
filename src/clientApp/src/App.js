@@ -21,7 +21,9 @@ configureAvatarStore();
 configureNotifyStore();
 
 // Font Awesome
-const AsyncPage = loadable((props) => import(`${props.page}`));
+const AsyncPage = loadable((props) => import(`${props.page}`), {
+  cacheKey: (props) => props.page,
+});
 library.add(fas);
 
 export default () => {

@@ -6,7 +6,7 @@ namespace Camino.Service.Business.Authorization.Contracts
 {
     public interface IRoleClaimBusiness
     {
-        void Add(RoleClaimProjection RoleClaim);
+        void Create(RoleClaimProjection RoleClaim);
         Task<IList<RoleClaimProjection>> GetByClaimAsync(long roleId, string claimValue, string claimType);
         Task<IList<RoleClaimProjection>> GetByRoleIdAsync(long roleId);
         Task<IList<RoleProjection>> GetRolesForClaimAsync(ClaimProjection claim);

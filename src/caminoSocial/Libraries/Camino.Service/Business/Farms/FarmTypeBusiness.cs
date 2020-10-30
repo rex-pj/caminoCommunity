@@ -189,7 +189,7 @@ namespace Camino.Service.Business.Farms
             return farmTypes;
         }
 
-        public int Add(FarmTypeProjection farmType)
+        public int Create(FarmTypeProjection farmType)
         {
             var newFarmType = new FarmType()
             {

@@ -102,7 +102,7 @@ namespace Camino.Service.Business.Authorization
             return result;
         }
 
-        public long Add(AuthorizationPolicyProjection authorizationPolicy)
+        public long Create(AuthorizationPolicyProjection authorizationPolicy)
         {
             var newPolicy = _mapper.Map<AuthorizationPolicy>(authorizationPolicy);
             newPolicy.UpdatedDate = DateTime.UtcNow;

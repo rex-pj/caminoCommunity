@@ -10,6 +10,6 @@ namespace Camino.Service.Business.Authorization.Contracts
         Task<UserRoleProjection> FindUserRoleAsync(long userId, long roleId);
         Task<IList<UserProjection>> GetUsersInRoleAsync(long roleId);
         void Remove(UserRoleProjection userRoleRequest);
-        void Add(UserRoleProjection userRoleRequest);
+        void Create(UserRoleProjection userRoleRequest);
     }
 }

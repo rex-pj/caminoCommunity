@@ -155,7 +155,7 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = LoggedUserId
             };
 
-            var id = _farmTypeBusiness.Add(farmType);
+            var id = _farmTypeBusiness.Create(farmType);
 
             return RedirectToAction("Detail", new { id });
         }

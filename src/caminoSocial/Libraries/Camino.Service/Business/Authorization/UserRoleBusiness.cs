@@ -60,7 +60,7 @@ namespace Camino.Service.Business.Authorization
             return existUserRoles;
         }
 
-        public void Add(UserRoleProjection userRoleRequest)
+        public void Create(UserRoleProjection userRoleRequest)
         {
             var userRole = _mapper.Map<UserRole>(userRoleRequest);
             _userRoleRepository.Add(userRole);
