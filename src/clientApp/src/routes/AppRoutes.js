@@ -1,7 +1,6 @@
 import {
   DefaultLayout,
   DetailLayout,
-  ProductPageLayout,
   FrameLayout,
   AuthLayout,
   ProfileLayout,
@@ -31,7 +30,7 @@ export default [
     path: "/products/:id",
     exact: true,
     page: "products/detail",
-    layout: ProductPageLayout,
+    layout: DetailLayout,
   },
   {
     path: ["/farms", "/farms/page/:pageNumber"],
@@ -73,12 +72,6 @@ export default [
     path: "/auth/signup",
     exact: true,
     page: "auth/signup",
-    layout: AuthLayout,
-  },
-  {
-    path: "/auth/signout",
-    exact: true,
-    page: "auth/signout",
     layout: AuthLayout,
   },
   {

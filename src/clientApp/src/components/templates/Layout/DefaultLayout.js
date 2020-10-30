@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   }
 `;
 
+// The layout default like home, products, articles or farms index page
 export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout

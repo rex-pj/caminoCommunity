@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   }
 `;
 
+// The layout or article or farm detail page
 export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout

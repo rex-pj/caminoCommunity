@@ -28,6 +28,7 @@ const Column = styled.div`
   margin-top: ${(p) => p.theme.size.normal};
 `;
 
+// The layout of Associations
 export default function (props) {
   const { info, children } = props;
 

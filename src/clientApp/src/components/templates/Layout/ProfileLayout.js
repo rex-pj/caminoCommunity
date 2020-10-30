@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   }
 `;
 
+// The layout for User profile page
 export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout

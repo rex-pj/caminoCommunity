@@ -199,7 +199,7 @@ export default withRouter(function (props) {
   });
 
   const pageQuery = location.search;
-  const baseUrl = props.userUrl + "/posts";
+  const baseUrl = props.userUrl + "/articles";
   const { totalPage, filter } = userProducts;
   const { page } = filter;
 

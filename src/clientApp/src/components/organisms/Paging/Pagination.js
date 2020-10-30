@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Bullet from "./Bullet";
@@ -6,7 +6,7 @@ import { HorizontalList } from "../../atoms/List";
 
 const Root = styled.div`
   text-align: center;
-  margin: ${p => p.theme.size.distance} 0;
+  margin: ${(p) => p.theme.size.distance} 0;
 `;
 
 const PageItem = styled.li`
@@ -14,7 +14,7 @@ const PageItem = styled.li`
 
   :hover a {
     text-decoration: none;
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
   }
 
   svg > path {
@@ -22,8 +22,11 @@ const PageItem = styled.li`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { totalPage, baseUrl, pageQuery } = props;
+  if (totalPage === 0) {
+    return <Fragment></Fragment>;
+  }
   let { currentPage } = props;
   currentPage = Number(currentPage);
   currentPage = currentPage <= 0 ? 1 : currentPage;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import { HorizontalList } from "../../atoms/List";
 import DropdownButton from "../../molecules/DropdownButton";
@@ -40,92 +40,73 @@ const UserDropdown = styled(DropdownButton)`
   padding: 7px;
 `;
 
-export default (class extends Component {
-  render() {
-    const { className, userId, baseUrl } = this.props;
-    return (
-      <Root>
-        <div className="row">
-          <div className="col-auto mr-auto">
-            <HorizontalList className={className}>
-              <ListItem>
-                <ProfileNavLink
-                  {...this.props}
-                  userId={userId}
-                  baseUrl={baseUrl}
-                >
-                  Feed
-                </ProfileNavLink>
-              </ListItem>
-              <ListItem>
-                <ProfileNavLink
-                  pageNav="posts"
-                  {...this.props}
-                  userId={userId}
-                  baseUrl={baseUrl}
-                >
-                  Articles
-                </ProfileNavLink>
-              </ListItem>
-              <ListItem>
-                <ProfileNavLink
-                  pageNav="products"
-                  {...this.props}
-                  userId={userId}
-                >
-                  Products
-                </ProfileNavLink>
-              </ListItem>
-              <ListItem>
-                <ProfileNavLink
-                  pageNav="farms"
-                  {...this.props}
-                  userId={userId}
-                  baseUrl={baseUrl}
-                >
-                  Farms
-                </ProfileNavLink>
-              </ListItem>
-              <ListItem>
-                <ProfileNavLink
-                  pageNav="followings"
-                  {...this.props}
-                  userId={userId}
-                >
-                  Following
-                </ProfileNavLink>
-              </ListItem>
-              <ListItem>
-                <ProfileNavLink
-                  pageNav="about"
-                  {...this.props}
-                  userId={userId}
-                  baseUrl={baseUrl}
-                >
-                  About Me
-                </ProfileNavLink>
-              </ListItem>
-            </HorizontalList>
-          </div>
-          <div className="col-auto">
-            <UserDropdown
-              icon="ellipsis-v"
-              dropdown={[
-                {
-                  url: `${baseUrl}/${userId}/update`,
-                  name: "Update My Information",
-                  isNav: true,
-                },
-                {
-                  url: `${baseUrl}/${userId}/security`,
-                  name: "Security",
-                  isNav: true,
-                },
-              ]}
-            />
-          </div>
+export default (function (props) {
+  const { className, userId, baseUrl } = props;
+  const dropdown = [
+    {
+      url: `${baseUrl}/${userId}/update`,
+      name: "Update My Information",
+      isNav: true,
+    },
+    {
+      url: `${baseUrl}/${userId}/security`,
+      name: "Security",
+      isNav: true,
+    },
+  ];
+
+  const navs = [
+    {
+      pageNav: "",
+      title: "Feeds",
+    },
+    {
+      pageNav: "articles",
+      title: "Articles",
+    },
+    {
+      pageNav: "farms",
+      title: "Farms",
+    },
+    {
+      pageNav: "products",
+      title: "Products",
+    },
+    {
+      pageNav: "about",
+      title: "About Me",
+    },
+    {
+      pageNav: "followings",
+      title: "Followings",
+    },
+  ];
+
+  return (
+    <Root>
+      <div className="row">
+        <div className="col-auto mr-auto">
+          <HorizontalList className={className}>
+            {navs.map((nav) => {
+              return (
+                <ListItem key={nav.pageNav}>
+                  <ProfileNavLink
+                    pageNav={nav.pageNav}
+                    {...props}
+                    userId={userId}
+                    baseUrl={baseUrl}
+                  >
+                    {nav.title}
+                  </ProfileNavLink>
+                </ListItem>
+              );
+            })}
+          </HorizontalList>
         </div>
-      </Root>
-    );
-  }
+        <div className="col-auto">
+          <UserDropdown icon="ellipsis-v" dropdown={dropdown} />
+        </div>
+      </div>
+    </Root>
+  );
 });

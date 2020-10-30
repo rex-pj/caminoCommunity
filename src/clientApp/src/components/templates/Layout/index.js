@@ -1,7 +1,6 @@
 import DefaultLayout from "./DefaultLayout";
 import DetailLayout from "./DetailLayout";
 import AssociationLayout from "./AssociationLayout";
-import ProductPageLayout from "./ProductPageLayout";
 import FrameLayout from "./FrameLayout";
 import AuthLayout from "./AuthLayout";
 import ProfileLayout from "./ProfileLayout";
@@ -13,7 +12,6 @@ export {
   DefaultLayout,
   DetailLayout,
   AssociationLayout,
-  ProductPageLayout,
   AuthLayout,
   ProfileLayout,
   MasterLayout,

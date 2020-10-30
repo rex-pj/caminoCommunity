@@ -32,6 +32,7 @@ const Wrap = styled.div`
   }
 `;
 
+// The layout for signin, signup or forgot password
 function AuthLayout({ component: Component, ...rest }) {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   return (

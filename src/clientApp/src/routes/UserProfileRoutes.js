@@ -12,8 +12,8 @@ export default [
     page: "user-security",
   },
   {
-    path: ["/:userId/posts", "/:userId/posts/page/:pageNumber"],
-    page: "user-posts",
+    path: ["/:userId/articles", "/:userId/articles/page/:pageNumber"],
+    page: "user-articles",
   },
   {
     path: ["/:userId/products", "/:userId/products/page/:pageNumber"],

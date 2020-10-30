@@ -4,6 +4,7 @@ import { Header } from "../../organisms/Containers";
 import { SessionContext } from "../../../store/context/SessionContext";
 import PageLoading from "../../molecules/Loading/PageLoading";
 
+// The layout with header
 export default ({ ...props }) => {
   const { component: Component } = props;
   const sessionContext = useContext(SessionContext);
@@ -15,7 +16,7 @@ export default ({ ...props }) => {
   return (
     <MasterLayout
       {...props}
-      component={matchProps => (
+      component={(matchProps) => (
         <Fragment>
           <Header />
           <Component {...matchProps} />
