@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
@@ -16,12 +16,14 @@ import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
   const dispatch = useStore(false)[1];
+  const { user } = useContext(SessionContext);
 
   const { loading, data, error, refetch: fetchFarms, networkStatus } = useQuery(
     GET_USER_FARMS,
@@ -105,17 +107,18 @@ export default withRouter(function (props) {
     fetchFarms();
   };
 
-  const farmEditor = (
-    <FarmEditor
-      height={230}
-      convertImageCallback={convertImagefile}
-      onImageValidate={onImageValidate}
-      filterCategories={searchFarmTypes}
-      onFarmPost={onFarmPost}
-      refetchNews={refetchNewFarms}
-      showValidationError={showValidationError}
-    />
-  );
+  const farmEditor =
+    user && user.isLogin ? (
+      <FarmEditor
+        height={230}
+        convertImageCallback={convertImagefile}
+        onImageValidate={onImageValidate}
+        filterCategories={searchFarmTypes}
+        onFarmPost={onFarmPost}
+        refetchNews={refetchNewFarms}
+        showValidationError={showValidationError}
+      />
+    ) : null;
 
   if (loading || !data || networkStatus === 1) {
     return (

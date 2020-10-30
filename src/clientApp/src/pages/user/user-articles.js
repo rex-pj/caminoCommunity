@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
@@ -16,12 +16,14 @@ import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
   const dispatch = useStore(false)[1];
+  const { user } = useContext(SessionContext);
 
   const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
@@ -107,17 +109,18 @@ export default withRouter(function (props) {
     fetchArticles();
   };
 
-  const articleEditor = (
-    <ArticleEditor
-      height={230}
-      convertImageCallback={convertImagefile}
-      onImageValidate={onImageValidate}
-      filterCategories={searchArticleCategories}
-      onArticlePost={onArticlePost}
-      refetchNews={refetchNewArticles}
-      showValidationError={showValidationError}
-    />
-  );
+  const articleEditor =
+    user && user.isLogin ? (
+      <ArticleEditor
+        height={230}
+        convertImageCallback={convertImagefile}
+        onImageValidate={onImageValidate}
+        filterCategories={searchArticleCategories}
+        onArticlePost={onArticlePost}
+        refetchNews={refetchNewArticles}
+        showValidationError={showValidationError}
+      />
+    ) : null;
 
   if (loading || !data || networkStatus === 1) {
     return (

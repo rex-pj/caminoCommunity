@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
 import { VerticalList } from "../../atoms/List";
@@ -29,44 +29,33 @@ const Root = styled.div`
   }
 `;
 
-export default class AdsList extends Component {
-  constructor() {
-    super();
-
-    const listAds = [];
-    for (let i = 0; i < 1; i++) {
-      listAds.push({
-        description:
-          "Chuyên cung cấp dừa tươi cho các đại lý, quán nước, sỉ và lẻ cho các tỉnh thành phía Nam...",
-        title: "Vựa dừa xiêm anh Ba Rô",
-        photoUrl: `${process.env.PUBLIC_URL}/photos/coconut-farm.jpg`,
-        url: "#",
-        icon: "bullhorn",
-      });
-    }
-
-    this.state = {
-      listAds: listAds,
-    };
+export default function (props) {
+  let listAds = [];
+  for (let i = 0; i < 1; i++) {
+    listAds.push({
+      description:
+        "Chuyên cung cấp dừa tươi cho các đại lý, quán nước, sỉ và lẻ cho các tỉnh thành phía Nam...",
+      title: "Vựa dừa xiêm anh Ba Rô",
+      photoUrl: `${process.env.PUBLIC_URL}/photos/coconut-farm.jpg`,
+      url: "#",
+      icon: "bullhorn",
+    });
   }
 
-  render() {
-    const { listAds } = this.state;
-    return (
-      <Root>
-        <FifthDarkHeading>
-          <span>Suggestions</span>
-          <FontAwesomeIcon icon="bullhorn" />
-        </FifthDarkHeading>
-        <div>
-          <VerticalList>
-            {listAds &&
-              listAds.map((ads, index) => (
-                <AdsItem key={index} ads={ads} index={index} />
-              ))}
-          </VerticalList>
-        </div>
-      </Root>
-    );
-  }
+  return (
+    <Root>
+      <FifthDarkHeading>
+        <span>Suggestions</span>
+        <FontAwesomeIcon icon="bullhorn" />
+      </FifthDarkHeading>
+      <div>
+        <VerticalList>
+          {listAds &&
+            listAds.map((ads, index) => (
+              <AdsItem key={index} ads={ads} index={index} />
+            ))}
+        </VerticalList>
+      </div>
+    </Root>
+  );
 }

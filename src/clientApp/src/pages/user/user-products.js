@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
@@ -17,12 +17,14 @@ import { useStore } from "../../store/hook-store";
 import { GET_USER_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
   const dispatch = useStore(false)[1];
+  const { user } = useContext(SessionContext);
 
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
   const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
@@ -136,18 +138,19 @@ export default withRouter(function (props) {
     fetchNewProducts();
   };
 
-  const productEditor = (
-    <ProductEditor
-      height={230}
-      convertImageCallback={convertImagefile}
-      onImageValidate={onImageValidate}
-      filterCategories={searchProductCategories}
-      onProductPost={onProductPost}
-      showValidationError={showValidationError}
-      refetchNews={refetchNewProducts}
-      filterFarms={searchFarms}
-    />
-  );
+  const productEditor =
+    user && user.isLogin ? (
+      <ProductEditor
+        height={230}
+        convertImageCallback={convertImagefile}
+        onImageValidate={onImageValidate}
+        filterCategories={searchProductCategories}
+        onProductPost={onProductPost}
+        showValidationError={showValidationError}
+        refetchNews={refetchNewProducts}
+        filterFarms={searchFarms}
+      />
+    ) : null;
 
   if (loading || !data || networkStatus === 1) {
     return (

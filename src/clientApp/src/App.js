@@ -42,7 +42,7 @@ export default () => {
     const userInfo = AuthService.parseUserInfo(response);
 
     if (error) {
-      return {};
+      return { isLogin: false };
     }
 
     return {
@@ -53,7 +53,7 @@ export default () => {
     };
   };
 
-  const userObj = !!isLogin ? parseLoggedUser(data) : {};
+  const userObj = !!isLogin ? parseLoggedUser(data) : { isLogin: false };
 
   return (
     <ApolloProvider client={graphqlClient}>

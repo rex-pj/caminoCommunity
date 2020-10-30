@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -77,7 +77,7 @@ const FollowButton = styled(ButtonIconOutlineSecondary)`
   z-index: 1;
 `;
 
-const ProfileBox = styled(ProfileAction)`
+const ProfileBox = styled(AuthorProfile)`
   position: absolute;
   bottom: ${(p) => p.theme.size.distance};
   left: ${(p) => p.theme.size.distance};

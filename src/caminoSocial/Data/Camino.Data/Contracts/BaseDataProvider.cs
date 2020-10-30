@@ -39,8 +39,9 @@ namespace Camino.Data.Contracts
 
         protected void LoadMappingSchemaBuilder()
         {
-            var fluentMapBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            FluentMapBuilder = fluentMapBuilder;
+            var mappingSchema = new MappingSchema();
+            FluentMapBuilder = mappingSchema.GetFluentMappingBuilder();
+            _dataConnection.AddMappingSchema(mappingSchema);
             OnMappingSchemaCreating();
             Singleton<MappingSchema>.Instance = _dataConnection.MappingSchema;
         }

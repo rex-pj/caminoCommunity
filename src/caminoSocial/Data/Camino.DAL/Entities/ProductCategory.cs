@@ -23,6 +23,6 @@ namespace Camino.DAL.Entities
 
         public virtual ProductCategory ParentCategory { get; set; }
 
-        public virtual ICollection<ArticleCategory> ChildCategories { get; set; }
+        public virtual ICollection<ProductCategory> ChildCategories { get; set; }
     }
 }

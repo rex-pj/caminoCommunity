@@ -283,7 +283,7 @@ namespace Camino.Service.Business.Products
             return categories;
         }
 
-        public int Create(ProductCategoryProjection category)
+        public async Task<int> CreateAsync(ProductCategoryProjection category)
         {
             var newCategory = new ProductCategory()
             {
@@ -296,7 +296,7 @@ namespace Camino.Service.Business.Products
                 CreatedDate = DateTimeOffset.UtcNow
             };
 
-            var id = _productCategoryRepository.AddWithInt32Entity(newCategory);
+            var id = await _productCategoryRepository.AddWithInt32EntityAsync(newCategory);
             return id;
         }
 

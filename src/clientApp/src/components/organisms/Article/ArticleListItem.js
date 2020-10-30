@@ -5,7 +5,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import NoImage from "../../atoms/NoImages/no-image";
 import Overlay from "../../atoms/Overlay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
@@ -112,7 +112,7 @@ export default (props) => {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">

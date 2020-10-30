@@ -13,7 +13,6 @@ namespace Module.Api.Product.GraphQL
         {
             descriptor.Field<IProductResolver>(x => x.GetUserProductsAsync(default, default))
                 .Type<ProductPageListType>()
-                .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<ProductFilterInputType>());
 
             descriptor.Field<IProductResolver>(x => x.GetProductsAsync(default, default))

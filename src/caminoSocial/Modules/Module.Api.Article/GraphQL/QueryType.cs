@@ -13,7 +13,6 @@ namespace Module.Api.Article.GraphQL
         {
             descriptor.Field<IArticleResolver>(x => x.GetUserArticlesAsync(default))
                 .Type<ArticlePageListType>()
-                .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<ArticleFilterInputType>());
 
             descriptor.Field<IArticleResolver>(x => x.GetArticlesAsync(default))

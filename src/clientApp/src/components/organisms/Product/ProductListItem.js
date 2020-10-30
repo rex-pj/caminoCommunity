@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -77,7 +77,7 @@ export default function (props) {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">

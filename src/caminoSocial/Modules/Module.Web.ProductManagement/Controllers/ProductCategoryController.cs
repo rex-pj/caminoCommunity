@@ -119,7 +119,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductCategory)]
-        public IActionResult Create(ProductCategoryModel model)
+        public async Task<IActionResult> Create(ProductCategoryModel model)
         {
             var category = new ProductCategoryProjection()
             {
@@ -136,7 +136,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = _productCategoryBusiness.Create(category);
+            var id = await _productCategoryBusiness.CreateAsync(category);
 
             return RedirectToAction("Detail", new { id });
         }

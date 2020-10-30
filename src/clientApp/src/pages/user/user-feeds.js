@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
@@ -25,12 +25,14 @@ import { FeedType } from "../../utils/Enums";
 import EditorTabs from "../../components/organisms/User/EditorTabs";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter((props) => {
   const [editorMode, setEditorMode] = useState("ARTICLE");
   const { location, pageNumber, match } = props;
   const { params } = match;
   const { userId } = params;
+  const { user } = useContext(SessionContext);
 
   const {
     loading,
@@ -264,22 +266,31 @@ export default withRouter((props) => {
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        <EditorTabs
-          onToggleCreateMode={onToggleCreateMode}
-          editorMode={editorMode}
-        ></EditorTabs>
-        {editor}
+        {user && user.isLogin ? (
+          <Fragment>
+            <EditorTabs
+              onToggleCreateMode={onToggleCreateMode}
+              editorMode={editorMode}
+            ></EditorTabs>
+            {editor}
+          </Fragment>
+        ) : null}
+
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        <EditorTabs
-          onToggleCreateMode={onToggleCreateMode}
-          editorMode={editorMode}
-        ></EditorTabs>
-        {editor}
+        {user && user.isLogin ? (
+          <Fragment>
+            <EditorTabs
+              onToggleCreateMode={onToggleCreateMode}
+              editorMode={editorMode}
+            ></EditorTabs>
+            {editor}
+          </Fragment>
+        ) : null}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -320,12 +331,16 @@ export default withRouter((props) => {
   const baseUrl = props.userUrl + "/feeds";
   return (
     <Fragment>
-      <EditorTabs
-        onToggleCreateMode={onToggleCreateMode}
-        editorMode={editorMode}
-      ></EditorTabs>
+      {user && user.isLogin ? (
+        <Fragment>
+          <EditorTabs
+            onToggleCreateMode={onToggleCreateMode}
+            editorMode={editorMode}
+          ></EditorTabs>
 
-      {editor}
+          {editor}
+        </Fragment>
+      ) : null}
 
       {feeds
         ? feeds.map((item) => {

@@ -16,7 +16,7 @@ namespace Camino.Service.Business.Products.Contracts
         Task<IList<ProductCategoryProjection>> SearchAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
         Task<IList<ProductCategoryProjection>> SearchParentsAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10);
         List<ProductCategoryProjection> Get(Expression<Func<ProductCategory, bool>> filter);
-        public int Create(ProductCategoryProjection category);
+        Task<int> CreateAsync(ProductCategoryProjection category);
         ProductCategoryProjection Update(ProductCategoryProjection category);
         ProductCategoryProjection FindByName(string name);
     }

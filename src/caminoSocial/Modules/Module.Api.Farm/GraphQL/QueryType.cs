@@ -13,7 +13,6 @@ namespace Module.Api.Farm.GraphQL
         {
             descriptor.Field<IFarmResolver>(x => x.GetUserFarmsAsync(default))
                 .Type<FarmPageListType>()
-                .Directive<AuthenticationDirectiveType>()
                 .Argument("criterias", a => a.Type<FarmFilterInputType>());
 
             descriptor.Field<IFarmResolver>(x => x.GetFarmsAsync(default))

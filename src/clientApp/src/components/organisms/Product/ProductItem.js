@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalList } from "../../atoms/List";
@@ -120,7 +120,7 @@ export default (props) => {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
