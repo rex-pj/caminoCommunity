@@ -7,6 +7,6 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
 {
     public interface IFarmTypeResolver
     {
-        Task<IEnumerable<ISelectOption>> GetFarmTypesAsync(SelectFilterModel criterias);
+        Task<IEnumerable<SelectOption>> GetFarmTypesAsync(SelectFilterModel criterias);
     }
 }

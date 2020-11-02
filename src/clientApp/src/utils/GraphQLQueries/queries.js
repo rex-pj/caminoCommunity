@@ -69,14 +69,14 @@ export const GET_FULL_USER_INFO = gql`
       countryId
       statusLabel
       userIdentityId
-      countrySelections {
-        id
-        name
-      }
-      genderSelections {
-        id
-        text
-      }
+    }
+    countrySelections {
+      id
+      text
+    }
+    genderSelections {
+      id
+      text
     }
   }
 `;
@@ -123,7 +123,9 @@ export const GET_USER_ARTICLES = gql`
         createdBy
         createdDate
         updatedDate
-        thumbnailId
+        thumbnail {
+          pictureId
+        }
         createdByIdentityId
         createdByPhotoCode
       }
@@ -153,7 +155,7 @@ export const GET_USER_PRODUCTS = gql`
         createdByIdentityId
         createdByPhotoCode
         thumbnails {
-          id
+          pictureId
         }
         productFarms {
           id
@@ -187,7 +189,7 @@ export const GET_USER_FARMS = gql`
         createdByPhotoCode
         address
         thumbnails {
-          id
+          pictureId
         }
       }
     }
@@ -268,7 +270,9 @@ export const GET_ARTICLES = gql`
         createdBy
         createdDate
         updatedDate
-        thumbnailId
+        thumbnail {
+          pictureId
+        }
         createdByIdentityId
         createdByPhotoCode
       }
@@ -286,7 +290,9 @@ export const GET_RELEVANT_ARTICLES = gql`
       createdBy
       createdDate
       updatedDate
-      thumbnailId
+      thumbnail {
+        pictureId
+      }
       createdByIdentityId
       createdByPhotoCode
     }
@@ -303,9 +309,32 @@ export const GET_ARTICLE = gql`
       createdBy
       createdDate
       updatedDate
-      thumbnailId
+      thumbnail {
+        pictureId
+      }
       createdByIdentityId
       createdByPhotoCode
+    }
+  }
+`;
+
+export const GET_ARTICLE_FOR_UPDATE = gql`
+  query($criterias: ArticleFilterModelInput) {
+    article(criterias: $criterias) {
+      id
+      content
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      thumbnail {
+        pictureId
+      }
+      createdByIdentityId
+      createdByPhotoCode
+      articleCategoryId
+      articleCategoryName
     }
   }
 `;
@@ -332,7 +361,7 @@ export const GET_PRODUCTS = gql`
         createdByIdentityId
         createdByPhotoCode
         thumbnails {
-          id
+          pictureId
         }
         productFarms {
           id
@@ -358,7 +387,7 @@ export const GET_PRODUCT = gql`
       createdByIdentityId
       createdByPhotoCode
       thumbnails {
-        id
+        pictureId
       }
       productFarms {
         id
@@ -383,7 +412,7 @@ export const GET_RELEVANT_PRODUCTS = gql`
       createdByIdentityId
       createdByPhotoCode
       thumbnails {
-        id
+        pictureId
       }
       productFarms {
         id
@@ -416,7 +445,7 @@ export const GET_FARMS = gql`
         createdByPhotoCode
         address
         thumbnails {
-          id
+          pictureId
         }
       }
     }
@@ -437,7 +466,7 @@ export const GET_FARM = gql`
       createdByIdentityId
       createdByPhotoCode
       thumbnails {
-        id
+        pictureId
       }
     }
   }

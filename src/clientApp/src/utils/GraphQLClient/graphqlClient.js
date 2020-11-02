@@ -1,4 +1,9 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  ApolloLink,
+} from "@apollo/client";
 import { setContext } from "apollo-link-context";
 import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
 
@@ -27,6 +32,20 @@ const contextLink = setContext(async (_, { headers }) => {
   };
 });
 
+const cleanTypeName = new ApolloLink((operation, forward) => {
+  if (operation.variables) {
+    const omitTypename = (key, value) =>
+      key === "__typename" ? undefined : value;
+    operation.variables = JSON.parse(
+      JSON.stringify(operation.variables),
+      omitTypename
+    );
+  }
+  return forward(operation).map((data) => {
+    return data;
+  });
+});
+
 const cache = new InMemoryCache({
   typePolicies: {
     FullUserInfoModel: {
@@ -35,6 +54,10 @@ const cache = new InMemoryCache({
     FeedModel: {
       keyFields: ["feedType", "id"],
     },
+    SelectOption: {
+      keyFields: ["text", "id"],
+    },
+
     ProductModel: {
       fields: {
         thumbnails: {
@@ -48,7 +71,7 @@ const cache = new InMemoryCache({
 });
 
 let client = new ApolloClient({
-  link: contextLink.concat(httpLink),
+  link: ApolloLink.from([cleanTypeName, contextLink.concat(httpLink)]),
   cache: cache,
   ssrMode: true,
   initialState: preloadedState,

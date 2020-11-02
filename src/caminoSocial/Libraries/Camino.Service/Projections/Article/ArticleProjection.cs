@@ -1,9 +1,15 @@
-﻿using System;
+﻿using Camino.Service.Projections.Media;
+using System;
 
 namespace Camino.Service.Projections.Article
 {
     public class ArticleProjection
     {
+        public ArticleProjection()
+        {
+            Thumbnail = new PictureRequestProjection();
+        }
+
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -17,11 +23,6 @@ namespace Camino.Service.Projections.Article
         public string CreatedByPhotoCode { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
-
-        // Thumbnail Picture
-        public long ThumbnailId { get; set; }
-        public string Thumbnail { get; set; }
-        public string ThumbnailFileType { get; set; }
-        public string ThumbnailFileName { get; set; }
+        public PictureRequestProjection Thumbnail { get; set; }
     }
 }

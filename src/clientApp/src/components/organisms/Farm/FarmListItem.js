@@ -20,9 +20,10 @@ const Panel = styled(PanelDefault)`
 
   .no-image {
     height: 200px;
+    border-radius: 0;
   }
 
-  ${ImageThumb} img {
+  img.thumbnail-img {
     width: 100%;
     border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
     border-top-right-radius: ${(p) => p.theme.borderRadius.normal};

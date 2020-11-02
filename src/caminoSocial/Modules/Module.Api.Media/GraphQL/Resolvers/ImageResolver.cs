@@ -4,20 +4,20 @@ using Module.Api.Media.Models;
 using Camino.Service.Strategies.Validation;
 using Camino.Framework.Models;
 using Camino.Core.Models;
-using Camino.IdentityManager.Contracts.Core;
+using Camino.IdentityManager.Contracts;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class ImageResolver : BaseResolver, IImageResolver
     {
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public ImageResolver(ValidationStrategyContext validationStrategyContext, SessionState sessionState)
-            : base(sessionState)
+        public ImageResolver(ValidationStrategyContext validationStrategyContext, ISessionContext sessionContext)
+            : base(sessionContext)
         {
             _validationStrategyContext = validationStrategyContext;
         }
 
-        public ICommonResult ValidateImageUrl(ImageValidationModel criterias)
+        public CommonResult ValidateImageUrl(ImageValidationModel criterias)
         {
             _validationStrategyContext.SetStrategy(new ImageUrlValidationStrategy());
             if(criterias == null || string.IsNullOrEmpty(criterias.Url))

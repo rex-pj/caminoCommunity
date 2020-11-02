@@ -65,7 +65,7 @@ namespace Camino.Service.Business.Farms
             return exist;
         }
 
-        public async Task<IList<FarmProjection>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -73,7 +73,7 @@ namespace Camino.Service.Business.Farms
             }
 
             search = search.ToLower();
-            var query = _farmRepository.Table
+            var query = _farmRepository.Get(x => x.CreatedById == userId)
                 .Select(c => new FarmProjection
                 {
                     Id = c.Id,
@@ -105,28 +105,28 @@ namespace Camino.Service.Business.Farms
         public async Task<FarmProjection> FindDetailAsync(long id)
         {
             var exist = await (from farm in _farmRepository.Table
-                         join farmType in _farmTypeRepository.Table
-                         on farm.FarmTypeId equals farmType.Id
-                         join farmPic in _farmPictureRepository.Table
-                         on farm.Id equals farmPic.FarmId into pics
-                         where farm.Id == id
-                         select new FarmProjection
-                         {
-                             Id = farm.Id,
-                             Name = farm.Name,
-                             Address = farm.Address,
-                             Description = farm.Description,
-                             CreatedDate = farm.CreatedDate,
-                             CreatedById = farm.CreatedById,
-                             UpdatedById = farm.UpdatedById,
-                             UpdatedDate = farm.UpdatedDate,
-                             FarmTypeName = farmType.Name,
-                             FarmTypeId = farm.FarmTypeId,
-                             Pictures = pics.Select(x => new PictureRequestProjection
-                             {
-                                 Id = x.PictureId
-                             }),
-                         }).FirstOrDefaultAsync();
+                               join farmType in _farmTypeRepository.Table
+                               on farm.FarmTypeId equals farmType.Id
+                               join farmPic in _farmPictureRepository.Table
+                               on farm.Id equals farmPic.FarmId into pics
+                               where farm.Id == id
+                               select new FarmProjection
+                               {
+                                   Id = farm.Id,
+                                   Name = farm.Name,
+                                   Address = farm.Address,
+                                   Description = farm.Description,
+                                   CreatedDate = farm.CreatedDate,
+                                   CreatedById = farm.CreatedById,
+                                   UpdatedById = farm.UpdatedById,
+                                   UpdatedDate = farm.UpdatedDate,
+                                   FarmTypeName = farmType.Name,
+                                   FarmTypeId = farm.FarmTypeId,
+                                   Pictures = pics.Select(x => new PictureRequestProjection
+                                   {
+                                       Id = x.PictureId
+                                   }),
+                               }).FirstOrDefaultAsync();
 
             if (exist == null)
             {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
@@ -17,84 +17,73 @@ const Card = styled(UserCard)`
   border-bottom: 1px solid ${(p) => p.theme.color.lighter};
 `;
 
-export default class extends Component {
-  constructor() {
-    super();
-
-    const infos = [
-      {
-        name: "Job",
-        infos: [
-          {
-            icon: "user",
-            name: "Farmer",
-          },
-        ],
-      },
-      {
-        name: "Farms",
-        infos: [
-          {
-            icon: "warehouse",
-            name: "Vườn chú Năm (Chợ Lách)",
-            url: `${UrlConstant.Farm.url}1`,
-          },
-          {
-            icon: "warehouse",
-            name: "Vườn chú Năm (Mỏ Cày Bắc)",
-            url: `${UrlConstant.Farm.url}2`,
-          },
-        ],
-      },
-      {
-        name: "Address",
-        infos: [
-          {
-            icon: "map-marker-alt",
-            name: "ấp Vĩnh Bình, xã Mỹ Thạnh, huyện Cần Thinh, tỉnh Bình Tuy",
-          },
-        ],
-      },
-      {
-        name: "Contact Information",
-        infos: [
-          {
-            icon: "phone",
-            name: "+84.787.888.667",
-          },
-          {
-            icon: "envelope",
-            name: "trungle.it@gmail.com",
-            url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          },
-        ],
-      },
-    ];
-
-    this.state = {
-      menuList: [
+export default function (props) {
+  const infos = [
+    {
+      name: "Job",
+      infos: [
         {
-          icon: faUserCheck,
-          text: "800",
-          description: "Following",
-        },
-        {
-          icon: faComments,
-          text: "350",
-          description: "Topics",
+          icon: "user",
+          name: "Farmer",
         },
       ],
-      infos,
-    };
-  }
+    },
+    {
+      name: "Farms",
+      infos: [
+        {
+          icon: "warehouse",
+          name: "Vườn chú Năm (Chợ Lách)",
+          url: `${UrlConstant.Farm.url}1`,
+        },
+        {
+          icon: "warehouse",
+          name: "Vườn chú Năm (Mỏ Cày Bắc)",
+          url: `${UrlConstant.Farm.url}2`,
+        },
+      ],
+    },
+    {
+      name: "Address",
+      infos: [
+        {
+          icon: "map-marker-alt",
+          name: "ấp Vĩnh Bình, xã Mỹ Thạnh, huyện Cần Thinh, tỉnh Bình Tuy",
+        },
+      ],
+    },
+    {
+      name: "Contact Information",
+      infos: [
+        {
+          icon: "phone",
+          name: "+84.787.888.667",
+        },
+        {
+          icon: "envelope",
+          name: "trungle.it@gmail.com",
+          url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
+        },
+      ],
+    },
+  ];
+  const menuList = [
+    {
+      icon: faUserCheck,
+      text: "800",
+      description: "Following",
+    },
+    {
+      icon: faComments,
+      text: "350",
+      description: "Topics",
+    },
+  ];
 
-  render() {
-    const { menuList, infos } = this.state;
-    return (
-      <Root>
-        <Card menuList={menuList} />
-        <ProfileCardInfo profileInfos={infos} />
-      </Root>
-    );
-  }
+  return (
+    <Root>
+      <Card menuList={menuList} />
+      <ProfileCardInfo profileInfos={infos} />
+    </Root>
+  );
 }

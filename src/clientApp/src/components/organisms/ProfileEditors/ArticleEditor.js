@@ -78,10 +78,11 @@ export default withRouter((props) => {
     onImageValidate,
     height,
     filterCategories,
-    refetchNews,
+    currentArticle,
   } = props;
-  const initialFormData = ArticleCreationModel;
-  const [formData, setFormData] = useState(initialFormData);
+  const initialFormData = JSON.parse(JSON.stringify(ArticleCreationModel));
+  const articleState = currentArticle ? currentArticle : initialFormData;
+  const [formData, setFormData] = useState(articleState);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -122,6 +123,13 @@ export default withRouter((props) => {
     }, 1000);
   };
 
+  const loadSelected = () => {
+    return {
+      label: articleCategoryName.value,
+      value: articleCategoryId.value,
+    };
+  };
+
   const handleSelectChange = (e) => {
     let data = formData || {};
     const name = "articleCategoryId";
@@ -146,10 +154,11 @@ export default withRouter((props) => {
     const { name, type } = file;
 
     data["thumbnail"].isValid = checkValidity(data, preview, "thumbnail");
-    data["thumbnail"].value = preview;
-
-    data["thumbnailFileType"].value = type;
-    data["thumbnailFileName"].value = name;
+    data["thumbnail"].value = {
+      base64Data: preview,
+      contentType: type,
+      fileName: name,
+    };
 
     setFormData({
       ...data,
@@ -178,12 +187,10 @@ export default withRouter((props) => {
         articleData[formIdentifier] = formData[formIdentifier].value;
       }
 
+      delete articleData["articleCategoryName"];
       await props.onArticlePost(articleData).then((response) => {
-        var { data } = response;
-        var { createArticle } = data;
-        if (createArticle && createArticle.id) {
+        if (response && response.id) {
           clearFormData();
-          refetchNews();
         }
       });
     }
@@ -200,20 +207,24 @@ export default withRouter((props) => {
     });
   };
 
-  const removeImage = () => {
+  const onImageRemoved = () => {
     let data = formData || {};
     data["thumbnail"].isValid = false;
-    data["thumbnail"].value = "";
-
-    data["thumbnailFileType"].value = "";
-    data["thumbnailFileName"].value = "";
+    data["thumbnail"].value = {
+      pictureId: 0,
+      fileName: "",
+      contentType: "",
+      base64Data: "",
+    };
 
     setFormData({
       ...data,
     });
   };
 
-  const { name, articleCategoryId, thumbnail } = formData;
+  const { name, articleCategoryId, articleCategoryName, thumbnail } = formData;
+  let { value: thumbnailData } = thumbnail;
+
   return (
     <Fragment>
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
@@ -230,6 +241,7 @@ export default withRouter((props) => {
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
             {articleCategoryId.value ? (
               <AsyncSelect
+                defaultValue={loadSelected()}
                 cacheOptions
                 defaultOptions
                 onChange={handleSelectChange}
@@ -238,7 +250,7 @@ export default withRouter((props) => {
               />
             ) : (
               <AsyncSelect
-                value=""
+                defaultValue=""
                 cacheOptions
                 defaultOptions
                 onChange={handleSelectChange}
@@ -252,12 +264,26 @@ export default withRouter((props) => {
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {thumbnail.value ? (
+        {thumbnailData.base64Data ? (
           <FormRow className="row">
             <div className="col-3">
               <ImageEditBox>
-                <Thumbnail src={thumbnail.value}></Thumbnail>
-                <RemoveImageButton onClick={removeImage}>
+                <Thumbnail src={thumbnailData.base64Data}></Thumbnail>
+                <RemoveImageButton onClick={onImageRemoved}>
+                  <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                </RemoveImageButton>
+              </ImageEditBox>
+            </div>
+          </FormRow>
+        ) : null}
+        {thumbnailData && thumbnailData.pictureId ? (
+          <FormRow className="row">
+            <div className="col-3">
+              <ImageEditBox>
+                <Thumbnail
+                  src={`${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnailData.pictureId}`}
+                ></Thumbnail>
+                <RemoveImageButton onClick={onImageRemoved}>
                   <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                 </RemoveImageButton>
               </ImageEditBox>
@@ -265,6 +291,7 @@ export default withRouter((props) => {
           </FormRow>
         ) : null}
         <CommonEditor
+          contentHtml={currentArticle ? currentArticle.content.value : null}
           height={height}
           convertImageCallback={convertImageCallback}
           onImageValidate={onImageValidate}

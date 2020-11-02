@@ -13,6 +13,7 @@ using Camino.Data.Enums;
 using Camino.Core.Utils;
 using Camino.Service.Projections.Article;
 using System.Collections.Generic;
+using Camino.Service.Projections.Media;
 
 namespace Camino.Service.Business.Articles
 {
@@ -40,23 +41,23 @@ namespace Camino.Service.Business.Articles
             _userPhotoRepository = userPhotoRepository;
         }
 
-        public ArticleProjection Find(long id)
+        public async Task<ArticleProjection> FindAsync(long id)
         {
-            var exist = (from article in _articleRepository.Table
-                         join category in _articleCategoryRepository.Table
-                         on article.ArticleCategoryId equals category.Id
-                         where article.Id == id
-                         select new ArticleProjection
-                         {
-                             CreatedDate = article.CreatedDate,
-                             CreatedById = article.CreatedById,
-                             Id = article.Id,
-                             Name = article.Name,
-                             UpdatedById = article.UpdatedById,
-                             UpdatedDate = article.UpdatedDate,
-                             ArticleCategoryName = category.Name,
-                             ArticleCategoryId = article.ArticleCategoryId
-                         }).FirstOrDefault();
+            var exist = await (from article in _articleRepository.Table
+                               join category in _articleCategoryRepository.Table
+                               on article.ArticleCategoryId equals category.Id
+                               where article.Id == id
+                               select new ArticleProjection
+                               {
+                                   CreatedDate = article.CreatedDate,
+                                   CreatedById = article.CreatedById,
+                                   Id = article.Id,
+                                   Name = article.Name,
+                                   UpdatedById = article.UpdatedById,
+                                   UpdatedDate = article.UpdatedDate,
+                                   ArticleCategoryName = category.Name,
+                                   ArticleCategoryId = article.ArticleCategoryId
+                               }).FirstOrDefaultAsync();
 
             if (exist == null)
             {
@@ -70,25 +71,29 @@ namespace Camino.Service.Business.Articles
         {
             var pictureTypeId = (int)ArticlePictureType.Thumbnail;
             var exist = await (from article in _articleRepository.Table
-                         join category in _articleCategoryRepository.Table
-                         on article.ArticleCategoryId equals category.Id
-                         join articlePic in _articlePictureRepository.Get(x=>x.PictureType == pictureTypeId)
-                         on article.Id equals articlePic.ArticleId
-                         where article.Id == id
-                         select new ArticleProjection
-                         {
-                             Description = article.Description,
-                             CreatedDate = article.CreatedDate,
-                             CreatedById = article.CreatedById,
-                             Id = article.Id,
-                             Name = article.Name,
-                             UpdatedById = article.UpdatedById,
-                             UpdatedDate = article.UpdatedDate,
-                             ArticleCategoryName = category.Name,
-                             ArticleCategoryId = article.ArticleCategoryId,
-                             Content = article.Content,
-                             ThumbnailId = articlePic.PictureId
-                         }).FirstOrDefaultAsync();
+                               join category in _articleCategoryRepository.Table
+                               on article.ArticleCategoryId equals category.Id
+                               join articlePic in _articlePictureRepository.Get(x => x.PictureType == pictureTypeId)
+                               on article.Id equals articlePic.ArticleId into articlePics
+                               from picture in articlePics.DefaultIfEmpty()
+                               where article.Id == id
+                               select new ArticleProjection
+                               {
+                                   Description = article.Description,
+                                   CreatedDate = article.CreatedDate,
+                                   CreatedById = article.CreatedById,
+                                   Id = article.Id,
+                                   Name = article.Name,
+                                   UpdatedById = article.UpdatedById,
+                                   UpdatedDate = article.UpdatedDate,
+                                   ArticleCategoryName = category.Name,
+                                   ArticleCategoryId = article.ArticleCategoryId,
+                                   Content = article.Content,
+                                   Thumbnail = new PictureRequestProjection
+                                   {
+                                       Id = picture.PictureId
+                                   }
+                               }).FirstOrDefaultAsync();
 
             if (exist == null)
             {
@@ -163,7 +168,7 @@ namespace Camino.Service.Business.Articles
                         join pic in _articlePictureRepository.Table
                         on ar.Id equals pic.ArticleId into pics
                         from picture in pics.DefaultIfEmpty()
-                        join pho in _userPhotoRepository.Get(x =>  x.TypeId == avatarTypeId)
+                        join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                         on ar.CreatedById equals pho.UserId into photos
                         from photo in photos.DefaultIfEmpty()
                         select new ArticleProjection
@@ -175,7 +180,10 @@ namespace Camino.Service.Business.Articles
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            ThumbnailId = picture.PictureId,
+                            Thumbnail = new PictureRequestProjection
+                            {
+                                Id = picture.PictureId
+                            },
                             Content = ar.Content,
                             CreatedByPhotoCode = photo.Code
                         };
@@ -206,8 +214,8 @@ namespace Camino.Service.Business.Articles
 
                 var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == article.UpdatedById);
                 article.UpdatedBy = updatedBy.DisplayName;
-                article.Description = string.IsNullOrEmpty(article.Description) 
-                    ? HtmlUtil.TrimHtml(article.Content) 
+                article.Description = string.IsNullOrEmpty(article.Description)
+                    ? HtmlUtil.TrimHtml(article.Content)
                     : article.Description;
             }
 
@@ -236,7 +244,7 @@ namespace Camino.Service.Business.Articles
 
             var id = await _articleRepository.AddWithInt32EntityAsync(newArticle);
 
-            var thumbnail = ImageUtil.EncodeJavascriptBase64(article.Thumbnail);
+            var thumbnail = ImageUtil.EncodeJavascriptBase64(article.Thumbnail.Base64Data);
             if (!string.IsNullOrEmpty(thumbnail))
             {
                 var pictureData = Convert.FromBase64String(thumbnail);
@@ -244,8 +252,8 @@ namespace Camino.Service.Business.Articles
                 {
                     CreatedById = article.UpdatedById,
                     CreatedDate = modifiedDate,
-                    FileName = article.ThumbnailFileName,
-                    MimeType = article.ThumbnailFileType,
+                    FileName = article.Thumbnail.FileName,
+                    MimeType = article.Thumbnail.ContentType,
                     UpdatedById = article.UpdatedById,
                     UpdatedDate = modifiedDate,
                     BinaryData = pictureData
@@ -266,15 +274,21 @@ namespace Camino.Service.Business.Articles
         {
             var updatedDate = DateTimeOffset.UtcNow;
             var exist = _articleRepository.FirstOrDefault(x => x.Id == article.Id);
-            exist.Description = article.Description;
             exist.Name = article.Name;
             exist.ArticleCategoryId = article.ArticleCategoryId;
             exist.UpdatedById = article.UpdatedById;
             exist.UpdatedDate = updatedDate;
             exist.Content = article.Content;
-            if (!string.IsNullOrEmpty(article.Thumbnail))
+
+            var thumbnail = article.Thumbnail;
+
+            var thumbnailType = (int)ArticlePictureType.Thumbnail;
+            var shouldRemoveThumbnail = thumbnail.Id == 0 && string.IsNullOrEmpty(thumbnail.Base64Data);
+            var shouldUpdateThumbnail = thumbnail.Id == 0 && !string.IsNullOrEmpty(thumbnail.Base64Data);
+
+            // Remove Old thumbnail
+            if (shouldRemoveThumbnail || shouldUpdateThumbnail)
             {
-                var thumbnailType = (int)ArticlePictureType.Thumbnail;
                 var articleThumbnails = _articlePictureRepository
                     .Get(x => x.ArticleId == article.Id && x.PictureType == thumbnailType)
                     .AsEnumerable();
@@ -287,14 +301,18 @@ namespace Camino.Service.Business.Articles
                     var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
                     await _pictureRepository.DeleteAsync(currentThumbnails);
                 }
+            }
 
-                var pictureData = Convert.FromBase64String(article.Thumbnail);
+            if (shouldUpdateThumbnail)
+            {
+                var base64Data = ImageUtil.EncodeJavascriptBase64(article.Thumbnail.Base64Data);
+                var pictureData = Convert.FromBase64String(base64Data);
                 var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
                 {
                     CreatedById = article.UpdatedById,
                     CreatedDate = updatedDate,
-                    FileName = article.ThumbnailFileName,
-                    MimeType = article.ThumbnailFileType,
+                    FileName = article.Thumbnail.FileName,
+                    MimeType = article.Thumbnail.ContentType,
                     UpdatedById = article.UpdatedById,
                     UpdatedDate = updatedDate,
                     BinaryData = pictureData
@@ -309,8 +327,6 @@ namespace Camino.Service.Business.Articles
             }
 
             _articleRepository.Update(exist);
-
-            article.UpdatedDate = exist.UpdatedDate;
             return article;
         }
 
@@ -345,7 +361,10 @@ namespace Camino.Service.Business.Articles
                                             Description = ar.Description,
                                             UpdatedById = ar.UpdatedById,
                                             UpdatedDate = ar.UpdatedDate,
-                                            ThumbnailId = picture.PictureId,
+                                            Thumbnail = new PictureRequestProjection()
+                                            {
+                                                Id = picture.PictureId
+                                            },
                                             Content = ar.Content,
                                             CreatedByPhotoCode = photo.Code
                                         });

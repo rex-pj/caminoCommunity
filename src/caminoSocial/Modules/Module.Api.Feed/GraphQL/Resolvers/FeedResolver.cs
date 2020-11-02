@@ -20,8 +20,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
         private readonly IFeedBusiness _feedBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public FeedResolver(SessionState sessionState, IFeedBusiness feedBusiness, IUserManager<ApplicationUser> userManager)
-            : base(sessionState)
+        public FeedResolver(ISessionContext sessionContext, IFeedBusiness feedBusiness, IUserManager<ApplicationUser> userManager)
+            : base(sessionContext)
         {
             _feedBusiness = feedBusiness;
             _userManager = userManager;

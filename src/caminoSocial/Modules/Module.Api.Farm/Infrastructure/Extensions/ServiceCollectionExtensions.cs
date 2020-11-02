@@ -5,6 +5,8 @@ using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Farm.GraphQL.Queries;
+using Module.Api.Farm.GraphQL.Mutations;
 
 namespace Module.Api.Farm.Infrastructure.Extensions
 {
@@ -14,6 +16,12 @@ namespace Module.Api.Farm.Infrastructure.Extensions
         {
             services.AddTransient<IFarmTypeResolver, FarmTypeResolver>();
             services.AddTransient<IFarmResolver, FarmResolver>();
+
+            services.AddGraphQLServer()
+                .AddType<FarmQueries>()
+                .AddType<FarmMutations>()
+                .AddType<FarmTypeMutations>();
+
             return services;
         }
 

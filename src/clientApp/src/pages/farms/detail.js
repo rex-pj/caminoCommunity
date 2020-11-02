@@ -34,6 +34,8 @@ export default withRouter(function (props) {
       variables: {
         criterias: {
           farmId: parseFloat(id),
+          page: 1,
+          pageSize: 8,
         },
       },
     }
@@ -63,9 +65,9 @@ export default withRouter(function (props) {
     farm.images = farm.thumbnails.map((item) => {
       let image = { ...item };
 
-      if (image.id > 0) {
-        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
-        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+      if (image.pictureId > 0) {
+        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
+        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
       }
       return image;
     });
@@ -86,8 +88,8 @@ export default withRouter(function (props) {
       product.url = `${UrlConstant.Product.url}${product.id}`;
       if (product.thumbnails && product.thumbnails.length > 0) {
         const thumbnail = product.thumbnails[0];
-        if (thumbnail.id > 0) {
-          product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.id}`;
+        if (thumbnail.pictureId > 0) {
+          product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
         }
       }
 

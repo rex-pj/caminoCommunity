@@ -1,15 +1,14 @@
-﻿using Camino.IdentityManager.Contracts.Core;
-using Camino.IdentityManager.Models;
+﻿using Camino.IdentityManager.Contracts;
 
 namespace Camino.Framework.GraphQL.Resolvers
 {
     public abstract class BaseResolver
     {
-        protected readonly ApplicationUser CurrentUser;
+        protected readonly ISessionContext _sessionContext;
 
-        protected BaseResolver(SessionState sessionState)
+        protected BaseResolver(ISessionContext sessionContext)
         {
-            CurrentUser = sessionState.CurrentUser;
+            _sessionContext = sessionContext;
         }
     }
 }

@@ -5,6 +5,7 @@ using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Feed.GraphQL.Queries;
 
 namespace Module.Api.Feed.Infrastructure.Extensions
 {
@@ -13,6 +14,10 @@ namespace Module.Api.Feed.Infrastructure.Extensions
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
             services.AddTransient<IFeedResolver, FeedResolver>();
+
+            services.AddGraphQLServer()
+                .AddType<FeedQueries>();
+
             return services;
         }
 
@@ -20,6 +25,7 @@ namespace Module.Api.Feed.Infrastructure.Extensions
         {
             services
                 .AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
+
             services.ConfigureGraphQlServices();
             return services;
         }

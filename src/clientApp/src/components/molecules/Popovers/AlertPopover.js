@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
 import {
@@ -34,86 +34,73 @@ const Wrap = styled(PanelDefault)`
   }
 `;
 
-class AlertPopover extends Component {
-  constructor() {
-    super();
+export default function (props) {
+  const [alertState, setAlertState] = useState({
+    isShown: false,
+    left: null,
+    top: null,
+  });
 
-    this.state = {
-      isShown: false,
-      left: null,
-      top: null,
+  useEffect(() => {
+    document.addEventListener("click", handleClickTarget, false);
+    return () => {
+      document.removeEventListener("click", handleClickTarget);
     };
-  }
+  });
 
-  componentDidMount() {
-    document.addEventListener("click", this.handleClickTarget);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("click", this.handleClickTarget);
-  }
-
-  handleClickTarget = (event) => {
-    const { target } = this.props;
+  const handleClickTarget = (event) => {
+    const { target } = props;
 
     var currentTarget = document.getElementById(target);
     if (currentTarget && currentTarget.contains(event.target)) {
-      const { isShown } = this.state;
-      this.setState(() => {
-        return {
-          isShown: !isShown,
-          left: currentTarget.offsetLeft,
-        };
+      const { isShown } = alertState;
+      setAlertState({
+        isShown: !isShown,
+        left: currentTarget.offsetLeft,
       });
 
-      if (!isShown && this.props.onClose) {
-        this.props.onClose();
+      if (!isShown && props.onClose) {
+        props.onClose();
       }
 
-      if (isShown && this.props.onOpen) {
-        this.props.onOpen();
+      if (isShown && props.onOpen) {
+        props.onOpen();
       }
     }
   };
 
-  onClose = () => {
-    this.setState(() => {
-      return {
-        isShown: false,
-      };
+  const onClose = () => {
+    setAlertState({
+      isShown: false,
     });
-    if (this.props.onClose) {
-      this.props.onClose();
+    if (props.onClose) {
+      props.onClose();
     }
   };
 
-  onExecute = () => {
-    if (this.props.onExecute) {
-      this.props.onExecute();
+  const onExecute = () => {
+    if (props.onExecute) {
+      props.onExecute();
     }
   };
 
-  render() {
-    const { isShown, left } = this.state;
-    const { title, className } = this.props;
-    if (!isShown) {
-      return null;
-    }
-
-    return (
-      <Wrap left={left} bottom="100%" className={className}>
-        <PanelHeading>{title}</PanelHeading>
-        <PanelBody>
-          <ButtonOutlineNormal size="sm" onClick={this.onClose}>
-            Không
-          </ButtonOutlineNormal>
-          <ButtonOutlineDanger size="sm" onClick={this.onExecute}>
-            Đồng Ý
-          </ButtonOutlineDanger>
-        </PanelBody>
-      </Wrap>
-    );
+  const { isShown, left } = alertState;
+  const { title, className } = props;
+  if (!isShown) {
+    return null;
   }
-}
 
-export default AlertPopover;
+  return (
+    <Wrap left={left} bottom="100%" className={className}>
+      <PanelHeading>{title}</PanelHeading>
+      <PanelBody>
+        <ButtonOutlineNormal size="sm" onClick={onClose}>
+          Không
+        </ButtonOutlineNormal>
+        <ButtonOutlineDanger size="sm" onClick={onExecute}>
+          Đồng Ý
+        </ButtonOutlineDanger>
+      </PanelBody>
+    </Wrap>
+  );
+}

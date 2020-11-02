@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
-import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import { GET_USER_ARTICLES } from "../../utils/GraphQLQueries/queries";
 import {
   VALIDATE_IMAGE_URL,
@@ -17,9 +16,10 @@ import { fileToBase64 } from "../../utils/Helper";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 import { SessionContext } from "../../store/context/SessionContext";
+import ArticleListItemThumbnail from "../../components/organisms/Article/ArticleListItemThumbnail";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber } = props;
+  const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
   const dispatch = useStore(false)[1];
@@ -37,7 +37,8 @@ export default withRouter(function (props) {
     variables: {
       criterias: {
         userIdentityId: userId,
-        page: pageNumber,
+        page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });
@@ -76,6 +77,13 @@ export default withRouter(function (props) {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve, reject) => {
+        const { data } = response;
+        const { createArticle: article } = data;
+        refetchNewArticles();
+        resolve({ article });
+      });
     });
   };
 
@@ -143,8 +151,8 @@ export default withRouter(function (props) {
   const articles = collections.map((item) => {
     let article = { ...item };
     article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.thumbnailId) {
-      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnailId}`;
+    if (article.thumbnail.pictureId) {
+      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnail.pictureId}`;
     }
 
     article.creator = {
@@ -170,7 +178,15 @@ export default withRouter(function (props) {
       {articleEditor}
       {articles
         ? articles.map((item) => (
-            <ArticleListItem key={item.id} article={item} />
+            <ArticleListItemThumbnail
+              key={item.id}
+              article={item}
+              convertImageCallback={convertImagefile}
+              onImageValidate={onImageValidate}
+              filterCategories={searchArticleCategories}
+              refetchNews={refetchNewArticles}
+              showValidationError={showValidationError}
+            />
           ))
         : null}
       <Pagination

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ListScroll from "../../molecules/ListScroll";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import styled from "styled-components";
@@ -97,32 +97,29 @@ const NextButton = styled(NavigateButton)`
   right: ${(p) => p.theme.size.exTiny};
 `;
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default function (props) {
+  const images = props.images;
+  let image = null,
+    numberOfImages = 0;
 
-    const images = this.props.images;
-    let currentImage = null,
-      numberOfImages = 0;
-    if (images) {
-      images[0].isActive = true;
-      currentImage = images[0];
-      currentImage.index = 0;
-      numberOfImages = images.length;
-    }
-
-    let { numberOfDisplay } = this.props;
-    this.state = {
-      currentImage: currentImage,
-      numberOfDisplay: numberOfDisplay ? numberOfDisplay : numberOfImages,
-      numberOfImages: numberOfImages,
-    };
-
-    this.currentRef = React.createRef();
+  if (images) {
+    images[0].isActive = true;
+    image = images[0];
+    image.index = 0;
+    numberOfImages = images.length;
   }
 
-  renderRelationImages = (relationImages) => {
-    const { numberOfDisplay, currentImage } = this.state;
+  let { displayNumber } = props;
+  const [slideState, setSlideState] = useState({
+    currentImage: image,
+    numberOfDisplay: displayNumber ? displayNumber : numberOfImages,
+    numberOfImages: numberOfImages,
+  });
+
+  const currentRef = useRef();
+
+  const renderRelationImages = (relationImages) => {
+    const { numberOfDisplay, currentImage } = slideState;
 
     if (relationImages) {
       let groupIndex = 0;
@@ -158,7 +155,7 @@ export default class extends Component {
             key={index}
             src={item.url}
             alt={item.name}
-            onClick={(e) => this.onChangeThumbnail(item)}
+            onClick={(e) => onChangeThumbnail(item)}
           />
         );
       });
@@ -167,108 +164,100 @@ export default class extends Component {
     }
   };
 
-  onChangeThumbnail = (item) => {
-    const { images } = this.props;
+  const onChangeThumbnail = (item) => {
+    const { images } = props;
     images.map((item) => {
       return item;
     });
 
-    this.setState({
+    var newSlideState = {
+      ...slideState,
       currentImage: item,
-    });
+    };
+    setSlideState(newSlideState);
   };
 
-  onNext = () => {
-    const { numberOfImages, currentImage } = this.state;
-    const { images } = this.props;
+  const onNext = () => {
+    const { numberOfImages, currentImage } = slideState;
+    const { images } = props;
     let image = null;
     if (currentImage.index < numberOfImages - 1) {
       image = images[currentImage.index + 1];
     } else {
       image = images[0];
     }
-    this.setState({
+
+    var newSlideState = {
+      ...slideState,
       currentImage: image,
-    });
+    };
+    setSlideState(newSlideState);
   };
 
-  onPrev = () => {
-    let { currentImage } = this.state;
-    const { images } = this.props;
+  const onPrev = () => {
+    let { currentImage } = slideState;
+    const { images } = props;
     let image = null;
     if (currentImage.index > 0) {
       image = images[currentImage.index - 1];
     } else {
-      const { numberOfImages } = this.state;
+      const { numberOfImages } = slideState;
       image = images[numberOfImages - 1];
     }
-    this.setState({
+    var newSlideState = {
+      ...slideState,
       currentImage: image,
-    });
+    };
+    setSlideState(newSlideState);
   };
 
-  componentDidMount() {
-    this.currentRef.current.addEventListener(
-      "keydown",
-      this.onChangeImage,
-      false
-    );
-  }
+  useEffect(() => {
+    var thumbnailRef = currentRef.current;
+    thumbnailRef.addEventListener("keydown", onChangeImage, false);
+    return () => {
+      thumbnailRef.removeEventListener("keydown", onChangeImage);
+    };
+  });
 
-  componentWillUnmount() {
-    this.currentRef.current.removeEventListener("keydown", this.onChangeImage);
-  }
-
-  onChangeImage = (e) => {
+  const onChangeImage = (e) => {
     var originator = e.keyCode || e.which;
 
     if (originator === 39) {
-      this.onNext();
+      onNext();
     } else if (originator === 37) {
-      this.onPrev();
+      onPrev();
     }
   };
 
-  onMouseOvered = (e) => {
-    this.currentRef.current.focus();
+  const onMouseOvered = (e) => {
+    currentRef.current.focus();
   };
 
-  render() {
-    const { images } = this.props;
-    const { currentImage, numberOfDisplay } = this.state;
+  const { currentImage, numberOfDisplay } = slideState;
 
-    return (
-      <PostThumbnail>
-        <MainThumbnail
-          onMouseOver={this.onMouseOvered}
-          ref={this.currentRef}
-          tabIndex="1"
-        >
-          <NavigateLeft onClick={this.onPrev}>
-            <PrevButton>
-              <FontAwesomeIcon icon="angle-left" />
-            </PrevButton>
-          </NavigateLeft>
-          {currentImage ? (
-            <Thumbnail
-              src={currentImage.thumbnailUrl}
-              onClick={this.onNext}
-              alt=""
-            />
-          ) : null}
-          <NavigateRight onClick={this.onNext}>
-            <NextButton>
-              <FontAwesomeIcon icon="angle-right" />
-            </NextButton>
-          </NavigateRight>
-        </MainThumbnail>
-        <div>
-          <HorizontalListScroll
-            numberOfDisplay={numberOfDisplay}
-            list={this.renderRelationImages(images)}
-          />
-        </div>
-      </PostThumbnail>
-    );
-  }
+  return (
+    <PostThumbnail>
+      <MainThumbnail onMouseOver={onMouseOvered} ref={currentRef} tabIndex="1">
+        <NavigateLeft onClick={onPrev}>
+          <PrevButton>
+            <FontAwesomeIcon icon="angle-left" />
+          </PrevButton>
+        </NavigateLeft>
+        {currentImage ? (
+          <Thumbnail src={currentImage.thumbnailUrl} onClick={onNext} alt="" />
+        ) : null}
+        <NavigateRight onClick={onNext}>
+          <NextButton>
+            <FontAwesomeIcon icon="angle-right" />
+          </NextButton>
+        </NavigateRight>
+      </MainThumbnail>
+      <div>
+        <HorizontalListScroll
+          numberOfDisplay={numberOfDisplay}
+          list={renderRelationImages(images)}
+        />
+      </div>
+    </PostThumbnail>
+  );
 }

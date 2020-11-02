@@ -8,6 +8,7 @@ using Camino.Service.Business.Farms.Contracts;
 using Camino.Service.Projections.Farm;
 using Camino.Service.Projections.Filters;
 using Camino.Service.Projections.Media;
+using HotChocolate.Resolvers;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
@@ -22,21 +23,21 @@ namespace Module.Api.Farm.GraphQL.Resolvers
         private readonly IFarmBusiness _farmBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public FarmResolver(SessionState sessionState, IFarmBusiness farmBusiness, IUserManager<ApplicationUser> userManager)
-            : base(sessionState)
+        public FarmResolver(ISessionContext sessionContext, IFarmBusiness farmBusiness, IUserManager<ApplicationUser> userManager)
+            : base(sessionContext)
         {
             _farmBusiness = farmBusiness;
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<ISelectOption>> SelectFarmsAsync(SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, SelectFilterModel criterias)
         {
             if (criterias == null)
             {
                 criterias = new SelectFilterModel();
             }
 
-            var farms = await _farmBusiness.SearchAsync(criterias.Query);
+            var farms = await _farmBusiness.SearchByUserIdAsync(currentUser.Id, criterias.Query);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -51,12 +52,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             return farmSeletions;
         }
-        public async Task<FarmModel> CreateFarmAsync(FarmModel criterias)
+
+        public async Task<FarmModel> CreateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
         {
             var farm = new FarmProjection()
             {
-                CreatedById = CurrentUser.Id,
-                UpdatedById = CurrentUser.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
                 Description = criterias.Description,
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
@@ -187,7 +189,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 CreatedByPhotoCode = farmProjection.CreatedByPhotoCode,
                 Thumbnails = farmProjection.Pictures.Select(y => new PictureRequestModel()
                 {
-                    Id = y.Id
+                    PictureId = y.Id
                 }),
             };
 
@@ -212,7 +214,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
                 Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
                 {
-                    Id = y.Id
+                    PictureId = y.Id
                 }),
             }).ToList();
 

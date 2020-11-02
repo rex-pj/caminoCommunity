@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Camino.Framework.Models;
+using System;
 
 namespace Module.Api.Article.Models
 {
@@ -8,10 +9,7 @@ namespace Module.Api.Article.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }
-        public long ThumbnailId { get; set; }
-        public string Thumbnail { get; set; }
-        public string ThumbnailFileType { get; set; }
-        public string ThumbnailFileName { get; set; }
+        public PictureRequestModel Thumbnail { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdateById { get; set; }
         public string UpdatedBy { get; set; }

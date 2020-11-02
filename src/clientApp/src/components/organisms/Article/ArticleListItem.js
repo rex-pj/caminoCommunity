@@ -1,9 +1,8 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { Thumbnail } from "../../molecules/Thumbnails";
-import NoImage from "../../atoms/NoImages/no-image";
-import Overlay from "../../atoms/Overlay";
+import ArticleListItemThumbnail from "./ArticleListItemThumbnail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -13,6 +12,8 @@ import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
+import Dropdown from "../../molecules/DropdownButton/Dropdown";
+import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -47,33 +48,69 @@ const InteractiveItem = styled.li`
   }
 `;
 
-const CollapsedThumbnail = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
-  overflow-y: hidden;
-  max-height: 300px;
-  position: relative;
-`;
-
-const ExpandedThumbnail = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
-`;
-
-const ThumbnailOverlay = styled(Overlay)`
-  height: 80px;
-  top: auto;
-  bottom: 0;
-  cursor: pointer;
-`;
-
 const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default (props) => {
-  const { article } = props;
-  const { creator } = article;
-  const [isShowFullImage, setShowFullImage] = useState(false);
+const DropdownList = styled(Dropdown)`
+  position: absolute;
+  right: 0;
+  top: calc(100% + ${(p) => p.theme.size.exTiny});
+  background: ${(p) => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  min-width: calc(${(p) => p.theme.size.large} * 3);
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  padding: ${(p) => p.theme.size.exTiny} 0;
 
+  ${ModuleMenuListItem} span {
+    display: block;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+    cursor: pointer;
+    text-align: left;
+
+    :hover {
+      background-color: ${(p) => p.theme.color.lighter};
+    }
+
+    :last-child {
+      border-bottom: 0;
+    }
+  }
+`;
+
+export default withRouter((props) => {
+  const { article } = props;
+  const [isActionDropdownShown, setActionDropdownShown] = useState(false);
+  const currentRef = useRef();
+  const onActionDropdownHide = (e) => {
+    if (currentRef.current && !currentRef.current.contains(e.target)) {
+      setActionDropdownShown(false);
+    }
+  };
+
+  const onActionDropdownShow = () => {
+    setActionDropdownShown(true);
+  };
+
+  const onEditMode = async () => {
+    props.history.push({
+      pathname: `/articles/update/${article.id}`,
+      state: {
+        from: props.location.pathname,
+      },
+    });
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", onActionDropdownHide, false);
+    return () => {
+      document.removeEventListener("click", onActionDropdownHide);
+    };
+  });
+
+  const { creator } = article;
   if (creator) {
     var datePeriod = convertDateTimeToPeriod(article.createdDate);
     creator.info = (
@@ -81,28 +118,6 @@ export default (props) => {
         <FontAwesomeIcon icon="calendar-alt" />
         {datePeriod}
       </Fragment>
-    );
-  }
-
-  function showFullImage() {
-    setShowFullImage(!isShowFullImage);
-  }
-
-  let thumbnailBox = null;
-  if (!article.thumbnailUrl) {
-    thumbnailBox = <NoImage className="no-image mt-2"></NoImage>;
-  } else if (!isShowFullImage) {
-    thumbnailBox = (
-      <CollapsedThumbnail>
-        <Thumbnail src={article.thumbnailUrl} alt="" />
-        <ThumbnailOverlay onClick={showFullImage}></ThumbnailOverlay>
-      </CollapsedThumbnail>
-    );
-  } else if (isShowFullImage) {
-    thumbnailBox = (
-      <ExpandedThumbnail>
-        <Thumbnail src={article.thumbnailUrl} alt="" />
-      </ExpandedThumbnail>
     );
   }
 
@@ -116,10 +131,20 @@ export default (props) => {
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              <PostActions>
-                <ActionButton>
+              <PostActions ref={currentRef}>
+                <ActionButton onClick={onActionDropdownShow}>
                   <FontAwesomeIcon icon="angle-down" />
                 </ActionButton>
+                {isActionDropdownShown ? (
+                  <DropdownList>
+                    <ModuleMenuListItem>
+                      <span onClick={onEditMode}>
+                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
+                        Edit
+                      </span>
+                    </ModuleMenuListItem>
+                  </DropdownList>
+                ) : null}
               </PostActions>
             </div>
           </div>
@@ -128,7 +153,7 @@ export default (props) => {
           <AnchorLink to={article.url}>{article.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
-      {thumbnailBox}
+      <ArticleListItemThumbnail imageUrl={article.thumbnailUrl} />
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
@@ -156,4 +181,4 @@ export default (props) => {
       </PanelBody>
     </Panel>
   );
-};
+});

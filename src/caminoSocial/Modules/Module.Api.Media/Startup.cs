@@ -12,7 +12,7 @@ namespace Module.Api.Media
         public override void ConfigureServices(IServiceCollection services)
         {
             var serviceProvider = services.BuildServiceProvider();
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();;
             services.ConfigureContentServices(configuration);
         }
 

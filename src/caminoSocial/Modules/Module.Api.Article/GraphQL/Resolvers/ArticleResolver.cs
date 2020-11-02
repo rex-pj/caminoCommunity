@@ -1,10 +1,11 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
+using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
 using Camino.Service.Business.Articles.Contracts;
 using Camino.Service.Projections.Article;
 using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Media;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
 using System;
@@ -19,29 +20,75 @@ namespace Module.Api.Article.GraphQL.Resolvers
         private readonly IArticleBusiness _articleBusiness;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public ArticleResolver(SessionState sessionState, IArticleBusiness articleBusiness, IUserManager<ApplicationUser> userManager)
-            : base(sessionState)
+        public ArticleResolver(IArticleBusiness articleBusiness, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext)
+            : base(sessionContext)
         {
             _articleBusiness = articleBusiness;
             _userManager = userManager;
         }
 
-        public async Task<ArticleModel> CreateArticleAsync(ArticleModel criterias)
+        public async Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
         {
             var article = new ArticleProjection()
             {
-                CreatedById = CurrentUser.Id,
-                UpdatedById = CurrentUser.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
                 Content = criterias.Content,
                 Name = criterias.Name,
-                Thumbnail = criterias.Thumbnail,
-                ThumbnailFileName = criterias.ThumbnailFileName,
-                ThumbnailFileType = criterias.ThumbnailFileType,
                 ArticleCategoryId = criterias.ArticleCategoryId
             };
 
+            if (criterias.Thumbnail != null)
+            {
+                article.Thumbnail = new PictureRequestProjection()
+                {
+                    Base64Data = criterias.Thumbnail.Base64Data,
+                    ContentType = criterias.Thumbnail.ContentType,
+                    FileName = criterias.Thumbnail.FileName
+                };
+            }
+
             var id = await _articleBusiness.CreateAsync(article);
             criterias.Id = id;
+            return criterias;
+        }
+
+        public async Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
+        {
+            var exist = await _articleBusiness.FindAsync(criterias.Id);
+            if (exist == null)
+            {
+                throw new Exception("No article found");
+            }
+
+            if (currentUser.Id != exist.CreatedById)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var article = new ArticleProjection()
+            {
+                Id = criterias.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
+                Content = criterias.Content,
+                Name = criterias.Name,
+                ArticleCategoryId = criterias.ArticleCategoryId
+            };
+
+            if (criterias.Thumbnail != null)
+            {
+                article.Thumbnail = new PictureRequestProjection()
+                {
+                    Base64Data = criterias.Thumbnail.Base64Data,
+                    ContentType = criterias.Thumbnail.ContentType,
+                    FileName = criterias.Thumbnail.FileName,
+                    Id = criterias.Thumbnail.PictureId
+                };
+            }
+
+            var updated = await _articleBusiness.UpdateAsync(article);
+            criterias.Id = updated.Id;
             return criterias;
         }
 
@@ -182,11 +229,16 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 CreatedDate = articleProjection.CreatedDate,
                 Description = articleProjection.Description,
                 Name = articleProjection.Name,
-                ThumbnailId = articleProjection.ThumbnailId,
-                ThumbnailFileType = articleProjection.ThumbnailFileType,
-                ThumbnailFileName = articleProjection.ThumbnailFileName,
                 CreatedByPhotoCode = articleProjection.CreatedByPhotoCode
             };
+
+            if (articleProjection.Thumbnail != null)
+            {
+                article.Thumbnail = new PictureRequestModel()
+                {
+                    PictureId = articleProjection.Thumbnail.Id
+                };
+            }
 
             article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
 
@@ -206,9 +258,14 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 CreatedDate = x.CreatedDate,
                 Description = x.Description,
                 Name = x.Name,
-                ThumbnailId = x.ThumbnailId,
-                ThumbnailFileType = x.ThumbnailFileType,
-                ThumbnailFileName = x.ThumbnailFileName,
+                Thumbnail = x.Thumbnail != null
+                    ? new PictureRequestModel
+                    {
+                        PictureId = x.Thumbnail.Id,
+                        ContentType = x.Thumbnail.ContentType,
+                        FileName = x.Thumbnail.FileName
+                    }
+                    : new PictureRequestModel(),
                 CreatedByPhotoCode = x.CreatedByPhotoCode
             }).ToList();
 

@@ -60,6 +60,8 @@ const DropdownList = styled(Dropdown)`
 
 export default function (props) {
   const [isShown, setShow] = useState(false);
+  const currentRef = useRef();
+  const { className, dropdown, icon } = props;
 
   useEffect(() => {
     document.addEventListener("click", onHide, false);
@@ -69,7 +71,7 @@ export default function (props) {
   });
 
   const onHide = (e) => {
-    if (!currentRef.current.contains(e.target)) {
+    if (currentRef.current && !currentRef.current.contains(e.target)) {
       setShow(false);
     }
   };
@@ -77,9 +79,6 @@ export default function (props) {
   const show = () => {
     setShow(!isShown);
   };
-
-  const currentRef = useRef();
-  const { className, dropdown, icon } = props;
 
   return (
     <DropdownGroup className={className} ref={currentRef}>

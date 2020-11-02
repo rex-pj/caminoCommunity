@@ -21,6 +21,7 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Framework.Models.Settings;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
+using HotChocolate.Resolvers;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -35,9 +36,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly ResetPasswordSettings _resetPasswordSettings;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender,
-            IUserBusiness userBusiness, SessionState sessionState, IOptions<AppSettings> appSettings,
+            IUserBusiness userBusiness, IOptions<AppSettings> appSettings, ISessionContext sessionContext, 
             IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<ResetPasswordSettings> resetPasswordSettings)
-            : base(sessionState)
+            : base(sessionContext)
         {
             _userManager = userManager;
             _loginManager = loginManager;
@@ -48,34 +49,34 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _emailSender = emailSender;
         }
 
-        public FullUserInfoModel GetLoggedUser()
+        public FullUserInfoModel GetLoggedUser(ApplicationUser currentUser)
         {
             return new FullUserInfoModel
             {
-                Address = CurrentUser.Address,
-                BirthDate = CurrentUser.BirthDate,
-                CountryCode = CurrentUser.CountryCode,
-                CountryId = CurrentUser.CountryId,
-                CountryName = CurrentUser.CountryName,
-                Email = CurrentUser.Email,
-                CreatedDate = CurrentUser.CreatedDate,
-                Description = CurrentUser.Description,
-                DisplayName = CurrentUser.DisplayName,
-                Firstname = CurrentUser.Firstname,
-                GenderId = CurrentUser.GenderId,
-                GenderLabel = CurrentUser.GenderLabel,
-                Lastname = CurrentUser.Lastname,
-                PhoneNumber = CurrentUser.PhoneNumber,
-                StatusId = CurrentUser.StatusId,
-                StatusLabel = CurrentUser.StatusLabel,
-                UpdatedDate = CurrentUser.UpdatedDate,
-                UserIdentityId = CurrentUser.UserIdentityId
+                Address = currentUser.Address,
+                BirthDate = currentUser.BirthDate,
+                CountryCode = currentUser.CountryCode,
+                CountryId = currentUser.CountryId,
+                CountryName = currentUser.CountryName,
+                Email = currentUser.Email,
+                CreatedDate = currentUser.CreatedDate,
+                Description = currentUser.Description,
+                DisplayName = currentUser.DisplayName,
+                Firstname = currentUser.Firstname,
+                GenderId = currentUser.GenderId,
+                GenderLabel = currentUser.GenderLabel,
+                Lastname = currentUser.Lastname,
+                PhoneNumber = currentUser.PhoneNumber,
+                StatusId = currentUser.StatusId,
+                StatusLabel = currentUser.StatusLabel,
+                UpdatedDate = currentUser.UpdatedDate,
+                UserIdentityId = currentUser.UserIdentityId
             };
         }
 
-        public async Task<FullUserInfoModel> GetFullUserInfoAsync(FindUserModel criterias)
+        public async Task<FullUserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias)
         {
-            var userId = CurrentUser.Id;
+            var userId = currentUser.Id;
             if (!string.IsNullOrEmpty(criterias.UserId))
             {
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
@@ -106,21 +107,21 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusId = user.StatusId,
                 StatusLabel = user.StatusLabel,
                 UpdatedDate = user.UpdatedDate,
-                UserIdentityId = CurrentUser.UserIdentityId,
-                CanEdit = userId == CurrentUser.Id
+                UserIdentityId = currentUser.UserIdentityId,
+                CanEdit = userId == currentUser.Id
             };
 
             return userInfo;
         }
 
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(UpdatePerItemModel criterias)
+        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias)
         {
             try
             {
                 ValidateUserInfoItem(criterias);
 
                 var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
-                if (userId != CurrentUser.Id)
+                if (userId != currentUser.Id)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -164,11 +165,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> SignoutAsync()
+        public async Task<CommonResult> SignoutAsync(ApplicationUser currentUser)
         {
             try
             {
-                var result = await _userManager.RemoveLoginAsync(CurrentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, CurrentUser.AuthenticationToken);
+                var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, currentUser.AuthenticationToken);
                 if (!result.Succeeded)
                 {
                     return CommonResult.Failed(new CommonError()
@@ -185,23 +186,23 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest criterias)
+        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias)
         {
             try
             {
-                CurrentUser.Lastname = criterias.Lastname;
-                CurrentUser.Firstname = criterias.Firstname;
-                CurrentUser.DisplayName = criterias.DisplayName;
+                currentUser.Lastname = criterias.Lastname;
+                currentUser.Firstname = criterias.Firstname;
+                currentUser.DisplayName = criterias.DisplayName;
 
-                var updatedUser = await _userManager.UpdateAsync(CurrentUser);
+                var updatedUser = await _userManager.UpdateAsync(currentUser);
                 if (updatedUser.Succeeded)
                 {
                     return new UserIdentifierUpdateRequest()
                     {
-                        DisplayName = CurrentUser.DisplayName,
-                        Firstname = CurrentUser.Firstname,
-                        Id = CurrentUser.Id,
-                        Lastname = CurrentUser.Lastname
+                        DisplayName = currentUser.DisplayName,
+                        Firstname = currentUser.Firstname,
+                        Id = currentUser.Id,
+                        Lastname = currentUser.Lastname
                     };
                 }
                 return new UserIdentifierUpdateRequest();
@@ -212,13 +213,13 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<UserTokenModel> UpdatePasswordAsync(UserPasswordUpdateRequest criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateRequest criterias)
         {
             try
             {
                 ComparePassword(criterias);
 
-                var result = await _userManager.ChangePasswordAsync(CurrentUser, criterias.CurrentPassword, criterias.NewPassword);
+                var result = await _userManager.ChangePasswordAsync(currentUser, criterias.CurrentPassword, criterias.NewPassword);
                 if (!result.Succeeded)
                 {
                     return new UserTokenModel(false);
@@ -226,29 +227,29 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
                 return new UserTokenModel()
                 {
-                    AuthenticationToken = CurrentUser.AuthenticationToken,
+                    AuthenticationToken = currentUser.AuthenticationToken,
                     AccessMode = AccessMode.CanEdit,
                     IsSucceed = true,
                     UserInfo = new UserInfoModel()
                     {
-                        Address = CurrentUser.Address,
-                        BirthDate = CurrentUser.BirthDate,
-                        CountryCode = CurrentUser.CountryCode,
-                        CountryId = CurrentUser.CountryId,
-                        CountryName = CurrentUser.CountryName,
-                        Email = CurrentUser.Email,
-                        CreatedDate = CurrentUser.CreatedDate,
-                        Description = CurrentUser.Description,
-                        DisplayName = CurrentUser.DisplayName,
-                        Firstname = CurrentUser.Firstname,
-                        GenderId = CurrentUser.GenderId,
-                        GenderLabel = CurrentUser.GenderLabel,
-                        Lastname = CurrentUser.Lastname,
-                        PhoneNumber = CurrentUser.PhoneNumber,
-                        StatusId = CurrentUser.StatusId,
-                        StatusLabel = CurrentUser.StatusLabel,
-                        UpdatedDate = CurrentUser.UpdatedDate,
-                        UserIdentityId = CurrentUser.UserIdentityId
+                        Address = currentUser.Address,
+                        BirthDate = currentUser.BirthDate,
+                        CountryCode = currentUser.CountryCode,
+                        CountryId = currentUser.CountryId,
+                        CountryName = currentUser.CountryName,
+                        Email = currentUser.Email,
+                        CreatedDate = currentUser.CreatedDate,
+                        Description = currentUser.Description,
+                        DisplayName = currentUser.DisplayName,
+                        Firstname = currentUser.Firstname,
+                        GenderId = currentUser.GenderId,
+                        GenderLabel = currentUser.GenderLabel,
+                        Lastname = currentUser.Lastname,
+                        PhoneNumber = currentUser.PhoneNumber,
+                        StatusId = currentUser.StatusId,
+                        StatusLabel = currentUser.StatusLabel,
+                        UpdatedDate = currentUser.UpdatedDate,
+                        UserIdentityId = currentUser.UserIdentityId
                     }
                 };
             }
@@ -297,7 +298,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> SignupAsync(SignupModel criterias)
+        public async Task<CommonResult> SignupAsync(SignupModel criterias)
         {
             var user = new ApplicationUser()
             {
@@ -354,7 +355,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }, TextFormat.Html);
         }
 
-        public async Task<ICommonResult> ActiveAsync(ActiveUserModel criterias)
+        public async Task<CommonResult> ActiveAsync(ActiveUserModel criterias)
         {
             var user = await _userManager.FindByNameAsync(criterias.Email);
             if (!await _userManager.IsEmailConfirmedAsync(user))
@@ -380,7 +381,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             });
         }
 
-        public async Task<ICommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
+        public async Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
         {
             try
             {
@@ -437,7 +438,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }, TextFormat.Html);
         }
 
-        public async Task<ICommonResult> ResetPasswordAsync(ResetPasswordModel criterias)
+        public async Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias)
         {
             try
             {

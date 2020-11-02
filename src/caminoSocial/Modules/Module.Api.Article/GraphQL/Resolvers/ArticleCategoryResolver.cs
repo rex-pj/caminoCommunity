@@ -16,7 +16,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        public IEnumerable<ISelectOption> GetArticleCategories(SelectFilterModel criterias)
+        public IEnumerable<SelectOption> GetArticleCategories(SelectFilterModel criterias)
         {
             if (criterias == null)
             {

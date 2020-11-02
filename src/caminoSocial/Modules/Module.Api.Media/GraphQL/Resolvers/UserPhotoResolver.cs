@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
+using Camino.IdentityManager.Contracts;
+using HotChocolate.Resolvers;
+using Camino.IdentityManager.Models;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {
@@ -15,13 +18,13 @@ namespace Module.Api.Media.GraphQL.Resolvers
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
 
-        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, SessionState sessionState)
-            : base(sessionState)
+        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, ISessionContext sessionContext)
+            : base(sessionContext)
         {
             _userPhotoBusiness = userPhotoBusiness;
         }
 
-        public async Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateAvatarAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias)
         {
             try
             {
@@ -31,7 +34,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 criterias.UserPhotoType = UserPhotoKind.Avatar;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
@@ -41,7 +44,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateCoverAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias)
         {
             try
             {
@@ -51,7 +54,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 criterias.UserPhotoType = UserPhotoKind.Cover;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, CurrentUser.Id);
+                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
@@ -61,7 +64,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> DeleteAvatarAsync(PhotoDeleteModel criterias)
+        public async Task<CommonResult> DeleteAvatarAsync(ApplicationUser currentUser, PhotoDeleteModel criterias)
         {
             try
             {
@@ -70,7 +73,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoKind.Avatar);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception ex)
@@ -79,7 +82,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
             }
         }
 
-        public async Task<ICommonResult> DeleteCoverAsync(PhotoDeleteModel criterias)
+        public async Task<CommonResult> DeleteCoverAsync(ApplicationUser currentUser, PhotoDeleteModel criterias)
         {
             try
             {
@@ -88,7 +91,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(CurrentUser.Id, UserPhotoKind.Cover);
+                await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Cover);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception ex)

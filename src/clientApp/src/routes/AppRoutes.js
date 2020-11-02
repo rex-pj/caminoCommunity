@@ -21,6 +21,12 @@ export default [
     layout: DetailLayout,
   },
   {
+    path: "/articles/update/:id",
+    exact: true,
+    page: "articles/update",
+    layout: DetailLayout,
+  },
+  {
     path: ["/products", "/products/page/:pageNumber"],
     exact: true,
     page: "products",
@@ -125,7 +131,7 @@ export default [
   {
     path: "*",
     exact: true,
-    page: "not-found",
+    page: "error/not-found",
     layout: PromptLayout,
   },
 ];

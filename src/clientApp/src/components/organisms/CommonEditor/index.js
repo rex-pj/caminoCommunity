@@ -23,6 +23,7 @@ import {
   ContentState,
 } from "draft-js";
 import { styleMap, STYLES, findLinkEntities, findImageEntities } from "./Utils";
+import { stateFromHTML } from "draft-js-import-html";
 
 const Root = styled.div`
   position: relative;
@@ -92,10 +93,13 @@ export default forwardRef((props, ref) => {
     convertImageCallback,
     onImageValidate,
     onChanged,
+    contentHtml,
   } = props;
-  const [editorState, setEditorState] = React.useState(
-    EditorState.createEmpty(decorator)
-  );
+
+  const initContentState = contentHtml
+    ? EditorState.createWithContent(stateFromHTML(contentHtml))
+    : EditorState.createEmpty(decorator);
+  const [editorState, setEditorState] = useState(initContentState);
 
   const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);

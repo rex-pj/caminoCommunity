@@ -4,6 +4,7 @@ using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Media.GraphQL.Mutations;
 
 namespace Module.Api.Media.Infrastructure.Extensions
 {
@@ -13,6 +14,10 @@ namespace Module.Api.Media.Infrastructure.Extensions
         {
             services.AddTransient<IImageResolver, ImageResolver>();
             services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+
+            services.AddGraphQLServer()
+                .AddType<ImageMutations>()
+                .AddType<UserPhotoMutations>();
             return services;
         }
 

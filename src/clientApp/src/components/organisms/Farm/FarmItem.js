@@ -107,10 +107,8 @@ export default (props) => {
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={farm.thumbnailUrl}>
-          <ImageThumb src={farm.thumbnailUrl} alt="" />
-          <Overlay />
-        </AnchorLink>
+        <ImageThumb src={farm.thumbnailUrl} alt="" />
+        <Overlay />
         <FollowButton icon="user-plus" size="sm">
           Follow
         </FollowButton>

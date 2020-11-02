@@ -2,6 +2,8 @@
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Product.GraphQL.Mutations;
+using Module.Api.Product.GraphQL.Queries;
 
 namespace Module.Api.Product.Infrastructure.Extensions
 {
@@ -11,6 +13,12 @@ namespace Module.Api.Product.Infrastructure.Extensions
         {
             services.AddTransient<IProductCategoryResolver, ProductCategoryResolver>();
             services.AddTransient<IProductResolver, ProductResolver>();
+
+            services.AddGraphQLServer()
+                .AddType<ProductQueries>()
+                .AddType<ProductMutations>()
+                .AddType<ProductCategoryMutations>();
+
             return services;
         }
 

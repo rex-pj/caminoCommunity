@@ -3,6 +3,7 @@ using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Service.Business.Identities.Contracts;
+using Camino.Core.Models;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -14,18 +15,18 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _countryBusiness = countryBusiness;
         }
 
-        public IEnumerable<CountryModel> GetAll()
+        public IEnumerable<SelectOption> GetSelections()
         {
-            var countries = _countryBusiness.GetAll();
+            var countries = _countryBusiness.Get();
             if (countries == null || !countries.Any())
             {
-                return new List<CountryModel>();
+                return new List<SelectOption>();
             }
 
-            return countries.Select(x => new CountryModel()
+            return countries.Select(x => new SelectOption()
             {
-                Id = x.Id,
-                Name = x.Name
+                Id = x.Id.ToString(),
+                Text = x.Name
             }).ToList();
         }
     }

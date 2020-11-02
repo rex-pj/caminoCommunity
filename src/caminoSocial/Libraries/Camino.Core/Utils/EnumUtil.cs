@@ -42,7 +42,7 @@ namespace Camino.Core.Utils
             return default;
         }
 
-        public static IEnumerable<ISelectOption> EnumToSelectList<TEnum>(string selectedId = "")
+        public static IEnumerable<SelectOption> EnumToSelectList<TEnum>(string selectedId = "")
         {
             var enumsData = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
             var result = enumsData.Select(e => new SelectOption()

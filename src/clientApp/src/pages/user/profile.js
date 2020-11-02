@@ -40,7 +40,12 @@ const CoverPageBlock = styled.div`
 
 const ProfileNameLink = styled.a`
   font-weight: 600;
+  color: inherit;
   font-size: ${(p) => p.theme.fontSize.large};
+
+  :hover {
+    color: inherit;
+  }
 `;
 
 const CoverNav = styled.div`

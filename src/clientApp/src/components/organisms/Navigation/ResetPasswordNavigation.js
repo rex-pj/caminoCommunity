@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
@@ -53,24 +53,20 @@ const ListItem = styled.li`
   }
 `;
 
-export default withRouter(
-  class extends Component {
-    render() {
-      const { className } = this.props;
-      return (
-        <Root>
-          <HorizontalList className={className}>
-            <ListItem>
-              <NavButton to="/">
-                <FontAwesomeIcon icon="home" />
-              </NavButton>
-            </ListItem>
-            <ListItem className="actived">
-              <span>Quên mật khẩu</span>
-            </ListItem>
-          </HorizontalList>
-        </Root>
-      );
-    }
-  }
-);
+export default withRouter(function (props) {
+  const { className } = props;
+  return (
+    <Root>
+      <HorizontalList className={className}>
+        <ListItem>
+          <NavButton to="/">
+            <FontAwesomeIcon icon="home" />
+          </NavButton>
+        </ListItem>
+        <ListItem className="actived">
+          <span>Quên mật khẩu</span>
+        </ListItem>
+      </HorizontalList>
+    </Root>
+  );
+});

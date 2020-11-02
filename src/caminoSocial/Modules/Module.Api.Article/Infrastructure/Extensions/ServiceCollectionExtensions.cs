@@ -5,6 +5,8 @@ using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Article.GraphQL.Mutations;
+using Module.Api.Article.GraphQL.Queries;
 
 namespace Module.Api.Article.Infrastructure.Extensions
 {
@@ -14,6 +16,10 @@ namespace Module.Api.Article.Infrastructure.Extensions
         {
             services.AddTransient<IArticleCategoryResolver, ArticleCategoryResolver>();
             services.AddTransient<IArticleResolver, ArticleResolver>();
+
+            services.AddGraphQLServer().AddType<ArticleMutations>()
+                .AddType<ArticleCategoryMutations>()
+                .AddType<ArticleQueries>();
             return services;
         }
 
@@ -21,6 +27,7 @@ namespace Module.Api.Article.Infrastructure.Extensions
         {
             services
                 .AddAutoMapper(typeof(FrameworkMappingProfile), typeof(IdentityMappingProfile));
+
             services.ConfigureGraphQlServices();
             return services;
         }

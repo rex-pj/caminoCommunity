@@ -2,22 +2,23 @@
 using Camino.Framework.Models;
 using System.Threading.Tasks;
 using Camino.Service.Projections.Request;
+using Camino.IdentityManager.Models;
 
 namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        FullUserInfoModel GetLoggedUser();
-        Task<FullUserInfoModel> GetFullUserInfoAsync(FindUserModel criterias);
-        Task<UpdatePerItemModel> UpdateUserInfoItemAsync(UpdatePerItemModel criterias);
-        Task<ICommonResult> SignoutAsync();
-        Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest criterias);
-        Task<UserTokenModel> UpdatePasswordAsync(UserPasswordUpdateRequest criterias);
+        FullUserInfoModel GetLoggedUser(ApplicationUser currentUser);
+        Task<FullUserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias);
+        Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias);
+        Task<CommonResult> SignoutAsync(ApplicationUser currentUser);
+        Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias);
+        Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateRequest criterias);
 
         Task<UserTokenModel> SigninAsync(SigninModel criterias);
-        Task<ICommonResult> SignupAsync(SignupModel criterias);
-        Task<ICommonResult> ActiveAsync(ActiveUserModel criterias);
-        Task<ICommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);
-        Task<ICommonResult> ResetPasswordAsync(ResetPasswordModel criterias);
+        Task<CommonResult> SignupAsync(SignupModel criterias);
+        Task<CommonResult> ActiveAsync(ActiveUserModel criterias);
+        Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);
+        Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias);
     }
 }

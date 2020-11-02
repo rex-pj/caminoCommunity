@@ -1,13 +1,11 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
 using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Projections.Filters;
 using Camino.Service.Projections.Media;
 using Camino.Service.Projections.Product;
-using HotChocolate;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Module.Api.Product.Models;
 using System;
@@ -20,19 +18,21 @@ namespace Module.Api.Product.GraphQL.Resolvers
     public class ProductResolver : BaseResolver, IProductResolver
     {
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly IProductBusiness _productBusiness;
 
-        public ProductResolver(SessionState sessionState, IUserManager<ApplicationUser> userManager)
-            : base(sessionState)
+        public ProductResolver(IUserManager<ApplicationUser> userManager, ISessionContext sessionContext, IProductBusiness productBusiness)
+            : base(sessionContext)
         {
             _userManager = userManager;
+            _productBusiness = productBusiness;
         }
 
-        public async Task<ProductModel> CreateProductAsync(ProductModel criterias, [Service] IProductBusiness productBusiness)
+        public async Task<ProductModel> CreateProductAsync(ApplicationUser currentUser, ProductModel criterias)
         {
             var product = new ProductProjection()
             {
-                CreatedById = CurrentUser.Id,
-                UpdatedById = CurrentUser.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
                 Name = criterias.Name,
                 Description = criterias.Description,
                 Price = criterias.Price,
@@ -52,12 +52,12 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 })
             };
 
-            var id = await productBusiness.CreateAsync(product);
+            var id = await _productBusiness.CreateAsync(product);
             criterias.Id = id;
             return criterias;
         }
 
-        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
+        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -83,7 +83,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await productBusiness.GetAsync(filterRequest);
+                var productPageList = await _productBusiness.GetAsync(filterRequest);
                 var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -101,7 +101,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
-        public async Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
+        public async Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -118,7 +118,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await productBusiness.GetAsync(filterRequest);
+                var productPageList = await _productBusiness.GetAsync(filterRequest);
                 var products = await MapProductsProjectionToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -136,7 +136,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
-        public async Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
+        public async Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -152,7 +152,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var relevantProducts = await productBusiness.GetRelevantsAsync(criterias.Id, filterRequest);
+                var relevantProducts = await _productBusiness.GetRelevantsAsync(criterias.Id, filterRequest);
                 var products = await MapProductsProjectionToModelAsync(relevantProducts);
 
                 return products;
@@ -177,7 +177,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
                 Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
                 {
-                    Id = y.Id
+                    PictureId = y.Id
                 }),
                 ProductFarms = x.ProductFarms.Select(x => new ProductFarmModel()
                 {
@@ -195,7 +195,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias, [Service] IProductBusiness productBusiness)
+        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -204,7 +204,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productProjection = await productBusiness.FindDetailAsync(criterias.Id);
+                var productProjection = await _productBusiness.FindDetailAsync(criterias.Id);
                 var product = await MapProductProjectionToModelAsync(productProjection);
                 return product;
             }
@@ -227,7 +227,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Price = productProjection.Price,
                 Thumbnails = productProjection.Thumbnails.Select(y => new PictureRequestModel()
                 {
-                    Id = y.Id
+                    PictureId = y.Id
                 }),
                 CreatedByPhotoCode = productProjection.CreatedByPhotoCode,
                 ProductFarms = productProjection.ProductFarms.Select(x => new ProductFarmModel()

@@ -21,7 +21,7 @@ namespace Camino.Service.Business.Identities
             _countryRepository = countryRepository;
         }
 
-        public List<CountryProjection> GetAll()
+        public List<CountryProjection> Get()
         {
             return _countryRepository.Get()
                 .Select(x => new CountryProjection()

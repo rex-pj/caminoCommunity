@@ -6,7 +6,8 @@ namespace Module.Api.Farm.Models
     {
         public FarmFilterModel() : base()
         {
-
+            Page = 1;
+            PageSize = 10;
         }
 
         public long Id { get; set; }

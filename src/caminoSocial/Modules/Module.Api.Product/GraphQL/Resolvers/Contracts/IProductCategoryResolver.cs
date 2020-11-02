@@ -7,6 +7,6 @@ namespace Module.Api.Product.GraphQL.Resolvers.Contracts
 {
     public interface IProductCategoryResolver
     {
-        Task<IEnumerable<ISelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias);
+        Task<IEnumerable<SelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias);
     }
 }

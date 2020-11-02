@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Textbox } from "../../atoms/Textboxes";
 import { ButtonPrimaryDark } from "../../atoms/Buttons/Buttons";
@@ -58,42 +58,29 @@ const SearchButton = styled(ButtonPrimaryDark)`
   }
 `;
 
-export default class SearchBar extends Component {
-  constructor() {
-    super();
+export default function (props) {
+  const [isOnFocus, setOnFocus] = useState(false);
 
-    this.state = {
-      isOnFocus: false,
-    };
-  }
-
-  onFocus = () => {
-    this.setState({
-      isOnFocus: true,
-    });
+  const onFocus = () => {
+    setOnFocus(true);
   };
 
-  onBlur = () => {
-    this.setState({
-      isOnFocus: false,
-    });
+  const onBlur = () => {
+    setOnFocus(false);
   };
 
-  render() {
-    const { isOnFocus } = this.state;
-    return (
-      <SearchForm isOnFocus={isOnFocus}>
-        <SearchButton type="submit">
-          <FontAwesomeIcon icon={faSearch} />
-        </SearchButton>
-        <SearchInput
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
-      </SearchForm>
-    );
-  }
+  return (
+    <SearchForm isOnFocus={isOnFocus}>
+      <SearchButton type="submit">
+        <FontAwesomeIcon icon={faSearch} />
+      </SearchButton>
+      <SearchInput
+        onFocus={onFocus}
+        onBlur={onBlur}
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+    </SearchForm>
+  );
 }

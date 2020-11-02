@@ -20,16 +20,21 @@ export default {
     },
     isValid: false,
   },
+  articleCategoryName: {
+    value: "",
+    isValid: true,
+  },
   thumbnail: {
-    value: "",
+    value: {
+      pictureId: 0,
+      fileName: "",
+      contentType: "",
+      base64Data: "",
+    },
     isValid: true,
   },
-  thumbnailFileType: {
-    value: "",
-    isValid: true,
-  },
-  thumbnailFileName: {
-    value: "",
+  id: {
+    value: 0,
     isValid: true,
   },
 };

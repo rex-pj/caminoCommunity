@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
@@ -16,45 +16,27 @@ import {
   FILTER_FARMS,
 } from "../../utils/GraphQLQueries/mutations";
 import { GET_USER_FEEDS } from "../../utils/GraphQLQueries/queries";
-import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
-import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
-import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
+import ProfileEditorTabs from "../../components/organisms/ProfileEditors/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
-import EditorTabs from "../../components/organisms/User/EditorTabs";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter((props) => {
-  const [editorMode, setEditorMode] = useState("ARTICLE");
-  const { location, pageNumber, match } = props;
+  const { location, pageNumber, pageSize, match } = props;
   const { params } = match;
   const { userId } = params;
   const { user } = useContext(SessionContext);
-
-  const {
-    loading,
-    data,
-    error,
-    refetch: feedsRefetch,
-    networkStatus,
-  } = useQuery(GET_USER_FEEDS, {
-    variables: {
-      criterias: {
-        userIdentityId: userId,
-        page: pageNumber,
-      },
-    },
-  });
-
   const dispatch = useStore(false)[1];
+
+  // Mutations
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
   const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
   const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
   const [farmTypes] = useMutation(FILTER_FARM_TYPES);
-  const [farms] = useMutation(FILTER_FARMS);
+  const [userFarms] = useMutation(FILTER_FARMS);
   const [createArticle] = useMutation(CREATE_ARTICLE, {
     client: graphqlClient,
   });
@@ -65,6 +47,39 @@ export default withRouter((props) => {
     client: graphqlClient,
   });
 
+  // Queries
+  const {
+    loading,
+    data,
+    error,
+    refetch: feedsRefetch,
+    networkStatus,
+  } = useQuery(GET_USER_FEEDS, {
+    variables: {
+      criterias: {
+        userIdentityId: userId,
+        page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
+      },
+    },
+  });
+
+  // Selections mapping
+  const mapSelectListItems = (response) => {
+    var { data } = response;
+    var { categories } = data;
+    if (!categories) {
+      return [];
+    }
+    return categories.map((cat) => {
+      return {
+        value: cat.id,
+        label: cat.text,
+      };
+    });
+  };
+
+  // Search selections
   const searchArticleCategories = async (inputValue) => {
     return await articleCategories({
       variables: {
@@ -72,20 +87,9 @@ export default withRouter((props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
+        return mapSelectListItems(response);
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -97,37 +101,26 @@ export default withRouter((props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
+        return mapSelectListItems(response);
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
 
   const searchFarms = async (inputValue) => {
-    return await farms({
+    return await userFarms({
       variables: {
         criterias: { query: inputValue },
       },
     })
       .then((response) => {
         var { data } = response;
-        var { farms } = data;
-        if (!farms) {
+        var { userFarms } = data;
+        if (!userFarms) {
           return [];
         }
-        return farms.map((cat) => {
+        return userFarms.map((cat) => {
           return {
             value: cat.id,
             label: cat.text,
@@ -135,7 +128,6 @@ export default withRouter((props) => {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -147,20 +139,9 @@ export default withRouter((props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
+        return mapSelectListItems(response);
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -177,21 +158,27 @@ export default withRouter((props) => {
     };
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
+  const onImageValidate = async (value) =>
+    await validateImageUrl({
       variables: {
         criterias: {
           url: value,
         },
       },
     });
-  };
 
   const onArticlePost = async (data) => {
     return await createArticle({
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createArticle: article } = data;
+        refetchNewsFeed();
+        resolve({ article });
+      });
     });
   };
 
@@ -219,78 +206,33 @@ export default withRouter((props) => {
     });
   };
 
-  const onToggleCreateMode = (name) => {
-    setEditorMode(name);
-  };
-
-  let editor = null;
-  if (editorMode === "ARTICLE") {
-    editor = (
-      <ArticleEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchArticleCategories}
-        onArticlePost={onArticlePost}
-        refetchNews={refetchNewsFeed}
-        showValidationError={showValidationError}
-      />
-    );
-  } else if (editorMode === "PRODUCT") {
-    editor = (
-      <ProductEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchProductCategories}
-        onProductPost={onProductPost}
-        showValidationError={showValidationError}
-        refetchNews={refetchNewsFeed}
-        filterFarms={searchFarms}
-      />
-    );
-  } else {
-    editor = (
-      <FarmEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchFarmTypes}
-        onFarmPost={onFarmPost}
-        refetchNews={refetchNewsFeed}
-        showValidationError={showValidationError}
-      />
-    );
-  }
+  const renderProfileEditorTabs = () => (
+    <ProfileEditorTabs
+      convertImagefile={convertImagefile}
+      onImageValidate={onImageValidate}
+      searchArticleCategories={searchArticleCategories}
+      onArticlePost={onArticlePost}
+      refetchNewsFeed={refetchNewsFeed}
+      showValidationError={showValidationError}
+      searchProductCategories={searchProductCategories}
+      onProductPost={onProductPost}
+      searchFarms={searchFarms}
+      searchFarmTypes={searchFarmTypes}
+      onFarmPost={onFarmPost}
+    ></ProfileEditorTabs>
+  );
 
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        {user && user.isLogin ? (
-          <Fragment>
-            <EditorTabs
-              onToggleCreateMode={onToggleCreateMode}
-              editorMode={editorMode}
-            ></EditorTabs>
-            {editor}
-          </Fragment>
-        ) : null}
-
+        {user && user.isLogin ? renderProfileEditorTabs() : null}
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        {user && user.isLogin ? (
-          <Fragment>
-            <EditorTabs
-              onToggleCreateMode={onToggleCreateMode}
-              editorMode={editorMode}
-            ></EditorTabs>
-            {editor}
-          </Fragment>
-        ) : null}
+        {user && user.isLogin ? renderProfileEditorTabs() : null}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -298,6 +240,9 @@ export default withRouter((props) => {
 
   const { userFeeds } = data;
   const { totalPage, filter, collections } = userFeeds;
+  const { page } = filter;
+  const baseUrl = props.userUrl + "/feeds";
+  const pageQuery = location.search;
 
   const feeds = collections.map((item) => {
     let feed = { ...item };
@@ -326,21 +271,9 @@ export default withRouter((props) => {
     return feed;
   });
 
-  const pageQuery = location.search;
-  const { page } = filter;
-  const baseUrl = props.userUrl + "/feeds";
   return (
     <Fragment>
-      {user && user.isLogin ? (
-        <Fragment>
-          <EditorTabs
-            onToggleCreateMode={onToggleCreateMode}
-            editorMode={editorMode}
-          ></EditorTabs>
-
-          {editor}
-        </Fragment>
-      ) : null}
+      {user && user.isLogin ? renderProfileEditorTabs() : null}
 
       {feeds
         ? feeds.map((item) => {

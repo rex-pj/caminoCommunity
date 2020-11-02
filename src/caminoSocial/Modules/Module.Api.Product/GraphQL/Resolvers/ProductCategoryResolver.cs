@@ -17,7 +17,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             _productCategoryBusiness = productCategoryBusiness;
         }
 
-        public async Task<IEnumerable<ISelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias)
         {
             if (criterias == null)
             {

@@ -8,7 +8,7 @@ namespace  Module.Api.Auth.GraphQL.Resolvers
 {
     public class GenderResolver : IGenderResolver
     {
-        public IEnumerable<ISelectOption> GetSelections()
+        public IEnumerable<SelectOption> GetSelections()
         {
             return EnumUtil.EnumToSelectList<GenderType>();
         }

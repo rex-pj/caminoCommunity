@@ -165,7 +165,7 @@ export const FILTER_FARM_TYPES = gql`
 
 export const FILTER_FARMS = gql`
   mutation($criterias: SelectFilterModelInput) {
-    farms: selectFarms(criterias: $criterias) {
+    userFarms: selectUserFarms(criterias: $criterias) {
       id
       isSelected
       text
@@ -176,6 +176,14 @@ export const FILTER_FARMS = gql`
 export const CREATE_ARTICLE = gql`
   mutation($criterias: ArticleModelInput!) {
     createArticle(criterias: $criterias) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_ARTICLE = gql`
+  mutation($criterias: ArticleModelInput!) {
+    updateArticle(criterias: $criterias) {
       id
     }
   }

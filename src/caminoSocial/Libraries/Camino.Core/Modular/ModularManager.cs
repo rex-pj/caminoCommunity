@@ -47,7 +47,7 @@ namespace Camino.Core.Modular
                         }
                     }
 
-                    if (assembly.FullName.Contains(moduleFolder.Name))
+                    if (assembly.FullName.Contains(moduleFolder.Name) && !modules.Any(x => x.Path == moduleFolder.FullName))
                     {
                         modules.Add(new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName });
                     }

@@ -147,7 +147,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _articleBusiness.Find(model.Id);
+            var exist = await _articleBusiness.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();

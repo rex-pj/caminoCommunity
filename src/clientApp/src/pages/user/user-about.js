@@ -27,7 +27,7 @@ export default withRouter((props) => {
     return <ErrorBlock>Error</ErrorBlock>;
   }
 
-  const { fullUserInfo } = data;
+  const { fullUserInfo, countrySelections, genderSelections } = data;
   const { canEdit } = fullUserInfo;
 
   const onEdited = async (e) => {
@@ -54,6 +54,8 @@ export default withRouter((props) => {
     <About
       onEdited={(e) => onEdited(e)}
       userInfo={fullUserInfo}
+      genderSelections={genderSelections}
+      countrySelections={countrySelections}
       canEdit={canEdit}
     />
   );

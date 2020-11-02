@@ -9,5 +9,5 @@ export default (props) => {
     return <NoImage className={`no-image ${className}`}></NoImage>;
   }
 
-  return <Image {...props}></Image>;
+  return <Image className="thumbnail-img" {...props}></Image>;
 };

@@ -26,8 +26,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             services
                 .AddSingleton<IFileProvider, FileProvider>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
-                .AddScoped<IEmailProvider, EmailProvider>()
-                .AddScoped<SessionState>();
+                .AddScoped<IEmailProvider, EmailProvider>();
         }
     }
 }

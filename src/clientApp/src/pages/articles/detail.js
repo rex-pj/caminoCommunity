@@ -39,6 +39,8 @@ export default withRouter(function (props) {
     variables: {
       criterias: {
         id: parseFloat(id),
+        page: 1,
+        pageSize: 8,
       },
     },
   });
@@ -63,8 +65,8 @@ export default withRouter(function (props) {
     },
   ];
 
-  if (article.thumbnailId) {
-    article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnailId}`;
+  if (article.thumbnail.pictureId) {
+    article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnail.pictureId}`;
   }
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
@@ -77,8 +79,8 @@ export default withRouter(function (props) {
     const relevants = relevantArticles.map((item) => {
       let articleItem = { ...item };
       articleItem.url = `${UrlConstant.Article.url}${articleItem.id}`;
-      if (articleItem.thumbnailId) {
-        articleItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${articleItem.thumbnailId}`;
+      if (articleItem.thumbnail.pictureId) {
+        articleItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${articleItem.thumbnail.pictureId}`;
       }
 
       articleItem.creator = {

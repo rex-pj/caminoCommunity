@@ -8,7 +8,7 @@ namespace Camino.Service.Business.Identities.Contracts
 {
     public interface ICountryBusiness
     {
-        List<CountryProjection> GetAll();
+        List<CountryProjection> Get();
         Task<BasePageList<CountryProjection>> GetAsync(CountryFilter filter);
         IList<CountryProjection> Search(string query = "", int page = 1, int pageSize = 10);
         CountryProjection Find(int id);

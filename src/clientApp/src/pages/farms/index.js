@@ -10,11 +10,12 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
-  const { pageNumber } = params;
+  const { pageNumber, pageSize } = params;
   const { loading, data, error } = useQuery(GET_FARMS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });
@@ -32,8 +33,8 @@ export default withRouter(function (props) {
     farm.url = `${UrlConstant.Farm.url}${farm.id}`;
     if (farm.thumbnails) {
       const thumbnail = farm.thumbnails[0];
-      if (thumbnail.id > 0) {
-        farm.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.id}`;
+      if (thumbnail.pictureId > 0) {
+        farm.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
       }
     }
 

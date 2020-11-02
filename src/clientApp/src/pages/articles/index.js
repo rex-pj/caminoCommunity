@@ -10,11 +10,12 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
-  const { pageNumber } = params;
+  const { pageNumber, pageSize } = params;
   const { loading, data, error } = useQuery(GET_ARTICLES, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });
@@ -30,8 +31,8 @@ export default withRouter(function (props) {
   const articles = collections.map((item) => {
     let article = { ...item };
     article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.thumbnailId) {
-      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnailId}`;
+    if (article.thumbnail.pictureId) {
+      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnail.pictureId}`;
     }
 
     article.creator = {

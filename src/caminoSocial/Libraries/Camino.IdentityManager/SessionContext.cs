@@ -61,7 +61,7 @@ namespace Camino.IdentityManager
             user.UserIdentityId = AuthorizationHeaders.UserIdentityId;
         }
 
-        public SessionContextHeaders GetAuthorizationHeaders()
+        private SessionContextHeaders GetAuthorizationHeaders()
         {
             if (RequestHeaders == null)
             {

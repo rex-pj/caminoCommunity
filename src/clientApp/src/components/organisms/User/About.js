@@ -30,17 +30,8 @@ export default (props) => {
     return await props.onEdited(e);
   };
 
-  const { userInfo, canEdit } = props;
-  const { countrySelections } = userInfo;
-  let countries = [];
-  if (countrySelections) {
-    countries = countrySelections.map((country) => {
-      return {
-        id: country.id,
-        text: country.name,
-      };
-    });
-  }
+  const { userInfo, canEdit, countrySelections, genderSelections } = props;
+
   return (
     <MainPanel>
       <Root>
@@ -85,7 +76,7 @@ export default (props) => {
                 emptyText="Your sex"
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
-                selections={userInfo.genderSelections}
+                selections={genderSelections}
               />
             </LabelAndInfo>
             <LabelAndInfo label="Address">
@@ -106,7 +97,7 @@ export default (props) => {
                 emptyText="Select your country"
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
-                selections={countries}
+                selections={countrySelections}
               />
               {userInfo.country}
             </LabelAndInfo>

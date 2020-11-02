@@ -39,6 +39,8 @@ export default withRouter(function (props) {
     variables: {
       criterias: {
         id: parseFloat(id),
+        page: 1,
+        pageSize: 8,
       },
     },
   });
@@ -67,9 +69,9 @@ export default withRouter(function (props) {
     product.images = product.thumbnails.map((item) => {
       let image = { ...item };
 
-      if (image.id > 0) {
-        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
-        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.id}`;
+      if (image.pictureId > 0) {
+        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
+        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
       }
       return image;
     });
@@ -95,8 +97,8 @@ export default withRouter(function (props) {
       productItem.url = `${UrlConstant.Product.url}${productItem.id}`;
       if (productItem.thumbnails) {
         const thumbnail = productItem.thumbnails[0];
-        if (thumbnail && thumbnail.id > 0) {
-          productItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.id}`;
+        if (thumbnail && thumbnail.pictureId > 0) {
+          productItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
         }
       }
 

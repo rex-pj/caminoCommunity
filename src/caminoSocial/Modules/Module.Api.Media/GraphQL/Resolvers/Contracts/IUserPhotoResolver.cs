@@ -2,14 +2,15 @@
 using Camino.Framework.Models;
 using System.Threading.Tasks;
 using Camino.Service.Projections.Request;
+using Camino.IdentityManager.Models;
 
 namespace Module.Api.Media.GraphQL.Resolvers.Contracts
 {
     public interface IUserPhotoResolver
     {
-        Task<ICommonResult> UpdateAvatarAsync(UserPhotoUpdateRequest criterias);
-        Task<ICommonResult> UpdateCoverAsync(UserPhotoUpdateRequest criterias);
-        Task<ICommonResult> DeleteAvatarAsync(PhotoDeleteModel criterias);
-        Task<ICommonResult> DeleteCoverAsync(PhotoDeleteModel criterias);
+        Task<CommonResult> UpdateAvatarAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias);
+        Task<CommonResult> UpdateCoverAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias);
+        Task<CommonResult> DeleteAvatarAsync(ApplicationUser currentUser, PhotoDeleteModel criterias);
+        Task<CommonResult> DeleteCoverAsync(ApplicationUser currentUser, PhotoDeleteModel criterias);
     }
 }

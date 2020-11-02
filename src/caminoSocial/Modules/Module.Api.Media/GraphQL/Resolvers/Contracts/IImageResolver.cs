@@ -5,6 +5,6 @@ namespace Module.Api.Media.GraphQL.Resolvers.Contracts
 {
     public interface IImageResolver
     {
-        ICommonResult ValidateImageUrl(ImageValidationModel criterias);
+        CommonResult ValidateImageUrl(ImageValidationModel criterias);
     }
 }

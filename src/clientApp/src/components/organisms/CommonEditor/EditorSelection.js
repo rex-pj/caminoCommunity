@@ -7,17 +7,17 @@ const Root = styled.div`
   display: inline-block;
   min-width: 125px;
   z-index: 2;
-  background-color: ${p => (p.isShown ? p.theme.color.light : "transparent")};
+  background-color: ${(p) => (p.isShown ? p.theme.color.light : "transparent")};
 `;
 
 const Dropdown = styled.div`
   cursor: pointer;
   font-size: 0.8rem;
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
+  padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
   height: auto;
   min-width: inherit;
-  border: 1px solid ${p => p.theme.color.neutral};
-  border-radius: ${p => p.theme.borderRadius.normal};
+  border: 1px solid ${(p) => p.theme.color.neutral};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   position: relative;
 
   > span {
@@ -33,35 +33,35 @@ const SelectDropdown = styled.ul`
   left: 0;
   top: calc(100% + 1px);
   min-width: 110%;
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   list-style: none;
   padding-left: 0;
   overflow: hidden;
 `;
 
 const Option = styled.li`
-  background: ${p => p.theme.color.lighter};
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
-  border-bottom: 1px solid ${p => p.theme.color.light};
-  color: ${p => p.theme.color.primaryLight};
+  background: ${(p) => p.theme.color.lighter};
+  padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+  border-bottom: 1px solid ${(p) => p.theme.color.light};
+  color: ${(p) => p.theme.color.primaryLight};
   font-weight: 600;
 
   :hover {
-    background-color: ${p => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.light};
   }
 `;
 
 const ButtonCaret = styled.span`
   position: absolute;
-  right: ${p => p.theme.size.exTiny};
+  right: ${(p) => p.theme.size.exTiny};
   top: 0;
   bottom: 0;
   margin: auto;
   margin-top: 4px;
 `;
 
-export default props => {
+export default (props) => {
   const { className, options, placeholder } = props;
   const [isShown, setShown] = useState(false);
   const currentRef = React.createRef();
@@ -70,15 +70,15 @@ export default props => {
     if (props.actived !== value) {
       const event = {
         target: {
-          value
-        }
+          value,
+        },
       };
       props.onToggle(event);
       setShown(false);
     }
   };
 
-  const toggleDropdown = e => {
+  const toggleDropdown = (e) => {
     stopPropagation(e);
     setShown(() => {
       return !isShown;
@@ -92,18 +92,18 @@ export default props => {
     };
   });
 
-  const onHide = e => {
-    if (!currentRef.current.contains(e.target)) {
+  const onHide = (e) => {
+    if (currentRef.current && !currentRef.current.contains(e.target)) {
       setShown(false);
     }
   };
 
-  const stopPropagation = e => {
+  const stopPropagation = (e) => {
     e.stopPropagation();
   };
 
   const current = options
-    ? options.find(element => {
+    ? options.find((element) => {
         return element.style === props.actived;
       })
     : {};
@@ -118,10 +118,10 @@ export default props => {
       </Dropdown>
       <SelectDropdown onClick={stopPropagation}>
         {isShown
-          ? options.map(heading => (
+          ? options.map((heading) => (
               <Option
                 key={heading.style}
-                onClick={e => onToggle(e, heading.style)}
+                onClick={(e) => onToggle(e, heading.style)}
               >
                 {heading.label}
               </Option>

@@ -11,11 +11,12 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
-  const { pageNumber } = params;
+  const { pageNumber, pageSize } = params;
   const { loading, data, error } = useQuery(GET_FEEDS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });

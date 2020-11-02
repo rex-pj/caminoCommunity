@@ -20,7 +20,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber } = props;
+  const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
   const dispatch = useStore(false)[1];
@@ -45,7 +45,8 @@ export default withRouter(function (props) {
     variables: {
       criterias: {
         userIdentityId: userId,
-        page: pageNumber,
+        page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });
@@ -175,8 +176,8 @@ export default withRouter(function (props) {
     product.url = `${UrlConstant.Product.url}${product.id}`;
     if (product.thumbnails && product.thumbnails.length > 0) {
       const thumbnail = product.thumbnails[0];
-      if (thumbnail.id > 0) {
-        product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.id}`;
+      if (thumbnail.pictureId > 0) {
+        product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
       }
     }
 

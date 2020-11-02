@@ -5,6 +5,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IGenderResolver
     {
-        IEnumerable<ISelectOption> GetSelections();
+        IEnumerable<SelectOption> GetSelections();
     }
 }

@@ -1,10 +1,10 @@
-﻿using Module.Api.Auth.Models;
+﻿using Camino.Core.Models;
 using System.Collections.Generic;
 
-namespace  Module.Api.Auth.GraphQL.Resolvers.Contracts
+namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface ICountryResolver
     {
-        IEnumerable<CountryModel> GetAll();
+        IEnumerable<SelectOption> GetSelections();
     }
 }

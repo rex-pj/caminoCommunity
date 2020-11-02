@@ -5,14 +5,15 @@ const Item = styled.li`
   line-height: 1;
 `;
 
-export default props => {
+export default (props) => {
   const activeClass = props.isActived ? "actived" : null;
   const firstClass = props.index === 0 ? "first" : null;
-  return (
-    <Item
-      className={`${props.className}${" "}${firstClass}${" "}${activeClass}`}
-    >
-      {props.children}
-    </Item>
-  );
+  let className = props.className;
+  if (firstClass) {
+    className = `${className}${" "}${firstClass}`;
+  }
+  if (activeClass) {
+    className = `${className}${" "}${activeClass}`;
+  }
+  return <Item className={className}>{props.children}</Item>;
 };

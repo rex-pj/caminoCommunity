@@ -4,19 +4,7 @@ using Camino.Core.Models;
 
 namespace Camino.Framework.Models
 {
-    public interface ICommonResult<TResult>
-    {
-        AccessMode AccessMode { get; set; }
-        bool IsSucceed { get; set; }
-        TResult Result { get; set; }
-        List<CommonError> Errors { get; set; }
-    }
-
-    public interface ICommonResult : ICommonResult<object>
-    {
-    }
-
-    public class CommonResult : CommonResult<object>, ICommonResult
+    public class CommonResult : CommonResult<object>
     {
         public CommonResult() : this(false)
         {
@@ -30,26 +18,26 @@ namespace Camino.Framework.Models
         }
     }
 
-    public class CommonResult<TResult> : ICommonResult<TResult>
+    public class CommonResult<TResult>
     {
         public AccessMode AccessMode { get; set; }
         public bool IsSucceed { get; set; }
         public List<CommonError> Errors { get; set; }
         public TResult Result { get; set; }
 
-        public static ICommonResult Success()
+        public static CommonResult Success()
         {
             return new CommonResult(true);
         }
 
-        public static ICommonResult Success(TResult result)
+        public static CommonResult Success(TResult result)
         {
             var updateResult = Success();
             updateResult.Result = result;
             return updateResult;
         }
 
-        public static ICommonResult Success(TResult result, bool canEdit)
+        public static CommonResult Success(TResult result, bool canEdit)
         {
             var accessMode = canEdit ? AccessMode.CanEdit : AccessMode.ReadOnly;
             var updateResult = Success(result);
@@ -57,7 +45,7 @@ namespace Camino.Framework.Models
             return updateResult;
         }
 
-        public static ICommonResult Failed(IEnumerable<CommonError> errors)
+        public static CommonResult Failed(IEnumerable<CommonError> errors)
         {
             var result = new CommonResult();
             if (errors != null)
@@ -67,7 +55,7 @@ namespace Camino.Framework.Models
             return result;
         }
 
-        public static ICommonResult Failed(CommonError error)
+        public static CommonResult Failed(CommonError error)
         {
             return Failed(new CommonError[] { error });
         }

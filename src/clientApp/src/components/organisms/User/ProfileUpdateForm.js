@@ -61,18 +61,18 @@ export default (props) => {
       isValid: !!userInfo.displayName,
     },
     lastname: {
-      value: userInfo.firstname,
-      validation: {
-        isRequired: true,
-      },
-      isValid: !!userInfo.firstname,
-    },
-    firstname: {
       value: userInfo.lastname,
       validation: {
         isRequired: true,
       },
       isValid: !!userInfo.lastname,
+    },
+    firstname: {
+      value: userInfo.firstname,
+      validation: {
+        isRequired: true,
+      },
+      isValid: !!userInfo.firstname,
     },
   };
 

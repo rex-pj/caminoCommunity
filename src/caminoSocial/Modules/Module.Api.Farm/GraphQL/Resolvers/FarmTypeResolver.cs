@@ -16,7 +16,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             _farmTypeBusiness = farmTypeBusiness;
         }
 
-        public async Task<IEnumerable<ISelectOption>> GetFarmTypesAsync(SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> GetFarmTypesAsync(SelectFilterModel criterias)
         {
             if (criterias == null)
             {

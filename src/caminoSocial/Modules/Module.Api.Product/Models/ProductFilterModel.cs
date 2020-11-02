@@ -6,7 +6,8 @@ namespace Module.Api.Product.Models
     {
         public ProductFilterModel() : base()
         {
-
+            Page = 1;
+            PageSize = 10;
         }
 
         public long Id { get; set; }

@@ -6,6 +6,6 @@ namespace Module.Api.Article.GraphQL.Resolvers.Contracts
 {
     public interface IArticleCategoryResolver
     {
-        IEnumerable<ISelectOption> GetArticleCategories(SelectFilterModel criterias);
+        IEnumerable<SelectOption> GetArticleCategories(SelectFilterModel criterias);
     }
 }
