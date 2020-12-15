@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import ArticleCreationModel from "../../../models/ArticleCreationModel";
+import articleCreationModel from "../../../models/articleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 
 const FormRow = styled.div`
@@ -80,7 +80,7 @@ export default withRouter((props) => {
     filterCategories,
     currentArticle,
   } = props;
-  const initialFormData = JSON.parse(JSON.stringify(ArticleCreationModel));
+  const initialFormData = JSON.parse(JSON.stringify(articleCreationModel));
   const articleState = currentArticle ? currentArticle : initialFormData;
   const [formData, setFormData] = useState(articleState);
   const editorRef = useRef();

@@ -14,7 +14,7 @@ import {
 import { GET_ARTICLE_FOR_UPDATE } from "../../utils/GraphQLQueries/queries";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
-import ArticleCreationModel from "../../models/ArticleCreationModel";
+import articleCreationModel from "../../models/articleCreationModel";
 
 export default withRouter(function (props) {
   const { match } = props;
@@ -138,7 +138,7 @@ export default withRouter(function (props) {
       });
   };
 
-  const currentArticle = JSON.parse(JSON.stringify(ArticleCreationModel));
+  const currentArticle = JSON.parse(JSON.stringify(articleCreationModel));
   for (const formIdentifier in currentArticle) {
     currentArticle[formIdentifier].value = article[formIdentifier];
     if (article[formIdentifier]) {

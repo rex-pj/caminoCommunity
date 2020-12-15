@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import ProductCreationModel from "../../../models/ProductCreationModel";
+import productCreationModel from "../../../models/productCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 
 const FormRow = styled.div`
@@ -83,7 +83,7 @@ export default withRouter((props) => {
     filterFarms,
     refetchNews,
   } = props;
-  const initialFormData = ProductCreationModel;
+  const initialFormData = productCreationModel;
   const [formData, setFormData] = useState(initialFormData);
   const editorRef = useRef();
 
