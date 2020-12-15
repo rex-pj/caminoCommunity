@@ -1,0 +1,20 @@
+﻿@model FarmTypeModel
+@{
+    ViewData["Title"] = "Farm Type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts {
+    <script src="~/farmmanagement/js/farmtype-update.js" asp-append-version="true"></script>
+}
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="FarmType" class="btn btn-sm btn-outline-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <form method="post" asp-action="Create" asp-controller="FarmType">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
+</div>

@@ -1,23 +1,23 @@
 import Alerts from "./LangData/Alerts";
 
-function formatNumber(num) {
+export function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 }
 
-function langExtract(langData, key, lang) {
+export function langExtract(langData, key, lang) {
   return langData && langData[key] && langData[key][lang]
     ? langData[key][lang]
     : null;
 }
 
-function getError(key, lang) {
+export function getError(key, lang) {
   return (
     langExtract(Alerts, key, lang) &&
     langExtract(Alerts, "ErrorOccurredTryRefeshInputAgain", lang)
   );
 }
 
-const createArray = (from, to, isInvert) => {
+export const createArray = (from, to, isInvert) => {
   const arr = [];
 
   if (!!isInvert) {
@@ -33,7 +33,7 @@ const createArray = (from, to, isInvert) => {
   return arr;
 };
 
-const generateDate = data => {
+export const generateDate = (data) => {
   const { date, month, year } = data;
 
   if (date && month && year) {
@@ -42,19 +42,31 @@ const generateDate = data => {
   return null;
 };
 
-const fileToBase64 = file =>
+export const fileToBase64 = (file) => {
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
+};
 
-export {
-  formatNumber,
-  langExtract,
-  getError,
-  createArray,
-  generateDate,
-  fileToBase64
+export const base64toBlob = (dataURI, mineType) => {
+  var urlSplitted = dataURI.split(",");
+  var byteString = null;
+  if (urlSplitted.length > 1) {
+    byteString = atob(dataURI.split(",")[1]);
+  } else {
+    byteString = atob(dataURI);
+  }
+
+  var buffers = new ArrayBuffer(byteString.length);
+  var unitBuffers = new Uint8Array(buffers);
+
+  for (var i = 0; i < byteString.length; i++) {
+    unitBuffers[i] = byteString.charCodeAt(i);
+  }
+
+  mineType = mineType ? mineType : "image/jpeg";
+  return new Blob([buffers], { type: mineType });
 };

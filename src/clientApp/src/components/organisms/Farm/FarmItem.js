@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { ThumbnailRound } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
@@ -15,11 +15,15 @@ import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+  }
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -34,26 +38,14 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
   height: 160px;
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
-  }
-`;
-
-const PostThumbnail = styled(ThumbnailRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  max-height: 150px;
-  overflow: hidden;
-
-  img {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
   }
 `;
 
@@ -75,18 +67,18 @@ const InteractRightItem = styled(InteractiveItem)`
 `;
 
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.tiny};
-  right: ${p => p.theme.size.tiny};
+  bottom: ${(p) => p.theme.size.tiny};
+  right: ${(p) => p.theme.size.tiny};
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.neutral};
-  font-size: ${p => p.theme.fontSize.tiny};
+  color: ${(p) => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {
     color: inherit;
@@ -94,7 +86,7 @@ const TopBarInfo = styled.div`
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     color: inherit;
     vertical-align: middle;
   }
@@ -104,30 +96,28 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { farm } = props;
   const { creator } = farm;
 
   if (creator) {
-    creator.info = "Nông dân";
+    creator.info = "Farmer";
   }
 
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={farm.thumbnailUrl}>
-          <PostThumbnail src={farm.thumbnailUrl} alt="" />
-          <Overlay />
-        </AnchorLink>
+        <ImageThumb src={farm.thumbnailUrl} alt="" />
+        <Overlay />
         <FollowButton icon="user-plus" size="sm">
-          Theo dõi
+          Follow
         </FollowButton>
       </ThumbnailBox>
       <PanelHeader>
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
@@ -143,13 +133,19 @@ export default props => {
           <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
         </PostTitle>
         <TopBarInfo>
-          <FontAwesomeIcon icon="map-marker-alt" />
-          <span>{farm.address}</span>
+          {farm.address ? (
+            <Fragment>
+              <FontAwesomeIcon icon="map-marker-alt" />
+              <span>{farm.address}</span>
+            </Fragment>
+          ) : null}
         </TopBarInfo>
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
-          <ContentBody>{farm.description}</ContentBody>
+          <ContentBody>
+            <p dangerouslySetInnerHTML={{ __html: farm.description }}></p>
+          </ContentBody>
         </div>
 
         <div className="interactive-toolbar">

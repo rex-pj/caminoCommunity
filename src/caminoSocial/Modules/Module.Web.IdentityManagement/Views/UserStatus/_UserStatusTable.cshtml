@@ -1,0 +1,29 @@
+﻿@model PageListModel<UserStatusModel>
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var status in Model.Collections)
+            {
+                status.SetPageAuthorizationForModel(Model);
+                <partial name="_UserStatusRow" model="status" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

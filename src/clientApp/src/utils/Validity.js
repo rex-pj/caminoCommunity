@@ -39,6 +39,10 @@ export function checkValidity(formData, value, formName) {
 
   const rule = formData[formName].validation;
 
+  if (!rule) {
+    return isValid;
+  }
+
   if (rule.isRequired) {
     isValid = value && value.trim() !== "" && isValid;
   }

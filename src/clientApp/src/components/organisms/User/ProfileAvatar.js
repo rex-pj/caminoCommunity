@@ -50,7 +50,7 @@ const ProfileImage = styled(ImageRound)`
     border-radius: 20px;
   `;
 
-function ProfileAvatar({ ...props }) {
+export default function ({ ...props }) {
   const { userInfo, canEdit, className } = props;
   const { userAvatar } = userInfo;
   const dispatch = useStore(true)[1];
@@ -62,7 +62,7 @@ function ProfileAvatar({ ...props }) {
           userAvatar && userAvatar.code
             ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${userAvatar.code}`
             : null,
-        title: "Đổi Ảnh Đại Diện",
+        title: "Update Avatar",
         canEdit: userInfo.canEdit,
       },
       options: {
@@ -91,5 +91,3 @@ function ProfileAvatar({ ...props }) {
     </Wrap>
   );
 }
-
-export default ProfileAvatar;

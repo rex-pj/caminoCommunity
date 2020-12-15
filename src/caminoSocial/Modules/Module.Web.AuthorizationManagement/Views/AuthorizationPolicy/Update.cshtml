@@ -4,14 +4,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model AuthorizationPolicyViewModel
+@model AuthorizationPolicyModel
 
-<div class="card-header bg-secondary text-light">
-    <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-light">
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-outline-secondary">
         <i class="fa fa-arrow-left"></i>
     </a>
     @ViewData["Title"]
 </div>
 <div class="card-body">
-    <partial name="_CreateOrUpdateForm" />
+    <form method="post" asp-action="Update" asp-controller="AuthorizationPolicy">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
 </div>

@@ -13,12 +13,11 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
-    background-color: #f4f7f6;
+    background-color: #f8f9fa;
 }
 
 .box-shadow {
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
 
 /* Controls
@@ -29,125 +28,211 @@ body {
 
 /* Sticky header styles
 -------------------------------------------------- */
-.site-logo {
-    max-width: 35px;
-    max-height: 35px;
-    margin-right: 8px;
+.top-nav {
+    width: 100%;
 }
 
-.navbar-light .navbar-brand {
-    font-weight: 600;
-    font-size: 18px;
-    text-transform: uppercase
-}
+    .top-nav .navbar {
+        padding: 5px 0;
+    }
 
+    .top-nav .navbar-toggler {
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
 /* Nav tab
 -------------------------------------------------- */
-#navTab {
-    margin-left: -15px;
-    margin-right: -15px;
-    margin-top: 8px;
+.site-nav-logo {
+    height: 50px;
+    line-height: 50px;
 }
+
+.site-logo {
+    max-width: 25px;
+    max-height: 25px;
+}
+
+.site-nav-logo .navbar-brand {
+    font-weight: 600;
+    font-size: 18px;
+    padding: 0;
+    margin-right: 0;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+#navTab {
+    border-bottom: 0;
+}
+
+    #navTab .nav-item {
+        margin-bottom: 0;
+    }
 
     #navTab .nav-link {
         font-weight: 600;
-        color: #f68c1f;
-        color: #495057
-    }
-
-    #navTab .nav-item:first-child .nav-link {
-        border-top-left-radius: 0;
-    }
-
-    #navTab .nav-link.active {
-        background-color: #f4f7f6;
-        border-bottom: 1px solid #f4f7f6;
-        color: #f68c1f;
-    }
-
-#navTabContent .tab-pane {
-    padding-top: 15px;
-}
-/* Nav tools
--------------------------------------------------- */
-.nav-tool {
-    height: 100%;
-    margin-left: -15px;
-    margin-right: -15px;
-}
-
-    .nav-tool .nav-tool-item > a {
-        border-right: 0;
-        border-left: 0;
-        background-color: transparent;
+        color: #FFFFFF;
+        height: 45px;
+        line-height: 45px;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
         border: 0;
-        border-radius: 0;
-        font-size: 14px;
-        display: block;
-        padding: 0.75rem 0.75rem;
-        position: relative;
-        background-color: #f1f1f1;
-        font-weight: 600;
-        text-decoration: none;
     }
 
-        .nav-tool .nav-tool-item > a.collapsed:hover {
-            background-color: #f1f1f1;
+        #navTab .nav-link.active {
+            background-color: #343a40;
+            border-bottom: 0;
+            color: #778B53;
         }
 
-        .nav-tool .nav-tool-item > a.collapsed {
+/* Nav tools
+-------------------------------------------------- */
+#mainNavigation,
+#mainNavigation.d-none.show {
+    -webkit-transition: width 0s ease;
+    -moz-transition: width 0s ease;
+    -o-transition: width 0s ease;
+    transition: width 0s ease;
+}
+
+    #mainNavigation.collapse {
+        width: 0px;
+    }
+
+.nav-tool {
+    height: 100%;
+}
+
+    .nav-tool .nav-tool-item > span {
+        display: block;
+        position: relative;
+    }
+
+        .nav-tool .nav-tool-item > span > a,
+        .nav-tool .nav-tool-item > span > button {
+            font-size: 14px;
+            display: block;
+            padding: 0.75rem 0.75rem;
+            text-decoration: none;
+            border: 0;
+            outline: none;
             background-color: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-tool .nav-tool-item > span :hover {
+            background-color: #212529;
+        }
+
+        .nav-tool .nav-tool-item > span > a.active {
+            background-color: #212529;
+        }
+
+        .nav-tool .nav-tool-item > span > a.collapsed {
             font-weight: 400;
         }
 
-        .nav-tool .nav-tool-item > a::after {
+        .nav-tool .nav-tool-item > span .fa-angle-up,
+        .nav-tool .nav-tool-item > span .fa-angle-down {
+            position: absolute;
+            top: 50%;
+            bottom: 50%;
+            margin: -5px auto 0 auto;
+            right: 15px;
+        }
+
+        .nav-tool .nav-tool-item > span .fa-angle-up {
+            display: inline-block;
+        }
+
+        .nav-tool .nav-tool-item > span .fa-angle-down {
+            display: none;
+        }
+
+        .nav-tool .nav-tool-item > span > .collapsed .fa-angle-up {
+            display: none;
+        }
+
+        .nav-tool .nav-tool-item > span > .collapsed .fa-angle-down {
+            display: inline-block;
+        }
+
+        .nav-tool .nav-tool-item > span a.active:after {
             content: " ";
             display: block;
             position: absolute;
             left: 0;
-            top: 0;
-            bottom: 0;
+            top: 50%;
+            bottom: 50%;
             width: 3px;
-            height: 100%;
-            background-color: #f68c1f;
+            height: 15px;
+            margin: auto;
+            background-color: #778B53;
         }
 
-        .nav-tool .nav-tool-item > a.collapsed::after {
+        .nav-tool .nav-tool-item > span > a.collapsed::after {
             display: none;
         }
 
+    .nav-tool .list-group {
+        border-radius: 0;
+    }
+
     .nav-tool .list-group-item {
         border-radius: 0;
-        border-left: 0;
-        border-right: 0;
-        border-color: #f1f1f1;
+        border: 0;
         font-size: 14px;
         padding: 0.75rem 0.75rem;
+        background-color: transparent;
     }
 
         .nav-tool .list-group-item:hover,
         .nav-tool .list-group-item.active:hover {
             text-decoration: none;
-            font-weight: 600;
+            background-color: #212529;
+        }
+
+        .nav-tool .list-group-item:hover {
+            color: #6c757d !important;
         }
 
         .nav-tool .list-group-item.active {
-            background-color: #FFFFFF;
-            font-weight: 600;
+            font-weight: 700;
         }
 /* Sticky footer styles
 -------------------------------------------------- */
 .main {
-    margin-top: 15px;
     border: 0;
+}
+
+.table-fixed-layout {
+    table-layout: fixed;
+}
+
+.data-table .spinner-grow {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    display: block;
+}
+
+.main-body {
+    height: calc(100% - 100px - 2rem);
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 .footer {
-    position: absolute;
-    bottom: 0;
     width: 100%;
     white-space: nowrap;
-    line-height: 60px;
+    line-height: 45px;
+    font-size: 14px;
 }

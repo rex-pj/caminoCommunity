@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "./Logo";
 import SearchBar from "../../Search/SearchBar";
-import NavigationMenu from "../../NavigationMenu/NavigationMenu";
+import NavigationMenu from "../../Navigation/NavigationMenu";
 
 const NavRoot = styled.nav`
-  background-image: ${p => p.theme.gradientColor.primary};
+  background-image: ${(p) => p.theme.gradientColor.primary};
   padding: 2px 16px;
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   position: relative;
   z-index: 100;
 `;

@@ -4,7 +4,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import ForgotAuthNavigation from "../../../components/organisms/NavigationMenu/ForgotAuthNavigation";
+import ForgotPasswordNavigation from "../../../components/organisms/Navigation/ForgotPasswordNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import forgotPasswordModel from "../../../models/forgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
@@ -118,8 +118,8 @@ export default withRouter((props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
@@ -148,20 +148,20 @@ export default withRouter((props) => {
           <AuthBanner icon="unlock-alt" title="Phục hồi mật khẩu" />
         </div>
         <div className="col col-12 col-sm-5">
-          <ForgotAuthNavigation />
+          <ForgotPasswordNavigation />
           <PanelBody>
             <FormRow>
               {isSubmitted ? (
                 <PrimaryNotice>
-                  Chúng tôi sẽ gửi một e-mail kích hoạt cho bạn, hãy vào email
-                  kiểm tra, nếu không tìm thấy hãy vào thư mục spam để xem thử
+                  We will send an activation e-mail to you, please check your
+                  e-mail, if you couldn't found may it is in spam folder
                 </PrimaryNotice>
               ) : null}
             </FormRow>
             <FormRow>
               <Label>E-mail</Label>
               <Textbox
-                placeholder="Nhập e-mail"
+                placeholder="Please input your e-mail"
                 type="email"
                 name="email"
                 autoComplete="off"
@@ -171,7 +171,7 @@ export default withRouter((props) => {
             </FormRow>
             <FormFooter>
               <SubmitButton disabled={!isFormEnabled} type="submit">
-                Gửi Email
+                Send
               </SubmitButton>
             </FormFooter>
           </PanelBody>

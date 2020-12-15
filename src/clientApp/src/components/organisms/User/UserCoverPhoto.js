@@ -4,7 +4,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../../molecules/UploadControl/ImageUpload";
+import ImageUpload from "../UploadControl/ImageUpload";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
 import NoImage from "../../atoms/NoImages/no-image";
@@ -18,7 +18,7 @@ import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER,
 } from "../../../utils/GraphQLQueries/mutations";
-import contentClient from "../../../utils/GraphQLClient/contentClient";
+import graphqlClient from "../../../utils/GraphQLClient/graphqlClient";
 
 const Wrap = styled.div`
     position: relative;
@@ -47,6 +47,7 @@ const Wrap = styled.div`
     right: 0;
     margin: auto;
     z-index: 0;
+    border-radius: 0;
     font-size: calc(${(p) => p.theme.fontSize.giant} * 2);
     color: ${(p) => p.theme.color.light};
     svg,
@@ -221,11 +222,11 @@ export default (props) => {
     }
 
     if (!canEdit) {
-      message = "Bạn không được quyền sửa chữa thông tin này";
+      message = "Your are unauthorized to edit this information";
     }
 
     if (!isValid) {
-      message = "Hình ảnh phải lớn hơn 1000px x 300px";
+      message = "The image size must be bigger than 1000px x 300px";
     }
 
     setDisabled(!isValid);
@@ -277,7 +278,7 @@ export default (props) => {
   };
 
   const [updateCover] = useMutation(UPDATE_USER_COVER, {
-    client: contentClient,
+    client: graphqlClient,
   });
   const onUpdate = async () => {
     const { src } = coverState;
@@ -290,7 +291,7 @@ export default (props) => {
       const validateResult = validateForSubmit();
       if (!validateResult.isSucceed) {
         showValidationError(
-          "Bạn không thể thay đổi ảnh cover",
+          "Your are unable to update your cover photo",
           validateResult.message
         );
         return;
@@ -318,7 +319,7 @@ export default (props) => {
   };
 
   const [deleteCover] = useMutation(DELETE_USER_COVER, {
-    client: contentClient,
+    client: graphqlClient,
   });
 
   const onDelete = async () => {
@@ -411,7 +412,7 @@ export default (props) => {
             <DeletePopoverConfirm
               isShown={showDeletePopover}
               target="DeleteCover"
-              title="Bạn có muốn xóa ảnh không?"
+              title="Please confirm your cover photo deletion?"
               onExecute={(e) => onDelete()}
             />
             <ButtonOutlineSecondary id="DeleteCover" size="sm">

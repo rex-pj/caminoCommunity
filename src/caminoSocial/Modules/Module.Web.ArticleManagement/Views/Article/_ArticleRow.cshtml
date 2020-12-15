@@ -1,0 +1,34 @@
+﻿@model ArticleModel
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        @if (Model.ThumbnailId > 0)
+        {
+            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
+        }
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" title="@Model.Description">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <p class="text-muted">by: @Model.CreatedBy</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <p class="text-muted">by: @Model.UpdatedBy</p>
+    </td>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="Article" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+</tr>

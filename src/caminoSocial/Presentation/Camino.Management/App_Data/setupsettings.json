@@ -1,9 +1,4 @@
 ﻿{
-  "HasSetupDatabase": false,
-  "SetupUrl": "/Setup",
-  "IsInitialized": true,
-  "CreateIdentityPath": "App_Data\\Setup\\01.Create_IdentityDb.sql",
-  "PrepareIdentityDataPath": "App_Data\\Setup\\Identity_Data.json",
-  "CreateContentDbPath": "App_Data\\Setup\\02.Create_ContentDb.sql",
-  "PrepareContentDataPath": "App_Data\\Setup\\Content_Data.json"
+  "HasSetupDatabase": true,
+  "IsInitialized": true
 }

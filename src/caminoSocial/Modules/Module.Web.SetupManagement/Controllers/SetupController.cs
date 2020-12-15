@@ -1,31 +1,32 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.General;
-using Camino.Business.Dtos.Identity;
+using Camino.Service.Projections.Identity;
 using Camino.Data.Enums;
-using Camino.Framework.Models;
 using Camino.Framework.Providers.Contracts;
-using Camino.Framework.SessionManager.Contracts;
 using Module.Web.SetupManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using Camino.IdentityManager.Models;
+using Camino.IdentityManager.Contracts;
+using Camino.Service.Business.Setup.Contracts;
+using Camino.Service.Projections.Request;
 
 namespace Module.Web.SetupManagement.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly ISeedDataBusiness _seedDataBusiness;
+        private readonly ISetupBusiness _seedDataBusiness;
         private readonly ISetupProvider _setupProvider;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
         private readonly IUserSecurityStampStore<ApplicationUser> _userSecurityStampStore;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IUserManager<ApplicationUser> _userManager;
-        public SetupController(ISeedDataBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
+        
+        public SetupController(ISetupBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
             IFileProvider fileProvider, IUserSecurityStampStore<ApplicationUser> userSecurityStampStore, 
             IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager)
         {
@@ -46,11 +47,11 @@ namespace Module.Web.SetupManagement.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(new SetupViewModel());
+            return View(new SetupModel());
         }
 
         [HttpPost]
-        public IActionResult Index(SetupViewModel model)
+        public async Task<IActionResult> Index(SetupModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,22 +86,22 @@ namespace Module.Web.SetupManagement.Controllers
                 };
 
                 initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, model.AdminPassword);
-                _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
+                await _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
 
                 // Get Identity json data
                 var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
-                var identitySetup = JsonConvert.DeserializeObject<SetupDto>(indentityJson);
-                identitySetup.InitualUser = _mapper.Map<UserDto>(initialUser);
+                var identitySetup = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
+                identitySetup.InitualUser = _mapper.Map<UserProjection>(initialUser);
 
                 // Initialize identity database
-                _seedDataBusiness.PrepareIdentityData(identitySetup);
+                await _seedDataBusiness.PrepareIdentityDataAsync(identitySetup);
 
                 // Get content json data
                 var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
-                var contentSetup = JsonConvert.DeserializeObject<SetupDto>(contentJson);
+                var contentSetup = JsonConvert.DeserializeObject<SetupRequest>(contentJson);
 
                 // Initialize content database
-                _seedDataBusiness.PrepareContentData(contentSetup);
+                await _seedDataBusiness.PrepareContentDataAsync(contentSetup);
 
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Succeed");

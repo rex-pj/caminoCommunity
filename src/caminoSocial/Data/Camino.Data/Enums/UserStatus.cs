@@ -3,10 +3,10 @@
     public enum UserStatus
     {
         New = 1,
-        Pending = 2,
-        Actived = 3,
-        Reported = 4,
-        Inactived = 5,
-        Blocked = 6
+        Actived = 2,
+        Reported = 3,
+        Inactived = 4,
+        Blocked = 5,
+        Deleted = 6
     }
 }

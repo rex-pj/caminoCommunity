@@ -1,4 +1,8 @@
-﻿.setup-panel {
+﻿.setup-body {
+    height: calc(100vh - 45px);
+}
+
+.setup-panel {
     position: relative;
 }
 
@@ -30,10 +34,14 @@
     margin-top: -50px;
 }
 
-.setup-porgress .progress-bar {
-    width: 100%;
-}
+    .setup-porgress .progress-bar {
+        width: 100%;
+    }
 
 .succeed .fas {
     font-size: 72px;
+}
+
+.footer {
+    height: 45px;
 }

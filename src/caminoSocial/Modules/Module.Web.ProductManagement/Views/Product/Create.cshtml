@@ -1,0 +1,28 @@
+﻿@model ProductModel
+@{
+    ViewData["Title"] = "Create product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head{
+    <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
+    <script src="~/lib/fileupload/js/vendor/jquery.ui.widget.js" asp-append-version="true"></script>
+    <script src="~/lib/fileupload/js/jquery.fileupload.js" asp-append-version="true"></script>
+    <script src="~/productmanagement/js/product-update.js" asp-append-version="true"></script>
+}
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="Product" class="btn btn-sm btn-outline-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <form method="post" asp-action="Create" asp-controller="Product">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
+</div>

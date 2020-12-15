@@ -87,8 +87,8 @@ export default (props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
@@ -108,25 +108,25 @@ export default (props) => {
 
   return (
     <Fragment>
-      <Heading>Thay đổi mật khẩu</Heading>
+      <Heading>Change Password</Heading>
       <MainPanel>
         <form onSubmit={(e) => onUpdate(e)} method="POST">
           <Fragment>
             <FormGroup>
               <LabelAndTextbox
-                label="Mật khẩu hiện tại"
+                label="Current password"
                 name="currentPassword"
                 type="password"
-                placeholder="Nhập mật khẩu hiện tại"
+                placeholder="Enter current password"
                 value={currentPassword.value}
                 onChange={onTextboxChange}
               />
             </FormGroup>
             <FormGroup>
               <LabelAndTextbox
-                label="Mật khẩu mới"
+                label="New password"
                 name="newPassword"
-                placeholder="Nhập mật khẩu mới"
+                placeholder="Enter new password"
                 value={newPassword.value}
                 type="password"
                 onChange={onTextboxChange}
@@ -134,9 +134,9 @@ export default (props) => {
             </FormGroup>
             <FormGroup>
               <LabelAndTextbox
-                label="Tên hiển thị"
+                label="Confirm new password"
                 name="confirmPassword"
-                placeholder="Xác nhận lại mật khẩu mới"
+                placeholder="Confirm new password"
                 value={confirmPassword.value}
                 type="password"
                 onChange={onTextboxChange}
@@ -150,7 +150,7 @@ export default (props) => {
               disabled={!props.isFormEnabled || !isFormValid}
             >
               <FontAwesomeIcon icon="pencil-alt" />
-              Cập Nhật
+              Change Password
             </SubmitButton>
           </FormFooter>
         </form>

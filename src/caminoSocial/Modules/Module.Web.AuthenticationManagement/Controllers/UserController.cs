@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
+using Camino.Service.Projections.Filters;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthenticationManagement.Models;
@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using Camino.Framework.Attributes;
+using Camino.Core.Constants;
+using Camino.Core.Enums;
+using System.Threading.Tasks;
+using Camino.Framework.Helpers.Contracts;
+using Camino.Service.Business.Users.Contracts;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -14,38 +20,61 @@ namespace Module.Web.AuthenticationManagement.Controllers
     {
         private readonly IUserBusiness _userBusiness;
         private readonly IMapper _mapper;
+        private readonly IHttpHelper _httpHelper;
 
-        public UserController(IMapper mapper, IUserBusiness userBusiness, IHttpContextAccessor httpContextAccessor)
+        public UserController(IMapper mapper, IUserBusiness userBusiness, IHttpContextAccessor httpContextAccessor,
+            IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _mapper = mapper;
+            _httpHelper = httpHelper;
             _userBusiness = userBusiness;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var users = _userBusiness.GetFull();
-            var userModels = _mapper.Map<List<UserViewModel>>(users);
-            var userPage = new PagerViewModel<UserViewModel>(userModels);
+            var filterRequest = _mapper.Map<UserFilter>(filter);
+            var userPageList = await _userBusiness.GetAsync(filterRequest);
+            var users = _mapper.Map<List<UserModel>>(userPageList.Collections);
+            var userPage = new PageListModel<UserModel>(users) { 
+                Filter = filter,
+                TotalPage = userPageList.TotalPage,
+                TotalResult = userPageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_UserTable", userPage);
+            }
 
             return View(userPage);
         }
 
-        [HttpGet]
-        public IActionResult Search(string q)
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        public async Task<IActionResult> Detail(long id)
         {
-            var users = _userBusiness.Search(q);
+            var userRequest = await _userBusiness.FindFullByIdAsync(id);
+            var user = _mapper.Map<UserModel>(userRequest);
+            
+            return View(user);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        public IActionResult Search(string q, List<long> currentUserIds)
+        {
+            var users = _userBusiness.Search(q, currentUserIds);
             if (users == null || !users.Any())
             {
                 return Json(new
                 {
-                    Items = new List<Select2Item>()
+                    Items = new List<Select2ItemModel>()
                 });
             }
 
-            var userModels = _mapper.Map<List<UserViewModel>>(users)
-                .Select(x => new Select2Item
+            var userModels = users.Select(x => new Select2ItemModel
                 {
                     Id = x.Id.ToString(),
                     Text = x.Lastname + " " + x.Firstname

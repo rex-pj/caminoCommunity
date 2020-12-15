@@ -14,10 +14,10 @@ export default withRouter((props) => {
   const onUpdateConfirmation = () => {
     dispatch("OPEN_MODAL", {
       data: {
-        title: "Bạn sẽ cần phải thoát và đăng nhập lại",
+        title: "You will need to log out and log in again",
         message:
-          "Để đảm bảo các chức năng được hoạt động tốt bạn cần thoát ra và đăng nhập lại",
-        executeButtonName: "Đồng ý",
+          "To make sure all functions are working properly you need to log out and log in again",
+        executeButtonName: "Ok",
         executeUrl: "/auth/signout",
       },
       options: {
@@ -54,15 +54,15 @@ export default withRouter((props) => {
           if (errors) {
             setFormEnabled(true);
             showNotification(
-              "Có lỗi khi cập nhật mật khẩu",
-              "Kiểm tra lại thông tin và thử lại",
+              "An error occured when update the password",
+              "Please check your input and try again",
               "error"
             );
           }
 
           showNotification(
-            "Thay đổi mật khẩu thành công",
-            "Bạn đã cập nhật mật khẩu thành công",
+            "The password is changed successfully",
+            "The password is changed successfully",
             "info"
           );
           onUpdateConfirmation();
@@ -71,8 +71,8 @@ export default withRouter((props) => {
         .catch((error) => {
           setFormEnabled(true);
           showNotification(
-            "Có lỗi khi cập nhật mật khẩu",
-            "Kiểm tra lại thông tin và thử lại",
+            "An error occured when update the password",
+            "Please check your input and try again",
             "error"
           );
         });

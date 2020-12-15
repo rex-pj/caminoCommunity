@@ -1,7 +1,7 @@
 import React from "react";
-import { SuggestionPanel } from "../../molecules/SuggestionPanels";
+import { SuggestionPanel } from "../SuggestionPanels";
 
-export default props => {
+export default (props) => {
   const { className, index } = props;
   let { farm } = props;
 
@@ -9,7 +9,7 @@ export default props => {
     ...farm,
     actionIcon: "user-plus",
     infoIcon: "map-marker-alt",
-    actionText: "Theo dõi"
+    actionText: "Follow",
   };
   return <SuggestionPanel data={farm} className={className} index={index} />;
 };

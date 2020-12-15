@@ -4,6 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Camino.Core.Utils
 {
@@ -120,6 +121,14 @@ namespace Camino.Core.Utils
             }
 
             return destImage;
+        }
+
+        public static string EncodeJavascriptBase64(string javascriptBase64)
+        {
+            var result = Regex.Match(javascriptBase64, @"data:image/(?<type>.+?);(?<base64>.+?),(?<data>.+)")
+                .Groups["data"].Value;
+
+            return result;
         }
     }
 }

@@ -1,22 +1,28 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { Thumbnail } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { AnchorLink } from "../../atoms/Links";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+    border-radius: 0;
+  }
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -28,7 +34,7 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const ContentBody = styled.div`
-  padding: 0 0 ${p => p.theme.size.distance} 0;
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
 `;
 
 const DetailLink = styled.span`
@@ -36,26 +42,32 @@ const DetailLink = styled.span`
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
 `;
 
 const PostThumbnail = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default props => {
+export default (props) => {
   const { article } = props;
   const { creator } = article;
 
   if (creator) {
-    creator.info = `Gửi bài lúc ${article.createdDate}`;
+    var datePeriod = convertDateTimeToPeriod(article.createdDate);
+    creator.info = (
+      <Fragment>
+        <FontAwesomeIcon icon="calendar-alt" />
+        {datePeriod}
+      </Fragment>
+    );
   }
 
   return (
@@ -64,7 +76,7 @@ export default props => {
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
@@ -82,15 +94,17 @@ export default props => {
       </PanelHeader>
       <PostThumbnail>
         <AnchorLink to={article.url}>
-          <Thumbnail src={article.thumbnailUrl} alt="" />
+          <ImageThumb src={article.thumbnailUrl} alt="" />
         </AnchorLink>
       </PostThumbnail>
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            {article.description}
+            <span
+              dangerouslySetInnerHTML={{ __html: article.description }}
+            ></span>
             <DetailLink>
-              <AnchorLink to={article.url}>Xem Thêm</AnchorLink>
+              <AnchorLink to={article.url}>Detail</AnchorLink>
             </DetailLink>
           </ContentBody>
         </div>

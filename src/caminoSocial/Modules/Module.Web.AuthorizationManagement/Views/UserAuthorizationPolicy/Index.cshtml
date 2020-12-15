@@ -1,47 +1,59 @@
-﻿@model AuthorizationPolicyUsersViewModel
+﻿@model AuthorizationPolicyUsersModel
 @{
     ViewData["Title"] = "Authorization policy users management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="card-header bg-secondary text-light">
-    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#grantRoleModal">
-        <i class="fa fa-plus"></i>
-    </button>
-    @ViewData["Title"]
-</div>
-<div class="card-body">
-    <div class="card">
-        <div class="card-header">
-            <strong>@Model.Name</strong>
+
+@section Scripts {
+    <script src="~/authorizationmanagement/js/user-authorizationpolicy.js" asp-append-version="true"></script>
+}
+
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
+                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+                <i class="fa fa-search"></i>
+            </button>
+            @ViewData["Title"]
         </div>
-        <div class="alert alert-light mb-0" role="alert">
-            <div>See who @Model.Description</div>
-        </div>
-        <ul class="list-group list-group-flush">
-            @if (Model != null && Model.AuthorizationPolicyUsers.Any())
+        <div class="col-auto">
+            @if (Model.CanCreate)
             {
-                foreach (var user in Model.AuthorizationPolicyUsers)
-                {
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col align-self-start">
-                                <span>@user.Lastname @user.Firstname (@user.DisplayName)</span>
-                            </div>
-                            <div class="col align-self-end text-right">
-                                <form asp-action="Ungrant" asp-controller="UserAuthorizationPolicy" method="post">
-                                    <input type="hidden" name="AuthorizationPolicyId" value="@Model.Id" />
-                                    <input type="hidden" name="UserId" value="@user.Id" />
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </li>
-                }
+                <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#grantUserModal">
+                    <i class="fa fa-plus"></i>
+                </button>
             }
-        </ul>
+        </div>
+    </div>
+</div>
+<div class="card bg-light">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">See the users @Model.Description</p>
+    </div>
+
+    <partial name="_SearchForm" model="Model.Filter" />
+
+    <div class="data-table">
+        <partial name="_UserAuthorizationPolicyTable" />
+        <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
 </div>
 
-<partial name="_GrantUserAuthorizationPolicy" />
+@if (Model.CanCreate)
+{
+    var userAuthorizationPolicy = new UserAuthorizationPolicyModel
+    {
+        AuthorizationPolicyId = Model.Id,
+        AuthorizationPolicyName = Model.Name,
+        CurrentUserIds = Model.Collections.Select(x => x.Id)
+    };
+
+    <partial name="_GrantUserAuthorizationPolicy" model="userAuthorizationPolicy" />
+}

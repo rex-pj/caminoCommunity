@@ -1,115 +1,154 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
-import { UrlConstant } from "../../utils/Constant";
-import { ContentType } from "../../utils/Enums";
-import { Pagination } from "../../components/molecules/Paging";
+import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
-import { useMutation } from "@apollo/client";
-import contentClient from "../../utils/GraphQLClient/contentClient";
-import { VALIDATE_IMAGE_URL } from "../../utils/GraphQLQueries/mutations";
-import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import { useMutation, useQuery } from "@apollo/client";
+import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import {
+  VALIDATE_IMAGE_URL,
+  FILTER_ARTICLE_CATEGORIES,
+  FILTER_PRODUCT_CATEGORIES,
+  CREATE_ARTICLE,
+  CREATE_PRODUCT,
+  FILTER_FARM_TYPES,
+  CREATE_FARM,
+  FILTER_FARMS,
+} from "../../utils/GraphQLQueries/mutations";
+import { GET_USER_FEEDS } from "../../utils/GraphQLQueries/queries";
+import ProfileEditorTabs from "../../components/organisms/ProfileEditors/ProfileEditorTabs";
+import { useStore } from "../../store/hook-store";
+import { UrlConstant } from "../../utils/Constants";
+import { FeedType } from "../../utils/Enums";
+import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { SessionContext } from "../../store/context/SessionContext";
 
 export default withRouter((props) => {
-  const feedItems = [];
+  const { location, pageNumber, pageSize, match } = props;
+  const { params } = match;
+  const { userId } = params;
+  const { user } = useContext(SessionContext);
+  const dispatch = useStore(false)[1];
 
-  const articleItem = {
-    id: "2",
-    creator: {
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-      profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-      name: "Anh Sáu",
-    },
-    createdDate: "26/11/2018 9:28",
-    updatedDate: "26/11/2018 9:28",
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farmstay.jpg`,
-    description:
-      "Bọ rùa (Coccinellidae), hay còn gọi là bọ hoàng hậu, bọ cánh cam là tên gọi chung cho các loài côn trùng nhỏ, mình tròn hình cái trống, phủ giáp trụ, trên mặt cánh có những chấm đen (có loài không có). Người ta phân loại bọ rùa tùy theo số chấm và hình thái cơ thể Loài bọ rùa thường thấy nhất là bọ rùa 7 sao. Trên bộ cánh vỏ vàng cam có 7 nốt đen (mỗi cánh có ba nốt, còn một nốt ở chỗ giáp lại giữ hai cánh). Đây là loài bọ rùa to nhất và là một thợ săn đáng",
-    url: `${UrlConstant.Article.url}1`,
-    reactionNumber: "2.5k+",
-    commentNumber: "14",
-    name:
-      "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
-    contentType: ContentType.Article,
-  };
-
-  const product = {
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
-    description:
-      "Bạn nghe nói đến nhiều tác dụng của chuối đối với sức khỏe, nhưng việc ăn chuối thường xuyên để có được 5 lợi ích đáng kinh ngạc này thì nhiều người chưa biết. Hãy sớm áp dụng.",
-    name: "Đào ngâm thuốc sáu tháng không hư",
-    id: "2353443435",
-    createdDate: "4/12/2018",
-    price: 100000,
-    farmUrl: `${UrlConstant.Farm.url}1`,
-    farmName: "Trang trại ông Chín Sớm",
-    contentType: ContentType.Product,
-    updatedDate: "4/12/2018",
-    reactionNumber: "45+",
-    commentNumber: "15+",
-    url: `${UrlConstant.Product.url}1`,
-    creator: {
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-      profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-      name: "Bác Chín",
-    },
-  };
-
-  const farmItem = {
-    id: "3",
-    creator: {
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-      profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-      name: "Ông 5 Đất",
-      info: "Nông dân",
-    },
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
-    description:
-      "Trang trại nằm ở gần cầu Hàm Luông, có nuôi và trồng khá nhiều cây trồng vật nuôi, có cả homestay để nghĩ ngơi với những nhà sàn bên sông rất mát",
-    url: `${UrlConstant.Farm.url}1`,
-    commentNumber: "14",
-    reactionNumber: "45+",
-    createdDate: "4/12/2018",
-    name: "Trang trại ông Năm Đất",
-    address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-    contentType: 3,
-  };
-
-  const farmGroupItem = {
-    id: "4",
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
-    description:
-      "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm",
-    url: `${UrlConstant.FarmGroup.url}1`,
-    followingNumber: "14",
-    name: "Hội trái cây sạch An Thạnh",
-    contentType: 4,
-  };
-
-  feedItems.push(articleItem);
-  feedItems.push(product);
-  feedItems.push(farmItem);
-  feedItems.push(farmGroupItem);
-
-  feedItems.push(articleItem);
-  feedItems.push(product);
-  feedItems.push(farmItem);
-  feedItems.push(farmGroupItem);
-
-  const [feeds] = useState(feedItems);
-
-  const { location, pageNumber, userUrl } = props;
-
-  const [pageOptions] = useState({
-    totalPage: 10,
-    pageQuery: location.search,
-    baseUrl: userUrl + "/feeds",
-    currentPage: pageNumber ? pageNumber : 1,
+  // Mutations
+  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
+  const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
+  const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
+  const [farmTypes] = useMutation(FILTER_FARM_TYPES);
+  const [userFarms] = useMutation(FILTER_FARMS);
+  const [createArticle] = useMutation(CREATE_ARTICLE, {
+    client: graphqlClient,
+  });
+  const [createProduct] = useMutation(CREATE_PRODUCT, {
+    client: graphqlClient,
+  });
+  const [createFarm] = useMutation(CREATE_FARM, {
+    client: graphqlClient,
   });
 
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL, {
-    client: contentClient,
+  // Queries
+  const {
+    loading,
+    data,
+    error,
+    refetch: feedsRefetch,
+    networkStatus,
+  } = useQuery(GET_USER_FEEDS, {
+    variables: {
+      criterias: {
+        userIdentityId: userId,
+        page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
+      },
+    },
   });
+
+  // Selections mapping
+  const mapSelectListItems = (response) => {
+    var { data } = response;
+    var { categories } = data;
+    if (!categories) {
+      return [];
+    }
+    return categories.map((cat) => {
+      return {
+        value: cat.id,
+        label: cat.text,
+      };
+    });
+  };
+
+  // Search selections
+  const searchArticleCategories = async (inputValue) => {
+    return await articleCategories({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        return mapSelectListItems(response);
+      })
+      .catch((error) => {
+        return [];
+      });
+  };
+
+  const searchProductCategories = async (inputValue) => {
+    return await productCategories({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        return mapSelectListItems(response);
+      })
+      .catch((error) => {
+        return [];
+      });
+  };
+
+  const searchFarms = async (inputValue) => {
+    return await userFarms({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        var { data } = response;
+        var { userFarms } = data;
+        if (!userFarms) {
+          return [];
+        }
+        return userFarms.map((cat) => {
+          return {
+            value: cat.id,
+            label: cat.text,
+          };
+        });
+      })
+      .catch((error) => {
+        return [];
+      });
+  };
+
+  const searchFarmTypes = async (inputValue) => {
+    return await farmTypes({
+      variables: {
+        criterias: { query: inputValue },
+      },
+    })
+      .then((response) => {
+        return mapSelectListItems(response);
+      })
+      .catch((error) => {
+        return [];
+      });
+  };
+
+  const refetchNewsFeed = () => {
+    feedsRefetch();
+  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -119,32 +158,134 @@ export default withRouter((props) => {
     };
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
+  const onImageValidate = async (value) =>
+    await validateImageUrl({
       variables: {
         criterias: {
           url: value,
         },
       },
     });
+
+  const onArticlePost = async (data) => {
+    return await createArticle({
+      variables: {
+        criterias: data,
+      },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createArticle: article } = data;
+        refetchNewsFeed();
+        resolve({ article });
+      });
+    });
   };
 
-  const { totalPage, currentPage, baseUrl, pageQuery } = pageOptions;
+  const onProductPost = async (data) => {
+    return await createProduct({
+      variables: {
+        criterias: data,
+      },
+    });
+  };
+
+  const onFarmPost = async (data) => {
+    return await createFarm({
+      variables: {
+        criterias: data,
+      },
+    });
+  };
+
+  const showValidationError = (title, message) => {
+    dispatch("NOTIFY", {
+      title,
+      message,
+      type: "error",
+    });
+  };
+
+  const renderProfileEditorTabs = () => (
+    <ProfileEditorTabs
+      convertImagefile={convertImagefile}
+      onImageValidate={onImageValidate}
+      searchArticleCategories={searchArticleCategories}
+      onArticlePost={onArticlePost}
+      refetchNewsFeed={refetchNewsFeed}
+      showValidationError={showValidationError}
+      searchProductCategories={searchProductCategories}
+      onProductPost={onProductPost}
+      searchFarms={searchFarms}
+      searchFarmTypes={searchFarmTypes}
+      onFarmPost={onFarmPost}
+    ></ProfileEditorTabs>
+  );
+
+  if (loading || !data || networkStatus === 1) {
+    return (
+      <Fragment>
+        {user && user.isLogin ? renderProfileEditorTabs() : null}
+        <Loading>Loading...</Loading>
+      </Fragment>
+    );
+  } else if (error) {
+    return (
+      <Fragment>
+        {user && user.isLogin ? renderProfileEditorTabs() : null}
+        <ErrorBlock>Error!</ErrorBlock>
+      </Fragment>
+    );
+  }
+
+  const { userFeeds } = data;
+  const { totalPage, filter, collections } = userFeeds;
+  const { page } = filter;
+  const baseUrl = props.userUrl + "/feeds";
+  const pageQuery = location.search;
+
+  const feeds = collections.map((item) => {
+    let feed = { ...item };
+    if (feed.feedType === FeedType.Farm) {
+      feed.url = `${UrlConstant.Farm.url}${feed.id}`;
+    } else if (feed.feedType === FeedType.Article) {
+      feed.url = `${UrlConstant.Article.url}${feed.id}`;
+    } else if (feed.feedType === FeedType.Product) {
+      feed.url = `${UrlConstant.Product.url}${feed.id}`;
+    }
+
+    if (feed.pictureId > 0) {
+      feed.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+    }
+
+    feed.creator = {
+      createdDate: item.createdDate,
+      profileUrl: `/profile/${item.createdByIdentityId}`,
+      name: item.createdByName,
+    };
+
+    if (item.createdByPhotoCode) {
+      feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+    }
+
+    return feed;
+  });
+
   return (
     <Fragment>
-      <ArticleEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-      />
+      {user && user.isLogin ? renderProfileEditorTabs() : null}
+
       {feeds
-        ? feeds.map((item, index) => <FeedItem key={index} feed={item} />)
+        ? feeds.map((item) => {
+            const key = `${item.feedType}_${item.id}`;
+            return <FeedItem key={key} feed={item} />;
+          })
         : null}
       <Pagination
         totalPage={totalPage}
         baseUrl={baseUrl}
         pageQuery={pageQuery}
-        currentPage={currentPage}
+        currentPage={page}
       />
     </Fragment>
   );

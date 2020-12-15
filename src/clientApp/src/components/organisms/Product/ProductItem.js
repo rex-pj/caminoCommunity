@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
-import { ThumbnailRound } from "../../molecules/Thumbnails";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalList } from "../../atoms/List";
@@ -15,11 +15,20 @@ import { PriceLabel } from "../../molecules/PriceAndCurrency";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 140px;
+  }
+`;
+
+const ContentBody = styled.div`
+  padding: 0 0 ${(p) => p.theme.size.distance} 0;
+  height: 160px;
 `;
 
 const ContentTopbar = styled.div`
-  margin-bottom: ${p => p.theme.size.exSmall};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
 const PostActions = styled.div`
@@ -34,21 +43,9 @@ const PostTitle = styled(SecondaryTitleLink)`
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
-  }
-`;
-
-const PostThumbnail = styled(ThumbnailRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  max-height: 150px;
-  overflow: hidden;
-
-  img {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
   }
 `;
 
@@ -70,25 +67,25 @@ const InteractRightItem = styled(InteractiveItem)`
 `;
 
 const RowItem = styled.div`
-  margin-bottom: ${p => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.exTiny};
 `;
 
 const FarmInfo = styled(RowItem)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${p => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.rgbaColor.small};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutral};
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
-    font-size: ${p => p.theme.fontSize.tiny};
-    color: ${p => p.theme.color.neutral};
+    margin-right: ${(p) => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.fontSize.tiny};
+    color: ${(p) => p.theme.color.neutral};
     vertical-align: middle;
   }
 
@@ -97,27 +94,33 @@ const FarmInfo = styled(RowItem)`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { product } = props;
   const { creator } = product;
 
   if (creator) {
-    creator.info = "Nông dân";
+    creator.info = "Farmer";
+  }
+
+  let description = null;
+  if (product.description && product.description.length >= 120) {
+    description = `${product.description.substring(0, 120)}...`;
   }
 
   return (
     <Panel>
       <ThumbnailBox>
         <AnchorLink to={product.url}>
-          <PostThumbnail src={product.thumbnailUrl} alt="" />
+          <ImageThumb src={product.thumbnailUrl} alt="" />
           <Overlay />
         </AnchorLink>
       </ThumbnailBox>
+
       <PanelHeader>
         <ContentTopbar>
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <ProfileAction profile={creator} />
+              <AuthorProfile profile={creator} />
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
@@ -135,12 +138,30 @@ export default props => {
       </PanelHeader>
       <PanelBody>
         <RowItem>
-          <PriceLabel price={product.price} currency="vnđ" />
+          {product.price > 0 ? (
+            <PriceLabel price={product.price} currency="vnđ" />
+          ) : null}
         </RowItem>
-        <FarmInfo>
-          <FontAwesomeIcon icon="warehouse" />
-          <AnchorLink to={product.farmUrl}>{product.farmName}</AnchorLink>
-        </FarmInfo>
+        {product.productFarms
+          ? product.productFarms.map((pf) => {
+              if (!pf.id) {
+                return null;
+              }
+
+              return (
+                <FarmInfo key={pf.id}>
+                  <FontAwesomeIcon icon="warehouse" />
+                  <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                </FarmInfo>
+              );
+            })
+          : null}
+
+        <div className="panel-content">
+          <ContentBody>
+            <p dangerouslySetInnerHTML={{ __html: description }}></p>
+          </ContentBody>
+        </div>
         <HorizontalList className="clearfix">
           <InteractItem>
             <HorizontalReactBar reactionNumber={product.reactionNumber} />

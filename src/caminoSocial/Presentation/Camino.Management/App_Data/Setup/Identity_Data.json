@@ -1,16 +1,12 @@
-{
+ï»¿{
   "Statuses": [
     {
       "Name": "New",
       "Description": "New creating user"
     },
     {
-      "Name": "Pending",
-      "Description": "Waiting for verification"
-    },
-    {
       "Name": "Actived",
-      "Description": "Active user"
+      "Description": "Actived user"
     },
     {
       "Name": "Reported",
@@ -23,6 +19,10 @@
     {
       "Name": "Blocked",
       "Description": "The user is being blocked"
+    },
+    {
+      "Name": "Deleted",
+      "Description": "The user is being deleted"
     }
   ],
   "Genders": [
@@ -98,6 +98,14 @@
     {
       "Name": "CanDeleteUser",
       "Description": "Can delete user"
+    },
+    {
+      "Name": "CanActiveUser",
+      "Description": "Can active user"
+    },
+    {
+      "Name": "CanActiveUser",
+      "Description": "Can deactive user"
     },
     {
       "Name": "CanCreateUserStatus",
@@ -194,6 +202,102 @@
     {
       "Name": "CanDeleteRoleAuthorizationPolicy",
       "Description": "Can delete role authorization policy"
+    },
+    {
+      "Name": "CanCreateCountry",
+      "Description": "Can create new country"
+    },
+    {
+      "Name": "CanReadCountry",
+      "Description": "Can read country"
+    },
+    {
+      "Name": "CanUpdateCountry",
+      "Description": "Can update country"
+    },
+    {
+      "Name": "CanDeleteCountry",
+      "Description": "Can delete country"
+    },
+    {
+      "Name": "CanCreatePicture",
+      "Description": "Can create picture"
+    },
+    {
+      "Name": "CanReadPicture",
+      "Description": "Can read picture"
+    },
+    {
+      "Name": "CanUpdatePicture",
+      "Description": "Can update picture"
+    },
+    {
+      "Name": "CanDeletePicture",
+      "Description": "Can delete picture"
+    },
+    {
+      "Name": "CanCreateFarm",
+      "Description": "Can create farm"
+    },
+    {
+      "Name": "CanReadFarm",
+      "Description": "Can read farm"
+    },
+    {
+      "Name": "CanUpdateFarm",
+      "Description": "Can update farm"
+    },
+    {
+      "Name": "CanDeleteFarm",
+      "Description": "Can delete farm"
+    },
+    {
+      "Name": "CanCreateFarmType",
+      "Description": "Can create farm type"
+    },
+    {
+      "Name": "CanReadFarmType",
+      "Description": "Can read farm type"
+    },
+    {
+      "Name": "CanUpdateFarmType",
+      "Description": "Can update farm type"
+    },
+    {
+      "Name": "CanDeleteFarmType",
+      "Description": "Can delete farm type"
+    },
+    {
+      "Name": "CanCreateProduct",
+      "Description": "Can create product"
+    },
+    {
+      "Name": "CanReadProduct",
+      "Description": "Can read product"
+    },
+    {
+      "Name": "CanUpdateProduct",
+      "Description": "Can update product"
+    },
+    {
+      "Name": "CanDeleteProduct",
+      "Description": "Can delete product"
+    },
+    {
+      "Name": "CanCreateProductCategory",
+      "Description": "Can create product category"
+    },
+    {
+      "Name": "CanReadProductCategory",
+      "Description": "Can read product category"
+    },
+    {
+      "Name": "CanUpdateProductCategory",
+      "Description": "Can update product category"
+    },
+    {
+      "Name": "CanDeleteProductCategory",
+      "Description": "Can delete product category"
     }
   ],
   "Countries": [
@@ -203,7 +307,7 @@
     },
     {
       "Code": "ALA",
-      "Name": "Åland Islands"
+      "Name": "Ã…land Islands"
     },
     {
       "Code": "ALB",
@@ -415,7 +519,7 @@
     },
     {
       "Code": "CIV",
-      "Name": "Côte d''Ivoire"
+      "Name": "CÃ´te d'Ivoire"
     },
     {
       "Code": "HRV",
@@ -427,7 +531,7 @@
     },
     {
       "Code": "CUW",
-      "Name": "Curaçao"
+      "Name": "CuraÃ§ao"
     },
     {
       "Code": "CYP",
@@ -923,7 +1027,7 @@
     },
     {
       "Code": "REU",
-      "Name": "Réunion"
+      "Name": "RÃ©union"
     },
     {
       "Code": "ROU",
@@ -939,7 +1043,7 @@
     },
     {
       "Code": "BLM",
-      "Name": "Saint Barthélemy"
+      "Name": "Saint BarthÃ©lemy"
     },
     {
       "Code": "SHN",

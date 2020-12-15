@@ -1,4 +1,5 @@
 using Camino.ApiHost.Infrastructure.Extensions;
+using Camino.Core.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +27,9 @@ namespace Camino.ApiHost
 
             var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{Configuration["Modular:Path"]}";
-            services.AddModular(modulesPath, Configuration["Modular:Prefix"]);
+
+            var mvcBuilder = services.AddControllers().AddNewtonsoftJson();
+            mvcBuilder.AddModular(modulesPath, Configuration["Modular:Prefix"]);
             services.AddGraphQlModular();
         }
 

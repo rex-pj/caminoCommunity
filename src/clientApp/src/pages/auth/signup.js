@@ -31,7 +31,6 @@ export default withRouter((props) => {
         },
       })
         .then((response) => {
-          console.log(response);
           const { errors } = response;
           if (errors) {
             showError(

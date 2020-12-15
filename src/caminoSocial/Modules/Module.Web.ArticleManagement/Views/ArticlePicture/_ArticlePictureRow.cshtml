@@ -1,0 +1,24 @@
+﻿@using Camino.Core.Utils
+@model ArticlePictureModel
+<tr>
+    <td>
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.ArticleId" class="common-tooltip" data-toggle="tooltip">
+            @Model.ArticleName
+        </a>
+        <p><b>Type: </b> @EnumUtil.GetDescription(Model.ArticlePictureType)</p>
+    </td>
+    <td>
+        @if (Model.PictureId > 0)
+        {
+            <img width="200" src="@Url.Action("Get", "Picture", new { id = Model.PictureId })" alt="..." class="img-thumbnail">
+        }
+    </td>
+    <td>
+        <div>@Model.PictureName</div>
+        <p><b>Content Type:</b> @Model.ContentType</p>
+    </td>
+    <td>
+        <div>@Model.PictureCreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <p class="text-muted">by: @Model.PictureCreatedBy</p>
+    </td>
+</tr>

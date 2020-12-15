@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Camino.Business.Dtos.General;
+using Camino.Service.Projections.Request;
 using Module.Web.SetupManagement.Models;
 
 namespace Module.Web.SetupManagement.Infrastructure.AutoMap
@@ -8,7 +8,7 @@ namespace Module.Web.SetupManagement.Infrastructure.AutoMap
     {
         public SetupMappingProfile()
         {
-            CreateMap<SetupViewModel, SetupDto>();
+            CreateMap<SetupModel, SetupRequest>();
         }
     }
 }

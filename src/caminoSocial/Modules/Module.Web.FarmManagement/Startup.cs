@@ -10,7 +10,7 @@ namespace Module.Web.FarmManagement
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureFileServices();
+            services.ConfigureServices();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

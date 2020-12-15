@@ -1,21 +1,33 @@
-import React from "react";
-import ProfileAction from "../ProfileCard/ProfileAction";
+import React, { Fragment } from "react";
+import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ImageRound } from "../../atoms/Images";
+import ImageThumb from "../../molecules/Images/ImageThumb";
 import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
+import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 
 const Panel = styled(PanelDefault)`
   position: relative;
-  margin-bottom: ${p => p.theme.size.distance};
+  margin-bottom: ${(p) => p.theme.size.distance};
+
+  .no-image {
+    height: 200px;
+    border-radius: 0;
+  }
+
+  img.thumbnail-img {
+    width: 100%;
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
+  }
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -39,11 +51,11 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${p => p.theme.size.distance};
+  margin-top: ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
-  margin-right: ${p => p.theme.size.small};
+  margin-right: ${(p) => p.theme.size.small};
   :last-child {
     margin-right: 0;
   }
@@ -55,36 +67,31 @@ const Cover = styled.div`
   overflow: hidden;
 `;
 
-const CoverImage = styled(ImageRound)`
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-`;
-
 const FollowButton = styled(ButtonIconOutlineSecondary)`
-  padding: ${p => p.theme.size.tiny};
-  font-size: ${p => p.theme.rgbaColor.small};
+  padding: ${(p) => p.theme.size.tiny};
+  font-size: ${(p) => p.theme.rgbaColor.small};
   line-height: 1;
 
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  right: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
   z-index: 1;
 `;
 
-const ProfileBox = styled(ProfileAction)`
+const ProfileBox = styled(AuthorProfile)`
   position: absolute;
-  bottom: ${p => p.theme.size.distance};
-  left: ${p => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
+  left: ${(p) => p.theme.size.distance};
   z-index: 1;
 
   a {
-    color: ${p => p.theme.color.light};
+    color: ${(p) => p.theme.color.light};
   }
 `;
 
 const TopBarInfo = styled.div`
-  color: ${p => p.theme.color.neutral};
-  font-size: ${p => p.theme.fontSize.tiny};
+  color: ${(p) => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {
     color: inherit;
@@ -92,7 +99,7 @@ const TopBarInfo = styled.div`
   }
 
   svg {
-    margin-right: ${p => p.theme.size.exTiny};
+    margin-right: ${(p) => p.theme.size.exTiny};
     color: inherit;
     vertical-align: middle;
   }
@@ -102,7 +109,7 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default props => {
+export default (props) => {
   const { farm } = props;
   const { creator } = farm;
 
@@ -110,13 +117,13 @@ export default props => {
     <Panel>
       <Cover>
         <AnchorLink to={farm.url}>
-          <CoverImage src={farm.thumbnailUrl} alt="" />
+          <ImageThumb src={farm.thumbnailUrl} alt="" />
           <Overlay />
         </AnchorLink>
 
         <ProfileBox profile={creator} />
         <FollowButton icon="user-plus" size="sm">
-          Theo dõi
+          Follow
         </FollowButton>
       </Cover>
 
@@ -127,9 +134,18 @@ export default props => {
               <Title>
                 <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
               </Title>
+
               <TopBarInfo>
-                <FontAwesomeIcon icon="map-marker-alt" />
-                <span>{farm.address}</span>
+                <span className="mr-3">
+                  <FontAwesomeIcon icon="calendar-alt" />
+                  <span>{convertDateTimeToPeriod(farm.createdDate)}</span>
+                </span>
+                {farm.address ? (
+                  <Fragment>
+                    <FontAwesomeIcon icon="map-marker-alt" />
+                    <span>{farm.address}</span>
+                  </Fragment>
+                ) : null}
               </TopBarInfo>
             </div>
 
@@ -146,7 +162,8 @@ export default props => {
       <PanelBody>
         <div className="panel-content">
           <Description>
-            {farm.description} <AnchorLink to={farm.url}>Xem Thêm</AnchorLink>
+            <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>{" "}
+            <AnchorLink to={farm.url}>Detail</AnchorLink>
           </Description>
         </div>
         <InteractiveToolbar>
@@ -158,7 +175,7 @@ export default props => {
             <InteractiveItem>
               <FontButtonItem
                 icon="comments"
-                title="Thảo luận"
+                title="Discussions"
                 dynamicText={farm.commentNumber}
               />
             </InteractiveItem>

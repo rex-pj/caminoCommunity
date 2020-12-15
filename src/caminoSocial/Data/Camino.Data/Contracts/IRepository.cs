@@ -80,6 +80,18 @@ namespace Camino.Data.Contracts
         void Add(IEnumerable<TEntity> entities);
 
         /// <summary>
+        /// Add with int32 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        int AddWithInt32Entity(TEntity entity);
+
+        /// <summary>
+        /// Add with int32 entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        Task<int> AddWithInt32EntityAsync(TEntity entity);
+
+        /// <summary>
         /// Add entity async
         /// </summary>
         /// <param name="entities">entity</param>

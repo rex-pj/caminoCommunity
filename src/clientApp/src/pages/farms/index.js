@@ -1,60 +1,74 @@
-import React, { Component } from "react";
+import React from "react";
 import Farm from "../../components/templates/Farm";
-import { UrlConstant } from "../../utils/Constant";
+import { UrlConstant } from "../../utils/Constants";
+import { useQuery } from "@apollo/client";
+import { GET_FARMS } from "../../utils/GraphQLQueries/queries";
+import { withRouter } from "react-router-dom";
+import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+export default withRouter(function (props) {
+  const { match } = props;
+  const { params } = match;
+  const { pageNumber, pageSize } = params;
+  const { loading, data, error } = useQuery(GET_FARMS, {
+    variables: {
+      criterias: {
+        page: pageNumber ? parseInt(pageNumber) : 1,
+        pageSize: pageSize ? parseInt(pageSize) : 10,
+      },
+    },
+  });
 
-    let farms = [];
-    for (let i = 0; i < 9; i++) {
-      const farmItem = {
-        id: i + 1,
-        creator: {
-          photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất"
-        },
-        thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm1.jpg`,
-        description:
-          "Trang trại nằm ở gần cầu Hàm Luông, có nuôi và trồng khá nhiều cây trồng vật nuôi, có cả homestay để nghĩ ngơi với những nhà sàn bên sông rất mát",
-        url: `${UrlConstant.Farm.url}1`,
-        commentNumber: "14",
-        reactionNumber: "45+",
-        name: "Trang trại ông Năm Đất",
-        contentType: 3,
-        address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An"
-      };
+  if (loading || !data) {
+    return <Loading>Loading</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
+  }
 
-      farms.push(farmItem);
+  const { farms: farmsResponse } = data;
+  const { collections } = farmsResponse;
+  const farms = collections.map((item) => {
+    let farm = { ...item };
+    farm.url = `${UrlConstant.Farm.url}${farm.id}`;
+    if (farm.thumbnails) {
+      const thumbnail = farm.thumbnails[0];
+      if (thumbnail.pictureId > 0) {
+        farm.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+      }
     }
 
-    const breadcrumbs = [
-      {
-        isActived: true,
-        title: "Nông trại"
-      }
-    ];
-
-    this.state = {
-      farms,
-      totalPage: 10,
-      baseUrl: "/farms",
-      currentPage: 8,
-      breadcrumbs
+    farm.creator = {
+      createdDate: item.createdDate,
+      profileUrl: `/profile/${item.createdByIdentityId}`,
+      name: item.createdBy,
     };
-  }
 
-  render() {
-    const { farms, breadcrumbs, totalPage, baseUrl, currentPage } = this.state;
-    return (
-      <Farm
-        farms={farms}
-        breadcrumbs={breadcrumbs}
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        currentPage={currentPage}
-      />
-    );
-  }
-}
+    if (item.createdByPhotoCode) {
+      farm.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+    }
+
+    return farm;
+  });
+
+  const baseUrl = "/farms";
+  const { totalPage, filter } = farmsResponse;
+  const { page } = filter;
+
+  const breadcrumbs = [
+    {
+      isActived: true,
+      title: "Farm",
+    },
+  ];
+
+  return (
+    <Farm
+      farms={farms}
+      breadcrumbs={breadcrumbs}
+      totalPage={totalPage}
+      baseUrl={baseUrl}
+      currentPage={page}
+    />
+  );
+});

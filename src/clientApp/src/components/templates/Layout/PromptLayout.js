@@ -3,7 +3,7 @@ import styled from "styled-components";
 import MasterLayout from "./MasterLayout";
 
 const Root = styled.div`
-  background-color: ${p => p.theme.color.lighter};
+  background-color: ${(p) => p.theme.color.lighter};
   height: 100%;
 `;
 
@@ -17,10 +17,10 @@ const Container = styled.div`
 const Wrap = styled.div`
   width: 750px;
   max-width: 100%;
-  background-color: ${p => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.primaryLight};
   min-height: 500px;
-  border-radius: ${p => p.theme.borderRadius.medium};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
+  border-radius: ${(p) => p.theme.borderRadius.medium};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   margin: auto;
   overflow: hidden;
 
@@ -29,11 +29,11 @@ const Wrap = styled.div`
   }
 `;
 
-function PromptLayout({ component: Component, ...rest }) {
+export default function ({ component: Component, ...rest }) {
   return (
     <MasterLayout
       {...rest}
-      component={matchProps => (
+      component={(matchProps) => (
         <Root>
           <Container>
             <Wrap>
@@ -45,5 +45,3 @@ function PromptLayout({ component: Component, ...rest }) {
     />
   );
 }
-
-export default PromptLayout;

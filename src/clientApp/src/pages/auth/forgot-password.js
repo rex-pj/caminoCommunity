@@ -26,14 +26,14 @@ export default withRouter((props) => {
 
       errors.forEach((item) => {
         dispatch("NOTIFY", {
-          title: "Có lỗi xảy ra khi thay đổi mật khẩu",
+          title: "Something went wrong when update your password",
           message: getError(item.extensions.code, lang),
           type: "error",
         });
       });
     } else {
       dispatch("NOTIFY", {
-        title: "Có lỗi xảy ra khi thay đổi mật khẩu",
+        title: "Something went wrong when update your password",
         message: getError("ErrorOccurredTryRefeshInputAgain", lang),
         type: "error",
       });

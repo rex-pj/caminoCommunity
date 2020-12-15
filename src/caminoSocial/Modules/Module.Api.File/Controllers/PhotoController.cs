@@ -1,8 +1,9 @@
-﻿using Camino.Business.Contracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Camino.Data.Enums;
+using Camino.Service.Business.Users.Contracts;
+using Camino.Service.Business.Media.Contracts;
 
 namespace Module.Api.File.Controllers
 {
@@ -10,10 +11,12 @@ namespace Module.Api.File.Controllers
     public class PhotoController : Controller
     {
         private readonly IUserPhotoBusiness _userPhotoBusiness;
+        private readonly IPictureBusiness _pictureBusiness;
 
-        public PhotoController(IUserPhotoBusiness userPhotoBusiness)
+        public PhotoController(IUserPhotoBusiness userPhotoBusiness, IPictureBusiness pictureBusiness)
         {
             _userPhotoBusiness = userPhotoBusiness;
+            _pictureBusiness = pictureBusiness;
         }
 
         [HttpGet]
@@ -34,6 +37,15 @@ namespace Module.Api.File.Controllers
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
             return File(bytes, "image/jpeg");
+        }
+
+        [HttpGet]
+        [IgnoreAntiforgeryToken]
+        [Route("get/{id}")]
+        public async Task<IActionResult> Get(long id)
+        {
+            var picture = await _pictureBusiness.GetPicture(id);
+            return File(picture.BinaryData, picture.MimeType);
         }
     }
 }

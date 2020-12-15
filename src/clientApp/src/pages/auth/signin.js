@@ -30,7 +30,7 @@ export default withRouter((props) => {
           item.extensions && item.extensions.code
             ? getError(item.extensions.code, sessionContext.lang)
             : null;
-        showError("Đăng nhập KHÔNG thành công", errorCode);
+        showError("An error occurd when login", errorCode);
       });
     }
   };
@@ -70,7 +70,7 @@ export default withRouter((props) => {
         .catch((error) => {
           setFormEnabled(true);
           showError(
-            "Đăng nhập KHÔNG thành công",
+            "An error occurd when login",
             getError("ErrorOccurredTryRefeshInputAgain", sessionContext.lang)
           );
         });

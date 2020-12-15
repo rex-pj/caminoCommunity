@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { AnchorLink } from "../../../atoms/Links";
-import { PageInfo } from "../../../../utils/Constant";
+import { PageInfo } from "../../../../utils/Constants";
 import { Image } from "../../../atoms/Images";
 
 const LogoImageLink = styled.a`

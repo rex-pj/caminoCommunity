@@ -1,0 +1,27 @@
+﻿@model RoleAuthorizationPolicyFilterModel
+
+<div class="search-panel m-3 collapse card" id="searchPanel">
+    <div class="card-header">
+        <i class="fa fa-search mr-2"></i>Search
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-12 col-lg-3 col-form-label" for="Name">Name</label>
+                        <div class="col-sm-12 col-lg-9">
+                            <input type="hidden" asp-for="Id">
+                            <input type="text" class="form-control" asp-for="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-info">
+                    <i class="fa fa-search mr-2"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

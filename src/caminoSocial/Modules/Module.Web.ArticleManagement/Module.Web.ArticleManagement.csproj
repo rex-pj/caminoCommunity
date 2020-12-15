@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	</PropertyGroup>
 
@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Libraries\Camino.Business\Camino.Business.csproj" />
-	  <ProjectReference Include="..\..\Presentation\Camino.Framework\Camino.Framework.csproj" />
+	  <ProjectReference Include="..\..\Libraries\Camino.Service\Camino.Service.csproj" />
+	  <ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
 </Project>

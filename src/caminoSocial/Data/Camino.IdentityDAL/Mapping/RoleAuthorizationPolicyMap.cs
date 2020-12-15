@@ -1,6 +1,6 @@
 ﻿using Camino.Core.Constants;
 using Camino.Data.MapBuilders;
-using Camino.Data.Entities.Identity;
+using Camino.IdentityDAL.Entities;
 using LinqToDB.Mapping;
 
 namespace Camino.IdentityDAL.Mapping

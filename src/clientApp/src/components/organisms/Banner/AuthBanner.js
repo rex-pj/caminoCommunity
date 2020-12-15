@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Image } from "../../atoms/Images";
-import { PageInfo } from "../../../utils/Constant";
+import { PageInfo } from "../../../utils/Constants";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnchorLink } from "../../atoms/Links";
@@ -24,57 +24,57 @@ const Instruction = styled.div`
   bottom: 50%;
   left: 0;
   right: 0;
-  margin: auto ${p => p.theme.size.distance};
+  margin: auto ${(p) => p.theme.size.distance};
   min-height: 180px;
-  padding: ${p => p.theme.size.distance};
-  background: ${p => p.theme.rgbaColor.light};
-  border-radius: ${p => p.theme.borderRadius.medium};
+  padding: ${(p) => p.theme.size.distance};
+  background: ${(p) => p.theme.rgbaColor.light};
+  border-radius: ${(p) => p.theme.borderRadius.medium};
 
   ${SecondaryHeading} {
-    font-size: ${p => p.theme.fontSize.giant};
-    color: ${p => p.theme.color.lighter};
+    font-size: ${(p) => p.theme.fontSize.giant};
+    color: ${(p) => p.theme.color.lighter};
     text-transform: uppercase;
   }
 
   ${Image} {
     display: block;
-    margin: auto auto ${p => p.theme.size.distance} auto;
-    width: ${p => p.theme.size.large};
-    height: ${p => p.theme.size.large};
-    background: ${p => p.theme.rgbaColor.cyan};
-    padding: ${p => p.theme.size.tiny};
-    border-radius: ${p => p.theme.borderRadius.medium};
+    margin: auto auto ${(p) => p.theme.size.distance} auto;
+    width: ${(p) => p.theme.size.large};
+    height: ${(p) => p.theme.size.large};
+    background: ${(p) => p.theme.rgbaColor.cyan};
+    padding: ${(p) => p.theme.size.tiny};
+    border-radius: ${(p) => p.theme.borderRadius.medium};
   }
 
   svg {
-    margin-bottom: ${p => p.theme.size.distance};
+    margin-bottom: ${(p) => p.theme.size.distance};
   }
 
   svg,
   path {
-    font-size: ${p => p.theme.fontSize.giant};
-    color: ${p => p.theme.color.warning};
+    font-size: ${(p) => p.theme.fontSize.giant};
+    color: ${(p) => p.theme.color.warning};
   }
 
   p {
-    color: ${p => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.lighter};
     margin-bottom: 0;
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 
   a {
-    color: ${p => p.theme.color.white};
-    font-size: ${p => p.theme.fontSize.small};
+    color: ${(p) => p.theme.color.white};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
-    font-size: ${p => p.theme.fontSize.normal};
-    margin-top: ${p => p.theme.size.exTiny};
+    font-size: ${(p) => p.theme.fontSize.normal};
+    margin-top: ${(p) => p.theme.size.exTiny};
     display: block;
     text-decoration: underline;
   }
 `;
 
-export default function(props) {
+export default function (props) {
   const { imageUrl, icon, title, instruction, actionUrl, actionText } = props;
   return (
     <Root>

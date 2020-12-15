@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.Infrastructure.Middlewares;
-using Camino.Framework.Models;
-using HotChocolate.AspNetCore;
+using Camino.Framework.Models.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace Camino.ApiHost.Infrastructure.Extensions
 {
@@ -29,8 +29,17 @@ namespace Camino.ApiHost.Infrastructure.Extensions
             app.UseModular(env);
 
             app.UseWebSockets();
-            app.UseGraphQL("/graphql");
-            app.UsePlayground();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGraphQL();
+
+                endpoints.MapGet("/", context =>
+                {
+                    context.Response.Redirect("/graphql");
+                    return Task.CompletedTask;
+                });
+            });
 
             return app;
         }

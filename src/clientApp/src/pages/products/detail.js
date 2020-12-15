@@ -1,135 +1,154 @@
-import React, { Component, Fragment } from "react";
-import { UrlConstant } from "../../utils/Constant";
+import React, { Fragment } from "react";
+import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
-import Breadcrumb from "../../components/molecules/Breadcrumb";
+import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
+import { useQuery } from "@apollo/client";
+import styled from "styled-components";
+import {
+  GET_PRODUCT,
+  GET_RELEVANT_PRODUCTS,
+} from "../../utils/GraphQLQueries/queries";
+import { withRouter } from "react-router-dom";
+import ProductItem from "../../components/organisms/Product/ProductItem";
+import { TertiaryHeading } from "../../components/atoms/Heading";
+import Loading from "../../components/atoms/Loading";
+import ErrorBlock from "../../components/atoms/ErrorBlock";
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+const RelationBox = styled.div`
+  margin-top: ${(p) => p.theme.size.distance};
+`;
 
-    const product = {
-      title: "Chuối chính cây Đồng Nai",
-      createdDate: "25/03/2019 00:00",
-      thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-      content:
-        "Chúng ta đã nghe nói quá nhiều về những tác dụng tuyệt vời của chuối đối với sức khỏe, nhưng để duy trì việc ăn chuối thành thói quen tự nhiên hàng ngày thì vẫn rất ít người thực hiện được. Có thể bạn đã biết rõ tác dụng tốt của chuối, nhưng bạn vẫn chưa đủ động lực để ăn chuối hàng ngày, trong khi thói quen này lại có thể mang đến 5 thay đổi lớn đến các bộ phận cơ thể. Hãy tạo thói quen ăn chuối càng sớm càng tốt.",
-      commentNumber: "40+",
-      reactionNumber: "2.5+",
-      url: `${UrlConstant.Farm.url}1`,
-      address: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-      price: 100000,
-      origin: "Đồng Nai",
-      farmUrl: `${UrlConstant.Farm.url}1`,
-      farmName: "Trang trại ông năm đất",
-      images: [
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana2.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana2.jpg`
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana3.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana3.jpg`
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana4.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana4.jpg`
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana5.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana5.jpg`
-        },
-        {
-          name: "Image 1",
-          url: `${process.env.PUBLIC_URL}/photos/banana6.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana6.jpg`
-        },
-        {
-          name: "Peach",
-          url: `${process.env.PUBLIC_URL}/photos/peach.png`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`
-        },
-        {
-          name: "Fruit",
-          url: `${process.env.PUBLIC_URL}/photos/fruit.jpg`,
-          thumbnailUrl: `${process.env.PUBLIC_URL}/photos/fruit.jpg`
-        }
-      ]
-    };
+export default withRouter(function (props) {
+  const { match } = props;
+  const { params } = match;
+  const { id } = params;
 
-    this.state = {
-      product,
-      breadcrumbs: [],
-      relationProducts: []
-    };
+  const { loading, data, error } = useQuery(GET_PRODUCT, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
+      },
+    },
+  });
+
+  const {
+    relevantLoading,
+    data: relevantData,
+    error: relevantError,
+  } = useQuery(GET_RELEVANT_PRODUCTS, {
+    variables: {
+      criterias: {
+        id: parseFloat(id),
+        page: 1,
+        pageSize: 8,
+      },
+    },
+  });
+
+  if (loading || !data) {
+    return <Loading>Loading...</Loading>;
+  } else if (error) {
+    return <ErrorBlock>Error!</ErrorBlock>;
   }
 
-  fetchRelationProducts = () => {
-    let relationProducts = [];
-    for (let i = 0; i < 6; i++) {
-      const productItem = {
-        id: i + 1,
-        creator: {
-          photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
-          profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-          name: "Ông 5 Đất"
-        },
-        thumbnailUrl: `${process.env.PUBLIC_URL}/photos/banana.jpg`,
-        farmUrl: `${UrlConstant.Farm.url}1`,
-        farmName: "Trang trại ông năm đất",
-        url: `${UrlConstant.Product.url}1`,
-        commentNumber: "14",
-        reactionNumber: "45+",
-        name: "Chuối chính cây Đồng Nai",
-        contentType: 2,
-        price: 100000
+  const { product: productResponse } = data;
+  let product = { ...productResponse };
+
+  const breadcrumbs = [
+    {
+      title: "Products",
+      url: "/products/",
+    },
+    {
+      isActived: true,
+      title: product.name,
+    },
+  ];
+
+  if (product.thumbnails && product.thumbnails.length > 0) {
+    product.images = product.thumbnails.map((item) => {
+      let image = { ...item };
+
+      if (image.pictureId > 0) {
+        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
+        image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
+      }
+      return image;
+    });
+  }
+
+  if (product.productFarms) {
+    product.productFarms = product.productFarms.map((pf) => {
+      let productFarm = { ...pf };
+      productFarm.url = `/farms/${pf.farmId}`;
+      return productFarm;
+    });
+  }
+
+  const renderRelevants = (relevantLoading, relevantData, relevantError) => {
+    if (relevantLoading || !relevantData) {
+      return <Loading className="mt-3">Loading...</Loading>;
+    } else if (relevantError) {
+      return <ErrorBlock>Error!</ErrorBlock>;
+    }
+    const { relevantProducts } = relevantData;
+    const relevants = relevantProducts.map((item) => {
+      let productItem = { ...item };
+      productItem.url = `${UrlConstant.Product.url}${productItem.id}`;
+      if (productItem.thumbnails) {
+        const thumbnail = productItem.thumbnails[0];
+        if (thumbnail && thumbnail.pictureId > 0) {
+          productItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+        }
+      }
+
+      productItem.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
       };
 
-      relationProducts.push(productItem);
-    }
+      if (item.createdByPhotoCode) {
+        productItem.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
 
-    this.setState({
-      relationProducts
+      if (productItem.productFarms) {
+        productItem.productFarms = productItem.productFarms.map((pf) => {
+          let productFarm = { ...pf };
+          productFarm.url = `/farms/${pf.farmId}`;
+          return productFarm;
+        });
+      }
+
+      return productItem;
     });
+
+    return (
+      <RelationBox className="mt-3">
+        <TertiaryHeading>Other Products</TertiaryHeading>
+        <div className="row">
+          {relevants
+            ? relevants.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
+                  >
+                    <ProductItem product={item} />
+                  </div>
+                );
+              })
+            : null}
+        </div>
+      </RelationBox>
+    );
   };
 
-  componentDidMount() {
-    const breadcrumbs = [
-      {
-        title: "Sản phẩm",
-        url: "/products/"
-      },
-      {
-        isActived: true,
-        title: "Chuối chính cây Đồng Nai"
-      }
-    ];
-
-    this.setState({
-      breadcrumbs
-    });
-  }
-
-  render() {
-    const { breadcrumbs, product, relationProducts } = this.state;
-    return (
-      <Fragment>
-        <Breadcrumb list={breadcrumbs} />
-        <Detail
-          product={product}
-          breadcrumbs={breadcrumbs}
-          fetchRelationProducts={this.fetchRelationProducts}
-          relationProducts={relationProducts}
-        />
-      </Fragment>
-    );
-  }
-}
+  return (
+    <Fragment>
+      <Breadcrumb list={breadcrumbs} />
+      <Detail product={product} breadcrumbs={breadcrumbs} />
+      {renderRelevants(relevantLoading, relevantData, relevantError)}
+    </Fragment>
+  );
+});

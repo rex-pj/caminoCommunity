@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Module.Api.Auth.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Camino.Core.Modular.Contracts;
+using Camino.Framework.Models;
 
 namespace Module.Api.Auth
 {

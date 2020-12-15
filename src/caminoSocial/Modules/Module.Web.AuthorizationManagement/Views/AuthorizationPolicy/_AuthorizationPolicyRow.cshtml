@@ -1,0 +1,47 @@
+﻿@model AuthorizationPolicyModel
+
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        <a asp-action="Detail" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@Model.Description">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.CreatedDate.ToLongDateString()</div>
+        <p class="text-muted">by: @Model.CreatedByName</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToLongDateString()</div>
+        <p class="text-muted">by: @Model.UpdatedByName</p>
+    </td>
+    <td>
+        <div class="mb-2">
+            @if (Model.CanUpdate)
+            {
+                <a asp-action="Update" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                   data-toggle="tooltip" data-placement="top" title="Edit authorization policy @Model.Name">
+                    <i class="fa fa-edit"></i>
+                </a>
+            }
+
+            @if (Model.CanViewUserAuthorizationPolicy)
+            {
+                <a asp-action="Index" asp-controller="UserAuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                   data-toggle="tooltip" data-placement="top" title="View user authorization policy">
+                    <i class="fa fa-eye"></i>
+                    <i class="fa fa-users"></i>
+                </a>
+            }
+
+            @if (Model.CanViewRoleAuthorizationPolicy)
+            {
+                <a asp-action="Index" asp-controller="RoleAuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
+                   data-toggle="tooltip" data-placement="top" title="View role authorization policy">
+                    <i class="fa fa-eye"></i>
+                    <i class="fa fa-id-card"></i>
+                </a>
+            }
+        </div>
+    </td>
+</tr>

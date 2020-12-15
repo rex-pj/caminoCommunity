@@ -9,14 +9,15 @@ const ButtonGroups = styled.div`
 const Button = styled(ButtonTransparent)`
   padding: 0;
   text-align: center;
-  width: ${p => p.theme.size.small};
-  height: ${p => p.theme.size.small};
+  width: ${(p) => p.theme.size.small};
+  height: ${(p) => p.theme.size.small};
 `;
 
-export default props => {
+export default (props) => {
+  const { onClick } = props;
   return (
     <ButtonGroups className={props.className}>
-      <Button>{props.children}</Button>
+      {onClick ? <Button onClick={onClick}>{props.children}</Button> : null}
     </ButtonGroups>
   );
 };

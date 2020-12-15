@@ -1,8 +1,90 @@
-﻿
+﻿@model FarmModel
 @{
-    ViewData["Title"] = "Detail";
+    ViewData["Title"] = "Farm " + @Model.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Detail</h1>
-
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <a asp-action="Index" asp-controller="Farm" class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanUpdate)
+            {
+                <a asp-action="Update" asp-controller="Farm" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="form-row">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="form-group mb-3">
+                @if (Model.ThumbnailId > 0)
+                {
+                    <img src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
+                }
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-7">
+            <div class="form-group">
+                <h2>@Model.Name</h2>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-7">
+            <div class="form-group">
+                <p>@Html.Raw(Model.Description)</p>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Created by</label>
+                <span class="form-control" readonly>@Model.CreatedBy</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Created date</label>
+                <span class="form-control" readonly>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Updated by</label>
+                <span class="form-control" readonly>@Model.UpdatedBy</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Updated date</label>
+                <span class="form-control" readonly>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Farm Type</label>
+                <span class="form-control" readonly>@Model.FarmTypeName</span>
+            </div>
+        </div>
+    </div>
+</div>

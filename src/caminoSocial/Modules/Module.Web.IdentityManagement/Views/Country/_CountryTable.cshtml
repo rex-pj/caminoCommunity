@@ -1,0 +1,29 @@
+﻿@model PageListModel<CountryModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var country in Model.Collections)
+            {
+                country.SetPageAuthorizationForModel(Model);
+                <partial name="_CountryRow" model="country" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

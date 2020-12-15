@@ -6,7 +6,7 @@ namespace Camino.ApiHost.Controllers
     {
         public IActionResult Index()
         {
-            return Content("Api");
+            return Content("Camino Api");
         }
     }
 }

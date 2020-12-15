@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Camino.Core.Utils
@@ -41,7 +42,7 @@ namespace Camino.Core.Utils
             return default;
         }
 
-        public static IEnumerable<ISelectOption> EnumToSelectList<TEnum>(string selectedId = "")
+        public static IEnumerable<SelectOption> EnumToSelectList<TEnum>(string selectedId = "")
         {
             var enumsData = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
             var result = enumsData.Select(e => new SelectOption()
@@ -51,6 +52,25 @@ namespace Camino.Core.Utils
             });
 
             return result;
+        }
+
+        public static string GetDescription<TEnum>(TEnum value)
+        {
+            var type = value.GetType();
+            string name = Enum.GetName(type, value);
+            if (name != null)
+            {
+                var field = type.GetField(name);
+                if (field != null)
+                {
+                    var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                    if (attribute != null)
+                    {
+                        return attribute.Description;
+                    }
+                }
+            }
+            return value.ToString();
         }
     }
 }

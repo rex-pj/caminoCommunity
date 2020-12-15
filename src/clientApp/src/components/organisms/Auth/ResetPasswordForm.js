@@ -4,7 +4,7 @@ import { TextboxSecondary } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import ResetPasswordNavigation from "../../../components/organisms/NavigationMenu/ResetPasswordNavigation";
+import ResetPasswordNavigation from "../../../components/organisms/Navigation/ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
 import resetPasswordModel from "../../../models/resetPasswordModel";
@@ -131,8 +131,8 @@ export default (props) => {
 
       if (!isFormValid) {
         props.showValidationError(
-          "Thông tin bạn nhập có thể bị sai",
-          "Có thể bạn nhập sai thông tin này, vui lòng kiểm tra và nhập lại"
+          "Something went wrong with your input",
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
@@ -165,14 +165,17 @@ export default (props) => {
     <form onSubmit={(e) => onResetPassword(e)} method="POST">
       <ResetPasswordNavigation />
       <Instruction>
-        <p>Mật khẩu nên bao gồm chữ, số, ký tự đặc biệt và chữ viết hoa</p>
+        <p>
+          Password must contain lower case, upper case letters, numeric, special
+          characters
+        </p>
       </Instruction>
       <PanelBody>
         <FormRow>
-          <Label>Mật khẩu hiện tại</Label>
+          <Label>Current password</Label>
           <Textbox
             autoComplete="off"
-            placeholder="Nhập mật khẩu hiện tại của bạn vào đây"
+            placeholder="Your current password"
             name="currentPassword"
             type="password"
             onChange={(e) => handleInputChange(e)}
@@ -180,10 +183,10 @@ export default (props) => {
           />
         </FormRow>
         <FormRow>
-          <Label>Mật khẩu mới</Label>
+          <Label>New password</Label>
           <Textbox
             autoComplete="off"
-            placeholder="Nhập mật khẩu mới"
+            placeholder="Enter new password"
             type="password"
             name="password"
             onChange={(e) => handleInputChange(e)}
@@ -191,10 +194,10 @@ export default (props) => {
           />
         </FormRow>
         <FormRow>
-          <Label>Nhập lại mật khẩu</Label>
+          <Label>Confirm password</Label>
           <Textbox
             autoComplete="off"
-            placeholder="Nhập lại mật khẩu mới"
+            placeholder="Please confirm your new password"
             type="password"
             name="confirmPassword"
             onChange={(e) => handleInputChange(e)}
@@ -203,7 +206,7 @@ export default (props) => {
         </FormRow>
         <FormFooter>
           <SubmitButton type="submit" disabled={!isFormCheckValid}>
-            Đổi mật khẩu
+            Change password
           </SubmitButton>
         </FormFooter>
       </PanelBody>

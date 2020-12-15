@@ -14,6 +14,7 @@ using System.Text;
 using LinqToDB.Mapping;
 using Camino.Core.Infrastructure;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace Camino.Data.Contracts
 {
@@ -26,7 +27,7 @@ namespace Camino.Data.Contracts
         {
             _dataProvider = new SqlServerDataProvider(ProviderName.SqlServer, SqlServerVersion.v2008);
             _dataConnection = dataConnection;
-            
+
             if (Singleton<TMappingSchema>.Instance == null)
             {
                 LoadMappingSchemaBuilder();
@@ -38,8 +39,9 @@ namespace Camino.Data.Contracts
 
         protected void LoadMappingSchemaBuilder()
         {
-            var fluentMapBuilder = _dataConnection.MappingSchema.GetFluentMappingBuilder();
-            FluentMapBuilder = fluentMapBuilder;
+            var mappingSchema = new MappingSchema();
+            FluentMapBuilder = mappingSchema.GetFluentMappingBuilder();
+            _dataConnection.AddMappingSchema(mappingSchema);
             OnMappingSchemaCreating();
             Singleton<MappingSchema>.Instance = _dataConnection.MappingSchema;
         }
@@ -119,15 +121,27 @@ namespace Camino.Data.Contracts
             _dataConnection.BulkCopy(new BulkCopyOptions(), entities.RetrieveIdentity(_dataConnection));
         }
 
-        public object Insert<TEntity>(TEntity entity)
+        public object InsertWithIdentity<TEntity>(TEntity entity)
         {
-            var id = _dataConnection.Insert(entity);
+            var id = _dataConnection.InsertWithIdentity(entity);
             return id;
         }
 
-        public async Task<object> InsertAsync<TEntity>(TEntity entity)
+        public async Task<object> InsertWithIdentityAsync<TEntity>(TEntity entity)
         {
-            var id = await _dataConnection.InsertAsync(entity);
+            var id = await _dataConnection.InsertWithIdentityAsync(entity);
+            return id;
+        }
+
+        public async Task<int> InsertWithInt32IdentityAsync<TEntity>(TEntity entity)
+        {
+            var id = await _dataConnection.InsertWithInt32IdentityAsync(entity);
+            return id;
+        }
+
+        public int InsertWithInt32Identity<TEntity>(TEntity entity)
+        {
+            var id = _dataConnection.InsertWithInt32Identity(entity);
             return id;
         }
 

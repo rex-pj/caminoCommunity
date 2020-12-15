@@ -1,7 +1,7 @@
 ﻿using Camino.Core.Constants;
-using Camino.Data.Entities.Content;
 using LinqToDB.Mapping;
 using Camino.Data.MapBuilders;
+using Camino.DAL.Entities;
 
 namespace Camino.DAL.Mapping
 {

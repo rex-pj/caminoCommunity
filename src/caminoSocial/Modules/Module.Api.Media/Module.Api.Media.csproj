@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="HotChocolate.Data" Version="11.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
+		<ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+	</ItemGroup>
+</Project>

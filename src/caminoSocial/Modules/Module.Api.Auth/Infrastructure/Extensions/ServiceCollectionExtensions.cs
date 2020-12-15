@@ -1,12 +1,14 @@
 ﻿using Module.Api.Auth.Infrastructure.AutoMap;
 using Module.Api.Auth.Models;
-using Module.Api.Auth.Resolvers;
-using Module.Api.Auth.Resolvers.Contracts;
+using Module.Api.Auth.GraphQL.Resolvers;
+using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using AutoMapper;
-using Camino.Business.AutoMap;
+using Camino.Service.AutoMap;
 using Camino.Framework.Infrastructure.AutoMap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Api.Auth.GraphQL.Mutations;
+using Module.Api.Auth.GraphQL.Queries;
 
 namespace Module.Api.Auth.Infrastructure.Extensions
 {
@@ -18,6 +20,13 @@ namespace Module.Api.Auth.Infrastructure.Extensions
             services.AddTransient<ICountryResolver, CountryResolver>();
             services.AddTransient<IGenderResolver, GenderResolver>();
             services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+
+            services.AddGraphQLServer()
+                .AddType<CountryQueries>()
+                .AddType<GenderQueries>()
+                .AddType<UserPhotoQueries>()
+                .AddType<UserQueries>()
+                .AddType<UserMutations>();
 
             return services;
         }

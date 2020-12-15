@@ -1,16 +1,20 @@
 ﻿using AutoMapper;
-using Camino.Business.Contracts;
-using Camino.Business.Dtos.Content;
+using Camino.Service.Projections.Filters;
+using Camino.Core.Constants;
+using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Module.Web.ArticleManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Camino.Service.Business.Articles.Contracts;
+using Camino.Service.Projections.Article;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -18,23 +22,51 @@ namespace Module.Web.ArticleManagement.Controllers
     {
         private readonly IArticleCategoryBusiness _articleCategoryBusiness;
         private readonly IMapper _mapper;
-        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness, IHttpContextAccessor httpContextAccessor)
+        private readonly IHttpHelper _httpHelper;
+
+        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness,
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
+            _httpHelper = httpHelper;
             _mapper = mapper;
             _articleCategoryBusiness = articleCategoryBusiness;
         }
 
-        [ApplicationAuthorization(policy: "CanReadArticleCategory")]
-        public IActionResult Index()
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var categories = _articleCategoryBusiness.GetFull();
-            var categoryModels = _mapper.Map<List<ArticleCategoryViewModel>>(categories);
-            var categoryPage = new PagerViewModel<ArticleCategoryViewModel>(categoryModels);
+            var filterRequest = new ArticleCategoryFilter()
+            {
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search,
+                UpdatedById = filter.UpdatedById
+            };
+
+            var categoryPageList = await _articleCategoryBusiness.GetAsync(filterRequest);
+            var categories = _mapper.Map<List<ArticleCategoryModel>>(categoryPageList.Collections);
+            var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
+            {
+                Filter = filter,
+                TotalPage = categoryPageList.TotalPage,
+                TotalResult = categoryPageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_ArticleCategoryTable", categoryPage);
+            }
 
             return View(categoryPage);
         }
 
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)
@@ -50,7 +82,7 @@ namespace Module.Web.ArticleManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<ArticleCategoryViewModel>(category);
+                var model = _mapper.Map<ArticleCategoryModel>(category);
                 return View(model);
             }
             catch (Exception)
@@ -59,65 +91,87 @@ namespace Module.Web.ArticleManagement.Controllers
             }
         }
 
-        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
         public IActionResult Create()
         {
-            var model = new ArticleCategoryViewModel()
-            {
-                SelectCategories = _articleCategoryBusiness
-                .Get(x => !x.ParentId.HasValue)
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                })
-            };
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Update(int id)
-        {
-            var category = _articleCategoryBusiness.Find(id);
-            var model = _mapper.Map<ArticleCategoryViewModel>(category);
-
-            if (category.ParentId.HasValue)
-            {
-                model.SelectCategories = _articleCategoryBusiness
-                .Get(x => x.Id != id && !x.ParentId.HasValue)
-                .Where(x => x.Id != id)
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                });
-            }
-
+            var model = new ArticleCategoryModel();
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult CreateOrUpdate(ArticleCategoryViewModel model)
+        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
+        public IActionResult Create(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryDto>(model);
-            category.UpdatedById = LoggedUserId;
-            if (category.Id > 0)
-            {
-                _articleCategoryBusiness.Update(category);
-                return RedirectToAction("Detail", new { id = category.Id });
-            }
-
+            var category = _mapper.Map<ArticleCategoryProjection>(model);
             var exist = _articleCategoryBusiness.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
+            category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var newId = _articleCategoryBusiness.Add(category);
+            var id = _articleCategoryBusiness.Create(category);
 
-            return RedirectToAction("Detail", new { id = newId });
+            return RedirectToAction("Detail", new { id });
+        }
+
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        public IActionResult Update(int id)
+        {
+            var category = _articleCategoryBusiness.Find(id);
+            var model = _mapper.Map<ArticleCategoryModel>(category);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        public IActionResult Update(ArticleCategoryModel model)
+        {
+            var category = _mapper.Map<ArticleCategoryProjection>(model);
+            if (category.Id <= 0)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var exist = _articleCategoryBusiness.Find(model.Id);
+            if (exist == null)
+            {
+                return RedirectToErrorPage();
+            }
+
+            category.UpdatedById = LoggedUserId;
+            _articleCategoryBusiness.Update(category);
+            return RedirectToAction("Detail", new { id = category.Id });
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        public IActionResult Search(string q, long? currentId = null, bool isParentOnly = false)
+        {
+            IList<ArticleCategoryProjection> categories;
+            if (isParentOnly)
+            {
+                categories = _articleCategoryBusiness.SearchParents(q, currentId);
+            }
+            else
+            {
+                categories = _articleCategoryBusiness.Search(q, currentId);
+            }
+
+            if (categories == null || !categories.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = categories
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.ParentId.HasValue ? $"-- {x.Name}" : x.Name
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

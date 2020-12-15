@@ -6,7 +6,7 @@ import AdsList from "../../organisms/Ads/AdsList";
 import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
   FarmSuggestions,
-  GroupSuggestions,
+  AssociationSuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   }
 `;
 
+// The layout or article or farm detail page
 export default ({ component: Component, ...rest }) => {
   return (
     <FrameLayout
@@ -45,7 +46,7 @@ export default ({ component: Component, ...rest }) => {
                 <AdsList />
               </PageColumnPanel>
               <PageColumnPanel>
-                <GroupSuggestions />
+                <AssociationSuggestions />
               </PageColumnPanel>
               <PageColumnPanel>
                 <AdsList />

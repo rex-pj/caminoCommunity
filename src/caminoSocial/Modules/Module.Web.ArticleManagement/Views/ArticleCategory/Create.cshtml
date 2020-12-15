@@ -1,15 +1,20 @@
-﻿@{
+﻿@model ArticleCategoryModel
+@{
     ViewData["Title"] = "Create category";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model ArticleCategoryViewModel
+@section Scripts {
+    <script src="~/articlemanagement/js/articlecategory-update.js" asp-append-version="true"></script>
+}
 
-<div class="card-header bg-secondary text-light">
-    <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-light">
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="ArticleCategory" class="btn btn-sm btn-outline-secondary">
         <i class="fa fa-arrow-left"></i>
     </a>
     @ViewData["Title"]
 </div>
 <div class="card-body">
-    <partial name="_CreateOrUpdateForm" />
+    <form method="post" asp-action="Create" asp-controller="ArticleCategory">
+        <partial name="_CreateOrUpdateForm" />
+    </form>
 </div>
