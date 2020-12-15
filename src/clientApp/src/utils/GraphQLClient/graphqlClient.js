@@ -57,7 +57,6 @@ const cache = new InMemoryCache({
     SelectOption: {
       keyFields: ["text", "id"],
     },
-
     ProductModel: {
       fields: {
         thumbnails: {

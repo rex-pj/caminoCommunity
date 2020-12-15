@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 
 namespace Camino.Management
 {
@@ -28,15 +27,13 @@ namespace Camino.Management
         {
             services.ConfigureManagementServices(_configuration);
 
-            var rootPath = Directory.GetParent(_webHostEnvironment.ContentRootPath).Parent.FullName;
-            var modulesPath = $"{rootPath}{_configuration["Modular:Path"]}";
             var mvcBuilder = services.AddControllersWithViews(options =>
             {
                 options.ModelBinderProviders.Insert(0, new ApplicationModelBinderProvider());
             })
             .AddNewtonsoftJson();
 
-            mvcBuilder.AddModular(modulesPath, _configuration["Modular:Prefix"]);
+            mvcBuilder.AddModular();
             services.AddAutoMappingModular();
         }
 

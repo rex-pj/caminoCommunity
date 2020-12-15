@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
@@ -22,7 +22,7 @@ export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
-  const dispatch = useStore(false)[1];
+  const [state, dispatch] = useStore(false);
   const { user } = useContext(SessionContext);
 
   const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
@@ -81,7 +81,7 @@ export default withRouter(function (props) {
       return new Promise((resolve, reject) => {
         const { data } = response;
         const { createArticle: article } = data;
-        refetchNewArticles();
+        fetchArticles();
         resolve({ article });
       });
     });
@@ -113,10 +113,6 @@ export default withRouter(function (props) {
     };
   };
 
-  const refetchNewArticles = () => {
-    fetchArticles();
-  };
-
   const articleEditor =
     user && user.isLogin ? (
       <ArticleEditor
@@ -125,10 +121,16 @@ export default withRouter(function (props) {
         onImageValidate={onImageValidate}
         filterCategories={searchArticleCategories}
         onArticlePost={onArticlePost}
-        refetchNews={refetchNewArticles}
+        refetchNews={fetchArticles}
         showValidationError={showValidationError}
       />
     ) : null;
+
+  useEffect(() => {
+    if (state.type === "ARTICLE" && state.id) {
+      fetchArticles();
+    }
+  }, [state, fetchArticles]);
 
   if (loading || !data || networkStatus === 1) {
     return (
@@ -184,7 +186,7 @@ export default withRouter(function (props) {
               convertImageCallback={convertImagefile}
               onImageValidate={onImageValidate}
               filterCategories={searchArticleCategories}
-              refetchNews={refetchNewArticles}
+              refetchNews={fetchArticles}
               showValidationError={showValidationError}
             />
           ))

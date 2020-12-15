@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Detail from "../../components/templates/Article/Detail";
 import { UrlConstant } from "../../utils/Constants";
@@ -13,6 +13,7 @@ import { TertiaryDarkHeading } from "../../components/atoms/Heading";
 import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { useStore } from "../../store/hook-store";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -22,8 +23,8 @@ export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { id } = params;
-
-  const { loading, data, error } = useQuery(GET_ARTICLE, {
+  const [state] = useStore(true);
+  const { loading, data, error, refetch } = useQuery(GET_ARTICLE, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -44,6 +45,12 @@ export default withRouter(function (props) {
       },
     },
   });
+
+  useEffect(() => {
+    if (state.type === "ARTICLE" && state.id) {
+      refetch();
+    }
+  }, [state, refetch]);
 
   if (loading || !data) {
     return <Loading>Loading...</Loading>;

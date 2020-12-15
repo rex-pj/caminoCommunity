@@ -45,6 +45,11 @@ namespace Module.Api.File.Controllers
         public async Task<IActionResult> Get(long id)
         {
             var picture = await _pictureBusiness.GetPicture(id);
+            if (picture == null)
+            {
+                return null;
+            }
+
             return File(picture.BinaryData, picture.MimeType);
         }
     }

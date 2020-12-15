@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Loading from "../../components/atoms/Loading";
@@ -27,12 +27,21 @@ export default withRouter(function (props) {
   });
   const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
 
-  const { loading, data, error } = useQuery(GET_ARTICLE_FOR_UPDATE, {
-    variables: {
-      criterias: {
-        id: parseFloat(id),
+  const { loading, data, error, refetch, called } = useQuery(
+    GET_ARTICLE_FOR_UPDATE,
+    {
+      variables: {
+        criterias: {
+          id: parseFloat(id),
+        },
       },
-    },
+    }
+  );
+
+  useEffect(() => {
+    if (!loading && called) {
+      refetch();
+    }
   });
 
   if (loading || !data) {
@@ -98,15 +107,25 @@ export default withRouter(function (props) {
           const referrefUri = props.location.state.from;
           const articleUpdateUrl = `/articles/update/${article.id}`;
           if (referrefUri !== articleUpdateUrl) {
-            resolve({ article });
+            raiseArticleUpdatedNotify(article);
+
             props.history.push(referrefUri);
+            resolve({ article });
             return;
           }
         }
 
+        raiseArticleUpdatedNotify(article);
+
         props.history.push(`/articles/${article.id}`);
         resolve({ article });
       });
+    });
+  };
+
+  const raiseArticleUpdatedNotify = (article) => {
+    dispatch("ARTICLE_UPDATE", {
+      id: article.id,
     });
   };
 

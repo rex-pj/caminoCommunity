@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
@@ -29,7 +29,7 @@ export default withRouter((props) => {
   const { params } = match;
   const { userId } = params;
   const { user } = useContext(SessionContext);
-  const dispatch = useStore(false)[1];
+  const [state, dispatch] = useStore(false);
 
   // Mutations
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
@@ -146,10 +146,6 @@ export default withRouter((props) => {
       });
   };
 
-  const refetchNewsFeed = () => {
-    feedsRefetch();
-  };
-
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
     return {
@@ -176,7 +172,7 @@ export default withRouter((props) => {
       return new Promise((resolve) => {
         const { data } = response;
         const { createArticle: article } = data;
-        refetchNewsFeed();
+        feedsRefetch();
         resolve({ article });
       });
     });
@@ -212,7 +208,7 @@ export default withRouter((props) => {
       onImageValidate={onImageValidate}
       searchArticleCategories={searchArticleCategories}
       onArticlePost={onArticlePost}
-      refetchNewsFeed={refetchNewsFeed}
+      refetchNewsFeed={feedsRefetch}
       showValidationError={showValidationError}
       searchProductCategories={searchProductCategories}
       onProductPost={onProductPost}
@@ -221,6 +217,12 @@ export default withRouter((props) => {
       onFarmPost={onFarmPost}
     ></ProfileEditorTabs>
   );
+
+  useEffect(() => {
+    if (state.id) {
+      feedsRefetch();
+    }
+  }, [state, feedsRefetch]);
 
   if (loading || !data || networkStatus === 1) {
     return (

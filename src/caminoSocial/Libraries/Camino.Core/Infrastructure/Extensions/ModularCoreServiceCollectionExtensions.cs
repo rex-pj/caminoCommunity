@@ -7,17 +7,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Camino.Core.Infrastructure.Extensions
 {
     public static class ModularCoreServiceCollectionExtensions
     {
+        public static IMvcBuilder AddModular(this IMvcBuilder mvcBuilder)
+        {
+            var services = mvcBuilder.Services;
+            var serviceProvider = services.BuildServiceProvider();
+
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
+            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.FullName;
+            var modulesPath = $"{rootPath}{configuration["Modular:Path"]}";
+            var prefix = configuration["Modular:Prefix"];
+            
+            return AddModular(mvcBuilder, modulesPath, prefix);
+        }
+
         public static IMvcBuilder AddModular(this IMvcBuilder mvcBuilder, string modulesPath, string prefix = null)
         {
             var services = mvcBuilder.Services;
             services.AddSingleton<IModularManager, ModularManager>();
             var serviceProvider = services.BuildServiceProvider();
             var modularManager = serviceProvider.GetRequiredService<IModularManager>();
+
             modularManager.LoadModules(modulesPath, prefix);
 
             var modules = Singleton<IList<ModuleInfo>>.Instance;

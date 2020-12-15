@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
@@ -7,12 +7,14 @@ import { GET_FEEDS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const { loading, data, error } = useQuery(GET_FEEDS, {
+  const [state] = useStore(true);
+  const { loading, data, error, refetch } = useQuery(GET_FEEDS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
@@ -20,6 +22,12 @@ export default withRouter((props) => {
       },
     },
   });
+
+  useEffect(() => {
+    if (state.id) {
+      refetch();
+    }
+  }, [state, refetch]);
 
   if (loading || !data) {
     return <Loading>Loading</Loading>;

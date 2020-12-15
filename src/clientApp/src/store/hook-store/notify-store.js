@@ -12,17 +12,17 @@ const configureStore = () => {
 
       if (payload) {
         updatedNotifications = updatedNotifications.filter(
-          item => item !== payload
+          (item) => item !== payload
         );
       } else {
         updatedNotifications.splice(0, 1);
       }
 
       return { notifications: updatedNotifications };
-    }
+    },
   };
   initStore(actions, {
-    notifications: []
+    notifications: [],
   });
 };
 
