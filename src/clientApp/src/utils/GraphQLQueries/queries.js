@@ -471,3 +471,25 @@ export const GET_FARM = gql`
     }
   }
 `;
+
+export const GET_FARM_FOR_UPDATE = gql`
+  query($criterias: FarmFilterModelInput) {
+    farm(criterias: $criterias) {
+      id
+      description
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      address
+      createdByIdentityId
+      createdByPhotoCode
+      farmTypeName
+      farmTypeId
+      thumbnails {
+        pictureId
+      }
+    }
+  }
+`;

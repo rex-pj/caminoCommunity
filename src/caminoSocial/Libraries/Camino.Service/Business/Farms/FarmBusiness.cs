@@ -37,30 +37,25 @@ namespace Camino.Service.Business.Farms
             _userPhotoRepository = userPhotoRepository;
         }
 
-        public FarmProjection Find(long id)
+        public async Task<FarmProjection> FindAsync(long id)
         {
-            var exist = (from farm in _farmRepository.Table
-                         join farmType in _farmTypeRepository.Table
-                         on farm.FarmTypeId equals farmType.Id
-                         where farm.Id == id
-                         select new FarmProjection
-                         {
-                             CreatedDate = farm.CreatedDate,
-                             CreatedById = farm.CreatedById,
-                             Id = farm.Id,
-                             Name = farm.Name,
-                             Address = farm.Address,
-                             UpdatedById = farm.UpdatedById,
-                             UpdatedDate = farm.UpdatedDate,
-                             Description = farm.Description,
-                             FarmTypeId = farm.FarmTypeId,
-                             FarmTypeName = farmType.Name
-                         }).FirstOrDefault();
-
-            if (exist == null)
-            {
-                return null;
-            }
+            var exist = await (from farm in _farmRepository.Table
+                               join farmType in _farmTypeRepository.Table
+                               on farm.FarmTypeId equals farmType.Id
+                               where farm.Id == id
+                               select new FarmProjection
+                               {
+                                   CreatedDate = farm.CreatedDate,
+                                   CreatedById = farm.CreatedById,
+                                   Id = farm.Id,
+                                   Name = farm.Name,
+                                   Address = farm.Address,
+                                   UpdatedById = farm.UpdatedById,
+                                   UpdatedDate = farm.UpdatedDate,
+                                   Description = farm.Description,
+                                   FarmTypeId = farm.FarmTypeId,
+                                   FarmTypeName = farmType.Name
+                               }).FirstOrDefaultAsync();
 
             return exist;
         }
@@ -323,25 +318,33 @@ namespace Camino.Service.Business.Farms
             farm.UpdatedDate = updatedDate;
             farm.Address = farm.Address;
 
-            int index = 0;
+            var pictureIds = request.Pictures.Select(x => x.Id);
+            var deleteFarmPictures = _farmPictureRepository
+                        .Get(x => x.FarmId == request.Id && !pictureIds.Contains(x.PictureId));
+
+            var deletePictureIds = deleteFarmPictures.Select(x => x.PictureId).ToList();
+            if (deletePictureIds.Any())
+            {
+                await _farmPictureRepository.DeleteAsync(deleteFarmPictures);
+
+                var currentPictures = _pictureRepository.Get(x => deletePictureIds.Contains(x.Id));
+                await _pictureRepository.DeleteAsync(currentPictures);
+            }
+
+            var thumbnailType = (int)FarmPictureType.Thumbnail;
+            var shouldAddThumbnail = true;
+            var hasThumbnail = _farmPictureRepository.Get(x => x.FarmId == request.Id && x.PictureType == thumbnailType).Any();
+            if (hasThumbnail)
+            {
+                shouldAddThumbnail = false;
+            }
+
             foreach (var picture in request.Pictures)
             {
                 if (!string.IsNullOrEmpty(picture.Base64Data))
                 {
-                    var farmPictures = _farmPictureRepository
-                        .Get(x => x.FarmId == request.Id)
-                        .AsEnumerable();
-
-                    if (farmPictures.Any())
-                    {
-                        var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
-                        await _farmPictureRepository.DeleteAsync(farmPictures.AsQueryable());
-
-                        var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-                        await _pictureRepository.DeleteAsync(currentThumbnails);
-                    }
-
-                    var pictureData = Convert.FromBase64String(picture.Base64Data);
+                    var base64Data = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
+                    var pictureData = Convert.FromBase64String(base64Data);
                     var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
                     {
                         CreatedById = request.UpdatedById,
@@ -353,20 +356,25 @@ namespace Camino.Service.Business.Farms
                         BinaryData = pictureData
                     });
 
-                    var farmPictureType = index == 0 ? (int)FarmPictureType.Thumbnail : (int)FarmPictureType.Secondary;
+                    var farmPictureType = shouldAddThumbnail ? thumbnailType : (int)FarmPictureType.Secondary;
                     _farmPictureRepository.Add(new FarmPicture()
                     {
                         FarmId = farm.Id,
                         PictureId = pictureId,
                         PictureType = farmPictureType
                     });
-                    index += 1;
+                    shouldAddThumbnail = false;
                 }
-
-                _farmRepository.Update(farm);
             }
 
-            request.UpdatedDate = farm.UpdatedDate;
+            var firstRestPicture = await _farmPictureRepository.FirstOrDefaultAsync(x => x.FarmId == request.Id);
+            if (firstRestPicture != null)
+            {
+                firstRestPicture.PictureType = thumbnailType;
+                await _farmPictureRepository.UpdateAsync(firstRestPicture);
+            }
+
+            _farmRepository.Update(farm);
             return request;
         }
     }

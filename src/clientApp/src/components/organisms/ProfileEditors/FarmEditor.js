@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import FarmCreationModel from "../../../models/FarmCreationModel";
+import farmCreationModel from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 
 const FormRow = styled.div`
@@ -76,10 +76,11 @@ export default withRouter((props) => {
     onImageValidate,
     height,
     filterCategories,
-    refetchNews,
+    currentFarm,
   } = props;
-  const initialFormData = FarmCreationModel;
-  const [formData, setFormData] = useState(initialFormData);
+  const initialFormData = JSON.parse(JSON.stringify(farmCreationModel));
+  const farmState = currentFarm ? currentFarm : initialFormData;
+  const [formData, setFormData] = useState(farmState);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -138,16 +139,18 @@ export default withRouter((props) => {
   };
 
   const handleImageChange = (e) => {
-    let data = formData || {};
+    let data = { ...formData } || {};
     const { preview, file } = e;
     const { name, type } = file;
 
-    data.thumbnails.value.push({
+    let thumbnails = Object.assign([], data.thumbnails.value);
+    thumbnails.push({
       base64Data: preview,
       fileName: name,
       contentType: type,
     });
 
+    data.thumbnails.value = thumbnails;
     setFormData({
       ...data,
     });
@@ -176,14 +179,18 @@ export default withRouter((props) => {
       }
 
       await props.onFarmPost(farmData).then((response) => {
-        var { data } = response;
-        var { createFarm } = data;
-        if (createFarm && createFarm.id) {
+        if (response && response.id) {
           clearFormData();
-          refetchNews();
         }
       });
     }
+  };
+
+  const loadSelected = () => {
+    return {
+      label: farmTypeName.value,
+      value: farmTypeId.value,
+    };
   };
 
   const clearFormData = () => {
@@ -197,18 +204,26 @@ export default withRouter((props) => {
     });
   };
 
-  const removeImage = (e) => {
+  const onImageRemoved = (e, item) => {
     let data = formData || {};
+    if (!data.thumbnails) {
+      return;
+    }
 
-    var index = data.thumbnails.value.indexOf(e);
-    data.thumbnails.value.splice(index, 1);
+    if (item.pictureId) {
+      data.thumbnails.value = data.thumbnails.value.filter(
+        (x) => x.pictureId !== item.pictureId
+      );
+    } else {
+      data.thumbnails.value = data.thumbnails.value.filter((x) => x !== item);
+    }
 
     setFormData({
       ...data,
     });
   };
 
-  const { name, address, farmTypeId, thumbnails } = formData;
+  const { name, address, farmTypeName, farmTypeId, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
@@ -228,6 +243,7 @@ export default withRouter((props) => {
                 className="select"
                 cacheOptions
                 defaultOptions
+                defaultValue={loadSelected()}
                 onChange={handleSelectChange}
                 loadOptions={loadOptions}
                 isClearable={true}
@@ -263,20 +279,42 @@ export default withRouter((props) => {
         {thumbnails.value ? (
           <FormRow className="row">
             {thumbnails.value.map((item, index) => {
-              return (
-                <div className="col-3" key={index}>
-                  <ImageEditBox>
-                    <Thumbnail src={item.base64Data}></Thumbnail>
-                    <RemoveImageButton onClick={removeImage}>
-                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                    </RemoveImageButton>
-                  </ImageEditBox>
-                </div>
-              );
+              if (item.base64Data) {
+                return (
+                  <div className="col-3" key={index}>
+                    <ImageEditBox>
+                      <Thumbnail src={item.base64Data}></Thumbnail>
+                      <RemoveImageButton
+                        onClick={(e) => onImageRemoved(e, item)}
+                      >
+                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                      </RemoveImageButton>
+                    </ImageEditBox>
+                  </div>
+                );
+              } else if (item.pictureId) {
+                return (
+                  <div className="col-3" key={index}>
+                    <ImageEditBox>
+                      <Thumbnail
+                        src={`${process.env.REACT_APP_CDN_PHOTO_URL}${item.pictureId}`}
+                      ></Thumbnail>
+                      <RemoveImageButton
+                        onClick={(e) => onImageRemoved(e, item)}
+                      >
+                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                      </RemoveImageButton>
+                    </ImageEditBox>
+                  </div>
+                );
+              }
+
+              return null;
             })}
           </FormRow>
         ) : null}
         <CommonEditor
+          contentHtml={currentFarm ? currentFarm.description.value : null}
           height={height}
           convertImageCallback={convertImageCallback}
           onImageValidate={onImageValidate}

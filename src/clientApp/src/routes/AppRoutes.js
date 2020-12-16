@@ -51,6 +51,12 @@ export default [
     layout: DetailLayout,
   },
   {
+    path: "/farms/update/:id",
+    exact: true,
+    page: "farms/update",
+    layout: DetailLayout,
+  },
+  {
     path: ["/associations", "/associations/page/:pageNumber"],
     exact: true,
     page: "associations",

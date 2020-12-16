@@ -1,4 +1,8 @@
 export default {
+  id: {
+    value: 0,
+    isValid: true,
+  },
   name: {
     value: "",
     validation: {
@@ -20,8 +24,12 @@ export default {
     },
     isValid: true,
   },
+  farmTypeName: {
+    value: "",
+    isValid: true,
+  },
   farmTypeId: {
-    value: [],
+    value: 0,
     validation: {
       isRequired: true,
     },

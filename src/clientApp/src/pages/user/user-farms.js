@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
@@ -22,7 +22,7 @@ export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
-  const dispatch = useStore(false)[1];
+  const [state, dispatch] = useStore(false);
   const { user } = useContext(SessionContext);
 
   const { loading, data, error, refetch: fetchFarms, networkStatus } = useQuery(
@@ -104,10 +104,6 @@ export default withRouter(function (props) {
     });
   };
 
-  const refetchNewFarms = () => {
-    fetchFarms();
-  };
-
   const farmEditor =
     user && user.isLogin ? (
       <FarmEditor
@@ -116,10 +112,16 @@ export default withRouter(function (props) {
         onImageValidate={onImageValidate}
         filterCategories={searchFarmTypes}
         onFarmPost={onFarmPost}
-        refetchNews={refetchNewFarms}
+        refetchNews={fetchFarms}
         showValidationError={showValidationError}
       />
     ) : null;
+
+  useEffect(() => {
+    if (state.type === "FARM" && state.id) {
+      fetchFarms();
+    }
+  }, [state, fetchFarms]);
 
   if (loading || !data || networkStatus === 1) {
     return (

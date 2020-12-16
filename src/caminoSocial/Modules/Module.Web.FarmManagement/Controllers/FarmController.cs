@@ -209,7 +209,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeId = model.FarmTypeId
             };
 
-            var exist = _farmBusiness.Find(model.Id);
+            var exist = await _farmBusiness.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();

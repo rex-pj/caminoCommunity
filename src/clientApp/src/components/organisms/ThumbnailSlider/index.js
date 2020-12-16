@@ -98,29 +98,14 @@ const NextButton = styled(NavigateButton)`
 `;
 
 export default function (props) {
-  const images = props.images;
-  let image = null,
-    numberOfImages = 0;
-
-  if (images) {
-    images[0].isActive = true;
-    image = images[0];
-    image.index = 0;
-    numberOfImages = images.length;
-  }
-
-  let { displayNumber } = props;
-  const [slideState, setSlideState] = useState({
-    currentImage: image,
-    numberOfDisplay: displayNumber ? displayNumber : numberOfImages,
-    numberOfImages: numberOfImages,
-  });
-
   const currentRef = useRef();
+  const { images, currentImage } = props;
+  let { displayNumber } = props;
+  const numberOfImages = images.length;
+  const numberOfDisplay = displayNumber ? displayNumber : numberOfImages;
+  const [thumbnailImage, setThumbnailImage] = useState(currentImage);
 
   const renderRelationImages = (relationImages) => {
-    const { numberOfDisplay, currentImage } = slideState;
-
     if (relationImages) {
       let groupIndex = 0;
       relationImages = relationImages.map((item, index) => {
@@ -134,7 +119,7 @@ export default function (props) {
       });
 
       relationImages = relationImages.filter(
-        (data) => data.groupIndex === currentImage.groupIndex
+        (data) => data.groupIndex === thumbnailImage.groupIndex
       );
 
       return relationImages.map((item, index) => {
@@ -145,7 +130,7 @@ export default function (props) {
             ? "last-item"
             : "";
 
-        if (item === currentImage) {
+        if (item === thumbnailImage) {
           className += " actived";
         }
 
@@ -170,45 +155,30 @@ export default function (props) {
       return item;
     });
 
-    var newSlideState = {
-      ...slideState,
-      currentImage: item,
-    };
-    setSlideState(newSlideState);
+    setThumbnailImage(item);
   };
 
   const onNext = () => {
-    const { numberOfImages, currentImage } = slideState;
     const { images } = props;
     let image = null;
-    if (currentImage.index < numberOfImages - 1) {
-      image = images[currentImage.index + 1];
+    if (thumbnailImage.index < numberOfImages - 1) {
+      image = images[thumbnailImage.index + 1];
     } else {
       image = images[0];
     }
 
-    var newSlideState = {
-      ...slideState,
-      currentImage: image,
-    };
-    setSlideState(newSlideState);
+    setThumbnailImage(image);
   };
 
   const onPrev = () => {
-    let { currentImage } = slideState;
     const { images } = props;
     let image = null;
-    if (currentImage.index > 0) {
-      image = images[currentImage.index - 1];
+    if (thumbnailImage.index > 0) {
+      image = images[thumbnailImage.index - 1];
     } else {
-      const { numberOfImages } = slideState;
       image = images[numberOfImages - 1];
     }
-    var newSlideState = {
-      ...slideState,
-      currentImage: image,
-    };
-    setSlideState(newSlideState);
+    setThumbnailImage(image);
   };
 
   useEffect(() => {
@@ -233,7 +203,14 @@ export default function (props) {
     currentRef.current.focus();
   };
 
-  const { currentImage, numberOfDisplay } = slideState;
+  const renderThumbnailImage = () => {
+    if (thumbnailImage) {
+      return (
+        <Thumbnail src={thumbnailImage.thumbnailUrl} onClick={onNext} alt="" />
+      );
+    }
+    return null;
+  };
 
   return (
     <PostThumbnail>
@@ -243,9 +220,7 @@ export default function (props) {
             <FontAwesomeIcon icon="angle-left" />
           </PrevButton>
         </NavigateLeft>
-        {currentImage ? (
-          <Thumbnail src={currentImage.thumbnailUrl} onClick={onNext} alt="" />
-        ) : null}
+        {renderThumbnailImage()}
         <NavigateRight onClick={onNext}>
           <NextButton>
             <FontAwesomeIcon icon="angle-right" />

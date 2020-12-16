@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
 import { GET_FARM } from "../../utils/GraphQLQueries/queries";
@@ -10,6 +10,7 @@ import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
 import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { useStore } from "../../store/hook-store";
 
 const FarmProductsBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -19,8 +20,9 @@ export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { id } = params;
+  const [state] = useStore(false);
 
-  const { loading, data, error } = useQuery(GET_FARM, {
+  const { loading, data, error, refetch } = useQuery(GET_FARM, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -41,14 +43,20 @@ export default withRouter(function (props) {
     }
   );
 
+  useEffect(() => {
+    if (state.type === "FARM" && state.id) {
+      refetch();
+    }
+  }, [state, refetch]);
+
   if (loading || !data) {
     return <Loading>Loading...</Loading>;
   } else if (error) {
     return <ErrorBlock>Error!</ErrorBlock>;
   }
 
-  const { farm: farmResponse } = data;
-  let farm = { ...farmResponse };
+  const { farm: farmData } = data;
+  let farm = { ...farmData };
 
   const breadcrumbs = [
     {

@@ -204,3 +204,11 @@ export const CREATE_FARM = gql`
     }
   }
 `;
+
+export const UPDATE_FARM = gql`
+  mutation($criterias: FarmModelInput!) {
+    updateFarm(criterias: $criterias) {
+      id
+    }
+  }
+`;

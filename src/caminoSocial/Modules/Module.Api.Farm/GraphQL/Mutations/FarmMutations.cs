@@ -22,6 +22,12 @@ namespace Module.Api.Farm.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
+        public async Task<FarmModel> UpdateFarmAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, FarmModel criterias)
+        {
+            return await farmResolver.UpdateFarmAsync(currentUser, criterias);
+        }
+
+        [GraphQlAuthentication]
         public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, SelectFilterModel criterias)
         {
             return await farmResolver.SelectUserFarmsAsync(currentUser, criterias);

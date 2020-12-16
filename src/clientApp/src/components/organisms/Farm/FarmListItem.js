@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef, useState, useEffect } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
@@ -13,6 +13,37 @@ import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
+import Dropdown from "../../molecules/DropdownButton/Dropdown";
+import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import { withRouter } from "react-router-dom";
+
+const DropdownList = styled(Dropdown)`
+  position: absolute;
+  right: 0;
+  top: calc(100% + ${(p) => p.theme.size.exTiny});
+  background: ${(p) => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  min-width: calc(${(p) => p.theme.size.large} * 3);
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  padding: ${(p) => p.theme.size.exTiny} 0;
+
+  ${ModuleMenuListItem} span {
+    display: block;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+    cursor: pointer;
+    text-align: left;
+
+    :hover {
+      background-color: ${(p) => p.theme.color.lighter};
+    }
+
+    :last-child {
+      border-bottom: 0;
+    }
+  }
+`;
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -44,6 +75,7 @@ const Title = styled(SecondaryTitleLink)`
 
 const PostActions = styled.div`
   text-align: right;
+  position: relative;
 `;
 
 const Description = styled.p`
@@ -109,9 +141,36 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default (props) => {
+export default withRouter((props) => {
   const { farm } = props;
   const { creator } = farm;
+  const [isActionDropdownShown, setActionDropdownShown] = useState(false);
+  const currentRef = useRef();
+  const onActionDropdownHide = (e) => {
+    if (currentRef.current && !currentRef.current.contains(e.target)) {
+      setActionDropdownShown(false);
+    }
+  };
+
+  const onActionDropdownShow = () => {
+    setActionDropdownShown(true);
+  };
+
+  const onEditMode = async () => {
+    props.history.push({
+      pathname: `/farms/update/${farm.id}`,
+      state: {
+        from: props.location.pathname,
+      },
+    });
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", onActionDropdownHide, false);
+    return () => {
+      document.removeEventListener("click", onActionDropdownHide);
+    };
+  });
 
   return (
     <Panel>
@@ -150,10 +209,20 @@ export default (props) => {
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              <PostActions>
-                <ActionButton>
+              <PostActions ref={currentRef}>
+                <ActionButton onClick={onActionDropdownShow}>
                   <FontAwesomeIcon icon="angle-down" />
                 </ActionButton>
+                {isActionDropdownShown ? (
+                  <DropdownList>
+                    <ModuleMenuListItem>
+                      <span onClick={onEditMode}>
+                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
+                        Edit
+                      </span>
+                    </ModuleMenuListItem>
+                  </DropdownList>
+                ) : null}
               </PostActions>
             </div>
           </div>
@@ -184,4 +253,4 @@ export default (props) => {
       </PanelBody>
     </Panel>
   );
-};
+});

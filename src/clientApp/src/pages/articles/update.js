@@ -42,7 +42,7 @@ export default withRouter(function (props) {
     if (!loading && called) {
       refetch();
     }
-  });
+  }, [refetch, called, loading]);
 
   if (loading || !data) {
     return <Loading>Loading...</Loading>;
@@ -108,7 +108,6 @@ export default withRouter(function (props) {
           const articleUpdateUrl = `/articles/update/${article.id}`;
           if (referrefUri !== articleUpdateUrl) {
             raiseArticleUpdatedNotify(article);
-
             props.history.push(referrefUri);
             resolve({ article });
             return;
@@ -116,7 +115,6 @@ export default withRouter(function (props) {
         }
 
         raiseArticleUpdatedNotify(article);
-
         props.history.push(`/articles/${article.id}`);
         resolve({ article });
       });

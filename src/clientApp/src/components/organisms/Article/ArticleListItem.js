@@ -31,6 +31,7 @@ const ContentTopbar = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
+  position: relative;
 `;
 
 const PostTitle = styled(SecondaryTitleLink)`

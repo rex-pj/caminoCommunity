@@ -93,7 +93,11 @@ export default withRouter(function (props) {
     <Fragment>
       <PanelDefault>
         {product.images ? (
-          <ThumbnailSlider images={product.images} numberOfDisplay={5} />
+          <ThumbnailSlider
+            currentImage={product.images[0]}
+            images={product.images}
+            numberOfDisplay={5}
+          />
         ) : null}
 
         <PanelBody>

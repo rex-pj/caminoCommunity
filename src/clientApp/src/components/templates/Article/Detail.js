@@ -22,6 +22,7 @@ const PostActions = styled.div`
   .dropdown-action {
     float: right;
   }
+  position: relative;
 `;
 
 const ContentTopBar = styled.div`
@@ -61,7 +62,7 @@ const PostThumbnail = styled.div`
 const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: calc(100% + ${(p) => p.theme.size.exTiny});
+  top: 100%;
   background: ${(p) => p.theme.color.white};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);

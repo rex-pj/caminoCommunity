@@ -2,13 +2,11 @@
 using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
 using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Models;
 using Camino.Service.Business.Farms.Contracts;
 using Camino.Service.Projections.Farm;
 using Camino.Service.Projections.Filters;
 using Camino.Service.Projections.Media;
-using HotChocolate.Resolvers;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
@@ -73,6 +71,45 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             var id = await _farmBusiness.CreateAsync(farm);
             criterias.Id = id;
+            return criterias;
+        }
+
+        public async Task<FarmModel> UpdateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
+        {
+            var exist = await _farmBusiness.FindAsync(criterias.Id);
+            if (exist == null)
+            {
+                throw new Exception("No article found");
+            }
+
+            if (currentUser.Id != exist.CreatedById)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var farm = new FarmProjection()
+            {
+                Id = criterias.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
+                Description = criterias.Description,
+                Name = criterias.Name,
+                FarmTypeId = criterias.FarmTypeId,
+                Address = criterias.Address,
+            };
+
+            if (criterias.Thumbnails != null && criterias.Thumbnails.Any())
+            {
+                farm.Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection() { 
+                    Base64Data = x.Base64Data,
+                    ContentType = x.ContentType,
+                    FileName = x.FileName,
+                    Id = x.PictureId
+                });
+            }
+
+            var updated = await _farmBusiness.UpdateAsync(farm);
+            criterias.Id = updated.Id;
             return criterias;
         }
 

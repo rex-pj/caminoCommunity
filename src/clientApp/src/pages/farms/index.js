@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Farm from "../../components/templates/Farm";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
@@ -6,12 +6,14 @@ import { GET_FARMS } from "../../utils/GraphQLQueries/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { useStore } from "../../store/hook-store";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const { loading, data, error } = useQuery(GET_FARMS, {
+  const [state] = useStore(false);
+  const { loading, data, error, refetch } = useQuery(GET_FARMS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
@@ -19,6 +21,12 @@ export default withRouter(function (props) {
       },
     },
   });
+
+  useEffect(() => {
+    if (state.type === "FARM" && state.id) {
+      refetch();
+    }
+  }, [state, refetch]);
 
   if (loading || !data) {
     return <Loading>Loading</Loading>;

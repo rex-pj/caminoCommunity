@@ -5,6 +5,9 @@ const configureStore = () => {
     ARTICLE_UPDATE: (curState, payload) => {
       return { id: payload.id, type: "ARTICLE" };
     },
+    FARM_UPDATE: (curState, payload) => {
+      return { id: payload.id, type: "FARM" };
+    },
   };
   initStore(actions, {
     notifications: [],
