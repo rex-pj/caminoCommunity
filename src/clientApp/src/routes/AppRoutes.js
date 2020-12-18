@@ -39,6 +39,12 @@ export default [
     layout: DetailLayout,
   },
   {
+    path: "/products/update/:id",
+    exact: true,
+    page: "products/update",
+    layout: DetailLayout,
+  },
+  {
     path: ["/farms", "/farms/page/:pageNumber"],
     exact: true,
     page: "farms",

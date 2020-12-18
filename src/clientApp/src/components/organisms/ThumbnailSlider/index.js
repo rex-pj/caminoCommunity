@@ -103,7 +103,7 @@ export default function (props) {
   let { displayNumber } = props;
   const numberOfImages = images.length;
   const numberOfDisplay = displayNumber ? displayNumber : numberOfImages;
-  const [thumbnailImage, setThumbnailImage] = useState(currentImage);
+  const [thumbnailImage, setThumbnailImage] = useState({});
 
   const renderRelationImages = (relationImages) => {
     if (relationImages) {
@@ -182,6 +182,10 @@ export default function (props) {
   };
 
   useEffect(() => {
+    setThumbnailImage(currentImage);
+  }, [currentImage]);
+
+  useEffect(() => {
     var thumbnailRef = currentRef.current;
     thumbnailRef.addEventListener("keydown", onChangeImage, false);
     return () => {
@@ -204,7 +208,10 @@ export default function (props) {
   };
 
   const renderThumbnailImage = () => {
-    if (thumbnailImage) {
+    if (
+      thumbnailImage &&
+      thumbnailImage.thumbnailUrl === currentImage.thumbnailUrl
+    ) {
       return (
         <Thumbnail src={thumbnailImage.thumbnailUrl} onClick={onNext} alt="" />
       );

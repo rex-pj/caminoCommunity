@@ -199,7 +199,6 @@ namespace Camino.Service.Business.Farms
             var query = from farm in farmQuery
                         join pic in _farmPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
                         on farm.Id equals pic.FarmId into pics
-                        from p in pics.DefaultIfEmpty()
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                         on farm.CreatedById equals pho.CreatedById into photos
                         from userPhoto in photos.DefaultIfEmpty()
@@ -214,13 +213,10 @@ namespace Camino.Service.Business.Farms
                             UpdatedById = farm.UpdatedById,
                             UpdatedDate = farm.UpdatedDate,
                             CreatedByPhotoCode = userPhoto.Code,
-                            Pictures = new List<PictureRequestProjection>()
+                            Pictures = pics.Select(x => new PictureRequestProjection
                             {
-                                new PictureRequestProjection()
-                                {
-                                    Id = p.PictureId
-                                }
-                            }
+                                Id = x.PictureId
+                            })
                         };
 
             var farms = await query
@@ -367,7 +363,7 @@ namespace Camino.Service.Business.Farms
                 }
             }
 
-            var firstRestPicture = await _farmPictureRepository.FirstOrDefaultAsync(x => x.FarmId == request.Id);
+            var firstRestPicture = await _farmPictureRepository.FirstOrDefaultAsync(x => x.FarmId == request.Id && x.PictureType != thumbnailType);
             if (firstRestPicture != null)
             {
                 firstRestPicture.PictureType = thumbnailType;
@@ -375,6 +371,7 @@ namespace Camino.Service.Business.Farms
             }
 
             _farmRepository.Update(farm);
+
             return request;
         }
     }

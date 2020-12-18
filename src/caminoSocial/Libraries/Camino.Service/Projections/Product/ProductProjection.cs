@@ -9,6 +9,8 @@ namespace Camino.Service.Projections.Product
         public ProductProjection()
         {
             Thumbnails = new List<PictureRequestProjection>();
+            ProductCategories = new List<ProductCategoryProjection>();
+            ProductFarms = new List<ProductFarmProjection>();
         }
 
         public long Id { get; set; }

@@ -27,6 +27,7 @@ namespace Camino.Service.Business.Products
         private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<ProductPrice> _productPriceRepository;
         private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
+        private readonly IRepository<ProductCategory> _productCategoryRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
@@ -34,7 +35,8 @@ namespace Camino.Service.Business.Products
             IRepository<ProductCategoryRelation> productCategoryRelationRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
             IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository,
-            IRepository<FarmProduct> farmProductRepository, IRepository<Farm> farmRepository)
+            IRepository<FarmProduct> farmProductRepository, IRepository<Farm> farmRepository,
+            IRepository<ProductCategory> productCategoryRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
@@ -46,6 +48,7 @@ namespace Camino.Service.Business.Products
             _productPriceRepository = productPriceRepository;
             _farmProductRepository = farmProductRepository;
             _farmRepository = farmRepository;
+            _productCategoryRepository = productCategoryRepository;
         }
 
         public ProductProjection Find(long id)
@@ -83,6 +86,17 @@ namespace Camino.Service.Business.Products
                                 Name = farm.Name
                             };
 
+            var productCategoryQuery = from category in _productCategoryRepository.Table
+                            join categoryRelation in _productCategoryRelationRepository.Table
+                            on category.Id equals categoryRelation.ProductCategoryId
+                            select new
+                            {
+                                Id = categoryRelation.Id,
+                                CategoryId = category.Id,
+                                ProductId = categoryRelation.ProductId,
+                                Name = category.Name
+                            };
+
             var product = await (from p in _productRepository.Table
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
@@ -90,6 +104,9 @@ namespace Camino.Service.Business.Products
 
                                  join productPic in _productPictureRepository.Table
                                  on p.Id equals productPic.ProductId into pics
+
+                                 join categoryRelation in productCategoryQuery
+                                 on p.Id equals categoryRelation.ProductId into productCategories
 
                                  join fp in farmQuery
                                  on p.Id equals fp.ProductId into farmProducts
@@ -104,6 +121,11 @@ namespace Camino.Service.Business.Products
                                      UpdatedById = p.UpdatedById,
                                      UpdatedDate = p.UpdatedDate,
                                      Price = price.Price,
+                                     ProductCategories = productCategories.Select(x => new ProductCategoryProjection()
+                                     {
+                                         Id = x.CategoryId,
+                                         Name = x.Name
+                                     }),
                                      ProductFarms = farmProducts.Select(x => new ProductFarmProjection()
                                      {
                                          Id = x.Id,

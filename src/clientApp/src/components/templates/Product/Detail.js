@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { PrimaryTitle } from "../../atoms/Titles";
@@ -12,6 +12,8 @@ import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import { TypographyPrimary } from "../../atoms/Typographies";
 import { withRouter } from "react-router-dom";
+import Dropdown from "../../molecules/DropdownButton/Dropdown";
+import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primary};
@@ -87,8 +89,65 @@ const FarmInfo = styled.div`
   }
 `;
 
+const DropdownList = styled(Dropdown)`
+  position: absolute;
+  right: 0;
+  top: ${(p) => p.theme.size.normal};
+  background: ${(p) => p.theme.color.white};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
+  min-width: calc(${(p) => p.theme.size.large} * 3);
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  padding: ${(p) => p.theme.size.exTiny} 0;
+
+  ${ModuleMenuListItem} span {
+    display: block;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+    cursor: pointer;
+    text-align: left;
+
+    :hover {
+      background-color: ${(p) => p.theme.color.lighter};
+    }
+
+    :last-child {
+      border-bottom: 0;
+    }
+  }
+`;
+
 export default withRouter(function (props) {
   const { product } = props;
+
+  const [isActionDropdownShown, setActionDropdownShown] = useState(false);
+  const currentRef = useRef();
+  const onActionDropdownHide = (e) => {
+    if (currentRef.current && !currentRef.current.contains(e.target)) {
+      setActionDropdownShown(false);
+    }
+  };
+
+  const onActionDropdownShow = () => {
+    setActionDropdownShown(true);
+  };
+
+  const onEditMode = async () => {
+    props.history.push({
+      pathname: `/products/update/${product.id}`,
+      state: {
+        from: props.location.pathname,
+      },
+    });
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", onActionDropdownHide, false);
+    return () => {
+      document.removeEventListener("click", onActionDropdownHide);
+    };
+  });
+
   return (
     <Fragment>
       <PanelDefault>
@@ -103,7 +162,31 @@ export default withRouter(function (props) {
         <PanelBody>
           <div className="clearfix">
             <TopBarInfo>
-              <Title>{product.title}</Title>
+              <div className="row">
+                <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                  <Title>{product.title}</Title>
+                </div>
+                <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
+                  <PostActions>
+                    <ActionButton
+                      className="dropdown-action"
+                      onClick={onActionDropdownShow}
+                    >
+                      <FontAwesomeIcon icon="angle-down" />
+                    </ActionButton>
+                  </PostActions>
+                  {isActionDropdownShown ? (
+                    <DropdownList>
+                      <ModuleMenuListItem>
+                        <span onClick={onEditMode}>
+                          <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
+                          Edit
+                        </span>
+                      </ModuleMenuListItem>
+                    </DropdownList>
+                  ) : null}
+                </div>
+              </div>
             </TopBarInfo>
             <RowItem>
               <label>Giá:</label>

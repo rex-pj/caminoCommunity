@@ -398,6 +398,35 @@ export const GET_PRODUCT = gql`
   }
 `;
 
+export const GET_PRODUCT_FOR_UPDATE = gql`
+  query($criterias: ProductFilterModelInput) {
+    product(criterias: $criterias) {
+      id
+      description
+      name
+      createdById
+      createdBy
+      createdDate
+      updatedDate
+      price
+      createdByIdentityId
+      createdByPhotoCode
+      productCategories {
+        id
+        name
+      }
+      thumbnails {
+        pictureId
+      }
+      productFarms {
+        id
+        farmId
+        farmName
+      }
+    }
+  }
+`;
+
 export const GET_RELEVANT_PRODUCTS = gql`
   query($criterias: ProductFilterModelInput) {
     relevantProducts(criterias: $criterias) {

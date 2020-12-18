@@ -80,7 +80,7 @@ namespace Camino.Service.Business.Feeds
             var articleFeeds = (from article in articleQuery
                                 join articlePic in _articlePictureRepository.Get(x => x.PictureType == articlePictureType)
                                 on article.Id equals articlePic.ArticleId into articlePics
-                                from ap in articlePics.DefaultIfEmpty()
+                                from ap in articlePics.Take(1).DefaultIfEmpty()
                                 join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                                 on article.CreatedById equals pho.CreatedById into photos
                                 from photo in photos.DefaultIfEmpty()
@@ -101,7 +101,7 @@ namespace Camino.Service.Business.Feeds
             var productFeeds = (from product in productQuery
                                 join productPic in _productPictureRepository.Get(x => x.PictureType == productPictureType)
                                 on product.Id equals productPic.ProductId into productPics
-                                from pp in productPics.DefaultIfEmpty()
+                                from pp in productPics.Take(1).DefaultIfEmpty()
                                 join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                 on product.Id equals pr.ProductId into prices
                                 from price in prices.DefaultIfEmpty()
@@ -125,7 +125,7 @@ namespace Camino.Service.Business.Feeds
             var farmFeeds = (from farm in farmQuery
                              join farmPic in _farmPictureRepository.Get(x => x.PictureType == farmPictureType)
                              on farm.Id equals farmPic.FarmId into farmPics
-                             from fp in farmPics.DefaultIfEmpty()
+                             from fp in farmPics.Take(1).DefaultIfEmpty()
                              join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                              on farm.CreatedById equals pho.UserId into photos
                              from photo in photos.DefaultIfEmpty()

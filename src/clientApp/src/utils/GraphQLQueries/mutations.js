@@ -212,3 +212,11 @@ export const UPDATE_FARM = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT = gql`
+  mutation($criterias: ProductModelInput!) {
+    updateProduct(criterias: $criterias) {
+      id
+    }
+  }
+`;

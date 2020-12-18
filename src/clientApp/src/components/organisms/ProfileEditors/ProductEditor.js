@@ -81,10 +81,11 @@ export default withRouter((props) => {
     height,
     filterCategories,
     filterFarms,
-    refetchNews,
+    currentProduct,
   } = props;
-  const initialFormData = productCreationModel;
-  const [formData, setFormData] = useState(initialFormData);
+  const initialFormData = JSON.parse(JSON.stringify(productCreationModel));
+  const farmState = currentProduct ? currentProduct : initialFormData;
+  const [formData, setFormData] = useState(farmState);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -208,11 +209,8 @@ export default withRouter((props) => {
       }
 
       await props.onProductPost(productData).then((response) => {
-        var { data } = response;
-        var { createProduct } = data;
-        if (createProduct && createProduct.id) {
+        if (response && response.id) {
           clearFormData();
-          refetchNews();
         }
       });
     }
@@ -229,18 +227,44 @@ export default withRouter((props) => {
     });
   };
 
-  const removeImage = (e) => {
+  const onImageRemoved = (e, item) => {
     let data = formData || {};
+    if (!data.thumbnails) {
+      return;
+    }
 
-    var index = data.thumbnails.value.indexOf(e);
-    data.thumbnails.value.splice(index, 1);
+    if (item.pictureId) {
+      data.thumbnails.value = data.thumbnails.value.filter(
+        (x) => x.pictureId !== item.pictureId
+      );
+    } else {
+      data.thumbnails.value = data.thumbnails.value.filter((x) => x !== item);
+    }
 
     setFormData({
       ...data,
     });
   };
 
-  const { name, price, productCategories, thumbnails } = formData;
+  const loadCategoriesSelected = () => {
+    if (!productCategories.value) {
+      return [];
+    }
+    return productCategories.value.map((item) => {
+      return { label: item.name, value: item.id };
+    });
+  };
+
+  const loadFarmsSelected = () => {
+    if (!productFarms.value) {
+      return [];
+    }
+    return productFarms.value.map((item) => {
+      return { label: item.farmName, value: item.farmId };
+    });
+  };
+
+  const { name, price, productCategories, productFarms, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -271,10 +295,12 @@ export default withRouter((props) => {
                 className="select"
                 cacheOptions
                 defaultOptions
+                defaultValue={loadCategoriesSelected()}
                 isMulti
                 onChange={(e) => handleSelectChange(e, "productCategories")}
                 loadOptions={loadOptions}
                 isClearable={true}
+                placeholder="Select categories"
               />
             ) : (
               <AsyncSelect
@@ -297,9 +323,11 @@ export default withRouter((props) => {
                 cacheOptions
                 defaultOptions
                 isMulti
+                defaultValue={loadFarmsSelected()}
                 onChange={(e) => handleSelectChange(e, "productFarms")}
                 loadOptions={loadFarmOptions}
                 isClearable={true}
+                placeholder="Select farms"
               />
             ) : (
               <AsyncSelect
@@ -322,20 +350,42 @@ export default withRouter((props) => {
         {thumbnails.value ? (
           <FormRow className="row">
             {thumbnails.value.map((item, index) => {
-              return (
-                <div className="col-3" key={index}>
-                  <ImageEditBox>
-                    <Thumbnail src={item.base64Data}></Thumbnail>
-                    <RemoveImageButton onClick={removeImage}>
-                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                    </RemoveImageButton>
-                  </ImageEditBox>
-                </div>
-              );
+              if (item.base64Data) {
+                return (
+                  <div className="col-3" key={index}>
+                    <ImageEditBox>
+                      <Thumbnail src={item.base64Data}></Thumbnail>
+                      <RemoveImageButton
+                        onClick={(e) => onImageRemoved(e, item)}
+                      >
+                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                      </RemoveImageButton>
+                    </ImageEditBox>
+                  </div>
+                );
+              } else if (item.pictureId) {
+                return (
+                  <div className="col-3" key={index}>
+                    <ImageEditBox>
+                      <Thumbnail
+                        src={`${process.env.REACT_APP_CDN_PHOTO_URL}${item.pictureId}`}
+                      ></Thumbnail>
+                      <RemoveImageButton
+                        onClick={(e) => onImageRemoved(e, item)}
+                      >
+                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                      </RemoveImageButton>
+                    </ImageEditBox>
+                  </div>
+                );
+              }
+
+              return null;
             })}
           </FormRow>
         ) : null}
         <CommonEditor
+          contentHtml={currentProduct ? currentProduct.description.value : null}
           height={height}
           convertImageCallback={convertImageCallback}
           onImageValidate={onImageValidate}

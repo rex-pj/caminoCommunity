@@ -38,4 +38,8 @@ export default {
     value: [],
     isValid: true,
   },
+  id: {
+    value: 0,
+    isValid: true,
+  },
 };

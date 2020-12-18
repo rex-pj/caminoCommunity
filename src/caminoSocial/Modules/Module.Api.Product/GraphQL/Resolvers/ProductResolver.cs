@@ -225,16 +225,21 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Description = productProjection.Description,
                 Name = productProjection.Name,
                 Price = productProjection.Price,
-                Thumbnails = productProjection.Thumbnails.Select(y => new PictureRequestModel()
-                {
-                    PictureId = y.Id
-                }),
                 CreatedByPhotoCode = productProjection.CreatedByPhotoCode,
+                ProductCategories = productProjection.ProductCategories.Select(x => new ProductCategoryRelationModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }),
                 ProductFarms = productProjection.ProductFarms.Select(x => new ProductFarmModel()
                 {
                     FarmName = x.FarmName,
                     Id = x.Id,
                     FarmId = x.FarmId
+                }),
+                Thumbnails = productProjection.Thumbnails.Select(y => new PictureRequestModel()
+                {
+                    PictureId = y.Id
                 })
             };
 
