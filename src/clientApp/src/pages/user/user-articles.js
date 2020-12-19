@@ -16,7 +16,7 @@ import { fileToBase64 } from "../../utils/Helper";
 import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
 import { SessionContext } from "../../store/context/SessionContext";
-import ArticleListItemThumbnail from "../../components/organisms/Article/ArticleListItemThumbnail";
+import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
@@ -81,8 +81,8 @@ export default withRouter(function (props) {
       return new Promise((resolve, reject) => {
         const { data } = response;
         const { createArticle: article } = data;
+        resolve(article);
         fetchArticles();
-        resolve({ article });
       });
     });
   };
@@ -113,18 +113,22 @@ export default withRouter(function (props) {
     };
   };
 
-  const articleEditor =
-    user && user.isLogin ? (
-      <ArticleEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchArticleCategories}
-        onArticlePost={onArticlePost}
-        refetchNews={fetchArticles}
-        showValidationError={showValidationError}
-      />
-    ) : null;
+  const renderArticleEditor = () => {
+    if (user && user.isLogin) {
+      return (
+        <ArticleEditor
+          height={230}
+          convertImageCallback={convertImagefile}
+          onImageValidate={onImageValidate}
+          filterCategories={searchArticleCategories}
+          onArticlePost={onArticlePost}
+          refetchNews={fetchArticles}
+          showValidationError={showValidationError}
+        />
+      );
+    }
+    return null;
+  };
 
   useEffect(() => {
     if (state.type === "ARTICLE" && state.id) {
@@ -135,14 +139,14 @@ export default withRouter(function (props) {
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        {articleEditor}
+        {renderArticleEditor()}
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        {articleEditor}
+        {renderArticleEditor()}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -177,10 +181,10 @@ export default withRouter(function (props) {
 
   return (
     <Fragment>
-      {articleEditor}
+      {renderArticleEditor()}
       {articles
         ? articles.map((item) => (
-            <ArticleListItemThumbnail
+            <ArticleListItem
               key={item.id}
               article={item}
               convertImageCallback={convertImagefile}

@@ -83,9 +83,12 @@ export default withRouter((props) => {
     filterFarms,
     currentProduct,
   } = props;
-  const initialFormData = JSON.parse(JSON.stringify(productCreationModel));
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(
+    JSON.parse(JSON.stringify(productCreationModel))
+  );
   const editorRef = useRef();
+  const categorySelectRef = useRef();
+  const farmSelectRef = useRef();
 
   const handleInputChange = (evt) => {
     let data = formData || {};
@@ -199,31 +202,28 @@ export default withRouter((props) => {
         "Something went wrong with your input",
         "Something went wrong with your information, please check and input again"
       );
+
+      return;
     }
 
-    if (!!isFormValid) {
-      const productData = {};
-      for (const formIdentifier in formData) {
-        productData[formIdentifier] = formData[formIdentifier].value;
+    const productData = {};
+    for (const formIdentifier in formData) {
+      productData[formIdentifier] = formData[formIdentifier].value;
+    }
+
+    await props.onProductPost(productData).then((response) => {
+      if (response && response.id) {
+        clearFormData();
       }
-
-      await props.onProductPost(productData).then((response) => {
-        if (response && response.id) {
-          clearFormData();
-        }
-      });
-    }
+    });
   };
 
   const clearFormData = () => {
-    for (let formIdentifier in formData) {
-      formData[formIdentifier].value = "";
-    }
-
     editorRef.current.clearEditor();
-    setFormData({
-      ...formData,
-    });
+    categorySelectRef.current.select.select.clearValue();
+    farmSelectRef.current.select.select.clearValue();
+    var productFormData = JSON.parse(JSON.stringify(productCreationModel));
+    setFormData({ ...productFormData });
   };
 
   const onImageRemoved = (e, item) => {
@@ -246,21 +246,27 @@ export default withRouter((props) => {
   };
 
   const loadCategoriesSelected = () => {
-    const { productCategories: categories } = currentProduct;
-    if (!categories.value) {
-      return [];
+    if (!currentProduct) {
+      return null;
     }
-    return categories.value.map((item) => {
+    const { productCategories } = currentProduct;
+    if (!productCategories.value) {
+      return null;
+    }
+    return productCategories.value.map((item) => {
       return { label: item.name, value: item.id };
     });
   };
 
   const loadFarmsSelected = () => {
-    const { productFarms: farms } = currentProduct;
-    if (!farms.value) {
-      return [];
+    if (!currentProduct) {
+      return null;
     }
-    return farms.value.map((item) => {
+    const { productFarms } = currentProduct;
+    if (!productFarms.value) {
+      return null;
+    }
+    return productFarms.value.map((item) => {
       return { label: item.farmName, value: item.farmId };
     });
   };
@@ -271,7 +277,7 @@ export default withRouter((props) => {
     }
   }, [currentProduct]);
 
-  const { name, price, productCategories, productFarms } = formData;
+  const { name, price } = formData;
   const { thumbnails } = currentProduct ? currentProduct : formData;
   return (
     <Fragment>
@@ -298,58 +304,32 @@ export default withRouter((props) => {
         </FormRow>
         <FormRow className="row">
           <div className="col-4 col-lg-5 pr-1">
-            {productCategories.value ? (
-              <AsyncSelect
-                className="select"
-                cacheOptions
-                defaultOptions
-                defaultValue={loadCategoriesSelected()}
-                isMulti
-                onChange={(e) => handleSelectChange(e, "productCategories")}
-                loadOptions={loadOptions}
-                isClearable={true}
-                placeholder="Select categories"
-              />
-            ) : (
-              <AsyncSelect
-                className="select"
-                value=""
-                cacheOptions
-                defaultOptions
-                isMulti
-                onChange={(e) => handleSelectChange(e, "productCategories")}
-                loadOptions={loadOptions}
-                isClearable={true}
-                placeholder="Product category"
-              />
-            )}
+            <AsyncSelect
+              className="select"
+              cacheOptions
+              defaultOptions
+              ref={categorySelectRef}
+              defaultValue={loadCategoriesSelected()}
+              isMulti
+              onChange={(e) => handleSelectChange(e, "productCategories")}
+              loadOptions={loadOptions}
+              isClearable={true}
+              placeholder="Select categories"
+            />
           </div>
           <div className="col-4 col-lg-5 pr-1">
-            {productFarms.value ? (
-              <AsyncSelect
-                className="select"
-                cacheOptions
-                defaultOptions
-                isMulti
-                defaultValue={loadFarmsSelected()}
-                onChange={(e) => handleSelectChange(e, "productFarms")}
-                loadOptions={loadFarmOptions}
-                isClearable={true}
-                placeholder="Select farms"
-              />
-            ) : (
-              <AsyncSelect
-                className="select"
-                value=""
-                cacheOptions
-                defaultOptions
-                isMulti
-                onChange={(e) => handleSelectChange(e, "productFarms")}
-                loadOptions={loadFarmOptions}
-                isClearable={true}
-                placeholder="Farms"
-              />
-            )}
+            <AsyncSelect
+              className="select"
+              cacheOptions
+              defaultOptions
+              isMulti
+              ref={farmSelectRef}
+              defaultValue={loadFarmsSelected()}
+              onChange={(e) => handleSelectChange(e, "productFarms")}
+              loadOptions={loadFarmOptions}
+              isClearable={true}
+              placeholder="Select farms"
+            />
           </div>
           <div className="col-4 col-lg-2 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>

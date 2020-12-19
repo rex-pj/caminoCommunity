@@ -13,37 +13,9 @@ import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
-import Dropdown from "../../molecules/DropdownButton/Dropdown";
+import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { withRouter } from "react-router-dom";
-
-const DropdownList = styled(Dropdown)`
-  position: absolute;
-  right: 0;
-  top: calc(100% + ${(p) => p.theme.size.exTiny});
-  background: ${(p) => p.theme.color.white};
-  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
-  min-width: calc(${(p) => p.theme.size.large} * 3);
-  border-radius: ${(p) => p.theme.borderRadius.normal};
-  padding: ${(p) => p.theme.size.exTiny} 0;
-
-  ${ModuleMenuListItem} span {
-    display: block;
-    margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
-    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
-    cursor: pointer;
-    text-align: left;
-
-    :hover {
-      background-color: ${(p) => p.theme.color.lighter};
-    }
-
-    :last-child {
-      border-bottom: 0;
-    }
-  }
-`;
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -214,14 +186,14 @@ export default withRouter((props) => {
                   <FontAwesomeIcon icon="angle-down" />
                 </ActionButton>
                 {isActionDropdownShown ? (
-                  <DropdownList>
+                  <ContentItemDropdown>
                     <ModuleMenuListItem>
                       <span onClick={onEditMode}>
                         <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
                         Edit
                       </span>
                     </ModuleMenuListItem>
-                  </DropdownList>
+                  </ContentItemDropdown>
                 ) : null}
               </PostActions>
             </div>
@@ -232,7 +204,6 @@ export default withRouter((props) => {
         <div className="panel-content">
           <Description>
             <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>{" "}
-            <AnchorLink to={farm.url}>Detail</AnchorLink>
           </Description>
         </div>
         <InteractiveToolbar>

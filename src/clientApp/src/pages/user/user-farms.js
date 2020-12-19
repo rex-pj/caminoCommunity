@@ -93,6 +93,13 @@ export default withRouter(function (props) {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createFarm: farm } = data;
+        resolve(farm);
+        fetchFarms();
+      });
     });
   };
 

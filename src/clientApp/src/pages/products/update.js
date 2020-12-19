@@ -154,8 +154,8 @@ export default withRouter(function (props) {
 
   useEffect(() => {
     if (!loading && called) {
-      refetch();
       window.scrollTo(0, 0);
+      refetch();
     }
   }, [refetch, called, loading]);
 
@@ -195,7 +195,7 @@ export default withRouter(function (props) {
       <Breadcrumb list={breadcrumbs} />
       <ProductEditor
         currentProduct={currentProduct}
-        height={230}
+        height={350}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
         filterCategories={searchProductCategories}

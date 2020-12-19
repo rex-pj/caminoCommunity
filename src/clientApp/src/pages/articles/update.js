@@ -40,6 +40,7 @@ export default withRouter(function (props) {
 
   useEffect(() => {
     if (!loading && called) {
+      window.scrollTo(0, 0);
       refetch();
     }
   }, [refetch, called, loading]);
@@ -167,7 +168,7 @@ export default withRouter(function (props) {
     <Fragment>
       <Breadcrumb list={breadcrumbs} />
       <ArticleEditor
-        height={500}
+        height={350}
         currentArticle={currentArticle}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}

@@ -107,6 +107,13 @@ export default withRouter(function (props) {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createProduct: product } = data;
+        resolve(product);
+        fetchNewProducts();
+      });
     });
   };
 

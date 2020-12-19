@@ -172,8 +172,8 @@ export default withRouter((props) => {
       return new Promise((resolve) => {
         const { data } = response;
         const { createArticle: article } = data;
+        resolve(article);
         feedsRefetch();
-        resolve({ article });
       });
     });
   };
@@ -183,6 +183,13 @@ export default withRouter((props) => {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createProduct: product } = data;
+        resolve(product);
+        feedsRefetch();
+      });
     });
   };
 
@@ -191,6 +198,13 @@ export default withRouter((props) => {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { createFarm: farm } = data;
+        resolve(farm);
+        feedsRefetch();
+      });
     });
   };
 

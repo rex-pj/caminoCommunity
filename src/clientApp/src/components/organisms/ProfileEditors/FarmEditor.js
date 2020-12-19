@@ -78,9 +78,11 @@ export default withRouter((props) => {
     filterCategories,
     currentFarm,
   } = props;
-  const initialFormData = JSON.parse(JSON.stringify(farmCreationModel));
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(
+    JSON.parse(JSON.stringify(farmCreationModel))
+  );
   const editorRef = useRef();
+  const selectRef = useRef();
 
   const handleInputChange = (evt) => {
     let data = formData || {};
@@ -169,23 +171,32 @@ export default withRouter((props) => {
         "Something went wrong with your input",
         "Something went wrong with your information, please check and input again"
       );
+
+      return;
     }
 
-    if (!!isFormValid) {
-      const farmData = {};
-      for (const formIdentifier in formData) {
-        farmData[formIdentifier] = formData[formIdentifier].value;
+    const farmData = {};
+    for (const formIdentifier in formData) {
+      farmData[formIdentifier] = formData[formIdentifier].value;
+    }
+
+    await props.onFarmPost(farmData).then((response) => {
+      if (response && response.id) {
+        clearFormData();
       }
-
-      await props.onFarmPost(farmData).then((response) => {
-        if (response && response.id) {
-          clearFormData();
-        }
-      });
-    }
+    });
   };
 
   const loadSelected = () => {
+    if (!currentFarm) {
+      return null;
+    }
+
+    const { farmTypeId, farmTypeName } = currentFarm;
+    if (!farmTypeId.value) {
+      return null;
+    }
+
     return {
       label: farmTypeName.value,
       value: farmTypeId.value,
@@ -193,14 +204,9 @@ export default withRouter((props) => {
   };
 
   const clearFormData = () => {
-    for (let formIdentifier in formData) {
-      formData[formIdentifier].value = "";
-    }
-
     editorRef.current.clearEditor();
-    setFormData({
-      ...formData,
-    });
+    selectRef.current.select.select.clearValue();
+    setFormData(JSON.parse(JSON.stringify(farmCreationModel)));
   };
 
   const onImageRemoved = (e, item) => {
@@ -228,7 +234,7 @@ export default withRouter((props) => {
     }
   }, [currentFarm]);
 
-  const { name, address, farmTypeName, farmTypeId } = formData;
+  const { name, address } = formData;
   const { thumbnails } = currentFarm ? currentFarm : formData;
   return (
     <Fragment>
@@ -244,28 +250,16 @@ export default withRouter((props) => {
             />
           </div>
           <div className="col-6 col-lg-6 pl-lg-1">
-            {farmTypeId.value ? (
-              <AsyncSelect
-                className="select"
-                cacheOptions
-                defaultOptions
-                defaultValue={loadSelected()}
-                onChange={handleSelectChange}
-                loadOptions={loadOptions}
-                isClearable={true}
-              />
-            ) : (
-              <AsyncSelect
-                className="select"
-                value=""
-                cacheOptions
-                defaultOptions
-                onChange={handleSelectChange}
-                loadOptions={loadOptions}
-                isClearable={true}
-                placeholder="Farm type"
-              />
-            )}
+            <AsyncSelect
+              className="select"
+              cacheOptions
+              defaultOptions
+              ref={selectRef}
+              defaultValue={loadSelected()}
+              onChange={handleSelectChange}
+              loadOptions={loadOptions}
+              isClearable={true}
+            />
           </div>
         </FormRow>
         <FormRow className="row">

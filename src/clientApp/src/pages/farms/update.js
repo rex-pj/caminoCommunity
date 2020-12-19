@@ -124,6 +124,7 @@ export default withRouter(function (props) {
 
   useEffect(() => {
     if (!loading && called) {
+      window.scrollTo(0, 0);
       refetch();
     }
   }, [refetch, called, loading]);
@@ -163,7 +164,7 @@ export default withRouter(function (props) {
     <Fragment>
       <Breadcrumb list={breadcrumbs} />
       <FarmEditor
-        height={230}
+        height={350}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
         filterCategories={searchFarmTypes}

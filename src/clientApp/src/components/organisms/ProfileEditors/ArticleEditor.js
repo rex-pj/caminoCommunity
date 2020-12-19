@@ -80,9 +80,11 @@ export default withRouter((props) => {
     filterCategories,
     currentArticle,
   } = props;
-  const initialFormData = JSON.parse(JSON.stringify(articleCreationModel));
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(
+    JSON.parse(JSON.stringify(articleCreationModel))
+  );
   const editorRef = useRef();
+  const selectRef = useRef();
 
   const handleInputChange = (evt) => {
     let data = formData || {};
@@ -120,13 +122,6 @@ export default withRouter((props) => {
     setTimeout(async () => {
       callback(await fetchCategories(value));
     }, 1000);
-  };
-
-  const loadSelected = () => {
-    return {
-      label: articleCategoryName.value,
-      value: articleCategoryId.value,
-    };
   };
 
   const handleSelectChange = (e) => {
@@ -178,32 +173,28 @@ export default withRouter((props) => {
         "Something went wrong with your input",
         "Something went wrong with your information, please check and input again"
       );
+
+      return;
     }
 
-    if (!!isFormValid) {
-      const articleData = {};
-      for (const formIdentifier in formData) {
-        articleData[formIdentifier] = formData[formIdentifier].value;
+    const articleData = {};
+    for (const formIdentifier in formData) {
+      articleData[formIdentifier] = formData[formIdentifier].value;
+    }
+
+    delete articleData["articleCategoryName"];
+    await props.onArticlePost(articleData).then((response) => {
+      if (response && response.id) {
+        clearFormData();
       }
-
-      delete articleData["articleCategoryName"];
-      await props.onArticlePost(articleData).then((response) => {
-        if (response && response.id) {
-          clearFormData();
-        }
-      });
-    }
+    });
   };
 
   const clearFormData = () => {
-    for (let formIdentifier in formData) {
-      formData[formIdentifier].value = "";
-    }
-
     editorRef.current.clearEditor();
-    setFormData({
-      ...formData,
-    });
+    selectRef.current.select.select.clearValue();
+    var articleFormData = JSON.parse(JSON.stringify(articleCreationModel));
+    setFormData({ ...articleFormData });
   };
 
   const onImageRemoved = () => {
@@ -221,13 +212,27 @@ export default withRouter((props) => {
     });
   };
 
+  const loadSelected = () => {
+    if (!currentArticle) {
+      return "";
+    }
+    const { articleCategoryName, articleCategoryId } = currentArticle;
+    if (!articleCategoryId.value) {
+      return "";
+    }
+    return {
+      label: articleCategoryName.value,
+      value: articleCategoryId.value,
+    };
+  };
+
   useEffect(() => {
     if (currentArticle) {
       setFormData(currentArticle);
     }
   }, [currentArticle]);
 
-  const { name, articleCategoryId, articleCategoryName } = formData;
+  const { name } = formData;
   const { thumbnail } = currentArticle ? currentArticle : formData;
   return (
     <Fragment>
@@ -243,26 +248,15 @@ export default withRouter((props) => {
             />
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
-            {articleCategoryId.value ? (
-              <AsyncSelect
-                defaultValue={loadSelected()}
-                cacheOptions
-                defaultOptions
-                onChange={handleSelectChange}
-                loadOptions={loadOptions}
-                isClearable={true}
-              />
-            ) : (
-              <AsyncSelect
-                defaultValue=""
-                cacheOptions
-                defaultOptions
-                onChange={handleSelectChange}
-                loadOptions={loadOptions}
-                isClearable={true}
-                placeholder="Post category"
-              />
-            )}
+            <AsyncSelect
+              ref={selectRef}
+              defaultValue={loadSelected()}
+              cacheOptions
+              defaultOptions
+              onChange={handleSelectChange}
+              loadOptions={loadOptions}
+              isClearable={true}
+            />
           </div>
           <div className="col-2 col-lg-2 pl-lg-1 pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
