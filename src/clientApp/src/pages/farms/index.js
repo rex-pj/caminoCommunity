@@ -34,8 +34,8 @@ export default withRouter(function (props) {
     return <ErrorBlock>Error!</ErrorBlock>;
   }
 
-  const { farms: farmsResponse } = data;
-  const { collections } = farmsResponse;
+  const { farms: farmsData } = data;
+  const { collections } = farmsData;
   const farms = collections.map((item) => {
     let farm = { ...item };
     farm.url = `${UrlConstant.Farm.url}${farm.id}`;
@@ -60,7 +60,7 @@ export default withRouter(function (props) {
   });
 
   const baseUrl = "/farms";
-  const { totalPage, filter } = farmsResponse;
+  const { totalPage, filter } = farmsData;
   const { page } = filter;
 
   const breadcrumbs = [

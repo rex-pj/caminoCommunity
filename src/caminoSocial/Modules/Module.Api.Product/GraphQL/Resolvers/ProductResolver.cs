@@ -36,7 +36,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = criterias.Name,
                 Description = criterias.Description,
                 Price = criterias.Price,
-                Thumbnails = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
                 {
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
@@ -175,7 +175,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = x.Name,
                 Price = x.Price,
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
-                Thumbnails = x.Thumbnails.Select(y => new PictureRequestModel()
+                Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 }),
@@ -214,6 +214,58 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
+        public async Task<ProductModel> UpdateProductAsync(ApplicationUser currentUser, ProductModel criterias)
+        {
+            var exist = await _productBusiness.FindAsync(criterias.Id);
+            if (exist == null)
+            {
+                throw new Exception("No article found");
+            }
+
+            if (currentUser.Id != exist.CreatedById)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var farm = new ProductProjection()
+            {
+                Id = criterias.Id,
+                CreatedById = currentUser.Id,
+                UpdatedById = currentUser.Id,
+                Name = criterias.Name,
+                Description = criterias.Description,
+                Price = criterias.Price,
+                Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                {
+                    Base64Data = x.Base64Data,
+                    FileName = x.FileName,
+                    ContentType = x.ContentType,
+                }),
+                ProductCategories = criterias.ProductCategories.Select(x => new ProductCategoryProjection()
+                {
+                    Id = x.Id
+                }),
+                ProductFarms = criterias.ProductFarms.Select(x => new ProductFarmProjection()
+                {
+                    FarmId = x.Id
+                })
+            };
+
+            if (criterias.Thumbnails != null && criterias.Thumbnails.Any())
+            {
+                farm.Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                {
+                    Base64Data = x.Base64Data,
+                    ContentType = x.ContentType,
+                    FileName = x.FileName,
+                    Id = x.PictureId
+                });
+            }
+
+            var updated = await _productBusiness.UpdateAsync(farm);
+            return criterias;
+        }
+
         private async Task<ProductModel> MapProductProjectionToModelAsync(ProductProjection productProjection)
         {
             var product = new ProductModel()
@@ -237,7 +289,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     Id = x.Id,
                     FarmId = x.FarmId
                 }),
-                Thumbnails = productProjection.Thumbnails.Select(y => new PictureRequestModel()
+                Thumbnails = productProjection.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 })

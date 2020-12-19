@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useRef, useEffect } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
+import { withRouter } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -87,7 +88,7 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default function (props) {
+export default withRouter(function (props) {
   const { product } = props;
   const { creator } = product;
 
@@ -217,4 +218,4 @@ export default function (props) {
       </PanelBody>
     </Panel>
   );
-}
+});

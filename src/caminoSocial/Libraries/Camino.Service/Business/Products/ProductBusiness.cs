@@ -51,24 +51,19 @@ namespace Camino.Service.Business.Products
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public ProductProjection Find(long id)
+        public async Task<ProductProjection> FindAsync(long id)
         {
-            var exist = (from product in _productRepository.Table
-                         where product.Id == id
-                         select new ProductProjection
-                         {
-                             CreatedDate = product.CreatedDate,
-                             CreatedById = product.CreatedById,
-                             Id = product.Id,
-                             Name = product.Name,
-                             UpdatedById = product.UpdatedById,
-                             UpdatedDate = product.UpdatedDate,
-                         }).FirstOrDefault();
-
-            if (exist == null)
-            {
-                return null;
-            }
+            var exist = await (from product in _productRepository.Table
+                               where product.Id == id
+                               select new ProductProjection
+                               {
+                                   CreatedDate = product.CreatedDate,
+                                   CreatedById = product.CreatedById,
+                                   Id = product.Id,
+                                   Name = product.Name,
+                                   UpdatedById = product.UpdatedById,
+                                   UpdatedDate = product.UpdatedDate,
+                               }).FirstOrDefaultAsync();
 
             return exist;
         }
@@ -87,15 +82,15 @@ namespace Camino.Service.Business.Products
                             };
 
             var productCategoryQuery = from category in _productCategoryRepository.Table
-                            join categoryRelation in _productCategoryRelationRepository.Table
-                            on category.Id equals categoryRelation.ProductCategoryId
-                            select new
-                            {
-                                Id = categoryRelation.Id,
-                                CategoryId = category.Id,
-                                ProductId = categoryRelation.ProductId,
-                                Name = category.Name
-                            };
+                                       join categoryRelation in _productCategoryRelationRepository.Table
+                                       on category.Id equals categoryRelation.ProductCategoryId
+                                       select new
+                                       {
+                                           Id = categoryRelation.Id,
+                                           CategoryId = category.Id,
+                                           ProductId = categoryRelation.ProductId,
+                                           Name = category.Name
+                                       };
 
             var product = await (from p in _productRepository.Table
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
@@ -132,7 +127,7 @@ namespace Camino.Service.Business.Products
                                          FarmId = x.FarmId,
                                          FarmName = x.Name
                                      }),
-                                     Thumbnails = pics.Select(x => new PictureRequestProjection
+                                     Pictures = pics.Select(x => new PictureRequestProjection
                                      {
                                          Id = x.PictureId
                                      }),
@@ -240,7 +235,7 @@ namespace Camino.Service.Business.Products
                             UpdatedById = product.UpdatedById,
                             UpdatedDate = product.UpdatedDate,
                             CreatedByPhotoCode = userPhoto.Code,
-                            Thumbnails = pics.Select(x => new PictureRequestProjection
+                            Pictures = pics.Select(x => new PictureRequestProjection
                             {
                                 Id = x.PictureId
                             }),
@@ -358,7 +353,7 @@ namespace Camino.Service.Business.Products
                                             UpdatedById = pr.UpdatedById,
                                             UpdatedDate = pr.UpdatedDate,
                                             CreatedByPhotoCode = userPhoto.Code,
-                                            Thumbnails = pics.Select(x => new PictureRequestProjection
+                                            Pictures = pics.Select(x => new PictureRequestProjection
                                             {
                                                 Id = x.PictureId
                                             }),
@@ -447,7 +442,7 @@ namespace Camino.Service.Business.Products
                 });
 
                 var index = 0;
-                foreach (var picture in product.Thumbnails)
+                foreach (var picture in product.Pictures)
                 {
                     var thumbnail = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
                     var pictureData = Convert.FromBase64String(thumbnail);
@@ -478,57 +473,152 @@ namespace Camino.Service.Business.Products
 
         public async Task<ProductProjection> UpdateAsync(ProductProjection request)
         {
-            var updatedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTimeOffset.UtcNow;
             var product = _productRepository.FirstOrDefault(x => x.Id == request.Id);
             product.Description = request.Description;
             product.Name = request.Name;
             product.UpdatedById = request.UpdatedById;
-            product.UpdatedDate = updatedDate;
+            product.UpdatedDate = modifiedDate;
 
-            var index = 0;
-            foreach (var picture in request.Thumbnails)
+            var pictureIds = request.Pictures.Select(x => x.Id);
+            var deleteProductPictures = _productPictureRepository
+                        .Get(x => x.ProductId == request.Id && !pictureIds.Contains(x.PictureId));
+
+            // Delete old images
+            var deletePictureIds = deleteProductPictures.Select(x => x.PictureId).ToList();
+            if (deletePictureIds.Any())
+            {
+                await _productPictureRepository.DeleteAsync(deleteProductPictures);
+
+                var currentPictures = _pictureRepository.Get(x => deletePictureIds.Contains(x.Id));
+                await _pictureRepository.DeleteAsync(currentPictures);
+            }
+
+            var thumbnailType = (int)ProductPictureType.Thumbnail;
+            var shouldAddThumbnail = true;
+            var hasThumbnail = _productPictureRepository.Get(x => x.ProductId == request.Id && x.PictureType == thumbnailType).Any();
+            if (hasThumbnail)
+            {
+                shouldAddThumbnail = false;
+            }
+
+            // Add new images
+            foreach (var picture in request.Pictures)
             {
                 if (!string.IsNullOrEmpty(picture.Base64Data))
                 {
-                    var productThumbnails = _productPictureRepository
-                        .Get(x => x.ProductId == request.Id)
-                        .AsEnumerable();
-
-                    if (productThumbnails.Any())
-                    {
-                        var pictureIds = productThumbnails.Select(x => x.PictureId).ToList();
-                        await _productPictureRepository.DeleteAsync(productThumbnails.AsQueryable());
-
-                        var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-                        await _pictureRepository.DeleteAsync(currentThumbnails);
-                    }
-
-                    var pictureData = Convert.FromBase64String(picture.Base64Data);
+                    var base64Data = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
+                    var pictureData = Convert.FromBase64String(base64Data);
                     var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
                     {
                         CreatedById = request.UpdatedById,
-                        CreatedDate = updatedDate,
+                        CreatedDate = modifiedDate,
                         FileName = picture.FileName,
                         MimeType = picture.ContentType,
                         UpdatedById = request.UpdatedById,
-                        UpdatedDate = updatedDate,
+                        UpdatedDate = modifiedDate,
                         BinaryData = pictureData
                     });
 
-                    var productPictureType = index == 0 ? (int)ProductPictureType.Thumbnail : (int)ProductPictureType.Secondary;
+                    var farmPictureType = shouldAddThumbnail ? thumbnailType : (int)ProductPictureType.Secondary;
                     _productPictureRepository.Add(new ProductPicture()
                     {
                         ProductId = product.Id,
                         PictureId = pictureId,
-                        PictureType = productPictureType
+                        PictureType = farmPictureType
                     });
-                    index += 1;
+                    shouldAddThumbnail = false;
                 }
-
-                _productRepository.Update(product);
             }
 
-            request.UpdatedDate = product.UpdatedDate;
+            var firstRestPicture = await _productPictureRepository.FirstOrDefaultAsync(x => x.ProductId == request.Id && x.PictureType != thumbnailType);
+            if (firstRestPicture != null)
+            {
+                firstRestPicture.PictureType = thumbnailType;
+                await _productPictureRepository.UpdateAsync(firstRestPicture);
+            }
+
+            // Update Category
+            var categoryIds = request.ProductCategories.Select(x => x.Id);
+            var deleteCategories = _productCategoryRelationRepository
+                        .Get(x => x.ProductId == request.Id && !categoryIds.Contains(x.ProductCategoryId));
+
+            var deletecategoryIds = deleteCategories.Select(x => x.ProductCategoryId).ToList();
+            if (deletecategoryIds.Any())
+            {
+                await _productCategoryRelationRepository.DeleteAsync(deleteCategories);
+            }
+
+            var linkedCategoryIds = _productCategoryRelationRepository
+                .Get(x => x.ProductId == request.Id && categoryIds.Contains(x.ProductCategoryId))
+                .Select(x => x.ProductCategoryId)
+                .ToList();
+
+            var unlinkedCategories = request.ProductCategories.Where(x => !linkedCategoryIds.Contains(x.Id));
+            if (unlinkedCategories != null && unlinkedCategories.Any())
+            {
+                foreach (var category in unlinkedCategories)
+                {
+                    _productCategoryRelationRepository.Add(new ProductCategoryRelation()
+                    {
+                        ProductCategoryId = category.Id,
+                        ProductId = request.Id
+                    });
+                }
+            }
+
+            // Update Farm
+            var farmIds = request.ProductFarms.Select(x => x.FarmId);
+            var deletedFarms = _farmProductRepository
+                        .Get(x => x.ProductId == request.Id && !farmIds.Contains(x.FarmId));
+
+            var deleteFarmIds = deletedFarms.Select(x => x.FarmId).ToList();
+            if (deleteFarmIds.Any())
+            {
+                await _farmProductRepository.DeleteAsync(deletedFarms);
+            }
+
+            var linkedFarmIds = _farmProductRepository
+                .Get(x => x.ProductId == request.Id && farmIds.Contains(x.FarmId))
+                .Select(x => x.FarmId)
+                .ToList();
+
+            var unlinkedFarms = request.ProductFarms.Where(x => !linkedFarmIds.Contains(x.FarmId));
+            if (unlinkedFarms != null && unlinkedFarms.Any())
+            {
+                foreach (var farm in unlinkedFarms)
+                {
+                    _farmProductRepository.Add(new FarmProduct()
+                    {
+                        FarmId = farm.FarmId,
+                        ProductId = request.Id,
+                        IsLinked = true,
+                        LinkedById = product.CreatedById,
+                        LinkedDate = modifiedDate
+                    });
+                }
+            }
+
+            // Unlink all price
+            var unlinkedProductPrices = await _productPriceRepository.Get(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price)
+                .ToListAsync();
+
+            if (unlinkedProductPrices.Any())
+            {
+                unlinkedProductPrices.ForEach(x => x.IsCurrent = false);
+                await _productPriceRepository.UpdateAsync(unlinkedProductPrices);
+
+                await _productPriceRepository.AddAsync(new ProductPrice()
+                {
+                    PricedDate = modifiedDate,
+                    ProductId = request.Id,
+                    Price = request.Price,
+                    IsCurrent = true
+                });
+            }
+
+            _productRepository.Update(product);
+
             return request;
         }
     }

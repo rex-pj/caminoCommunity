@@ -147,7 +147,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _productBusiness.Find(model.Id);
+            var exist = await _productBusiness.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();

@@ -62,7 +62,7 @@ const PostThumbnail = styled.div`
 const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: 100%;
+  top: ${(p) => p.theme.size.medium};
   background: ${(p) => p.theme.color.white};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);
@@ -121,17 +121,16 @@ export default withRouter(function (props) {
     <Fragment>
       <PanelDefault>
         <PanelHeading>
-          <Title>{article.name}</Title>
-
           <PostActions ref={currentRef}>
             <div className="row">
-              <div className="col">
+              <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                <Title>{article.name}</Title>
                 <ContentTopBar>
                   <FontAwesomeIcon icon="calendar-alt" />
                   <span>{convertDateTimeToPeriod(article.createdDate)}</span>
                 </ContentTopBar>
               </div>
-              <div className="col">
+              <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
                 <ActionButton
                   className="dropdown-action"
                   onClick={onActionDropdownShow}
@@ -151,15 +150,6 @@ export default withRouter(function (props) {
               </div>
             </div>
           </PostActions>
-          {isActionDropdownShown ? (
-            <DropdownList>
-              <ModuleMenuListItem>
-                <span onClick={onEditMode}>
-                  <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
-                </span>
-              </ModuleMenuListItem>
-            </DropdownList>
-          ) : null}
         </PanelHeading>
         {article.thumbnailUrl ? (
           <PostThumbnail>

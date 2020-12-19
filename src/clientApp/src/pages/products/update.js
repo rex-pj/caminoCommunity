@@ -116,6 +116,31 @@ export default withRouter(function (props) {
       variables: {
         criterias: data,
       },
+    }).then((response) => {
+      return new Promise((resolve) => {
+        const { data } = response;
+        const { updateProduct: product } = data;
+        if (props.location.state && props.location.state.from) {
+          const referrefUri = props.location.state.from;
+          const productUpdateUrl = `/products/update/${product.id}`;
+          if (referrefUri !== productUpdateUrl) {
+            raiseProductUpdatedNotify(product);
+            props.history.push(referrefUri);
+            resolve({ product });
+            return;
+          }
+        }
+
+        raiseProductUpdatedNotify(product);
+        props.history.push(`/products/${product.id}`);
+        resolve({ product });
+      });
+    });
+  };
+
+  const raiseProductUpdatedNotify = (product) => {
+    dispatch("PRODUCT_UPDATE", {
+      id: product.id,
     });
   };
 
@@ -130,6 +155,7 @@ export default withRouter(function (props) {
   useEffect(() => {
     if (!loading && called) {
       refetch();
+      window.scrollTo(0, 0);
     }
   }, [refetch, called, loading]);
 

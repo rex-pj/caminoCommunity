@@ -1,5 +1,4 @@
 ﻿using LinqToDB;
-using LinqToDB.Common;
 using LinqToDB.Data;
 using LinqToDB.Tools;
 using System;
@@ -14,7 +13,6 @@ using System.Text;
 using LinqToDB.Mapping;
 using Camino.Core.Infrastructure;
 using System.Data.SqlClient;
-using System.Linq.Expressions;
 
 namespace Camino.Data.Contracts
 {
@@ -34,7 +32,6 @@ namespace Camino.Data.Contracts
             }
 
             OnMappingSchemaCreated();
-            AllowMultipleQuery();
         }
 
         protected void LoadMappingSchemaBuilder()
@@ -57,11 +54,6 @@ namespace Camino.Data.Contracts
         {
             var dataConnection = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
             return dataConnection;
-        }
-
-        internal static void AllowMultipleQuery()
-        {
-            Configuration.Linq.AllowMultipleQuery = true;
         }
 
         public bool IsDatabaseExist()

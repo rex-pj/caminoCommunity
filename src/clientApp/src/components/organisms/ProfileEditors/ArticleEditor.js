@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
@@ -81,8 +81,7 @@ export default withRouter((props) => {
     currentArticle,
   } = props;
   const initialFormData = JSON.parse(JSON.stringify(articleCreationModel));
-  const articleState = currentArticle ? currentArticle : initialFormData;
-  const [formData, setFormData] = useState(articleState);
+  const [formData, setFormData] = useState(initialFormData);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -222,9 +221,14 @@ export default withRouter((props) => {
     });
   };
 
-  const { name, articleCategoryId, articleCategoryName, thumbnail } = formData;
-  let { value: thumbnailData } = thumbnail;
+  useEffect(() => {
+    if (currentArticle) {
+      setFormData(currentArticle);
+    }
+  }, [currentArticle]);
 
+  const { name, articleCategoryId, articleCategoryName } = formData;
+  const { thumbnail } = currentArticle ? currentArticle : formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
@@ -264,11 +268,11 @@ export default withRouter((props) => {
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {thumbnailData.base64Data ? (
+        {thumbnail && thumbnail.value && thumbnail.value.base64Data ? (
           <FormRow className="row">
             <div className="col-3">
               <ImageEditBox>
-                <Thumbnail src={thumbnailData.base64Data}></Thumbnail>
+                <Thumbnail src={thumbnail.value.base64Data}></Thumbnail>
                 <RemoveImageButton onClick={onImageRemoved}>
                   <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                 </RemoveImageButton>
@@ -276,12 +280,12 @@ export default withRouter((props) => {
             </div>
           </FormRow>
         ) : null}
-        {thumbnailData && thumbnailData.pictureId ? (
+        {thumbnail && thumbnail.value && thumbnail.value.pictureId ? (
           <FormRow className="row">
             <div className="col-3">
               <ImageEditBox>
                 <Thumbnail
-                  src={`${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnailData.pictureId}`}
+                  src={`${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.value.pictureId}`}
                 ></Thumbnail>
                 <RemoveImageButton onClick={onImageRemoved}>
                   <FontAwesomeIcon icon="times"></FontAwesomeIcon>

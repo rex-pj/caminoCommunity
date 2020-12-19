@@ -273,6 +273,23 @@ namespace Camino.Data.Contracts
         }
 
         /// <summary>
+        /// Update entities
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual async Task UpdateAsync(IEnumerable<TEntity> entities)
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+
+            foreach (var entity in entities)
+            {
+                await UpdateAsync(entity);
+            }
+        }
+
+        /// <summary>
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>

@@ -8,6 +8,9 @@ const configureStore = () => {
     FARM_UPDATE: (curState, payload) => {
       return { id: payload.id, type: "FARM" };
     },
+    PRODUCT_UPDATE: (curState, payload) => {
+      return { id: payload.id, type: "PRODUCT" };
+    },
   };
   initStore(actions, {
     notifications: [],

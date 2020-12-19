@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
@@ -84,8 +84,7 @@ export default withRouter((props) => {
     currentProduct,
   } = props;
   const initialFormData = JSON.parse(JSON.stringify(productCreationModel));
-  const farmState = currentProduct ? currentProduct : initialFormData;
-  const [formData, setFormData] = useState(farmState);
+  const [formData, setFormData] = useState(initialFormData);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -247,24 +246,33 @@ export default withRouter((props) => {
   };
 
   const loadCategoriesSelected = () => {
-    if (!productCategories.value) {
+    const { productCategories: categories } = currentProduct;
+    if (!categories.value) {
       return [];
     }
-    return productCategories.value.map((item) => {
+    return categories.value.map((item) => {
       return { label: item.name, value: item.id };
     });
   };
 
   const loadFarmsSelected = () => {
-    if (!productFarms.value) {
+    const { productFarms: farms } = currentProduct;
+    if (!farms.value) {
       return [];
     }
-    return productFarms.value.map((item) => {
+    return farms.value.map((item) => {
       return { label: item.farmName, value: item.farmId };
     });
   };
 
-  const { name, price, productCategories, productFarms, thumbnails } = formData;
+  useEffect(() => {
+    if (currentProduct) {
+      setFormData(currentProduct);
+    }
+  }, [currentProduct]);
+
+  const { name, price, productCategories, productFarms } = formData;
+  const { thumbnails } = currentProduct ? currentProduct : formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -317,7 +325,7 @@ export default withRouter((props) => {
             )}
           </div>
           <div className="col-4 col-lg-5 pr-1">
-            {productCategories.value ? (
+            {productFarms.value ? (
               <AsyncSelect
                 className="select"
                 cacheOptions

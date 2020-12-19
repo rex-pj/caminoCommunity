@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
@@ -79,8 +79,7 @@ export default withRouter((props) => {
     currentFarm,
   } = props;
   const initialFormData = JSON.parse(JSON.stringify(farmCreationModel));
-  const farmState = currentFarm ? currentFarm : initialFormData;
-  const [formData, setFormData] = useState(farmState);
+  const [formData, setFormData] = useState(initialFormData);
   const editorRef = useRef();
 
   const handleInputChange = (evt) => {
@@ -223,7 +222,14 @@ export default withRouter((props) => {
     });
   };
 
-  const { name, address, farmTypeName, farmTypeId, thumbnails } = formData;
+  useEffect(() => {
+    if (currentFarm) {
+      setFormData(currentFarm);
+    }
+  }, [currentFarm]);
+
+  const { name, address, farmTypeName, farmTypeId } = formData;
+  const { thumbnails } = currentFarm ? currentFarm : formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">

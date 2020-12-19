@@ -208,10 +208,10 @@ export default function (props) {
   };
 
   const renderThumbnailImage = () => {
-    if (
-      thumbnailImage &&
-      thumbnailImage.thumbnailUrl === currentImage.thumbnailUrl
-    ) {
+    const isThumbnailInList = images.some((x) => {
+      return x.thumbnailUrl === currentImage.thumbnailUrl;
+    });
+    if (isThumbnailInList) {
       return (
         <Thumbnail src={thumbnailImage.thumbnailUrl} onClick={onNext} alt="" />
       );

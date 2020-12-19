@@ -59,8 +59,8 @@ export default withRouter(function (props) {
     return <ErrorBlock>Error!</ErrorBlock>;
   }
 
-  const { product: productResponse } = data;
-  let product = { ...productResponse };
+  const { product: productData } = data;
+  let product = { ...productData };
 
   const breadcrumbs = [
     {

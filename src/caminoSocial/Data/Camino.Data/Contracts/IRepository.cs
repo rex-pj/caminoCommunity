@@ -128,6 +128,13 @@ namespace Camino.Data.Contracts
         Task UpdateAsync(TEntity entity);
 
         /// <summary>
+        /// Update entities async
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task UpdateAsync(IEnumerable<TEntity> entities);
+
+        /// <summary>
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>

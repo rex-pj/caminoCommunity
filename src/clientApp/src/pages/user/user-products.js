@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
@@ -23,7 +23,7 @@ export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
-  const dispatch = useStore(false)[1];
+  const [state, dispatch] = useStore(false);
   const { user } = useContext(SessionContext);
 
   const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
@@ -135,9 +135,11 @@ export default withRouter(function (props) {
       });
   };
 
-  const refetchNewProducts = () => {
-    fetchNewProducts();
-  };
+  useEffect(() => {
+    if (state.type === "PRODUCT" && state.id) {
+      fetchNewProducts();
+    }
+  }, [state, fetchNewProducts]);
 
   const productEditor =
     user && user.isLogin ? (
@@ -148,7 +150,7 @@ export default withRouter(function (props) {
         filterCategories={searchProductCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}
-        refetchNews={refetchNewProducts}
+        refetchNews={fetchNewProducts}
         filterFarms={searchFarms}
       />
     ) : null;
