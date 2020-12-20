@@ -1,41 +1,41 @@
 import React, { useState } from "react";
-import Association from "../../components/templates/Association";
+import Community from "../../components/templates/Community";
 import { UrlConstant } from "../../utils/Constants";
 
 export default () => {
-  let associations = [];
+  let communities = [];
   for (let i = 0; i < 9; i++) {
-    const associationItem = {
+    const communityItem = {
       id: i + 1,
       thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
       description:
         "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm, ngoài trái cây bạn còn có thể mua thêm tùm lum tà la ở đây",
-      url: `${UrlConstant.Association.url}1`,
+      url: `${UrlConstant.Community.url}1`,
       followingNumber: "14",
       name: "Hội trái cây sạch An Thạnh",
       contentType: 4,
     };
 
-    associations.push(associationItem);
+    communities.push(communityItem);
   }
 
   const breadcrumbs = [
     {
       isActived: true,
-      title: "Associations",
+      title: "Communities",
     },
   ];
 
   const [state] = useState({
     totalPage: 10,
     currentPage: 8,
-    baseUrl: "/associations",
+    baseUrl: "/communities",
   });
 
   const { totalPage, baseUrl, currentPage } = state;
   return (
-    <Association
-      associations={associations}
+    <Community
+      communities={communities}
       breadcrumbs={breadcrumbs}
       totalPage={totalPage}
       baseUrl={baseUrl}

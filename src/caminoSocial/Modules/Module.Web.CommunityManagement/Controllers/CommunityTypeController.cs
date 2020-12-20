@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Module.Web.AssociationManagement.Controllers
+namespace Module.Web.CommunityManagement.Controllers
 {
-    public class AssociationTypeController : BaseAuthController
+    public class CommunityTypeController : BaseAuthController
     {
-        public AssociationTypeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public CommunityTypeController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
         }
 

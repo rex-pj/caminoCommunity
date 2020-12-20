@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AssociationLayout from "../../components/templates/Layout/AssociationLayout";
-import Detail from "../../components/templates/Association/Detail";
+import CommunityLayout from "../../components/templates/Layout/CommunityLayout";
+import Detail from "../../components/templates/Community/Detail";
 import { UrlConstant } from "../../utils/Constants";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
@@ -11,11 +11,11 @@ const Wrapper = styled.div`
 `;
 
 export default () => {
-  const association = {
+  const community = {
     createdDate: "25/03/2019 00:00",
     thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
     info: {
-      url: `${UrlConstant.Association.url}1`,
+      url: `${UrlConstant.Community.url}1`,
       title: "Hội trái cây sạch An Thạnh",
       description:
         "Hội lập ra nhằm mục đích chia sẻ các kinh nghiệm trồng trái cây sạch cũng như quảng bá trái cây của nhóm, ngoài trái cây bạn còn có thể mua thêm tùm lum tà la ở đây",
@@ -25,8 +25,8 @@ export default () => {
 
   let breadcrumbs = [
     {
-      title: "Associations",
-      url: "/associations/",
+      title: "Communities",
+      url: "/communities/",
     },
     {
       isActived: true,
@@ -97,8 +97,8 @@ export default () => {
   const { totalPage, baseUrl, currentPage } = state;
 
   return (
-    <AssociationLayout info={association.info}>
-      <Detail association={association} breadcrumbs={breadcrumbs} />
+    <CommunityLayout info={community.info}>
+      <Detail community={community} breadcrumbs={breadcrumbs} />
       <Wrapper>
         <Feeds
           feeds={feeds}
@@ -107,6 +107,6 @@ export default () => {
           currentPage={currentPage}
         />
       </Wrapper>
-    </AssociationLayout>
+    </CommunityLayout>
   );
 };

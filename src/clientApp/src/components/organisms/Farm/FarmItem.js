@@ -54,6 +54,11 @@ const InteractiveItem = styled.li`
 
 const ThumbnailBox = styled.div`
   position: relative;
+
+  img {
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
+  }
 `;
 
 const PanelHeader = styled(PanelHeading)`

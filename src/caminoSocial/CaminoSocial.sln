@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.ArticleManagemen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.FarmManagement", "Modules\Module.Web.FarmManagement\Module.Web.FarmManagement.csproj", "{AD176F4B-EF72-4237-B1D8-682F2ABB675C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.AssociationManagement", "Modules\Module.Web.AssociationManagement\Module.Web.AssociationManagement.csproj", "{718DE384-C548-4AE8-BB51-48D4E67B56ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.CommunityManagement", "Modules\Module.Web.CommunityManagement\Module.Web.CommunityManagement.csproj", "{718DE384-C548-4AE8-BB51-48D4E67B56ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.ProductManagement", "Modules\Module.Web.ProductManagement\Module.Web.ProductManagement.csproj", "{BC24217B-720C-4707-9BA0-0CEF67A1EFDB}"
 EndProject
@@ -63,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Media", "Modules
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Farm", "Modules\Module.Api.Farm\Module.Api.Farm.csproj", "{52969427-F935-42ED-8D68-D288AA07A029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Api.Feed", "Modules\Module.Api.Feed\Module.Api.Feed.csproj", "{002686D0-924E-4F89-8A42-8C5F0D3E2942}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Feed", "Modules\Module.Api.Feed\Module.Api.Feed.csproj", "{002686D0-924E-4F89-8A42-8C5F0D3E2942}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

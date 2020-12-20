@@ -89,22 +89,22 @@ namespace Module.Web.Navigation.ViewComponents
                             new NavigationModel()
                             {
                                 Icon = "far fa-flag",
-                                Name = "Association",
-                                Code = "associationNav",
-                                Url = "/Association",
+                                Name = "Community",
+                                Code = "CommunityNav",
+                                Url = "/Community",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
-                                        Name = "Farm Associations",
-                                        Code = "Association",
-                                        Url = "/Association"
+                                        Name = "Farm Communities",
+                                        Code = "Community",
+                                        Url = "/Community"
                                     },
                                     new NavigationModel()
                                     {
-                                        Name = "Farm Association Types",
-                                        Code = "AssociationType",
-                                        Url = "/AssociationType"
+                                        Name = "Farm Community Types",
+                                        Code = "CommunityType",
+                                        Url = "/CommunityType"
                                     }
                                 }
                             },

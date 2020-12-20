@@ -63,15 +63,15 @@ export default [
     layout: DetailLayout,
   },
   {
-    path: ["/associations", "/associations/page/:pageNumber"],
+    path: ["/communities", "/communities/page/:pageNumber"],
     exact: true,
-    page: "associations",
+    page: "communities",
     layout: DefaultLayout,
   },
   {
-    path: "/associations/:id",
+    path: "/communities/:id",
     exact: true,
-    page: "associations/detail",
+    page: "communities/detail",
     layout: FrameLayout,
   },
   {

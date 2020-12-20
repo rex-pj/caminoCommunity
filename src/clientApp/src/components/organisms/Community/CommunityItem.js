@@ -77,13 +77,13 @@ const ThumbnailOverlay = styled(Overlay)`
 `;
 
 export default (props) => {
-  const { association } = props;
+  const { community } = props;
 
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={association.thumbnailUrl}>
-          <PostThumbnail src={association.thumbnailUrl} alt="" />
+        <AnchorLink to={community.thumbnailUrl}>
+          <PostThumbnail src={community.thumbnailUrl} alt="" />
           <ThumbnailOverlay />
         </AnchorLink>
         <FollowButton icon="handshake" size="sm">
@@ -92,12 +92,12 @@ export default (props) => {
       </ThumbnailBox>
       <PanelHeader>
         <PostTitle>
-          <AnchorLink to={association.url}>{association.name}</AnchorLink>
+          <AnchorLink to={community.url}>{community.name}</AnchorLink>
         </PostTitle>
       </PanelHeader>
       <PanelBody>
         <div className="panel-content">
-          <ContentBody>{association.description}</ContentBody>
+          <ContentBody>{community.description}</ContentBody>
         </div>
 
         <div className="interactive-toolbar">
@@ -105,7 +105,7 @@ export default (props) => {
             <InteractItem>
               <FontButtonItem
                 icon="users"
-                dynamicText={association.followingNumber}
+                dynamicText={community.followingNumber}
               />
             </InteractItem>
           </HorizontalList>

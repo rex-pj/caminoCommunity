@@ -23,7 +23,7 @@ FOREIGN KEY (ParentMenuId) REFERENCES dbo.Menu(Id);
 
 --GROUP--
 GO
-CREATE TABLE dbo.[Association](
+CREATE TABLE dbo.[Community](
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	Title NVARCHAR(255) NULL,
 	[Description] NVARCHAR(500) NULL,
@@ -34,13 +34,13 @@ CREATE TABLE dbo.[Association](
 )
 
 GO
-ALTER TABLE dbo.[Association]
-ADD CONSTRAINT PK_Association
+ALTER TABLE dbo.[Community]
+ADD CONSTRAINT PK_Community
 PRIMARY KEY (Id);
 
 --GROUP ROLE--
 GO
-CREATE TABLE dbo.[AssociationRole]
+CREATE TABLE dbo.[CommunityRole]
 (
 	Id TINYINT NOT NULL IDENTITY(1,1),
 	[Name] NVARCHAR(255) NOT NULL,
@@ -48,29 +48,29 @@ CREATE TABLE dbo.[AssociationRole]
 )
 
 GO
-ALTER TABLE dbo.[AssociationRole]
-ADD CONSTRAINT PK_AssociationRole
+ALTER TABLE dbo.[CommunityRole]
+ADD CONSTRAINT PK_CommunityRole
 PRIMARY KEY (Id);
 
 --FARMER GROUP--
 GO
-CREATE TABLE dbo.AssociationMember(
+CREATE TABLE dbo.CommunityMember(
 	UserId BIGINT NOT NULL,
-	AssociationId BIGINT NOT NULL,
+	CommunityId BIGINT NOT NULL,
 	JoinedDate DATETIME2 NULL,
 	IsJoined BIT NOT NULL,
 	ApprovedById BIGINT NOT NULL
 )
 
 GO
-ALTER TABLE dbo.AssociationMember
-ADD CONSTRAINT PK_UserAssociation
-PRIMARY KEY (UserId, AssociationId);
+ALTER TABLE dbo.CommunityMember
+ADD CONSTRAINT PK_UserCommunity
+PRIMARY KEY (UserId, CommunityId);
 
 GO
-ALTER TABLE dbo.AssociationMember
-ADD CONSTRAINT FK_User_Association
-FOREIGN KEY (AssociationId) REFERENCES dbo.[Association](Id);
+ALTER TABLE dbo.CommunityMember
+ADD CONSTRAINT FK_User_Community
+FOREIGN KEY (CommunityId) REFERENCES dbo.[Community](Id);
 
 --FARM TYPE--
 GO
@@ -150,9 +150,9 @@ FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
 
 --GROUP FARM--
 GO
-CREATE TABLE dbo.FarmAssociation(
+CREATE TABLE dbo.FarmCommunity(
 	Id BIGINT NOT NULL IDENTITY(1,1),
-	AssociationId BIGINT NOT NULL,
+	CommunityId BIGINT NOT NULL,
 	FarmId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
 	IsLinked BIT NOT NULL,
@@ -161,18 +161,18 @@ CREATE TABLE dbo.FarmAssociation(
 )
 
 GO
-ALTER TABLE dbo.FarmAssociation
-ADD CONSTRAINT PK_FarmAssociation
+ALTER TABLE dbo.FarmCommunity
+ADD CONSTRAINT PK_FarmCommunity
 PRIMARY KEY (Id);
 
 GO
-ALTER TABLE dbo.FarmAssociation
-ADD CONSTRAINT FK_FarmAssociation_Association
-FOREIGN KEY (AssociationId) REFERENCES dbo.[Association](Id);
+ALTER TABLE dbo.FarmCommunity
+ADD CONSTRAINT FK_FarmCommunity_Community
+FOREIGN KEY (CommunityId) REFERENCES dbo.[Community](Id);
 
 GO
-ALTER TABLE dbo.FarmAssociation
-ADD CONSTRAINT FK_FarmAssociation_Farm
+ALTER TABLE dbo.FarmCommunity
+ADD CONSTRAINT FK_FarmCommunity_Farm
 FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
 -- PRODUCT CATEGORY --
 GO
@@ -268,9 +268,9 @@ FOREIGN KEY (FarmId) REFERENCES dbo.Farm(Id);
 
 --PRODUCT GROUP--
 GO
-CREATE TABLE dbo.ProductAssociation(
+CREATE TABLE dbo.ProductCommunity(
 	Id BIGINT NOT NULL IDENTITY(1,1),
-	AssociationId BIGINT NOT NULL,
+	CommunityId BIGINT NOT NULL,
 	ProductId BIGINT NOT NULL,
 	LinkedDate DATETIME2 NOT NULL,
 	IsLinked BIT NOT NULL,
@@ -279,19 +279,19 @@ CREATE TABLE dbo.ProductAssociation(
 )
 
 GO
-ALTER TABLE dbo.ProductAssociation
-ADD CONSTRAINT PK_ProductAssociation
-PRIMARY KEY (AssociationId, ProductId);
+ALTER TABLE dbo.ProductCommunity
+ADD CONSTRAINT PK_ProductCommunity
+PRIMARY KEY (CommunityId, ProductId);
 
 GO
-ALTER TABLE dbo.ProductAssociation
-ADD CONSTRAINT FK_AssociationProduct_Product
+ALTER TABLE dbo.ProductCommunity
+ADD CONSTRAINT FK_CommunityProduct_Product
 FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
 
 GO
-ALTER TABLE dbo.ProductAssociation
-ADD CONSTRAINT FK_AssociationProduct_Association
-FOREIGN KEY (AssociationId) REFERENCES dbo.[Association](Id);
+ALTER TABLE dbo.ProductCommunity
+ADD CONSTRAINT FK_CommunityProduct_Community
+FOREIGN KEY (CommunityId) REFERENCES dbo.[Community](Id);
 
 -- USER PHOTO --
 GO 

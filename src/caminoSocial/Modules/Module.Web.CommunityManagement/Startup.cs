@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Core.Modular.Contracts;
-using Module.Web.AssociationManagement.Infrastructure.Extensions;
+using Module.Web.CommunityManagement.Infrastructure.Extensions;
 
-namespace Module.Web.AssociationManagement
+namespace Module.Web.CommunityManagement
 {
     public class Startup : PluginStartupBase
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Module.Web.AssociationManagement.Infrastructure.Extensions
+namespace Module.Web.CommunityManagement.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {

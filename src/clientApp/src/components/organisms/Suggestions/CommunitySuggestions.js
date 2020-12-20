@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import AssociationSuggestionItem from "./AssociationSuggestionItem";
+import CommunitySuggestionItem from "./CommunitySuggestionItem";
 import { VerticalList } from "../../atoms/List";
 import { FifthDarkHeading } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constants";
@@ -18,14 +18,14 @@ const List = styled(VerticalList)`
 `;
 
 export default () => {
-  let associations = [];
+  let communities = [];
   for (let i = 0; i < 3; i++) {
-    associations.push({
+    communities.push({
       info: "125 participants",
       name: "Hội trái cây Mini",
       description:
         "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
-      url: `${UrlConstant.Association.url}1`,
+      url: `${UrlConstant.Community.url}1`,
       id: "1212234r5423",
       photoUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
     });
@@ -34,15 +34,15 @@ export default () => {
   return (
     <div>
       <FifthDarkHeading>
-        Join The Farm Association To Connect Better!
+        Join The Farm Community To Connect Better!
       </FifthDarkHeading>
       <Root>
         <List>
-          {associations &&
-            associations.map((association, index) => (
-              <AssociationSuggestionItem
+          {communities &&
+            communities.map((communitie, index) => (
+              <CommunitySuggestionItem
                 key={index}
-                association={association}
+                communitie={communitie}
                 index={index}
               />
             ))}

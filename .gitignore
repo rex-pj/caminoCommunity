@@ -28,6 +28,8 @@ src/caminoSocial/Presentation/Camino.ApiHost/bin/
 src/caminoSocial/Modules/Module.Web.ArticleManagement/obj/
 src/caminoSocial/Modules/Module.Web.AssociationManagement/bin/
 src/caminoSocial/Modules/Module.Web.AssociationManagement/obj/
+src/caminoSocial/Modules/Module.Web.CommunityManagement/bin/
+src/caminoSocial/Modules/Module.Web.CommunityManagement/obj/
 src/caminoSocial/Modules/Module.Web.AuthenticationManagement/bin/
 src/caminoSocial/Modules/Module.Web.AuthenticationManagement/obj/
 src/caminoSocial/Modules/Module.Web.AuthorizationManagement/bin/

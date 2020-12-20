@@ -2,7 +2,7 @@ import React from "react";
 import ArticleListItem from "../Article/ArticleListItem";
 import ProductListItem from "../Product/ProductListItem";
 import FarmListItem from "../Farm/FarmListItem";
-import AssociationListItem from "../Association/AssociationListItem";
+import CommunityListItem from "../Community/CommunityListItem";
 import { FeedType } from "../../../utils/Enums";
 
 export default function (props) {
@@ -14,7 +14,7 @@ export default function (props) {
     return <ProductListItem product={feed} />;
   } else if (feed.feedType === FeedType.Farm) {
     return <FarmListItem farm={feed} />;
-  } else if (feed.feedType === FeedType.Association) {
-    return <AssociationListItem association={feed} />;
+  } else if (feed.feedType === FeedType.Community) {
+    return <CommunityListItem community={feed} />;
   }
 }

@@ -6,7 +6,7 @@ import AdsList from "../../organisms/Ads/AdsList";
 import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
   FarmSuggestions,
-  AssociationSuggestions,
+  CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
@@ -46,7 +46,7 @@ export default ({ component: Component, ...rest }) => {
                 <AdsList />
               </PageColumnPanel>
               <PageColumnPanel>
-                <AssociationSuggestions />
+                <CommunitySuggestions />
               </PageColumnPanel>
               <PageColumnPanel>
                 <AdsList />

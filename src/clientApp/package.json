@@ -58,7 +58,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/preset-env": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@loadable/babel-plugin": "^5.13.2",
     "@loadable/webpack-plugin": "^5.14.0"
   }

@@ -3,15 +3,15 @@ import { SuggestionPanel } from "../SuggestionPanels";
 
 export default (props) => {
   const { className, index } = props;
-  let { association } = props;
+  let { community } = props;
 
-  association = {
-    ...association,
+  community = {
+    ...community,
     actionIcon: "handshake",
     infoIcon: "users",
     actionText: "Join",
   };
   return (
-    <SuggestionPanel data={association} className={className} index={index} />
+    <SuggestionPanel data={community} className={className} index={index} />
   );
 };

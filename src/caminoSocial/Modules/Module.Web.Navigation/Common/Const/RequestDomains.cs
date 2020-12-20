@@ -8,8 +8,8 @@
         public const string ARTICLE_PICTURE = "ArticlePicture";
         public const string FARM = "Farm";
         public const string FARM_TYPE = "FarmType";
-        public const string FARM_ASSOCIATION = "FarmAssociation";
-        public const string FARM_ASSOCIATION_TYPE = "FarmAssociationType";
+        public const string FARM_COMMUNITY = "FarmCommunity";
+        public const string FARM_COMMUNITY_TYPE = "FarmCommunityType";
         public const string PRODUCT = "Product";
         public const string PRODUCT_CATEGORY = "ProductCategory";
         public const string USER = "User";

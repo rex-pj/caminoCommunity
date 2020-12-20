@@ -24,8 +24,8 @@ export default function (props) {
     },
     {
       icon: "flag",
-      text: "Associations",
-      href: "/associations/",
+      text: "Communities",
+      href: "/Communities/",
     },
     {
       icon: "apple-alt",

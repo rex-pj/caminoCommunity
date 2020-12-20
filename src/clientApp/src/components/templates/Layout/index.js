@@ -1,6 +1,6 @@
 import DefaultLayout from "./DefaultLayout";
 import DetailLayout from "./DetailLayout";
-import AssociationLayout from "./AssociationLayout";
+import CommunityLayout from "./CommunityLayout";
 import FrameLayout from "./FrameLayout";
 import AuthLayout from "./AuthLayout";
 import ProfileLayout from "./ProfileLayout";
@@ -11,7 +11,7 @@ export {
   FrameLayout,
   DefaultLayout,
   DetailLayout,
-  AssociationLayout,
+  CommunityLayout,
   AuthLayout,
   ProfileLayout,
   MasterLayout,

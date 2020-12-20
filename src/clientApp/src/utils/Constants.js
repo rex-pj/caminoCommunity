@@ -11,8 +11,8 @@ const UrlConstant = {
   Farm: {
     url: "/farms/",
   },
-  Association: {
-    url: "/associations/",
+  Community: {
+    url: "/communities/",
   },
   Product: {
     url: "/products/",

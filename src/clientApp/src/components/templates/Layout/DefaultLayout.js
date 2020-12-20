@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { PageColumnPanel } from "../../atoms/Panels";
 import {
   FarmSuggestions,
-  AssociationSuggestions,
+  CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 
@@ -58,7 +58,7 @@ export default ({ component: Component, ...rest }) => {
                 <AdsList />
               </PageColumnPanel>
               <PageColumnPanel>
-                <AssociationSuggestions />
+                <CommunitySuggestions />
               </PageColumnPanel>
               <PageColumnPanel>
                 <AdsList />
