@@ -5,7 +5,7 @@ import EditorImageLink from "./EditorImageLink";
 import styled from "styled-components";
 import EditorImageInfo from "./EditorImageInfo";
 import imageInfoModel from "../../../models/imageInfoModel";
-import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
+import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AtomicBlockUtils, EditorState } from "draft-js";
 
@@ -14,7 +14,7 @@ const Root = styled.div`
   margin: ${(p) => p.theme.size.tiny} ${(p) => p.theme.size.tiny} 0
     ${(p) => p.theme.size.tiny};
   min-height: 200px;
-  background-color: ${(p) => p.theme.color.dark};
+  background-color: ${(p) => p.theme.color.darkBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
@@ -41,12 +41,12 @@ const ImageEditorTabs = styled(Tabs)`
   }
   ul.tabs-bar li button {
     background-color: transparent;
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   ul.tabs-bar li.actived button {
     background-color: ${(p) => p.theme.rgbaColor.cyanLight};
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.neutralText};
   }
 `;
 
@@ -194,7 +194,7 @@ export default (props) => {
             ),
           },
           {
-            title: "Đường dẫn",
+            title: "Link",
             tabComponent: () => (
               <EditorImageLink
                 onAddImage={onAddImage}
@@ -215,9 +215,9 @@ export default (props) => {
         imageData={imageData}
       />
       <Footer>
-        <ButtonSecondary size="sm" onClick={onClose}>
+        <ButtonLight size="sm" onClick={onClose}>
           Đóng
-        </ButtonSecondary>
+        </ButtonLight>
         <ButtonPrimary size="sm" onClick={onImageAdded} disabled={!isValid}>
           <FontAwesomeIcon icon="check" />
           Lưu

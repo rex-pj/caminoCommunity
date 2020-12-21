@@ -1,20 +1,19 @@
 import React, { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import styled from "styled-components";
 
 const EditorTabs = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
   .tabs-bar button {
-    border-radius: ${(p) => p.theme.borderRadius.large};
-    color: ${(p) => p.theme.color.light};
     background-color: transparent;
     font-weight: normal;
     border-color: transparent;
+    color: ${(p) => p.theme.color.neutralText};
   }
   .tabs-bar button.actived {
-    color: ${(p) => p.theme.color.neutral};
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.primaryBg};
+    color: ${(p) => p.theme.color.lightText};
   }
 `;
 
@@ -25,8 +24,8 @@ export default function (props) {
     <Fragment>
       <EditorTabs>
         <div className="tabs-bar">
-          <ButtonSecondary
-            size="sm"
+          <ButtonPrimary
+            size="xs"
             className={`mr-1${editorMode === "ARTICLE" ? " actived" : ""}`}
             onClick={() => onToggleCreateMode("ARTICLE")}
           >
@@ -37,9 +36,9 @@ export default function (props) {
               ></FontAwesomeIcon>
               Create Post
             </span>
-          </ButtonSecondary>
-          <ButtonSecondary
-            size="sm"
+          </ButtonPrimary>
+          <ButtonPrimary
+            size="xs"
             onClick={() => onToggleCreateMode("PRODUCT")}
             className={`mr-1${editorMode === "PRODUCT" ? " actived" : ""}`}
           >
@@ -50,9 +49,9 @@ export default function (props) {
               ></FontAwesomeIcon>
               Create Product
             </span>
-          </ButtonSecondary>
-          <ButtonSecondary
-            size="sm"
+          </ButtonPrimary>
+          <ButtonPrimary
+            size="xs"
             onClick={() => onToggleCreateMode("FARM")}
             className={`mr-1${editorMode === "FARM" ? " actived" : ""}`}
           >
@@ -63,7 +62,7 @@ export default function (props) {
               ></FontAwesomeIcon>
               Create Farm
             </span>
-          </ButtonSecondary>
+          </ButtonPrimary>
         </div>
       </EditorTabs>
     </Fragment>

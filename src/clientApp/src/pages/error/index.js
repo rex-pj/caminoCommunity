@@ -1,9 +1,9 @@
 import React from "react";
-import NotFound from "../../components/organisms/Error/NotFound";
+import BadRequest from "../../components/organisms/Error/BadRequest";
 
 export default function (props) {
   return (
-    <NotFound
+    <BadRequest
       icon="dizzy"
       title="Có lỗi xảy ra với truy cập của bạn"
       instruction="Liên kết bạn đang truy cập có thể tạm thời bị lỗi, hãy thử lại hoặc quay lại vào lúc khác"

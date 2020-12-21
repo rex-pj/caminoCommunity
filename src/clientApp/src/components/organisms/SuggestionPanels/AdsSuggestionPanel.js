@@ -2,27 +2,27 @@ import React from "react";
 import styled from "styled-components";
 import { ImageRound } from "../../atoms/Images";
 import { TertiaryTitle } from "../../atoms/Titles";
-import { TypographySecondary } from "../../atoms/Typographies";
+import { TypographyTitle } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
-  border-top: 1px solid ${p => p.theme.color.lighter};
-  padding-top: ${p => p.theme.size.exSmall};
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding-top: ${(p) => p.theme.size.exSmall};
 `;
 
 const Title = styled(TertiaryTitle)`
   margin-bottom: 3px;
 `;
 
-const Description = styled(TypographySecondary)`
+const Description = styled(TypographyTitle)`
   margin-bottom: 0;
 `;
 
 const Body = styled.div`
-  padding-bottom: ${p => p.theme.size.exTiny};
+  padding-bottom: ${(p) => p.theme.size.exTiny};
 `;
 
-export default props => {
+export default (props) => {
   const { data, className, index } = props;
   return (
     <ListItem

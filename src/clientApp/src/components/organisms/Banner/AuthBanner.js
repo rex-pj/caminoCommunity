@@ -32,7 +32,7 @@ const Instruction = styled.div`
 
   ${SecondaryHeading} {
     font-size: ${(p) => p.theme.fontSize.giant};
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.neutralText};
     text-transform: uppercase;
   }
 
@@ -53,18 +53,18 @@ const Instruction = styled.div`
   svg,
   path {
     font-size: ${(p) => p.theme.fontSize.giant};
-    color: ${(p) => p.theme.color.warning};
+    color: ${(p) => p.theme.color.primaryWarnText};
   }
 
   p {
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.neutralText};
     margin-bottom: 0;
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 
   a {
-    color: ${(p) => p.theme.color.white};
+    color: ${(p) => p.theme.color.whiteText};
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
     font-size: ${(p) => p.theme.fontSize.normal};

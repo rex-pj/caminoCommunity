@@ -8,11 +8,10 @@ import { useStore } from "../../../store/hook-store";
 
 const ProfileImage = styled(ImageRound)`
     display: block;
-    border-radius: ${(p) => p.theme.borderRadius.medium};
     min-width: 100%;
   `,
   EmptyAvatar = styled(NoAvatar)`
-    border-radius: ${(p) => p.theme.borderRadius.medium};
+    border-radius: ${(p) => p.theme.borderRadius.normal};
     width: 100px;
     height: 100px;
   `,
@@ -26,8 +25,7 @@ const ProfileImage = styled(ImageRound)`
     z-index: 2;
     text-align: center;
     margin: auto;
-
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.whiteText};
     width: ${(p) => p.theme.size.medium};
     height: ${(p) => p.theme.size.medium};
     border-radius: 100%;
@@ -45,9 +43,9 @@ const ProfileImage = styled(ImageRound)`
     display: block;
     width: 110px;
     height: 110px;
-    border: 5px solid ${(p) => p.theme.rgbaColor.cyan};
+    border: 3px solid ${(p) => p.theme.rgbaColor.cyan};
     background-color: ${(p) => p.theme.rgbaColor.cyan};
-    border-radius: 20px;
+    border-radius: 7px;
   `;
 
 export default function ({ ...props }) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Textbox } from "../../atoms/Textboxes";
-import { ButtonPrimaryDark } from "../../atoms/Buttons/Buttons";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
+import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,7 +15,7 @@ const SearchForm = styled.div`
   margin: 1px 0;
 `;
 
-const SearchInput = styled(Textbox)`
+const SearchInput = styled(PrimaryTextbox)`
   border-top-right-radius: 100%;
   border-bottom-right-radius: 100%;
   background: transparent;
@@ -23,16 +23,16 @@ const SearchInput = styled(Textbox)`
   width: 300px;
   height: calc(${(p) => p.theme.size.normal} - 2px);
   float: left;
-  color: ${(p) => p.theme.color.lighter};
+  color: ${(p) => p.theme.color.neutralText};
   max-width: calc(100% - ${(p) => p.theme.size.normal});
 
   ::placeholder {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 `;
 
-const SearchButton = styled(ButtonPrimaryDark)`
+const SearchButton = styled(ButtonTransparent)`
   border-radius: 100%;
   height: calc(${(p) => p.theme.size.normal} - 6px);
   width: calc(${(p) => p.theme.size.normal} - 6px);
@@ -54,7 +54,7 @@ const SearchButton = styled(ButtonPrimaryDark)`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
   }
 `;
 

@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { ThumbnailRound } from "../../molecules/Thumbnails";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
-import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
@@ -14,7 +14,7 @@ const Panel = styled(PanelDefault)`
   margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
-const PostTitle = styled(SecondaryTitleLink)`
+const PostTitle = styled(secondaryTitleLink)`
   margin-bottom: 0;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -60,9 +60,9 @@ const InteractItem = styled(InteractiveItem)`
   margin-right: 0;
 `;
 
-const FollowButton = styled(ButtonIconOutlineSecondary)`
+const FollowButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;

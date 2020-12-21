@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
@@ -12,7 +12,7 @@ const DropdownGroup = styled.div`
   z-index: 2;
 `;
 
-const ButtonCaret = styled(ButtonTransparent)`
+const ButtonCaret = styled(ButtonPrimary)`
   padding: 0;
   text-align: center;
   width: ${(p) => p.theme.size.small};
@@ -23,7 +23,7 @@ const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
   top: calc(100% + ${(p) => p.theme.size.exTiny});
-  background: ${(p) => p.theme.color.white};
+  background: ${(p) => p.theme.color.whiteBg};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -31,7 +31,7 @@ const DropdownList = styled(Dropdown)`
 
   ${ModuleMenuListItem} {
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
 
     :last-child {
       border-bottom: 0;
@@ -54,7 +54,7 @@ const DropdownList = styled(Dropdown)`
     border-left: ${(p) => p.theme.size.exTiny} solid transparent;
     border-right: ${(p) => p.theme.size.exTiny} solid transparent;
     border-bottom: ${(p) => p.theme.size.exTiny} solid
-      ${(p) => p.theme.color.white};
+      ${(p) => p.theme.color.whiteBg};
   }
 `;
 

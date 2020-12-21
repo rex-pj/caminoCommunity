@@ -15,7 +15,7 @@ const InfoList = styled(VerticalList)`
 
 const ChildItem = styled.li`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   margin-bottom: ${(p) => p.theme.size.exSmall};
 
   span {
@@ -36,11 +36,11 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.primary};
+    color: ${(p) => p.theme.color.primaryText};
   }
 
   a {
-    font-size: ${(p) => p.theme.rgbaColor.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 `;

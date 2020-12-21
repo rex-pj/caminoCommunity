@@ -16,7 +16,7 @@ import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 
 const Title = styled(PrimaryTitle)`
-  color: ${(p) => p.theme.color.primary};
+  color: ${(p) => p.theme.color.primaryText};
 `;
 
 const ContentBody = styled.div`
@@ -31,13 +31,13 @@ const InteractiveItem = styled.li`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.light};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
 
   button {
     vertical-align: middle;
@@ -52,7 +52,7 @@ const RowItem = styled.div`
     display: inline-block;
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.small};
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
     margin-bottom: 0;
   }
 
@@ -74,13 +74,13 @@ const FarmInfo = styled.div`
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   svg {
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
     vertical-align: middle;
   }
 
@@ -93,7 +93,7 @@ const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
   top: ${(p) => p.theme.size.normal};
-  background: ${(p) => p.theme.color.white};
+  background: ${(p) => p.theme.color.whiteBg};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -102,13 +102,13 @@ const DropdownList = styled(Dropdown)`
   ${ModuleMenuListItem} span {
     display: block;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
     padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
     cursor: pointer;
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.lighter};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     :last-child {

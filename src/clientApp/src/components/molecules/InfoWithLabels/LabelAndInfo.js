@@ -2,28 +2,28 @@ import React from "react";
 import styled from "styled-components";
 
 const ChildItem = styled.div`
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.dark};
-  margin-bottom: ${p => p.theme.size.tiny};
-  padding-bottom: ${p => p.theme.size.tiny};
-  min-height: ${p => p.theme.size.normal};
-  border-bottom: 1px solid ${p => p.theme.color.lighter};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.darkText};
+  margin-bottom: ${(p) => p.theme.size.tiny};
+  padding-bottom: ${(p) => p.theme.size.tiny};
+  min-height: ${(p) => p.theme.size.normal};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
 
   label {
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   div {
     font-weight: 600;
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
 
   p {
-    font-size: ${p => p.theme.fontSize.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
     display: block;
     margin-bottom: 0;
-    color: ${p => p.theme.color.link};
+    color: ${(p) => p.theme.color.primaryLink};
     text-decoration: underline;
   }
 
@@ -34,7 +34,7 @@ const ChildItem = styled.div`
   }
 `;
 
-const LabelAndInfo = props => {
+const LabelAndInfo = (props) => {
   const { className, children, label, isEmail } = props;
   return (
     <ChildItem className={className}>

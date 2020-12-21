@@ -11,11 +11,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
         FullUserInfoModel GetLoggedUser(ApplicationUser currentUser);
         Task<FullUserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias);
-        Task<CommonResult> SignoutAsync(ApplicationUser currentUser);
+        Task<CommonResult> LogoutAsync(ApplicationUser currentUser);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias);
         Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateRequest criterias);
 
-        Task<UserTokenModel> SigninAsync(SigninModel criterias);
+        Task<UserTokenModel> LoginAsync(LoginModel criterias);
         Task<CommonResult> SignupAsync(SignupModel criterias);
         Task<CommonResult> ActiveAsync(ActiveUserModel criterias);
         Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);

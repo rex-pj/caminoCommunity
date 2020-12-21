@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { PanelBody, PanelFooter } from "../../atoms/Panels";
-import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
+import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 
-export default function(props) {
+export default function (props) {
   const { children } = props;
 
   return (
@@ -10,9 +10,7 @@ export default function(props) {
       <PanelBody>{children}</PanelBody>
       <PanelFooter>
         <ButtonPrimary>Upload</ButtonPrimary>
-        <ButtonSecondary onClick={() => props.closeModal()}>
-          Hủy
-        </ButtonSecondary>
+        <ButtonLight onClick={() => props.closeModal()}>Hủy</ButtonLight>
       </PanelFooter>
     </Fragment>
   );

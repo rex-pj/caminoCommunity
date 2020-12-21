@@ -34,12 +34,12 @@ const CreatorName = styled(AnchorLink)`
   display: inline-block;
   margin-bottom: 5px;
   margin-top: 1px;
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
 `;
 
 const MoreInfo = styled.p`
   font-size: ${(p) => p.theme.fontSize.tiny};
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 400;
   margin-bottom: 0;
 `;

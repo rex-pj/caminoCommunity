@@ -1,25 +1,25 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { TextboxSecondary } from "../../../components/atoms/Textboxes";
-import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
-import { LabelNormal } from "../../../components/atoms/Labels";
-import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
-import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";
-import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import signinModel from "../../../models/signinModel";
+import { SecondaryTextbox } from "../../atoms/Textboxes";
+import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { LabelNormal } from "../../atoms/Labels";
+import { ButtonLight } from "../../atoms/Buttons/Buttons";
+import AuthNavigation from "../Navigation/AuthNavigation";
+import AuthBanner from "../Banner/AuthBanner";
+import loginModel from "../../../models/loginModel";
 import { checkValidity } from "../../../utils/Validity";
 
-const Textbox = styled(TextboxSecondary)`
+const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
-  background-color: ${(p) => p.theme.color.lighter};
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
+  background-color: ${(p) => p.theme.color.neutralBg};
   width: 100%;
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
@@ -28,7 +28,7 @@ const Textbox = styled(TextboxSecondary)`
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
   }
 `;
 
@@ -47,17 +47,18 @@ const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
-const SubmitButton = styled(ButtonPrimary)`
+const SubmitButton = styled(ButtonLight)`
   font-size: ${(p) => p.theme.fontSize.small};
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.primaryBg};
 
   :hover {
-    color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.neutralBg};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.primaryLight};
-    color: ${(p) => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.neutralBg};
+    color: ${(p) => p.theme.color.primaryText};
     cursor: auto;
   }
 `;
@@ -66,7 +67,7 @@ const ForgotPasswordRow = styled(FormRow)`
   margin-top: ${(p) => p.theme.size.exTiny};
   font-size: ${(p) => p.theme.fontSize.small};
   a {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
   }
   text-align: center;
 `;
@@ -74,7 +75,7 @@ const ForgotPasswordRow = styled(FormRow)`
 export default (props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
-  let formData = signinModel;
+  let formData = loginModel;
 
   const handleInputBlur = (evt) => {
     const { name } = evt.target;
@@ -108,7 +109,7 @@ export default (props) => {
     return isFormValid;
   };
 
-  const onSignin = (e) => {
+  const onlogin = (e) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -124,24 +125,24 @@ export default (props) => {
     }
 
     if (!!isFormValid) {
-      const signinData = {};
+      const loginData = {};
       for (const formIdentifier in formData) {
-        signinData[formIdentifier] = formData[formIdentifier].value;
+        loginData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.onSignin(signinData);
+      props.onlogin(loginData);
     }
   };
 
   const isFormValid = checkIsFormValid();
 
   return (
-    <form onSubmit={(e) => onSignin(e)} method="POST">
+    <form onSubmit={(e) => onlogin(e)} method="POST">
       <div className="row no-gutters">
         <div className="col col-12 col-sm-7">
           <AuthBanner
             imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
-            title="Sign In"
+            title="Login"
             instruction="Join with us to connect with many other farmers"
           />
         </div>
@@ -173,7 +174,7 @@ export default (props) => {
                 disabled={!props.isFormEnabled || !isFormValid}
                 type="submit"
               >
-                Sign In
+                Login
               </SubmitButton>
             </FormFooter>
             <ForgotPasswordRow>

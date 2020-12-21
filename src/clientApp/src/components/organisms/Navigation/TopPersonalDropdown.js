@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
+import { RouterLinkButtonTransparent } from "../../atoms/Buttons/RouterLinkButtons";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
-import { ImageCircle } from "../../atoms/Images";
+import { ImageRound } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
 import DropdownButton from "../../molecules/DropdownButton";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
@@ -21,11 +21,11 @@ const EmptyAvatar = styled(NoAvatar)`
   margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
-const ProfileButton = styled(RouterLinkButton)`
-  color: ${(p) => p.theme.color.lighter};
+const ProfileButton = styled(RouterLinkButtonTransparent)`
+  color: ${(p) => p.theme.color.lightText};
   background-color: ${(p) => p.theme.rgbaColor.darkLight};
-  border: 1px solid ${(p) => p.theme.rgbaColor.light};
-  ${ImageCircle} {
+  border: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  ${ImageRound} {
     height: 100%;
     margin-right: ${(p) => p.theme.size.exTiny};
   }
@@ -37,14 +37,14 @@ const PorfileButtonGroup = styled(ButtonGroup)`
     border: 1px solid ${(p) => p.theme.rgbaColor.light};
     background-color: ${(p) => p.theme.rgbaColor.darkLight};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    padding: 3px ${(p) => p.theme.size.exTiny};
+    padding: 3px;
     margin: 1px 0;
     font-weight: 600;
     height: ${(p) => p.theme.size.normal};
     vertical-align: middle;
 
     :hover {
-      color: ${(p) => p.theme.color.light};
+      color: ${(p) => p.theme.color.lightText};
     }
   }
 
@@ -76,17 +76,16 @@ export default function (props) {
     },
     {
       name: "Logout",
-      url: "/auth/signout",
+      url: "/auth/logout",
     },
   ];
-  const [profileState] = useState({ dropdowns: profileDropdowns });
 
   return (
     <Root>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
           {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
-            <ImageCircle
+            <ImageRound
               src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.userAvatar.code}`}
               alt=""
             />
@@ -96,12 +95,10 @@ export default function (props) {
 
           <UserName>{userInfo ? userInfo.displayName : ""}</UserName>
         </ProfileButton>
-        {profileState.dropdowns ? (
-          <DropdownButton
-            className="profile-dropdown"
-            dropdown={profileState.dropdowns}
-          />
-        ) : null}
+        <DropdownButton
+          className="profile-dropdown"
+          dropdown={profileDropdowns}
+        />
       </PorfileButtonGroup>
     </Root>
   );

@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 const BaseButton = styled.span`
-  color: ${p => p.theme.color.primaryLight};
+  color: ${(p) => p.theme.color.secondaryText};
   padding: 5px 8px;
-  border-radius: ${p => p.theme.borderRadius.normal};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   border-width: 1px;
   border-style: solid;
-  border-color: ${p => p.theme.color.neutral};
+  border-color: ${(p) => p.theme.color.neutralBg};
   font-size: 0.8rem;
   font-weight: 600;
   box-sizing: border-box;
@@ -18,17 +18,17 @@ const BaseButton = styled.span`
   cursor: pointer;
 
   &.actived {
-    color: ${p => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.light};
+    background-color: ${(p) => p.theme.rgbaColor.light};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.light};
+    background-color: ${(p) => p.theme.rgbaColor.light};
   }
 
   svg,
@@ -39,14 +39,14 @@ const BaseButton = styled.span`
   }
 `;
 
-export const DefaultButton = props => {
+export const DefaultButton = (props) => {
   let { className } = props;
-  const onToggle = e => {
+  const onToggle = (e) => {
     const event = {
       target: {
-        value: props.style
+        value: props.style,
       },
-      preventDefault: e.preventDefault
+      preventDefault: e.preventDefault,
     };
     props.onToggle(event);
   };

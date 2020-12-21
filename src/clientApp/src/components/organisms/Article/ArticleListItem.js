@@ -6,7 +6,7 @@ import ArticleListItemThumbnail from "./ArticleListItemThumbnail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -34,7 +34,7 @@ const PostActions = styled.div`
   position: relative;
 `;
 
-const PostTitle = styled(SecondaryTitleLink)`
+const PostTitle = styled(secondaryTitleLink)`
   margin-bottom: 0;
 `;
 
@@ -47,6 +47,11 @@ const InteractiveItem = styled.li`
   :last-child {
     margin-right: 0;
   }
+`;
+
+const InteractiveToolbar = styled.div`
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 
 const PanelHeader = styled(PanelHeading)`
@@ -133,28 +138,27 @@ export default withRouter((props) => {
       <PanelBody>
         <div className="panel-content">
           <ContentBody>
-            <p>{article.description}</p>
+            <p dangerouslySetInnerHTML={{ __html: article.description }}></p>{" "}
           </ContentBody>
         </div>
-
-        <div className="interactive-toolbar">
-          <HorizontalList>
-            <InteractiveItem>
-              <HorizontalReactBar reactionNumber={article.reactionNumber} />
-            </InteractiveItem>
-            <InteractiveItem>
-              <FontButtonItem
-                icon="comments"
-                title="Discussions"
-                dynamicText={article.commentNumber}
-              />
-            </InteractiveItem>
-            <InteractiveItem>
-              <FontButtonItem icon="bookmark" title="Save this article" />
-            </InteractiveItem>
-          </HorizontalList>
-        </div>
       </PanelBody>
+      <InteractiveToolbar className="interactive-toolbar">
+        <HorizontalList>
+          <InteractiveItem>
+            <HorizontalReactBar reactionNumber={article.reactionNumber} />
+          </InteractiveItem>
+          <InteractiveItem>
+            <FontButtonItem
+              icon="comments"
+              title="Discussions"
+              dynamicText={article.commentNumber}
+            />
+          </InteractiveItem>
+          <InteractiveItem>
+            <FontButtonItem icon="bookmark" title="Save this article" />
+          </InteractiveItem>
+        </HorizontalList>
+      </InteractiveToolbar>
     </Panel>
   );
 });

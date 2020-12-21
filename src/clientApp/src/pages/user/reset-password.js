@@ -40,7 +40,7 @@ export default withRouter((props) => {
   const notifyInfo = (error, lang) => {
     dispatch("NOTIFY", {
       title: "Update your password successfully",
-      message: "Your password has changed successfully, please sign in again",
+      message: "Your password has changed successfully, please login again",
       type: "info",
     });
   };
@@ -59,7 +59,7 @@ export default withRouter((props) => {
           notifyError(rs.errors, "vn");
         } else {
           notifyInfo();
-          history.push("/auth/signin");
+          history.push("/auth/login");
         }
       })
       .catch(() => {

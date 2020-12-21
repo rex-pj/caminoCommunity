@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { RouterLinkButtonSecondary } from "../../atoms/RouterLinkButtons";
+import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { SessionContext } from "../../../store/context/SessionContext";
-import PersonalDropdown from "./PersonalDropdown";
+import TopPersonalDropdown from "./TopPersonalDropdown";
 
 const List = styled.ul`
   list-style: none;
@@ -30,17 +30,14 @@ const Devided = styled.li`
   margin: 0 2px;
 `;
 
-const AuthButton = styled(RouterLinkButtonSecondary)`
-  color: ${(p) => p.theme.color.lighter};
-  font-weight: 500;
+const AuthButton = styled(RouterLinkButtonPrimary)`
+  color: ${(p) => p.theme.color.neutralText};
+  background-color: ${(p) => p.theme.rgbaColor.darkLight};
+  border: 1px solid ${(p) => p.theme.rgbaColor.light};
   height: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: ${(p) => p.theme.fontSize.small};
-
-  :hover {
-    color: ${(p) => p.theme.color.light};
-  }
+  font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
 export default (props) => {
@@ -51,7 +48,7 @@ export default (props) => {
   }
 
   if (user && user.isLogin) {
-    return <PersonalDropdown userInfo={user} />;
+    return <TopPersonalDropdown userInfo={user} />;
   }
 
   return (
@@ -62,7 +59,7 @@ export default (props) => {
 
       <Devided />
       <ListItem>
-        <AuthButton to="/auth/signin">Sign In</AuthButton>
+        <AuthButton to="/auth/login">Login</AuthButton>
       </ListItem>
     </List>
   );

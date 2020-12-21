@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const SecondaryHeading = styled.h2`
-  font-size: ${p => p.theme.fontSize.normal};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.normal};
+  color: ${(p) => p.theme.color.neutralText};
   line-height: 1;
 
   svg,
@@ -12,8 +12,8 @@ export const SecondaryHeading = styled.h2`
 `;
 
 export const TertiaryHeading = styled.h3`
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.neutralText};
   line-height: 1;
 
   svg,
@@ -23,19 +23,8 @@ export const TertiaryHeading = styled.h3`
 `;
 
 export const TertiaryDarkHeading = styled.h3`
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.dark};
-  line-height: 1;
-
-  svg,
-  path {
-    color: inherit;
-  }
-`;
-
-export const QuaternaryHeading = styled.h4`
-  font-size: ${p => p.theme.rgbaColor.small};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.darkText};
   line-height: 1;
 
   svg,
@@ -45,8 +34,8 @@ export const QuaternaryHeading = styled.h4`
 `;
 
 export const QuaternaryDarkHeading = styled.h4`
-  font-size: ${p => p.theme.rgbaColor.small};
-  color: ${p => p.theme.color.dark};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.darkText};
   line-height: 1;
 
   svg,
@@ -55,9 +44,9 @@ export const QuaternaryDarkHeading = styled.h4`
   }
 `;
 
-export const FifthHeading = styled.h5`
-  font-size: ${p => p.theme.rgbaColor.small};
-  color: ${p => p.theme.color.neutral};
+export const FifthHeadingSecondary = styled.h5`
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.secondaryTitle};
   line-height: 1;
 
   svg,
@@ -66,9 +55,9 @@ export const FifthHeading = styled.h5`
   }
 `;
 
-export const FifthDarkHeading = styled.h5`
-  font-size: ${p => p.theme.rgbaColor.small};
-  color: ${p => p.theme.color.dark};
+export const FifthHeadingPrimary = styled.h5`
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.darkText};
   line-height: 1;
 
   svg,

@@ -1,18 +1,15 @@
 import React, { Fragment } from "react";
-import { ButtonOutlineSecondary } from "../../atoms/Buttons/OutlineButtons";
-import {
-  RouterLinkButtonOutlineNormal,
-  RouterLinkButtonOutlineSecondary
-} from "../../atoms/RouterLinkButtons";
+import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
+import { RouterLinkButtonOutlineNeutral } from "../../atoms/Buttons/RouterLinkButtons";
 
-export default props => {
+export default (props) => {
   const {
     baseUrl,
     children,
     currentPage,
     pageNumber,
     disabled,
-    pageQuery
+    pageQuery,
   } = props;
 
   let to = `${baseUrl}${"/page/"}${pageNumber}`;
@@ -33,21 +30,21 @@ export default props => {
   let ButtonItem = null;
   if (!pageNumber || disabled) {
     ButtonItem = (
-      <ButtonOutlineSecondary size="sm" disabled={true}>
+      <ButtonOutlineLight size="sm" disabled={true}>
         {children}
-      </ButtonOutlineSecondary>
+      </ButtonOutlineLight>
     );
   } else if (currentPage === pageNumber) {
     ButtonItem = (
-      <RouterLinkButtonOutlineSecondary size="sm" to={to} disabled={true}>
+      <RouterLinkButtonOutlineNeutral size="sm" to={to} disabled={true}>
         {children}
-      </RouterLinkButtonOutlineSecondary>
+      </RouterLinkButtonOutlineNeutral>
     );
   } else {
     ButtonItem = (
-      <RouterLinkButtonOutlineNormal size="sm" to={to}>
+      <RouterLinkButtonOutlineNeutral size="sm" to={to}>
         {children}
-      </RouterLinkButtonOutlineNormal>
+      </RouterLinkButtonOutlineNeutral>
     );
   }
 

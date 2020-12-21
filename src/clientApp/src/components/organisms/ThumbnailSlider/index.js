@@ -12,15 +12,15 @@ const PostThumbnail = styled.div`
 
 const MainThumbnail = styled.div`
   overflow: hidden;
-  background-color: ${(p) => p.theme.color.primary};
+  background-color: ${(p) => p.theme.color.darkBg};
   position: relative;
   outline: none;
 `;
 
 const HorizontalListScroll = styled(ListScroll)`
-  background-color: ${(p) => p.theme.color.primaryLight};
-  border-top: 1px solid ${(p) => p.theme.color.primary};
-  border-bottom: 1px solid ${(p) => p.theme.color.primary};
+  background-color: ${(p) => p.theme.color.darkBg};
+  border-top: 1px solid ${(p) => p.theme.color.darkBg};
+  border-bottom: 1px solid ${(p) => p.theme.color.darkBg};
 
   li {
     height: 140px;
@@ -55,7 +55,7 @@ const ThumbnailItem = styled(Thumbnail)`
 
   &.actived,
   :hover {
-    background-color: ${(p) => p.theme.color.primaryDark};
+    background-color: ${(p) => p.theme.color.darkBg};
   }
 `;
 
@@ -82,7 +82,7 @@ const NavigateButton = styled(ButtonTransparent)`
   bottom: 50%;
   margin-top: -${(p) => p.theme.size.normal};
   height: ${(p) => p.theme.size.normal};
-  color: ${(p) => p.theme.color.light};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.large};
   line-height: 1;
   padding: 0;
@@ -219,27 +219,32 @@ export default function (props) {
     return null;
   };
 
+  const canSlide = numberOfImages > 2;
   return (
     <PostThumbnail>
       <MainThumbnail onMouseOver={onMouseOvered} ref={currentRef} tabIndex="1">
-        <NavigateLeft onClick={onPrev}>
-          <PrevButton>
-            <FontAwesomeIcon icon="angle-left" />
-          </PrevButton>
-        </NavigateLeft>
+        {canSlide ? (
+          <NavigateLeft onClick={onPrev}>
+            <PrevButton>
+              <FontAwesomeIcon icon="angle-left" />
+            </PrevButton>
+          </NavigateLeft>
+        ) : null}
         {renderThumbnailImage()}
-        <NavigateRight onClick={onNext}>
-          <NextButton>
-            <FontAwesomeIcon icon="angle-right" />
-          </NextButton>
-        </NavigateRight>
+        {canSlide ? (
+          <NavigateRight onClick={onNext}>
+            <NextButton>
+              <FontAwesomeIcon icon="angle-right" />
+            </NextButton>
+          </NavigateRight>
+        ) : null}
       </MainThumbnail>
-      <div>
+      {canSlide ? (
         <HorizontalListScroll
           numberOfDisplay={numberOfDisplay}
           list={renderRelationImages(images)}
         />
-      </div>
+      ) : null}
     </PostThumbnail>
   );
 }

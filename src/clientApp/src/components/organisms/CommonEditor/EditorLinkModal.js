@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
-import { ButtonPrimary, ButtonSecondary } from "../../atoms/Buttons/Buttons";
-import { Textbox } from "../../atoms/Textboxes";
+import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
 import { checkValidity, validateLink } from "../../../utils/Validity";
 import { EditorState, Modifier } from "draft-js";
@@ -11,47 +11,47 @@ import { getEntityRange, getSelectionEntity } from "draftjs-utils";
 const Root = styled.div`
   max-width: 80%;
   width: 400px;
-  background: ${p => p.theme.color.white};
-  margin: ${p => p.theme.size.exTiny} auto 0 auto;
-  border-radius: ${p => p.theme.borderRadius.normal};
-  box-shadow: ${p => p.theme.shadow.BoxShadow};
+  background: ${(p) => p.theme.color.whiteBg};
+  margin: ${(p) => p.theme.size.exTiny} auto 0 auto;
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
 `;
 
 const Body = styled.div`
   height: auto;
-  padding: ${p => p.theme.size.tiny} ${p => p.theme.size.distance};
+  padding: ${(p) => p.theme.size.tiny} ${(p) => p.theme.size.distance};
 `;
 
 const Footer = styled.div`
   min-height: 20px;
   text-align: right;
-  border-top: 1px solid ${p => p.theme.color.light};
-  padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.distance};
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.distance};
 
   button {
-    margin-left: ${p => p.theme.size.exTiny};
+    margin-left: ${(p) => p.theme.size.exTiny};
     font-weight: normal;
-    padding: ${p => p.theme.size.exTiny} ${p => p.theme.size.tiny};
+    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
 
     svg {
-      margin-right: ${p => p.theme.size.exTiny};
+      margin-right: ${(p) => p.theme.size.exTiny};
     }
   }
 `;
 
 const FormRow = styled.div`
-  margin-bottom: ${p => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.tiny};
 
   ${LabelNormal} {
     display: block;
   }
 
-  ${Textbox} {
+  ${PrimaryTextbox} {
     width: 100%;
   }
 `;
 
-export default props => {
+export default (props) => {
   const { isOpen, editorState, currentValue } = props;
   const linkRef = useRef();
   const { link, selectionText } = currentValue;
@@ -63,22 +63,22 @@ export default props => {
       value: link && link.target ? link.target : "",
       validation: {
         isRequired: true,
-        isLink: true
+        isLink: true,
       },
-      isValid: isLinkValid
+      isValid: isLinkValid,
     },
     title: {
       value: selectionText ? selectionText : linkText,
       validation: {
-        isRequired: false
+        isRequired: false,
       },
-      isValid: true
-    }
+      isValid: true,
+    },
   };
 
   const [linkData, setLinkData] = useState(formData);
 
-  const handleInputChange = evt => {
+  const handleInputChange = (evt) => {
     let data = linkData || {};
     const { name, value } = evt.target;
 
@@ -86,7 +86,7 @@ export default props => {
     data[name].value = value;
 
     setLinkData({
-      ...data
+      ...data,
     });
   };
 
@@ -94,7 +94,7 @@ export default props => {
     props.onClose();
   };
 
-  const handleKeyUp = e => {
+  const handleKeyUp = (e) => {
     if (e.key === "Enter") {
       onAddLink();
     }
@@ -112,12 +112,12 @@ export default props => {
       if (isBackward) {
         selection = selection.merge({
           anchorOffset: entityRange.end,
-          focusOffset: entityRange.start
+          focusOffset: entityRange.start,
         });
       } else {
         selection = selection.merge({
           anchorOffset: entityRange.start,
-          focusOffset: entityRange.end
+          focusOffset: entityRange.end,
         });
       }
     }
@@ -126,7 +126,7 @@ export default props => {
       .getCurrentContent()
       .createEntity("LINK", "MUTABLE", {
         url: linkTarget,
-        targetOption: linkTargetOption
+        targetOption: linkTargetOption,
       })
       .getLastCreatedEntityKey();
 
@@ -147,7 +147,7 @@ export default props => {
     // insert a blank space after link
     selection = newEditorState.getSelection().merge({
       anchorOffset: selection.get("anchorOffset") + linkTitle.length,
-      focusOffset: selection.get("anchorOffset") + linkTitle.length
+      focusOffset: selection.get("anchorOffset") + linkTitle.length,
     });
 
     newEditorState = EditorState.acceptSelection(newEditorState, selection);
@@ -161,7 +161,7 @@ export default props => {
 
     props.onAccept({
       newEditorState,
-      entityKey: "insert-characters"
+      entityKey: "insert-characters",
     });
   };
 
@@ -169,7 +169,7 @@ export default props => {
     let data = formData || {};
 
     setLinkData({
-      ...data
+      ...data,
     });
   };
 
@@ -198,31 +198,31 @@ export default props => {
     <Root>
       <Body>
         <FormRow>
-          <LabelNormal>Đường dẫn</LabelNormal>
-          <Textbox
+          <LabelNormal>Tile</LabelNormal>
+          <PrimaryTextbox
             name="title"
             onKeyUp={handleKeyUp}
             value={title.value}
             autoComplete="off"
-            onChange={e => handleInputChange(e)}
+            onChange={(e) => handleInputChange(e)}
           />
         </FormRow>
         <FormRow>
-          <LabelNormal>Đường dẫn</LabelNormal>
-          <Textbox
+          <LabelNormal>Link</LabelNormal>
+          <PrimaryTextbox
             name="url"
             onKeyUp={handleKeyUp}
             value={url.value}
             autoComplete="off"
             ref={linkRef}
-            onChange={e => handleInputChange(e)}
+            onChange={(e) => handleInputChange(e)}
           />
         </FormRow>
       </Body>
       <Footer>
-        <ButtonSecondary size="sm" onClick={onClose}>
+        <ButtonLight size="sm" onClick={onClose}>
           Đóng
-        </ButtonSecondary>
+        </ButtonLight>
         <ButtonPrimary size="sm" onClick={onAddLink} disabled={!isValid}>
           <FontAwesomeIcon icon="check" />
           Lưu

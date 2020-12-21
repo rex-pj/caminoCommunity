@@ -1,8 +1,7 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import NotFound from "../../components/organisms/Error/NotFound";
 
-export default withRouter(function (props) {
+export default function (props) {
   return (
     <NotFound
       icon="unlink"
@@ -12,4 +11,4 @@ export default withRouter(function (props) {
       actionText="Quay về trang chủ"
     />
   );
-});
+}

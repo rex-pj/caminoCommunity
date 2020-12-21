@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,20 +6,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Root = styled.ol`
   padding: 0;
   margin-bottom: 1rem;
-  border: 1px solid ${(p) => p.theme.color.light};
-  border-radius: ${(p) => p.theme.borderRadius.normal};
   line-height: 1;
 `;
 
 const ListItem = styled.li`
   display: inline-block;
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.primaryLight};
-  border-right: 1px solid ${(p) => p.theme.color.light};
-  border-top-right-radius: ${(p) => p.theme.borderRadius.large};
-  border-bottom-right-radius: ${(p) => p.theme.borderRadius.large};
-  padding: ${(p) => p.theme.size.tiny};
-  min-width: ${(p) => p.theme.size.normal};
+  color: ${(p) => p.theme.color.secondaryText};
+  padding: 0 0 ${(p) => p.theme.size.tiny} 0;
+  min-width: ${(p) => p.theme.size.distance};
   position: relative;
 
   white-space: nowrap;
@@ -27,26 +22,27 @@ const ListItem = styled.li`
   text-overflow: ellipsis;
   max-width: 60%;
 
-  &.actived {
-    color: ${(p) => p.theme.color.neutral};
-    border-right: 0;
-  }
-
-  span {
-    color: inherit;
-  }
-
   a {
     text-decoration: none;
     color: inherit;
     font-weight: 600;
   }
 
+  .actived {
+    color: ${(p) => p.theme.color.darkText};
+    border-right: 0;
+  }
+
   svg,
   path {
-    color: inherit;
-    font-size: ${(p) => p.theme.rgbaColor.small};
+    color: ${(p) => p.theme.color.darkText};
+    font-size: ${(p) => p.theme.fontSize.small};
   }
+`;
+
+const Slash = styled.span`
+  margin: 0 ${(p) => p.theme.size.exSmall};
+  color: ${(p) => p.theme.color.neutralBg};
 `;
 
 export default (props) => {
@@ -62,20 +58,18 @@ export default (props) => {
         ? list.map((item, index) => {
             if (!item.isActived) {
               return (
-                <Fragment key={index}>
-                  <ListItem title={item.title}>
-                    <AnchorLink to={item.url}>{item.title}</AnchorLink>
-                  </ListItem>
-                </Fragment>
+                <ListItem title={item.title} key={index}>
+                  <Slash>\</Slash>
+                  <AnchorLink to={item.url}>{item.title}</AnchorLink>
+                </ListItem>
               );
             }
 
             return (
-              <Fragment key={index}>
-                <ListItem key={index} className="actived" title={item.title}>
-                  <span>{item.title}</span>
-                </ListItem>
-              </Fragment>
+              <ListItem key={index} className="actived" title={item.title}>
+                <Slash>\</Slash>
+                <span>{item.title}</span>
+              </ListItem>
             );
           })
         : null}

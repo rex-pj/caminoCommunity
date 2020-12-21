@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../atoms/List";
-import { FifthDarkHeading } from "../../atoms/Heading";
+import { FifthHeadingSecondary } from "../../atoms/Heading";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   border-radius: ${(p) => p.theme.borderRadius.normal};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
 export default () => {
@@ -26,7 +26,7 @@ export default () => {
 
   return (
     <div>
-      <FifthDarkHeading>Connect To Other Farmers</FifthDarkHeading>
+      <FifthHeadingSecondary>Connect To Other Farmers</FifthHeadingSecondary>
       <Root>
         <VerticalList>
           {connections &&

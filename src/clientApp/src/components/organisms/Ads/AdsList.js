@@ -2,23 +2,23 @@ import React from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
 import { VerticalList } from "../../atoms/List";
-import { FifthDarkHeading } from "../../atoms/Heading";
+import { FifthHeadingSecondary } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   padding: ${(p) => p.theme.size.exSmall};
 
-  ${FifthDarkHeading} {
+  ${FifthHeadingSecondary} {
     span {
       float: left;
     }
 
     svg {
       float: right;
-      color: ${(p) => p.theme.color.neutral};
+      color: ${(p) => p.theme.color.secondaryTitle};
     }
 
     :after {
@@ -44,10 +44,10 @@ export default function (props) {
 
   return (
     <Root>
-      <FifthDarkHeading>
-        <span>Suggestions</span>
+      <FifthHeadingSecondary>
+        Suggestions
         <FontAwesomeIcon icon="bullhorn" />
-      </FifthDarkHeading>
+      </FifthHeadingSecondary>
       <div>
         <VerticalList>
           {listAds &&

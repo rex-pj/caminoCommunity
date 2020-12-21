@@ -8,7 +8,7 @@ const Root = styled.div``;
 const List = styled.ul`
   list-style: none;
   padding-left: 0;
-  border-bottom: 1px solid ${(p) => p.theme.color.neutral};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   margin-bottom: 0;
 `;
 

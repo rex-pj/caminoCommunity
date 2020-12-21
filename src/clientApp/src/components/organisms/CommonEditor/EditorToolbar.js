@@ -7,29 +7,31 @@ import { HEADING_TYPES } from "./Utils";
 
 const Toolbar = styled.div`
   padding: ${(p) => p.theme.size.tiny};
-  border-bottom: 1px solid ${(p) => p.theme.color.light};
-  background-color: ${(p) => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
+  background-color: ${(p) => p.theme.color.primaryBg};
   background-image: ${(p) => p.theme.gradientColor.primary};
   border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
   border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
 const EditorButton = styled(DefaultButton)`
-  color: ${(p) => p.theme.color.lighter};
+  color: ${(p) => p.theme.color.lightText};
   border: 0;
   margin-right: 4px;
   :hover {
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.whiteText};
   }
 
   &.actived {
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.whiteText};
   }
 `;
 
 const Divide = styled.span`
   display: inline-block;
-  border-right: 1px solid ${(p) => p.theme.color.light};
+  border-right: 1px solid ${(p) => p.theme.color.neutralBg};
   height: 20px;
   width: 0px;
   margin: 0 8px 0 4px;
@@ -37,13 +39,13 @@ const Divide = styled.span`
 `;
 
 const SelectHeading = styled(EditorSelection)`
-  background-color: ${(p) => p.theme.rgbaColor.light};
-  color: ${(p) => p.theme.color.lighter};
+  background-color: ${(p) => p.theme.color.lightBg};
+  color: ${(p) => p.theme.color.secondaryText};
   font-weight: 600;
   border: 0;
 
   :hover {
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.lightBg};
   }
 `;
 

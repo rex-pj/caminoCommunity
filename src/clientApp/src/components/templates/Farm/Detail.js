@@ -9,14 +9,14 @@ import { PanelBody, PanelDefault } from "../../atoms/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
-import { ButtonIconOutline } from "../../molecules/ButtonIcons";
+import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${(p) => p.theme.size.exTiny};
-  color: ${(p) => p.theme.color.primary};
+  color: ${(p) => p.theme.color.primaryText};
 `;
 
 const ContentBody = styled.div`
@@ -31,7 +31,7 @@ const InteractiveItem = styled.li`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.light};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
   margin-bottom: ${(p) => p.theme.size.distance};
   position: relative;
@@ -54,7 +54,7 @@ const TopBarInfo = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
   position: relative;
 
   button {
@@ -64,14 +64,18 @@ const PostActions = styled.div`
 
 const BreadCrumbNav = styled(Breadcrumb)`
   border: 0;
-  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
   border-radius: 0;
   margin-bottom: 0;
+  li {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-left: ${(p) => p.theme.size.tiny};
+  }
 `;
 
-const FollowButton = styled(ButtonIconOutline)`
+const FollowButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;
@@ -84,7 +88,7 @@ const DropdownList = styled(Dropdown)`
   position: absolute;
   right: 0;
   top: ${(p) => p.theme.size.normal};
-  background: ${(p) => p.theme.color.white};
+  background: ${(p) => p.theme.color.whiteBg};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -93,13 +97,13 @@ const DropdownList = styled(Dropdown)`
   ${ModuleMenuListItem} span {
     display: block;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
     padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
     cursor: pointer;
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.lighter};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     :last-child {

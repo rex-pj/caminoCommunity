@@ -7,7 +7,7 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageThumb from "../../molecules/Images/ImageThumb";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -33,7 +33,7 @@ const ContentTopbar = styled.div`
   margin-bottom: ${(p) => p.theme.size.exSmall};
 `;
 
-const Title = styled(SecondaryTitleLink)`
+const Title = styled(secondaryTitleLink)`
   margin-bottom: 0;
 
   svg {
@@ -50,7 +50,8 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
@@ -175,21 +176,21 @@ export default withRouter(function (props) {
             </div>
           </div>
         </div>
-        <InteractiveToolbar>
-          <HorizontalList>
-            <InteractiveItem>
-              <HorizontalReactBar reactionNumber={product.reactionNumber} />
-            </InteractiveItem>
-            <InteractiveItem>
-              <FontButtonItem
-                icon="comments"
-                dynamicText={product.commentNumber}
-                title="Discussions"
-              />
-            </InteractiveItem>
-          </HorizontalList>
-        </InteractiveToolbar>
       </PanelBody>
+      <InteractiveToolbar>
+        <HorizontalList>
+          <InteractiveItem>
+            <HorizontalReactBar reactionNumber={product.reactionNumber} />
+          </InteractiveItem>
+          <InteractiveItem>
+            <FontButtonItem
+              icon="comments"
+              dynamicText={product.commentNumber}
+              title="Discussions"
+            />
+          </InteractiveItem>
+        </HorizontalList>
+      </InteractiveToolbar>
     </Panel>
   );
 });

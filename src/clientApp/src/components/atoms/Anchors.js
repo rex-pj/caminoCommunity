@@ -1,27 +1,15 @@
 import styled from "styled-components";
 
-const VirtualAnchorSecondary = styled.span`
-  color: ${p => p.theme.color.neutral};
+const VirtualAnchorNeutral = styled.span`
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 600;
-  font-size: ${p => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   vertical-align: middle;
   cursor: pointer;
 
   :hover {
-    color: ${p => p.theme.color.primaryLight};
+    color: ${(p) => p.theme.color.darkText};
   }
 `;
 
-const LinkAnchorSecondary = styled.a`
-  color: ${p => p.theme.color.neutral};
-  font-weight: 600;
-  font-size: ${p => p.theme.fontSize.small};
-  vertical-align: middle;
-  cursor: pointer;
-
-  :hover {
-    color: ${p => p.theme.color.primaryLight};
-  }
-`;
-
-export { VirtualAnchorSecondary, LinkAnchorSecondary };
+export { VirtualAnchorNeutral };

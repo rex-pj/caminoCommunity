@@ -12,9 +12,9 @@ export const SIGNUP = gql`
   }
 `;
 
-export const SIGNIN = gql`
-  mutation Signin($criterias: SigninModelInput!) {
-    signin(criterias: $criterias) {
+export const LOGIN = gql`
+  mutation login($criterias: LoginModelInput!) {
+    login(criterias: $criterias) {
       userInfo {
         displayName
         userIdentityId

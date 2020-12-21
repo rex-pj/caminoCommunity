@@ -25,7 +25,7 @@ export default function (props) {
     {
       icon: "flag",
       text: "Communities",
-      href: "/Communities/",
+      href: "/communities/",
     },
     {
       icon: "apple-alt",
@@ -52,7 +52,7 @@ export default function (props) {
             <IconBlock>
               <FontAwesomeIcon icon={item.icon} />
             </IconBlock>
-            <span>{item.text}</span>
+            <span className="menu-item-text">{item.text}</span>
           </AnchorLink>
         </ModuleMenuListItem>
       ))}

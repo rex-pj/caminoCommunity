@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VirtualAnchorSecondary } from "../../atoms/Anchors";
+import { VirtualAnchorNeutral } from "../../atoms/Anchors";
 
 const ReactButton = styled.span`
   display: inline-block;
@@ -10,7 +10,7 @@ const ReactButton = styled.span`
   vertical-align: middle;
   cursor: pointer;
   margin-right: ${(p) => p.theme.size.exSmall};
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
 
   svg,
   path {
@@ -19,7 +19,7 @@ const ReactButton = styled.span`
 
   &.smile:hover,
   &.smile.actived {
-    color: ${(p) => p.theme.color.warning};
+    color: ${(p) => p.theme.color.primaryDangerText};
   }
 `;
 
@@ -30,7 +30,7 @@ export default (props) => {
       <ReactButton className="smile">
         <FontAwesomeIcon icon="smile-beam" />
       </ReactButton>
-      <VirtualAnchorSecondary>{reactionNumber}</VirtualAnchorSecondary>
+      <VirtualAnchorNeutral>{reactionNumber}</VirtualAnchorNeutral>
     </div>
   );
 };

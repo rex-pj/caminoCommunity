@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { PanelBody, PanelFooter } from "../../atoms/Panels";
-import { AnchorButton } from "../../atoms/AnchorButtons";
+import { AnchorButtonPrimary } from "../../atoms/Buttons/AnchorButtons";
 
-const AcceptButton = styled(AnchorButton)`
-  border-radius: ${p => p.theme.borderRadius.large};
+const AcceptButton = styled(AnchorButtonPrimary)`
+  border-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
-export default function(props) {
+export default function (props) {
   const { children, data } = props;
   const { executeButtonName, executeUrl } = data;
 

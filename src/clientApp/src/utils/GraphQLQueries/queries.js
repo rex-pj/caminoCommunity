@@ -16,6 +16,18 @@ export const GET_LOGGED_USER = gql`
   }
 `;
 
+export const LOGOUT = gql`
+  query logout {
+    logout {
+      isSucceed
+      errors {
+        code
+        message
+      }
+    }
+  }
+`;
+
 export const GET_USER_INFO = gql`
   query($criterias: FindUserModelInput!) {
     userInfo: fullUserInfo(criterias: $criterias) {
@@ -77,18 +89,6 @@ export const GET_FULL_USER_INFO = gql`
     genderSelections {
       id
       text
-    }
-  }
-`;
-
-export const SIGNOUT = gql`
-  query signout {
-    signout {
-      isSucceed
-      errors {
-        code
-        message
-      }
     }
   }
 `;
@@ -264,7 +264,7 @@ export const GET_ARTICLES = gql`
       }
       collections {
         id
-        content
+        description
         name
         createdById
         createdBy
@@ -284,7 +284,7 @@ export const GET_RELEVANT_ARTICLES = gql`
   query($criterias: ArticleFilterModelInput) {
     relevantArticles(criterias: $criterias) {
       id
-      content
+      description
       name
       createdById
       createdBy

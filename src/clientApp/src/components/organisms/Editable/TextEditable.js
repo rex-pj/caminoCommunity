@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Textbox } from "../../atoms/Textboxes";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
 import {
   ButtonOutlinePrimary,
-  ButtonOutlineNormal,
+  ButtonOutlineLight,
 } from "../../atoms/Buttons/OutlineButtons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,20 +17,20 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
     line-height: ${(p) => p.theme.size.normal};
     height: ${(p) => p.theme.size.normal};
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.danger};
+    color: ${(p) => p.theme.color.primaryDangerText};
     font-weight: 400;
   }
 `;
 
-const TextEditing = styled(Textbox)`
+const TextEditing = styled(PrimaryTextbox)`
   border: 0;
-  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
   border-radius: 0;
 `;
 
@@ -128,9 +128,9 @@ export default function (props) {
         <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
           <FontAwesomeIcon icon="check" />
         </ButtonOutlinePrimary>
-        <ButtonOutlineNormal size="xs" onClick={closeTextBox}>
+        <ButtonOutlineLight size="xs" onClick={closeTextBox}>
           <FontAwesomeIcon icon="times" />
-        </ButtonOutlineNormal>
+        </ButtonOutlineLight>
       </Wrap>
     );
   }

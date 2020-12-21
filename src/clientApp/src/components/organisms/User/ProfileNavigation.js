@@ -13,19 +13,19 @@ const ListItem = styled.li`
   margin: 0 ${(p) => p.theme.size.distance};
 
   a.actived {
-    color: ${(p) => p.theme.color.primaryDark};
+    color: ${(p) => p.theme.color.darkText};
     text-decoration: none;
     font-weight: 600;
-    border-bottom: 3px solid ${(p) => p.theme.color.primary};
+    border-bottom: 3px solid ${(p) => p.theme.color.primaryBg};
   }
 
   :hover a {
-    color: ${(p) => p.theme.color.primaryDark};
+    color: ${(p) => p.theme.color.darkText};
     text-decoration: none;
   }
 
   a {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.secondaryTitle};
     font-weight: 500;
     font-size: ${(p) => p.theme.fontSize.small};
     border: 0;
@@ -37,7 +37,19 @@ const ListItem = styled.li`
 `;
 
 const UserDropdown = styled(DropdownButton)`
-  padding: 7px;
+  height: 100%;
+  > button {
+    height: 100%;
+    padding: 10px 15px;
+    line-height: 1;
+  }
+  > button,
+  > button:hover,
+  > button:focus {
+    background-color: transparent;
+    border: 0;
+    color: ${(p) => p.theme.color.neutralText};
+  }
 `;
 
 export default (function (props) {

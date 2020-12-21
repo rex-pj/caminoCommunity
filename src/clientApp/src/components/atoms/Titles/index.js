@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const PrimaryTitle = styled.h1`
-  font-size: ${p => p.theme.fontSize.medium};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.medium};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 700;
 
   svg,
@@ -11,9 +11,9 @@ const PrimaryTitle = styled.h1`
   }
 `;
 
-const SecondaryTitle = styled.h2`
-  font-size: ${p => p.theme.fontSize.normal};
-  color: ${p => p.theme.color.neutral};
+const secondaryTitle = styled.h2`
+  font-size: ${(p) => p.theme.fontSize.normal};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 700;
 
   svg,
@@ -23,8 +23,8 @@ const SecondaryTitle = styled.h2`
 `;
 
 const TertiaryTitle = styled.h3`
-  font-size: ${p => p.theme.fontSize.small};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 700;
 
   svg,
@@ -34,8 +34,8 @@ const TertiaryTitle = styled.h3`
 `;
 
 const QuaternaryTitle = styled.h4`
-  font-size: ${p => p.theme.rgbaColor.small};
-  color: ${p => p.theme.color.neutral};
+  font-size: ${(p) => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 700;
 
   svg,
@@ -44,4 +44,4 @@ const QuaternaryTitle = styled.h4`
   }
 `;
 
-export { PrimaryTitle, SecondaryTitle, TertiaryTitle, QuaternaryTitle };
+export { PrimaryTitle, secondaryTitle, TertiaryTitle, QuaternaryTitle };

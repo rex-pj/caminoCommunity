@@ -1,36 +1,34 @@
 import styled from "styled-components";
 
 const ButtonOutlinePrimary = styled.button`
-  color: ${p => p.theme.color.light};
-  padding: ${p =>
+  color: ${(p) => p.theme.color.primaryBg};
+  border-color: ${(p) => p.theme.color.primaryText};
+  border-width: 1px;
+  border-style: solid;
+  padding: ${(p) =>
     p.size === "xs"
       ? "5px 8px"
       : p.size === "sm"
       ? ".5rem .75rem"
       : "10px 15px"};
-  border-radius: ${p => p.theme.borderRadius.normal};
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${p => p.theme.color.primary};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   font-size: 1rem;
   font-weight: 600;
   box-sizing: border-box;
   outline: none;
   text-align: center;
   display: inline-block;
-
   background: transparent;
-  color: ${p => p.theme.color.primary};
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.cyan};
+    background-color: ${(p) => p.theme.rgbaColor.cyan};
     outline: none;
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.cyan};
+    background-color: ${(p) => p.theme.rgbaColor.cyan};
   }
 
   svg,
@@ -40,88 +38,35 @@ const ButtonOutlinePrimary = styled.button`
   }
 `;
 
-const ButtonOutlineSecondary = styled(ButtonOutlinePrimary)`
-  border-color: ${p => p.theme.color.light};
-  color: ${p => p.theme.color.light};
+const ButtonOutlineLight = styled(ButtonOutlinePrimary)`
+  border-color: ${(p) => p.theme.color.neutralBg};
+  color: ${(p) => p.theme.color.neutralText};
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${p => p.theme.rgbaColor.lighter};
+    background-color: ${(p) => p.theme.rgbaColor.lighter};
   }
 
   :disabled {
-    background-color: ${p => p.theme.rgbaColor.lighter};
-  }
-`;
-
-const ButtonOutlineNeutral = styled(ButtonOutlinePrimary)`
-  border-color: ${p => p.theme.color.neutral};
-  color: ${p => p.theme.color.neutral};
-
-  :active,
-  :hover,
-  :focus-within {
-    background-color: ${p => p.theme.rgbaColor.light};
-  }
-
-  :disabled {
-    background-color: ${p => p.theme.rgbaColor.light};
-  }
-`;
-
-const ButtonOutlineNormal = styled(ButtonOutlinePrimary)`
-  border-color: ${p => p.theme.color.neutral};
-  color: ${p => p.theme.color.neutral};
-
-  :active,
-  :hover,
-  :focus-within {
-    background-color: ${p => p.theme.rgbaColor.cyan};
-  }
-
-  :disabled {
-    background-color: ${p => p.theme.rgbaColor.cyan};
-  }
-`;
-
-const ButtonOutlineDark = styled(ButtonOutlinePrimary)`
-  background: ${p => p.theme.rgbaColor.dark};
-  border-color: ${p => p.theme.color.light};
-  color: ${p => p.theme.color.light};
-
-  :active,
-  :hover,
-  :focus-within {
-    background-color: ${p => p.theme.rgbaColor.darker};
-  }
-
-  :disabled {
-    background-color: ${p => p.theme.rgbaColor.darker};
+    background-color: ${(p) => p.theme.rgbaColor.lighter};
   }
 `;
 
 const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
-  border-color: ${p => p.theme.color.dangerLight};
-  color: ${p => p.theme.color.dangerLight};
+  border-color: ${(p) => p.theme.color.secondaryDangerBg};
+  color: ${(p) => p.theme.color.secondaryDangerText};
 
   :active,
   :hover,
   :focus-within {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.primaryDangerText};
     background-color: transparent;
   }
 
   :disabled {
-    color: ${p => p.theme.color.danger};
+    color: ${(p) => p.theme.color.primaryDangerText};
   }
 `;
 
-export {
-  ButtonOutlineSecondary,
-  ButtonOutlineDark,
-  ButtonOutlineNormal,
-  ButtonOutlinePrimary,
-  ButtonOutlineDanger,
-  ButtonOutlineNeutral
-};
+export { ButtonOutlinePrimary, ButtonOutlineLight, ButtonOutlineDanger };

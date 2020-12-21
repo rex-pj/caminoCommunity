@@ -14,7 +14,7 @@ const Root = styled(PanelDefault)`
 const Card = styled(UserCard)`
   box-shadow: none;
   border-radius: 0;
-  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
 `;
 
 export default function (props) {

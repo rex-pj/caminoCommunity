@@ -20,11 +20,10 @@ namespace Module.Api.Auth.GraphQL.Queries
         }
 
         [GraphQlAuthentication]
-        public async Task<CommonResult> SignoutAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver)
+        public async Task<CommonResult> LogoutAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver)
         {
-            return await userResolver.SignoutAsync(currentUser);
+            return await userResolver.LogoutAsync(currentUser);
         }
-
         public async Task<FullUserInfoModel> GetFullUserInfoAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, FindUserModel criterias)
         {
             return await userResolver.GetFullUserInfoAsync(currentUser, criterias);

@@ -1,18 +1,13 @@
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TextArea } from "../../atoms/TextAreas";
+import { TextAreaNeutral } from "../../atoms/TextAreas";
 import {
   ButtonOutlinePrimary,
-  ButtonOutlineNormal,
+  ButtonOutlineLight,
 } from "../../atoms/Buttons/OutlineButtons";
 
 const Wrap = styled.div`
-  ${TextArea} {
-    margin-bottom: 0;
-    vertical-align: middle;
-  }
-
   button {
     vertical-align: bottom;
     margin-left: ${(p) => p.theme.size.tiny};
@@ -23,21 +18,23 @@ const TextLabel = styled.div`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
     line-height: ${(p) => p.theme.size.normal};
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.danger};
+    color: ${(p) => p.theme.color.primaryDangerText};
     font-weight: 400;
   }
 `;
 
-const TextEditing = styled(TextArea)`
+const TextEditing = styled(TextAreaNeutral)`
   border: 0;
-  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
   border-radius: 0;
   max-width: 50%;
+  margin-bottom: 0;
+  vertical-align: middle;
 `;
 
 export default (props) => {
@@ -146,9 +143,9 @@ export default (props) => {
             <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
               <FontAwesomeIcon icon="check" />
             </ButtonOutlinePrimary>
-            <ButtonOutlineNormal size="xs" onClick={cancelEdit}>
+            <ButtonOutlineLight size="xs" onClick={cancelEdit}>
               <FontAwesomeIcon icon="times" />
-            </ButtonOutlineNormal>
+            </ButtonOutlineLight>
           </Fragment>
         ) : null}
       </Wrap>

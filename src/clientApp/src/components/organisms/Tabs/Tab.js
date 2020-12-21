@@ -7,11 +7,11 @@ const TabButton = styled(ButtonPrimary)`
   border-bottom-left-radius: 0;
   font-weight: normal;
   border: 0;
-  color: ${(p) => p.theme.color.primaryDark};
-  background-color: ${(p) => p.theme.color.light};
+  color: ${(p) => p.theme.color.darkText};
+  background-color: ${(p) => p.theme.color.neutralBg};
 
   :hover {
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.neutralBg};
   }
 `;
 
@@ -19,8 +19,8 @@ const Item = styled.li`
   display: inline-block;
 
   &.actived ${TabButton} {
-    color: ${(p) => p.theme.color.light};
-    background-color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
+    background-color: ${(p) => p.theme.color.neutralBg};
   }
 
   ${TabButton} {
@@ -45,7 +45,7 @@ export default (props) => {
   }`;
   return (
     <Item className={activedClass} tabOrder={tabOrder} totalTabs={totalTabs}>
-      <TabButton size="sm" onClick={toggleTab}>
+      <TabButton type="button" size="sm" onClick={toggleTab}>
         {props.title}
       </TabButton>
     </Item>

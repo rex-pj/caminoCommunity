@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
 import {
-  ButtonOutlineNormal,
+  ButtonOutlineLight,
   ButtonOutlineDanger,
 } from "../../atoms/Buttons/OutlineButtons";
 
@@ -12,11 +12,11 @@ const Wrap = styled(PanelDefault)`
   left: ${(p) => (p.left ? p.left + "px" : "auto")};
   top: ${(p) => (p.top ? p.top + "px" : "auto")};
   right: ${(p) => (p.right ? p.right + "px" : "auto")};
-  background-color: ${(p) => p.theme.color.warningLight};
+  background-color: ${(p) => p.theme.color.secondaryWarnBg};
 
   > ${PanelHeading} {
     border-bottom: 1px solid ${(p) => p.theme.rgbaColor.darkLight};
-    color: ${(p) => p.theme.color.warning};
+    color: ${(p) => p.theme.color.primaryWarnText};
   }
 
   ::after {
@@ -30,7 +30,7 @@ const Wrap = styled(PanelDefault)`
     border-left: ${(p) => p.theme.size.tiny} solid transparent;
     border-right: ${(p) => p.theme.size.tiny} solid transparent;
     border-top: ${(p) => p.theme.size.tiny} solid
-      ${(p) => p.theme.color.warningLight};
+      ${(p) => p.theme.color.secondaryWarnText};
   }
 `;
 
@@ -94,9 +94,9 @@ export default function (props) {
     <Wrap left={left} bottom="100%" className={className}>
       <PanelHeading>{title}</PanelHeading>
       <PanelBody>
-        <ButtonOutlineNormal size="sm" onClick={onClose}>
+        <ButtonOutlineLight size="sm" onClick={onClose}>
           Không
-        </ButtonOutlineNormal>
+        </ButtonOutlineLight>
         <ButtonOutlineDanger size="sm" onClick={onExecute}>
           Đồng Ý
         </ButtonOutlineDanger>

@@ -1,22 +1,22 @@
 import styled from "styled-components";
-import { SecondaryTitle, TertiaryTitle } from "../Titles";
+import { secondaryTitle, TertiaryTitle } from "../Titles";
 
-export const SecondaryTitleLink = styled(SecondaryTitle)`
+export const secondaryTitleLink = styled(secondaryTitle)`
   a {
-    color: ${p => p.theme.color.dark};
+    color: ${(p) => p.theme.color.darkText};
 
     :hover {
-      color: ${p => p.theme.color.link};
+      color: ${(p) => p.theme.color.primaryLink};
     }
   }
 `;
 
 export const TertiaryTitleLink = styled(TertiaryTitle)`
   a {
-    color: ${p => p.theme.color.dark};
+    color: ${(p) => p.theme.color.darkText};
 
     :hover {
-      color: ${p => p.theme.color.link};
+      color: ${(p) => p.theme.color.primaryLink};
     }
   }
 `;

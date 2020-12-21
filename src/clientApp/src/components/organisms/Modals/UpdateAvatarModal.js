@@ -5,7 +5,7 @@ import { PanelFooter, PanelBody } from "../../atoms/Panels";
 import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
 import {
   ButtonPrimary,
-  ButtonSecondary,
+  ButtonLight,
   ButtonAlert,
 } from "../../atoms/Buttons/Buttons";
 import {
@@ -64,17 +64,17 @@ const AvatarUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.primaryText};
     height: ${(p) => p.theme.size.medium};
-    padding: 0 ${(p) => p.theme.size.tiny};
-    background-color: ${(p) => p.theme.color.lighter};
-    border-radius: ${(p) => p.theme.borderRadius.large};
-    border: 1px solid ${(p) => p.theme.color.neutral};
+    padding: 0 ${(p) => p.theme.size.distance};
+    background-color: ${(p) => p.theme.color.lightBg};
+    border-radius: ${(p) => p.theme.borderRadius.normal};
+    border: 1px solid ${(p) => p.theme.color.neutralBg};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${(p) => p.theme.color.light};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     svg {
@@ -90,7 +90,7 @@ const ButtonRemove = styled(ButtonAlert)`
   padding-top: 0;
   padding-bottom: 0;
   vertical-align: middle;
-  border-radius: ${(p) => p.theme.borderRadius.large};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   margin-left: ${(p) => p.theme.size.exTiny};
 `;
 
@@ -311,7 +311,7 @@ const UpdateAvatarModal = (props) => {
               title="Please confirm your avatar deletion?"
               onExecute={(e) => onDelete(e)}
             />
-            <ButtonOutlineDanger size="sm" id="DeleteAvatar">
+            <ButtonOutlineDanger size="xs" id="DeleteAvatar">
               <FontAwesomeIcon icon="trash-alt" />
               <span>Delete</span>
             </ButtonOutlineDanger>
@@ -320,17 +320,17 @@ const UpdateAvatarModal = (props) => {
           <div className="col">
             <ButtonPrimary
               disabled={isDisabled}
-              size="sm"
+              size="xs"
               onClick={(e) => onUpload(e)}
             >
               <FontAwesomeIcon icon="upload" />
               <span>Upload</span>
             </ButtonPrimary>
 
-            <ButtonSecondary size="sm" onClick={() => props.closeModal()}>
+            <ButtonLight size="xs" onClick={() => props.closeModal()}>
               <FontAwesomeIcon icon="times" />
               <span>Cancel</span>
-            </ButtonSecondary>
+            </ButtonLight>
           </div>
         </FooterButtons>
       </PanelFooter>

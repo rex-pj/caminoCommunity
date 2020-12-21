@@ -18,7 +18,7 @@ export default withRouter((props) => {
         message:
           "To make sure all functions are working properly you need to log out and log in again",
         executeButtonName: "Ok",
-        executeUrl: "/auth/signout",
+        executeUrl: "/auth/logout",
       },
       options: {
         isOpen: true,

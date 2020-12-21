@@ -141,9 +141,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     Value = updatedItem.Value
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -165,7 +165,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<CommonResult> SignoutAsync(ApplicationUser currentUser)
+        public async Task<CommonResult> LogoutAsync(ApplicationUser currentUser)
         {
             try
             {
@@ -180,9 +180,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 }
                 return CommonResult.Success();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -207,9 +207,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 }
                 return new UserIdentifierUpdateRequest();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -253,7 +253,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     }
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new UserTokenModel(false);
             }
@@ -267,7 +267,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<UserTokenModel> SigninAsync(SigninModel criterias)
+        public async Task<UserTokenModel> LoginAsync(LoginModel criterias)
         {
             try
             {
@@ -292,9 +292,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     }
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -410,9 +410,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
                 return CommonResult.Success();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -464,9 +464,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
                 return CommonResult.Success();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 

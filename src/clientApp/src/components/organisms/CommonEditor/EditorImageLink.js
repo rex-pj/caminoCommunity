@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
 import { PanelBody } from "../../atoms/Panels";
-import { Textbox } from "../../atoms/Textboxes";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
 import EditorImageScalePreview from "./EditorImageScalePreview";
 
@@ -16,7 +16,7 @@ const FormRow = styled.div`
     display: block;
   }
 
-  ${Textbox} {
+  ${PrimaryTextbox} {
     width: 100%;
   }
 `;
@@ -56,7 +56,7 @@ export default (props) => {
       <Body>
         <FormRow>
           <LabelNormal>Url of your image</LabelNormal>
-          <Textbox
+          <PrimaryTextbox
             name="src"
             onKeyUp={handleKeyUp}
             value={src.value}

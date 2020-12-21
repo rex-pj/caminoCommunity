@@ -1,17 +1,17 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { RouterLinkButton } from "../../atoms/RouterLinkButtons";
+import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { HorizontalList } from "../../atoms/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  background-color: ${(p) => p.theme.color.neutral};
+  background-color: ${(p) => p.theme.color.neutralBg};
   position: relative;
 `;
 
-const NavButton = styled(RouterLinkButton)`
-  color: ${(p) => p.theme.color.lighter};
+const NavButton = styled(RouterLinkButtonPrimary)`
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 500;
   font-size: ${(p) => p.theme.fontSize.small};
   border: 0;
@@ -22,7 +22,7 @@ const NavButton = styled(RouterLinkButton)`
   background-color: transparent;
 
   :hover {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     background-color: transparent;
   }
 `;
@@ -31,7 +31,7 @@ const ListItem = styled.li`
   display: inline-block;
 
   &.actived ${NavButton} {
-    background-color: ${(p) => p.theme.color.primaryLight};
+    background-color: ${(p) => p.theme.color.secondaryBg};
   }
 
   :first-child ${NavButton} {
@@ -45,8 +45,8 @@ export default withRouter(function (props) {
   return (
     <Root>
       <HorizontalList className={className}>
-        <ListItem className={path === "/auth/signin" ? "actived" : ""}>
-          <NavButton to="/auth/signin">Sign In</NavButton>
+        <ListItem className={path === "/auth/login" ? "actived" : ""}>
+          <NavButton to="/auth/login">Login</NavButton>
         </ListItem>
         <ListItem className={path === "/auth/forgot-password" ? "actived" : ""}>
           <NavButton to="/auth/forgot-password">Forgot Password</NavButton>

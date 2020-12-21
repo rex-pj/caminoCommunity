@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
-import { Textbox } from "../../atoms/Textboxes";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -9,7 +9,7 @@ const FormInput = styled.div`
   margin: ${(p) => p.theme.size.tiny} auto;
 
   svg {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.size.small};
     path {
@@ -18,7 +18,7 @@ const FormInput = styled.div`
   }
 
   ${LabelNormal} {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     margin-right: ${(p) => p.theme.size.exTiny};
     font-weight: bold;
     font-size: ${(p) => p.theme.size.distance};
@@ -49,7 +49,7 @@ export default (props) => {
             <div className="row">
               <div className="col-md-12">
                 <LabelNormal>Title</LabelNormal>
-                <Textbox
+                <PrimaryTextbox
                   className="image-title"
                   name="alt"
                   value={alt.value}
@@ -63,7 +63,7 @@ export default (props) => {
             <div className="row">
               <div className="col-md-6">
                 <FontAwesomeIcon icon="arrows-alt-h" />
-                <Textbox
+                <PrimaryTextbox
                   name="width"
                   value={width.value}
                   autoComplete="off"
@@ -72,7 +72,7 @@ export default (props) => {
               </div>
               <div className="col-md-6">
                 <FontAwesomeIcon icon="arrows-alt-v" />
-                <Textbox
+                <PrimaryTextbox
                   name="height"
                   value={height.value}
                   autoComplete="off"

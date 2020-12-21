@@ -24,7 +24,7 @@ const ParentItem = styled.div``;
 
 const ChildItem = styled.li`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   margin-bottom: ${(p) => p.theme.size.exTiny};
 
   span {
@@ -37,7 +37,7 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.primary};
+    color: ${(p) => p.theme.color.primaryText};
     font-size: ${(p) => p.theme.fontSize.tiny};
   }
 

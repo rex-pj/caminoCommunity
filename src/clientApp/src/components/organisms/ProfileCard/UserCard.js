@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ImageCircle } from "../../atoms/Images";
+import { ImageRound } from "../../atoms/Images";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Menubar from "./CardToolbar";
 import Overlay from "../../atoms/Overlay";
@@ -33,11 +33,11 @@ const Username = styled.h3`
   font-size: ${(p) => p.theme.fontSize.normal};
   text-shadow: ${(p) => p.theme.shadow.TextShadow};
   a {
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.lightText};
   }
 `;
 
-const ProfileImage = styled(ImageCircle)`
+const ProfileImage = styled(ImageRound)`
   position: absolute;
   top: -20px;
   left: ${(p) => p.theme.size.exSmall};
@@ -48,7 +48,7 @@ const ProfileImage = styled(ImageCircle)`
 `;
 
 const EmptyAvatar = styled(NoAvatar)`
-  border-radius: ${(p) => p.theme.borderRadius.large};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
   width: 55px;
   height: 55px;
   font-size: 24px;

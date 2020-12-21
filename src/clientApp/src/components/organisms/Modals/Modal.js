@@ -24,18 +24,18 @@ const Scroll = styled.div`
   z-index: 900;
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${(p) => p.theme.color.light};
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
     font-weight: 600;
     position: relative;
   }
 
   ${PanelFooter} {
-    border-top: 1px solid ${(p) => p.theme.color.light};
+    border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
     text-align: right;
 
     button {
       margin-left: ${(p) => p.theme.size.tiny};
-      border-radius: ${(p) => p.theme.borderRadius.large};
+      border-radius: ${(p) => p.theme.borderRadius.normal};
     }
   }
 `;

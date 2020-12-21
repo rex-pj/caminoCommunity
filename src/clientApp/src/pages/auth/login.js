@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import SignInForm from "../../components/organisms/Auth/SignInForm";
+import LoginForm from "../../components/organisms/Auth/LoginForm";
 import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../utils/GraphQLClient";
-import { SIGNIN } from "../../utils/GraphQLQueries/mutations";
+import { LOGIN } from "../../utils/GraphQLQueries/mutations";
 import { withRouter } from "react-router-dom";
 import { SessionContext } from "../../store/context/SessionContext";
 import AuthService from "../../services/AuthService";
@@ -13,7 +13,7 @@ export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const sessionContext = useContext(SessionContext);
-  const [signin] = useMutation(SIGNIN, {
+  const [login] = useMutation(LOGIN, {
     client: unauthClient,
   });
 
@@ -43,24 +43,24 @@ export default withRouter((props) => {
     });
   };
 
-  const signIn = async (data) => {
+  const onLogin = async (data) => {
     setFormEnabled(false);
 
-    if (signin) {
-      await signin({
+    if (login) {
+      await login({
         variables: {
           criterias: data,
         },
       })
         .then(async (response) => {
           const { data, errors } = response;
-          const { signin } = data;
+          const { login } = data;
 
-          if (errors || !signin || !signin.authenticationToken) {
+          if (errors || !login || !login.authenticationToken) {
             notifyError(errors);
             setFormEnabled(true);
           } else {
-            const { userInfo, authenticationToken } = signin;
+            const { userInfo, authenticationToken } = login;
             AuthService.setLogin(userInfo, authenticationToken);
 
             await sessionContext.relogin();
@@ -78,8 +78,8 @@ export default withRouter((props) => {
   };
 
   return (
-    <SignInForm
-      onSignin={(data) => signIn(data)}
+    <LoginForm
+      onlogin={(data) => onLogin(data)}
       showValidationError={showError}
       isFormEnabled={isFormEnabled}
     />

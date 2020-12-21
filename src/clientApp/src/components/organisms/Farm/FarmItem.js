@@ -6,8 +6,8 @@ import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
-import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
@@ -33,7 +33,7 @@ const PostActions = styled.div`
   text-align: right;
 `;
 
-const PostTitle = styled(SecondaryTitleLink)`
+const PostTitle = styled(secondaryTitleLink)`
   margin-bottom: 0;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -74,9 +74,9 @@ const InteractRightItem = styled(InteractiveItem)`
   float: right;
 `;
 
-const FollowButton = styled(ButtonIconOutlineSecondary)`
+const FollowButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;
@@ -85,7 +85,7 @@ const FollowButton = styled(ButtonIconOutlineSecondary)`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {

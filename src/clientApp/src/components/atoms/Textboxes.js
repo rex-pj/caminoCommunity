@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-const Textbox = styled.input.attrs((p) => ({
+const PrimaryTextbox = styled.input.attrs((p) => ({
   type: p.type === "password" ? "password" : p.type,
 }))`
   height: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.neutral};
+  border: 1px solid ${(p) => p.theme.color.primaryDivide};
   padding: 6px 5px;
   border-radius: ${(p) => p.theme.borderRadius.normal};
   font-size: ${(p) => p.theme.fontSize.normal};
@@ -13,8 +13,8 @@ const Textbox = styled.input.attrs((p) => ({
   }
 `;
 
-const TextboxSecondary = styled(Textbox)`
-  border: 1px solid ${(p) => p.theme.color.secondary};
+const SecondaryTextbox = styled(PrimaryTextbox)`
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
 `;
 
-export { Textbox, TextboxSecondary };
+export { PrimaryTextbox, SecondaryTextbox };

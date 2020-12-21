@@ -6,7 +6,7 @@ const TextLabel = styled.span`
   display: inline-block;
 
   &.can-edit {
-    border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+    border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
     line-height: ${(p) => p.theme.size.normal};
     height: ${(p) => p.theme.size.normal};
     cursor: pointer;
@@ -14,16 +14,16 @@ const TextLabel = styled.span`
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.danger};
+    color: ${(p) => p.theme.color.primaryDangerText};
     font-weight: 400;
   }
 
   &.success {
-    border: 1px solid ${(p) => p.theme.color.primaryLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryBg};
   }
 
   &.fail {
-    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
   }
 `;
 
@@ -31,16 +31,16 @@ const SelectBox = styled(Selection)`
   min-width: calc(${(p) => p.theme.size.large} * 2);
   cursor: pointer;
   border: 0;
-  border-bottom: 1px dashed ${(p) => p.theme.color.neutral};
+  border-bottom: 1px dashed ${(p) => p.theme.color.neutralBg};
   border-radius: 0;
   max-width: 100%;
 
   &.success {
-    border: 1px solid ${(p) => p.theme.color.primaryLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryBg};
   }
 
   &.fail {
-    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
   }
 `;
 

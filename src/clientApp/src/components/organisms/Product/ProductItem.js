@@ -6,7 +6,7 @@ import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
@@ -38,7 +38,7 @@ const PostActions = styled.div`
   text-align: right;
 `;
 
-const PostTitle = styled(SecondaryTitleLink)`
+const PostTitle = styled(secondaryTitleLink)`
   margin-bottom: 0;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -82,18 +82,18 @@ const FarmInfo = styled(RowItem)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   svg {
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
     vertical-align: middle;
   }
 

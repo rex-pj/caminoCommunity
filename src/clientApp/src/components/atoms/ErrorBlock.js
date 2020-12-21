@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const ErrorBlock = styled.div`
-  color: ${p => p.theme.color.warning};
-  background-color: ${p => p.theme.color.warningLight};
-  border: spx solid ${p => p.theme.color.warningLight};
+  color: ${(p) => p.theme.color.secondaryWarnBg};
+  background-color: ${(p) => p.theme.color.primaryWarnText};
+  border: spx solid ${(p) => p.theme.color.secondaryWarnBg};
   text-align: center;
-  padding: ${p => p.theme.size.tiny};
+  padding: ${(p) => p.theme.size.tiny};
 `;
 
 export default ErrorBlock;

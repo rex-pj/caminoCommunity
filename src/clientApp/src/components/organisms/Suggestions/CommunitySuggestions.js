@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import CommunitySuggestionItem from "./CommunitySuggestionItem";
 import { VerticalList } from "../../atoms/List";
-import { FifthDarkHeading } from "../../atoms/Heading";
+import { FifthHeadingSecondary } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constants";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   border-radius: ${(p) => p.theme.borderRadius.normal};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
 const List = styled(VerticalList)`
@@ -33,16 +33,16 @@ export default () => {
 
   return (
     <div>
-      <FifthDarkHeading>
-        Join The Farm Community To Connect Better!
-      </FifthDarkHeading>
+      <FifthHeadingSecondary>
+        Join The Farm Communities To Connect Better!
+      </FifthHeadingSecondary>
       <Root>
         <List>
           {communities &&
-            communities.map((communitie, index) => (
+            communities.map((community, index) => (
               <CommunitySuggestionItem
                 key={index}
-                communitie={communitie}
+                community={community}
                 index={index}
               />
             ))}

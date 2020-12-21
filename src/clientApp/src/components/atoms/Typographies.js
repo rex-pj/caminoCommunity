@@ -1,22 +1,22 @@
 import styled from "styled-components";
 
 const TypographySecondary = styled.p`
-  color: ${p => p.theme.color.neutral};
-  font-size: ${p => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.neutralText};
+  font-size: ${(p) => p.theme.fontSize.small};
 
   a {
-    color: ${p => p.theme.color.neutral};
+    color: inherit;
   }
 `;
 
 const TypographyPrimary = styled.p`
-  color: ${p => p.theme.color.primary};
-  font-size: ${p => p.theme.fontSize.small};
+  color: ${(p) => p.theme.color.primaryText};
+  font-size: ${(p) => p.theme.fontSize.small};
 `;
 
-const TypographyDark = styled.p`
-  color: ${p => p.theme.color.dark};
-  font-size: ${p => p.theme.fontSize.small};
+const TypographyTitle = styled.p`
+  color: ${(p) => p.theme.color.secondaryTitle};
+  font-size: ${(p) => p.theme.fontSize.small};
 `;
 
-export { TypographySecondary, TypographyPrimary, TypographyDark };
+export { TypographySecondary, TypographyPrimary, TypographyTitle };

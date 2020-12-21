@@ -10,10 +10,7 @@ import Slider from "rc-slider";
 import NoImage from "../../atoms/NoImages/no-image";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
-import {
-  ButtonOutlineNormal,
-  ButtonOutlineSecondary,
-} from "../../atoms/Buttons/OutlineButtons";
+import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
 import {
   UPDATE_USER_COVER,
   DELETE_USER_COVER,
@@ -49,7 +46,7 @@ const Wrap = styled.div`
     z-index: 0;
     border-radius: 0;
     font-size: calc(${(p) => p.theme.fontSize.giant} * 2);
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     svg,
     path {
       font-size: inherit;
@@ -75,7 +72,7 @@ const Wrap = styled.div`
     border-radius: ${(p) => p.theme.borderRadius.large};
     border: 1px solid ${(p) => p.theme.rgbaColor.dark};
     background-color: ${(p) => p.theme.rgbaColor.darkLight};
-    color: ${(p) => p.theme.color.white};
+    color: ${(p) => p.theme.color.whiteText};
     right: ${(p) => p.theme.size.distance};
     top: ${(p) => p.theme.size.distance};
     z-index: 2;
@@ -127,7 +124,7 @@ const Wrap = styled.div`
       width: ${(p) => p.theme.size.large};
       height: ${(p) => p.theme.size.large};
       font-size: ${(p) => p.theme.fontSize.large};
-      color: ${(p) => p.theme.color.lighter};
+      color: ${(p) => p.theme.color.lightText};
       border-radius: ${(p) => p.theme.borderRadius.medium};
       padding: ${(p) => p.theme.size.exSmall} 0;
 
@@ -150,7 +147,7 @@ const Wrap = styled.div`
     width: ${(p) => p.theme.size.large};
     height: ${(p) => p.theme.size.large};
     font-size: ${(p) => p.theme.fontSize.large};
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.lightText};
     margin-left: ${(p) => p.theme.size.exTiny};
     vertical-align: middle;
     border-radius: ${(p) => p.theme.borderRadius.medium};
@@ -173,9 +170,9 @@ const Wrap = styled.div`
     span {
       margin-left: ${(p) => p.theme.size.distance};
     }
-    border: 1px solid ${(p) => p.theme.color.primary};
+    border: 1px solid ${(p) => p.theme.color.primaryBg};
   `,
-  CancelUpdateButton = styled(ButtonOutlineNormal)`
+  CancelUpdateButton = styled(ButtonOutlineLight)`
     span {
       margin-left: ${(p) => p.theme.size.distance};
     }
@@ -415,9 +412,9 @@ export default (props) => {
               title="Please confirm your cover photo deletion?"
               onExecute={(e) => onDelete()}
             />
-            <ButtonOutlineSecondary id="DeleteCover" size="sm">
+            <ButtonOutlineLight id="DeleteCover" size="sm">
               <FontAwesomeIcon icon="trash-alt" />
-            </ButtonOutlineSecondary>
+            </ButtonOutlineLight>
           </DeleteConfirm>
         </Fragment>
       ) : (

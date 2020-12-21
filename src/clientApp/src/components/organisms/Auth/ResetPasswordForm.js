@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { TextboxSecondary } from "../../../components/atoms/Textboxes";
+import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
@@ -9,16 +9,16 @@ import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
 import resetPasswordModel from "../../../models/resetPasswordModel";
 
-const Textbox = styled(TextboxSecondary)`
+const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
   background-color: ${(p) => p.theme.rgbaColor.darkLight};
   width: 100%;
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
@@ -27,7 +27,7 @@ const Textbox = styled(TextboxSecondary)`
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
   }
 `;
 
@@ -49,15 +49,15 @@ const FormRow = styled.div`
 const SubmitButton = styled(ButtonPrimary)`
   font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
 
   :hover {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.primaryLight};
-    color: ${(p) => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.neutralText};
     cursor: auto;
   }
 `;
@@ -72,12 +72,12 @@ const Instruction = styled.div`
 
   ${SecondaryHeading} {
     font-size: ${(p) => p.theme.fontSize.giant};
-    color: ${(p) => p.theme.color.lighter};
+    color: ${(p) => p.theme.color.neutralText};
     text-transform: uppercase;
   }
 
   p {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     margin-bottom: 0;
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;

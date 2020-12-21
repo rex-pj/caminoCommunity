@@ -15,17 +15,17 @@ const PhotoUpload = styled(ImageUpload)`
   max-width: 235px;
 
   > span {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.secondaryText};
     height: ${(p) => p.theme.size.medium};
     padding: 0 ${(p) => p.theme.size.tiny};
-    background-color: ${(p) => p.theme.color.lighter};
-    border-radius: ${(p) => p.theme.borderRadius.large};
-    border: 1px solid ${(p) => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.lightBg};
+    border-radius: ${(p) => p.theme.borderRadius.normal};
+    border: 1px solid ${(p) => p.theme.color.neutralBg};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${(p) => p.theme.color.light};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     svg {

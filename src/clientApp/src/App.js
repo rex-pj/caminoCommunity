@@ -37,9 +37,7 @@ export default () => {
   });
 
   const relogin = () => {
-    if (refetch) {
-      return refetch();
-    }
+    return refetch();
   };
 
   const parseLoggedUser = (response) => {
@@ -62,7 +60,7 @@ export default () => {
   return (
     <ApolloProvider client={graphqlClient}>
       <SessionContext.Provider
-        value={{ ...userObj, relogin: relogin, isLoading: loading }}
+        value={{ ...userObj, relogin, isLoading: loading }}
       >
         <Router history={history}>
           <Switch>

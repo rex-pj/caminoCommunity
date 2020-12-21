@@ -81,9 +81,9 @@ export default [
     layout: AuthLayout,
   },
   {
-    path: "/auth/signin",
+    path: "/auth/login",
     exact: true,
-    page: "auth/signin",
+    page: "auth/login",
     layout: AuthLayout,
   },
   {
@@ -93,9 +93,9 @@ export default [
     layout: AuthLayout,
   },
   {
-    path: "/auth/signout",
+    path: "/auth/logout",
     exact: true,
-    page: "auth/signout",
+    page: "auth/logout",
     layout: PromptLayout,
   },
   {

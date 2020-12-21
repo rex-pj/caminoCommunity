@@ -7,15 +7,15 @@ const Root = styled.p`
 `;
 
 const PriceNumber = styled.span`
-  color: ${p => p.theme.color.warning};
+  color: ${(p) => p.theme.color.primaryWarnText};
   font-weight: 600;
-  font-size: ${p => p.theme.fontSize.medium};
-  margin-bottom: ${p => p.theme.size.tiny};
-  margin-right: ${p => p.theme.size.exTiny};
+  font-size: ${(p) => p.theme.fontSize.medium};
+  margin-bottom: ${(p) => p.theme.size.tiny};
+  margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
 const CurrencyText = styled.span`
-  color: ${p => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: 14px;
   vertical-align: super;
 `;

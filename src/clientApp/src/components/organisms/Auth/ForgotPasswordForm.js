@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { TextboxSecondary } from "../../atoms/Textboxes";
+import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../atoms/Panels";
 import { LabelNormal } from "../../atoms/Labels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
@@ -11,16 +11,16 @@ import { checkValidity } from "../../../utils/Validity";
 import { PrimaryNotice } from "../../atoms/Notices/AlertNotice";
 import { withRouter } from "react-router-dom";
 
-const Textbox = styled(TextboxSecondary)`
+const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
   background-color: ${(p) => p.theme.rgbaColor.lighter};
   width: 100%;
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
@@ -29,7 +29,7 @@ const Textbox = styled(TextboxSecondary)`
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.dangerLight};
+    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
   }
 `;
 
@@ -50,15 +50,15 @@ const FormRow = styled.div`
 
 const SubmitButton = styled(ButtonPrimary)`
   font-size: ${(p) => p.theme.fontSize.small};
-  border: 1px solid ${(p) => p.theme.color.primaryLight};
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
 
   :hover {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.primaryLight};
-    color: ${(p) => p.theme.color.neutral};
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.neutralText};
     cursor: auto;
   }
 `;

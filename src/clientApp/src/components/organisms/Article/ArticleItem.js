@@ -6,7 +6,7 @@ import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import { HorizontalList } from "../../atoms/List";
 import { AnchorLink } from "../../atoms/Links";
@@ -32,7 +32,7 @@ const PostActions = styled.div`
   text-align: right;
 `;
 
-const PostTitle = styled(SecondaryTitleLink)`
+const PostTitle = styled(secondaryTitleLink)`
   margin-bottom: 0;
 `;
 

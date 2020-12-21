@@ -2,7 +2,7 @@ import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
-import { Textbox } from "../../atoms/Textboxes";
+import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
@@ -15,9 +15,15 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 
-  ${Textbox} {
+  ${PrimaryTextbox} {
     max-width: 100%;
     width: 500px;
+  }
+
+  .cate-selection {
+    > div {
+      border: 1px solid ${(p) => p.theme.color.primaryDivide};
+    }
   }
 
   ${AsyncSelect} {
@@ -34,18 +40,18 @@ const ThumbnailUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.primaryText};
     height: ${(p) => p.theme.size.normal};
     padding: 0 ${(p) => p.theme.size.tiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    background-color: ${(p) => p.theme.color.lighter};
+    background-color: ${(p) => p.theme.color.lightBg};
     border-radius: ${(p) => p.theme.borderRadius.normal};
-    border: 1px solid ${(p) => p.theme.color.neutral};
+    border: 1px solid ${(p) => p.theme.color.neutralBg};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${(p) => p.theme.color.light};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     svg {
@@ -239,7 +245,7 @@ export default withRouter((props) => {
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
         <FormRow className="row">
           <div className="col-12 col-lg-6 pr-lg-1">
-            <Textbox
+            <PrimaryTextbox
               name="name"
               value={name.value}
               autoComplete="off"
@@ -249,6 +255,7 @@ export default withRouter((props) => {
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
             <AsyncSelect
+              className="cate-selection"
               ref={selectRef}
               defaultValue={loadSelected()}
               cacheOptions
@@ -300,7 +307,7 @@ export default withRouter((props) => {
         <Footer className="row mb-3">
           <div className="col-auto"></div>
           <div className="col-auto ml-auto">
-            <ButtonPrimary size="sm">Post</ButtonPrimary>
+            <ButtonPrimary size="xs">Post</ButtonPrimary>
           </div>
         </Footer>
       </form>

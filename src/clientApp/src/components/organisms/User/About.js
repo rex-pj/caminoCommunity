@@ -13,7 +13,7 @@ const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   margin-bottom: ${(p) => p.theme.size.normal};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
 const Root = styled.div`

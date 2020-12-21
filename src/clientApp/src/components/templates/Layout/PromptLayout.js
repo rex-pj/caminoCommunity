@@ -3,7 +3,7 @@ import styled from "styled-components";
 import MasterLayout from "./MasterLayout";
 
 const Root = styled.div`
-  background-color: ${(p) => p.theme.color.lighter};
+  background-color: ${(p) => p.theme.color.neutralBg};
   height: 100%;
 `;
 
@@ -17,7 +17,7 @@ const Container = styled.div`
 const Wrap = styled.div`
   width: 750px;
   max-width: 100%;
-  background-color: ${(p) => p.theme.color.primaryLight};
+  background-color: ${(p) => p.theme.color.secondaryBg};
   min-height: 500px;
   border-radius: ${(p) => p.theme.borderRadius.medium};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};

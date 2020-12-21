@@ -14,12 +14,12 @@ const InfoList = styled(VerticalList)`
 `;
 
 const OtherInfo = styled.span`
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
 `;
 
 const ChildItem = styled.li`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.dark};
+  color: ${(p) => p.theme.color.darkText};
   margin-bottom: ${(p) => p.theme.size.distance};
 
   span {
@@ -28,7 +28,7 @@ const ChildItem = styled.li`
   }
 
   ${OtherInfo} {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   svg {
@@ -37,11 +37,11 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.neutral};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   a {
-    font-size: ${(p) => p.theme.rgbaColor.small};
+    font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 `;

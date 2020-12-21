@@ -44,7 +44,7 @@ export default withRouter((props) => {
   if (data) {
     const { active } = data;
     if (active && !!active.isSucceed) {
-      history.push("/auth/signin");
+      history.push("/auth/login");
     }
   }
 

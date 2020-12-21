@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonOutlineNormal } from "../../atoms/Buttons/OutlineButtons";
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ThumbnailCircle } from "../../molecules/Thumbnails";
 import { TertiaryTitle } from "../../atoms/Titles";
 import { TypographySecondary } from "../../atoms/Typographies";
@@ -9,14 +9,14 @@ import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
   padding: ${(p) => p.theme.size.distance};
-  border-top: 1px solid ${(p) => p.theme.color.lighter};
+  border-top: 1px solid ${(p) => p.theme.color.neutralBg};
 
   &.first-item {
     border-top: 0;
   }
 `;
 
-const ActionButton = styled(ButtonOutlineNormal)`
+const ActionButton = styled(ButtonPrimary)`
   font-weight: 500;
   font-size: ${(p) => p.theme.fontSize.small};
   top: ${(p) => p.theme.size.distance};
@@ -35,7 +35,7 @@ const Description = styled(TypographySecondary)`
 `;
 
 const Avatar = styled(ThumbnailCircle)`
-  border: 2px solid ${(p) => p.theme.color.light};
+  border: 2px solid ${(p) => p.theme.color.neutralBg};
   width: calc(100% + 4px);
   padding-top: 100%;
   position: relative;

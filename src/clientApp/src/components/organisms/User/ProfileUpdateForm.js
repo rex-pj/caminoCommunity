@@ -12,36 +12,17 @@ const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   margin-bottom: ${(p) => p.theme.size.normal};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
 const FormGroup = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
-  border-bottom: 1px solid ${(p) => p.theme.color.lighter};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
 `;
 
 const Heading = styled(QuaternaryDarkHeading)`
   margin-bottom: ${(p) => p.theme.size.distance};
   margin-left: ${(p) => p.theme.size.exTiny};
-`;
-
-const SubmitButton = styled(ButtonPrimary)`
-  font-size: ${(p) => p.theme.fontSize.small};
-  cursor: pointer;
-
-  :hover {
-    color: ${(p) => p.theme.color.light};
-  }
-
-  :disabled {
-    background-color: ${(p) => p.theme.color.primaryLight};
-    color: ${(p) => p.theme.color.neutral};
-    cursor: auto;
-  }
-
-  svg {
-    margin-right: ${(p) => p.theme.size.exTiny};
-  }
 `;
 
 const FormFooter = styled(PanelFooter)`
@@ -166,14 +147,14 @@ export default (props) => {
             </Fragment>
           ) : null}
           <FormFooter>
-            <SubmitButton
+            <ButtonPrimary
               type="submit"
-              size="sm"
+              size="xs"
               disabled={!props.isFormEnabled || !isFormValid}
             >
-              <FontAwesomeIcon icon="pencil-alt" />
+              <FontAwesomeIcon icon="pencil-alt" className="mr-1" />
               Update
-            </SubmitButton>
+            </ButtonPrimary>
           </FormFooter>
         </form>
       </MainPanel>

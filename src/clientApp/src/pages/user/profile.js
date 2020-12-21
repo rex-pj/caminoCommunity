@@ -9,7 +9,7 @@ import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
 import { parseUserInfo } from "../../services/UserService";
 import UserProfileRoutes from "../../routes/UserProfileRoutes";
-import { ButtonIconOutlineSecondary } from "../../components/molecules/ButtonIcons";
+import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import loadable from "@loadable/component";
 
@@ -34,13 +34,13 @@ const CoverPageBlock = styled.div`
     z-index: 3;
     margin-bottom: 0;
     position: absolute;
-    color: ${(p) => p.theme.color.white};
+    color: ${(p) => p.theme.color.whiteText};
   }
 `;
 
 const ProfileNameLink = styled.a`
   font-weight: 600;
-  color: inherit;
+  color: ${(p) => p.theme.color.lightText};
   font-size: ${(p) => p.theme.fontSize.large};
 
   :hover {
@@ -50,7 +50,7 @@ const ProfileNameLink = styled.a`
 
 const CoverNav = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
-  background-color: ${(p) => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.whiteBg};
   border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
   margin-bottom: ${(p) => p.theme.size.distance};
@@ -63,9 +63,9 @@ const AvatarBlock = styled(ProfileAvatar)`
   z-index: 3;
 `;
 
-const ConnectButton = styled(ButtonIconOutlineSecondary)`
+const ConnectButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;

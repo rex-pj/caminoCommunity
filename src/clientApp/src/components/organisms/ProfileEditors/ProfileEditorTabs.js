@@ -23,6 +23,7 @@ export default (props) => {
   const onToggleCreateMode = (name) => {
     setEditorMode(name);
   };
+
   if (editorMode === "ARTICLE") {
     return (
       <Fragment>
@@ -41,7 +42,9 @@ export default (props) => {
         />
       </Fragment>
     );
-  } else if (editorMode === "PRODUCT") {
+  }
+
+  if (editorMode === "PRODUCT") {
     return (
       <Fragment>
         <EditorTabs
@@ -60,23 +63,23 @@ export default (props) => {
         />
       </Fragment>
     );
-  } else {
-    return (
-      <Fragment>
-        <EditorTabs
-          onToggleCreateMode={onToggleCreateMode}
-          editorMode={editorMode}
-        ></EditorTabs>
-        <FarmEditor
-          height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
-          filterCategories={searchFarmTypes}
-          onFarmPost={onFarmPost}
-          refetchNews={refetchNewsFeed}
-          showValidationError={showValidationError}
-        />
-      </Fragment>
-    );
   }
+
+  return (
+    <Fragment>
+      <EditorTabs
+        onToggleCreateMode={onToggleCreateMode}
+        editorMode={editorMode}
+      ></EditorTabs>
+      <FarmEditor
+        height={230}
+        convertImageCallback={convertImagefile}
+        onImageValidate={onImageValidate}
+        filterCategories={searchFarmTypes}
+        onFarmPost={onFarmPost}
+        refetchNews={refetchNewsFeed}
+        showValidationError={showValidationError}
+      />
+    </Fragment>
+  );
 };

@@ -31,7 +31,7 @@ const Root = styled.div`
 
 const Container = styled.div`
   margin-bottom: 15px;
-  background: ${(p) => p.theme.color.white};
+  background: ${(p) => p.theme.color.whiteBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-height: ${(p) => (p.height ? `${p.height}px` : "100px")};

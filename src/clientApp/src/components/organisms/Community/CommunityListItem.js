@@ -4,11 +4,11 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ImageRound } from "../../atoms/Images";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
-import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
+import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 
 const Panel = styled(PanelDefault)`
@@ -24,7 +24,7 @@ const ContentTopbar = styled.div`
   margin-bottom: 0;
 `;
 
-const Title = styled(SecondaryTitleLink)`
+const Title = styled(secondaryTitleLink)`
   margin-bottom: 0;
 `;
 
@@ -37,7 +37,8 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
@@ -58,9 +59,9 @@ const CoverImage = styled(ImageRound)`
   border-bottom-right-radius: 0;
 `;
 
-const FollowButton = styled(ButtonIconOutlineSecondary)`
+const FollowButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;
@@ -114,18 +115,18 @@ export default (props) => {
         <div className="panel-content">
           <Description>{community.description}</Description>
         </div>
-        <InteractiveToolbar>
-          <HorizontalList>
-            <InteractiveItem>
-              <FontButtonItem
-                icon="users"
-                title="Followers"
-                dynamicText={community.followingNumber}
-              />
-            </InteractiveItem>
-          </HorizontalList>
-        </InteractiveToolbar>
       </PanelBody>
+      <InteractiveToolbar>
+        <HorizontalList>
+          <InteractiveItem>
+            <FontButtonItem
+              icon="users"
+              title="Followers"
+              dynamicText={community.followingNumber}
+            />
+          </InteractiveItem>
+        </HorizontalList>
+      </InteractiveToolbar>
     </Panel>
   );
 };

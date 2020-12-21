@@ -37,9 +37,9 @@ namespace Module.Api.Auth.GraphQL.Mutations
             return await userResolver.SignupAsync(criterias);
         }
 
-        public async Task<UserTokenModel> SigninAsync([Service] IUserResolver userResolver, SigninModel criterias)
+        public async Task<UserTokenModel> LoginAsync([Service] IUserResolver userResolver, LoginModel criterias)
         {
-            return await userResolver.SigninAsync(criterias);
+            return await userResolver.LoginAsync(criterias);
         }
 
         public async Task<CommonResult> ForgotPasswordAsync([Service] IUserResolver userResolver, ForgotPasswordModel criterias)

@@ -16,7 +16,7 @@ const Dropdown = styled.div`
   padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
   height: auto;
   min-width: inherit;
-  border: 1px solid ${(p) => p.theme.color.neutral};
+  border: 1px solid ${(p) => p.theme.color.neutralBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   position: relative;
 
@@ -41,14 +41,14 @@ const SelectDropdown = styled.ul`
 `;
 
 const Option = styled.li`
-  background: ${(p) => p.theme.color.lighter};
+  background: ${(p) => p.theme.color.neutralBg};
   padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
-  border-bottom: 1px solid ${(p) => p.theme.color.light};
-  color: ${(p) => p.theme.color.primaryLight};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
+  color: ${(p) => p.theme.color.secondaryText};
   font-weight: 600;
 
   :hover {
-    background-color: ${(p) => p.theme.color.light};
+    background-color: ${(p) => p.theme.color.neutralBg};
   }
 `;
 

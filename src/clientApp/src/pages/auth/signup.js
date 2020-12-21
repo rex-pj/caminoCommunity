@@ -38,7 +38,7 @@ export default withRouter((props) => {
               "Có lỗi xảy ra trong quá trình đăng ký"
             );
           } else {
-            props.history.push("/auth/signin");
+            props.history.push("/auth/login");
           }
         })
         .catch((error) => {

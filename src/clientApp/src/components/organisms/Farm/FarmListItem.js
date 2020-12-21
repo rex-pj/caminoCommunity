@@ -6,11 +6,11 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageThumb from "../../molecules/Images/ImageThumb";
-import { SecondaryTitleLink } from "../../atoms/Titles/TitleLinks";
+import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
-import { ButtonIconOutlineSecondary } from "../../molecules/ButtonIcons";
+import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
@@ -41,7 +41,7 @@ const ContentTopbar = styled.div`
   margin-bottom: 0;
 `;
 
-const Title = styled(SecondaryTitleLink)`
+const Title = styled(secondaryTitleLink)`
   margin-bottom: 0;
 `;
 
@@ -55,7 +55,8 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  margin-top: ${(p) => p.theme.size.distance};
+  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 
 const InteractiveItem = styled.li`
@@ -71,9 +72,9 @@ const Cover = styled.div`
   overflow: hidden;
 `;
 
-const FollowButton = styled(ButtonIconOutlineSecondary)`
+const FollowButton = styled(ButtonIconPrimary)`
   padding: ${(p) => p.theme.size.tiny};
-  font-size: ${(p) => p.theme.rgbaColor.small};
+  font-size: ${(p) => p.theme.fontSize.small};
   line-height: 1;
 
   position: absolute;
@@ -89,12 +90,12 @@ const ProfileBox = styled(AuthorProfile)`
   z-index: 1;
 
   a {
-    color: ${(p) => p.theme.color.light};
+    color: ${(p) => p.theme.color.lightText};
   }
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.neutral};
+  color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {
@@ -115,7 +116,6 @@ const TopBarInfo = styled.div`
 
 export default withRouter((props) => {
   const { farm } = props;
-  const { creator } = farm;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -144,6 +144,14 @@ export default withRouter((props) => {
     };
   });
 
+  const loadCreatedInfo = () => {
+    const { creator } = farm;
+    if (creator) {
+      creator.info = "Farmer";
+    }
+    return creator;
+  };
+
   return (
     <Panel>
       <Cover>
@@ -152,7 +160,7 @@ export default withRouter((props) => {
           <Overlay />
         </AnchorLink>
 
-        <ProfileBox profile={creator} />
+        <ProfileBox profile={loadCreatedInfo()} />
         <FollowButton icon="user-plus" size="sm">
           Follow
         </FollowButton>
@@ -206,22 +214,22 @@ export default withRouter((props) => {
             <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>{" "}
           </Description>
         </div>
-        <InteractiveToolbar>
-          <HorizontalList>
-            <InteractiveItem>
-              <HorizontalReactBar reactionNumber={farm.reactionNumber} />
-            </InteractiveItem>
-
-            <InteractiveItem>
-              <FontButtonItem
-                icon="comments"
-                title="Discussions"
-                dynamicText={farm.commentNumber}
-              />
-            </InteractiveItem>
-          </HorizontalList>
-        </InteractiveToolbar>
       </PanelBody>
+      <InteractiveToolbar>
+        <HorizontalList>
+          <InteractiveItem>
+            <HorizontalReactBar reactionNumber={farm.reactionNumber} />
+          </InteractiveItem>
+
+          <InteractiveItem>
+            <FontButtonItem
+              icon="comments"
+              title="Discussions"
+              dynamicText={farm.commentNumber}
+            />
+          </InteractiveItem>
+        </HorizontalList>
+      </InteractiveToolbar>
     </Panel>
   );
 });
