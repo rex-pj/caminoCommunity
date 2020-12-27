@@ -13,7 +13,7 @@ namespace Module.Web.Navigation.ViewComponents
             var mainNavigation = new MainNavigationModel()
             {
                 Name = "Camino",
-                SubName = "Social",
+                SubName = "Community",
                 Logo = "/img/logo.png",
                 Url = "/",
                 TabNavigations = new List<TabNavigationModel>() {
