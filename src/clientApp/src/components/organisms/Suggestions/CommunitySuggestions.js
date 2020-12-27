@@ -22,7 +22,7 @@ export default () => {
   for (let i = 0; i < 3; i++) {
     communities.push({
       info: "125 participants",
-      name: "Hội trái cây Mini",
+      name: "Mini fruits group",
       description:
         "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
       url: `${UrlConstant.Community.url}1`,

@@ -13,7 +13,7 @@ const Root = styled.div`
 `;
 
 const CoverWrapper = styled.div`
-  max-height: 90px;
+  max-height: 110px;
   overflow: hidden;
   position: relative;
 
@@ -26,7 +26,7 @@ const CoverWrapper = styled.div`
 const Username = styled.h3`
   margin-bottom: 0;
   position: absolute;
-  bottom: calc(${(p) => p.theme.size.normal} + 15px);
+  bottom: calc(${(p) => p.theme.size.normal} + 10px);
   left: ${(p) => p.theme.size.exSmall};
   z-index: 1;
   line-height: 1;
@@ -55,7 +55,7 @@ const EmptyAvatar = styled(NoAvatar)`
   position: absolute;
   top: -20px;
   left: 15px;
-  border: 5px solid ${(p) => p.theme.rgbaColor.cyan};
+  border: 3px solid ${(p) => p.theme.rgbaColor.cyan};
   z-index: 1;
 `;
 
@@ -76,7 +76,8 @@ const StaticBar = styled.div`
 export default function (props) {
   const { className, menuList } = props;
   const { userInfo } = props;
-  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
+  const userIdentityId = userInfo?.userIdentityId;
+
   return (
     <Root className={className}>
       {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (

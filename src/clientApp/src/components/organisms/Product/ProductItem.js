@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
@@ -15,6 +15,7 @@ import Overlay from "../../atoms/Overlay";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -104,7 +105,10 @@ const FarmInfo = styled(RowItem)`
 
 export default withRouter((props) => {
   const { product } = props;
-  const { creator } = product;
+  const { creator, createdByIdentityId } = product;
+  var { currentUser, isLogin } = useContext(SessionContext);
+  const isAuthor =
+    currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -162,12 +166,14 @@ export default withRouter((props) => {
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              <PostActions ref={currentRef}>
-                <ActionButton onClick={onActionDropdownShow}>
-                  <FontAwesomeIcon icon="angle-down" />
-                </ActionButton>
-              </PostActions>
-              {isActionDropdownShown ? (
+              {isLogin ? (
+                <PostActions ref={currentRef}>
+                  <ActionButton onClick={onActionDropdownShow}>
+                    <FontAwesomeIcon icon="angle-down" />
+                  </ActionButton>
+                </PostActions>
+              ) : null}
+              {isActionDropdownShown && isAuthor ? (
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>

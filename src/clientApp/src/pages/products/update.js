@@ -1,14 +1,17 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useQuery, useMutation } from "@apollo/client";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
-import { GET_PRODUCT_FOR_UPDATE } from "../../utils/GraphQLQueries/queries";
+import authClient from "../../graphql/client/authClient";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_PRODUCT_CATEGORIES,
-  UPDATE_PRODUCT,
-  FILTER_FARMS,
-} from "../../utils/GraphQLQueries/mutations";
+  productQueries,
+  userQueries,
+  farmQueries,
+} from "../../graphql/fetching/queries";
+import {
+  mediaMutations,
+  productMutations,
+  farmMutations,
+} from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
@@ -16,21 +19,24 @@ import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { id } = params;
   const dispatch = useStore(false)[1];
-  const [userFarms] = useMutation(FILTER_FARMS);
-  const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [updateProduct] = useMutation(UPDATE_PRODUCT, {
-    client: graphqlClient,
+  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
+  const [productCategories] = useMutation(
+    productMutations.FILTER_PRODUCT_CATEGORIES
+  );
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [updateProduct] = useMutation(productMutations.UPDATE_PRODUCT, {
+    client: authClient,
   });
 
   const { loading, data, error, refetch, called } = useQuery(
-    GET_PRODUCT_FOR_UPDATE,
+    productQueries.GET_PRODUCT_FOR_UPDATE,
     {
       variables: {
         criterias: {
@@ -39,6 +45,27 @@ export default withRouter(function (props) {
       },
     }
   );
+
+  const userIdentityId = data?.farm?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 4,
+      },
+    },
+  });
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -190,8 +217,34 @@ export default withRouter(function (props) {
     },
   ];
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
       <ProductEditor
         currentProduct={currentProduct}
@@ -203,6 +256,6 @@ export default withRouter(function (props) {
         showValidationError={showValidationError}
         filterFarms={searchFarms}
       />
-    </Fragment>
+    </DetailLayout>
   );
 });

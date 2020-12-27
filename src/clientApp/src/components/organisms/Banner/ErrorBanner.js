@@ -31,7 +31,7 @@ const Instruction = styled.div`
 
   ${SecondaryHeading} {
     font-size: ${(p) => p.theme.fontSize.giant};
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.lightText};
     text-transform: uppercase;
   }
 
@@ -56,7 +56,7 @@ const Instruction = styled.div`
   }
 
   p {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.lightText};
     margin-bottom: 0;
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;

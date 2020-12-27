@@ -9,7 +9,7 @@ const AsyncPage = loadable(
   }
 );
 
-const UserProfileInfo = loadable(() => import("./UserProfileInfo"));
+const ProfileInfo = loadable(() => import("./ProfileInfo"));
 
 export default withRouter((props) => {
   const { userId, baseUrl, pages, userInfo, pageNumber } = props;
@@ -51,7 +51,7 @@ export default withRouter((props) => {
         </Switch>
       </div>
       <div className="col col-4 col-sm-4 col-md-4 col-lg-3">
-        <UserProfileInfo userInfo={userInfo} />
+        <ProfileInfo userInfo={userInfo} />
       </div>
     </div>
   );

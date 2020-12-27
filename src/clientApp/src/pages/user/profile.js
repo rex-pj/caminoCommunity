@@ -1,14 +1,14 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import Profile from "../../components/organisms/User/Profile";
-import { SessionContext } from "../../store/context/SessionContext";
-import { GET_USER_INFO } from "../../utils/GraphQLQueries/queries";
+import { SessionContext } from "../../store/context/session-context";
+import { userQueries } from "../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
-import { parseUserInfo } from "../../services/UserService";
-import UserProfileRoutes from "../../routes/UserProfileRoutes";
+import { parseUserInfo } from "../../services/userService";
+import UserProfileRoutes from "../../routes/userProfileRoutes";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import loadable from "@loadable/component";
@@ -16,8 +16,8 @@ import loadable from "@loadable/component";
 const ProfileAvatar = loadable(() =>
     import("../../components/organisms/User/ProfileAvatar")
   ),
-  UserCoverPhoto = loadable(() =>
-    import("../../components/organisms/User/UserCoverPhoto")
+  ProfileCover = loadable(() =>
+    import("../../components/organisms/User/ProfileCover")
   ),
   ProfileNavigation = loadable(() =>
     import("../../components/organisms/User/ProfileNavigation")
@@ -77,24 +77,27 @@ const ConnectButton = styled(ButtonIconPrimary)`
 export default withRouter((props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
   const _baseUrl = "/profile";
-  const sessionContext = useContext(SessionContext);
+  const { relogin, isLogin, currentUser } = useContext(SessionContext);
   const { match } = props;
   const { params } = match;
   const { userId, pageNumber } = params;
-  const { loading, error, data, refetch } = useQuery(GET_USER_INFO, {
-    variables: {
-      criterias: {
-        userId,
+  const { loading, error, data, refetch } = useQuery(
+    userQueries.GET_USER_INFO,
+    {
+      variables: {
+        criterias: {
+          userId,
+        },
       },
-    },
-  });
+    }
+  );
 
   const [state, dispatch] = useStore(false);
   useEffect(() => {
     if (state.type === "AVATAR_UPDATED") {
       refetch();
     }
-  }, [state, refetch, sessionContext]);
+  }, [state, refetch]);
 
   if (loading) {
     return <Loading>Loading</Loading>;
@@ -125,8 +128,8 @@ export default withRouter((props) => {
       return await action({ variables: { criterias: data } })
         .then(async () => {
           await refetch().then(() => {
-            if (sessionContext.relogin) {
-              sessionContext.relogin();
+            if (relogin) {
+              relogin();
             }
           });
         })
@@ -140,7 +143,7 @@ export default withRouter((props) => {
   };
 
   const userInfo = parseUserInfo(data);
-  const { canEdit } = userInfo;
+  const { canEdit, userIdentityId } = userInfo;
 
   let currentPage;
   if (pageNumber) {
@@ -150,12 +153,14 @@ export default withRouter((props) => {
   return (
     <Fragment>
       <CoverPageBlock>
-        {!isEditCoverMode ? (
+        {!isEditCoverMode &&
+        isLogin &&
+        currentUser.userIdentityId !== userIdentityId ? (
           <ConnectButton icon="user-plus" size="sm">
             Connect
           </ConnectButton>
         ) : null}
-        <UserCoverPhoto
+        <ProfileCover
           userInfo={userInfo}
           canEdit={canEdit}
           onUpdated={userCoverUpdated}
@@ -167,9 +172,7 @@ export default withRouter((props) => {
           canEdit={canEdit && !isEditCoverMode}
         />
         <h2>
-          <ProfileNameLink
-            href={userInfo.url ? `${_baseUrl}/${userInfo.url}` : null}
-          >
+          <ProfileNameLink href={userInfo.url}>
             {userInfo.displayName}
           </ProfileNameLink>
         </h2>

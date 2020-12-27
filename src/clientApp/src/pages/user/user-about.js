@@ -1,8 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_FULL_USER_INFO } from "../../utils/GraphQLQueries/queries";
-import { UPDATE_USER_INFO_PER_ITEM } from "../../utils/GraphQLQueries/mutations";
+import { userQueries } from "../../graphql/fetching/queries";
+import { userMutations } from "../../graphql/fetching/mutations";
 import About from "../../components/organisms/User/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -10,15 +10,20 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 export default withRouter((props) => {
   const { userId } = props;
 
-  const [updateUserInfoItem] = useMutation(UPDATE_USER_INFO_PER_ITEM);
+  const [updateUserInfoItem] = useMutation(
+    userMutations.UPDATE_USER_INFO_PER_ITEM
+  );
 
-  const { loading, error, data, refetch } = useQuery(GET_FULL_USER_INFO, {
-    variables: {
-      criterias: {
-        userId,
+  const { loading, error, data, refetch } = useQuery(
+    userQueries.GET_FULL_USER_INFO,
+    {
+      variables: {
+        criterias: {
+          userId,
+        },
       },
-    },
-  });
+    }
+  );
 
   if (loading) {
     return <Loading>Loading</Loading>;

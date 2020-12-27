@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import UpdatePasswordForm from "../../components/organisms/User/UpdatePasswordForm";
-import { UPDATE_USER_PASSWORD } from "../../utils/GraphQLQueries/mutations";
+import PasswordUpdateForm from "../../components/organisms/User/PasswordUpdateForm";
+import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const [updateUserPassword] = useMutation(UPDATE_USER_PASSWORD);
+  const [updateUserPassword] = useMutation(userMutations.UPDATE_USER_PASSWORD);
   const { canEdit } = props;
 
   const onUpdateConfirmation = () => {
@@ -80,7 +80,7 @@ export default withRouter((props) => {
   };
 
   return (
-    <UpdatePasswordForm
+    <PasswordUpdateForm
       onUpdate={(e) => onUpdatePassword(e, canEdit)}
       isFormEnabled={isFormEnabled}
       canEdit={canEdit}

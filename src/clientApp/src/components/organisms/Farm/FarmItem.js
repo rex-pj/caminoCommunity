@@ -1,4 +1,10 @@
-import React, { Fragment, useState, useRef, useEffect } from "react";
+import React, {
+  Fragment,
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+} from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
@@ -15,6 +21,7 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import Overlay from "../../atoms/Overlay";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -106,7 +113,10 @@ const TopBarInfo = styled.div`
 
 export default withRouter((props) => {
   const { farm } = props;
-  const { creator } = farm;
+  const { creator, createdByIdentityId } = farm;
+  var { currentUser, isLogin } = useContext(SessionContext);
+  const isAuthor =
+    currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -159,12 +169,15 @@ export default withRouter((props) => {
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              <PostActions ref={currentRef}>
-                <ActionButton onClick={onActionDropdownShow}>
-                  <FontAwesomeIcon icon="angle-down" />
-                </ActionButton>
-              </PostActions>
-              {isActionDropdownShown ? (
+              {isLogin ? (
+                <PostActions ref={currentRef}>
+                  <ActionButton onClick={onActionDropdownShow}>
+                    <FontAwesomeIcon icon="angle-down" />
+                  </ActionButton>
+                </PostActions>
+              ) : null}
+
+              {isActionDropdownShown && isAuthor ? (
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>

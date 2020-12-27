@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
-import { SessionContext } from "../../../store/context/SessionContext";
+import { SessionContext } from "../../../store/context/session-context";
 import TopPersonalDropdown from "./TopPersonalDropdown";
 
 const List = styled.ul`
@@ -41,14 +41,14 @@ const AuthButton = styled(RouterLinkButtonPrimary)`
 `;
 
 export default (props) => {
-  const { user, isLoading } = useContext(SessionContext);
+  const { currentUser, isLogin, isLoading } = useContext(SessionContext);
 
   if (isLoading) {
     return null;
   }
 
-  if (user && user.isLogin) {
-    return <TopPersonalDropdown userInfo={user} />;
+  if (currentUser && isLogin) {
+    return <TopPersonalDropdown userInfo={currentUser} />;
   }
 
   return (

@@ -1,6 +1,5 @@
 import {
   DefaultLayout,
-  DetailLayout,
   FrameLayout,
   AuthLayout,
   ProfileLayout,
@@ -18,13 +17,13 @@ export default [
     path: "/articles/:id",
     exact: true,
     page: "articles/detail",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: "/articles/update/:id",
     exact: true,
     page: "articles/update",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: ["/products", "/products/page/:pageNumber"],
@@ -36,13 +35,13 @@ export default [
     path: "/products/:id",
     exact: true,
     page: "products/detail",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: "/products/update/:id",
     exact: true,
     page: "products/update",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: ["/farms", "/farms/page/:pageNumber"],
@@ -54,13 +53,13 @@ export default [
     path: "/farms/:id",
     exact: true,
     page: "farms/detail",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: "/farms/update/:id",
     exact: true,
     page: "farms/update",
-    layout: DetailLayout,
+    layout: FrameLayout,
   },
   {
     path: ["/communities", "/communities/page/:pageNumber"],
@@ -121,7 +120,7 @@ export default [
       "/user/active/:email/*",
     ],
     exact: true,
-    page: "user/active",
+    page: "user/user-active",
     layout: PromptLayout,
   },
   {

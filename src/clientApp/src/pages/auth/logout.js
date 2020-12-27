@@ -1,15 +1,15 @@
 import React, { useContext, useRef } from "react";
-import AuthService from "../../services/AuthService";
+import AuthService from "../../services/authService";
 import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import LogoutPanel from "../../components/organisms/Auth/LogoutPanel";
-import { LOGOUT } from "../../utils/GraphQLQueries/queries";
-import { SessionContext } from "../../store/context/SessionContext";
+import { userQueries } from "../../graphql/fetching/queries";
+import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter((props) => {
-  const { data, error } = useQuery(LOGOUT);
-  const sessionContext = useContext(SessionContext);
+  const { data, error } = useQuery(userQueries.LOGOUT);
+  const { relogin } = useContext(SessionContext);
   const currentRef = useRef({
     renderCount: 0,
   });
@@ -23,7 +23,7 @@ export default withRouter((props) => {
     if (logout.isSucceed) {
       const isCleared = AuthService.logOut();
       if (isCleared) {
-        sessionContext.relogin();
+        relogin();
         currentRef.current.renderCount += 1;
         return <Redirect to="/" />;
       }

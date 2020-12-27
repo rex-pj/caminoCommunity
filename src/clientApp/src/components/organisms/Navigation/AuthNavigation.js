@@ -22,7 +22,7 @@ const NavButton = styled(RouterLinkButtonPrimary)`
   background-color: transparent;
 
   :hover {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.lighText};
     background-color: transparent;
   }
 `;
@@ -32,6 +32,8 @@ const ListItem = styled.li`
 
   &.actived ${NavButton} {
     background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.whiteText};
+    font-weight: 600;
   }
 
   :first-child ${NavButton} {

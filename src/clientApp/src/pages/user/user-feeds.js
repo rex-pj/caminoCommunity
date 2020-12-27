@@ -4,47 +4,47 @@ import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation, useQuery } from "@apollo/client";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_ARTICLE_CATEGORIES,
-  FILTER_PRODUCT_CATEGORIES,
-  CREATE_ARTICLE,
-  CREATE_PRODUCT,
-  FILTER_FARM_TYPES,
-  CREATE_FARM,
-  FILTER_FARMS,
-} from "../../utils/GraphQLQueries/mutations";
-import { GET_USER_FEEDS } from "../../utils/GraphQLQueries/queries";
+  articleMutations,
+  farmMutations,
+  productMutations,
+  mediaMutations,
+} from "../../graphql/fetching/mutations";
+import { feedqueries } from "../../graphql/fetching/queries";
 import ProfileEditorTabs from "../../components/organisms/ProfileEditors/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter((props) => {
   const { location, pageNumber, pageSize, match } = props;
   const { params } = match;
   const { userId } = params;
-  const { user } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const [state, dispatch] = useStore(false);
 
   // Mutations
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
-  const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
-  const [farmTypes] = useMutation(FILTER_FARM_TYPES);
-  const [userFarms] = useMutation(FILTER_FARMS);
-  const [createArticle] = useMutation(CREATE_ARTICLE, {
-    client: graphqlClient,
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [articleCategories] = useMutation(
+    articleMutations.FILTER_ARTICLE_CATEGORIES
+  );
+  const [productCategories] = useMutation(
+    productMutations.FILTER_PRODUCT_CATEGORIES
+  );
+  const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
+  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
+  const [createArticle] = useMutation(articleMutations.CREATE_ARTICLE, {
+    client: authClient,
   });
-  const [createProduct] = useMutation(CREATE_PRODUCT, {
-    client: graphqlClient,
+  const [createProduct] = useMutation(productMutations.CREATE_PRODUCT, {
+    client: authClient,
   });
-  const [createFarm] = useMutation(CREATE_FARM, {
-    client: graphqlClient,
+  const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
+    client: authClient,
   });
 
   // Queries
@@ -54,7 +54,7 @@ export default withRouter((props) => {
     error,
     refetch: feedsRefetch,
     networkStatus,
-  } = useQuery(GET_USER_FEEDS, {
+  } = useQuery(feedqueries.GET_USER_FEEDS, {
     variables: {
       criterias: {
         userIdentityId: userId,
@@ -241,14 +241,14 @@ export default withRouter((props) => {
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        {user && user.isLogin ? renderProfileEditorTabs() : null}
+        {currentUser && isLogin ? renderProfileEditorTabs() : null}
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        {user && user.isLogin ? renderProfileEditorTabs() : null}
+        {currentUser && isLogin ? renderProfileEditorTabs() : null}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -289,7 +289,7 @@ export default withRouter((props) => {
 
   return (
     <Fragment>
-      {user && user.isLogin ? renderProfileEditorTabs() : null}
+      {currentUser && isLogin ? renderProfileEditorTabs() : null}
 
       {feeds
         ? feeds.map((item) => {

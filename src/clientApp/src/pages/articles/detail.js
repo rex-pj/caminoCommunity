@@ -1,11 +1,12 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Detail from "../../components/templates/Article/Detail";
 import { UrlConstant } from "../../utils/Constants";
 import {
-  GET_ARTICLE,
-  GET_RELEVANT_ARTICLES,
-} from "../../utils/GraphQLQueries/queries";
+  articleQueries,
+  userQueries,
+  farmQueries,
+} from "../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
@@ -14,6 +15,7 @@ import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -24,10 +26,34 @@ export default withRouter(function (props) {
   const { params } = match;
   const { id } = params;
   const [state] = useStore(true);
-  const { loading, data, error, refetch } = useQuery(GET_ARTICLE, {
+  const { loading, data, error, refetch } = useQuery(
+    articleQueries.GET_ARTICLE,
+    {
+      variables: {
+        criterias: {
+          id: parseFloat(id),
+        },
+      },
+    }
+  );
+
+  const userIdentityId = data?.article?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
     variables: {
       criterias: {
-        id: parseFloat(id),
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 3,
       },
     },
   });
@@ -36,7 +62,7 @@ export default withRouter(function (props) {
     relevantLoading,
     data: relevantData,
     error: relevantError,
-  } = useQuery(GET_RELEVANT_ARTICLES, {
+  } = useQuery(articleQueries.GET_RELEVANT_ARTICLES, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -124,11 +150,37 @@ export default withRouter(function (props) {
     );
   };
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
       <Detail article={article} />
       {renderRelevants(relevantLoading, relevantData, relevantError)}
-    </Fragment>
+    </DetailLayout>
   );
 });

@@ -20,8 +20,8 @@ export default () => {
   let farms = [];
   for (let i = 0; i < 3; i++) {
     farms.push({
-      info: "123 Lò Sơn, ấp Gì Đó, xã Không Biết, huyện Cần Đước, Long An",
-      name: "Trang trại ông Chín",
+      info: "7526 Baker Blvd. Alamosa, CO 81101",
+      name: "Uncle Ninth farm",
       description:
         "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
       url: "/farms/1",

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { unauthClient } from "../../utils/GraphQLClient";
+import { unauthClient } from "../../graphql/client";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
-import { SIGNUP } from "../../utils/GraphQLQueries/mutations";
+import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const [signup] = useMutation(SIGNUP, {
+  const [signup] = useMutation(userMutations.SIGNUP, {
     client: unauthClient,
   });
 

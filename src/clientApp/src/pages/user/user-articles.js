@@ -3,19 +3,18 @@ import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
-import { GET_USER_ARTICLES } from "../../utils/GraphQLQueries/queries";
+import { articleQueries } from "../../graphql/fetching/queries";
 import {
-  VALIDATE_IMAGE_URL,
-  CREATE_ARTICLE,
-  FILTER_ARTICLE_CATEGORIES,
-} from "../../utils/GraphQLQueries/mutations";
+  articleMutations,
+  mediaMutations,
+} from "../../graphql/fetching/mutations";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 
 export default withRouter(function (props) {
@@ -23,17 +22,19 @@ export default withRouter(function (props) {
   const { params } = match;
   const { userId } = params;
   const [state, dispatch] = useStore(false);
-  const { user } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
 
-  const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
+  const [articleCategories] = useMutation(
+    articleMutations.FILTER_ARTICLE_CATEGORIES
+  );
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const {
     loading,
     data,
     error,
     refetch: fetchArticles,
     networkStatus,
-  } = useQuery(GET_USER_ARTICLES, {
+  } = useQuery(articleQueries.GET_USER_ARTICLES, {
     variables: {
       criterias: {
         userIdentityId: userId,
@@ -43,8 +44,8 @@ export default withRouter(function (props) {
     },
   });
 
-  const [createArticle] = useMutation(CREATE_ARTICLE, {
-    client: graphqlClient,
+  const [createArticle] = useMutation(articleMutations.CREATE_ARTICLE, {
+    client: authClient,
   });
 
   const searchArticleCategories = async (inputValue) => {
@@ -67,7 +68,6 @@ export default withRouter(function (props) {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -114,7 +114,7 @@ export default withRouter(function (props) {
   };
 
   const renderArticleEditor = () => {
-    if (user && user.isLogin) {
+    if (currentUser && isLogin) {
       return (
         <ArticleEditor
           height={230}

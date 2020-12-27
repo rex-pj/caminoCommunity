@@ -37,7 +37,6 @@ export const UPDATE_USER_IDENTIFIER = gql`
 export const UPDATE_USER_INFO_PER_ITEM = gql`
   mutation UpdateUserInfoItem($criterias: UpdatePerItemModelInput!) {
     updateUserInfoItem(criterias: $criterias) {
-      value
       propertyName
     }
   }
@@ -121,102 +120,6 @@ export const RESET_PASSWORD = gql`
         code
         message
       }
-    }
-  }
-`;
-
-export const VALIDATE_IMAGE_URL = gql`
-  mutation($criterias: ImageValidationModelInput!) {
-    validateImageUrl(criterias: $criterias) {
-      isSucceed
-    }
-  }
-`;
-
-export const FILTER_ARTICLE_CATEGORIES = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    categories: articleCategories(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
-export const FILTER_PRODUCT_CATEGORIES = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    categories: productCategories(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
-export const FILTER_FARM_TYPES = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    categories: farmTypes(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
-export const FILTER_FARMS = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    userFarms: selectUserFarms(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
-export const CREATE_ARTICLE = gql`
-  mutation($criterias: ArticleModelInput!) {
-    createArticle(criterias: $criterias) {
-      id
-    }
-  }
-`;
-
-export const UPDATE_ARTICLE = gql`
-  mutation($criterias: ArticleModelInput!) {
-    updateArticle(criterias: $criterias) {
-      id
-    }
-  }
-`;
-
-export const CREATE_PRODUCT = gql`
-  mutation($criterias: ProductModelInput!) {
-    createProduct(criterias: $criterias) {
-      id
-    }
-  }
-`;
-
-export const CREATE_FARM = gql`
-  mutation($criterias: FarmModelInput!) {
-    createFarm(criterias: $criterias) {
-      id
-    }
-  }
-`;
-
-export const UPDATE_FARM = gql`
-  mutation($criterias: FarmModelInput!) {
-    updateFarm(criterias: $criterias) {
-      id
-    }
-  }
-`;
-
-export const UPDATE_PRODUCT = gql`
-  mutation($criterias: ProductModelInput!) {
-    updateProduct(criterias: $criterias) {
-      id
     }
   }
 `;

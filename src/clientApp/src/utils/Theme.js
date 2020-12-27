@@ -40,7 +40,7 @@ export const rgbaColor = {
 export const gradientColor = {
   primary:
     "linear-gradient(to right top, #2e420e, #2d410d, #2b3f0c, #2a3e0a, #293d09);",
-  secondary: "linear-gradient(to bottom, #9eb378 0%, #c7dc9f 100%);",
+  secondary: "linear-gradient(to bottom, #9eb378 0%, #CBE0A3 100%);",
 };
 
 export const size = {
@@ -70,7 +70,7 @@ export const borderRadius = {
 };
 
 export const shadow = {
-  BoxShadow: `rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px`,
-  TextShadow: `0 0 3px rgba(0, 0, 0, 0.8)`,
-  BoxShadowInside: `rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px`,
+  BoxShadow: `0 1px 3px rgba(46,66,14,0.12), 0 1px 2px rgba(46,66,14,0.24)`,
+  TextShadow: `0 0 3px rgba(46,66,14, 0.8)`,
+  BoxShadowInside: `rgba(46,66,14, 0.2) 0px 1px 3px 0px, rgba(46,66,14, 0.14) 0px 1px 1px 0px, rgba(46,66,14, 0.12) 0px 2px 1px -1px`,
 };

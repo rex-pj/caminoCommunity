@@ -8,8 +8,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        FullUserInfoModel GetLoggedUser(ApplicationUser currentUser);
-        Task<FullUserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias);
+        UserInfoModel GetLoggedUser(ApplicationUser currentUser);
+        Task<UserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias);
         Task<CommonResult> LogoutAsync(ApplicationUser currentUser);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias);

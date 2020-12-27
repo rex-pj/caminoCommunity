@@ -8,18 +8,15 @@ import {
   ButtonLight,
   ButtonAlert,
 } from "../../atoms/Buttons/Buttons";
-import {
-  UPDATE_USER_AVATAR,
-  DELETE_USER_AVATAR,
-} from "../../../utils/GraphQLQueries/mutations";
-import graphqlClient from "../../../utils/GraphQLClient/graphqlClient";
+import { userMutations } from "../../../graphql/fetching/mutations";
+import { authClient } from "../../../graphql/client";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
-import { SessionContext } from "../../../store/context/SessionContext";
+import { SessionContext } from "../../../store/context/session-context";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const Wrap = styled.div`
@@ -117,11 +114,11 @@ const UpdateAvatarModal = (props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
-  const [updateAvatar] = useMutation(UPDATE_USER_AVATAR, {
-    client: graphqlClient,
+  const [updateAvatar] = useMutation(userMutations.UPDATE_USER_AVATAR, {
+    client: authClient,
   });
-  const [deleteAvatar] = useMutation(DELETE_USER_AVATAR, {
-    client: graphqlClient,
+  const [deleteAvatar] = useMutation(userMutations.DELETE_USER_AVATAR, {
+    client: authClient,
   });
   var sessionContext = useContext(SessionContext);
 

@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
+import { SessionContext } from "../../../store/context/session-context";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
@@ -11,11 +12,8 @@ import NoImage from "../../atoms/NoImages/no-image";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
-import {
-  UPDATE_USER_COVER,
-  DELETE_USER_COVER,
-} from "../../../utils/GraphQLQueries/mutations";
-import graphqlClient from "../../../utils/GraphQLClient/graphqlClient";
+import { userMutations } from "../../../graphql/fetching/mutations";
+import { authClient } from "../../../graphql/client";
 
 const Wrap = styled.div`
     position: relative;
@@ -192,6 +190,7 @@ export default (props) => {
   const [isInUpdateMode, setInUpdateMode] = useState(false);
   const [showDeletePopover] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
+  const { isLogin, currentUser } = useContext(SessionContext);
   const [coverState, setCoverState] = useState({
     contentType: null,
     fileName: null,
@@ -274,8 +273,8 @@ export default (props) => {
     props.showValidationError(title, message);
   };
 
-  const [updateCover] = useMutation(UPDATE_USER_COVER, {
-    client: graphqlClient,
+  const [updateCover] = useMutation(userMutations.UPDATE_USER_COVER, {
+    client: authClient,
   });
   const onUpdate = async () => {
     const { src } = coverState;
@@ -315,8 +314,8 @@ export default (props) => {
     }
   };
 
-  const [deleteCover] = useMutation(DELETE_USER_COVER, {
-    client: graphqlClient,
+  const [deleteCover] = useMutation(userMutations.DELETE_USER_COVER, {
+    client: authClient,
   });
 
   const onDelete = async () => {
@@ -348,7 +347,7 @@ export default (props) => {
   };
 
   const { userInfo } = props;
-  const { userCover } = userInfo;
+  const { userCover, userIdentityId } = userInfo;
   const { src } = coverState;
 
   if (src) {
@@ -419,9 +418,12 @@ export default (props) => {
         </Fragment>
       ) : (
         <Fragment>
-          <EditButton size="sm" onClick={turnOnUpdateMode}>
-            <FontAwesomeIcon icon="pencil-alt" />
-          </EditButton>
+          {isLogin && currentUser.userIdentityId === userIdentityId ? (
+            <EditButton size="sm" onClick={turnOnUpdateMode}>
+              <FontAwesomeIcon icon="pencil-alt" />
+            </EditButton>
+          ) : null}
+
           <a href={userInfo.url} className="cover-link">
             {userCover && userCover.code ? (
               <Thumbnail

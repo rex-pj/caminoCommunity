@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Product from "../../components/templates/Product";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
-import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
+import { productQueries } from "../../graphql/fetching/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -13,14 +13,17 @@ export default withRouter(function (props) {
   const { params } = match;
   const { pageNumber, pageSize } = params;
   const [state] = useStore(false);
-  const { loading, data, error, refetch } = useQuery(GET_PRODUCTS, {
-    variables: {
-      criterias: {
-        page: pageNumber ? parseInt(pageNumber) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 10,
+  const { loading, data, error, refetch } = useQuery(
+    productQueries.GET_PRODUCTS,
+    {
+      variables: {
+        criterias: {
+          page: pageNumber ? parseInt(pageNumber) : 1,
+          pageSize: pageSize ? parseInt(pageSize) : 10,
+        },
       },
-    },
-  });
+    }
+  );
 
   useEffect(() => {
     if (state.type === "PRODUCT" && state.id) {

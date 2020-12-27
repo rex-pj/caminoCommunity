@@ -23,59 +23,59 @@ export default function (props) {
   const shortcuts = [
     {
       icon: "seedling",
-      text: "Vườn anh da đen",
+      text: "Sixth brother orchard",
       href: "/farms/1",
     },
     {
       icon: "piggy-bank",
-      text: "Chuồng bò ông Sáu",
+      text: "Eighth sister byre",
       href: "/farms/1",
     },
     {
       icon: "flag",
-      text: "Đây là đâu tôi là ai Farm",
+      text: "Seventh sister Durian farm",
       href: "/farms/1",
     },
     {
       icon: "apple-alt",
-      text: "Ruộng của anh Ba",
+      text: "Third brother rice field",
       href: "/farms/1",
     },
     {
       icon: "fish",
-      text: "Ao cá bác Tư",
+      text: "Fourth uncle fish pond",
       href: "/farms/1",
     },
     {
       icon: "tree",
-      text: "Khu vườn hạnh phúc",
+      text: "Happy garden",
       href: "/farms/1",
     },
     {
       icon: "flag",
-      text: "Đây là đâu tôi là ai Farm",
+      text: "Ninth brother Garden",
       href: "/farms/1",
     },
     {
       icon: "apple-alt",
-      text: "Ruộng của anh Ba",
+      text: "Baro's field",
       href: "/farms/1",
     },
     {
       icon: "fish",
-      text: "Ao cá bác Tư",
+      text: "Fish pond of Ninth sister",
       href: "/farms/1",
     },
     {
       icon: "tree",
-      text: "Khu vườn hạnh phúc",
+      text: "David's garden",
       href: "/farms/1",
     },
   ];
 
   return (
     <Root>
-      <FifthHeadingPrimary>Quan Tâm</FifthHeadingPrimary>
+      <FifthHeadingPrimary>Interested in</FifthHeadingPrimary>
       <ListControl>
         {shortcuts.map((item, index) => (
           <ModuleMenuListItem

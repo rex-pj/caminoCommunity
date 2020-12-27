@@ -1,19 +1,21 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import {
-  GET_PRODUCT,
-  GET_RELEVANT_PRODUCTS,
-} from "../../utils/GraphQLQueries/queries";
+  productQueries,
+  userQueries,
+  farmQueries,
+} from "../../graphql/fetching/queries";
 import { withRouter } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -25,10 +27,34 @@ export default withRouter(function (props) {
   const { id } = params;
   const [state] = useStore(false);
 
-  const { loading, data, error, refetch } = useQuery(GET_PRODUCT, {
+  const { loading, data, error, refetch } = useQuery(
+    productQueries.GET_PRODUCT,
+    {
+      variables: {
+        criterias: {
+          id: parseFloat(id),
+        },
+      },
+    }
+  );
+
+  const userIdentityId = data?.product?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
     variables: {
       criterias: {
-        id: parseFloat(id),
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 3,
       },
     },
   });
@@ -37,7 +63,7 @@ export default withRouter(function (props) {
     relevantLoading,
     data: relevantData,
     error: relevantError,
-  } = useQuery(GET_RELEVANT_PRODUCTS, {
+  } = useQuery(productQueries.GET_RELEVANT_PRODUCTS, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -152,11 +178,37 @@ export default withRouter(function (props) {
     );
   };
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
       <Detail product={product} breadcrumbs={breadcrumbs} />
       {renderRelevants(relevantLoading, relevantData, relevantError)}
-    </Fragment>
+    </DetailLayout>
   );
 });

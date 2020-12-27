@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="HotChocolate.Data" Version="11.0.5" />
+	  <PackageReference Include="HotChocolate.Data" Version="11.0.6" />
 	</ItemGroup>
 	
 	<ItemGroup>

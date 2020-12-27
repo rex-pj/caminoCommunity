@@ -1,17 +1,17 @@
 import React, { useContext } from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
 import { useMutation } from "@apollo/client";
-import { unauthClient } from "../../utils/GraphQLClient";
-import { FORGOT_PASSWORD } from "../../utils/GraphQLQueries/mutations";
+import { unauthClient } from "../../graphql/client";
+import { userMutations } from "../../graphql/fetching/mutations";
 import { getError } from "../../utils/Helper";
 import { withRouter } from "react-router-dom";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 import { useStore } from "../../store/hook-store";
 
 export default withRouter((props) => {
   const dispatch = useStore(false)[1];
-  const sessionContext = useContext(SessionContext);
-  const [forgotPassword] = useMutation(FORGOT_PASSWORD, {
+  const { lang } = useContext(SessionContext);
+  const [forgotPassword] = useMutation(userMutations.FORGOT_PASSWORD, {
     client: unauthClient,
   });
 
@@ -59,11 +59,11 @@ export default withRouter((props) => {
         const { forgotPassword: rs } = data;
 
         if (!rs || !rs.isSucceed) {
-          notifyError(rs.errors, sessionContext.lang);
+          notifyError(rs.errors, lang);
         }
       })
       .catch((error) => {
-        notifyError(error, sessionContext.lang);
+        notifyError(error, lang);
       });
   };
 

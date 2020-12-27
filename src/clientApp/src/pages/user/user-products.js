@@ -4,36 +4,37 @@ import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
 import ProductItem from "../../components/organisms/Product/ProductItem";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import { fileToBase64 } from "../../utils/Helper";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_PRODUCT_CATEGORIES,
-  CREATE_PRODUCT,
-  FILTER_FARMS,
-} from "../../utils/GraphQLQueries/mutations";
+  productMutations,
+  mediaMutations,
+  farmMutations,
+} from "../../graphql/fetching/mutations";
 import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
 import { useStore } from "../../store/hook-store";
-import { GET_USER_PRODUCTS } from "../../utils/GraphQLQueries/queries";
+import { productQueries } from "../../graphql/fetching/queries";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
   const [state, dispatch] = useStore(false);
-  const { user } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
 
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [productCategories] = useMutation(FILTER_PRODUCT_CATEGORIES);
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [productCategories] = useMutation(
+    productMutations.FILTER_PRODUCT_CATEGORIES
+  );
 
-  const [createProduct] = useMutation(CREATE_PRODUCT, {
-    client: graphqlClient,
+  const [createProduct] = useMutation(productMutations.CREATE_PRODUCT, {
+    client: authClient,
   });
 
-  const [farms] = useMutation(FILTER_FARMS);
+  const [farms] = useMutation(farmMutations.FILTER_FARMS);
 
   const {
     loading,
@@ -41,7 +42,7 @@ export default withRouter(function (props) {
     error,
     networkStatus,
     refetch: fetchNewProducts,
-  } = useQuery(GET_USER_PRODUCTS, {
+  } = useQuery(productQueries.GET_USER_PRODUCTS, {
     variables: {
       criterias: {
         userIdentityId: userId,
@@ -71,7 +72,6 @@ export default withRouter(function (props) {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -137,7 +137,6 @@ export default withRouter(function (props) {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -149,7 +148,7 @@ export default withRouter(function (props) {
   }, [state, fetchNewProducts]);
 
   const productEditor =
-    user && user.isLogin ? (
+    currentUser && isLogin ? (
       <ProductEditor
         height={230}
         convertImageCallback={convertImagefile}

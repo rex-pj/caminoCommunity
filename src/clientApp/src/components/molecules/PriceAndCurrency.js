@@ -7,7 +7,7 @@ const Root = styled.p`
 `;
 
 const PriceNumber = styled.span`
-  color: ${(p) => p.theme.color.primaryWarnText};
+  color: ${(p) => p.theme.color.neutralText};
   font-weight: 600;
   font-size: ${(p) => p.theme.fontSize.medium};
   margin-bottom: ${(p) => p.theme.size.tiny};

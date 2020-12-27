@@ -1,34 +1,40 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Loading from "../../components/atoms/Loading";
 import { withRouter } from "react-router-dom";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_ARTICLE_CATEGORIES,
-  UPDATE_ARTICLE,
-} from "../../utils/GraphQLQueries/mutations";
-import { GET_ARTICLE_FOR_UPDATE } from "../../utils/GraphQLQueries/queries";
+  articleMutations,
+  mediaMutations,
+} from "../../graphql/fetching/mutations";
+import {
+  articleQueries,
+  farmQueries,
+  userQueries,
+} from "../../graphql/fetching/queries";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import articleCreationModel from "../../models/articleCreationModel";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { id } = params;
   const dispatch = useStore(false)[1];
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [updateArticle] = useMutation(UPDATE_ARTICLE, {
-    client: graphqlClient,
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [updateArticle] = useMutation(articleMutations.UPDATE_ARTICLE, {
+    client: authClient,
   });
-  const [articleCategories] = useMutation(FILTER_ARTICLE_CATEGORIES);
+  const [articleCategories] = useMutation(
+    articleMutations.FILTER_ARTICLE_CATEGORIES
+  );
 
   const { loading, data, error, refetch, called } = useQuery(
-    GET_ARTICLE_FOR_UPDATE,
+    articleQueries.GET_ARTICLE_FOR_UPDATE,
     {
       variables: {
         criterias: {
@@ -37,6 +43,27 @@ export default withRouter(function (props) {
       },
     }
   );
+
+  const userIdentityId = data?.farm?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 4,
+      },
+    },
+  });
 
   useEffect(() => {
     if (!loading && called) {
@@ -164,8 +191,34 @@ export default withRouter(function (props) {
     }
   }
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
       <ArticleEditor
         height={350}
@@ -176,6 +229,6 @@ export default withRouter(function (props) {
         onArticlePost={onArticlePost}
         showValidationError={showValidationError}
       ></ArticleEditor>
-    </Fragment>
+    </DetailLayout>
   );
 });

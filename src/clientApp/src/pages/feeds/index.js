@@ -3,7 +3,7 @@ import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
-import { GET_FEEDS } from "../../utils/GraphQLQueries/queries";
+import { feedqueries } from "../../graphql/fetching/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -14,7 +14,7 @@ export default withRouter((props) => {
   const { params } = match;
   const { pageNumber, pageSize } = params;
   const [state] = useStore(true);
-  const { loading, data, error, refetch } = useQuery(GET_FEEDS, {
+  const { loading, data, error, refetch } = useQuery(feedqueries.GET_FEEDS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,

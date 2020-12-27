@@ -4,29 +4,28 @@ import { useQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { Pagination } from "../../components/organisms/Paging";
 import FarmItem from "../../components/organisms/Farm/FarmItem";
-import { GET_USER_FARMS } from "../../utils/GraphQLQueries/queries";
+import { farmQueries } from "../../graphql/fetching/queries";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_FARM_TYPES,
-  CREATE_FARM,
-} from "../../utils/GraphQLQueries/mutations";
+  farmMutations,
+  mediaMutations,
+} from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter(function (props) {
   const { location, match, pageNumber, pageSize } = props;
   const { params } = match;
   const { userId } = params;
   const [state, dispatch] = useStore(false);
-  const { user } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
 
   const { loading, data, error, refetch: fetchFarms, networkStatus } = useQuery(
-    GET_USER_FARMS,
+    farmQueries.GET_USER_FARMS,
     {
       variables: {
         criterias: {
@@ -38,12 +37,12 @@ export default withRouter(function (props) {
     }
   );
 
-  const [createFarm] = useMutation(CREATE_FARM, {
-    client: graphqlClient,
+  const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
+    client: authClient,
   });
 
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [farmTypes] = useMutation(FILTER_FARM_TYPES);
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
 
   const searchFarmTypes = async (inputValue) => {
     return await farmTypes({
@@ -65,7 +64,6 @@ export default withRouter(function (props) {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -112,7 +110,7 @@ export default withRouter(function (props) {
   };
 
   const farmEditor =
-    user && user.isLogin ? (
+    currentUser && isLogin ? (
       <FarmEditor
         height={230}
         convertImageCallback={convertImagefile}

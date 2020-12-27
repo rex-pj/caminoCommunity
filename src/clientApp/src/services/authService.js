@@ -8,7 +8,7 @@ import {
   removeLocalStorage,
   setLocalStorage,
   getLocalStorageByKey,
-} from "./StorageService";
+} from "./storageService";
 
 const removeUserToken = () => {
   removeLocalStorage(AUTH_KEY);

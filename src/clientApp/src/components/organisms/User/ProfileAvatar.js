@@ -12,11 +12,13 @@ const ProfileImage = styled(ImageRound)`
   `,
   EmptyAvatar = styled(NoAvatar)`
     border-radius: ${(p) => p.theme.borderRadius.normal};
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
   `,
   Wrap = styled.div`
     display: block;
+    width: 110px;
+    height: 110px;
   `,
   AvatarUpload = styled(ButtonPrimary)`
     position: absolute;
@@ -41,8 +43,8 @@ const ProfileImage = styled(ImageRound)`
   `,
   AvatarLink = styled.a`
     display: block;
-    width: 110px;
-    height: 110px;
+    width: 100%;
+    height: 100%;
     border: 3px solid ${(p) => p.theme.rgbaColor.cyan};
     background-color: ${(p) => p.theme.rgbaColor.cyan};
     border-radius: 7px;

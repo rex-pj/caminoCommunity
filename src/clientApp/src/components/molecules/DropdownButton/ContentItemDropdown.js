@@ -5,7 +5,7 @@ import ModuleMenuListItem from "../MenuList/ModuleMenuListItem";
 export default styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: calc(100% + ${(p) => p.theme.size.exTiny});
+  top: calc(100% - ${(p) => p.theme.size.tiny});
   background: ${(p) => p.theme.color.whiteBg};
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   min-width: calc(${(p) => p.theme.size.large} * 3);
@@ -21,7 +21,7 @@ export default styled(Dropdown)`
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.neutralBg};
+      background-color: ${(p) => p.theme.color.lightBg};
     }
 
     :last-child {

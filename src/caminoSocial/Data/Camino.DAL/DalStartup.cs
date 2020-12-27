@@ -14,7 +14,8 @@ namespace Camino.DAL
             var configuration = services.BuildServiceProvider()
                 .GetRequiredService<IConfiguration>();
 
-            services.AddLinqToDbContext<ContentDbConnection>((provider, options) => {
+            services.AddLinqToDbContext<ContentDbConnection>((provider, options) =>
+            {
                 options.UseSqlServer(configuration.GetConnectionString(connectionName))
                 .UseDefaultLogging(provider);
             });

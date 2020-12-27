@@ -34,8 +34,8 @@ export default function (props) {
   for (let i = 0; i < 1; i++) {
     listAds.push({
       description:
-        "Chuyên cung cấp dừa tươi cho các đại lý, quán nước, sỉ và lẻ cho các tỉnh thành phía Nam...",
-      title: "Vựa dừa xiêm anh Ba Rô",
+        "Specializing in supplying fresh coconuts to agents, bars, wholesalers and retailers in the southern provinces...",
+      title: "Baro Siamese coconut granary",
       photoUrl: `${process.env.PUBLIC_URL}/photos/coconut-farm.jpg`,
       url: "#",
       icon: "bullhorn",

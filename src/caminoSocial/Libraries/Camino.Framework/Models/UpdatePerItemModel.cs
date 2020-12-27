@@ -2,9 +2,9 @@
 {
     public class UpdatePerItemModel
     {
-        public object Key { get; set; }
+        public string Key { get; set; }
         public string PropertyName { get; set; }
-        public object Value { get; set; }
+        public string Value { get; set; }
         public bool CanEdit { get; set; }
     }
 }

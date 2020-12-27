@@ -1,16 +1,20 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
-import { GET_FARM } from "../../utils/GraphQLQueries/queries";
+import {
+  farmQueries,
+  productQueries,
+  userQueries,
+} from "../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
-import { GET_PRODUCTS } from "../../utils/GraphQLQueries/queries";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 const FarmProductsBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -21,8 +25,7 @@ export default withRouter(function (props) {
   const { params } = match;
   const { id } = params;
   const [state] = useStore(false);
-
-  const { loading, data, error, refetch } = useQuery(GET_FARM, {
+  const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARM, {
     variables: {
       criterias: {
         id: parseFloat(id),
@@ -30,14 +33,35 @@ export default withRouter(function (props) {
     },
   });
 
+  const userIdentityId = data?.farm?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 4,
+      },
+    },
+  });
+
   const { productLoading, data: productData, error: productError } = useQuery(
-    GET_PRODUCTS,
+    productQueries.GET_PRODUCTS,
     {
       variables: {
         criterias: {
           farmId: parseFloat(id),
           page: 1,
-          pageSize: 8,
+          pageSize: 3,
         },
       },
     }
@@ -83,9 +107,17 @@ export default withRouter(function (props) {
 
   const renderProducts = (productLoading, productData, productError) => {
     if (productLoading || !productData) {
-      return <Loading>Loading...</Loading>;
+      return (
+        <div className="col-12">
+          <Loading>Loading...</Loading>
+        </div>
+      );
     } else if (productError) {
-      return <ErrorBlock>Error!</ErrorBlock>;
+      return (
+        <div className="col-12">
+          <ErrorBlock>Error!</ErrorBlock>
+        </div>
+      );
     }
 
     const { products: ProductCollections } = productData;
@@ -140,13 +172,39 @@ export default withRouter(function (props) {
     );
   };
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Detail farm={farm} breadcrumbs={breadcrumbs} />
       <FarmProductsBox>
         <TertiaryHeading>{farm.name}'s products</TertiaryHeading>
         {renderProducts(productLoading, productData, productError)}
       </FarmProductsBox>
-    </Fragment>
+    </DetailLayout>
   );
 });

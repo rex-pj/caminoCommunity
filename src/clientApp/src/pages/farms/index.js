@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Farm from "../../components/templates/Farm";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery } from "@apollo/client";
-import { GET_FARMS } from "../../utils/GraphQLQueries/queries";
+import { farmQueries } from "../../graphql/fetching/queries";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
@@ -13,7 +13,7 @@ export default withRouter(function (props) {
   const { params } = match;
   const { pageNumber, pageSize } = params;
   const [state] = useStore(false);
-  const { loading, data, error, refetch } = useQuery(GET_FARMS, {
+  const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARMS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,

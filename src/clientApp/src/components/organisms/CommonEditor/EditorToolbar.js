@@ -39,13 +39,12 @@ const Divide = styled.span`
 `;
 
 const SelectHeading = styled(EditorSelection)`
-  background-color: ${(p) => p.theme.color.lightBg};
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.lightText};
   font-weight: 600;
   border: 0;
 
   :hover {
-    background-color: ${(p) => p.theme.color.lightBg};
+    background-color: ${(p) => p.theme.color.secondaryBg};
   }
 `;
 

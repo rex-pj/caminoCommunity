@@ -1,12 +1,11 @@
-import React, { Fragment, useEffect } from "react";
-import { GET_FARM_FOR_UPDATE } from "../../utils/GraphQLQueries/queries";
+import React, { useEffect } from "react";
+import { farmQueries, userQueries } from "../../graphql/fetching/queries";
 import {
-  VALIDATE_IMAGE_URL,
-  FILTER_FARM_TYPES,
-  UPDATE_FARM,
-} from "../../utils/GraphQLQueries/mutations";
+  mediaMutations,
+  farmMutations,
+} from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
-import graphqlClient from "../../utils/GraphQLClient/graphqlClient";
+import authClient from "../../graphql/client/authClient";
 import { withRouter } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
@@ -15,20 +14,21 @@ import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
+import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { id } = params;
   const dispatch = useStore(false)[1];
-  const [validateImageUrl] = useMutation(VALIDATE_IMAGE_URL);
-  const [updateFarm] = useMutation(UPDATE_FARM, {
-    client: graphqlClient,
+  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
+  const [updateFarm] = useMutation(farmMutations.UPDATE_FARM, {
+    client: authClient,
   });
-  const [farmTypes] = useMutation(FILTER_FARM_TYPES);
+  const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
 
   const { loading, data, error, refetch, called } = useQuery(
-    GET_FARM_FOR_UPDATE,
+    farmQueries.GET_FARM_FOR_UPDATE,
     {
       variables: {
         criterias: {
@@ -37,6 +37,27 @@ export default withRouter(function (props) {
       },
     }
   );
+
+  const userIdentityId = data?.farm?.createdByIdentityId;
+  const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userId: userIdentityId,
+      },
+    },
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+        pageSize: 4,
+      },
+    },
+  });
 
   const searchFarmTypes = async (inputValue) => {
     return await farmTypes({
@@ -58,7 +79,6 @@ export default withRouter(function (props) {
         });
       })
       .catch((error) => {
-        console.log(error);
         return [];
       });
   };
@@ -160,8 +180,34 @@ export default withRouter(function (props) {
     },
   ];
 
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
+    }
+    return authorInfo;
+  };
+
   return (
-    <Fragment>
+    <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
       <FarmEditor
         height={350}
@@ -172,6 +218,6 @@ export default withRouter(function (props) {
         showValidationError={showValidationError}
         currentFarm={currentFarm}
       />
-    </Fragment>
+    </DetailLayout>
   );
 });

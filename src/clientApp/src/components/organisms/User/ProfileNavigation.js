@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { HorizontalList } from "../../atoms/List";
 import DropdownButton from "../../molecules/DropdownButton";
 import ProfileNavLink from "../../molecules/Links/ProfileNavLink";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Root = styled.div`
   position: relative;
@@ -38,6 +39,12 @@ const ListItem = styled.li`
 
 const UserDropdown = styled(DropdownButton)`
   height: 100%;
+  ul {
+    min-width: 200px;
+  }
+  ul li > a:hover {
+    background-color: ${(p) => p.theme.color.lightBg};
+  }
   > button {
     height: 100%;
     padding: 10px 15px;
@@ -54,7 +61,8 @@ const UserDropdown = styled(DropdownButton)`
 
 export default (function (props) {
   const { className, userId, baseUrl } = props;
-  const dropdown = [
+  var { currentUser, isLogin } = useContext(SessionContext);
+  const currentUserDropdown = [
     {
       url: `${baseUrl}/${userId}/update`,
       name: "Update My Information",
@@ -66,6 +74,8 @@ export default (function (props) {
       isNav: true,
     },
   ];
+
+  const otherUserDropdown = [];
 
   const navs = [
     {
@@ -115,8 +125,13 @@ export default (function (props) {
             })}
           </HorizontalList>
         </div>
+
         <div className="col-auto">
-          <UserDropdown icon="ellipsis-v" dropdown={dropdown} />
+          {isLogin && currentUser.userIdentityId === userId ? (
+            <UserDropdown icon="ellipsis-v" dropdown={currentUserDropdown} />
+          ) : isLogin ? (
+            <UserDropdown icon="ellipsis-v" dropdown={otherUserDropdown} />
+          ) : null}
         </div>
       </div>
     </Root>

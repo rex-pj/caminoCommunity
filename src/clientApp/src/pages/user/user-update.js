@@ -1,26 +1,31 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
-import { GET_USER_IDENTIFY } from "../../utils/GraphQLQueries/queries";
-import { UPDATE_USER_IDENTIFIER } from "../../utils/GraphQLQueries/mutations";
+import { userQueries } from "../../graphql/fetching/queries";
+import { userMutations } from "../../graphql/fetching/mutations";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
-import { SessionContext } from "../../store/context/SessionContext";
+import { SessionContext } from "../../store/context/session-context";
 
 export default (props) => {
   const { userId } = props;
   const [isFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const [updateUserIdentifier] = useMutation(UPDATE_USER_IDENTIFIER);
-  const sessionContext = useContext(SessionContext);
-  const { loading, error, data, refetch } = useQuery(GET_USER_IDENTIFY, {
-    variables: {
-      criterias: {
-        userId,
+  const [updateUserIdentifier] = useMutation(
+    userMutations.UPDATE_USER_IDENTIFIER
+  );
+  const { relogin } = useContext(SessionContext);
+  const { loading, error, data, refetch } = useQuery(
+    userQueries.GET_USER_IDENTIFY,
+    {
+      variables: {
+        criterias: {
+          userId,
+        },
       },
-    },
-  });
+    }
+  );
 
   useEffect(() => {
     return () => {
@@ -55,7 +60,7 @@ export default (props) => {
           refetch();
 
           setTimeout(() => {
-            sessionContext.relogin();
+            relogin();
           }, 300);
         }
       })

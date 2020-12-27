@@ -39,19 +39,6 @@ export default function (props) {
           </ButtonPrimary>
           <ButtonPrimary
             size="xs"
-            onClick={() => onToggleCreateMode("PRODUCT")}
-            className={`mr-1${editorMode === "PRODUCT" ? " actived" : ""}`}
-          >
-            <span>
-              <FontAwesomeIcon
-                icon="apple-alt"
-                className="mr-1"
-              ></FontAwesomeIcon>
-              Create Product
-            </span>
-          </ButtonPrimary>
-          <ButtonPrimary
-            size="xs"
             onClick={() => onToggleCreateMode("FARM")}
             className={`mr-1${editorMode === "FARM" ? " actived" : ""}`}
           >
@@ -61,6 +48,19 @@ export default function (props) {
                 className="mr-1"
               ></FontAwesomeIcon>
               Create Farm
+            </span>
+          </ButtonPrimary>
+          <ButtonPrimary
+            size="xs"
+            onClick={() => onToggleCreateMode("PRODUCT")}
+            className={`mr-1${editorMode === "PRODUCT" ? " actived" : ""}`}
+          >
+            <span>
+              <FontAwesomeIcon
+                icon="apple-alt"
+                className="mr-1"
+              ></FontAwesomeIcon>
+              Create Product
             </span>
           </ButtonPrimary>
         </div>

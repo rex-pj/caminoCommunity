@@ -14,7 +14,8 @@ namespace Camino.IdentityDAL
             var configuration = services.BuildServiceProvider()
                 .GetRequiredService<IConfiguration>();
 
-            services.AddLinqToDbContext<IdentityDbConnection>((provider, options) => {
+            services.AddLinqToDbContext<IdentityDbConnection>((provider, options) =>
+            {
                 options.UseSqlServer(configuration.GetConnectionString(connectionName))
                 .UseDefaultLogging(provider);
             });

@@ -14,7 +14,7 @@ export default () => {
   let connections = [];
   for (let i = 0; i < 3; i++) {
     connections.push({
-      name: "Ông Năm Cự",
+      name: "Mr. Fifth",
       description:
         "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
       url: "/profile/4976920d11d17ddb37cd40c54330ba8e",

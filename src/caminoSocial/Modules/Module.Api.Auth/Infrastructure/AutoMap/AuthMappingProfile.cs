@@ -2,7 +2,6 @@
 using AutoMapper;
 using Camino.Framework.Models;
 using Camino.Data.Enums;
-using Camino.IdentityManager.Models;
 using Camino.Service.Projections.Request;
 using Camino.Service.Projections.Media;
 
@@ -14,8 +13,6 @@ namespace Module.Api.Auth.Infrastructure.AutoMap
         {
             CreateMap<UpdatePerItemModel, UpdateItemRequest>();
             CreateMap<UpdateItemRequest, UpdatePerItemModel>();
-            CreateMap<UserFullProjection, FullUserInfoModel>();
-            CreateMap<ApplicationUser, FullUserInfoModel>();
             CreateMap<UserPhotoProjection, UserAvatarModel>();
             CreateMap<UserPhotoProjection, UserPhotoModel>()
                 .ForMember(dest => dest.PhotoType, opt => opt.MapFrom((src, dest) => { 

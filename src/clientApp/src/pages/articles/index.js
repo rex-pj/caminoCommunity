@@ -3,7 +3,7 @@ import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_ARTICLES } from "../../utils/GraphQLQueries/queries";
+import { articleQueries } from "../../graphql/fetching/queries";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 
@@ -11,7 +11,7 @@ export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const { loading, data, error } = useQuery(GET_ARTICLES, {
+  const { loading, data, error } = useQuery(articleQueries.GET_ARTICLES, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,

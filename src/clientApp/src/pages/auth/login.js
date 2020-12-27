@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import LoginForm from "../../components/organisms/Auth/LoginForm";
 import { useMutation } from "@apollo/client";
-import { unauthClient } from "../../utils/GraphQLClient";
-import { LOGIN } from "../../utils/GraphQLQueries/mutations";
+import { unauthClient } from "../../graphql/client";
+import { userMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
-import { SessionContext } from "../../store/context/SessionContext";
-import AuthService from "../../services/AuthService";
+import { SessionContext } from "../../store/context/session-context";
+import AuthService from "../../services/authService";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 
 export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const sessionContext = useContext(SessionContext);
-  const [login] = useMutation(LOGIN, {
+  const { lang, relogin } = useContext(SessionContext);
+  const [login] = useMutation(userMutations.LOGIN, {
     client: unauthClient,
   });
 
@@ -28,7 +28,7 @@ export default withRouter((props) => {
       errors.forEach((item) => {
         const errorCode =
           item.extensions && item.extensions.code
-            ? getError(item.extensions.code, sessionContext.lang)
+            ? getError(item.extensions.code, lang)
             : null;
         showError("An error occurd when login", errorCode);
       });
@@ -63,7 +63,7 @@ export default withRouter((props) => {
             const { userInfo, authenticationToken } = login;
             AuthService.setLogin(userInfo, authenticationToken);
 
-            await sessionContext.relogin();
+            await relogin();
             props.history.push("/");
           }
         })
@@ -71,7 +71,7 @@ export default withRouter((props) => {
           setFormEnabled(true);
           showError(
             "An error occurd when login",
-            getError("ErrorOccurredTryRefeshInputAgain", sessionContext.lang)
+            getError("ErrorOccurredTryRefeshInputAgain", lang)
           );
         });
     }

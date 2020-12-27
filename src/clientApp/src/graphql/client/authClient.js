@@ -5,7 +5,7 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../AppSettings";
+import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../../utils/AppSettings";
 
 const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
@@ -48,7 +48,7 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
 
 const cache = new InMemoryCache({
   typePolicies: {
-    FullUserInfoModel: {
+    UserInfoModel: {
       keyFields: ["userIdentityId"],
     },
     FeedModel: {

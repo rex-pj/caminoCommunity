@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VerticalList } from "../../atoms/List";
 import { PanelBody } from "../../atoms/Panels";
 import { LabelDark } from "../../atoms/Labels";
+import { Fragment } from "react";
+import { UrlConstant } from "../../../utils/Constants";
 import { AnchorLink } from "../../atoms/Links";
 
 const Root = styled.div`
@@ -48,38 +50,73 @@ const ChildItem = styled.li`
 `;
 
 export default function (props) {
-  const { profileInfos } = props;
+  const { author } = props;
+  let authorInfo = { ...author };
+  if (!author) {
+    authorInfo = {};
+  }
+
+  let farms = [];
+  if (author) {
+    farms = author.farms;
+  }
   return (
     <Root>
       <PanelBody>
-        {profileInfos
-          ? profileInfos.map((item, index) => {
-              const { infos } = item;
-              return (
-                <ParentItem key={index}>
-                  <Label>{item.name}</Label>
-                  {infos ? (
-                    <InfoList>
-                      {infos.map((info, index) => {
-                        return (
-                          <ChildItem key={index} isLink={!!info.url}>
-                            <FontAwesomeIcon icon={info.icon} />
-                            {info.url ? (
-                              <AnchorLink to={info.url} as={info.url}>
-                                {info.name}
-                              </AnchorLink>
-                            ) : (
-                              <span>{info.name}</span>
-                            )}
-                          </ChildItem>
-                        );
-                      })}
-                    </InfoList>
-                  ) : null}
-                </ParentItem>
-              );
-            })
-          : null}
+        <ParentItem>
+          {authorInfo.description ? (
+            <Fragment>
+              <InfoList>
+                <ChildItem isLink={false}>
+                  <FontAwesomeIcon icon="quote-left" />
+                  <span>{authorInfo.description}</span>
+                </ChildItem>
+              </InfoList>
+            </Fragment>
+          ) : null}
+          <Label>Title</Label>
+          <InfoList>
+            {farms ? (
+              <ChildItem isLink={false}>
+                <FontAwesomeIcon icon="user" />
+                <span>Farmer</span>
+              </ChildItem>
+            ) : (
+              <ChildItem isLink={false}>
+                <FontAwesomeIcon icon="user" />
+                <span>Visitor</span>
+              </ChildItem>
+            )}
+          </InfoList>
+
+          {authorInfo.address ? (
+            <Fragment>
+              <Label>Address</Label>
+              <InfoList>
+                <ChildItem isLink={false}>
+                  <FontAwesomeIcon icon="map-marker-alt" />
+                  <span>{authorInfo.address}</span>
+                </ChildItem>
+              </InfoList>
+            </Fragment>
+          ) : null}
+
+          {farms ? (
+            <InfoList>
+              {farms.map((farm, index) => {
+                const farmUrl = `${UrlConstant.Farm.url}${farm.id}`;
+                return (
+                  <ChildItem key={index} isLink={true}>
+                    <FontAwesomeIcon icon="warehouse" />
+                    <AnchorLink to={farmUrl} as={farmUrl}>
+                      {farm.name}
+                    </AnchorLink>
+                  </ChildItem>
+                );
+              })}
+            </InfoList>
+          ) : null}
+        </ParentItem>
       </PanelBody>
     </Root>
   );

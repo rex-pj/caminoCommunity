@@ -13,8 +13,8 @@ import signupModel from "../../../models/signupModel";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.secondaryBg};
-  background-color: ${(p) => p.theme.color.neutralBg};
+  border: 1px solid ${(p) => p.theme.color.neutralBg};
+  background-color: ${(p) => p.theme.color.lightBg};
   width: 100%;
   color: ${(p) => p.theme.color.darkText};
   padding: ${(p) => p.theme.size.tiny};
@@ -25,7 +25,8 @@ const Textbox = styled(SecondaryTextbox)`
   }
 
   :focus {
-    background-color: ${(p) => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.neutralBg};
+    color: ${(p) => p.theme.color.whiteText};
   }
 
   &.invalid {
@@ -68,7 +69,7 @@ const SubmitButton = styled(ButtonLight)`
   border: 1px solid ${(p) => p.theme.color.primaryBg};
 
   :hover {
-    background-color: ${(p) => p.theme.color.neutralBg};
+    background-color: ${(p) => p.theme.color.lightBg};
     color: ${(p) => p.theme.color.neutralText};
   }
 

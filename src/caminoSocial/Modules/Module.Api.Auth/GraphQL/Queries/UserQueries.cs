@@ -14,7 +14,7 @@ namespace Module.Api.Auth.GraphQL.Queries
     public class UserQueries : BaseQueries
     {
         [GraphQlAuthentication]
-        public FullUserInfoModel GetLoggedUser([Service] IUserResolver userResolver, [ApplicationUserState] ApplicationUser currentUser)
+        public UserInfoModel GetLoggedUser([Service] IUserResolver userResolver, [ApplicationUserState] ApplicationUser currentUser)
         {
             return userResolver.GetLoggedUser(currentUser);
         }
@@ -24,7 +24,7 @@ namespace Module.Api.Auth.GraphQL.Queries
         {
             return await userResolver.LogoutAsync(currentUser);
         }
-        public async Task<FullUserInfoModel> GetFullUserInfoAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, FindUserModel criterias)
+        public async Task<UserInfoModel> GetFullUserInfoAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, FindUserModel criterias)
         {
             return await userResolver.GetFullUserInfoAsync(currentUser, criterias);
         }

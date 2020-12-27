@@ -1,4 +1,10 @@
-import React, { Fragment, useRef, useState, useEffect } from "react";
+import React, {
+  Fragment,
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
@@ -15,6 +21,7 @@ import Overlay from "../../atoms/Overlay";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import { SessionContext } from "../../../store/context/session-context";
 import { withRouter } from "react-router-dom";
 
 const Panel = styled(PanelDefault)`
@@ -116,6 +123,10 @@ const TopBarInfo = styled.div`
 
 export default withRouter((props) => {
   const { farm } = props;
+  const { createdByIdentityId } = farm;
+  var { currentUser, isLogin } = useContext(SessionContext);
+  const isAuthor =
+    currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -189,21 +200,22 @@ export default withRouter((props) => {
             </div>
 
             <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              <PostActions ref={currentRef}>
-                <ActionButton onClick={onActionDropdownShow}>
-                  <FontAwesomeIcon icon="angle-down" />
-                </ActionButton>
-                {isActionDropdownShown ? (
-                  <ContentItemDropdown>
-                    <ModuleMenuListItem>
-                      <span onClick={onEditMode}>
-                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
-                        Edit
-                      </span>
-                    </ModuleMenuListItem>
-                  </ContentItemDropdown>
-                ) : null}
-              </PostActions>
+              {isLogin ? (
+                <PostActions ref={currentRef}>
+                  <ActionButton onClick={onActionDropdownShow}>
+                    <FontAwesomeIcon icon="angle-down" />
+                  </ActionButton>
+                </PostActions>
+              ) : null}
+              {isActionDropdownShown && isAuthor ? (
+                <ContentItemDropdown>
+                  <ModuleMenuListItem>
+                    <span onClick={onEditMode}>
+                      <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
+                    </span>
+                  </ModuleMenuListItem>
+                </ContentItemDropdown>
+              ) : null}
             </div>
           </div>
         </ContentTopbar>

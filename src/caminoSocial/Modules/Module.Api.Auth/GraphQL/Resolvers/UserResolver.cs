@@ -21,7 +21,6 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Framework.Models.Settings;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
-using HotChocolate.Resolvers;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -49,9 +48,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _emailSender = emailSender;
         }
 
-        public FullUserInfoModel GetLoggedUser(ApplicationUser currentUser)
+        public UserInfoModel GetLoggedUser(ApplicationUser currentUser)
         {
-            return new FullUserInfoModel
+            return new UserInfoModel
             {
                 Address = currentUser.Address,
                 BirthDate = currentUser.BirthDate,
@@ -74,7 +73,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             };
         }
 
-        public async Task<FullUserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias)
+        public async Task<UserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias)
         {
             var userId = currentUser.Id;
             if (!string.IsNullOrEmpty(criterias.UserId))
@@ -88,7 +87,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 return null;
             }
 
-            var userInfo = new FullUserInfoModel
+            var userInfo = new UserInfoModel
             {
                 Address = user.Address,
                 BirthDate = user.BirthDate,
@@ -107,9 +106,10 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusId = user.StatusId,
                 StatusLabel = user.StatusLabel,
                 UpdatedDate = user.UpdatedDate,
-                UserIdentityId = currentUser.UserIdentityId,
                 CanEdit = userId == currentUser.Id
             };
+
+            userInfo.UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
 
             return userInfo;
         }
@@ -136,9 +136,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
                 return new UpdatePerItemModel()
                 {
-                    Key = updatedItem.Key,
+                    Key = updatedItem.Key.ToString(),
                     PropertyName = updatedItem.PropertyName,
-                    Value = updatedItem.Value
+                    Value = updatedItem.Value.ToString()
                 };
             }
             catch (Exception)

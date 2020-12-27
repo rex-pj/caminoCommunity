@@ -23,7 +23,7 @@ const SearchInput = styled(PrimaryTextbox)`
   width: 300px;
   height: calc(${(p) => p.theme.size.normal} - 2px);
   float: left;
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.lightText};
   max-width: calc(100% - ${(p) => p.theme.size.normal});
 
   ::placeholder {

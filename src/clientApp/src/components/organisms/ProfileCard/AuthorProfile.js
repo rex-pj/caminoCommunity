@@ -39,7 +39,7 @@ const CreatorName = styled(AnchorLink)`
 
 const MoreInfo = styled.p`
   font-size: ${(p) => p.theme.fontSize.tiny};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.lightText};
   font-weight: 400;
   margin-bottom: 0;
 `;

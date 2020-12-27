@@ -1,9 +1,9 @@
 import React from "react";
-import Active from "../../components/organisms/User/Active";
+import UserActive from "../../components/organisms/User/UserActive";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { ACTIVE } from "../../utils/GraphQLQueries/queries";
-import { unauthClient } from "../../utils/GraphQLClient";
+import { userQueries } from "../../graphql/fetching/queries";
+import { unauthClient } from "../../graphql/client";
 
 export default withRouter((props) => {
   const { match } = props;
@@ -14,7 +14,7 @@ export default withRouter((props) => {
     key = params[0];
   }
 
-  const { data, loading, error } = useQuery(ACTIVE, {
+  const { data, loading, error } = useQuery(userQueries.ACTIVE_USER, {
     client: unauthClient,
     variables: {
       criterias: {
@@ -27,7 +27,7 @@ export default withRouter((props) => {
 
   if (loading) {
     return (
-      <Active
+      <UserActive
         icon="check"
         title="Waiting for activation"
         instruction="After successful activation you will be redirected to the login page"
@@ -49,7 +49,7 @@ export default withRouter((props) => {
   }
 
   return (
-    <Active
+    <UserActive
       icon="check"
       title="Successful activation"
       instruction="You have successfully activated your account"

@@ -4,10 +4,7 @@ namespace Camino.Framework.Models
 {
     public class UserInfoModel
     {
-        public UserInfoModel()
-        {
-
-        }
+        public UserInfoModel() { }
 
         public UserInfoModel(UserInfoModel userInfo)
         {

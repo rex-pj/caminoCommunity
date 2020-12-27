@@ -17,6 +17,10 @@ const BreadCrumbNav = styled(Breadcrumb)`
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   margin-bottom: 0;
+  li {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-left: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const FollowButton = styled(ButtonIconPrimary)`

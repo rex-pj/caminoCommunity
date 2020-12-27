@@ -1,7 +1,7 @@
 import React from "react";
 import MasterLayout from "./MasterLayout";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import { getLocalStorageByKey } from "../../../services/StorageService";
+import { getLocalStorageByKey } from "../../../services/storageService";
 import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
 import styled from "styled-components";
 

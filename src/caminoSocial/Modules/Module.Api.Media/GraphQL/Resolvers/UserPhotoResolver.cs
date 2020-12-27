@@ -5,11 +5,9 @@ using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
 using System;
 using System.Threading.Tasks;
-using Camino.IdentityManager.Contracts.Core;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
 using Camino.IdentityManager.Contracts;
-using HotChocolate.Resolvers;
 using Camino.IdentityManager.Models;
 
 namespace Module.Api.Media.GraphQL.Resolvers
