@@ -6,7 +6,7 @@ using Module.Web.SetupManagement.Infrastructure.Extensions;
 
 namespace Module.Web.SetupManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

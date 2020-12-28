@@ -8,7 +8,7 @@ using Camino.Framework.Models;
 
 namespace Module.Api.Auth
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

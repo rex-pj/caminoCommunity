@@ -6,7 +6,7 @@ using Module.Web.ArticleManagement.Infrastructure.Extensions;
 
 namespace Module.Web.ArticleManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

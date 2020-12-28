@@ -5,6 +5,6 @@ namespace Camino.Core.Modular.Contracts
 {
     public interface IModularManager
     {
-        IList<ModuleInfo> LoadModules(string pluginsPath, string prefix = null);
+        IList<ModuleInfo> LoadModules(string modulesPath, string prefix = null);
     }
 }

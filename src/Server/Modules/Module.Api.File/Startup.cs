@@ -6,7 +6,7 @@ using Module.Api.File.Infrastructure.Extensions;
 
 namespace Module.Api.File
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

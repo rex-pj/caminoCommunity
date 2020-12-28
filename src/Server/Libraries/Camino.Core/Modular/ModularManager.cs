@@ -11,9 +11,9 @@ namespace Camino.Core.Modular
 {
     public class ModularManager : IModularManager
     {
-        public IList<ModuleInfo> LoadModules(string pluginsPath, string prefix = null)
+        public IList<ModuleInfo> LoadModules(string modulesPath, string prefix = null)
         {
-            var moduleRootFolder = new DirectoryInfo(pluginsPath);
+            var moduleRootFolder = new DirectoryInfo(modulesPath);
             var moduleFolders = moduleRootFolder.GetDirectories();
             if (prefix != null)
             {
@@ -32,30 +32,44 @@ namespace Camino.Core.Modular
                 var dllFiles = binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories);
                 foreach (var file in dllFiles)
                 {
-                    Assembly assembly = null;
-                    try
+                    if (modules.Any(x => x.Path == moduleFolder.FullName))
                     {
-                        assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
-                    }
-                    catch (FileLoadException)
-                    {
-                        assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(file.Name)));
-
-                        if (assembly == null)
-                        {
-                            throw;
-                        }
+                        continue;
                     }
 
-                    if (assembly.FullName.Contains(moduleFolder.Name) && !modules.Any(x => x.Path == moduleFolder.FullName))
+                    var module = GetModuleByFile(file, moduleFolder, binFolder);
+                    if (module != null)
                     {
-                        modules.Add(new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName });
+                        modules.Add(module);
                     }
                 }
             }
 
-            Singleton<IList<ModuleInfo>>.Instance = modules;
             return modules;
+        }
+
+        private ModuleInfo GetModuleByFile(FileSystemInfo fileSystemInfo, DirectoryInfo moduleFolder, DirectoryInfo binFolder)
+        {
+            Assembly assembly;
+            try
+            {
+                assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileSystemInfo.FullName);
+            }
+            catch (FileLoadException)
+            {
+                assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(fileSystemInfo.Name)));
+                if (assembly == null)
+                {
+                    throw;
+                }
+            }
+
+            if (assembly.FullName.Contains(moduleFolder.Name))
+            {
+                return new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName };
+            }
+
+            return null;
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Camino.Core.Modular.Contracts
 {
-    public abstract class PluginStartupBase : IPluginStartup
+    public abstract class ModuleStartupBase : IModuleStartup
     {
         public virtual void ConfigureServices(IServiceCollection services)
         {

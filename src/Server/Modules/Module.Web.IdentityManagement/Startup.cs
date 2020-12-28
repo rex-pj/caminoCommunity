@@ -6,7 +6,7 @@ using Module.Web.IdentityManagement.Infrastructure.Extensions;
 
 namespace Module.Web.IdentityManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

@@ -1,5 +1,4 @@
-﻿using Camino.Core.Infrastructure;
-using Camino.Core.Models;
+﻿using Camino.Core.Models;
 using Camino.Core.Modular.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,28 +15,27 @@ namespace Camino.Framework.Infrastructure.Middlewares
     {
         public static IApplicationBuilder UseModular(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var modules = Singleton<IList<ModuleInfo>>.Instance;
-            var pluginStartupInterfaceType = typeof(IPluginStartup);
+            var serviceProvider = app.ApplicationServices;
+            var modules = serviceProvider.GetService(typeof(IList<ModuleInfo>)) as IList<ModuleInfo>;
+            var moduleStartupInterfaceType = typeof(IModuleStartup);
             foreach (var module in modules)
             {
-                var pluginStartupType = module.Assembly.GetTypes().FirstOrDefault(x => pluginStartupInterfaceType.IsAssignableFrom(x));
-                if (pluginStartupType != null && pluginStartupType != pluginStartupInterfaceType)
+                var moduleStartupType = module.Assembly.GetTypes().FirstOrDefault(x => moduleStartupInterfaceType.IsAssignableFrom(x));
+                if (moduleStartupType != null && moduleStartupType != moduleStartupInterfaceType)
                 {
-                    var moduleInitializer = Activator.CreateInstance(pluginStartupType) as IPluginStartup;
+                    var moduleInitializer = Activator.CreateInstance(moduleStartupType) as IModuleStartup;
                     moduleInitializer.Configure(app, env);
                 }
 
                 var wwwrootDir = new DirectoryInfo(Path.Combine(module.Path, "wwwroot"));
-                if (!wwwrootDir.Exists)
+                if (wwwrootDir.Exists)
                 {
-                    continue;
+                    app.UseStaticFiles(new StaticFileOptions()
+                    {
+                        FileProvider = new PhysicalFileProvider(wwwrootDir.FullName),
+                        RequestPath = new PathString("/" + module.ShortName)
+                    });
                 }
-
-                app.UseStaticFiles(new StaticFileOptions()
-                {
-                    FileProvider = new PhysicalFileProvider(wwwrootDir.FullName),
-                    RequestPath = new PathString("/" + module.ShortName)
-                });
             }
 
             return app;

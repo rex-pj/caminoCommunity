@@ -6,7 +6,7 @@ using Module.Web.CommunityManagement.Infrastructure.Extensions;
 
 namespace Module.Web.CommunityManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

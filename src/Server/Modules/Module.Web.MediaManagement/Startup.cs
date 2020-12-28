@@ -6,7 +6,7 @@ using Module.Web.UploadManagement.Infrastructure.Extensions;
 
 namespace Module.Web.UploadManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

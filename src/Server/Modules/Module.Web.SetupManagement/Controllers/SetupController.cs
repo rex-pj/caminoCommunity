@@ -18,7 +18,8 @@ namespace Module.Web.SetupManagement.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly ISetupBusiness _seedDataBusiness;
+        private readonly IIdentityDataSetupBusiness _identityDataSetupBusiness;
+        private readonly IContentDataSetupBusiness _contentDataSetupBusiness;
         private readonly ISetupProvider _setupProvider;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
@@ -26,17 +27,19 @@ namespace Module.Web.SetupManagement.Controllers
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IUserManager<ApplicationUser> _userManager;
         
-        public SetupController(ISetupBusiness seedDataBusiness, ISetupProvider setupProvider, IMapper mapper, 
+        public SetupController(ISetupProvider setupProvider, IMapper mapper, 
             IFileProvider fileProvider, IUserSecurityStampStore<ApplicationUser> userSecurityStampStore, 
-            IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager)
+            IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager,
+            IIdentityDataSetupBusiness identityDataSetupBusiness, IContentDataSetupBusiness contentDataSetupBusiness)
         {
             _setupProvider = setupProvider;
-            _seedDataBusiness = seedDataBusiness;
+            _identityDataSetupBusiness = identityDataSetupBusiness;
             _mapper = mapper;
             _fileProvider = fileProvider;
             _userSecurityStampStore = userSecurityStampStore;
             _passwordHasher = passwordHasher;
             _userManager = userManager;
+            _contentDataSetupBusiness = contentDataSetupBusiness;
         }
 
         [HttpGet]
@@ -69,11 +72,11 @@ namespace Module.Web.SetupManagement.Controllers
             {
                 // Create Identity database
                 var identityDbScript = _fileProvider.ReadText(settings.CreateIdentityPath, Encoding.Default);
-                _seedDataBusiness.SeedingIdentityDb(identityDbScript);
+                _identityDataSetupBusiness.SeedingIdentityDb(identityDbScript);
 
                 // Create Content database
                 var contentDbScript = _fileProvider.ReadText(settings.CreateContentDbPath, Encoding.Default);
-                _seedDataBusiness.SeedingContentDb(contentDbScript);
+                _contentDataSetupBusiness.SeedingContentDb(contentDbScript);
 
                 var initialUser = new ApplicationUser()
                 {
@@ -94,19 +97,19 @@ namespace Module.Web.SetupManagement.Controllers
                 identitySetup.InitualUser = _mapper.Map<UserProjection>(initialUser);
 
                 // Initialize identity database
-                await _seedDataBusiness.PrepareIdentityDataAsync(identitySetup);
+                await _identityDataSetupBusiness.PrepareIdentityDataAsync(identitySetup);
 
                 // Get content json data
                 var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
                 var contentSetup = JsonConvert.DeserializeObject<SetupRequest>(contentJson);
 
                 // Initialize content database
-                await _seedDataBusiness.PrepareContentDataAsync(contentSetup);
+                await _contentDataSetupBusiness.PrepareContentDataAsync(contentSetup);
 
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Succeed");
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 _fileProvider.DeleteFile(settings.SetupUrl);
                 return View();

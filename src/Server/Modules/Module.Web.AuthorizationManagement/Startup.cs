@@ -6,7 +6,7 @@ using Module.Web.AuthorizationManagement.Infrastructure.Extensions;
 
 namespace Module.Web.AuthorizationManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

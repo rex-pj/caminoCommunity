@@ -6,7 +6,7 @@ using Module.Web.Navigation.Infrastructure.Extensions;
 
 namespace Module.Web.Navigation
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

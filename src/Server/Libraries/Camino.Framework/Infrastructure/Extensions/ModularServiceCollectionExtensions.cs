@@ -16,14 +16,17 @@ namespace Camino.Framework.Infrastructure.Extensions
     {
         public static void AddAutoMappingModular(this IServiceCollection services)
         {
-            var modules = Singleton<IList<ModuleInfo>>.Instance;
-            var mapProfileType = typeof(Profile);
-            var mappingProfileTypes = new List<Type>();
-            mappingProfileTypes.Add(typeof(FrameworkMappingProfile));
-            mappingProfileTypes.Add(typeof(IdentityMappingProfile));
+            var serviceProvider = services.BuildServiceProvider();
+            var modules = serviceProvider.GetRequiredService<IList<ModuleInfo>>();
+            var mappingProfileTypes = new List<Type>
+            {
+                typeof(FrameworkMappingProfile),
+                typeof(IdentityMappingProfile)
+            };
 
             if (modules != null && modules.Any())
             {
+                var mapProfileType = typeof(Profile);
                 foreach (var module in modules)
                 {
                     var mapProfiles = module.Assembly.GetTypes().Where(x => mapProfileType.IsAssignableFrom(x));
@@ -36,14 +39,14 @@ namespace Camino.Framework.Infrastructure.Extensions
 
         public static void AddGraphQlModular(this IServiceCollection services)
         {
-            var modules = Singleton<IList<ModuleInfo>>.Instance;
+            var serviceProvider = services.BuildServiceProvider();
+            var modules = serviceProvider.GetRequiredService<IList<ModuleInfo>>();
             if (modules == null || !modules.Any())
             {
                 return;
             }
 
-            var requestExecutorBuilder = services
-                .AddGraphQLServer()
+            services.AddGraphQLServer()
                 .AddHttpRequestInterceptor<GraphQlRequestInterceptor>()
                 .AddQueryType(x => x.Name("Query"))
                 .AddMutationType(x => x.Name("Mutation"));

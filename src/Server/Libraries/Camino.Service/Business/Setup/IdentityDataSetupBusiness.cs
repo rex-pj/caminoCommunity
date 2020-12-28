@@ -1,40 +1,31 @@
 ﻿using AutoMapper;
-using Camino.Data.Contracts;
 using Camino.DAL.Contracts;
 using Camino.IdentityDAL.Contracts;
 using LinqToDB;
-using LinqToDB.Data;
 using System;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Camino.Data.Enums;
 using Camino.Service.Business.Setup.Contracts;
 using Camino.IdentityDAL.Entities;
-using Camino.DAL.Entities;
 using Camino.Service.Projections.Request;
 
 namespace Camino.Service.Business.Setup
 {
-    public class SetupBusiness : ISetupBusiness
+    public class IdentityDataSetupBusiness : IIdentityDataSetupBusiness
     {
         private readonly IIdentityDataProvider _identityDataProvider;
-        private readonly IContentDataProvider _contentDataProvider;
         private readonly IMapper _mapper;
-        public SetupBusiness(IIdentityDataProvider identityDataProvider, IContentDataProvider contentDataProvider, IMapper mapper)
+        private readonly ISeedDataBusiness _seedDataBusiness;
+        public IdentityDataSetupBusiness(IIdentityDataProvider identityDataProvider, IMapper mapper, ISeedDataBusiness seedDataBusiness)
         {
             _identityDataProvider = identityDataProvider;
-            _contentDataProvider = contentDataProvider;
+            _seedDataBusiness = seedDataBusiness;
             _mapper = mapper;
         }
 
         public bool IsIdentityDatabaseExist()
         {
             return _identityDataProvider.IsDatabaseExist();
-        }
-
-        public bool IsContentDatabaseExist()
-        {
-            return _contentDataProvider.IsDatabaseExist();
         }
 
         public void SeedingIdentityDb(string sql)
@@ -44,46 +35,8 @@ namespace Camino.Service.Business.Setup
                 return;
             }
 
-            CreateDatabase(_identityDataProvider);
-            CreateDataByScript(_identityDataProvider, sql);
-        }
-
-        public void SeedingContentDb(string sql)
-        {
-            if (IsContentDatabaseExist())
-            {
-                return;
-            }
-
-            CreateDatabase(_contentDataProvider);
-            CreateDataByScript(_contentDataProvider, sql);
-        }
-
-        private void CreateDatabase(IBaseDataProvider dataProvider)
-        {
-            var builder = dataProvider.GetConnectionStringBuilder();
-            var databaseName = builder.InitialCatalog;
-            builder.InitialCatalog = "master";
-            using (var connection = new SqlConnection(builder.ConnectionString))
-            {
-                var query = $"CREATE DATABASE [{databaseName}]";
-
-                var command = new SqlCommand(query, connection);
-                command.Connection.Open();
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private void CreateDataByScript(IBaseDataProvider dataProvider, string sql)
-        {
-            using (var dataConnection = dataProvider.CreateDataConnection())
-            {
-                var sqlCommands = dataProvider.GetCommandsFromScript(sql);
-                foreach (var command in sqlCommands)
-                {
-                    dataConnection.Execute(command);
-                }
-            }
+            _seedDataBusiness.CreateDatabase(_identityDataProvider);
+            _seedDataBusiness.CreateDataByScript(_identityDataProvider, sql);
         }
 
         public async Task PrepareIdentityDataAsync(SetupRequest installationRequest)
@@ -238,7 +191,7 @@ namespace Camino.Service.Business.Setup
                             await transaction.RollbackAsync();
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         await transaction.RollbackAsync();
                     }
@@ -246,34 +199,6 @@ namespace Camino.Service.Business.Setup
             }
         }
 
-        public async Task PrepareContentDataAsync(SetupRequest installationRequest)
-        {
-            using (var dataConnection = _contentDataProvider.CreateDataConnection())
-            {
-                using (var transaction = dataConnection.BeginTransaction())
-                {
-
-                    try
-                    {
-                        // Insert countries
-                        var userPhotoTypeTableName = nameof(UserPhotoType);
-                        foreach (var userPhotoType in installationRequest.UserPhotoTypes)
-                        {
-                            await dataConnection.InsertAsync(new UserPhotoType()
-                            {
-                                Name = userPhotoType.Name,
-                                Description = userPhotoType.Description
-                            }, userPhotoTypeTableName);
-                        }
-
-                        await transaction.CommitAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        await transaction.RollbackAsync();
-                    }
-                }
-            }
-        }
+        
     }
 }

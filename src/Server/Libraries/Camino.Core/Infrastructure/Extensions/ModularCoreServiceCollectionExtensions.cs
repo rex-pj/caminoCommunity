@@ -25,7 +25,7 @@ namespace Camino.Core.Infrastructure.Extensions
             var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.FullName;
             var modulesPath = $"{rootPath}{configuration["Modular:Path"]}";
             var prefix = configuration["Modular:Prefix"];
-            
+
             return AddModular(mvcBuilder, modulesPath, prefix);
         }
 
@@ -36,17 +36,17 @@ namespace Camino.Core.Infrastructure.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var modularManager = serviceProvider.GetRequiredService<IModularManager>();
 
-            modularManager.LoadModules(modulesPath, prefix);
+            var modules = modularManager.LoadModules(modulesPath, prefix);
+            services.AddSingleton(modules);
 
-            var modules = Singleton<IList<ModuleInfo>>.Instance;
-            var pluginStartupInterfaceType = typeof(IPluginStartup);
+            var moduleStartupInterfaceType = typeof(IModuleStartup);
             foreach (var module in modules)
             {
                 AddApplicationPart(mvcBuilder, module.Assembly);
-                var pluginStartupType = module.Assembly.GetTypes().FirstOrDefault(x => pluginStartupInterfaceType.IsAssignableFrom(x));
-                if (pluginStartupType != null && pluginStartupType != pluginStartupInterfaceType)
+                var moduleStartupType = module.Assembly.GetTypes().FirstOrDefault(x => moduleStartupInterfaceType.IsAssignableFrom(x));
+                if (moduleStartupType != null && moduleStartupType != moduleStartupInterfaceType)
                 {
-                    var moduleStartup = Activator.CreateInstance(pluginStartupType) as IPluginStartup;
+                    var moduleStartup = Activator.CreateInstance(moduleStartupType) as IModuleStartup;
                     moduleStartup.ConfigureServices(services);
                 }
             }

@@ -7,7 +7,7 @@ using Camino.Core.Modular.Contracts;
 
 namespace Module.Api.Farm
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

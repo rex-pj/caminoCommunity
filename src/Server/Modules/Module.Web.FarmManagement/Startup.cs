@@ -6,7 +6,7 @@ using Module.Web.FarmManagement.Infrastructure.Extensions;
 
 namespace Module.Web.FarmManagement
 {
-    public class Startup : PluginStartupBase
+    public class Startup : ModuleStartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {
