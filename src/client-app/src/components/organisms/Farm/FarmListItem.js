@@ -11,18 +11,18 @@ import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageThumb from "../../molecules/Images/ImageThumb";
+import ListItemCollapseCover from "../../molecules/Thumbnails/ListItemCollapseCover";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalList } from "../../atoms/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
-import Overlay from "../../atoms/Overlay";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { SessionContext } from "../../../store/context/session-context";
 import { withRouter } from "react-router-dom";
+import DeleteConfirmationModal from "../Modals/DeleteConfirmationModal";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -35,8 +35,6 @@ const Panel = styled(PanelDefault)`
 
   img.thumbnail-img {
     width: 100%;
-    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
-    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
   }
 `;
 
@@ -46,6 +44,21 @@ const PanelHeader = styled(PanelHeading)`
 
 const ContentTopbar = styled.div`
   margin-bottom: 0;
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const Title = styled(secondaryTitleLink)`
@@ -75,8 +88,12 @@ const InteractiveItem = styled.li`
 
 const Cover = styled.div`
   position: relative;
-  max-height: 250px;
   overflow: hidden;
+
+  img {
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
+  }
 `;
 
 const FollowButton = styled(ButtonIconPrimary)`
@@ -122,7 +139,7 @@ const TopBarInfo = styled.div`
 `;
 
 export default withRouter((props) => {
-  const { farm } = props;
+  const { farm, onOpenDeleteConfirmationModal, location } = props;
   const { createdByIdentityId } = farm;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -163,13 +180,19 @@ export default withRouter((props) => {
     return creator;
   };
 
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete farm "${farm.name}"?`,
+      id: parseFloat(farm.id),
+    });
+  };
+
   return (
     <Panel>
       <Cover>
-        <AnchorLink to={farm.url}>
-          <ImageThumb src={farm.thumbnailUrl} alt="" />
-          <Overlay />
-        </AnchorLink>
+        <ListItemCollapseCover imageUrl={farm.thumbnailUrl} />
 
         <ProfileBox profile={loadCreatedInfo()} />
         <FollowButton icon="user-plus" size="sm">
@@ -182,7 +205,14 @@ export default withRouter((props) => {
           <div className="row no-gutters">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
               <Title>
-                <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
+                <AnchorLink
+                  to={{
+                    pathname: farm.url,
+                    state: { from: location.pathname },
+                  }}
+                >
+                  {farm.name}
+                </AnchorLink>
               </Title>
 
               <TopBarInfo>
@@ -211,7 +241,20 @@ export default withRouter((props) => {
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>
-                      <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
+                      <FontAwesomeIcon
+                        icon="pencil-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Edit
+                    </span>
+                  </ModuleMenuListItem>
+                  <ModuleMenuListItem>
+                    <span onClick={onOpenDeleteConfirmation}>
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Delete
                     </span>
                   </ModuleMenuListItem>
                 </ContentItemDropdown>

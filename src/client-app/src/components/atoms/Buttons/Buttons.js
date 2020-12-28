@@ -84,14 +84,14 @@ const ButtonAlert = styled(ButtonTransparent)`
   }
 `;
 
-const ButtonCircle = styled(ButtonTransparent)`
+const ButtonCircleLight = styled(ButtonLight)`
   border-radius: 100%;
 `;
 
 export {
   ButtonPrimary,
   ButtonLight,
-  ButtonCircle,
+  ButtonCircleLight,
   ButtonTransparent,
   ButtonAlert,
 };

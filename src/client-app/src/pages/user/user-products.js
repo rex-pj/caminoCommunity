@@ -34,6 +34,10 @@ export default withRouter(function (props) {
     client: authClient,
   });
 
+  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
+    client: authClient,
+  });
+
   const [farms] = useMutation(farmMutations.FILTER_FARMS);
 
   const {
@@ -141,37 +145,68 @@ export default withRouter(function (props) {
       });
   };
 
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteProduct({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      fetchNewProducts();
+    });
+  };
+
   useEffect(() => {
-    if (state.type === "PRODUCT" && state.id) {
+    if (state.type === "PRODUCT_UPDATE" || state.type === "PRODUCT_DELETE") {
       fetchNewProducts();
     }
   }, [state, fetchNewProducts]);
 
-  const productEditor =
-    currentUser && isLogin ? (
-      <ProductEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchProductCategories}
-        onProductPost={onProductPost}
-        showValidationError={showValidationError}
-        refetchNews={fetchNewProducts}
-        filterFarms={searchFarms}
-      />
-    ) : null;
+  const renderProductEditor = () => {
+    if (currentUser && isLogin) {
+      return (
+        <ProductEditor
+          height={230}
+          convertImageCallback={convertImagefile}
+          onImageValidate={onImageValidate}
+          filterCategories={searchProductCategories}
+          onProductPost={onProductPost}
+          showValidationError={showValidationError}
+          refetchNews={fetchNewProducts}
+          filterFarms={searchFarms}
+        />
+      );
+    }
+    return null;
+  };
 
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        {productEditor}
+        {renderProductEditor()}
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        {productEditor}
+        {renderProductEditor()}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -217,7 +252,7 @@ export default withRouter(function (props) {
 
   return (
     <Fragment>
-      {productEditor}
+      {renderProductEditor()}
       <div className="row">
         {products
           ? products.map((item) => (
@@ -225,7 +260,10 @@ export default withRouter(function (props) {
                 key={item.id}
                 className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
               >
-                <ProductItem product={item} />
+                <ProductItem
+                  product={item}
+                  onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+                />
               </div>
             ))
           : null}

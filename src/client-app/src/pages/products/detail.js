@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import styled from "styled-components";
 import {
   productQueries,
   userQueries,
   farmQueries,
 } from "../../graphql/fetching/queries";
+import { productMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
@@ -16,17 +17,17 @@ import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
+import { authClient } from "../../graphql/client";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
 export default withRouter(function (props) {
-  const { match } = props;
+  const { match, location } = props;
   const { params } = match;
   const { id } = params;
-  const [state] = useStore(false);
-
+  const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(
     productQueries.GET_PRODUCT,
     {
@@ -59,10 +60,15 @@ export default withRouter(function (props) {
     },
   });
 
+  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
+    client: authClient,
+  });
+
   const {
     relevantLoading,
     data: relevantData,
     error: relevantError,
+    refetch: refetchRelevants,
   } = useQuery(productQueries.GET_RELEVANT_PRODUCTS, {
     variables: {
       criterias: {
@@ -73,8 +79,67 @@ export default withRouter(function (props) {
     },
   });
 
+  const onOpenDeleteConfirmation = (e, onDeleteData) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDeleteData },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onOpenDeleteMainConfirmation = (e) => {
+    onOpenDeleteConfirmation(e, onDeleteMain);
+  };
+
+  const onOpenDeleteRelevantConfirmation = (e) => {
+    onOpenDeleteConfirmation(e, onDeleteRelevant);
+  };
+
+  const onDeleteMain = (id) => {
+    deleteProduct({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      if (location.state?.from) {
+        dispatch("PRODUCT_DELETE", {
+          id: id,
+        });
+        props.history.push({
+          pathname: location.state.from,
+        });
+        return;
+      }
+      props.history.push({
+        pathname: `/`,
+      });
+    });
+  };
+
+  const onDeleteRelevant = (id) => {
+    deleteProduct({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      dispatch("PRODUCT_DELETE", {
+        id: id,
+      });
+      refetchRelevants();
+    });
+  };
+
   useEffect(() => {
-    if (state.type === "PRODUCT" && state.id) {
+    if (state.type === "PRODUCT_UPDATE" && state.id) {
       refetch();
     }
   }, [state, refetch]);
@@ -168,7 +233,12 @@ export default withRouter(function (props) {
                     key={index}
                     className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
                   >
-                    <ProductItem product={item} />
+                    <ProductItem
+                      product={item}
+                      onOpenDeleteConfirmationModal={
+                        onOpenDeleteRelevantConfirmation
+                      }
+                    />
                   </div>
                 );
               })
@@ -207,7 +277,11 @@ export default withRouter(function (props) {
   return (
     <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
-      <Detail product={product} breadcrumbs={breadcrumbs} />
+      <Detail
+        product={product}
+        breadcrumbs={breadcrumbs}
+        onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation}
+      />
       {renderRelevants(relevantLoading, relevantData, relevantError)}
     </DetailLayout>
   );

@@ -15,5 +15,6 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
         Task<FarmPageListModel> GetFarmsAsync(FarmFilterModel criterias);
         Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, SelectFilterModel criterias);
         Task<FarmModel> GetFarmAsync(FarmFilterModel criterias);
+        Task<bool> DeleteFarmAsync(ApplicationUser currentUser, FarmFilterModel criterias);
     }
 }

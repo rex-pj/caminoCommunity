@@ -41,6 +41,10 @@ export default withRouter(function (props) {
     client: authClient,
   });
 
+  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
+    client: authClient,
+  });
+
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
 
@@ -109,21 +113,53 @@ export default withRouter(function (props) {
     });
   };
 
-  const farmEditor =
-    currentUser && isLogin ? (
-      <FarmEditor
-        height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
-        filterCategories={searchFarmTypes}
-        onFarmPost={onFarmPost}
-        refetchNews={fetchFarms}
-        showValidationError={showValidationError}
-      />
-    ) : null;
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteFarm({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      fetchFarms();
+    });
+  };
+
+  const renderFarmEditor = () => {
+    if (currentUser && isLogin) {
+      return (
+        <FarmEditor
+          height={230}
+          convertImageCallback={convertImagefile}
+          onImageValidate={onImageValidate}
+          filterCategories={searchFarmTypes}
+          onFarmPost={onFarmPost}
+          refetchNews={fetchFarms}
+          showValidationError={showValidationError}
+        />
+      );
+    }
+
+    return null;
+  };
 
   useEffect(() => {
-    if (state.type === "FARM" && state.id) {
+    if (state.type === "FARM_UPDATE" || state.type === "FARM_DELETE") {
       fetchFarms();
     }
   }, [state, fetchFarms]);
@@ -131,14 +167,14 @@ export default withRouter(function (props) {
   if (loading || !data || networkStatus === 1) {
     return (
       <Fragment>
-        {farmEditor}
+        {renderFarmEditor()}
         <Loading>Loading...</Loading>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
-        {farmEditor}
+        {renderFarmEditor()}
         <ErrorBlock>Error!</ErrorBlock>
       </Fragment>
     );
@@ -176,7 +212,7 @@ export default withRouter(function (props) {
 
   return (
     <Fragment>
-      {farmEditor}
+      {renderFarmEditor()}
       <div className="row">
         {farms
           ? farms.map((item, index) => (
@@ -184,7 +220,11 @@ export default withRouter(function (props) {
                 key={index}
                 className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
               >
-                <FarmItem key={item.id} farm={item} />
+                <FarmItem
+                  key={item.id}
+                  farm={item}
+                  onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+                />
               </div>
             ))
           : null}

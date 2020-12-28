@@ -14,6 +14,7 @@ import { TypographyPrimary } from "../../atoms/Typographies";
 import { withRouter } from "react-router-dom";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primaryText};
@@ -33,6 +34,21 @@ const InteractiveItem = styled.li`
 const TopBarInfo = styled.div`
   color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const PostActions = styled.div`
@@ -74,13 +90,13 @@ const FarmInfo = styled.div`
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 
   svg {
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
     vertical-align: middle;
   }
 
@@ -118,7 +134,7 @@ const DropdownList = styled(Dropdown)`
 `;
 
 export default withRouter(function (props) {
-  const { product } = props;
+  const { product, onOpenDeleteConfirmationModal } = props;
 
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
@@ -138,6 +154,15 @@ export default withRouter(function (props) {
       state: {
         from: props.location.pathname,
       },
+    });
+  };
+
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete product "${product.name}"?`,
+      id: parseFloat(product.id),
     });
   };
 
@@ -181,6 +206,15 @@ export default withRouter(function (props) {
                         <span onClick={onEditMode}>
                           <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
                           Edit
+                        </span>
+                      </ModuleMenuListItem>
+                      <ModuleMenuListItem>
+                        <span onClick={onOpenDeleteConfirmation}>
+                          <FontAwesomeIcon
+                            icon="trash-alt"
+                            className="mr-2"
+                          ></FontAwesomeIcon>
+                          Delete
                         </span>
                       </ModuleMenuListItem>
                     </DropdownList>

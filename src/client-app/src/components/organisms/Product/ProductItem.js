@@ -16,6 +16,7 @@ import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { SessionContext } from "../../../store/context/session-context";
+import DeleteConfirmationModal from "../Modals/DeleteConfirmationModal";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -33,6 +34,21 @@ const ContentBody = styled.div`
 
 const ContentTopbar = styled.div`
   margin-bottom: ${(p) => p.theme.size.exSmall};
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const PostActions = styled.div`
@@ -104,7 +120,7 @@ const FarmInfo = styled(RowItem)`
 `;
 
 export default withRouter((props) => {
-  const { product } = props;
+  const { product, onOpenDeleteConfirmationModal, location } = props;
   const { creator, createdByIdentityId } = product;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -149,13 +165,20 @@ export default withRouter((props) => {
     description = `${product.description.substring(0, 120)}...`;
   }
 
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete product "${product.name}"?`,
+      id: parseFloat(product.id),
+    });
+  };
+
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={product.url}>
-          <ImageThumb src={product.thumbnailUrl} alt="" />
-          <Overlay />
-        </AnchorLink>
+        <ImageThumb src={product.thumbnailUrl} alt="" />
+        <Overlay />
       </ThumbnailBox>
 
       <PanelHeader>
@@ -177,7 +200,20 @@ export default withRouter((props) => {
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>
-                      <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
+                      <FontAwesomeIcon
+                        icon="pencil-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Edit
+                    </span>
+                  </ModuleMenuListItem>
+                  <ModuleMenuListItem>
+                    <span onClick={onOpenDeleteConfirmation}>
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Delete
                     </span>
                   </ModuleMenuListItem>
                 </ContentItemDropdown>
@@ -186,7 +222,14 @@ export default withRouter((props) => {
           </div>
         </ContentTopbar>
         <PostTitle>
-          <AnchorLink to={product.url}>{product.name}</AnchorLink>
+          <AnchorLink
+            to={{
+              pathname: product.url,
+              state: { from: location.pathname },
+            }}
+          >
+            {product.name}
+          </AnchorLink>
         </PostTitle>
       </PanelHeader>
       <PanelBody>
@@ -204,7 +247,14 @@ export default withRouter((props) => {
               return (
                 <FarmInfo key={pf.id}>
                   <FontAwesomeIcon icon="warehouse" />
-                  <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                  <AnchorLink
+                    to={{
+                      pathname: pf.url,
+                      state: { from: location.pathname },
+                    }}
+                  >
+                    {pf.farmName}
+                  </AnchorLink>
                 </FarmInfo>
               );
             })

@@ -69,4 +69,13 @@ const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
   }
 `;
 
-export { ButtonOutlinePrimary, ButtonOutlineLight, ButtonOutlineDanger };
+const ButtonOutlineCircleLight = styled(ButtonOutlineLight)`
+  border-radius: 100%;
+`;
+
+export {
+  ButtonOutlinePrimary,
+  ButtonOutlineLight,
+  ButtonOutlineCircleLight,
+  ButtonOutlineDanger,
+};

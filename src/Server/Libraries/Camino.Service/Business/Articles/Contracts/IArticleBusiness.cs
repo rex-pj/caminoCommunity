@@ -15,5 +15,6 @@ namespace Camino.Service.Business.Articles.Contracts
         Task<ArticleProjection> UpdateAsync(ArticleProjection article);
         Task<BasePageList<ArticleProjection>> GetAsync(ArticleFilter filter);
         Task<IList<ArticleProjection>> GetRelevantsAsync(long id, ArticleFilter filter);
+        Task<bool> DeleteAsync(long id);
     }
 }

@@ -46,6 +46,15 @@ export default withRouter((props) => {
   const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
     client: authClient,
   });
+  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
+    client: authClient,
+  });
+  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
+    client: authClient,
+  });
+  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
+    client: authClient,
+  });
 
   // Queries
   const {
@@ -216,6 +225,53 @@ export default withRouter((props) => {
     });
   };
 
+  const onOpenDeleteConfirmation = (e, onDelete) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDeleteArticle = (id) => {
+    deleteArticle({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      feedsRefetch();
+    });
+  };
+
+  const onDeleteFarm = (id) => {
+    deleteFarm({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      feedsRefetch();
+    });
+  };
+
+  const onDeleteProduct = (id) => {
+    deleteProduct({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      feedsRefetch();
+    });
+  };
+
   const renderProfileEditorTabs = () => (
     <ProfileEditorTabs
       convertImagefile={convertImagefile}
@@ -233,7 +289,7 @@ export default withRouter((props) => {
   );
 
   useEffect(() => {
-    if (state.id) {
+    if (state.store === "UPDATE" && state.id) {
       feedsRefetch();
     }
   }, [state, feedsRefetch]);
@@ -294,7 +350,16 @@ export default withRouter((props) => {
       {feeds
         ? feeds.map((item) => {
             const key = `${item.feedType}_${item.id}`;
-            return <FeedItem key={key} feed={item} />;
+            return (
+              <FeedItem
+                key={key}
+                feed={item}
+                onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+                onDeleteArticle={onDeleteArticle}
+                onDeleteFarm={onDeleteFarm}
+                onDeleteProduct={onDeleteProduct}
+              />
+            );
           })
         : null}
       <Pagination

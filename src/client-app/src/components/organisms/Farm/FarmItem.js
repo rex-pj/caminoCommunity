@@ -22,6 +22,7 @@ import Overlay from "../../atoms/Overlay";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { SessionContext } from "../../../store/context/session-context";
+import DeleteConfirmationModal from "../Modals/DeleteConfirmationModal";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -34,6 +35,21 @@ const Panel = styled(PanelDefault)`
 
 const ContentTopbar = styled.div`
   margin-bottom: ${(p) => p.theme.size.exSmall};
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const PostActions = styled.div`
@@ -112,7 +128,7 @@ const TopBarInfo = styled.div`
 `;
 
 export default withRouter((props) => {
-  const { farm } = props;
+  const { farm, onOpenDeleteConfirmationModal, location } = props;
   const { creator, createdByIdentityId } = farm;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -152,6 +168,15 @@ export default withRouter((props) => {
     return creator;
   };
 
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete farm "${farm.name}"?`,
+      id: parseFloat(farm.id),
+    });
+  };
+
   return (
     <Panel>
       <ThumbnailBox>
@@ -181,7 +206,20 @@ export default withRouter((props) => {
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>
-                      <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
+                      <FontAwesomeIcon
+                        icon="pencil-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Edit
+                    </span>
+                  </ModuleMenuListItem>
+                  <ModuleMenuListItem>
+                    <span onClick={onOpenDeleteConfirmation}>
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Delete
                     </span>
                   </ModuleMenuListItem>
                 </ContentItemDropdown>
@@ -190,7 +228,14 @@ export default withRouter((props) => {
           </div>
         </ContentTopbar>
         <PostTitle>
-          <AnchorLink to={farm.url}>{farm.name}</AnchorLink>
+          <AnchorLink
+            to={{
+              pathname: farm.url,
+              state: { from: location.pathname },
+            }}
+          >
+            {farm.name}
+          </AnchorLink>
         </PostTitle>
         <TopBarInfo>
           {farm.address ? (

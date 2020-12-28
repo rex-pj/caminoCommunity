@@ -95,7 +95,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
                 return productPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -130,7 +130,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
                 return productPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -157,7 +157,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
                 return products;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -208,7 +208,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 var product = await MapProductProjectionToModelAsync(productProjection);
                 return product;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -264,6 +264,24 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             var updated = await _productBusiness.UpdateAsync(farm);
             return criterias;
+        }
+
+        public async Task<bool> DeleteProductAsync(ApplicationUser currentUser, ProductFilterModel criterias)
+        {
+            try
+            {
+                var exist = await _productBusiness.FindAsync(criterias.Id);
+                if (exist == null || currentUser.Id != exist.CreatedById)
+                {
+                    return false;
+                }
+
+                return await _productBusiness.DeleteAsync(criterias.Id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private async Task<ProductModel> MapProductProjectionToModelAsync(ProductProjection productProjection)

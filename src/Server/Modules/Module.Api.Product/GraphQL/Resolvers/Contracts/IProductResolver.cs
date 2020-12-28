@@ -13,5 +13,6 @@ namespace Module.Api.Product.GraphQL.Resolvers.Contracts
         Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias);
         Task<ProductModel> GetProductAsync(ProductFilterModel criterias);
         Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias);
+        Task<bool> DeleteProductAsync(ApplicationUser currentUser, ProductFilterModel criterias);
     }
 }

@@ -25,3 +25,9 @@ export const UPDATE_ARTICLE = gql`
     }
   }
 `;
+
+export const DELETE_ARTICLE = gql`
+  mutation($criterias: ArticleFilterModelInput!) {
+    deleteArticle(criterias: $criterias)
+  }
+`;

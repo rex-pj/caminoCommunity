@@ -35,3 +35,9 @@ export const UPDATE_FARM = gql`
     }
   }
 `;
+
+export const DELETE_FARM = gql`
+  mutation($criterias: FarmFilterModelInput!) {
+    deleteFarm(criterias: $criterias)
+  }
+`;

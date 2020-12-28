@@ -1,5 +1,4 @@
-import React, { useState, useContext, Fragment } from "react";
-import { useMutation } from "@apollo/client";
+import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import { PanelFooter, PanelBody } from "../../atoms/Panels";
 import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
@@ -8,15 +7,12 @@ import {
   ButtonLight,
   ButtonAlert,
 } from "../../atoms/Buttons/Buttons";
-import { userMutations } from "../../../graphql/fetching/mutations";
-import { authClient } from "../../../graphql/client";
 import { Image } from "../../atoms/Images";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
-import { SessionContext } from "../../../store/context/session-context";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const Wrap = styled.div`
@@ -114,13 +110,6 @@ const UpdateAvatarModal = (props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
-  const [updateAvatar] = useMutation(userMutations.UPDATE_USER_AVATAR, {
-    client: authClient,
-  });
-  const [deleteAvatar] = useMutation(userMutations.DELETE_USER_AVATAR, {
-    client: authClient,
-  });
-  var sessionContext = useContext(SessionContext);
 
   const [cropData, setCropData] = useState({
     width: 255,
@@ -142,7 +131,6 @@ const UpdateAvatarModal = (props) => {
     const { data } = props;
     const { canEdit } = data;
     const image = avatarEditor.getImage();
-
     const isValid = image.width > 100 && image.height > 100;
 
     let isSucceed = false;
@@ -190,7 +178,7 @@ const UpdateAvatarModal = (props) => {
     });
   }
 
-  const onUpload = async (e) => {
+  const onUploading = async (e) => {
     props.setDisabled(true);
 
     const { src } = avatarData;
@@ -202,8 +190,9 @@ const UpdateAvatarModal = (props) => {
 
       const { fileName, contentType } = avatarData;
       const { scale } = cropData;
-      const { data } = props;
+      const { data, execution } = props;
       const { canEdit } = data;
+      const { onUpload } = execution;
 
       const variables = {
         criterias: {
@@ -219,21 +208,17 @@ const UpdateAvatarModal = (props) => {
         },
       };
 
-      await props
-        .onExecute(updateAvatar, { variables }, "AVATAR_UPDATED")
-        .then(async () => {
-          props.setDisabled(false);
-          if (sessionContext.relogin) {
-            await sessionContext.relogin();
-          }
-        })
-        .catch(() => {});
+      await onUpload(variables).then(async () => {
+        props.setDisabled(false);
+        props.closeModal();
+      });
     }
   };
 
-  const onDelete = async (e) => {
-    const { data } = props;
+  const onDeletting = async (e) => {
+    const { data, execution } = props;
     const { canEdit } = data;
+    const { onDelete } = execution;
 
     if (!canEdit) {
       return;
@@ -245,12 +230,10 @@ const UpdateAvatarModal = (props) => {
       },
     };
 
-    await props
-      .onExecute(deleteAvatar, { variables }, "AVATAR_UPDATED")
-      .then(() => {
-        props.setDisabled(false);
-        sessionContext.relogin();
-      });
+    await onDelete(variables).then(() => {
+      props.setDisabled(false);
+      props.closeModal();
+    });
   };
 
   function onLoadSuccess(e) {
@@ -306,7 +289,7 @@ const UpdateAvatarModal = (props) => {
               isShown={showDeletePopover}
               target="DeleteAvatar"
               title="Please confirm your avatar deletion?"
-              onExecute={(e) => onDelete(e)}
+              onExecute={(e) => onDeletting(e)}
             />
             <ButtonOutlineDanger size="xs" id="DeleteAvatar">
               <FontAwesomeIcon icon="trash-alt" />
@@ -318,7 +301,7 @@ const UpdateAvatarModal = (props) => {
             <ButtonPrimary
               disabled={isDisabled}
               size="xs"
-              onClick={(e) => onUpload(e)}
+              onClick={(e) => onUploading(e)}
             >
               <FontAwesomeIcon icon="upload" />
               <span>Upload</span>

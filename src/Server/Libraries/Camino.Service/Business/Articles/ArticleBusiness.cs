@@ -389,5 +389,20 @@ namespace Camino.Service.Business.Articles
 
             return relevantArticles;
         }
+
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var articlePictures = _articlePictureRepository.Get(x => x.ArticleId == id);
+            var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
+            await _articlePictureRepository.DeleteAsync(articlePictures);
+
+            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+            await _pictureRepository.DeleteAsync(pictures);
+
+            var existArticle = await _articleRepository.FirstOrDefaultAsync(x => x.Id == id);
+            await _articleRepository.DeleteAsync(existArticle);
+
+            return true;
+        }
     }
 }

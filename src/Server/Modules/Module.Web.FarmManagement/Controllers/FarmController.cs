@@ -7,7 +7,6 @@ using Camino.Framework.Models;
 using Camino.Service.Business.Farms.Contracts;
 using Camino.Service.Projections.Farm;
 using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Media;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.FarmManagement.Models;
@@ -54,7 +53,7 @@ namespace Module.Web.FarmManagement.Controllers
                 Description = x.Description,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                //ThumbnailId = x.ThumbnailId,
+                ThumbnailId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0,
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
             });

@@ -9,7 +9,7 @@ import { authClient } from "./graphql/client";
 import configureModalStore from "./store/hook-store/modal-store";
 import configureAvatarStore from "./store/hook-store/avatar-store";
 import configureNotifyStore from "./store/hook-store/notify-store";
-import configureContentUpdatedStore from "./store/hook-store/content-updated-store";
+import configureContentChangeStore from "./store/hook-store/content-change-store";
 import { useQuery } from "@apollo/client";
 import { userQueries } from "./graphql/fetching/queries";
 import { SessionContext } from "./store/context/session-context";
@@ -22,7 +22,7 @@ const history = createBrowserHistory();
 configureModalStore();
 configureAvatarStore();
 configureNotifyStore();
-configureContentUpdatedStore();
+configureContentChangeStore();
 
 // Font Awesome
 const AsyncPage = loadable((props) => import(`${props.page}`), {

@@ -25,3 +25,9 @@ export const CREATE_PRODUCT = gql`
     }
   }
 `;
+
+export const DELETE_PRODUCT = gql`
+  mutation($criterias: ProductFilterModelInput!) {
+    deleteProduct(criterias: $criterias)
+  }
+`;

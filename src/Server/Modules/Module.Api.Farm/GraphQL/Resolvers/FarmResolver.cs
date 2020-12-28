@@ -151,7 +151,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
                 return farmPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -185,7 +185,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
                 return farmPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -204,7 +204,25 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 var farm = await MapFarmProjectionToModelAsync(farmProjection);
                 return farm;
             }
-            catch (Exception e)
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteFarmAsync(ApplicationUser currentUser, FarmFilterModel criterias)
+        {
+            try
+            {
+                var exist = await _farmBusiness.FindAsync(criterias.Id);
+                if (exist == null || currentUser.Id != exist.CreatedById)
+                {
+                    return false;
+                }
+
+                return await _farmBusiness.DeleteAsync(criterias.Id);
+            }
+            catch (Exception)
             {
                 throw;
             }

@@ -21,13 +21,21 @@ namespace Camino.Service.Business.Farms
         private readonly IRepository<Farm> _farmRepository;
         private readonly IRepository<FarmType> _farmTypeRepository;
         private readonly IRepository<FarmPicture> _farmPictureRepository;
+        private readonly IRepository<FarmProduct> _farmProductRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<Picture> _pictureRepository;
+        private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<ProductPicture> _productPictureRepository;
+        private readonly IRepository<ProductPrice> _productPriceRepository;
+        private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
 
         public FarmBusiness(IRepository<Farm> farmRepository, IRepository<FarmType> farmTypeRepository,
             IRepository<FarmPicture> farmPictureRepository, IRepository<User> userRepository,
-            IRepository<Picture> pictureRepository, IRepository<UserPhoto> userPhotoRepository)
+            IRepository<Picture> pictureRepository, IRepository<UserPhoto> userPhotoRepository,
+            IRepository<FarmProduct> farmProductRepository, IRepository<Product> productRepository,
+            IRepository<ProductPicture> productPictureRepository, IRepository<ProductPrice> productPriceRepository,
+            IRepository<ProductCategoryRelation> productCategoryRelationRepository)
         {
             _farmRepository = farmRepository;
             _farmTypeRepository = farmTypeRepository;
@@ -35,6 +43,11 @@ namespace Camino.Service.Business.Farms
             _userRepository = userRepository;
             _pictureRepository = pictureRepository;
             _userPhotoRepository = userPhotoRepository;
+            _farmProductRepository = farmProductRepository;
+            _productRepository = productRepository;
+            _productPictureRepository = productPictureRepository;
+            _productPriceRepository = productPriceRepository;
+            _productCategoryRelationRepository = productCategoryRelationRepository;
         }
 
         public async Task<FarmProjection> FindAsync(long id)
@@ -312,7 +325,7 @@ namespace Camino.Service.Business.Farms
             farm.FarmTypeId = request.FarmTypeId;
             farm.UpdatedById = request.UpdatedById;
             farm.UpdatedDate = updatedDate;
-            farm.Address = farm.Address;
+            farm.Address = request.Address;
 
             var pictureIds = request.Pictures.Select(x => x.Id);
             var deleteFarmPictures = _farmPictureRepository
@@ -373,6 +386,55 @@ namespace Camino.Service.Business.Farms
             _farmRepository.Update(farm);
 
             return request;
+        }
+
+        public async Task<bool> DeleteAsync(long id)
+        {
+            // Delete farm pictures
+            var farmPictures = _farmPictureRepository.Get(x => x.FarmId == id);
+            var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
+            await _farmPictureRepository.DeleteAsync(farmPictures);
+
+            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+            await _pictureRepository.DeleteAsync(pictures);
+
+            // Delete farm products
+            await DeleteProductByFarmIdAsync(id);
+
+            // Delete farm
+            var existFarm = await _farmRepository.FirstOrDefaultAsync(x => x.Id == id);
+            await _farmRepository.DeleteAsync(existFarm);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Delete products by farm id
+        /// </summary>
+        /// <param name="farmId"></param>
+        /// <returns></returns>
+        private async Task DeleteProductByFarmIdAsync(long farmId)
+        {
+            var farmProducts = _farmProductRepository.Get(x => x.FarmId == farmId);
+            var productIds = farmProducts.Select(x => x.ProductId).ToList();
+
+            var productPictures = _productPictureRepository.Get(x => productIds.Contains(x.ProductId));
+            var pictureIds = productPictures.Select(x => x.PictureId).ToList();
+            await _productPictureRepository.DeleteAsync(productPictures);
+
+            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+            await _pictureRepository.DeleteAsync(pictures);
+
+            await _farmProductRepository.DeleteAsync(farmProducts);
+
+            var productPrices = _productPriceRepository.Get(x => productIds.Contains(x.ProductId));
+            await _productPriceRepository.DeleteAsync(productPrices);
+
+            var productCategoryRelations = _productCategoryRelationRepository.Get(x => productIds.Contains(x.ProductId));
+            await _productCategoryRelationRepository.DeleteAsync(productCategoryRelations);
+
+            var products = _productRepository.Get(x => productIds.Contains(x.Id));
+            await _productRepository.DeleteAsync(products);
         }
     }
 }

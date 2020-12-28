@@ -1,24 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 import { withRouter } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { articleQueries } from "../../graphql/fetching/queries";
+import { articleMutations } from "../../graphql/fetching/mutations";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
+import { useStore } from "../../store/hook-store";
+import { authClient } from "../../graphql/client";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const { loading, data, error } = useQuery(articleQueries.GET_ARTICLES, {
-    variables: {
-      criterias: {
-        page: pageNumber ? parseInt(pageNumber) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 10,
+  const [state, dispatch] = useStore(false);
+  const { loading, data, error, refetch } = useQuery(
+    articleQueries.GET_ARTICLES,
+    {
+      variables: {
+        criterias: {
+          page: pageNumber ? parseInt(pageNumber) : 1,
+          pageSize: pageSize ? parseInt(pageSize) : 10,
+        },
       },
-    },
+    }
+  );
+
+  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
+    client: authClient,
   });
+
+  useEffect(() => {
+    if (state.type === "ARTICLE_UPDATE" || state.type === "ARTICLE_DELETE") {
+      refetch();
+    }
+  }, [state, refetch]);
 
   if (loading || !data) {
     return <Loading>Loading</Loading>;
@@ -59,8 +76,36 @@ export default withRouter(function (props) {
     },
   ];
 
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteArticle({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      refetch();
+    });
+  };
+
   return (
     <Article
+      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
       articles={articles}
       breadcrumbs={breadcrumbs}
       totalPage={totalPage}

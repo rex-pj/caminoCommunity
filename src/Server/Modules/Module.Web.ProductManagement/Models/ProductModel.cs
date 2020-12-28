@@ -16,7 +16,6 @@ namespace Module.Web.ProductManagement.Models
         public string Description { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        public string Content { get; set; }
         public long ThumbnailId { get; set; }
         public string Thumbnail { get; set; }
         public string ThumbnailFileType { get; set; }

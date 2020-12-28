@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Projections.Product;
+using System.Linq;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -49,7 +50,20 @@ namespace Module.Web.ProductManagement.Controllers
             };
 
             var productPageList = await _productBusiness.GetAsync(filterRequest);
-            var products = _mapper.Map<List<ProductModel>>(productPageList.Collections);
+            var products = productPageList.Collections.Select(x => new ProductModel()
+            {
+                Description = x.Description,
+                CreatedBy = x.CreatedBy,
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                UpdatedBy = x.UpdatedBy,
+                UpdateById = x.UpdatedById,
+                UpdatedDate = x.UpdatedDate,
+                Id = x.Id,
+                Name = x.Name,
+                ThumbnailId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0
+            });
+
             var productPage = new PageListModel<ProductModel>(products)
             {
                 Filter = filter,
@@ -82,7 +96,18 @@ namespace Module.Web.ProductManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<ProductModel>(product);
+                var model = new ProductModel()
+                {
+                    Id = product.Id,
+                    UpdateById = product.UpdatedById,
+                    UpdatedBy = product.UpdatedBy,
+                    CreatedBy = product.CreatedBy,
+                    CreatedById = product.CreatedById,
+                    CreatedDate = product.CreatedDate,
+                    UpdatedDate = product.UpdatedDate,
+                    Description = product.Description,
+                    Name = product.Name
+                };
                 return View(model);
             }
             catch (Exception)
@@ -127,7 +152,18 @@ namespace Module.Web.ProductManagement.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var product = await _productBusiness.FindDetailAsync(id);
-            var model = _mapper.Map<ProductModel>(product);
+            var model = new ProductModel()
+            {
+                Id = product.Id,
+                UpdateById = product.UpdatedById,
+                UpdatedBy = product.UpdatedBy,
+                CreatedBy = product.CreatedBy,
+                CreatedById = product.CreatedById,
+                CreatedDate = product.CreatedDate,
+                UpdatedDate = product.UpdatedDate,
+                Description = product.Description,
+                Name = product.Name
+            };
 
             return View(model);
         }

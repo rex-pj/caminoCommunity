@@ -25,5 +25,12 @@ namespace Module.Api.Product.GraphQL.Mutations
         {
             return await productResolver.UpdateProductAsync(currentUser, criterias);
         }
+
+        [GraphQlAuthentication]
+        public async Task<bool> DeleteProductAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IProductResolver productResolver,
+            ProductFilterModel criterias)
+        {
+            return await productResolver.DeleteProductAsync(currentUser, criterias);
+        }
     }
 }

@@ -32,5 +32,11 @@ namespace Module.Api.Farm.GraphQL.Mutations
         {
             return await farmResolver.SelectUserFarmsAsync(currentUser, criterias);
         }
+
+        [GraphQlAuthentication]
+        public async Task<bool> DeleteFarmAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, FarmFilterModel criterias)
+        {
+            return await farmResolver.DeleteFarmAsync(currentUser, criterias);
+        }
     }
 }

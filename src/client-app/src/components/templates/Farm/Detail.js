@@ -13,6 +13,7 @@ import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
+import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${(p) => p.theme.size.exTiny};
@@ -35,6 +36,21 @@ const TopBarInfo = styled.div`
   font-size: ${(p) => p.theme.fontSize.tiny};
   margin-bottom: ${(p) => p.theme.size.distance};
   position: relative;
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 
   span {
     color: inherit;
@@ -113,7 +129,7 @@ const DropdownList = styled(Dropdown)`
 `;
 
 export default withRouter((props) => {
-  const { farm, breadcrumbs } = props;
+  const { farm, breadcrumbs, onOpenDeleteConfirmationModal } = props;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -132,6 +148,15 @@ export default withRouter((props) => {
       state: {
         from: props.location.pathname,
       },
+    });
+  };
+
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete farm "${farm.name}"?`,
+      id: parseFloat(farm.id),
     });
   };
 
@@ -177,6 +202,15 @@ export default withRouter((props) => {
                       <span onClick={onEditMode}>
                         <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
                         Edit
+                      </span>
+                    </ModuleMenuListItem>
+                    <ModuleMenuListItem>
+                      <span onClick={onOpenDeleteConfirmation}>
+                        <FontAwesomeIcon
+                          icon="trash-alt"
+                          className="mr-2"
+                        ></FontAwesomeIcon>
+                        Delete
                       </span>
                     </ModuleMenuListItem>
                   </DropdownList>

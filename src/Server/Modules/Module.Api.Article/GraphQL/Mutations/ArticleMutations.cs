@@ -1,9 +1,7 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Mutations;
-using Camino.Framework.GraphQL.Queries;
 using Camino.IdentityManager.Models;
 using HotChocolate;
-using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
@@ -24,6 +22,12 @@ namespace Module.Api.Article.GraphQL.Mutations
         public async Task<ArticleModel> UpdateArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleModel criterias)
         {
             return await articleResolver.UpdateArticleAsync(currentUser, criterias);
+        }
+
+        [GraphQlAuthentication]
+        public async Task<bool> DeleteArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        {
+            return await articleResolver.DeleteArticleAsync(currentUser, criterias);
         }
 
         [GraphQlAuthentication]

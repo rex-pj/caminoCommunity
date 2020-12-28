@@ -22,6 +22,7 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { SessionContext } from "../../../store/context/session-context";
+import DeleteConfirmationModal from "../Modals/DeleteConfirmationModal";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -38,6 +39,25 @@ const PanelHeader = styled(PanelHeading)`
 
 const ContentTopbar = styled.div`
   margin-bottom: ${(p) => p.theme.size.exSmall};
+
+  ${ContentItemDropdown} {
+    z-index: 10;
+  }
+
+  ${ModuleMenuListItem} {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
+  ${ModuleMenuListItem} span {
+    padding-top: ${(p) => p.theme.size.tiny};
+    padding-bottom: ${(p) => p.theme.size.tiny};
+  }
 `;
 
 const Title = styled(secondaryTitleLink)`
@@ -69,7 +89,7 @@ const InteractiveItem = styled.li`
 `;
 
 export default withRouter(function (props) {
-  const { product } = props;
+  const { product, onOpenDeleteConfirmationModal, location } = props;
   const { creator, createdByIdentityId } = product;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -115,6 +135,15 @@ export default withRouter(function (props) {
     return creator;
   };
 
+  const onOpenDeleteConfirmation = () => {
+    onOpenDeleteConfirmationModal({
+      title: "Delete Farm",
+      innerModal: DeleteConfirmationModal,
+      message: `Are you sure to delete product "${product.name}"?`,
+      id: parseFloat(product.id),
+    });
+  };
+
   return (
     <Panel>
       <PanelHeader>
@@ -136,7 +165,20 @@ export default withRouter(function (props) {
                 <ContentItemDropdown>
                   <ModuleMenuListItem>
                     <span onClick={onEditMode}>
-                      <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
+                      <FontAwesomeIcon
+                        icon="pencil-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Edit
+                    </span>
+                  </ModuleMenuListItem>
+                  <ModuleMenuListItem>
+                    <span onClick={onOpenDeleteConfirmation}>
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="mr-2"
+                      ></FontAwesomeIcon>
+                      Delete
                     </span>
                   </ModuleMenuListItem>
                 </ContentItemDropdown>
@@ -151,23 +193,41 @@ export default withRouter(function (props) {
                 if (!pf.id) {
                   return null;
                 }
-
                 return (
                   <Fragment>
-                    <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                    <AnchorLink
+                      to={{
+                        pathname: pf.url,
+                        state: { from: location.pathname },
+                      }}
+                    >
+                      {pf.farmName}
+                    </AnchorLink>
                     <FontAwesomeIcon icon="angle-right" />
                   </Fragment>
                 );
               })
             : null}
 
-          <AnchorLink to={product.url}>{product.name}</AnchorLink>
+          <AnchorLink
+            to={{
+              pathname: product.url,
+              state: { from: location.pathname },
+            }}
+          >
+            {product.name}
+          </AnchorLink>
         </Title>
       </PanelHeader>
       <PanelBody>
         <div className="row">
           <div className="col col-6 col-sm-6 col-md-5 col-lg-5">
-            <AnchorLink to={product.url}>
+            <AnchorLink
+              to={{
+                pathname: product.url,
+                state: { from: location.pathname },
+              }}
+            >
               <ImageThumb src={product.thumbnailUrl} alt="" />
             </AnchorLink>
           </div>

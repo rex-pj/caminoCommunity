@@ -48,6 +48,10 @@ export default withRouter(function (props) {
     client: authClient,
   });
 
+  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
+    client: authClient,
+  });
+
   const searchArticleCategories = async (inputValue) => {
     return await articleCategories({
       variables: {
@@ -113,6 +117,33 @@ export default withRouter(function (props) {
     };
   };
 
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteArticle({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      fetchArticles();
+    });
+  };
+
   const renderArticleEditor = () => {
     if (currentUser && isLogin) {
       return (
@@ -131,7 +162,7 @@ export default withRouter(function (props) {
   };
 
   useEffect(() => {
-    if (state.type === "ARTICLE" && state.id) {
+    if (state.type === "ARTICLE_UPDATE" || state.type === "ARTICLE_DELETE") {
       fetchArticles();
     }
   }, [state, fetchArticles]);
@@ -192,6 +223,7 @@ export default withRouter(function (props) {
               filterCategories={searchArticleCategories}
               refetchNews={fetchArticles}
               showValidationError={showValidationError}
+              onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
             />
           ))
         : null}

@@ -181,12 +181,14 @@ export default withRouter((props) => {
     const { preview, file } = e;
     const { name, type } = file;
 
-    data.thumbnails.value.push({
+    let thumbnails = Object.assign([], data.thumbnails.value);
+    thumbnails.push({
       base64Data: preview,
       fileName: name,
       contentType: type,
     });
 
+    data.thumbnails.value = thumbnails;
     setFormData({
       ...data,
     });

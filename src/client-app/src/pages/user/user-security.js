@@ -4,6 +4,7 @@ import { useMutation } from "@apollo/client";
 import PasswordUpdateForm from "../../components/organisms/User/PasswordUpdateForm";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
+import ConfirmToRedirectModal from "../../components/organisms/Modals/ConfirmToRedirectModal";
 
 export default withRouter((props) => {
   const [isFormEnabled, setFormEnabled] = useState(true);
@@ -15,17 +16,23 @@ export default withRouter((props) => {
     dispatch("OPEN_MODAL", {
       data: {
         title: "You will need to log out and log in again",
-        message:
+        children:
           "To make sure all functions are working properly you need to log out and log in again",
         executeButtonName: "Ok",
-        executeUrl: "/auth/logout",
+      },
+      execution: {
+        onSucceed: onSucceed,
       },
       options: {
         isOpen: true,
-        type: "CONFIRM_REDIRECT",
+        innerModal: ConfirmToRedirectModal,
         unableClose: true,
       },
     });
+  };
+
+  const onSucceed = () => {
+    props.history.push("/auth/logout");
   };
 
   const showNotification = (title, message, type) => {

@@ -216,6 +216,24 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
+        public async Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
+        {
+            try
+            {
+                var exist = await _articleBusiness.FindAsync(criterias.Id);
+                if (exist == null || currentUser.Id != exist.CreatedById)
+                {
+                    return false;
+                }
+
+                return await _articleBusiness.DeleteAsync(criterias.Id);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
         private async Task<ArticleModel> MapArticleProjectionToModelAsync(ArticleProjection articleProjection)
         {
             var article = new ArticleModel()

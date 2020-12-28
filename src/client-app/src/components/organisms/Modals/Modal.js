@@ -1,9 +1,6 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
-import DefaultModal from "./DefaultModal";
-import ConfirmToRedirectModal from "./ConfirmToRedirectModal";
-import UpdateAvatarModal from "./UpdateAvatarModal";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStore } from "../../../store/hook-store";
@@ -15,7 +12,7 @@ const Root = styled(PanelDefault)`
   bottom: auto;
   z-index: 100;
   margin: 0 auto;
-  position: absolute;
+  position: ${(p) => (p.position === "fixed" ? "fixed" : "absolute")};
   max-width: ${(p) => (p.size === "lg" ? "90%" : "720px")};
 `;
 
@@ -62,80 +59,32 @@ export default ({ ...props }) => {
   const [showBackdrop] = useState(true);
   const [isDisabled, setDisabled] = useState(true);
   const { className } = props;
-  let [state, dispatch] = useStore(true);
-  const { data, options } = state;
-  const { isOpen } = options;
+  const [state, dispatch] = useStore(true);
+  const { data, execution, options } = state;
+  const { isOpen, position } = options;
 
   function closeModal() {
     dispatch("CLOSE_MODAL");
   }
-
-  function onExecute() {}
-
-  const onExecuteAsync = async (action, data, callbackName) => {
-    return await action(data)
-      .then(() => {
-        dispatch(callbackName);
-        closeModal();
-      })
-      .catch((error) => {
-        dispatch("NOTIFY", {
-          title: "An error occured in processing",
-          mesage: "An error occured when updating, please try again!",
-          type: "error",
-        });
-      });
-  };
 
   if (!isOpen) {
     return null;
   }
 
   const { children, title } = data;
-  const { type, unableClose } = options;
-
-  let modal = null;
-  if (type === "AVATAR_MODAL") {
-    modal = (
-      <UpdateAvatarModal
-        title={title}
-        data={data}
-        closeModal={closeModal}
-        isDisabled={isDisabled}
-        setDisabled={setDisabled}
-        onExecute={(action, data, callbackName) =>
-          onExecuteAsync(action, data, callbackName)
-        }
-      >
-        {children}
-      </UpdateAvatarModal>
-    );
-  } else if (type === "CONFIRM_REDIRECT") {
-    modal = (
-      <ConfirmToRedirectModal
-        title={title}
-        data={data}
-        closeModal={closeModal}
-        onExecute={onExecute}
-      >
-        {data.message}
-      </ConfirmToRedirectModal>
-    );
-  } else {
-    modal = <DefaultModal closeModal={closeModal}>{children}</DefaultModal>;
-  }
-
-  let backdrop = null;
-  if (!!showBackdrop && !unableClose) {
-    backdrop = <Backdrop onClick={closeModal} />;
-  } else if (!!showBackdrop) {
-    backdrop = <Backdrop />;
-  }
+  const { unableClose, innerModal: InnerModal } = options;
+  const renderBackdrop = () => {
+    if (!!showBackdrop && !unableClose) {
+      return <Backdrop onClick={closeModal} />;
+    } else if (!!showBackdrop) {
+      return <Backdrop />;
+    }
+  };
 
   return (
     <Fragment>
-      {backdrop}
-      <Root className={className}>
+      {renderBackdrop()}
+      <Root className={className} position={position}>
         <Scroll>
           <PanelHeading>
             {title}
@@ -145,7 +94,15 @@ export default ({ ...props }) => {
               </CloseButton>
             ) : null}
           </PanelHeading>
-          {modal}
+          <InnerModal
+            data={data}
+            execution={execution}
+            closeModal={closeModal}
+            isDisabled={isDisabled}
+            setDisabled={setDisabled}
+          >
+            {children}
+          </InnerModal>
         </Scroll>
       </Root>
     </Fragment>

@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Profile from "../../components/organisms/User/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Loading from "../../components/atoms/Loading";
 import { useStore } from "../../store/hook-store";
@@ -12,6 +12,8 @@ import UserProfileRoutes from "../../routes/userProfileRoutes";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import loadable from "@loadable/component";
+import { userMutations } from "../../graphql/fetching/mutations";
+import { authClient } from "../../graphql/client";
 
 const ProfileAvatar = loadable(() =>
     import("../../components/organisms/User/ProfileAvatar")
@@ -81,6 +83,12 @@ export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
   const { userId, pageNumber } = params;
+  const [updateAvatar] = useMutation(userMutations.UPDATE_USER_AVATAR, {
+    client: authClient,
+  });
+  const [deleteAvatar] = useMutation(userMutations.DELETE_USER_AVATAR, {
+    client: authClient,
+  });
   const { loading, error, data, refetch } = useQuery(
     userQueries.GET_USER_INFO,
     {
@@ -142,6 +150,26 @@ export default withRouter((props) => {
     }
   };
 
+  const onAvatarUpload = async (variables) => {
+    return await updateAvatar({ variables }).then(() => {
+      relogin();
+      refetch();
+      return new Promise((resolve) => {
+        resolve({});
+      });
+    });
+  };
+
+  const onAvatarDelete = async (variables) => {
+    return await deleteAvatar({ variables }).then(() => {
+      relogin();
+      refetch();
+      return new Promise((resolve) => {
+        resolve({});
+      });
+    });
+  };
+
   const userInfo = parseUserInfo(data);
   const { canEdit, userIdentityId } = userInfo;
 
@@ -170,6 +198,8 @@ export default withRouter((props) => {
         <AvatarBlock
           userInfo={userInfo}
           canEdit={canEdit && !isEditCoverMode}
+          onUpload={onAvatarUpload}
+          onDelete={onAvatarDelete}
         />
         <h2>
           <ProfileNameLink href={userInfo.url}>

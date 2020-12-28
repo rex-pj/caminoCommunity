@@ -7,7 +7,8 @@ import {
   userQueries,
   farmQueries,
 } from "../../graphql/fetching/queries";
-import { useQuery } from "@apollo/client";
+import { articleMutations } from "../../graphql/fetching/mutations";
+import { useQuery, useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
@@ -16,16 +17,17 @@ import styled from "styled-components";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
+import { authClient } from "../../graphql/client";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
 export default withRouter(function (props) {
-  const { match } = props;
+  const { match, location } = props;
   const { params } = match;
   const { id } = params;
-  const [state] = useStore(true);
+  const [state, dispatch] = useStore(true);
   const { loading, data, error, refetch } = useQuery(
     articleQueries.GET_ARTICLE,
     {
@@ -36,6 +38,10 @@ export default withRouter(function (props) {
       },
     }
   );
+
+  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
+    client: authClient,
+  });
 
   const userIdentityId = data?.article?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
@@ -62,6 +68,7 @@ export default withRouter(function (props) {
     relevantLoading,
     data: relevantData,
     error: relevantError,
+    refetch: refetchRelevants,
   } = useQuery(articleQueries.GET_RELEVANT_ARTICLES, {
     variables: {
       criterias: {
@@ -72,8 +79,67 @@ export default withRouter(function (props) {
     },
   });
 
+  const onOpenDeleteConfirmation = (e, onDeleteData) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDeleteData },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onOpenDeleteMainConfirmation = (e) => {
+    onOpenDeleteConfirmation(e, onDeleteMain);
+  };
+
+  const onOpenDeleteRelevantConfirmation = (e) => {
+    onOpenDeleteConfirmation(e, onDeleteRelevant);
+  };
+
+  const onDeleteMain = (id) => {
+    deleteArticle({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      if (location.state?.from) {
+        dispatch("ARTICLE_DELETE", {
+          id: id,
+        });
+        props.history.push({
+          pathname: location.state.from,
+        });
+        return;
+      }
+      props.history.push({
+        pathname: `/`,
+      });
+    });
+  };
+
+  const onDeleteRelevant = (id) => {
+    deleteArticle({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      dispatch("ARTICLE_DELETE", {
+        id: id,
+      });
+      refetchRelevants();
+    });
+  };
+
   useEffect(() => {
-    if (state.type === "ARTICLE" && state.id) {
+    if (state.type === "ARTICLE_UPDATE" && state.id) {
       refetch();
     }
   }, [state, refetch]);
@@ -140,7 +206,12 @@ export default withRouter(function (props) {
                     key={index}
                     className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
                   >
-                    <ArticleItem article={item} />
+                    <ArticleItem
+                      article={item}
+                      onOpenDeleteConfirmationModal={
+                        onOpenDeleteRelevantConfirmation
+                      }
+                    />
                   </div>
                 );
               })
@@ -179,7 +250,10 @@ export default withRouter(function (props) {
   return (
     <DetailLayout author={getAuthorInfo()}>
       <Breadcrumb list={breadcrumbs} />
-      <Detail article={article} />
+      <Detail
+        article={article}
+        onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation}
+      />
       {renderRelevants(relevantLoading, relevantData, relevantError)}
     </DetailLayout>
   );

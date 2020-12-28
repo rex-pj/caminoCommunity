@@ -15,5 +15,6 @@ namespace Camino.Service.Business.Farms.Contracts
         Task<long> CreateAsync(FarmProjection farm);
         Task<FarmProjection> UpdateAsync(FarmProjection farm);
         Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, string search = "", int page = 1, int pageSize = 10);
+        Task<bool> DeleteAsync(long id);
     }
 }

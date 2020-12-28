@@ -621,5 +621,29 @@ namespace Camino.Service.Business.Products
 
             return request;
         }
+
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var productPictures = _productPictureRepository.Get(x => x.ProductId == id);
+            var pictureIds = productPictures.Select(x => x.PictureId).ToList();
+            await _productPictureRepository.DeleteAsync(productPictures);
+
+            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
+            await _pictureRepository.DeleteAsync(pictures);
+
+            var farmProducts = _farmProductRepository.Get(x => x.ProductId == id);
+            await _farmProductRepository.DeleteAsync(farmProducts);
+
+            var productPrices = _productPriceRepository.Get(x => x.ProductId == id);
+            await _productPriceRepository.DeleteAsync(productPrices);
+
+            var productCategoryRelations = _productCategoryRelationRepository.Get(x => x.ProductId == id);
+            await _productCategoryRelationRepository.DeleteAsync(productCategoryRelations);
+
+            var product = _productRepository.FirstOrDefault(x => x.Id == id);
+            await _productRepository.DeleteAsync(product);
+
+            return true;
+        }
     }
 }

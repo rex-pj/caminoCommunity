@@ -5,6 +5,7 @@ import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoAvatar from "../../atoms/NoImages/no-avatar";
 import { useStore } from "../../../store/hook-store";
+import UpdateAvatarModal from "../../organisms/Modals/UpdateAvatarModal";
 
 const ProfileImage = styled(ImageRound)`
     display: block;
@@ -51,7 +52,7 @@ const ProfileImage = styled(ImageRound)`
   `;
 
 export default function ({ ...props }) {
-  const { userInfo, canEdit, className } = props;
+  const { userInfo, canEdit, onUpload, onDelete } = props;
   const { userAvatar } = userInfo;
   const dispatch = useStore(true)[1];
 
@@ -65,15 +66,19 @@ export default function ({ ...props }) {
         title: "Update Avatar",
         canEdit: userInfo.canEdit,
       },
+      execution: {
+        onUpload: onUpload,
+        onDelete: onDelete,
+      },
       options: {
         isOpen: true,
-        type: "AVATAR_MODAL",
+        innerModal: UpdateAvatarModal,
       },
     });
   }
 
   return (
-    <Wrap className={className}>
+    <Wrap className={props.className}>
       <AvatarLink href={userInfo.url}>
         {userAvatar && userAvatar.code ? (
           <ProfileImage

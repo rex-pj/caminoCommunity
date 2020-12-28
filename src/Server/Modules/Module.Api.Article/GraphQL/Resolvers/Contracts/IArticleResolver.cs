@@ -13,5 +13,6 @@ namespace Module.Api.Article.GraphQL.Resolvers.Contracts
         Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias);
         Task<ArticleModel> GetArticleAsync(ArticleFilterModel criterias);
         Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias);
+        Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
     }
 }

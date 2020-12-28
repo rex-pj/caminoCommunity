@@ -1,21 +1,22 @@
 import React, { Fragment } from "react";
-import styled from "styled-components";
 import { PanelBody, PanelFooter } from "../../atoms/Panels";
-import { AnchorButtonPrimary } from "../../atoms/Buttons/AnchorButtons";
-
-const AcceptButton = styled(AnchorButtonPrimary)`
-  border-radius: ${(p) => p.theme.borderRadius.normal};
-`;
+import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 
 export default function (props) {
-  const { children, data } = props;
-  const { executeButtonName, executeUrl } = data;
+  const { children, data, execution } = props;
+  const { executeButtonName } = data;
+  const { onSucceed } = execution;
+
+  const onRedirect = () => {
+    onSucceed();
+    props.closeModal();
+  };
 
   return (
     <Fragment>
       {children ? <PanelBody>{children}</PanelBody> : null}
       <PanelFooter>
-        <AcceptButton href={executeUrl}>{executeButtonName}</AcceptButton>
+        <ButtonPrimary onClick={onRedirect}>{executeButtonName}</ButtonPrimary>
       </PanelFooter>
     </Fragment>
   );

@@ -4,7 +4,14 @@ import { Pagination } from "../../organisms/Paging";
 import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 
 export default function (props) {
-  const { farms, breadcrumbs, totalPage, baseUrl, currentPage } = props;
+  const {
+    farms,
+    breadcrumbs,
+    totalPage,
+    baseUrl,
+    currentPage,
+    onOpenDeleteConfirmation,
+  } = props;
 
   return (
     <Fragment>
@@ -16,7 +23,11 @@ export default function (props) {
                 key={index}
                 className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
               >
-                <FarmItem key={item.id} farm={item} />
+                <FarmItem
+                  key={item.id}
+                  farm={item}
+                  onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+                />
               </div>
             ))
           : null}

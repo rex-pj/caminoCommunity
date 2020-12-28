@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import Farm from "../../components/templates/Farm";
 import { UrlConstant } from "../../utils/Constants";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { farmQueries } from "../../graphql/fetching/queries";
+import { farmMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
+import { authClient } from "../../graphql/client";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const [state] = useStore(false);
+  const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARMS, {
     variables: {
       criterias: {
@@ -22,8 +24,12 @@ export default withRouter(function (props) {
     },
   });
 
+  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
+    client: authClient,
+  });
+
   useEffect(() => {
-    if (state.type === "FARM" && state.id) {
+    if (state.type === "FARM_UPDATE" || state.type === "FARM_DELETE") {
       refetch();
     }
   }, [state, refetch]);
@@ -59,7 +65,33 @@ export default withRouter(function (props) {
     return farm;
   });
 
-  const baseUrl = "/farms";
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteFarm({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      refetch();
+    });
+  };
+
   const { totalPage, filter } = farmsData;
   const { page } = filter;
 
@@ -72,10 +104,11 @@ export default withRouter(function (props) {
 
   return (
     <Farm
+      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
       farms={farms}
       breadcrumbs={breadcrumbs}
       totalPage={totalPage}
-      baseUrl={baseUrl}
+      baseUrl="/farms"
       currentPage={page}
     />
   );

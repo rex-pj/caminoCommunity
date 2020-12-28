@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import Product from "../../components/templates/Product";
 import { UrlConstant } from "../../utils/Constants";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { productQueries } from "../../graphql/fetching/queries";
+import { productMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
+import { authClient } from "../../graphql/client";
 
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
   const { pageNumber, pageSize } = params;
-  const [state] = useStore(false);
+  const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(
     productQueries.GET_PRODUCTS,
     {
@@ -25,8 +27,12 @@ export default withRouter(function (props) {
     }
   );
 
+  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
+    client: authClient,
+  });
+
   useEffect(() => {
-    if (state.type === "PRODUCT" && state.id) {
+    if (state.type === "PRODUCT_UPDATE" || state.type === "PRODUCT_DELETE") {
       refetch();
     }
   }, [state, refetch]);
@@ -81,8 +87,36 @@ export default withRouter(function (props) {
     },
   ];
 
+  const onOpenDeleteConfirmation = (e) => {
+    const { title, innerModal, message, id } = e;
+    dispatch("OPEN_MODAL", {
+      data: {
+        title: title,
+        children: message,
+        id: id,
+      },
+      execution: { onDelete: onDelete },
+      options: {
+        isOpen: true,
+        innerModal: innerModal,
+        position: "fixed",
+      },
+    });
+  };
+
+  const onDelete = (id) => {
+    deleteProduct({
+      variables: {
+        criterias: { id },
+      },
+    }).then(() => {
+      refetch();
+    });
+  };
+
   return (
     <Product
+      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
       products={products}
       breadcrumbs={breadcrumbs}
       totalPage={totalPage}
