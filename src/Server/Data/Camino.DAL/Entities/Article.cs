@@ -14,6 +14,8 @@ namespace Camino.DAL.Entities
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public int ArticleCategoryId { get; set; }
+        public bool IsActived { get; set; }
+        public bool IsBlocked { get; set; }
 
         public virtual ArticleCategory ArticleCategory { get; set; }
         public virtual ICollection<ArticlePicture> ArticlePictures { get; set; }

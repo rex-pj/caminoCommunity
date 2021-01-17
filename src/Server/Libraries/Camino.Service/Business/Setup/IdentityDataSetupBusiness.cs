@@ -45,7 +45,6 @@ namespace Camino.Service.Business.Setup
             {
                 using (var transaction = await dataConnection.BeginTransactionAsync())
                 {
-                    var statusTableName = nameof(Status);
                     // Insert user statuses
                     int activedStatusId = 0;
                     foreach (var statusRequest in installationRequest.Statuses)
@@ -58,11 +57,11 @@ namespace Camino.Service.Business.Setup
 
                         if (status.Name == UserStatus.Actived.ToString())
                         {
-                            activedStatusId = await dataConnection.InsertWithInt32IdentityAsync(status, statusTableName);
+                            activedStatusId = await dataConnection.InsertWithInt32IdentityAsync(status);
                         }
                         else
                         {
-                            await dataConnection.InsertWithInt32IdentityAsync(status, statusTableName);
+                            await dataConnection.InsertAsync(status);
                         }
                     }
 
@@ -72,24 +71,22 @@ namespace Camino.Service.Business.Setup
                     }
 
                     // Insert genders
-                    var genderTableName = nameof(Gender);
                     foreach (var gender in installationRequest.Genders)
                     {
                         await dataConnection.InsertAsync(new Gender()
                         {
                             Name = gender.Name
-                        }, genderTableName);
+                        });
                     }
 
                     // Insert countries
-                    var countryTableName = nameof(Country);
                     foreach (var country in installationRequest.Countries)
                     {
                         await dataConnection.InsertAsync(new Country()
                         {
                             Name = country.Name,
                             Code = country.Code
-                        }, countryTableName);
+                        });
                     }
 
                     // Insert user
@@ -102,14 +99,13 @@ namespace Camino.Service.Business.Setup
                         user.IsEmailConfirmed = true;
                         user.CreatedDate = DateTime.UtcNow;
                         user.UpdatedDate = DateTime.UtcNow;
-                        var userId = await dataConnection.InsertWithInt64IdentityAsync(user, nameof(User));
+                        var userId = await dataConnection.InsertWithInt64IdentityAsync(user);
                         if (userId > 0)
                         {
                             userInfo.Id = userId;
-                            await dataConnection.InsertWithInt64IdentityAsync(userInfo, nameof(UserInfo));
+                            await dataConnection.InsertWithInt64IdentityAsync(userInfo);
 
                             // Insert roles
-                            var roleTableName = nameof(Role);
                             var adminRoleId = 0;
                             foreach (var role in installationRequest.Roles)
                             {
@@ -125,11 +121,11 @@ namespace Camino.Service.Business.Setup
 
                                 if (role.Name == "Admin")
                                 {
-                                    adminRoleId = await dataConnection.InsertAsync(newRole, roleTableName);
+                                    adminRoleId = await dataConnection.InsertAsync(newRole);
                                 }
                                 else
                                 {
-                                    await dataConnection.InsertAsync(newRole, roleTableName);
+                                    await dataConnection.InsertAsync(newRole);
                                 }
                             }
 
@@ -145,12 +141,10 @@ namespace Camino.Service.Business.Setup
                                     RoleId = adminRoleId
                                 };
 
-                                var userRoleTableName = nameof(UserRole);
-                                await dataConnection.InsertAsync(adminUserRole, userRoleTableName);
+                                await dataConnection.InsertAsync(adminUserRole);
                             }
 
                             // Insert authorization policies
-                            var authorizationPolicyTableName = nameof(AuthorizationPolicy);
                             foreach (var authorizationPolicy in installationRequest.AuthorizationPolicies)
                             {
                                 var authorizationPolicyId = await dataConnection.InsertWithInt64IdentityAsync(new AuthorizationPolicy()
@@ -161,9 +155,8 @@ namespace Camino.Service.Business.Setup
                                     CreatedDate = DateTime.UtcNow,
                                     UpdatedById = userId,
                                     UpdatedDate = DateTime.UtcNow
-                                }, authorizationPolicyTableName);
+                                });
 
-                                var roleAuthorizationPolicyTableName = nameof(RoleAuthorizationPolicy);
                                 await dataConnection.InsertAsync(new RoleAuthorizationPolicy()
                                 {
                                     GrantedById = userId,
@@ -171,9 +164,8 @@ namespace Camino.Service.Business.Setup
                                     IsGranted = true,
                                     RoleId = adminRoleId,
                                     AuthorizationPolicyId = authorizationPolicyId
-                                }, roleAuthorizationPolicyTableName);
+                                });
 
-                                var userAuthorizationPolicyTableName = nameof(UserAuthorizationPolicy);
                                 await dataConnection.InsertAsync(new UserAuthorizationPolicy()
                                 {
                                     GrantedById = userId,
@@ -181,7 +173,7 @@ namespace Camino.Service.Business.Setup
                                     IsGranted = true,
                                     UserId = userId,
                                     AuthorizationPolicyId = authorizationPolicyId
-                                }, userAuthorizationPolicyTableName);
+                                });
                             }
 
                             await transaction.CommitAsync();

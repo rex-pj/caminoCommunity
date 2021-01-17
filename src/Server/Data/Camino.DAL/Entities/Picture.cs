@@ -15,5 +15,7 @@ namespace Camino.DAL.Entities
         public long UpdatedById { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
+        public bool IsActived { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }

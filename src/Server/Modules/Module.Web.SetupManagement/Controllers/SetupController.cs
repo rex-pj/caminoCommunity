@@ -13,6 +13,7 @@ using Camino.IdentityManager.Models;
 using Camino.IdentityManager.Contracts;
 using Camino.Service.Business.Setup.Contracts;
 using Camino.Service.Projections.Request;
+using Camino.Core.Constants;
 
 namespace Module.Web.SetupManagement.Controllers
 {
@@ -109,9 +110,9 @@ namespace Module.Web.SetupManagement.Controllers
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Succeed");
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                _fileProvider.DeleteFile(settings.SetupUrl);
+                _fileProvider.DeleteFile(SetupSettingsConst.FilePath);
                 return View();
             }
         }

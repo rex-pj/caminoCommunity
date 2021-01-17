@@ -13,6 +13,8 @@ namespace Camino.DAL.Entities
         public long CreatedById { get; set; }
         public long FarmTypeId { get; set; }
         public string Address { get; set; }
+        public bool IsActived { get; set; }
+        public bool IsBlocked { get; set; }
         public virtual FarmType FarmType { get; set; }
     }
 }

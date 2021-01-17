@@ -30,7 +30,9 @@ CREATE TABLE dbo.[Community](
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
 )
 
 GO
@@ -82,7 +84,8 @@ CREATE TABLE dbo.FarmType
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	IsActived BIT NOT NULL,
 )
 
 GO
@@ -101,7 +104,9 @@ CREATE TABLE dbo.Farm
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	FarmTypeId BIGINT NOT NULL,
-	[Address] NVARCHAR(500) NULL
+	[Address] NVARCHAR(500) NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
 )
 
 GO
@@ -185,7 +190,8 @@ CREATE TABLE dbo.[ProductCategory]
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ParentId INT NULL
+	ParentId INT NULL,
+	IsActived BIT NOT NULL,
 )
 
 GO
@@ -207,7 +213,9 @@ CREATE TABLE dbo.Product(
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
 )
 
 GO
@@ -239,31 +247,6 @@ ALTER TABLE dbo.ProductCategoryRelation
 ADD CONSTRAINT PK_ProductCategoryRelation
 PRIMARY KEY (Id);
 
-
---PRODUCT PICTURE--
-GO
-CREATE TABLE dbo.[ProductPicture](
-	Id BIGINT NOT NULL IDENTITY(1,1),
-	[ProductId] BIGINT NOT NULL,
-    [PictureId] BIGINT NOT NULL,
-	[PictureType] INT NULL
-)
-
-GO
-ALTER TABLE dbo.[ProductPicture]
-ADD CONSTRAINT FK_ProductPicture_Product
-FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
-
-GO
-ALTER TABLE dbo.[ProductPicture]
-ADD CONSTRAINT FK_ProductPicture_Picture
-FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
-
-GO
-ALTER TABLE dbo.[ProductPicture]
-ADD CONSTRAINT PK_ProductPicture
-PRIMARY KEY (Id);
-
 --PRODUCT PRICE--
 CREATE TABLE [dbo].[ProductPrice](
 	Id BIGINT NOT NULL IDENTITY(1,1),
@@ -271,7 +254,8 @@ CREATE TABLE [dbo].[ProductPrice](
 	[Price] INT NOT NULL,
 	[PricedDate] DATETIME2 NOT NULL,
 	[IsCurrent] BIT NOT NULL,
-	[IsDiscounted] BIT NOT NULL
+	[IsDiscounted] BIT NOT NULL,
+	IsActived BIT NOT NULL,
 )
 
 GO
@@ -363,7 +347,7 @@ CREATE TABLE dbo.UserPhoto(
 	CreatedById BIGINT NOT NULL,
 	ImageData NVARCHAR(MAX) NOT NULL,
 	UserId BIGINT NOT NULL,
-	TypeId TINYINT NOT NULL
+	TypeId TINYINT NOT NULL,
 )
 
 GO
@@ -387,7 +371,8 @@ CREATE TABLE dbo.ArticleCategory
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ParentId INT NULL
+	ParentId INT NULL,
+	IsActived BIT NOT NULL
 )
 
 GO
@@ -412,7 +397,9 @@ CREATE TABLE dbo.Article
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ArticleCategoryId INT NOT NULL
+	ArticleCategoryId INT NOT NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
 )
 
 GO
@@ -479,7 +466,9 @@ CREATE TABLE dbo.[Picture](
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
 )
 
 GO
@@ -533,4 +522,31 @@ FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
 GO
 ALTER TABLE dbo.[FarmPicture]
 ADD CONSTRAINT PK_FarmPicture
+PRIMARY KEY (Id);
+
+
+--PRODUCT PICTURE--
+GO
+CREATE TABLE dbo.[ProductPicture](
+	Id BIGINT NOT NULL IDENTITY(1,1),
+	[ProductId] BIGINT NOT NULL,
+    [PictureId] BIGINT NOT NULL,
+	[PictureType] INT NULL,
+	IsActived BIT NOT NULL,
+	IsBlocked BIT NOT NULL
+)
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT FK_ProductPicture_Product
+FOREIGN KEY (ProductId) REFERENCES dbo.Product(Id);
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT FK_ProductPicture_Picture
+FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
+
+GO
+ALTER TABLE dbo.[ProductPicture]
+ADD CONSTRAINT PK_ProductPicture
 PRIMARY KEY (Id);

@@ -1,3 +1,16 @@
+-- USER STATUS--
+CREATE TABLE dbo.[Status]
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	[Name] VARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL
+)
+
+GO
+ALTER TABLE dbo.[Status]
+ADD CONSTRAINT PK_Status
+PRIMARY KEY (Id);
+
 --USER--
 GO
 CREATE TABLE dbo.[User]
@@ -23,6 +36,10 @@ ALTER TABLE dbo.[User]
 ADD CONSTRAINT PK_User
 PRIMARY KEY (Id);
 
+GO
+ALTER TABLE dbo.[User]
+ADD CONSTRAINT FK_User_Status
+FOREIGN KEY (StatusId) REFERENCES dbo.[Status](Id);
 --USER INFO--
 GO
 CREATE TABLE dbo.UserInfo
@@ -47,25 +64,6 @@ GO
 ALTER TABLE dbo.[UserInfo]
 ADD CONSTRAINT FK_UserInfo_User
 FOREIGN KEY (Id) REFERENCES dbo.[User](Id);
-
--- USER STATUS--
-CREATE TABLE dbo.[Status]
-(
-	Id INT NOT NULL IDENTITY(1,1),
-	Name VARCHAR(255) NOT NULL,
-	[Description] NVARCHAR(1000) NULL
-)
-
-GO
-ALTER TABLE dbo.[Status]
-ADD CONSTRAINT PK_Status
-PRIMARY KEY (Id);
-
-
-GO
-ALTER TABLE dbo.[User]
-ADD CONSTRAINT FK_User_Status
-FOREIGN KEY (StatusId) REFERENCES dbo.[Status](Id);
 
 --ROLE--
 GO

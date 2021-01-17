@@ -53,7 +53,11 @@ namespace Camino.Data.Contracts
 
         public DataConnection CreateDataConnection()
         {
+            var mappingSchema = new MappingSchema();
+            FluentMapBuilder = mappingSchema.GetFluentMappingBuilder();
             var dataConnection = new DataConnection(_dataProvider, _dataConnection.ConnectionString);
+            dataConnection.AddMappingSchema(mappingSchema);
+            OnMappingSchemaCreating();
             return dataConnection;
         }
 
@@ -114,6 +118,18 @@ namespace Camino.Data.Contracts
         public void InsertRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
         {
             _dataConnection.BulkCopy(new BulkCopyOptions(), entities.RetrieveIdentity(_dataConnection));
+        }
+
+        public int Insert<TEntity>(TEntity entity)
+        {
+            var id = _dataConnection.Insert(entity);
+            return id;
+        }
+
+        public async Task<int> InsertAsync<TEntity>(TEntity entity)
+        {
+            var id = await _dataConnection.InsertAsync(entity);
+            return id;
         }
 
         public object InsertWithIdentity<TEntity>(TEntity entity)

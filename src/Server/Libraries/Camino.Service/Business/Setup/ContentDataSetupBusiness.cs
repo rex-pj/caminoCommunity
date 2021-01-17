@@ -43,15 +43,14 @@ namespace Camino.Service.Business.Setup
 
                     try
                     {
-                        // Insert countries
-                        var userPhotoTypeTableName = nameof(UserPhotoType);
+                        // Insert User Photo Types
                         foreach (var userPhotoType in installationRequest.UserPhotoTypes)
                         {
                             await dataConnection.InsertAsync(new UserPhotoType()
                             {
                                 Name = userPhotoType.Name,
                                 Description = userPhotoType.Description
-                            }, userPhotoTypeTableName);
+                            });
                         }
 
                         await transaction.CommitAsync();

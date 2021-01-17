@@ -20,7 +20,8 @@ namespace Camino.DAL.Entities
         public long CreatedById { get; set; }
 
         public int? ParentId { get; set; }
-        
+        public bool IsActived { get; set; }
+
         public virtual ArticleCategory ParentCategory { get; set; }
 
         public virtual ICollection<ArticleCategory> ChildCategories { get; set; }

@@ -17,5 +17,6 @@ namespace Camino.DAL.Entities
         public DateTimeOffset CreatedDate { get; set; }
 
         public long CreatedById { get; set; }
+        public bool IsActived { get; set; }
     }
 }

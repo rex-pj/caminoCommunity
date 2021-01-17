@@ -11,8 +11,8 @@ namespace Camino.IdentityDAL.Mapping
         {
             builder.Entity<Status>().HasTableName(nameof(Status))
                 .HasSchemaName(TableSchemaConst.DBO)
-                .HasIdentity(x => x.Id)
                 .HasPrimaryKey(x => x.Id)
+                .HasIdentity(x => x.Id)
                 .Association(c => c.Users, (status, users) => status.Id == users.StatusId);
         }
     }
