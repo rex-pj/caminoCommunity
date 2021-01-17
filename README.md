@@ -1,4 +1,4 @@
-# Camino Social
+# Camino Community
 
 An open-source to build a place to connect many people and build communities with special industries and hobbies example farmer, food production, Camino is the appropriate source.
 Hope to have your comments to build and improve Camino better.
@@ -11,9 +11,9 @@ Hope to have your comments to build and improve Camino better.
 
 **Business structure:**
 - Client
-  + **Camino.ApiHost** is an API server based on ASP.NET 5.0 and Hot Chocolate to build a GraphQL API.
-  + **clientApp** will take over the role for the front-end for the client, it's based on ReactJS and Apollo Client to *interact with Camino.ApiHost*
-- Management Center:
+  + **client-app** will take over the role for the front-end for the client, it's based on ReactJS and Apollo Client to *interact with Camino.ApiHost*
+- Server:
+  + **Camino.ApiHost** is an API server based on ASP.NET 5.0 and Hot Chocolate to build a GraphQL API, serve for **client-app**.
   + **Camino.Management** based on ASP.NET 5.0 MVC, it will take the role for some specific person to manage the data as Administrator, Moderator, Approver.
   
 **Please note:**
