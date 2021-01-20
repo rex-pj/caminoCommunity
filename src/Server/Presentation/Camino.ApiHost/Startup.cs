@@ -23,8 +23,6 @@ namespace Camino.ApiHost
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureApiHostServices(Configuration);
-
-            
             var mvcBuilder = services.AddControllers().AddNewtonsoftJson();
             mvcBuilder.AddModular();
             services.AddGraphQlModular();

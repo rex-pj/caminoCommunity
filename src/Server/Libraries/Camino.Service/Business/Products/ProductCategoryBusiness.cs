@@ -159,7 +159,7 @@ namespace Camino.Service.Business.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryProjection>> SearchParentsAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryProjection>> SearchParentsAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -176,9 +176,9 @@ namespace Camino.Service.Business.Products
                     ParentId = c.ParentId
                 });
 
-            if (currentId.HasValue)
+            if (currentIds != null && currentIds.Any())
             {
-                query = query.Where(x => x.Id != currentId);
+                query = query.Where(x => !currentIds.Contains(x.Id));
             }
 
             if (!string.IsNullOrEmpty(search))
@@ -203,7 +203,7 @@ namespace Camino.Service.Business.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryProjection>> SearchAsync(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryProjection>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -212,7 +212,13 @@ namespace Camino.Service.Business.Products
 
             search = search.ToLower();
             var queryParents = _productCategoryRepository.Get(x => !x.ParentId.HasValue);
+
             var queryChildrens = _productCategoryRepository.Get(x => x.ParentId.HasValue);
+            if (currentIds != null && currentIds.Any())
+            {
+                queryParents = queryParents.Where(x => !currentIds.Contains(x.Id));
+                queryChildrens = queryChildrens.Where(x => !currentIds.Contains(x.Id));
+            }
 
             var query = from parent in queryParents
                         join child in queryChildrens
@@ -239,11 +245,6 @@ namespace Camino.Service.Business.Products
                         || x.Description.ToLower().Contains(search)
                         || x.ParentCategory.Name.ToLower().Contains(search)
                         || x.ParentCategory.Description.ToLower().Contains(search));
-            }
-
-            if (currentId.HasValue)
-            {
-                query = query.Where(x => x.Id != currentId);
             }
 
             if (pageSize > 0)
@@ -293,7 +294,8 @@ namespace Camino.Service.Business.Products
                 CreatedById = category.CreatedById,
                 UpdatedById = category.UpdatedById,
                 UpdatedDate = DateTimeOffset.UtcNow,
-                CreatedDate = DateTimeOffset.UtcNow
+                CreatedDate = DateTimeOffset.UtcNow,
+                IsPublished = true
             };
 
             var id = await _productCategoryRepository.AddWithInt32EntityAsync(newCategory);

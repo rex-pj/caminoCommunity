@@ -36,9 +36,9 @@ namespace Module.Api.Media.GraphQL.Resolvers
 
                 return CommonResult.Success(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -56,9 +56,9 @@ namespace Module.Api.Media.GraphQL.Resolvers
 
                 return CommonResult.Success(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -74,9 +74,9 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -92,9 +92,9 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Cover);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Camino.Service.Business.Products.Contracts;
 using Camino.Service.Projections.Product;
 using System.Linq;
+using Camino.Service.Projections.Media;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -106,7 +107,22 @@ namespace Module.Web.ProductManagement.Controllers
                     CreatedDate = product.CreatedDate,
                     UpdatedDate = product.UpdatedDate,
                     Description = product.Description,
-                    Name = product.Name
+                    Name = product.Name,
+                    Price = product.Price,
+                    Thumbnails = product.Pictures.Select(y => new PictureRequestModel()
+                    {
+                        PictureId = y.Id
+                    }),
+                    ProductCategories = product.Categories.Select(x => new ProductCategoryRelationModel()
+                    {
+                        Id = x.Id,
+                        Name = x.Name
+                    }),
+                    ProductFarms = product.Farms.Select(x => new ProductFarmModel()
+                    {
+                        FarmId = x.FarmId,
+                        FarmName = x.Name
+                    })
                 };
                 return View(model);
             }
@@ -114,37 +130,6 @@ namespace Module.Web.ProductManagement.Controllers
             {
                 return RedirectToErrorPage();
             }
-        }
-
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProduct)]
-        [HttpGet]
-        public IActionResult Create()
-        {
-            var model = new ProductModel();
-            return View(model);
-        }
-
-        [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProduct)]
-        public async Task<IActionResult> Create(ProductModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToErrorPage();
-            }
-
-            var product = _mapper.Map<ProductProjection>(model);
-            var exist = _productBusiness.FindByName(model.Name);
-            if (exist != null)
-            {
-                return RedirectToErrorPage();
-            }
-
-            product.UpdatedById = LoggedUserId;
-            product.CreatedById = LoggedUserId;
-            var id = await _productBusiness.CreateAsync(product);
-
-            return RedirectToAction("Detail", new { id });
         }
 
         [HttpGet]
@@ -162,7 +147,22 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedDate = product.CreatedDate,
                 UpdatedDate = product.UpdatedDate,
                 Description = product.Description,
-                Name = product.Name
+                Name = product.Name,
+                Price = product.Price,
+                Thumbnails = product.Pictures.Select(y => new PictureRequestModel()
+                {
+                    PictureId = y.Id
+                }),
+                ProductCategories = product.Categories.Select(x => new ProductCategoryRelationModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }),
+                ProductFarms = product.Farms.Select(x => new ProductFarmModel()
+                {
+                    FarmId = x.FarmId,
+                    FarmName = x.Name
+                })
             };
 
             return View(model);
@@ -177,7 +177,23 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var product = _mapper.Map<ProductProjection>(model);
+            var product = new ProductProjection()
+            {
+                Id = model.Id,
+                UpdatedById = LoggedUserId,
+                CreatedById = LoggedUserId,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                Categories = model.ProductCategoryIds.Select(id => new ProductCategoryProjection()
+                {
+                    Id = id
+                }),
+                Farms = model.ProductFarmIds.Select(id => new ProductFarmProjection()
+                {
+                    FarmId = id
+                })
+            };
             if (product.Id <= 0)
             {
                 return RedirectToErrorPage();
@@ -187,6 +203,17 @@ namespace Module.Web.ProductManagement.Controllers
             if (exist == null)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (model.Thumbnails != null && model.Thumbnails.Any())
+            {
+                product.Pictures = model.Thumbnails.Select(x => new PictureRequestProjection()
+                {
+                    Base64Data = x.Base64Data,
+                    ContentType = x.ContentType,
+                    FileName = x.FileName,
+                    Id = x.PictureId
+                });
             }
 
             product.UpdatedById = LoggedUserId;

@@ -8,7 +8,9 @@ CREATE TABLE dbo.Menu
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	ParentMenuId SMALLINT NULL
+	ParentMenuId SMALLINT NULL,
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
 )
 
 GO
@@ -31,8 +33,9 @@ CREATE TABLE dbo.[Community](
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
+	StatusId INT NOT NULL
 )
 
 GO
@@ -85,7 +88,8 @@ CREATE TABLE dbo.FarmType
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsActived BIT NOT NULL,
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL
 )
 
 GO
@@ -105,8 +109,9 @@ CREATE TABLE dbo.Farm
 	CreatedById BIGINT NOT NULL,
 	FarmTypeId BIGINT NOT NULL,
 	[Address] NVARCHAR(500) NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
+	StatusId INT NOT NULL
 )
 
 GO
@@ -191,7 +196,8 @@ CREATE TABLE dbo.[ProductCategory]
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsActived BIT NOT NULL,
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL
 )
 
 GO
@@ -214,8 +220,9 @@ CREATE TABLE dbo.Product(
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
+	StatusId INT NOT NULL
 )
 
 GO
@@ -255,7 +262,7 @@ CREATE TABLE [dbo].[ProductPrice](
 	[PricedDate] DATETIME2 NOT NULL,
 	[IsCurrent] BIT NOT NULL,
 	[IsDiscounted] BIT NOT NULL,
-	IsActived BIT NOT NULL,
+	IsPublished BIT NOT NULL
 )
 
 GO
@@ -372,7 +379,8 @@ CREATE TABLE dbo.ArticleCategory
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsActived BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL
 )
 
 GO
@@ -398,8 +406,9 @@ CREATE TABLE dbo.Article
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ArticleCategoryId INT NOT NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
+	StatusId INT NOT NULL
 )
 
 GO
@@ -467,8 +476,9 @@ CREATE TABLE dbo.[Picture](
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	IsDeleted BIT NOT NULL,
+	IsPublished BIT NOT NULL,
+	StatusId INT NOT NULL
 )
 
 GO
@@ -482,7 +492,7 @@ CREATE TABLE dbo.[ArticlePicture](
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	[ArticleId] BIGINT NOT NULL,
     [PictureId] BIGINT NOT NULL,
-	[PictureType] INT NULL
+	[PictureTypeId] INT NULL
 )
 
 GO
@@ -506,7 +516,7 @@ CREATE TABLE dbo.[FarmPicture](
 	[Id] BIGINT NOT NULL IDENTITY(1,1),
 	[FarmId] BIGINT NOT NULL,
     [PictureId] BIGINT NOT NULL,
-	[PictureType] INT NULL
+	[PictureTypeId] INT NULL
 )
 
 GO
@@ -531,9 +541,7 @@ CREATE TABLE dbo.[ProductPicture](
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	[ProductId] BIGINT NOT NULL,
     [PictureId] BIGINT NOT NULL,
-	[PictureType] INT NULL,
-	IsActived BIT NOT NULL,
-	IsBlocked BIT NOT NULL
+	[PictureTypeId] INT NULL
 )
 
 GO

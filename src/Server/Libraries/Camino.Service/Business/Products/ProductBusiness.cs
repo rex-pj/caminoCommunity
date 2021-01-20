@@ -29,16 +29,14 @@ namespace Camino.Service.Business.Products
         private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
         private readonly IRepository<ProductCategory> _productCategoryRepository;
         private readonly IRepository<User> _userRepository;
-        private readonly IMapper _mapper;
 
-        public ProductBusiness(IMapper mapper, IRepository<Product> productRepository,
-            IRepository<ProductCategoryRelation> productCategoryRelationRepository, IRepository<User> userRepository,
+        public ProductBusiness(IRepository<Product> productRepository, IRepository<User> userRepository,
+            IRepository<ProductCategoryRelation> productCategoryRelationRepository,
             IRepository<Picture> pictureRepository, IRepository<ProductPicture> productPictureRepository,
             IRepository<UserPhoto> userPhotoRepository, IRepository<ProductPrice> productPriceRepository,
             IRepository<FarmProduct> farmProductRepository, IRepository<Farm> farmRepository,
             IRepository<ProductCategory> productCategoryRepository)
         {
-            _mapper = mapper;
             _productRepository = productRepository;
             _productCategoryRelationRepository = productCategoryRelationRepository;
             _userRepository = userRepository;
@@ -53,8 +51,7 @@ namespace Camino.Service.Business.Products
 
         public async Task<ProductProjection> FindAsync(long id)
         {
-            var exist = await (from product in _productRepository.Table
-                               where product.Id == id
+            var exist = await (from product in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
                                select new ProductProjection
                                {
                                    CreatedDate = product.CreatedDate,
@@ -70,7 +67,7 @@ namespace Camino.Service.Business.Products
 
         public async Task<ProductProjection> FindDetailAsync(long id)
         {
-            var farmQuery = from farm in _farmRepository.Table
+            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -92,12 +89,18 @@ namespace Camino.Service.Business.Products
                                            Name = category.Name
                                        };
 
-            var product = await (from p in _productRepository.Table
+            var thumbnailTypeId = (int)ProductPictureType.Thumbnail;
+            var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == thumbnailTypeId)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on productPic.PictureId equals picture.Id
+                                  select productPic;
+
+            var product = await (from p in _productRepository.Get(x => !x.IsDeleted && x.Id == id)
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
                                  from price in prices.DefaultIfEmpty()
 
-                                 join productPic in _productPictureRepository.Table
+                                 join productPic in productPictures
                                  on p.Id equals productPic.ProductId into pics
 
                                  join categoryRelation in productCategoryQuery
@@ -105,7 +108,6 @@ namespace Camino.Service.Business.Products
 
                                  join fp in farmQuery
                                  on p.Id equals fp.ProductId into farmProducts
-                                 where p.Id == id
                                  select new ProductProjection
                                  {
                                      Description = p.Description,
@@ -116,16 +118,16 @@ namespace Camino.Service.Business.Products
                                      UpdatedById = p.UpdatedById,
                                      UpdatedDate = p.UpdatedDate,
                                      Price = price.Price,
-                                     ProductCategories = productCategories.Select(x => new ProductCategoryProjection()
+                                     Categories = productCategories.Select(x => new ProductCategoryProjection()
                                      {
                                          Id = x.CategoryId,
                                          Name = x.Name
                                      }),
-                                     ProductFarms = farmProducts.Select(x => new ProductFarmProjection()
+                                     Farms = farmProducts.Select(x => new ProductFarmProjection()
                                      {
                                          Id = x.Id,
                                          FarmId = x.FarmId,
-                                         FarmName = x.Name
+                                         Name = x.Name
                                      }),
                                      Pictures = pics.Select(x => new PictureRequestProjection
                                      {
@@ -138,18 +140,27 @@ namespace Camino.Service.Business.Products
                 return null;
             }
 
-            var createdByUserName = await _userRepository.Get(x => x.Id == product.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
-            product.CreatedBy = createdByUserName;
+            product.CreatedBy = await _userRepository.Get(x => x.Id == product.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
+            product.UpdatedBy = await _userRepository.Get(x => x.Id == product.UpdatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
 
             return product;
         }
 
         public ProductProjection FindByName(string name)
         {
-            var exist = _productRepository.Get(x => x.Name == name)
+            var exist = _productRepository.Get(x => x.Name == name && !x.IsDeleted)
                 .FirstOrDefault();
 
-            var product = _mapper.Map<ProductProjection>(exist);
+            var product = new ProductProjection()
+            {
+                CreatedDate = exist.CreatedDate,
+                CreatedById = exist.CreatedById,
+                Id = exist.Id,
+                Name = exist.Name,
+                UpdatedById = exist.UpdatedById,
+                UpdatedDate = exist.UpdatedDate,
+                Description = exist.Description,
+            };
 
             return product;
         }
@@ -157,7 +168,7 @@ namespace Camino.Service.Business.Products
         public async Task<BasePageList<ProductProjection>> GetAsync(ProductFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Table;
+            var productQuery = _productRepository.Get(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -200,7 +211,7 @@ namespace Camino.Service.Business.Products
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
-            var farmQuery = from farm in _farmRepository.Table
+            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -213,8 +224,13 @@ namespace Camino.Service.Business.Products
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
+            var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == thumbnailTypeId)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on productPic.PictureId equals picture.Id
+                                  select productPic;
+
             var query = from product in productQuery
-                        join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
+                        join productPic in productPictures
                         on product.Id equals productPic.ProductId into pics
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                         on product.CreatedById equals pho.CreatedById into photos
@@ -239,11 +255,11 @@ namespace Camino.Service.Business.Products
                             {
                                 Id = x.PictureId
                             }),
-                            ProductFarms = farmProducts.Select(x => new ProductFarmProjection
+                            Farms = farmProducts.Select(x => new ProductFarmProjection
                             {
                                 Id = x.Id,
                                 FarmId = x.FarmId,
-                                FarmName = x.Name
+                                Name = x.Name
                             })
                         };
 
@@ -285,7 +301,7 @@ namespace Camino.Service.Business.Products
 
         public async Task<IList<ProductProjection>> GetRelevantsAsync(long id, ProductFilter filter)
         {
-            var exist = (from pr in _productRepository.Get(x => x.Id == id)
+            var exist = (from pr in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
                          join fp in _farmProductRepository.Table
                          on pr.Id equals fp.ProductId into farmProducts
                          join productCategoryRelation in _productCategoryRelationRepository.Table
@@ -295,18 +311,18 @@ namespace Camino.Service.Business.Products
                              Id = pr.Id,
                              CreatedById = pr.CreatedById,
                              UpdatedById = pr.UpdatedById,
-                             ProductCategories = categoriesRelation.Select(x => new ProductCategoryProjection()
+                             Categories = categoriesRelation.Select(x => new ProductCategoryProjection()
                              {
                                  Id = x.ProductCategoryId
                              }),
-                             ProductFarms = farmProducts.Select(x => new ProductFarmProjection()
+                             Farms = farmProducts.Select(x => new ProductFarmProjection()
                              {
                                  FarmId = x.FarmId
                              })
                          }).FirstOrDefault();
 
-            var farmIds = exist.ProductFarms.Select(x => x.FarmId);
-            var categoryIds = exist.ProductCategories.Select(x => x.Id);
+            var farmIds = exist.Farms.Select(x => x.FarmId);
+            var categoryIds = exist.Categories.Select(x => x.Id);
 
             var farmQuery = from farm in _farmRepository.Get(x => farmIds.Contains(x.Id))
                             join farmProduct in _farmProductRepository.Table
@@ -320,7 +336,12 @@ namespace Camino.Service.Business.Products
                             };
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
-            var thumbnailTypeId = (byte)ProductPictureType.Thumbnail;
+            var thumbnailTypeId = (int)ProductPictureType.Thumbnail;
+            var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == thumbnailTypeId)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on productPic.PictureId equals picture.Id
+                                  select productPic;
+
             var relevantProductQuery = (from pr in _productRepository.Get(x => x.Id != exist.Id)
                                         join fp in farmQuery
                                         on pr.Id equals fp.ProductId into farmProducts
@@ -329,7 +350,7 @@ namespace Camino.Service.Business.Products
                                         on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
                                         from categoryRelation in categoriesRelation.DefaultIfEmpty()
 
-                                        join productPic in _productPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
+                                        join productPic in productPictures
                                         on pr.Id equals productPic.ProductId into pics
                                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                                         on pr.CreatedById equals pho.CreatedById into photos
@@ -357,11 +378,11 @@ namespace Camino.Service.Business.Products
                                             {
                                                 Id = x.PictureId
                                             }),
-                                            ProductFarms = farmProducts.Select(x => new ProductFarmProjection
+                                            Farms = farmProducts.Select(x => new ProductFarmProjection
                                             {
                                                 Id = x.Id,
                                                 FarmId = x.FarmId,
-                                                FarmName = x.Name
+                                                Name = x.Name
                                             })
                                         });
 
@@ -407,12 +428,13 @@ namespace Camino.Service.Business.Products
                 UpdatedDate = modifiedDate,
                 Description = product.Description,
                 Name = product.Name,
+                IsPublished = true
             };
 
             var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
             if (id > 0)
             {
-                foreach (var category in product.ProductCategories)
+                foreach (var category in product.Categories)
                 {
                     _productCategoryRelationRepository.Add(new ProductCategoryRelation()
                     {
@@ -421,7 +443,7 @@ namespace Camino.Service.Business.Products
                     });
                 }
 
-                foreach (var farm in product.ProductFarms)
+                foreach (var farm in product.Farms)
                 {
                     _farmProductRepository.Add(new FarmProduct()
                     {
@@ -454,7 +476,8 @@ namespace Camino.Service.Business.Products
                         MimeType = picture.ContentType,
                         UpdatedById = product.UpdatedById,
                         UpdatedDate = modifiedDate,
-                        BinaryData = pictureData
+                        BinaryData = pictureData,
+                        IsPublished = true
                     });
 
                     var productPictureType = index == 0 ? (int)ProductPictureType.Thumbnail : (int)ProductPictureType.Secondary;
@@ -462,7 +485,7 @@ namespace Camino.Service.Business.Products
                     {
                         ProductId = id,
                         PictureId = pictureId,
-                        PictureType = productPictureType
+                        PictureTypeId = productPictureType
                     });
                     index += 1;
                 }
@@ -488,15 +511,13 @@ namespace Camino.Service.Business.Products
             var deletePictureIds = deleteProductPictures.Select(x => x.PictureId).ToList();
             if (deletePictureIds.Any())
             {
-                await _productPictureRepository.DeleteAsync(deleteProductPictures);
-
-                var currentPictures = _pictureRepository.Get(x => deletePictureIds.Contains(x.Id));
-                await _pictureRepository.DeleteAsync(currentPictures);
+                await deleteProductPictures.DeleteAsync();
+                await _pictureRepository.Get(x => deletePictureIds.Contains(x.Id)).DeleteAsync();
             }
 
             var thumbnailType = (int)ProductPictureType.Thumbnail;
             var shouldAddThumbnail = true;
-            var hasThumbnail = _productPictureRepository.Get(x => x.ProductId == request.Id && x.PictureType == thumbnailType).Any();
+            var hasThumbnail = _productPictureRepository.Get(x => x.ProductId == request.Id && x.PictureTypeId == thumbnailType).Any();
             if (hasThumbnail)
             {
                 shouldAddThumbnail = false;
@@ -517,7 +538,8 @@ namespace Camino.Service.Business.Products
                         MimeType = picture.ContentType,
                         UpdatedById = request.UpdatedById,
                         UpdatedDate = modifiedDate,
-                        BinaryData = pictureData
+                        BinaryData = pictureData,
+                        IsPublished = true
                     });
 
                     var farmPictureType = shouldAddThumbnail ? thumbnailType : (int)ProductPictureType.Secondary;
@@ -525,36 +547,31 @@ namespace Camino.Service.Business.Products
                     {
                         ProductId = product.Id,
                         PictureId = pictureId,
-                        PictureType = farmPictureType
+                        PictureTypeId = farmPictureType
                     });
                     shouldAddThumbnail = false;
                 }
             }
 
-            var firstRestPicture = await _productPictureRepository.FirstOrDefaultAsync(x => x.ProductId == request.Id && x.PictureType != thumbnailType);
+            var firstRestPicture = await _productPictureRepository.FirstOrDefaultAsync(x => x.ProductId == request.Id && x.PictureTypeId != thumbnailType);
             if (firstRestPicture != null)
             {
-                firstRestPicture.PictureType = thumbnailType;
+                firstRestPicture.PictureTypeId = thumbnailType;
                 await _productPictureRepository.UpdateAsync(firstRestPicture);
             }
 
             // Update Category
-            var categoryIds = request.ProductCategories.Select(x => x.Id);
-            var deleteCategories = _productCategoryRelationRepository
-                        .Get(x => x.ProductId == request.Id && !categoryIds.Contains(x.ProductCategoryId));
-
-            var deletecategoryIds = deleteCategories.Select(x => x.ProductCategoryId).ToList();
-            if (deletecategoryIds.Any())
-            {
-                await _productCategoryRelationRepository.DeleteAsync(deleteCategories);
-            }
+            var categoryIds = request.Categories.Select(x => x.Id);
+            await _productCategoryRelationRepository
+                        .Get(x => x.ProductId == request.Id && !categoryIds.Contains(x.ProductCategoryId))
+                        .DeleteAsync();
 
             var linkedCategoryIds = _productCategoryRelationRepository
                 .Get(x => x.ProductId == request.Id && categoryIds.Contains(x.ProductCategoryId))
                 .Select(x => x.ProductCategoryId)
                 .ToList();
 
-            var unlinkedCategories = request.ProductCategories.Where(x => !linkedCategoryIds.Contains(x.Id));
+            var unlinkedCategories = request.Categories.Where(x => !linkedCategoryIds.Contains(x.Id));
             if (unlinkedCategories != null && unlinkedCategories.Any())
             {
                 foreach (var category in unlinkedCategories)
@@ -568,22 +585,17 @@ namespace Camino.Service.Business.Products
             }
 
             // Update Farm
-            var farmIds = request.ProductFarms.Select(x => x.FarmId);
-            var deletedFarms = _farmProductRepository
-                        .Get(x => x.ProductId == request.Id && !farmIds.Contains(x.FarmId));
-
-            var deleteFarmIds = deletedFarms.Select(x => x.FarmId).ToList();
-            if (deleteFarmIds.Any())
-            {
-                await _farmProductRepository.DeleteAsync(deletedFarms);
-            }
+            var farmIds = request.Farms.Select(x => x.FarmId);
+            await _farmProductRepository
+                        .Get(x => x.ProductId == request.Id && !farmIds.Contains(x.FarmId))
+                        .DeleteAsync();
 
             var linkedFarmIds = _farmProductRepository
                 .Get(x => x.ProductId == request.Id && farmIds.Contains(x.FarmId))
                 .Select(x => x.FarmId)
                 .ToList();
 
-            var unlinkedFarms = request.ProductFarms.Where(x => !linkedFarmIds.Contains(x.FarmId));
+            var unlinkedFarms = request.Farms.Where(x => !linkedFarmIds.Contains(x.FarmId));
             if (unlinkedFarms != null && unlinkedFarms.Any())
             {
                 foreach (var farm in unlinkedFarms)
@@ -600,14 +612,12 @@ namespace Camino.Service.Business.Products
             }
 
             // Unlink all price
-            var unlinkedProductPrices = await _productPriceRepository.Get(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price)
-                .ToListAsync();
+            var totalPriceUpdated = await _productPriceRepository.Get(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price)
+                .Set(x => x.IsCurrent, false)
+                .UpdateAsync();
 
-            if (unlinkedProductPrices.Any())
+            if (totalPriceUpdated > 0)
             {
-                unlinkedProductPrices.ForEach(x => x.IsCurrent = false);
-                await _productPriceRepository.UpdateAsync(unlinkedProductPrices);
-
                 await _productPriceRepository.AddAsync(new ProductPrice()
                 {
                     PricedDate = modifiedDate,
@@ -626,22 +636,38 @@ namespace Camino.Service.Business.Products
         {
             var productPictures = _productPictureRepository.Get(x => x.ProductId == id);
             var pictureIds = productPictures.Select(x => x.PictureId).ToList();
-            await _productPictureRepository.DeleteAsync(productPictures);
+            await productPictures.DeleteAsync();
 
-            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-            await _pictureRepository.DeleteAsync(pictures);
+            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                .DeleteAsync();
 
-            var farmProducts = _farmProductRepository.Get(x => x.ProductId == id);
-            await _farmProductRepository.DeleteAsync(farmProducts);
+            await _farmProductRepository.Get(x => x.ProductId == id)
+                .DeleteAsync();
 
-            var productPrices = _productPriceRepository.Get(x => x.ProductId == id);
-            await _productPriceRepository.DeleteAsync(productPrices);
+            await _productPriceRepository.Get(x => x.ProductId == id)
+                .DeleteAsync();
 
-            var productCategoryRelations = _productCategoryRelationRepository.Get(x => x.ProductId == id);
-            await _productCategoryRelationRepository.DeleteAsync(productCategoryRelations);
+            await _productCategoryRelationRepository.Get(x => x.ProductId == id)
+                .DeleteAsync();
 
-            var product = _productRepository.FirstOrDefault(x => x.Id == id);
-            await _productRepository.DeleteAsync(product);
+            await _productRepository.Get(x => x.Id == id)
+                .DeleteAsync();
+
+            return true;
+        }
+
+        public async Task<bool> SoftDeleteAsync(long id)
+        {
+            await (from productPicture in _productPictureRepository.Get(x => x.ProductId == id)
+                   join picture in _pictureRepository.Table
+                   on productPicture.PictureId equals picture.Id
+                   select picture)
+                    .Set(x => x.IsDeleted, true)
+                    .UpdateAsync();
+
+            await _productRepository.Get(x => x.Id == id)
+                .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
 
             return true;
         }

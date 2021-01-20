@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Service.Projections.Filters;
 using Camino.Data.Contracts;
 using LinqToDB;
 using System;
@@ -25,14 +24,12 @@ namespace Camino.Service.Business.Articles
         private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IRepository<User> _userRepository;
-        private readonly IMapper _mapper;
 
-        public ArticleBusiness(IMapper mapper, IRepository<Article> articleRepository,
+        public ArticleBusiness(IRepository<Article> articleRepository,
             IRepository<ArticleCategory> articleCategoryRepository, IRepository<User> userRepository,
             IRepository<Picture> pictureRepository, IRepository<ArticlePicture> articlePictureRepository,
             IRepository<UserPhoto> userPhotoRepository)
         {
-            _mapper = mapper;
             _articleRepository = articleRepository;
             _articleCategoryRepository = articleCategoryRepository;
             _userRepository = userRepository;
@@ -43,10 +40,9 @@ namespace Camino.Service.Business.Articles
 
         public async Task<ArticleProjection> FindAsync(long id)
         {
-            var exist = await (from article in _articleRepository.Table
+            var exist = await (from article in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
-                               where article.Id == id
                                select new ArticleProjection
                                {
                                    CreatedDate = article.CreatedDate,
@@ -70,13 +66,18 @@ namespace Camino.Service.Business.Articles
         public async Task<ArticleProjection> FindDetailAsync(long id)
         {
             var pictureTypeId = (int)ArticlePictureType.Thumbnail;
-            var exist = await (from article in _articleRepository.Table
+            var articlePictures = from articlePic in _articlePictureRepository.Get(x => x.PictureTypeId == pictureTypeId)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on articlePic.PictureId equals picture.Id
+                                  select articlePic;
+
+            var exist = await (from article in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
-                               join articlePic in _articlePictureRepository.Get(x => x.PictureType == pictureTypeId)
+                               join articlePic in articlePictures
                                on article.Id equals articlePic.ArticleId into articlePics
-                               from picture in articlePics.DefaultIfEmpty()
-                               where article.Id == id
+                               from articlePicture in articlePics.DefaultIfEmpty()
+                               where article.Id == id && !article.IsDeleted
                                select new ArticleProjection
                                {
                                    Description = article.Description,
@@ -91,7 +92,7 @@ namespace Camino.Service.Business.Articles
                                    Content = article.Content,
                                    Thumbnail = new PictureRequestProjection
                                    {
-                                       Id = picture.PictureId
+                                       Id = articlePicture.PictureId
                                    }
                                }).FirstOrDefaultAsync();
 
@@ -108,10 +109,20 @@ namespace Camino.Service.Business.Articles
 
         public ArticleProjection FindByName(string name)
         {
-            var exist = _articleRepository.Get(x => x.Name == name)
+            var article = _articleRepository.Get(x => x.Name == name && !x.IsDeleted)
+                .Select(x => new ArticleProjection()
+                {
+                    ArticleCategoryId = x.ArticleCategoryId,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Content = x.Content,
+                    UpdatedById = x.UpdatedById,
+                    UpdatedDate = x.UpdatedDate,
+                    CreatedById = x.CreatedById,
+                    CreatedDate = x.CreatedDate,
+                    Id = x.Id
+                })
                 .FirstOrDefault();
-
-            var article = _mapper.Map<ArticleProjection>(exist);
 
             return article;
         }
@@ -119,7 +130,7 @@ namespace Camino.Service.Business.Articles
         public async Task<BasePageList<ArticleProjection>> GetAsync(ArticleFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var articleQuery = _articleRepository.Table;
+            var articleQuery = _articleRepository.Get(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(search))
             {
                 articleQuery = articleQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -164,8 +175,13 @@ namespace Camino.Service.Business.Articles
             var filteredNumber = articleQuery.Select(x => x.Id).Count();
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
+            var articlePictures = from articlePic in _articlePictureRepository.Table
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on articlePic.PictureId equals picture.Id
+                                  select articlePic;
+
             var query = from ar in articleQuery
-                        join pic in _articlePictureRepository.Table
+                        join pic in articlePictures
                         on ar.Id equals pic.ArticleId into pics
                         from picture in pics.DefaultIfEmpty()
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
@@ -239,7 +255,8 @@ namespace Camino.Service.Business.Articles
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
                 Description = article.Description,
-                Name = article.Name
+                Name = article.Name,
+                IsPublished = true
             };
 
             var id = await _articleRepository.AddWithInt32EntityAsync(newArticle);
@@ -256,14 +273,15 @@ namespace Camino.Service.Business.Articles
                     MimeType = article.Thumbnail.ContentType,
                     UpdatedById = article.UpdatedById,
                     UpdatedDate = modifiedDate,
-                    BinaryData = pictureData
+                    BinaryData = pictureData,
+                    IsPublished = true
                 });
 
                 _articlePictureRepository.Add(new ArticlePicture()
                 {
                     ArticleId = id,
                     PictureId = pictureId,
-                    PictureType = (int)ArticlePictureType.Thumbnail
+                    PictureTypeId = (int)ArticlePictureType.Thumbnail
                 });
             }
 
@@ -290,16 +308,15 @@ namespace Camino.Service.Business.Articles
             if (shouldRemoveThumbnail || shouldUpdateThumbnail)
             {
                 var articleThumbnails = _articlePictureRepository
-                    .Get(x => x.ArticleId == article.Id && x.PictureType == thumbnailType)
-                    .AsEnumerable();
+                    .Get(x => x.ArticleId == article.Id && x.PictureTypeId == thumbnailType);
 
                 if (articleThumbnails.Any())
                 {
                     var pictureIds = articleThumbnails.Select(x => x.PictureId).ToList();
-                    await _articlePictureRepository.DeleteAsync(articleThumbnails.AsQueryable());
+                    await articleThumbnails.DeleteAsync();
 
-                    var currentThumbnails = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-                    await _pictureRepository.DeleteAsync(currentThumbnails);
+                    await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                        .DeleteAsync();
                 }
             }
 
@@ -322,7 +339,7 @@ namespace Camino.Service.Business.Articles
                 {
                     ArticleId = exist.Id,
                     PictureId = pictureId,
-                    PictureType = thumbnailType
+                    PictureTypeId = thumbnailType
                 });
             }
 
@@ -332,7 +349,7 @@ namespace Camino.Service.Business.Articles
 
         public async Task<IList<ArticleProjection>> GetRelevantsAsync(long id, ArticleFilter filter)
         {
-            var exist = (from ar in _articleRepository.Get(x => x.Id == id)
+            var exist = (from ar in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
                          select new ArticleProjection
                          {
                              Id = ar.Id,
@@ -342,7 +359,7 @@ namespace Camino.Service.Business.Articles
                          }).FirstOrDefault();
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
-            var relevantArticleQuery = (from ar in _articleRepository.Get(x => x.Id != exist.Id)
+            var relevantArticleQuery = (from ar in _articleRepository.Get(x => x.Id != exist.Id && !x.IsDeleted)
                                         join pic in _articlePictureRepository.Table
                                         on ar.Id equals pic.ArticleId into pics
                                         from picture in pics.DefaultIfEmpty()
@@ -394,13 +411,29 @@ namespace Camino.Service.Business.Articles
         {
             var articlePictures = _articlePictureRepository.Get(x => x.ArticleId == id);
             var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
-            await _articlePictureRepository.DeleteAsync(articlePictures);
+            await articlePictures.DeleteAsync();
 
-            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-            await _pictureRepository.DeleteAsync(pictures);
+            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                .DeleteAsync();
 
-            var existArticle = await _articleRepository.FirstOrDefaultAsync(x => x.Id == id);
-            await _articleRepository.DeleteAsync(existArticle);
+            await _articleRepository.Get(x => x.Id == id)
+                .DeleteAsync();
+
+            return true;
+        }
+
+        public async Task<bool> SoftDeleteAsync(long id)
+        {
+            await (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == id)
+                   join picture in _pictureRepository.Table
+                   on articlePicture.PictureId equals picture.Id
+                   select picture)
+                                  .Set(x => x.IsDeleted, true)
+                                  .UpdateAsync();
+
+            await _articleRepository.Get(x => x.Id == id)
+                .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
 
             return true;
         }

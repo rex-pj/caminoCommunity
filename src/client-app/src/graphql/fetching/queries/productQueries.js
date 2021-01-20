@@ -23,10 +23,9 @@ export const GET_USER_PRODUCTS = gql`
         thumbnails {
           pictureId
         }
-        productFarms {
+        farms {
           id
-          farmId
-          farmName
+          name
         }
       }
     }
@@ -56,10 +55,9 @@ export const GET_PRODUCTS = gql`
         thumbnails {
           pictureId
         }
-        productFarms {
+        farms {
           id
-          farmId
-          farmName
+          name
         }
       }
     }
@@ -81,10 +79,9 @@ export const GET_PRODUCT = gql`
       thumbnails {
         pictureId
       }
-      productFarms {
+      farms {
         id
-        farmId
-        farmName
+        name
       }
     }
   }
@@ -102,17 +99,16 @@ export const GET_PRODUCT_FOR_UPDATE = gql`
       price
       createdByIdentityId
       createdByPhotoCode
-      productCategories {
+      categories {
         id
         name
       }
       thumbnails {
         pictureId
       }
-      productFarms {
+      farms {
         id
-        farmId
-        farmName
+        name
       }
     }
   }
@@ -133,10 +129,9 @@ export const GET_RELEVANT_PRODUCTS = gql`
       thumbnails {
         pictureId
       }
-      productFarms {
+      farms {
         id
-        farmId
-        farmName
+        name
       }
     }
   }

@@ -197,6 +197,7 @@ namespace Camino.Service.Business.Farms
                 Description = farmType.Description,
                 CreatedById = farmType.CreatedById,
                 UpdatedById = farmType.UpdatedById,
+                IsPublished = true
             };
             newFarmType.UpdatedDate = DateTimeOffset.UtcNow;
             newFarmType.CreatedDate = DateTimeOffset.UtcNow;

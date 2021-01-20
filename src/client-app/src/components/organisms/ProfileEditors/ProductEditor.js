@@ -133,49 +133,6 @@ export default withRouter((props) => {
     });
   };
 
-  const fetchCategories = async (value) => {
-    return await filterCategories(value).then((response) => {
-      return response;
-    });
-  };
-
-  const fetchFarms = async (value) => {
-    return await filterFarms(value).then((response) => {
-      return response;
-    });
-  };
-
-  const loadOptions = (value, callback) => {
-    setTimeout(async () => {
-      callback(await fetchCategories(value));
-    }, 1000);
-  };
-
-  const loadFarmOptions = (value, callback) => {
-    setTimeout(async () => {
-      callback(await fetchFarms(value));
-    }, 1000);
-  };
-
-  const handleSelectChange = (e, name) => {
-    let data = formData || {};
-    if (!e) {
-      data[name].value = [];
-
-      data[name].isValid = false;
-    } else {
-      data[name].value = e.map((item) => {
-        return { id: parseInt(item.value) };
-      });
-
-      data[name].isValid = data[name].value && data[name].value.length > 0;
-    }
-
-    setFormData({
-      ...data,
-    });
-  };
-
   const handleImageChange = (e) => {
     let data = formData || {};
     const { preview, file } = e;
@@ -251,40 +208,74 @@ export default withRouter((props) => {
     });
   };
 
+  const handleSelectChange = async (e, method, name) => {
+    let data = formData || {};
+    const { action, removedValue } = method;
+    if (action === "clear") {
+      data[name].value = [];
+      data[name].isValid = false;
+    } else if (action === "remove-value") {
+      data[name].value = data[name].value.filter(
+        (x) => x.id !== parseFloat(removedValue.value)
+      );
+      data[name].isValid = !!data[name].value;
+    } else {
+      data[name].value = e.map((item) => {
+        return { id: parseFloat(item.value), name: item.label };
+      });
+
+      data[name].isValid = data[name].value && data[name].value.length > 0;
+    }
+
+    setFormData({
+      ...data,
+    });
+  };
+
   const loadCategoriesSelected = () => {
-    if (!currentProduct) {
+    const { categories } = formData;
+    if (!categories.value) {
       return null;
     }
-    const { productCategories } = currentProduct;
-    if (!productCategories.value) {
-      return null;
-    }
-    return productCategories.value.map((item) => {
-      return { label: item.name, value: item.id };
+    return categories.value.map((item) => {
+      return { value: item.id, label: item.name };
+    });
+  };
+
+  const loadCategorySelections = (value, callback) => {
+    const { categories } = formData;
+    var currentIds = categories?.value?.map((cate) => cate.id);
+    return filterCategories(value, currentIds).then((response) => {
+      return response;
     });
   };
 
   const loadFarmsSelected = () => {
-    if (!currentProduct) {
+    const { farms } = formData;
+    if (!farms.value) {
       return null;
     }
-    const { productFarms } = currentProduct;
-    if (!productFarms.value) {
-      return null;
-    }
-    return productFarms.value.map((item) => {
-      return { label: item.farmName, value: item.farmId };
+    return farms.value.map((item) => {
+      return { value: item.id, label: item.name };
+    });
+  };
+
+  const loadFarmSelections = (value, callback) => {
+    const { farms } = formData;
+    const currentIds = farms?.value?.map((farm) => farm.id);
+    return filterFarms(value, currentIds).then((response) => {
+      return response;
     });
   };
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentProduct && !formData?.id?.value) {
       setFormData(currentProduct);
     }
-  }, [currentProduct]);
+  }, [currentProduct, formData]);
 
-  const { name, price } = formData;
-  const { thumbnails } = currentProduct ? currentProduct : formData;
+  const { name, price, thumbnails, categories, farms } = formData;
+
   return (
     <Fragment>
       <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -311,28 +302,31 @@ export default withRouter((props) => {
         <FormRow className="row">
           <div className="col-4 col-lg-5 pr-1">
             <AsyncSelect
+              key={JSON.stringify(categories)}
               className="cate-selection"
-              cacheOptions
               defaultOptions
+              isMulti
               ref={categorySelectRef}
               defaultValue={loadCategoriesSelected()}
-              isMulti
-              onChange={(e) => handleSelectChange(e, "productCategories")}
-              loadOptions={loadOptions}
+              onChange={(e, action) =>
+                handleSelectChange(e, action, "categories")
+              }
+              loadOptions={loadCategorySelections}
               isClearable={true}
+              cache={false}
               placeholder="Select categories"
             />
           </div>
           <div className="col-4 col-lg-5 pr-1">
             <AsyncSelect
               className="cate-selection"
-              cacheOptions
+              key={JSON.stringify(farms)}
               defaultOptions
               isMulti
               ref={farmSelectRef}
               defaultValue={loadFarmsSelected()}
-              onChange={(e) => handleSelectChange(e, "productFarms")}
-              loadOptions={loadFarmOptions}
+              onChange={(e, action) => handleSelectChange(e, action, "farms")}
+              loadOptions={loadFarmSelections}
               isClearable={true}
               placeholder="Select farms"
             />

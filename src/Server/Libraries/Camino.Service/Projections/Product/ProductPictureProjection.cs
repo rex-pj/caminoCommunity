@@ -6,7 +6,7 @@ namespace Camino.Service.Projections.Product
     {
         public long ProductId { get; set; }
         public string ProductName { get; set; }
-        public int ProductPictureType { get; set; }
+        public int ProductPictureTypeId { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

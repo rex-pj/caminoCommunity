@@ -238,8 +238,8 @@ export default withRouter((props) => {
             <PriceLabel price={product.price} currency="vnđ" />
           ) : null}
         </RowItem>
-        {product.productFarms
-          ? product.productFarms.map((pf) => {
+        {product.farms
+          ? product.farms.map((pf) => {
               if (!pf.id) {
                 return null;
               }
@@ -253,7 +253,7 @@ export default withRouter((props) => {
                       state: { from: location.pathname },
                     }}
                   >
-                    {pf.farmName}
+                    {pf.name}
                   </AnchorLink>
                 </FarmInfo>
               );

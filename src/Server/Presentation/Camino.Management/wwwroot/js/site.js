@@ -13,7 +13,11 @@
         var select2 = $(selection);
         var method = select2.attr("method") ? select2.attr("method") : "get";
         var url = select2.data("url");
-        var selected = selection.value;
+        var selected = select2.val();
+        if (typeof (selected) !== 'string') {
+            selected = selected.join(',');
+        }
+
         select2.select2({
             allowClear: true,
             placeholder: 'select..',
@@ -41,7 +45,7 @@
                 },
             },
             minimumInputLength: settings.minimumInputLength,
-            dropdownParent: settings.dropdownParent
+            dropdownParent: settings.dropdownParent,
         });
     });
 }

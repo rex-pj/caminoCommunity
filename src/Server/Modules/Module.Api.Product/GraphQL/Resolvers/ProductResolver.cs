@@ -42,11 +42,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     FileName = x.FileName,
                     ContentType = x.ContentType,
                 }),
-                ProductCategories = criterias.ProductCategories.Select(x => new ProductCategoryProjection()
+                Categories = criterias.Categories.Select(x => new ProductCategoryProjection()
                 {
                     Id = x.Id
                 }),
-                ProductFarms = criterias.ProductFarms.Select(x => new ProductFarmProjection()
+                Farms = criterias.Farms.Select(x => new ProductFarmProjection()
                 {
                     FarmId = x.Id
                 })
@@ -179,11 +179,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 {
                     PictureId = y.Id
                 }),
-                ProductFarms = x.ProductFarms.Select(x => new ProductFarmModel()
+                Farms = x.Farms.Select(x => new ProductFarmModel()
                 {
-                    FarmName = x.FarmName,
-                    Id = x.Id,
-                    FarmId = x.FarmId
+                    Name = x.Name,
+                    Id = x.FarmId
                 })
             }).ToList();
 
@@ -241,11 +240,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     FileName = x.FileName,
                     ContentType = x.ContentType,
                 }),
-                ProductCategories = criterias.ProductCategories.Select(x => new ProductCategoryProjection()
+                Categories = criterias.Categories.Select(x => new ProductCategoryProjection()
                 {
                     Id = x.Id
                 }),
-                ProductFarms = criterias.ProductFarms.Select(x => new ProductFarmProjection()
+                Farms = criterias.Farms.Select(x => new ProductFarmProjection()
                 {
                     FarmId = x.Id
                 })
@@ -276,7 +275,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _productBusiness.DeleteAsync(criterias.Id);
+                return await _productBusiness.SoftDeleteAsync(criterias.Id);
             }
             catch (Exception)
             {
@@ -296,16 +295,15 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = productProjection.Name,
                 Price = productProjection.Price,
                 CreatedByPhotoCode = productProjection.CreatedByPhotoCode,
-                ProductCategories = productProjection.ProductCategories.Select(x => new ProductCategoryRelationModel()
+                Categories = productProjection.Categories.Select(x => new ProductCategoryRelationModel()
                 {
                     Id = x.Id,
                     Name = x.Name
                 }),
-                ProductFarms = productProjection.ProductFarms.Select(x => new ProductFarmModel()
+                Farms = productProjection.Farms.Select(x => new ProductFarmModel()
                 {
-                    FarmName = x.FarmName,
-                    Id = x.Id,
-                    FarmId = x.FarmId
+                    Name = x.Name,
+                    Id = x.FarmId
                 }),
                 Thumbnails = productProjection.Pictures.Select(y => new PictureRequestModel()
                 {

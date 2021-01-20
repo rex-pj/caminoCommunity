@@ -11,7 +11,7 @@ namespace Module.Web.FarmManagement.Models
     {
         public FarmModel()
         {
-
+            Thumbnails = new List<PictureRequestModel>();
         }
 
         public long Id { get; set; }
@@ -21,14 +21,7 @@ namespace Module.Web.FarmManagement.Models
         public string Name { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        [MaxLength(1000)]
         public string Description { get; set; }
-
-        [Required(AllowEmptyStrings = false)]
-        public long ThumbnailId { get; set; }
-        public string Thumbnail { get; set; }
-        public string ThumbnailFileType { get; set; }
-        public string ThumbnailFileName { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdateById { get; set; }
         public string UpdatedBy { get; set; }
@@ -37,6 +30,8 @@ namespace Module.Web.FarmManagement.Models
         public string CreatedBy { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
+        public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
+        public long ThumbnailId { get; set; }
         public IFormFile File { get; set; }
 
         public IEnumerable<SelectListItem> SelectTypes { get; set; }

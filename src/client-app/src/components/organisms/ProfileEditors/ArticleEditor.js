@@ -21,15 +21,11 @@ const FormRow = styled.div`
   }
 
   .cate-selection {
+    z-index: 10;
+
     > div {
       border: 1px solid ${(p) => p.theme.color.primaryDivide};
     }
-  }
-
-  ${AsyncSelect} {
-    max-width: 100%;
-    z-index: 10;
-    position: relative;
   }
 `;
 
@@ -118,36 +114,6 @@ export default withRouter((props) => {
     });
   };
 
-  const fetchCategories = async (value) => {
-    return await filterCategories(value).then((response) => {
-      return response;
-    });
-  };
-
-  const loadOptions = (value, callback) => {
-    setTimeout(async () => {
-      callback(await fetchCategories(value));
-    }, 1000);
-  };
-
-  const handleSelectChange = (e) => {
-    let data = formData || {};
-    const name = "articleCategoryId";
-
-    if (!e) {
-      data[name].isValid = false;
-      data[name].value = 0;
-    } else {
-      const { value } = e;
-      data[name].isValid = checkValidity(data, value, name);
-      data[name].value = parseFloat(value);
-    }
-
-    setFormData({
-      ...data,
-    });
-  };
-
   const handleImageChange = (e) => {
     let data = formData || {};
     const { preview, file } = e;
@@ -218,13 +184,39 @@ export default withRouter((props) => {
     });
   };
 
-  const loadSelected = () => {
-    if (!currentArticle) {
-      return "";
+  const loadCategorySelections = (value, callback) => {
+    return filterCategories(value).then((response) => {
+      return response;
+    });
+  };
+
+  const handleSelectChange = (e, method) => {
+    const { action } = method;
+    let data = formData || {};
+    if (action === "clear" || action === "remove-value") {
+      data.articleCategoryId.isValid = false;
+      data.articleCategoryId.value = 0;
+      data.articleCategoryName.value = "";
+    } else {
+      const { value, label } = e;
+      data.articleCategoryId.isValid = checkValidity(
+        data,
+        value,
+        "articleCategoryId"
+      );
+      data.articleCategoryId.value = parseFloat(value);
+      data.articleCategoryName.value = label;
     }
-    const { articleCategoryName, articleCategoryId } = currentArticle;
+
+    setFormData({
+      ...data,
+    });
+  };
+
+  const loadCategorySelected = () => {
+    const { articleCategoryName, articleCategoryId } = formData;
     if (!articleCategoryId.value) {
-      return "";
+      return null;
     }
     return {
       label: articleCategoryName.value,
@@ -233,13 +225,12 @@ export default withRouter((props) => {
   };
 
   useEffect(() => {
-    if (currentArticle) {
+    if (currentArticle && !formData?.id?.value) {
       setFormData(currentArticle);
     }
-  }, [currentArticle]);
+  }, [currentArticle, formData]);
 
-  const { name } = formData;
-  const { thumbnail } = currentArticle ? currentArticle : formData;
+  const { name, articleCategoryId, thumbnail } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
@@ -255,13 +246,14 @@ export default withRouter((props) => {
           </div>
           <div className="col-10 col-lg-4 px-lg-1 pr-1">
             <AsyncSelect
+              key={JSON.stringify(articleCategoryId)}
               className="cate-selection"
               ref={selectRef}
-              defaultValue={loadSelected()}
+              defaultValue={loadCategorySelected()}
               cacheOptions
               defaultOptions
               onChange={handleSelectChange}
-              loadOptions={loadOptions}
+              loadOptions={loadCategorySelections}
               isClearable={true}
             />
           </div>

@@ -103,10 +103,10 @@ export default withRouter((props) => {
       });
   };
 
-  const searchProductCategories = async (inputValue) => {
+  const searchProductCategories = async (inputValue, currentIds) => {
     return await productCategories({
       variables: {
-        criterias: { query: inputValue },
+        criterias: { query: inputValue, currentIds },
       },
     })
       .then((response) => {
@@ -117,10 +117,10 @@ export default withRouter((props) => {
       });
   };
 
-  const searchFarms = async (inputValue) => {
+  const searchFarms = async (inputValue, currentIds) => {
     return await userFarms({
       variables: {
-        criterias: { query: inputValue },
+        criterias: { query: inputValue, currentIds },
       },
     })
       .then((response) => {

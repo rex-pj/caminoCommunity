@@ -226,8 +226,8 @@ export default withRouter(function (props) {
               <label>Giá:</label>
               <LabelPrice price={product.price} currency="vnđ" />
             </RowItem>
-            {product.productFarms
-              ? product.productFarms.map((pf) => {
+            {product.farms
+              ? product.farms.map((pf) => {
                   if (!pf.id) {
                     return null;
                   }
@@ -235,7 +235,7 @@ export default withRouter(function (props) {
                   return (
                     <FarmInfo key={pf.id}>
                       <FontAwesomeIcon icon="warehouse" />
-                      <AnchorLink to={pf.url}>{pf.farmName}</AnchorLink>
+                      <AnchorLink to={pf.url}>{pf.name}</AnchorLink>
                     </FarmInfo>
                   );
                 })

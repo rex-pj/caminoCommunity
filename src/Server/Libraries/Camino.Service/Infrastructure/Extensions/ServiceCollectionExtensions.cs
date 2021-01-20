@@ -68,6 +68,7 @@ namespace Camino.Service.Infrastructure.Extensions
                 .AddTransient<IPictureBusiness, PictureBusiness>()
                 .AddTransient<IFarmBusiness, FarmBusiness>()
                 .AddTransient<IFarmTypeBusiness, FarmTypeBusiness>()
+                .AddTransient<IFarmPictureBusiness, FarmPictureBusiness>()
                 .AddTransient<IProductBusiness, ProductBusiness>()
                 .AddTransient<IProductCategoryBusiness, ProductCategoryBusiness>()
                 .AddTransient<IProductPictureBusiness, ProductPictureBusiness>()

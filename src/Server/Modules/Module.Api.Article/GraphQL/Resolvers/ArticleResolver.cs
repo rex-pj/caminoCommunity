@@ -130,7 +130,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
                 return articlePage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -164,7 +164,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
                 return articlePage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -183,7 +183,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 var product = await MapArticleProjectionToModelAsync(productProjection);
                 return product;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -210,7 +210,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
                 return products;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -226,9 +226,9 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _articleBusiness.DeleteAsync(criterias.Id);
+                return await _articleBusiness.SoftDeleteAsync(criterias.Id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

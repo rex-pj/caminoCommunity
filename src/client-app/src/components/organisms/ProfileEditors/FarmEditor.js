@@ -114,35 +114,6 @@ export default withRouter((props) => {
     });
   };
 
-  const fetchCategories = async (value) => {
-    return await filterCategories(value).then((response) => {
-      return response;
-    });
-  };
-
-  const loadOptions = (value, callback) => {
-    setTimeout(async () => {
-      callback(await fetchCategories(value));
-    }, 1000);
-  };
-
-  const handleSelectChange = (e) => {
-    let data = formData || {};
-    const name = "farmTypeId";
-    if (!e) {
-      data[name].isValid = false;
-      data[name].value = 0;
-    } else {
-      const { value } = e;
-      data[name].isValid = checkValidity(data, value, name);
-      data[name].value = parseFloat(value);
-    }
-
-    setFormData({
-      ...data,
-    });
-  };
-
   const handleImageChange = (e) => {
     let data = { ...formData } || {};
     const { preview, file } = e;
@@ -191,12 +162,33 @@ export default withRouter((props) => {
     });
   };
 
-  const loadSelected = () => {
-    if (!currentFarm) {
-      return null;
+  const loadFarmTypeSelections = (value, callback) => {
+    return filterCategories(value).then((response) => {
+      return response;
+    });
+  };
+
+  const handleSelectChange = (e, method) => {
+    const { action } = method;
+    let data = formData || {};
+    if (action === "clear" || action === "remove-value") {
+      data.farmTypeId.isValid = false;
+      data.farmTypeId.value = 0;
+      data.farmTypeName.value = "";
+    } else {
+      const { value, label } = e;
+      data.farmTypeId.isValid = checkValidity(data, value, "farmTypeId");
+      data.farmTypeId.value = parseFloat(value);
+      data.farmTypeName.value = label;
     }
 
-    const { farmTypeId, farmTypeName } = currentFarm;
+    setFormData({
+      ...data,
+    });
+  };
+
+  const loadFarmTypeSelected = () => {
+    const { farmTypeId, farmTypeName } = formData;
     if (!farmTypeId.value) {
       return null;
     }
@@ -233,13 +225,12 @@ export default withRouter((props) => {
   };
 
   useEffect(() => {
-    if (currentFarm) {
+    if (currentFarm && !formData?.id?.value) {
       setFormData(currentFarm);
     }
-  }, [currentFarm]);
+  }, [currentFarm, formData]);
 
-  const { name, address } = formData;
-  const { thumbnails } = currentFarm ? currentFarm : formData;
+  const { name, address, farmTypeId, thumbnails } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
@@ -255,13 +246,14 @@ export default withRouter((props) => {
           </div>
           <div className="col-6 col-lg-6 pl-lg-1">
             <AsyncSelect
+              key={JSON.stringify(farmTypeId)}
               className="cate-selection"
               cacheOptions
               defaultOptions
               ref={selectRef}
-              defaultValue={loadSelected()}
-              onChange={handleSelectChange}
-              loadOptions={loadOptions}
+              defaultValue={loadFarmTypeSelected()}
+              onChange={(e, action) => handleSelectChange(e, action)}
+              loadOptions={loadFarmTypeSelections}
               isClearable={true}
             />
           </div>
@@ -270,7 +262,7 @@ export default withRouter((props) => {
           <div className="col-9 col-lg-10 pr-lg-1">
             <PrimaryTextbox
               name="address"
-              value={address.value}
+              value={address.value ? address.value : ""}
               autoComplete="off"
               onChange={(e) => handleInputChange(e)}
               placeholder="Address"

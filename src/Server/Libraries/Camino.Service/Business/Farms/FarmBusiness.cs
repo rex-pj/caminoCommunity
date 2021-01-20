@@ -52,10 +52,9 @@ namespace Camino.Service.Business.Farms
 
         public async Task<FarmProjection> FindAsync(long id)
         {
-            var exist = await (from farm in _farmRepository.Table
+            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
-                               where farm.Id == id
                                select new FarmProjection
                                {
                                    CreatedDate = farm.CreatedDate,
@@ -73,51 +72,19 @@ namespace Camino.Service.Business.Farms
             return exist;
         }
 
-        public async Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, string search = "", int page = 1, int pageSize = 10)
-        {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var query = _farmRepository.Get(x => x.CreatedById == userId)
-                .Select(c => new FarmProjection
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description
-                });
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
-            }
-
-            if (pageSize > 0)
-            {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
-            }
-
-            var farms = await query
-                .Select(x => new FarmProjection()
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                })
-                .ToListAsync();
-
-            return farms;
-        }
-
         public async Task<FarmProjection> FindDetailAsync(long id)
         {
-            var exist = await (from farm in _farmRepository.Table
+            var farmPictureType = (int)FarmPictureType.Thumbnail;
+            var farmPictures = from farmPic in _farmPictureRepository.Get(x => x.PictureTypeId == farmPictureType)
+                               join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                               on farmPic.PictureId equals picture.Id
+                               select farmPic;
+
+            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
                                join farmPic in _farmPictureRepository.Table
                                on farm.Id equals farmPic.FarmId into pics
-                               where farm.Id == id
                                select new FarmProjection
                                {
                                    Id = farm.Id,
@@ -144,12 +111,99 @@ namespace Camino.Service.Business.Farms
             var createdByUserName = await _userRepository.Get(x => x.Id == exist.CreatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
             exist.CreatedBy = createdByUserName;
 
+            var updatedByUserName = await _userRepository.Get(x => x.Id == exist.UpdatedById).Select(x => x.DisplayName).FirstOrDefaultAsync();
+            exist.UpdatedBy = updatedByUserName;
+
             return exist;
+        }
+
+        public async Task<IList<FarmProjection>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        {
+            if (search == null)
+            {
+                search = string.Empty;
+            }
+
+            search = search.ToLower();
+            var query = _farmRepository.Get(x => !x.IsDeleted)
+                .Select(c => new FarmProjection
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description
+                });
+
+            if (currentIds != null && currentIds.Any())
+            {
+                query = query.Where(x => !currentIds.Contains(x.Id));
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var farms = await query
+                .Select(x => new FarmProjection()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
+
+            return farms;
+        }
+
+        public async Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        {
+            if (search == null)
+            {
+                search = string.Empty;
+            }
+
+            search = search.ToLower();
+            var query = _farmRepository.Get(x => x.CreatedById == userId && !x.IsDeleted)
+                .Select(c => new FarmProjection
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description
+                });
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+            }
+
+            if (currentIds != null && currentIds.Any())
+            {
+                query = query.Where(x => !currentIds.Contains(x.Id));
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            var farms = await query
+                .Select(x => new FarmProjection()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
+
+            return farms;
         }
 
         public FarmProjection FindByName(string name)
         {
-            var exist = _farmRepository.Get(x => x.Name == name)
+            var exist = _farmRepository.Get(x => x.Name == name && !x.IsDeleted)
                 .Select(x => new FarmProjection()
                 {
                     Id = x.Id,
@@ -169,7 +223,7 @@ namespace Camino.Service.Business.Farms
         public async Task<BasePageList<FarmProjection>> GetAsync(FarmFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Table;
+            var farmQuery = _farmRepository.Get(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -209,8 +263,14 @@ namespace Camino.Service.Business.Farms
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var thumbnailTypeId = (int)FarmPictureType.Thumbnail;
+
+            var farmPictures = from farmPic in _farmPictureRepository.Get(x => x.PictureTypeId == thumbnailTypeId)
+                               join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                               on farmPic.PictureId equals picture.Id
+                               select farmPic;
+
             var query = from farm in farmQuery
-                        join pic in _farmPictureRepository.Get(x => x.PictureType == thumbnailTypeId)
+                        join pic in farmPictures
                         on farm.Id equals pic.FarmId into pics
                         join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                         on farm.CreatedById equals pho.CreatedById into photos
@@ -281,6 +341,7 @@ namespace Camino.Service.Business.Farms
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
                 Description = farm.Description,
+                IsPublished = true
             };
 
             var id = await _farmRepository.AddWithInt64EntityAsync(newFarm);
@@ -299,7 +360,8 @@ namespace Camino.Service.Business.Farms
                         MimeType = picture.ContentType,
                         UpdatedById = farm.UpdatedById,
                         UpdatedDate = modifiedDate,
-                        BinaryData = pictureData
+                        BinaryData = pictureData,
+                        IsPublished = true
                     });
 
                     var farmPictureType = index == 0 ? (int)FarmPictureType.Thumbnail : (int)FarmPictureType.Secondary;
@@ -307,7 +369,7 @@ namespace Camino.Service.Business.Farms
                     {
                         FarmId = id,
                         PictureId = pictureId,
-                        PictureType = farmPictureType
+                        PictureTypeId = farmPictureType
                     });
                     index += 1;
                 }
@@ -334,15 +396,15 @@ namespace Camino.Service.Business.Farms
             var deletePictureIds = deleteFarmPictures.Select(x => x.PictureId).ToList();
             if (deletePictureIds.Any())
             {
-                await _farmPictureRepository.DeleteAsync(deleteFarmPictures);
+                await deleteFarmPictures.DeleteAsync();
 
-                var currentPictures = _pictureRepository.Get(x => deletePictureIds.Contains(x.Id));
-                await _pictureRepository.DeleteAsync(currentPictures);
+                await _pictureRepository.Get(x => deletePictureIds.Contains(x.Id))
+                    .DeleteAsync();
             }
 
             var thumbnailType = (int)FarmPictureType.Thumbnail;
             var shouldAddThumbnail = true;
-            var hasThumbnail = _farmPictureRepository.Get(x => x.FarmId == request.Id && x.PictureType == thumbnailType).Any();
+            var hasThumbnail = _farmPictureRepository.Get(x => x.FarmId == request.Id && x.PictureTypeId == thumbnailType).Any();
             if (hasThumbnail)
             {
                 shouldAddThumbnail = false;
@@ -362,7 +424,8 @@ namespace Camino.Service.Business.Farms
                         MimeType = picture.ContentType,
                         UpdatedById = request.UpdatedById,
                         UpdatedDate = updatedDate,
-                        BinaryData = pictureData
+                        BinaryData = pictureData,
+                        IsPublished = true
                     });
 
                     var farmPictureType = shouldAddThumbnail ? thumbnailType : (int)FarmPictureType.Secondary;
@@ -370,16 +433,16 @@ namespace Camino.Service.Business.Farms
                     {
                         FarmId = farm.Id,
                         PictureId = pictureId,
-                        PictureType = farmPictureType
+                        PictureTypeId = farmPictureType
                     });
                     shouldAddThumbnail = false;
                 }
             }
 
-            var firstRestPicture = await _farmPictureRepository.FirstOrDefaultAsync(x => x.FarmId == request.Id && x.PictureType != thumbnailType);
+            var firstRestPicture = await _farmPictureRepository.FirstOrDefaultAsync(x => x.FarmId == request.Id && x.PictureTypeId != thumbnailType);
             if (firstRestPicture != null)
             {
-                firstRestPicture.PictureType = thumbnailType;
+                firstRestPicture.PictureTypeId = thumbnailType;
                 await _farmPictureRepository.UpdateAsync(firstRestPicture);
             }
 
@@ -393,17 +456,17 @@ namespace Camino.Service.Business.Farms
             // Delete farm pictures
             var farmPictures = _farmPictureRepository.Get(x => x.FarmId == id);
             var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
-            await _farmPictureRepository.DeleteAsync(farmPictures);
+            await farmPictures.DeleteAsync();
 
-            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-            await _pictureRepository.DeleteAsync(pictures);
+            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                .DeleteAsync();
 
             // Delete farm products
             await DeleteProductByFarmIdAsync(id);
 
             // Delete farm
-            var existFarm = await _farmRepository.FirstOrDefaultAsync(x => x.Id == id);
-            await _farmRepository.DeleteAsync(existFarm);
+            await _farmRepository.Get(x => x.Id == id)
+                .DeleteAsync();
 
             return true;
         }
@@ -420,21 +483,60 @@ namespace Camino.Service.Business.Farms
 
             var productPictures = _productPictureRepository.Get(x => productIds.Contains(x.ProductId));
             var pictureIds = productPictures.Select(x => x.PictureId).ToList();
-            await _productPictureRepository.DeleteAsync(productPictures);
+            await productPictures.DeleteAsync();
 
-            var pictures = _pictureRepository.Get(x => pictureIds.Contains(x.Id));
-            await _pictureRepository.DeleteAsync(pictures);
+            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                .DeleteAsync();
 
-            await _farmProductRepository.DeleteAsync(farmProducts);
+            await farmProducts.DeleteAsync();
 
-            var productPrices = _productPriceRepository.Get(x => productIds.Contains(x.ProductId));
-            await _productPriceRepository.DeleteAsync(productPrices);
+            await _productPriceRepository.Get(x => productIds.Contains(x.ProductId))
+                .DeleteAsync();
 
-            var productCategoryRelations = _productCategoryRelationRepository.Get(x => productIds.Contains(x.ProductId));
-            await _productCategoryRelationRepository.DeleteAsync(productCategoryRelations);
+            await _productCategoryRelationRepository
+                .Get(x => productIds.Contains(x.ProductId))
+                .DeleteAsync();
 
-            var products = _productRepository.Get(x => productIds.Contains(x.Id));
-            await _productRepository.DeleteAsync(products);
+            var products = _productRepository.Get(x => productIds.Contains(x.Id))
+                .DeleteAsync();
+        }
+
+        public async Task<bool> SoftDeleteAsync(long id)
+        {
+            // Delete farm pictures
+            await (from farmPicture in _farmPictureRepository.Get(x => x.FarmId == id)
+                   join picture in _pictureRepository.Table
+                   on farmPicture.PictureId equals picture.Id
+                   select picture)
+                    .Set(x => x.IsDeleted, true)
+                    .UpdateAsync();
+
+            // Delete farm products
+            await SoftDeleteProductByFarmIdAsync(id);
+
+            // Delete farm
+            await _farmRepository.Get(x => x.Id == id)
+                .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        private async Task SoftDeleteProductByFarmIdAsync(long farmId)
+        {
+            var productIds = _farmProductRepository.Get(x => x.FarmId == farmId)
+                .Select(x => x.ProductId);
+
+            await (from productPicture in _productPictureRepository.Get(x => productIds.Contains(x.ProductId))
+                   join picture in _pictureRepository.Table
+                   on productPicture.PictureId equals picture.Id
+                   select picture)
+                .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
+
+            await _productRepository.Get(x => productIds.Contains(x.Id))
+                .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
         }
     }
 }

@@ -7,6 +7,7 @@ using Camino.Framework.Models;
 using Camino.Service.Business.Farms.Contracts;
 using Camino.Service.Projections.Farm;
 using Camino.Service.Projections.Filters;
+using Camino.Service.Projections.Media;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.FarmManagement.Models;
@@ -57,6 +58,7 @@ namespace Module.Web.FarmManagement.Controllers
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
             });
+
             var farmPage = new PageListModel<FarmModel>(farms)
             {
                 Filter = filter,
@@ -102,7 +104,10 @@ namespace Module.Web.FarmManagement.Controllers
                     FarmTypeName = farm.FarmTypeName,
                     Name = farm.Name,
                     Id = farm.Id,
-                    //ThumbnailId = farm.ThumbnailId
+                    Thumbnails = farm.Pictures.Select(y => new PictureRequestModel()
+                    {
+                        PictureId = y.Id
+                    }),
                 };
                 return View(model);
             }
@@ -110,48 +115,6 @@ namespace Module.Web.FarmManagement.Controllers
             {
                 return RedirectToErrorPage();
             }
-        }
-
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateFarm)]
-        [HttpGet]
-        public IActionResult Create()
-        {
-            var model = new FarmModel();
-            return View(model);
-        }
-
-        [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateFarm)]
-        public IActionResult Create(FarmModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToErrorPage();
-            }
-
-            var exist = _farmBusiness.FindByName(model.Name);
-            if (exist != null)
-            {
-                return RedirectToErrorPage();
-            }
-
-            var farm = new FarmProjection()
-            {
-                UpdatedById = LoggedUserId,
-                CreatedById = LoggedUserId,
-                Name = model.Name,
-                Description = model.Description,
-                //Pictures = new PictureLoadProjection()
-                //{
-                //    FileName = model.ThumbnailFileName,
-                //    ContentType = model.ThumbnailFileType,
-                //    Base64Data = model.Thumbnail
-                //},
-                FarmTypeId = model.FarmTypeId
-            };
-            var id = _farmBusiness.CreateAsync(farm);
-
-            return RedirectToAction("Detail", new { id });
         }
 
         [HttpGet]
@@ -172,7 +135,10 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeName = farm.FarmTypeName,
                 Name = farm.Name,
                 Id = farm.Id,
-                //ThumbnailId = farm.ThumbnailId
+                Thumbnails = farm.Pictures.Select(y => new PictureRequestModel()
+                {
+                    PictureId = y.Id
+                }),
             };
 
             return View(model);
@@ -192,6 +158,12 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            var exist = await _farmBusiness.FindAsync(model.Id);
+            if (exist == null)
+            {
+                return RedirectToErrorPage();
+            }
+
             var farm = new FarmProjection()
             {
                 Id = model.Id,
@@ -199,19 +171,18 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = LoggedUserId,
                 Name = model.Name,
                 Description = model.Description,
-                //Thumbnail = new PictureLoadProjection()
-                //{
-                //    FileName = model.ThumbnailFileName,
-                //    ContentType = model.ThumbnailFileType,
-                //    Base64Data = model.Thumbnail
-                //},
                 FarmTypeId = model.FarmTypeId
             };
 
-            var exist = await _farmBusiness.FindAsync(model.Id);
-            if (exist == null)
+            if (model.Thumbnails != null && model.Thumbnails.Any())
             {
-                return RedirectToErrorPage();
+                farm.Pictures = model.Thumbnails.Select(x => new PictureRequestProjection()
+                {
+                    Base64Data = x.Base64Data,
+                    ContentType = x.ContentType,
+                    FileName = x.FileName,
+                    Id = x.PictureId
+                });
             }
 
             farm.UpdatedById = LoggedUserId;

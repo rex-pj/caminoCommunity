@@ -24,21 +24,21 @@
 </div>
 <div class="card-body">
     <div class="form-row">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-            <div class="form-group mb-3">
-                @if (Model.ThumbnailId > 0)
-                {
-                    <img src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
-                }
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
             <div class="form-group">
                 <h2>@Model.Name</h2>
             </div>
         </div>
+    </div>
+    <div class="form-row">
+        @foreach (var item in Model.Thumbnails)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                <div class="form-group mb-3">
+                    <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
+                </div>
+            </div>
+        }
     </div>
     <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">

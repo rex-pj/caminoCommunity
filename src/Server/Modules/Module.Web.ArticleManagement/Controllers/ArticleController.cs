@@ -99,29 +99,6 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public async Task<IActionResult> Create(ArticleModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToErrorPage();
-            }
-
-            var article = _mapper.Map<ArticleProjection>(model);
-            var exist = _articleBusiness.FindByName(model.Name);
-            if (exist != null)
-            {
-                return RedirectToErrorPage();
-            }
-
-            article.UpdatedById = LoggedUserId;
-            article.CreatedById = LoggedUserId;
-            var id = await _articleBusiness.CreateAsync(article);
-
-            return RedirectToAction("Detail", new { id });
-        }
-
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public IActionResult Update(int id)

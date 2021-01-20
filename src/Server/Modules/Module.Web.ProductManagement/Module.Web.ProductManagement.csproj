@@ -62,7 +62,7 @@
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\Product\_CreateOrUpdateForm.cshtml">
+	  <Content Update="Views\Product\_UpdateForm.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
@@ -73,12 +73,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Views\Product\Create.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="Views\ProductCategory\Create.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\Product\Create.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
