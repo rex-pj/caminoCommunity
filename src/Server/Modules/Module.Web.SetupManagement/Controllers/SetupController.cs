@@ -110,7 +110,7 @@ namespace Module.Web.SetupManagement.Controllers
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction("Succeed");
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 _fileProvider.DeleteFile(SetupSettingsConst.FilePath);
                 return View();

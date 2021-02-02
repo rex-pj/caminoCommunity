@@ -25,12 +25,13 @@ namespace Camino.Service.Business.Feeds
         private readonly IRepository<ProductPrice> _productPriceRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<UserPhoto> _userPhotoRepository;
+        private readonly IRepository<Picture> _pictureRepository;
 
         public FeedBusiness(IRepository<Article> articleRepository, IRepository<Product> productRepository,
             IRepository<Farm> farmRepository, IRepository<ArticlePicture> articlePictureRepository,
             IRepository<ProductPicture> productPictureRepository, IRepository<FarmPicture> farmPictureRepository,
             IRepository<ProductPrice> productPriceRepository, IRepository<User> userRepository,
-            IRepository<UserPhoto> userPhotoRepository)
+            IRepository<UserPhoto> userPhotoRepository, IRepository<Picture> pictureRepository)
         {
             _articleRepository = articleRepository;
             _productRepository = productRepository;
@@ -42,13 +43,14 @@ namespace Camino.Service.Business.Feeds
             _userRepository = userRepository;
             _userRepository = userRepository;
             _userPhotoRepository = userPhotoRepository;
+            _pictureRepository = pictureRepository;
         }
 
         public async Task<BasePageList<FeedProjection>> GetAsync(FeedFilter filter)
         {
-            var articleQuery = _articleRepository.Table;
-            var productQuery = _productRepository.Table;
-            var farmQuery = _farmRepository.Table;
+            var articleQuery = _articleRepository.Get(x => !x.IsDeleted);
+            var productQuery = _productRepository.Get(x => !x.IsDeleted);
+            var farmQuery = _farmRepository.Get(x => !x.IsDeleted);
             if (filter.CreatedById.HasValue)
             {
                 articleQuery = articleQuery.Where(x => x.CreatedById == filter.CreatedById);
@@ -77,8 +79,13 @@ namespace Camino.Service.Business.Feeds
 
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var articlePictureType = (int)ArticlePictureType.Thumbnail;
+            var articlePictures = from articlePic in _articlePictureRepository.Get(x => x.PictureTypeId == articlePictureType)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on articlePic.PictureId equals picture.Id
+                                  select articlePic;
+
             var articleFeeds = (from article in articleQuery
-                                join articlePic in _articlePictureRepository.Get(x => x.PictureType == articlePictureType)
+                                join articlePic in articlePictures
                                 on article.Id equals articlePic.ArticleId into articlePics
                                 from ap in articlePics.Take(1).DefaultIfEmpty()
                                 join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
@@ -98,8 +105,13 @@ namespace Camino.Service.Business.Feeds
 
 
             var productPictureType = (int)ProductPictureType.Thumbnail;
+            var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == productPictureType)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on productPic.PictureId equals picture.Id
+                                  select productPic;
+
             var productFeeds = (from product in productQuery
-                                join productPic in _productPictureRepository.Get(x => x.PictureType == productPictureType)
+                                join productPic in productPictures
                                 on product.Id equals productPic.ProductId into productPics
                                 from pp in productPics.Take(1).DefaultIfEmpty()
                                 join pr in _productPriceRepository.Get(x => x.IsCurrent)
@@ -122,8 +134,13 @@ namespace Camino.Service.Business.Feeds
                                 });
 
             var farmPictureType = (int)FarmPictureType.Thumbnail;
+            var farmPictures = from farmPic in _farmPictureRepository.Get(x => x.PictureTypeId == farmPictureType)
+                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  on farmPic.PictureId equals picture.Id
+                                  select farmPic;
+
             var farmFeeds = (from farm in farmQuery
-                             join farmPic in _farmPictureRepository.Get(x => x.PictureType == farmPictureType)
+                             join farmPic in farmPictures
                              on farm.Id equals farmPic.FarmId into farmPics
                              from fp in farmPics.Take(1).DefaultIfEmpty()
                              join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)

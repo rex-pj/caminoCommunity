@@ -6,7 +6,7 @@ namespace Camino.Service.Projections.Farm
     {
         public long FarmId { get; set; }
         public string FarmName { get; set; }
-        public int FarmPictureType { get; set; }
+        public int FarmPictureTypeId { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

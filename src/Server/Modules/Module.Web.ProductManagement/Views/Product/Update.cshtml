@@ -6,6 +6,7 @@
 
 @section Head{ 
     <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
+    <link rel="stylesheet" href="~/productmanagement/css/product-update.css" />
 }
 
 @section Scripts {
@@ -23,6 +24,6 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="Product">
-        <partial name="_CreateOrUpdateForm" />
+        <partial name="_UpdateForm" />
     </form>
 </div>

@@ -221,10 +221,10 @@ export default withRouter(function (props) {
         product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
       }
 
-      if (product.productFarms) {
-        product.productFarms = product.productFarms.map((pf) => {
+      if (product.farms) {
+        product.farms = product.farms.map((pf) => {
           let productFarm = { ...pf };
-          productFarm.url = `/farms/${pf.farmId}`;
+          productFarm.url = `/farms/${pf.id}`;
           return productFarm;
         });
       }

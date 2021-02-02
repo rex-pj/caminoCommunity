@@ -24,16 +24,6 @@
 </div>
 <div class="card-body">
     <div class="form-row">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-            <div class="form-group mb-3">
-                @if (Model.ThumbnailId > 0)
-                {
-                    <img src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
-                }
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
             <div class="form-group">
                 <h2>@Model.Name</h2>
@@ -41,9 +31,27 @@
         </div>
     </div>
     <div class="form-row">
+        @foreach (var item in Model.Thumbnails)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                <div class="form-group mb-3">
+                    <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
+                </div>
+            </div>
+        }
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Price</label>
+                <span class="form-control" readonly>@Model.Price</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
             <div class="form-group">
-                <p>@Model.Description</p>
+                <p>@Html.Raw(Model.Description)</p>
             </div>
         </div>
     </div>
@@ -82,8 +90,22 @@
     <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
-                <label>Category</label>
-                <span class="form-control" readonly>@Model.ProductCategoryName</span>
+                <label>Categories</label>
+                @foreach (var category in Model.ProductCategories)
+                {
+                    <span class="form-control" readonly>@category.Name</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <div class="form-group">
+                <label>Farms</label>
+                @foreach (var farm in Model.ProductFarms)
+                {
+                    <span class="form-control" readonly>@farm.FarmName</span>
+                }
             </div>
         </div>
     </div>

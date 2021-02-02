@@ -30,7 +30,7 @@ namespace Camino.Service.Business.Products
 
         public async Task<BasePageList<ProductPictureProjection>> GetAsync(ProductPictureFilter filter)
         {
-            var pictureQuery = _pictureRepository.Table;
+            var pictureQuery = _pictureRepository.Get(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(filter.Search))
             {
                 var search = filter.Search.ToLower();
@@ -74,7 +74,7 @@ namespace Camino.Service.Business.Products
                             ProductName = a.Name,
                             PictureId = p.Id,
                             PictureName = p.FileName,
-                            ProductPictureType = ap.PictureType,
+                            ProductPictureTypeId = ap.PictureTypeId,
                             PictureCreatedById = p.CreatedById,
                             PictureCreatedDate = p.CreatedDate,
                             ContentType = p.MimeType

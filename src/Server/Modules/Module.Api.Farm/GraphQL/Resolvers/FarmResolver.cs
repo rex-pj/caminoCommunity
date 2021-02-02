@@ -35,7 +35,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 criterias = new SelectFilterModel();
             }
 
-            var farms = await _farmBusiness.SearchByUserIdAsync(currentUser.Id, criterias.Query);
+            var farms = await _farmBusiness.SearchByUserIdAsync(currentUser.Id, criterias.CurrentIds, criterias.Query);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -220,7 +220,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _farmBusiness.DeleteAsync(criterias.Id);
+                return await _farmBusiness.SoftDeleteAsync(criterias.Id);
             }
             catch (Exception)
             {

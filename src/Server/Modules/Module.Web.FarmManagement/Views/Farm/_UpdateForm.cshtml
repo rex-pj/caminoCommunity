@@ -33,12 +33,9 @@
 <div class="form-row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
         <div class="form-group">
-            <label>Thumbnail</label>
+            <label>Thumbnails</label>
             <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
                    type="file" asp-for="File" id="thumbnailUpload" />
-            <input type="hidden" asp-for="Thumbnail" />
-            <input type="hidden" asp-for="ThumbnailFileType" />
-            <input type="hidden" asp-for="ThumbnailFileName" />
         </div>
         <div class="progress d-none" id="uploadProgress">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
@@ -46,22 +43,28 @@
     </div>
 </div>
 
-<div class="form-row mb-3">
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-        <div id="articleThumbnail">
-            @if (Model.ThumbnailId > 0)
-            {
-                <img src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
-            }
-        </div>
-    </div>
+<div class="form-row mb-3" id="farmThumbnails">
+    @{
+        int index = 0;
+        foreach (var item in Model.Thumbnails)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 thumbnail-item">
+                <div class="form-group mb-3">
+                    <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
+                </div>
+                <input type="hidden" name="Thumbnails[@index].PictureId" value="@item.PictureId" />
+                <span class="remove-thumbnail">X</span>
+            </div>
+            index++;
+        }
+    }
 </div>
 
 @if (Model.Id <= 0)
 {
-<button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Create</button>
 }
 else
 {
-<button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn btn-primary">Update</button>
 }

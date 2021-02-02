@@ -35,7 +35,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
-            catch(Exception e)
+            catch (Exception)
             {
                 return await Login(model);
             }

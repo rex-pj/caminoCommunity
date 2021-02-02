@@ -53,7 +53,7 @@ namespace Module.Web.ProductManagement.Controllers
                 PictureCreatedBy = x.PictureCreatedBy,
                 PictureCreatedById = x.PictureCreatedById,
                 PictureCreatedDate = x.PictureCreatedDate,
-                ProductPictureType = (ProductPictureType)x.ProductPictureType,
+                ProductPictureType = (ProductPictureType)x.ProductPictureTypeId,
                 ContentType = x.ContentType
             });
 

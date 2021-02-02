@@ -9,7 +9,7 @@ namespace Module.Api.Product.Models
         public ProductModel()
         {
             Thumbnails = new List<PictureRequestModel>();
-            ProductFarms = new List<ProductFarmModel>();
+            Farms = new List<ProductFarmModel>();
         }
 
         public long Id { get; set; }
@@ -24,8 +24,8 @@ namespace Module.Api.Product.Models
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }
         public int Price { get; set; }
-        public IEnumerable<ProductCategoryRelationModel> ProductCategories { get; set; }
-        public IEnumerable<ProductFarmModel> ProductFarms { get; set; }
+        public IEnumerable<ProductCategoryRelationModel> Categories { get; set; }
+        public IEnumerable<ProductFarmModel> Farms { get; set; }
         public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
     }
 }

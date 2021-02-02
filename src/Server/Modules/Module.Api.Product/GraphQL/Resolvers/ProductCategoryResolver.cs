@@ -27,11 +27,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
             IList<ProductCategoryProjection> categories;
             if (criterias.IsParentOnly)
             {
-                categories = await _productCategoryBusiness.SearchParentsAsync(criterias.Query, criterias.CurrentId);
+                categories = await _productCategoryBusiness.SearchParentsAsync(criterias.CurrentIds, criterias.Query);
             }
             else
             {
-                categories = await _productCategoryBusiness.SearchAsync(criterias.Query, criterias.CurrentId);
+                categories = await _productCategoryBusiness.SearchAsync(criterias.CurrentIds, criterias.Query);
             }
 
             if (categories == null || !categories.Any())

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Image } from "../../atoms/Images";
 import { AnchorLink } from "../../atoms/Links";
+import NoAvatar from "../../atoms/NoImages/no-avatar";
 
 const CreatorAvatar = styled(AnchorLink)`
   margin-right: ${(p) => p.theme.size.distance};
@@ -12,6 +13,13 @@ const CreatorAvatar = styled(AnchorLink)`
     height: ${(p) => p.theme.size.normal};
     border-radius: ${(p) => p.theme.size.normal};
   }
+`;
+
+const EmptyAvatar = styled(NoAvatar)`
+  width: ${(p) => p.theme.size.normal};
+  height: ${(p) => p.theme.size.normal};
+  border-radius: ${(p) => p.theme.size.normal};
+  font-size: 18px;
 `;
 
 const CreatorDetail = styled.div`
@@ -50,7 +58,11 @@ export default (props) => {
     <div className={`${className} row no-gutters`}>
       <div className="col col-auto">
         <CreatorAvatar to={profile.profileUrl}>
-          <Image src={profile.photoUrl} alt="" />
+          {profile.photoUrl ? (
+            <Image src={profile.photoUrl} alt="" />
+          ) : (
+            <EmptyAvatar />
+          )}
         </CreatorAvatar>
       </div>
       <div className="col col-auto">

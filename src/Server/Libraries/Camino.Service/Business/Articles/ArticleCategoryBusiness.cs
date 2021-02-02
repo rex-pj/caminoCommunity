@@ -285,9 +285,17 @@ namespace Camino.Service.Business.Articles
 
         public int Create(ArticleCategoryProjection category)
         {
-            var newCategory = _mapper.Map<ArticleCategory>(category);
-            newCategory.UpdatedDate = DateTime.UtcNow;
-            newCategory.CreatedDate = DateTime.UtcNow;
+            var newCategory = new ArticleCategory()
+            {
+                Description = category.Description,
+                Name = category.Name,
+                ParentId = category.ParentId,
+                CreatedById = category.CreatedById,
+                UpdatedById = category.UpdatedById,
+                UpdatedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                IsPublished = true
+            };
 
             var id = _articleCategoryRepository.AddWithInt32Entity(newCategory);
             return id;

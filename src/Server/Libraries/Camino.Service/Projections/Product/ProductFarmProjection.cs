@@ -7,7 +7,7 @@ namespace Camino.Service.Projections.Product
         public int Id { get; set; }
 
         public long FarmId { get; set; }
-        public string FarmName { get; set; }
+        public string Name { get; set; }
 
         public long ProductId { get; set; }
 

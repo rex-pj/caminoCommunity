@@ -20,14 +20,14 @@ export default {
     },
     isValid: false,
   },
-  productCategories: {
+  categories: {
     value: [],
     validation: {
       isRequired: true,
     },
     isValid: false,
   },
-  productFarms: {
+  farms: {
     value: [],
     validation: {
       isRequired: true,

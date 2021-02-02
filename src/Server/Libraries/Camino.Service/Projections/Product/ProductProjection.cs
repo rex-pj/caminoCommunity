@@ -9,8 +9,8 @@ namespace Camino.Service.Projections.Product
         public ProductProjection()
         {
             Pictures = new List<PictureRequestProjection>();
-            ProductCategories = new List<ProductCategoryProjection>();
-            ProductFarms = new List<ProductFarmProjection>();
+            Categories = new List<ProductCategoryProjection>();
+            Farms = new List<ProductFarmProjection>();
         }
 
         public long Id { get; set; }
@@ -24,8 +24,8 @@ namespace Camino.Service.Projections.Product
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }
         public int Price { get; set; }
-        public IEnumerable<ProductCategoryProjection> ProductCategories { get; set; }
-        public IEnumerable<ProductFarmProjection> ProductFarms { get; set; }
+        public IEnumerable<ProductCategoryProjection> Categories { get; set; }
+        public IEnumerable<ProductFarmProjection> Farms { get; set; }
         public IEnumerable<PictureRequestProjection> Pictures { get; set; }
     }
 }

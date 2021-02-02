@@ -188,8 +188,8 @@ export default withRouter(function (props) {
         </ContentTopbar>
 
         <Title>
-          {product.productFarms
-            ? product.productFarms.map((pf) => {
+          {product.farms
+            ? product.farms.map((pf) => {
                 if (!pf.id) {
                   return null;
                 }
@@ -201,7 +201,7 @@ export default withRouter(function (props) {
                         state: { from: location.pathname },
                       }}
                     >
-                      {pf.farmName}
+                      {pf.name}
                     </AnchorLink>
                     <FontAwesomeIcon icon="angle-right" />
                   </Fragment>

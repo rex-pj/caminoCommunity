@@ -65,7 +65,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
                 return feedPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -99,7 +99,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
                 return feedPage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

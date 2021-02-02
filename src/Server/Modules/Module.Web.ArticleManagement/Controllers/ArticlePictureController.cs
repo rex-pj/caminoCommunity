@@ -53,7 +53,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 PictureCreatedBy = x.PictureCreatedBy,
                 PictureCreatedById = x.PictureCreatedById,
                 PictureCreatedDate = x.PictureCreatedDate,
-                ArticlePictureType = (ArticlePictureType)x.ArticlePictureType,
+                ArticlePictureType = (ArticlePictureType)x.ArticlePictureTypeId,
                 ContentType = x.ContentType
             });
 

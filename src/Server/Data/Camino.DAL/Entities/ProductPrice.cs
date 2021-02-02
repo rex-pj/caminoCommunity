@@ -9,7 +9,7 @@ namespace Camino.DAL.Entities
         public int Price { get; set; }
         public bool IsCurrent { get; set; }
         public bool IsDiscounted { get; set; }
-        public bool IsActived { get; set; }
+        public bool IsPublished { get; set; }
         public DateTimeOffset PricedDate { get; set; }
         public virtual Product Product { get; set; }
     }
