@@ -35,7 +35,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 criterias = new SelectFilterModel();
             }
 
-            var farms = await _farmBusiness.SearchByUserIdAsync(currentUser.Id, criterias.CurrentIds, criterias.Query);
+            var filter = new SelectFilter()
+            {
+                CreatedById = currentUser.Id,
+                CurrentIds = criterias.CurrentIds,
+                Search = criterias.Query
+            };
+
+            var farms = await _farmBusiness.SelectAsync(filter);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -100,7 +107,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             if (criterias.Thumbnails != null && criterias.Thumbnails.Any())
             {
-                farm.Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection() { 
+                farm.Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                {
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
                     FileName = x.FileName,
@@ -170,6 +178,11 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 PageSize = criterias.PageSize,
                 Search = criterias.Search
             };
+
+            if (!string.IsNullOrEmpty(criterias.ExclusiveCreatedIdentityId))
+            {
+                filterRequest.ExclusiveCreatedById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveCreatedIdentityId);
+            }
 
             try
             {

@@ -20,6 +20,12 @@ namespace Module.Api.Auth.GraphQL.Queries
         }
 
         [GraphQlAuthentication]
+        public async Task<UserPageListModel> GetUsersAsync([Service] IUserResolver userResolver, UserFilterModel criterias)
+        {
+            return await userResolver.GetUsersAsync(criterias);
+        }
+
+        [GraphQlAuthentication]
         public async Task<CommonResult> LogoutAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver)
         {
             return await userResolver.LogoutAsync(currentUser);

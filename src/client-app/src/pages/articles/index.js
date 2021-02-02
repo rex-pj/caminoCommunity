@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DefaultLayout } from "../../components/templates/Layout";
 import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 import { withRouter } from "react-router-dom";
@@ -104,13 +105,15 @@ export default withRouter(function (props) {
   };
 
   return (
-    <Article
-      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-      articles={articles}
-      breadcrumbs={breadcrumbs}
-      totalPage={totalPage}
-      baseUrl={baseUrl}
-      currentPage={page}
-    />
+    <DefaultLayout>
+      <Article
+        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+        articles={articles}
+        breadcrumbs={breadcrumbs}
+        totalPage={totalPage}
+        baseUrl={baseUrl}
+        currentPage={page}
+      />
+    </DefaultLayout>
   );
 });

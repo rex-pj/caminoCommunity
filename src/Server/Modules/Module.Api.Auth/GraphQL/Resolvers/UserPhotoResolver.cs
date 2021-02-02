@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Camino.IdentityManager.Contracts;
 using Camino.IdentityManager.Models;
-using Camino.IdentityManager.Contracts.Core;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Media;
-using HotChocolate.Resolvers;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -31,48 +29,51 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
         public async Task<UserAvatarModel> GetUserAvatar(ApplicationUser currentUser, FindUserModel criterias)
         {
-            if (currentUser != null)
+            if (currentUser == null)
             {
-                var userId = currentUser.Id;
-                if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
-                {
-                    userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-                }
-
-                return _mapper.Map<UserAvatarModel>(GetUserPhoto(userId, UserPhotoKind.Avatar));
+                return null;
             }
-            return null;
+
+            var userId = currentUser.Id;
+            if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+            {
+                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+            }
+
+            return _mapper.Map<UserAvatarModel>(GetUserPhoto(userId, UserPhotoKind.Avatar));
         }
 
         public async Task<UserCoverModel> GetUserCover(ApplicationUser currentUser, FindUserModel criterias)
         {
-            if (currentUser != null)
+            if (currentUser == null)
             {
-                var userId = currentUser.Id;
-                if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
-                {
-                    userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-                }
-
-                return _mapper.Map<UserCoverModel>(GetUserPhoto(userId, UserPhotoKind.Cover));
+                return null;
             }
-            return null;
+
+            var userId = currentUser.Id;
+            if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+            {
+                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+            }
+
+            return _mapper.Map<UserCoverModel>(GetUserPhoto(userId, UserPhotoKind.Cover));
         }
 
         public async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(ApplicationUser currentUser, FindUserModel criterias)
         {
-            if (currentUser != null)
+            if (currentUser == null)
             {
-                var userId = currentUser.Id;
-                if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
-                {
-                    userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
-                }
-
-                var userPhotos = await GetUserPhotos(userId);
-                return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
+                return new List<UserPhotoModel>();
             }
-            return new List<UserPhotoModel>();
+
+            var userId = currentUser.Id;
+            if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
+            {
+                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+            }
+
+            var userPhotos = await GetUserPhotos(userId);
+            return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
         }
 
         private async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(long userId)

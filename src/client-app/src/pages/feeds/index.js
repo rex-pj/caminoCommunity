@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DefaultLayout } from "../../components/templates/Layout";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
@@ -18,6 +19,7 @@ import { authClient } from "../../graphql/client";
 export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
+
   const { pageNumber, pageSize } = params;
   const [state, dispatch] = useStore(true);
   const { loading, data, error, refetch } = useQuery(feedqueries.GET_FEEDS, {
@@ -130,15 +132,17 @@ export default withRouter((props) => {
   };
 
   return (
-    <Feeds
-      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-      onDeleteArticle={onDeleteArticle}
-      onDeleteFarm={onDeleteFarm}
-      onDeleteProduct={onDeleteProduct}
-      feeds={feeds}
-      totalPage={totalPage}
-      baseUrl="/feeds"
-      currentPage={page}
-    />
+    <DefaultLayout>
+      <Feeds
+        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+        onDeleteArticle={onDeleteArticle}
+        onDeleteFarm={onDeleteFarm}
+        onDeleteProduct={onDeleteProduct}
+        feeds={feeds}
+        totalPage={totalPage}
+        baseUrl="/feeds"
+        currentPage={page}
+      />
+    </DefaultLayout>
   );
 });

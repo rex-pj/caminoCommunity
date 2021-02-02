@@ -21,6 +21,9 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Framework.Models.Settings;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Projections.Request;
+using Camino.Service.Projections.Filters;
+using System.Collections.Generic;
+using Camino.Service.Projections.Media;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -29,14 +32,15 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IUserBusiness _userBusiness;
+        private readonly IUserPhotoBusiness _userPhotoBusiness;
         private readonly IEmailProvider _emailSender;
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender,
-            IUserBusiness userBusiness, IOptions<AppSettings> appSettings, ISessionContext sessionContext, 
-            IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<ResetPasswordSettings> resetPasswordSettings)
+            IUserBusiness userBusiness, IOptions<AppSettings> appSettings, ISessionContext sessionContext, IOptions<ResetPasswordSettings> resetPasswordSettings,
+            IUserPhotoBusiness userPhotoBusiness, IOptions<RegisterConfirmationSettings> registerConfirmationSettings)
             : base(sessionContext)
         {
             _userManager = userManager;
@@ -46,6 +50,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _registerConfirmationSettings = registerConfirmationSettings.Value;
             _resetPasswordSettings = resetPasswordSettings.Value;
             _emailSender = emailSender;
+            _userPhotoBusiness = userPhotoBusiness;
         }
 
         public UserInfoModel GetLoggedUser(ApplicationUser currentUser)
@@ -71,6 +76,48 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 UpdatedDate = currentUser.UpdatedDate,
                 UserIdentityId = currentUser.UserIdentityId
             };
+        }
+
+        public async Task<UserPageListModel> GetUsersAsync(UserFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new UserFilterModel();
+            }
+
+            var filterRequest = new UserFilter()
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search
+            };
+
+            if (!string.IsNullOrEmpty(criterias.ExclusiveCreatedIdentityId))
+            {
+                filterRequest.ExclusiveCreatedById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveCreatedIdentityId);
+            }
+
+            try
+            {
+                var userPageList = await _userBusiness.GetAsync(filterRequest);
+
+                var userIds = userPageList.Collections.Select(x => x.Id);
+                var userPhotos = _userPhotoBusiness.GetUserPhotoByUserIds(userIds, UserPhotoKind.Avatar);
+                var users = await MapUsersProjectionToModelAsync(userPageList.Collections, userPhotos);
+
+                var userPage = new UserPageListModel(users)
+                {
+                    Filter = criterias,
+                    TotalPage = userPageList.TotalPage,
+                    TotalResult = userPageList.TotalResult
+                };
+
+                return userPage;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<UserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias)
@@ -296,6 +343,41 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             {
                 throw;
             }
+        }
+
+        private async Task<IList<UserInfoModel>> MapUsersProjectionToModelAsync(IEnumerable<UserFullProjection> userProjections, IList<UserPhotoProjection> userPhotos)
+        {
+            var users = new List<UserInfoModel>();
+            foreach (var userProjection in userProjections)
+            {
+                var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userProjection.Id);
+                var user = new UserInfoModel()
+                {
+                    Address = userProjection.Address,
+                    BirthDate = userProjection.BirthDate,
+                    CountryCode = userProjection.CountryCode,
+                    CountryId = userProjection.CountryId,
+                    CountryName = userProjection.CountryName,
+                    Email = userProjection.Email,
+                    CreatedDate = userProjection.CreatedDate,
+                    Description = userProjection.Description,
+                    DisplayName = userProjection.DisplayName,
+                    Firstname = userProjection.Firstname,
+                    GenderId = userProjection.GenderId,
+                    GenderLabel = userProjection.GenderLabel,
+                    Lastname = userProjection.Lastname,
+                    PhoneNumber = userProjection.PhoneNumber,
+                    StatusId = userProjection.StatusId,
+                    StatusLabel = userProjection.StatusLabel,
+                    UpdatedDate = userProjection.UpdatedDate,
+                    UserIdentityId = await _userManager.EncryptUserIdAsync(userProjection.Id),
+                    AvatarCode = userAvatar != null ? userAvatar.Code : null
+                };
+
+                users.Add(user);
+            }
+
+            return users;
         }
 
         public async Task<CommonResult> SignupAsync(SignupModel criterias)

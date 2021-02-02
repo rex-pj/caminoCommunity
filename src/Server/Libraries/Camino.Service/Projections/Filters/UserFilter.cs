@@ -16,5 +16,6 @@ namespace Camino.Service.Projections.Filters
         public short? CountryId { get; set; }
         public int? StatusId { get; set; }
         public bool? IsEmailConfirmed { get; set; }
+        public long? ExclusiveCreatedById { get; set; }
     }
 }

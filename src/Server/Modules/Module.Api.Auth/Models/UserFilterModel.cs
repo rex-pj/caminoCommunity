@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.Models;
 
-namespace Module.Api.Farm.Models
+namespace Module.Api.Auth.Models
 {
-    public class FarmFilterModel : BaseFilterModel
+    public class UserFilterModel : BaseFilterModel
     {
-        public FarmFilterModel() : base()
+        public UserFilterModel() : base()
         {
             Page = 1;
             PageSize = 10;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DefaultLayout } from "../../components/templates/Layout";
 import Community from "../../components/templates/Community";
 import { UrlConstant } from "../../utils/Constants";
 
@@ -34,12 +35,14 @@ export default () => {
 
   const { totalPage, baseUrl, currentPage } = state;
   return (
-    <Community
-      communities={communities}
-      breadcrumbs={breadcrumbs}
-      totalPage={totalPage}
-      baseUrl={baseUrl}
-      currentPage={currentPage}
-    />
+    <DefaultLayout>
+      <Community
+        communities={communities}
+        breadcrumbs={breadcrumbs}
+        totalPage={totalPage}
+        baseUrl={baseUrl}
+        currentPage={currentPage}
+      />
+    </DefaultLayout>
   );
 };

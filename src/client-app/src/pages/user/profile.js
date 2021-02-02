@@ -135,10 +135,8 @@ export default withRouter((props) => {
     if (data && data.canEdit) {
       return await action({ variables: { criterias: data } })
         .then(async () => {
-          await refetch().then(() => {
-            if (relogin) {
-              relogin();
-            }
+          refetch().then(() => {
+            relogin();
           });
         })
         .catch(() => {
@@ -152,8 +150,10 @@ export default withRouter((props) => {
 
   const onAvatarUpload = async (variables) => {
     return await updateAvatar({ variables }).then(() => {
-      relogin();
-      refetch();
+      refetch().then(() => {
+        relogin();
+      });
+
       return new Promise((resolve) => {
         resolve({});
       });
@@ -162,8 +162,10 @@ export default withRouter((props) => {
 
   const onAvatarDelete = async (variables) => {
     return await deleteAvatar({ variables }).then(() => {
-      relogin();
-      refetch();
+      refetch().then(() => {
+        relogin();
+      });
+
       return new Promise((resolve) => {
         resolve({});
       });

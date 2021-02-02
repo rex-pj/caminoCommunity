@@ -14,8 +14,7 @@ namespace Camino.Service.Business.Farms.Contracts
         Task<BasePageList<FarmProjection>> GetAsync(FarmFilter filter);
         Task<long> CreateAsync(FarmProjection farm);
         Task<FarmProjection> UpdateAsync(FarmProjection farm);
-        Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, long[] currentIds, string search = "", int page = 1, int pageSize = 10);
-        Task<IList<FarmProjection>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10);
+        Task<IList<FarmProjection>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10);
         Task<bool> DeleteAsync(long id);
         Task<bool> SoftDeleteAsync(long id);
     }

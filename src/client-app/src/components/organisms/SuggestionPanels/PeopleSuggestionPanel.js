@@ -60,7 +60,7 @@ export default (props) => {
       <div className="row">
         <div className="col col-3 col-sm-3 col-md-4 col-lg-4 col-xl-3">
           <AnchorLink to={data.url}>
-            <Avatar src={data.ImageUrl} alt={data.ImageUrl} />
+            <Avatar src={data.imageUrl} alt={data.imageUrl} />
           </AnchorLink>
         </div>
         <div className="col col-auto">

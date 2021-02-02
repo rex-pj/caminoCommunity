@@ -5,7 +5,7 @@ using Camino.Data.Enums;
 using Camino.Service.Business.Users.Contracts;
 using Camino.Service.Business.Media.Contracts;
 
-namespace Module.Api.File.Controllers
+namespace Module.Api.Media.Controllers
 {
     [Route("file-api/[controller]")]
     public class PhotoController : Controller
@@ -21,7 +21,7 @@ namespace Module.Api.File.Controllers
 
         [HttpGet]
         [Route("avatar/{code}")]
-        public async Task<IActionResult> Avatar(string code)
+        public async Task<IActionResult> GetAvatar(string code)
         {
             var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoKind.Avatar);
             var bytes = Convert.FromBase64String(avatar.ImageData);
@@ -31,7 +31,7 @@ namespace Module.Api.File.Controllers
 
         [HttpGet]
         [Route("cover/{code}")]
-        public async Task<IActionResult> Cover(string code)
+        public async Task<IActionResult> GetCover(string code)
         {
             var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
             var bytes = Convert.FromBase64String(avatar.ImageData);

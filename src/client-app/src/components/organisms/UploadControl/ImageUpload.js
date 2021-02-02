@@ -34,7 +34,6 @@ export default (props) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (props.onChange) {
-          console.log(reader.result);
           var blobImage = base64toBlob(reader.result, file.type);
           var blobUrl = URL.createObjectURL(blobImage);
 

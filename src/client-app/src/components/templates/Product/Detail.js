@@ -1,4 +1,10 @@
-import React, { Fragment, useRef, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { PrimaryTitle } from "../../atoms/Titles";
@@ -15,6 +21,7 @@ import { withRouter } from "react-router-dom";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primaryText};
@@ -34,6 +41,9 @@ const InteractiveItem = styled.li`
 const TopBarInfo = styled.div`
   color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  padding-bottom: ${(p) => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.distance};
 
   ${ModuleMenuListItem} {
     margin-top: 0;
@@ -43,11 +53,6 @@ const TopBarInfo = styled.div`
 
   ${ModuleMenuListItem}:last-child {
     border-bottom: 0;
-  }
-
-  ${ModuleMenuListItem} span {
-    padding-top: ${(p) => p.theme.size.tiny};
-    padding-bottom: ${(p) => p.theme.size.tiny};
   }
 `;
 
@@ -115,27 +120,34 @@ const DropdownList = styled(Dropdown)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   padding: ${(p) => p.theme.size.exTiny} 0;
 
+  ${ModuleMenuListItem} {
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
   ${ModuleMenuListItem} span {
     display: block;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
-    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+
+    padding: ${(p) => p.theme.size.tiny} ${(p) => p.theme.size.tiny};
     cursor: pointer;
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.neutralBg};
-    }
-
-    :last-child {
-      border-bottom: 0;
+      background-color: ${(p) => p.theme.color.lightBg};
     }
   }
 `;
 
 export default withRouter(function (props) {
   const { product, onOpenDeleteConfirmationModal } = props;
-
+  const { currentUser, isLogin } = useContext(SessionContext);
+  const { createdByIdentityId } = product;
+  const isAuthor =
+    currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
   const onActionDropdownHide = (e) => {
@@ -192,15 +204,18 @@ export default withRouter(function (props) {
                   <Title>{product.title}</Title>
                 </div>
                 <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-                  <PostActions>
-                    <ActionButton
-                      className="dropdown-action"
-                      onClick={onActionDropdownShow}
-                    >
-                      <FontAwesomeIcon icon="angle-down" />
-                    </ActionButton>
-                  </PostActions>
-                  {isActionDropdownShown ? (
+                  {isLogin ? (
+                    <PostActions ref={currentRef}>
+                      <ActionButton
+                        className="dropdown-action"
+                        onClick={onActionDropdownShow}
+                      >
+                        <FontAwesomeIcon icon="angle-down" />
+                      </ActionButton>
+                    </PostActions>
+                  ) : null}
+
+                  {isActionDropdownShown && isAuthor ? (
                     <DropdownList>
                       <ModuleMenuListItem>
                         <span onClick={onEditMode}>

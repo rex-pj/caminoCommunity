@@ -330,6 +330,11 @@ namespace Camino.Service.Business.Users
                 userQuery = userQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
+            if (filter.ExclusiveCreatedById.HasValue)
+            {
+                userQuery = userQuery.Where(x => x.Id != filter.ExclusiveCreatedById);
+            }
+
             if (filter.IsEmailConfirmed.HasValue)
             {
                 userQuery = userQuery.Where(x => x.IsEmailConfirmed == filter.IsEmailConfirmed);

@@ -1,5 +1,4 @@
 import {
-  DefaultLayout,
   FrameLayout,
   AuthLayout,
   ProfileLayout,
@@ -11,7 +10,7 @@ export default [
     path: ["/articles", "/articles/page/:pageNumber"],
     exact: true,
     page: "articles",
-    layout: DefaultLayout,
+    layout: FrameLayout,
   },
   {
     path: "/articles/:id",
@@ -29,7 +28,7 @@ export default [
     path: ["/products", "/products/page/:pageNumber"],
     exact: true,
     page: "products",
-    layout: DefaultLayout,
+    layout: FrameLayout,
   },
   {
     path: "/products/:id",
@@ -47,7 +46,7 @@ export default [
     path: ["/farms", "/farms/page/:pageNumber"],
     exact: true,
     page: "farms",
-    layout: DefaultLayout,
+    layout: FrameLayout,
   },
   {
     path: "/farms/:id",
@@ -65,7 +64,7 @@ export default [
     path: ["/communities", "/communities/page/:pageNumber"],
     exact: true,
     page: "communities",
-    layout: DefaultLayout,
+    layout: FrameLayout,
   },
   {
     path: "/communities/:id",
@@ -111,7 +110,7 @@ export default [
     path: ["/", "/page/:pageNumber", "/feeds", "/feeds/page/:pageNumber"],
     exact: true,
     page: "feeds",
-    layout: DefaultLayout,
+    layout: FrameLayout,
   },
   {
     path: [

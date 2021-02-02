@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../atoms/List";
 import { FifthHeadingSecondary } from "../../atoms/Heading";
+import Loading from "../../atoms/Loading";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
@@ -10,19 +11,30 @@ const Root = styled.div`
   background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
-export default () => {
-  let connections = [];
-  for (let i = 0; i < 3; i++) {
-    connections.push({
-      name: "Mr. Fifth",
-      description:
-        "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
-      url: "/profile/4976920d11d17ddb37cd40c54330ba8e",
-
-      id: "1212234r5423",
-      ImageUrl: `${process.env.PUBLIC_URL}/photos/conn-farmer.png`,
-    });
+export default (props) => {
+  const { loading, data } = props;
+  if (loading) {
+    return <Loading>Loading</Loading>;
   }
+
+  if (!data) {
+    return null;
+  }
+
+  const { users } = data;
+  const { collections } = users;
+
+  let connections = collections.map((user) => {
+    return {
+      name: user.displayName,
+      description: user.description,
+      url: `/profile/${user.userIdentityId}`,
+      id: user.userIdentityId,
+      imageUrl: user.avatarCode
+        ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${user.avatarCode}`
+        : null,
+    };
+  });
 
   return (
     <div>

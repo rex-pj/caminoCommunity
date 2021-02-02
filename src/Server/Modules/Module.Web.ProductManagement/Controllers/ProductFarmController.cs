@@ -42,7 +42,12 @@ namespace Module.Web.ProductManagement.Controllers
                 currentIds = currentId.Split(',').Select(x => long.Parse(x)).ToArray();
             }
 
-            var farms = await _farmBusiness.SearchAsync(currentIds, q);
+            var filter = new SelectFilter()
+            {
+                CurrentIds = currentIds,
+                Search = q
+            };
+            var farms = await _farmBusiness.SelectAsync(filter);
             if (farms == null || !farms.Any())
             {
                 return Json(new List<Select2ItemModel>());

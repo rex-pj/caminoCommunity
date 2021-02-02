@@ -47,11 +47,6 @@ const TopBarInfo = styled.div`
     border-bottom: 0;
   }
 
-  ${ModuleMenuListItem} span {
-    padding-top: ${(p) => p.theme.size.tiny};
-    padding-bottom: ${(p) => p.theme.size.tiny};
-  }
-
   span {
     color: inherit;
     vertical-align: middle;
@@ -110,20 +105,24 @@ const DropdownList = styled(Dropdown)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   padding: ${(p) => p.theme.size.exTiny} 0;
 
+  ${ModuleMenuListItem} {
+    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  }
+
+  ${ModuleMenuListItem}:last-child {
+    border-bottom: 0;
+  }
+
   ${ModuleMenuListItem} span {
     display: block;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
-    padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
+
+    padding: ${(p) => p.theme.size.tiny} ${(p) => p.theme.size.tiny};
     cursor: pointer;
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.neutralBg};
-    }
-
-    :last-child {
-      border-bottom: 0;
+      background-color: ${(p) => p.theme.color.lightBg};
     }
   }
 `;
@@ -188,7 +187,7 @@ export default withRouter((props) => {
                 <span>{farm.address}</span>
               </div>
               <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-                <PostActions>
+                <PostActions ref={currentRef}>
                   <ActionButton
                     className="dropdown-action"
                     onClick={onActionDropdownShow}

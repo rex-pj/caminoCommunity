@@ -92,7 +92,9 @@ export default (props) => {
         <FifthHeadingSecondary>
           <AnchorLink to={data.url}>{data.name}</AnchorLink>
         </FifthHeadingSecondary>
-        <Description>{data.description}</Description>
+        <Description
+          dangerouslySetInnerHTML={{ __html: data.description }}
+        ></Description>
       </Body>
     </ListGroupItem>
   );

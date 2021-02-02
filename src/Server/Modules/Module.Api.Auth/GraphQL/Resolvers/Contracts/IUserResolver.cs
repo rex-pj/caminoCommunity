@@ -14,7 +14,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
         Task<CommonResult> LogoutAsync(ApplicationUser currentUser);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias);
         Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateRequest criterias);
-
+        Task<UserPageListModel> GetUsersAsync(UserFilterModel criterias);
         Task<UserTokenModel> LoginAsync(LoginModel criterias);
         Task<CommonResult> SignupAsync(SignupModel criterias);
         Task<CommonResult> ActiveAsync(ActiveUserModel criterias);

@@ -4,31 +4,6 @@ namespace Camino.Framework.Models
 {
     public class UserInfoModel
     {
-        public UserInfoModel() { }
-
-        public UserInfoModel(UserInfoModel userInfo)
-        {
-            Address = userInfo.Address;
-            UserIdentityId = userInfo.UserIdentityId;
-            Email = userInfo.Email;
-            Lastname = userInfo.Lastname;
-            Firstname = userInfo.Firstname;
-            DisplayName = userInfo.DisplayName;
-            Address = userInfo.Address;
-            PhoneNumber = userInfo.PhoneNumber;
-            Description = userInfo.Description;
-            BirthDate = userInfo.BirthDate;
-            CreatedDate = userInfo.CreatedDate;
-            UpdatedDate = userInfo.UpdatedDate;
-            GenderId = userInfo.GenderId;
-            GenderLabel = userInfo.GenderLabel;
-            StatusId = userInfo.StatusId;
-            StatusLabel = userInfo.StatusLabel;
-            CountryId = userInfo.CountryId;
-            CountryCode = userInfo.CountryCode;
-            CountryName = userInfo.CountryName;
-        }
-
         public string UserIdentityId { get; set; }
         public string Email { get; set; }
         public string Lastname { get; set; }
@@ -47,6 +22,7 @@ namespace Camino.Framework.Models
         public short? CountryId { get; set; }
         public string CountryCode { get; set; }
         public string CountryName { get; set; }
+        public string AvatarCode { get; set; }
         public bool CanEdit { get; set; }
     }
 }

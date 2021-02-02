@@ -117,14 +117,8 @@ namespace Camino.Service.Business.Farms
             return exist;
         }
 
-        public async Task<IList<FarmProjection>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmProjection>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
             var query = _farmRepository.Get(x => !x.IsDeleted)
                 .Select(c => new FarmProjection
                 {
@@ -133,56 +127,20 @@ namespace Camino.Service.Business.Farms
                     Description = c.Description
                 });
 
-            if (currentIds != null && currentIds.Any())
+            if (filter.CreatedById > 0)
             {
-                query = query.Where(x => !currentIds.Contains(x.Id));
+                query = query.Where(x => x.CreatedById == filter.CreatedById);
             }
 
-            if (!string.IsNullOrEmpty(search))
+            if (filter.CurrentIds.Any())
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => !filter.CurrentIds.Contains(x.Id));
             }
 
-            if (pageSize > 0)
+            filter.Search = filter.Search.ToLower();
+            if (!string.IsNullOrEmpty(filter.Search))
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
-            }
-
-            var farms = await query
-                .Select(x => new FarmProjection()
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                })
-                .ToListAsync();
-
-            return farms;
-        }
-
-        public async Task<IList<FarmProjection>> SearchByUserIdAsync(long userId, long[] currentIds, string search = "", int page = 1, int pageSize = 10)
-        {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var query = _farmRepository.Get(x => x.CreatedById == userId && !x.IsDeleted)
-                .Select(c => new FarmProjection
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description
-                });
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
-            }
-
-            if (currentIds != null && currentIds.Any())
-            {
-                query = query.Where(x => !currentIds.Contains(x.Id));
+                query = query.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
             }
 
             if (pageSize > 0)
@@ -228,6 +186,11 @@ namespace Camino.Service.Business.Farms
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
+            }
+
+            if (filter.ExclusiveCreatedById.HasValue)
+            {
+                farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveCreatedById);
             }
 
             if (filter.CreatedById.HasValue)

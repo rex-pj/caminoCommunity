@@ -151,7 +151,7 @@ namespace Camino.Service.Business.Users
         public async Task<IEnumerable<UserPhotoProjection>> GetUserPhotosAsync(long userId)
         {
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.UserId == userId);
-            
+
             return userPhotos.Select(x => new UserPhotoProjection()
             {
                 Code = x.Code,
@@ -163,9 +163,9 @@ namespace Camino.Service.Business.Users
             });
         }
 
-        public UserPhotoProjection GetUserPhotoByUserId(long userId, UserPhotoKind type)
+        public UserPhotoProjection GetUserPhotoByUserId(long userId, UserPhotoKind typeId)
         {
-            var photoType = (byte)type;
+            var photoType = (byte)typeId;
             var userPhotos = _userPhotoRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType));
             if (userPhotos == null || !userPhotos.Any())
             {
@@ -181,6 +181,23 @@ namespace Camino.Service.Business.Users
                 Url = x.Url,
                 TypeId = x.TypeId
             }).FirstOrDefault();
+        }
+
+        public IList<UserPhotoProjection> GetUserPhotoByUserIds(IEnumerable<long> userIds, UserPhotoKind typeId)
+        {
+            var photoType = (byte)typeId;
+            var userPhotos = _userPhotoRepository.Get(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType));
+
+            return userPhotos.Select(x => new UserPhotoProjection()
+            {
+                Code = x.Code,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name,
+                Url = x.Url,
+                TypeId = x.TypeId,
+                UserId = x.UserId
+            }).ToList();
         }
     }
 }

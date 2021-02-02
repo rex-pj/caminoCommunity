@@ -106,7 +106,7 @@ const EmptyAvatar = styled(NoAvatar)`
   margin: auto;
 `;
 
-const UpdateAvatarModal = (props) => {
+export default (props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
@@ -317,5 +317,3 @@ const UpdateAvatarModal = (props) => {
     </Wrap>
   );
 };
-
-export default UpdateAvatarModal;

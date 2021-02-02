@@ -13,5 +13,6 @@ namespace Camino.Service.Business.Users.Contracts
         Task<UserPhotoProjection> GetUserPhotoByCodeAsync(string code, UserPhotoKind type);
         UserPhotoProjection GetUserPhotoByUserId(long userId, UserPhotoKind type);
         Task<IEnumerable<UserPhotoProjection>> GetUserPhotosAsync(long userId);
+        IList<UserPhotoProjection> GetUserPhotoByUserIds(IEnumerable<long> userIds, UserPhotoKind typeId);
     }
 }

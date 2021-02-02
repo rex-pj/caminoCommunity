@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DefaultLayout } from "../../components/templates/Layout";
 import Farm from "../../components/templates/Farm";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery, useMutation } from "@apollo/client";
@@ -103,13 +104,15 @@ export default withRouter(function (props) {
   ];
 
   return (
-    <Farm
-      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-      farms={farms}
-      breadcrumbs={breadcrumbs}
-      totalPage={totalPage}
-      baseUrl="/farms"
-      currentPage={page}
-    />
+    <DefaultLayout>
+      <Farm
+        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+        farms={farms}
+        breadcrumbs={breadcrumbs}
+        totalPage={totalPage}
+        baseUrl="/farms"
+        currentPage={page}
+      />
+    </DefaultLayout>
   );
 });

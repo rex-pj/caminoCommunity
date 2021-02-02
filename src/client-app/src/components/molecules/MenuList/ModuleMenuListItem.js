@@ -31,7 +31,7 @@ export default styled(ListItem)`
       bottom: 50%;
       height: 12px;
       width: 3px;
-      background: ${(p) => p.theme.color.neutralBg};
+      background: ${(p) => p.theme.color.lightBg};
       margin: auto 0;
     }
   }

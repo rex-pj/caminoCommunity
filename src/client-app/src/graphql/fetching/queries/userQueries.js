@@ -49,6 +49,25 @@ export const GET_USER_INFO = gql`
   }
 `;
 
+export const GET_SUGGESSTION_USERS = gql`
+  query($criterias: UserFilterModelInput) {
+    users(criterias: $criterias) {
+      collections {
+        countryCode
+        countryId
+        countryName
+        description
+        displayName
+        firstname
+        genderLabel
+        lastname
+        userIdentityId
+        avatarCode
+      }
+    }
+  }
+`;
+
 export const GET_USER_IDENTIFY = gql`
   query($criterias: FindUserModelInput!) {
     userIdentityInfo: fullUserInfo(criterias: $criterias) {

@@ -1,6 +1,6 @@
 ﻿using Camino.Data.Enums;
 
-namespace  Module.Api.Auth.Models
+namespace Module.Api.Auth.Models
 {
     public class UserPhotoModel
     {
@@ -10,7 +10,7 @@ namespace  Module.Api.Auth.Models
         public string Url { get; set; }
         public string Description { get; set; }
         public string ImageData { get; set; }
-        public long UserId { get; set; }
+        public long UserIdentityId { get; set; }
         public UserPhotoKind PhotoType { get; set; }
     }
 }

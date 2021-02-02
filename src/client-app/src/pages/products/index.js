@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DefaultLayout } from "../../components/templates/Layout";
 import Product from "../../components/templates/Product";
 import { UrlConstant } from "../../utils/Constants";
 import { useQuery, useMutation } from "@apollo/client";
@@ -115,13 +116,15 @@ export default withRouter(function (props) {
   };
 
   return (
-    <Product
-      onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-      products={products}
-      breadcrumbs={breadcrumbs}
-      totalPage={totalPage}
-      baseUrl={baseUrl}
-      currentPage={page}
-    />
+    <DefaultLayout>
+      <Product
+        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+        products={products}
+        breadcrumbs={breadcrumbs}
+        totalPage={totalPage}
+        baseUrl={baseUrl}
+        currentPage={page}
+      />
+    </DefaultLayout>
   );
 });

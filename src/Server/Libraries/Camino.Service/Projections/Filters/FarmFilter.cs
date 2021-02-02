@@ -9,5 +9,6 @@ namespace Camino.Service.Projections.Filters
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public long? FarmTypeId { get; set; }
+        public long? ExclusiveCreatedById { get; set; }
     }
 }
