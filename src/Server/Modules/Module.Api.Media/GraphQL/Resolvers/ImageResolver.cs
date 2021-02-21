@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using Module.Api.Media.Models;
-using Camino.Service.Strategies.Validation;
 using Camino.Framework.Models;
-using Camino.Core.Models;
-using Camino.IdentityManager.Contracts;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.General;
+using Camino.Infrastructure.Strategies.Validations;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {

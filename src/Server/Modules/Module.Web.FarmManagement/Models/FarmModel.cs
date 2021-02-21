@@ -11,7 +11,7 @@ namespace Module.Web.FarmManagement.Models
     {
         public FarmModel()
         {
-            Thumbnails = new List<PictureRequestModel>();
+            Pictures = new List<PictureRequestModel>();
         }
 
         public long Id { get; set; }
@@ -30,8 +30,8 @@ namespace Module.Web.FarmManagement.Models
         public string CreatedBy { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
-        public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
-        public long ThumbnailId { get; set; }
+        public IEnumerable<PictureRequestModel> Pictures { get; set; }
+        public long PictureId { get; set; }
         public IFormFile File { get; set; }
 
         public IEnumerable<SelectListItem> SelectTypes { get; set; }

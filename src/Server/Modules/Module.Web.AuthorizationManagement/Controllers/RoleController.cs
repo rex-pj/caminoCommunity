@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Camino.Framework.Controllers;
+﻿using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
@@ -8,31 +7,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using Camino.Core.Constants;
 using Camino.Framework.Attributes;
-using Camino.Core.Enums;
-using Camino.Service.Projections.Filters;
-using Camino.Framework.Helpers.Contracts;
-using Camino.Service.Business.Authorization.Contracts;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Filters;
+using Camino.Core.Contracts.Helpers;
+using Camino.Core.Contracts.Services.Authorization;
+using Camino.Core.Contracts.IdentityManager;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class RoleController : BaseAuthController
     {
-        private readonly IRoleBusiness _roleBusiness;
-        private readonly IMapper _mapper;
+        private readonly IRoleService _roleService;
         private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
         private readonly IHttpHelper _httpHelper;
 
-        public RoleController(IMapper mapper, IRoleBusiness roleBusiness, IHttpContextAccessor httpContextAccessor,
+        public RoleController(IRoleService roleService, IHttpContextAccessor httpContextAccessor,
             IApplicationRoleManager<ApplicationRole> roleManager, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
-            _mapper = mapper;
             _httpHelper = httpHelper;
-            _roleBusiness = roleBusiness;
+            _roleService = roleService;
             _roleManager = roleManager;
         }
 
@@ -41,9 +38,26 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(RoleFilterModel filter)
         {
-            var filterRequest = _mapper.Map<RoleFilter>(filter);
-            var rolePageList = await _roleBusiness.GetAsync(filterRequest);
-            var roleModels = _mapper.Map<List<RoleModel>>(rolePageList.Collections);
+            var rolePageList = await _roleService.GetAsync(new RoleFilter
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search
+            });
+
+            var roleModels = rolePageList.Collections.Select(x => new RoleModel
+            {
+                CreatedById = x.CreatedById,
+                CreatedByName = x.CreatedByName,
+                CreatedDate = x.CreatedDate,
+                UpdatedById = x.UpdatedById,
+                UpdatedDate = x.UpdatedDate,
+                UpdatedByName = x.UpdatedByName,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name
+            });
+
             var rolePage = new PageListModel<RoleModel>(roleModels)
             {
                 Filter = filter,
@@ -63,7 +77,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         public IActionResult Search(string q, List<long> currentRoleIds)
         {
-            var roles = _roleBusiness.Search(q, currentRoleIds);
+            var roles = _roleService.Search(q, currentRoleIds);
             if (roles == null || !roles.Any())
             {
                 return Json(new
@@ -72,12 +86,11 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 });
             }
 
-            var userModels = _mapper.Map<List<RoleModel>>(roles)
-                .Select(x => new Select2ItemModel
-                {
-                    Id = x.Id.ToString(),
-                    Text = x.Name
-                });
+            var userModels = roles.Select(x => new Select2ItemModel
+            {
+                Id = x.Id.ToString(),
+                Text = x.Name
+            });
 
             return Json(userModels);
         }
@@ -99,7 +112,18 @@ namespace Module.Web.AuthorizationManagement.Controllers
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<RoleModel>(role);
+                var model = new RoleModel
+                {
+                    CreatedById = role.CreatedById,
+                    UpdatedById = role.UpdatedById,
+                    UpdatedByName = role.UpdatedByName,
+                    Name = role.Name,
+                    Id = role.Id,
+                    Description = role.Description,
+                    UpdatedDate = role.UpdatedDate,
+                    CreatedByName = role.CreatedByName,
+                    CreatedDate = role.CreatedDate
+                };
                 return View(model);
             }
             catch (Exception)
@@ -126,17 +150,25 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _roleBusiness.FindByName(model.Name);
+            var exist = _roleService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var role = _mapper.Map<ApplicationRole>(model);
-            role.UpdatedById = LoggedUserId;
-            role.CreatedById = LoggedUserId;
+            var role = new ApplicationRole
+            {
+                CreatedById = LoggedUserId,
+                UpdatedById = LoggedUserId,
+                UpdatedByName = model.UpdatedByName,
+                Name = model.Name,
+                Description = model.Description,
+                UpdatedDate = model.UpdatedDate,
+                CreatedByName = model.CreatedByName,
+                CreatedDate = model.CreatedDate
+            };
             var newId = _roleManager.CreateAsync(role);
-            return RedirectToAction("Detail", new { id = newId });
+            return RedirectToAction(nameof(Detail), new { id = newId });
         }
 
         [HttpGet]
@@ -144,7 +176,18 @@ namespace Module.Web.AuthorizationManagement.Controllers
         public async Task<IActionResult> Update(long id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
-            var model = _mapper.Map<RoleModel>(role);
+            var model = new RoleModel
+            {
+                CreatedById = role.CreatedById,
+                UpdatedById = role.UpdatedById,
+                UpdatedByName = role.UpdatedByName,
+                Name = role.Name,
+                Id = role.Id,
+                Description = role.Description,
+                UpdatedDate = role.UpdatedDate,
+                CreatedByName = role.CreatedByName,
+                CreatedDate = role.CreatedDate
+            };
 
             return View(model);
         }
@@ -158,16 +201,25 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _roleBusiness.FindByName(model.Name);
+            var exist = _roleService.FindByName(model.Name);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var role = _mapper.Map<ApplicationRole>(model);
-            role.UpdatedById = LoggedUserId;
+            var role = new ApplicationRole
+            {
+                UpdatedById = LoggedUserId,
+                UpdatedByName = model.UpdatedByName,
+                Name = model.Name,
+                Id = model.Id,
+                Description = model.Description,
+                UpdatedDate = model.UpdatedDate,
+                CreatedByName = model.CreatedByName,
+                CreatedDate = model.CreatedDate
+            };
             var newId = _roleManager.UpdateAsync(role);
-            return RedirectToAction("Detail", new { id = newId });
+            return RedirectToAction(nameof(Detail), new { id = newId });
         }
     }
 }

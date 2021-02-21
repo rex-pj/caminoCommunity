@@ -1,5 +1,5 @@
 import React from "react";
-import UserActive from "../../components/organisms/User/UserActive";
+import UserActive from "../../components/organisms/Profile/UserActive";
 import { withRouter } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";

@@ -46,10 +46,10 @@ export default withRouter(function (props) {
   const farms = collections.map((item) => {
     let farm = { ...item };
     farm.url = `${UrlConstant.Farm.url}${farm.id}`;
-    if (farm.thumbnails && farm.thumbnails.length > 0) {
-      const thumbnail = farm.thumbnails[0];
-      if (thumbnail.pictureId > 0) {
-        farm.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+    if (farm.pictures && farm.pictures.length > 0) {
+      const picture = farm.pictures[0];
+      if (picture.pictureId > 0) {
+        farm.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
       }
     }
 

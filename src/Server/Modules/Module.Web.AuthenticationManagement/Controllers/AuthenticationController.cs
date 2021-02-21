@@ -3,8 +3,8 @@ using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
+using Camino.Core.Contracts.IdentityManager;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -30,14 +30,14 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 var result = await _loginManager.PasswordSignInAsync(model.UserName, model.Password, true, false);
                 if (!result.Succeeded)
                 {
-                    return RedirectToAction("Login", "Authentication");
+                    return RedirectToAction(nameof(Login));
                 }
 
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception)
             {
-                return await Login(model);
+                return View(nameof(Login));
             }
         }
 

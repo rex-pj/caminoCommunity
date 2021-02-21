@@ -35,7 +35,7 @@ export default {
     },
     isValid: false,
   },
-  thumbnails: {
+  pictures: {
     value: [],
     isValid: true,
   },

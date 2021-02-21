@@ -103,7 +103,7 @@ export default function (props) {
   let { displayNumber } = props;
   const numberOfImages = images.length;
   const numberOfDisplay = displayNumber ? displayNumber : numberOfImages;
-  const [thumbnailImage, setThumbnailImage] = useState({});
+  const [thumbnailPicture, setThumbnailPicture] = useState({});
 
   const renderRelationImages = (relationImages) => {
     if (relationImages) {
@@ -119,7 +119,7 @@ export default function (props) {
       });
 
       relationImages = relationImages.filter(
-        (data) => data.groupIndex === thumbnailImage.groupIndex
+        (data) => data.groupIndex === thumbnailPicture.groupIndex
       );
 
       return relationImages.map((item, index) => {
@@ -130,7 +130,7 @@ export default function (props) {
             ? "last-item"
             : "";
 
-        if (item === thumbnailImage) {
+        if (item === thumbnailPicture) {
           className += " actived";
         }
 
@@ -155,34 +155,34 @@ export default function (props) {
       return item;
     });
 
-    setThumbnailImage(item);
+    setThumbnailPicture(item);
   };
 
   const onNext = () => {
     const { images } = props;
     let image = null;
-    if (thumbnailImage.index < numberOfImages - 1) {
-      image = images[thumbnailImage.index + 1];
+    if (thumbnailPicture.index < numberOfImages - 1) {
+      image = images[thumbnailPicture.index + 1];
     } else {
       image = images[0];
     }
 
-    setThumbnailImage(image);
+    setThumbnailPicture(image);
   };
 
   const onPrev = () => {
     const { images } = props;
     let image = null;
-    if (thumbnailImage.index > 0) {
-      image = images[thumbnailImage.index - 1];
+    if (thumbnailPicture.index > 0) {
+      image = images[thumbnailPicture.index - 1];
     } else {
       image = images[numberOfImages - 1];
     }
-    setThumbnailImage(image);
+    setThumbnailPicture(image);
   };
 
   useEffect(() => {
-    setThumbnailImage(currentImage);
+    setThumbnailPicture(currentImage);
   }, [currentImage]);
 
   useEffect(() => {
@@ -207,19 +207,19 @@ export default function (props) {
     currentRef.current.focus();
   };
 
-  const renderThumbnailImage = () => {
+  const renderThumbnailPicture = () => {
     const isThumbnailInList = images.some((x) => {
-      return x.thumbnailUrl === currentImage.thumbnailUrl;
+      return x.pictureUrl === currentImage.pictureUrl;
     });
     if (isThumbnailInList) {
       return (
-        <Thumbnail src={thumbnailImage.thumbnailUrl} onClick={onNext} alt="" />
+        <Thumbnail src={thumbnailPicture.pictureUrl} onClick={onNext} alt="" />
       );
     }
     return null;
   };
 
-  const canSlide = numberOfImages > 2;
+  const canSlide = numberOfImages > 1;
   return (
     <PostThumbnail>
       <MainThumbnail onMouseOver={onMouseOvered} ref={currentRef} tabIndex="1">
@@ -230,7 +230,7 @@ export default function (props) {
             </PrevButton>
           </NavigateLeft>
         ) : null}
-        {renderThumbnailImage()}
+        {renderThumbnailPicture()}
         {canSlide ? (
           <NavigateRight onClick={onNext}>
             <NextButton>
@@ -242,7 +242,7 @@ export default function (props) {
       {canSlide ? (
         <HorizontalListScroll
           numberOfDisplay={numberOfDisplay}
-          list={renderRelationImages(images)}
+          list={()=>renderRelationImages(images)}
         />
       ) : null}
     </PostThumbnail>

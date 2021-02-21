@@ -4,7 +4,7 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Loading from "../../components/atoms/Loading";
 import { withRouter } from "react-router-dom";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
-import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import authClient from "../../graphql/client/authClient";
 import {
   articleMutations,
@@ -155,34 +155,6 @@ export default withRouter(function (props) {
     });
   };
 
-  const mapSelectListItems = (response) => {
-    var { data } = response;
-    var { categories } = data;
-    if (!categories) {
-      return [];
-    }
-    return categories.map((cat) => {
-      return {
-        value: cat.id,
-        label: cat.text,
-      };
-    });
-  };
-
-  const searchArticleCategories = async (inputValue) => {
-    return await articleCategories({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        return mapSelectListItems(response);
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
   const currentArticle = JSON.parse(JSON.stringify(articleCreationModel));
   for (const formIdentifier in currentArticle) {
     currentArticle[formIdentifier].value = article[formIdentifier];
@@ -225,7 +197,7 @@ export default withRouter(function (props) {
         currentArticle={currentArticle}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={searchArticleCategories}
+        filterCategories={articleCategories}
         onArticlePost={onArticlePost}
         showValidationError={showValidationError}
       ></ArticleEditor>

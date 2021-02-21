@@ -26,9 +26,9 @@
     <div class="form-row">
         <div class="col-12 col-sm-12 col-md-6 col-lg-6">
             <div class="form-group mb-3">
-                @if (Model.ThumbnailId > 0)
+                @if (Model.PictureId > 0)
                 {
-                    <img src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
+                    <img src="@Url.Action("Get", "Picture", new { id = Model.PictureId })" alt="..." class="img-thumbnail">
                 }
             </div>
         </div>

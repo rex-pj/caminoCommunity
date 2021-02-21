@@ -10,7 +10,6 @@ namespace Module.Api.Auth.Models
             PageSize = 10;
         }
 
-        public long Id { get; set; }
         public string ExclusiveCreatedIdentityId { get; set; }
         public string UserIdentityId { get; set; }
     }

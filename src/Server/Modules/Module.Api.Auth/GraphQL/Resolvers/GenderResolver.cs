@@ -1,16 +1,16 @@
 ﻿using Module.Api.Auth.GraphQL.Resolvers.Contracts;
-using Camino.Data.Enums;
+using Camino.Shared.Enums;
 using System.Collections.Generic;
 using Camino.Core.Utils;
-using Camino.Core.Models;
+using Camino.Shared.General;
 
-namespace  Module.Api.Auth.GraphQL.Resolvers
+namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class GenderResolver : IGenderResolver
     {
         public IEnumerable<SelectOption> GetSelections()
         {
-            return EnumUtil.EnumToSelectList<GenderType>();
+            return EnumUtil.ToSelectOptions<GenderType>();
         }
     }
 }

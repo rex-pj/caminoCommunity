@@ -1,40 +1,38 @@
-﻿using AutoMapper;
-using Camino.Core.Utils;
-using Camino.Service.Projections.Identity;
+﻿using Camino.Core.Utils;
 using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using Camino.Framework.Models;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
-using Camino.Service.Projections.Filters;
-using Camino.Framework.Helpers.Contracts;
-using Camino.Service.Business.Authorization.Contracts;
+using Camino.Core.Domain.Identities;
+using Camino.Shared.Requests.Filters;
+using Camino.Core.Contracts.Helpers;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Core.Contracts.Services.Authorization;
+using Camino.Shared.Requests.Authorization;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class AuthorizationPolicyController : BaseAuthController
     {
-        private readonly IAuthorizationPolicyBusiness _authorizationPolicyBusiness;
+        private readonly IAuthorizationPolicyService _authorizationPolicyService;
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
         private readonly IHttpHelper _httpHelper;
 
-        public AuthorizationPolicyController(IMapper mapper, IAuthorizationPolicyBusiness authorizationPolicyBusiness, IHttpContextAccessor httpContextAccessor,
+        public AuthorizationPolicyController(IAuthorizationPolicyService authorizationPolicyService, IHttpContextAccessor httpContextAccessor,
             IUserManager<ApplicationUser> userManager, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _userManager = userManager;
-            _mapper = mapper;
             _httpHelper = httpHelper;
-            _authorizationPolicyBusiness = authorizationPolicyBusiness;
+            _authorizationPolicyService = authorizationPolicyService;
         }
 
         [HttpGet]
@@ -42,10 +40,26 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
-            var filterRequest = _mapper.Map<AuthorizationPolicyFilter>(filter);
-            var policiesPageList = _authorizationPolicyBusiness.Get(filterRequest);
+            var filterRequest = new AuthorizationPolicyFilter
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search
+            };
+            var policiesPageList = _authorizationPolicyService.Get(filterRequest);
 
-            var policyModels = _mapper.Map<List<AuthorizationPolicyModel>>(policiesPageList.Collections);
+            var policyModels = policiesPageList.Collections.Select(x => new AuthorizationPolicyModel
+            {
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                CreatedByName = x.CreatedByName,
+                UpdatedById = x.UpdatedById,
+                UpdatedDate = x.CreatedDate,
+                UpdatedByName = x.CreatedByName,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name
+            }).ToList();
             var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
             var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
             policyModels.ForEach(x =>
@@ -80,13 +94,24 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
             try
             {
-                var policy = _authorizationPolicyBusiness.Find(id);
+                var policy = _authorizationPolicyService.Find(id);
                 if (policy == null)
                 {
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<AuthorizationPolicyModel>(policy);
+                var model = new AuthorizationPolicyModel
+                {
+                    CreatedById = policy.CreatedById,
+                    CreatedDate = policy.CreatedDate,
+                    CreatedByName = policy.CreatedByName,
+                    UpdatedById = policy.UpdatedById,
+                    UpdatedDate = policy.CreatedDate,
+                    UpdatedByName = policy.CreatedByName,
+                    Description = policy.Description,
+                    Id = policy.Id,
+                    Name = policy.Name
+                };
                 return View(model);
             }
             catch (Exception)
@@ -101,7 +126,11 @@ namespace Module.Web.AuthorizationManagement.Controllers
         {
             var model = new AuthorizationPolicyModel()
             {
-                SelectPermissionMethods = EnumUtil.ToSelectListItems<PolicyMethod>()
+                SelectPermissionMethods = EnumUtil.ToSelectOptions<PolicyMethod>().Select(x => new SelectListItem
+                {
+                    Text = x.Text,
+                    Value = x.Id
+                })
             };
 
             return View(model);
@@ -111,11 +140,27 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
         public IActionResult Update(short id)
         {
-            var policy = _authorizationPolicyBusiness.Find(id);
-            var model = _mapper.Map<AuthorizationPolicyModel>(policy);
+            var policy = _authorizationPolicyService.Find(id);
+            var model = new AuthorizationPolicyModel
+            {
+                CreatedById = policy.CreatedById,
+                CreatedDate = policy.CreatedDate,
+                CreatedByName = policy.CreatedByName,
+                UpdatedById = policy.UpdatedById,
+                UpdatedDate = policy.CreatedDate,
+                UpdatedByName = policy.CreatedByName,
+                Description = policy.Description,
+                Id = policy.Id,
+                Name = policy.Name
+            };
 
             var permissionMethod = EnumUtil.FilterEnumByName<PolicyMethod>(model.Name);
-            model.SelectPermissionMethods = EnumUtil.ToSelectListItems(permissionMethod);
+            model.SelectPermissionMethods = EnumUtil.ToSelectOptions(permissionMethod).Select(x => new SelectListItem
+            {
+                Selected = x.IsSelected,
+                Value = x.Id,
+                Text = x.Text
+            });
             model.PermissionMethod = (int)permissionMethod;
             var permissionMethodName = permissionMethod.ToString();
             model.Name = model.Name.Replace(permissionMethodName, "");
@@ -132,7 +177,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _authorizationPolicyBusiness.FindByNameAsync(model.Name);
+            var exist = await _authorizationPolicyService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -144,12 +189,20 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyProjection>(model);
-            policy.UpdatedById = LoggedUserId;
-            policy.CreatedById = LoggedUserId;
-            var newId = _authorizationPolicyBusiness.Create(policy);
+            var policy = new AuthorizationPolicyRequest
+            {
+                CreatedById = LoggedUserId,
+                CreatedDate = model.CreatedDate,
+                CreatedByName = model.CreatedByName,
+                UpdatedById = LoggedUserId,
+                UpdatedDate = model.CreatedDate,
+                UpdatedByName = model.CreatedByName,
+                Description = model.Description,
+                Name = model.Name
+            };
 
-            return RedirectToAction("Detail", new { id = newId });
+            var newId = _authorizationPolicyService.Create(policy);
+            return RedirectToAction(nameof(Detail), new { id = newId });
         }
 
         [HttpPost]
@@ -167,17 +220,27 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
-            var exist = await _authorizationPolicyBusiness.FindByNameAsync(model.Name);
+            var exist = await _authorizationPolicyService.FindByNameAsync(model.Name);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var policy = _mapper.Map<AuthorizationPolicyProjection>(model);
+            var policy = new AuthorizationPolicyRequest
+            {
+                CreatedDate = model.CreatedDate,
+                CreatedByName = model.CreatedByName,
+                UpdatedById = LoggedUserId,
+                UpdatedDate = model.CreatedDate,
+                UpdatedByName = model.CreatedByName,
+                Description = model.Description,
+                Id = model.Id,
+                Name = model.Name
+            };
             policy.UpdatedById = LoggedUserId;
-            var newId = _authorizationPolicyBusiness.Update(policy);
+            await _authorizationPolicyService.UpdateAsync(policy);
 
-            return RedirectToAction("Detail", new { id = newId });
+            return RedirectToAction(nameof(Detail), new { id = model.Id });
         }
     }
 }

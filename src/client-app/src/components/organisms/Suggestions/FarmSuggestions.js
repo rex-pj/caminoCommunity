@@ -30,11 +30,11 @@ export default (props) => {
   const { collections } = farmsData;
 
   let farms = collections.map((farm) => {
-    var thumbnailUrl = null;
-    if (farm.thumbnails && farm.thumbnails.length > 0) {
-      const thumbnail = farm.thumbnails[0];
-      if (thumbnail.pictureId > 0) {
-        thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+    var pictureUrl = null;
+    if (farm.pictures && farm.pictures.length > 0) {
+      const picture = farm.pictures[0];
+      if (picture.pictureId > 0) {
+        pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
       }
     }
     return {
@@ -43,7 +43,7 @@ export default (props) => {
       description: farm.description,
       url: `/farms/${farm.id}`,
       id: farm.id,
-      photoUrl: thumbnailUrl,
+      photoUrl: pictureUrl,
     };
   });
 

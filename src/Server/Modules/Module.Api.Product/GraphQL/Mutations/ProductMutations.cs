@@ -1,6 +1,6 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Mutations;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Product.GraphQL.Mutations
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType("Mutation")]
     public class ProductMutations : BaseMutations
     {
         [GraphQlAuthentication]

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import PasswordUpdateForm from "../../components/organisms/User/PasswordUpdateForm";
+import PasswordUpdateForm from "../../components/organisms/Profile/PasswordUpdateForm";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import ConfirmToRedirectModal from "../../components/organisms/Modals/ConfirmToRedirectModal";

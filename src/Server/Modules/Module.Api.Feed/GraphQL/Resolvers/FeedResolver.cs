@@ -1,29 +1,27 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Framework.Models;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Contracts.Core;
-using Camino.IdentityManager.Models;
-using Camino.Service.Business.Feeds.Contracts;
-using Camino.Service.Projections.Feed;
-using Camino.Service.Projections.Filters;
+using Camino.Core.Domain.Identities;
+using Camino.Core.Contracts.Services.Feeds;
+using Camino.Shared.Results.Feed;
+using Camino.Shared.Requests.Filters;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Core.Contracts.IdentityManager;
 
 namespace Module.Api.Feed.GraphQL.Resolvers
 {
     public class FeedResolver : BaseResolver, IFeedResolver
     {
-        private readonly IFeedBusiness _feedBusiness;
+        private readonly IFeedService _feedService;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public FeedResolver(ISessionContext sessionContext, IFeedBusiness feedBusiness, IUserManager<ApplicationUser> userManager)
+        public FeedResolver(ISessionContext sessionContext, IFeedService feedService, IUserManager<ApplicationUser> userManager)
             : base(sessionContext)
         {
-            _feedBusiness = feedBusiness;
+            _feedService = feedService;
             _userManager = userManager;
         }
 
@@ -53,8 +51,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
             try
             {
-                var feedPageList = await _feedBusiness.GetAsync(filterRequest);
-                var feeds = await MapFeedsProjectionToModelAsync(feedPageList.Collections);
+                var feedPageList = await _feedService.GetAsync(filterRequest);
+                var feeds = await MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -87,8 +85,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
             try
             {
-                var feedPageList = await _feedBusiness.GetAsync(filterRequest);
-                var feeds = await MapFeedsProjectionToModelAsync(feedPageList.Collections);
+                var feedPageList = await _feedService.GetAsync(filterRequest);
+                var feeds = await MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -105,9 +103,9 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             }
         }
 
-        private async Task<IList<FeedModel>> MapFeedsProjectionToModelAsync(IEnumerable<FeedProjection> feedProjections)
+        private async Task<IList<FeedModel>> MapFeedsResultToModelAsync(IEnumerable<FeedResult> feedResults)
         {
-            var feeds = feedProjections.Select(x => new FeedModel()
+            var feeds = feedResults.Select(x => new FeedModel()
             {
                 Address = x.Address,
                 CreatedById = x.CreatedById,

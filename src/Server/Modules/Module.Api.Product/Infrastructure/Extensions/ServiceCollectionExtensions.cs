@@ -13,11 +13,13 @@ namespace Module.Api.Product.Infrastructure.Extensions
         {
             services.AddTransient<IProductCategoryResolver, ProductCategoryResolver>();
             services.AddTransient<IProductResolver, ProductResolver>();
+            services.AddTransient<IProductAttributeResolver, ProductAttributeResolver>();
 
             services.AddGraphQLServer()
                 .AddType<ProductQueries>()
                 .AddType<ProductMutations>()
-                .AddType<ProductCategoryMutations>();
+                .AddType<ProductCategoryMutations>()
+                .AddType<ProductAttributeMutations>();
 
             return services;
         }

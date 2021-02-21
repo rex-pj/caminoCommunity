@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,24 +11,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Projections.Article;
+using Camino.Core.Contracts.Services.Articles;
+using Camino.Shared.Results.Articles;
+using Camino.Shared.Requests.Articles;
+using Camino.Core.Contracts.Helpers;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
     public class ArticleCategoryController : BaseAuthController
     {
-        private readonly IArticleCategoryBusiness _articleCategoryBusiness;
-        private readonly IMapper _mapper;
+        private readonly IArticleCategoryService _articleCategoryService;
         private readonly IHttpHelper _httpHelper;
 
-        public ArticleCategoryController(IMapper mapper, IArticleCategoryBusiness articleCategoryBusiness,
+        public ArticleCategoryController(IArticleCategoryService articleCategoryService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _mapper = mapper;
-            _articleCategoryBusiness = articleCategoryBusiness;
+            _articleCategoryService = articleCategoryService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
@@ -48,8 +46,19 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdatedById = filter.UpdatedById
             };
 
-            var categoryPageList = await _articleCategoryBusiness.GetAsync(filterRequest);
-            var categories = _mapper.Map<List<ArticleCategoryModel>>(categoryPageList.Collections);
+            var categoryPageList = await _articleCategoryService.GetAsync(filterRequest);
+            var categories = categoryPageList.Collections.Select(x => new ArticleCategoryModel
+            {
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name,
+                ParentCategoryName = x.ParentCategoryName,
+                ParentId = x.ParentId,
+                UpdateById = x.UpdatedById,
+                UpdatedDate = x.UpdatedDate
+            });
             var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
             {
                 Filter = filter,
@@ -67,7 +76,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
         [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -76,13 +85,26 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var category = _articleCategoryBusiness.Find(id);
+                var category = await _articleCategoryService.FindAsync(id);
                 if (category == null)
                 {
                     return RedirectToNotFoundPage();
                 }
 
-                var model = _mapper.Map<ArticleCategoryModel>(category);
+                var model = new ArticleCategoryModel
+                {
+                    Description = category.Description,
+                    Id = category.Id,
+                    ParentId = category.ParentId,
+                    Name = category.Name,
+                    UpdatedDate = category.UpdatedDate,
+                    UpdateById = category.UpdatedById,
+                    CreatedById = category.CreatedById,
+                    CreatedDate = category.CreatedDate,
+                    CreatedBy = category.CreatedBy,
+                    UpdatedBy = category.UpdatedBy,
+                    ParentCategoryName = category.ParentCategoryName
+                };
                 return View(model);
             }
             catch (Exception)
@@ -100,10 +122,17 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
-        public IActionResult Create(ArticleCategoryModel model)
+        public async Task<IActionResult> Create(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryProjection>(model);
-            var exist = _articleCategoryBusiness.FindByName(model.Name);
+            var category = new ArticleCategoryModifyRequest
+            {
+                Description = model.Description,
+                ParentId = model.ParentId,
+                Name = model.Name,
+                UpdatedById = LoggedUserId,
+                CreatedById = LoggedUserId
+            };
+            var exist = await _articleCategoryService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -111,52 +140,71 @@ namespace Module.Web.ArticleManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = _articleCategoryBusiness.Create(category);
+            var id = await _articleCategoryService.CreateAsync(category);
 
-            return RedirectToAction("Detail", new { id });
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var category = _articleCategoryBusiness.Find(id);
-            var model = _mapper.Map<ArticleCategoryModel>(category);
+            var category = await _articleCategoryService.FindAsync(id);
+            var model = new ArticleCategoryModel
+            {
+                Description = category.Description,
+                Id = category.Id,
+                ParentId = category.ParentId,
+                Name = category.Name,
+                UpdatedDate = category.UpdatedDate,
+                UpdateById = category.UpdatedById,
+                CreatedById = category.CreatedById,
+                CreatedDate = category.CreatedDate,
+                ParentCategoryName = category.ParentCategoryName
+            };
             return View(model);
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
-        public IActionResult Update(ArticleCategoryModel model)
+        public async Task<IActionResult> Update(ArticleCategoryModel model)
         {
-            var category = _mapper.Map<ArticleCategoryProjection>(model);
+            var category = new ArticleCategoryModifyRequest
+            {
+                Description = model.Description,
+                ParentId = model.ParentId,
+                Name = model.Name,
+                UpdatedById = LoggedUserId,
+                CreatedById = LoggedUserId,
+                Id = model.Id
+            };
             if (category.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = _articleCategoryBusiness.Find(model.Id);
+            var exist = await _articleCategoryService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
             category.UpdatedById = LoggedUserId;
-            _articleCategoryBusiness.Update(category);
-            return RedirectToAction("Detail", new { id = category.Id });
+            await _articleCategoryService.UpdateAsync(category);
+            return RedirectToAction(nameof(Detail), new { id = category.Id });
         }
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
         public IActionResult Search(string q, long? currentId = null, bool isParentOnly = false)
         {
-            IList<ArticleCategoryProjection> categories;
+            IList<ArticleCategoryResult> categories;
             if (isParentOnly)
             {
-                categories = _articleCategoryBusiness.SearchParents(q, currentId);
+                categories = _articleCategoryService.SearchParents(q, currentId);
             }
             else
             {
-                categories = _articleCategoryBusiness.Search(q, currentId);
+                categories = _articleCategoryService.Search(q, currentId);
             }
 
             if (categories == null || !categories.Any())

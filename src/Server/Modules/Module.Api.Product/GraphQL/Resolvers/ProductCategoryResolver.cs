@@ -1,37 +1,37 @@
-﻿using Camino.Core.Models;
-using Camino.Framework.Models;
-using Camino.Service.Business.Products.Contracts;
-using Camino.Service.Projections.Product;
+﻿using Camino.Core.Contracts.Services.Products;
+using Camino.Shared.Results.Products;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Shared.General;
+using Module.Api.Product.Models;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductCategoryResolver : IProductCategoryResolver
     {
-        private readonly IProductCategoryBusiness _productCategoryBusiness;
-        public ProductCategoryResolver(IProductCategoryBusiness productCategoryBusiness)
+        private readonly IProductCategoryService _productCategoryService;
+        public ProductCategoryResolver(IProductCategoryService productCategoryService)
         {
-            _productCategoryBusiness = productCategoryBusiness;
+            _productCategoryService = productCategoryService;
         }
 
-        public async Task<IEnumerable<SelectOption>> GetProductCategoriesAsync(SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> GetProductCategoriesAsync(ProductCategorySelectFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new SelectFilterModel();
+                criterias = new ProductCategorySelectFilterModel();
             }
 
-            IList<ProductCategoryProjection> categories;
+            IList<ProductCategoryResult> categories;
             if (criterias.IsParentOnly)
             {
-                categories = await _productCategoryBusiness.SearchParentsAsync(criterias.CurrentIds, criterias.Query);
+                categories = await _productCategoryService.SearchParentsAsync(criterias.CurrentIds, criterias.Query);
             }
             else
             {
-                categories = await _productCategoryBusiness.SearchAsync(criterias.CurrentIds, criterias.Query);
+                categories = await _productCategoryService.SearchAsync(criterias.CurrentIds, criterias.Query);
             }
 
             if (categories == null || !categories.Any())

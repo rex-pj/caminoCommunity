@@ -46,7 +46,7 @@ export default function (props) {
     <PanelDefault>
       <GroupThumbnail>
         <AnchorLink to={community.info.url}>
-          <Thumbnail src={community.thumbnailUrl} alt="" />
+          <Thumbnail src={community.pictureUrl} alt="" />
         </AnchorLink>
         <ThumbnailOverlay />
         <FollowButton icon="handshake" size="sm">

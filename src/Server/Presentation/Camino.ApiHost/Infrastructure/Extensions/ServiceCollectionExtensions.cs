@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.Infrastructure.Extensions;
-using Camino.Framework.Models.Settings;
+using Camino.Shared.Configurations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using Camino.Service.Infrastructure.Extensions;
+using Camino.Infrastructure.Infrastructure.Extensions;
 
 namespace Camino.ApiHost.Infrastructure.Extensions
 {
@@ -14,7 +14,9 @@ namespace Camino.ApiHost.Infrastructure.Extensions
         {
             services.AddAuthentication();
             services.AddApplicationServices(configuration);
-            services.AddServices();
+
+            services.AddInfrastructureServices();
+            services.AddDomainServices();
             services.AddHttpContextAccessor();
             services.ConfigureCorsServices(services.BuildServiceProvider());
 

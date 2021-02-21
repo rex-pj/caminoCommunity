@@ -1,84 +1,135 @@
-﻿using AutoMapper;
-using Camino.Service.Projections.Identity;
-using Camino.Data.Enums;
-using Camino.Framework.Providers.Contracts;
-using Module.Web.SetupManagement.Models;
+﻿using Module.Web.SetupManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
-using System.Text;
 using System.Threading.Tasks;
-using Camino.IdentityManager.Models;
-using Camino.IdentityManager.Contracts;
-using Camino.Service.Business.Setup.Contracts;
-using Camino.Service.Projections.Request;
-using Camino.Core.Constants;
+using Camino.Core.Domain.Identities;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Setup;
+using Camino.Core.Contracts.Providers;
+using Camino.Core.Contracts.Services.Setup;
+using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Web.SetupManagement.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly IIdentityDataSetupBusiness _identityDataSetupBusiness;
-        private readonly IContentDataSetupBusiness _contentDataSetupBusiness;
+        private readonly IDataSeedService _dataSeedService;
         private readonly ISetupProvider _setupProvider;
-        private readonly IFileProvider _fileProvider;
-        private readonly IMapper _mapper;
         private readonly IUserSecurityStampStore<ApplicationUser> _userSecurityStampStore;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IUserManager<ApplicationUser> _userManager;
-        
-        public SetupController(ISetupProvider setupProvider, IMapper mapper, 
-            IFileProvider fileProvider, IUserSecurityStampStore<ApplicationUser> userSecurityStampStore, 
+        private readonly ILoginManager<ApplicationUser> _loginManager;
+
+        public SetupController(ISetupProvider setupProvider,
+            IUserSecurityStampStore<ApplicationUser> userSecurityStampStore,
             IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager,
-            IIdentityDataSetupBusiness identityDataSetupBusiness, IContentDataSetupBusiness contentDataSetupBusiness)
+            IDataSeedService dataSeedService, ILoginManager<ApplicationUser> loginManager)
         {
             _setupProvider = setupProvider;
-            _identityDataSetupBusiness = identityDataSetupBusiness;
-            _mapper = mapper;
-            _fileProvider = fileProvider;
             _userSecurityStampStore = userSecurityStampStore;
             _passwordHasher = passwordHasher;
             _userManager = userManager;
-            _contentDataSetupBusiness = contentDataSetupBusiness;
+            _loginManager = loginManager;
+            _dataSeedService = dataSeedService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult StartSetup()
         {
-            if (_setupProvider.HasSetupDatabase)
+            if (_setupProvider.HasDataSeeded())
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index), "Home");
             }
 
-            return View(new SetupModel());
+            if (_setupProvider.HasDatabaseSetup())
+            {
+                return RedirectToAction(nameof(SeedData));
+            }
+
+            return View(new StartSetupModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(SetupModel model)
+        public async Task<IActionResult> StartSetup(StartSetupModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            if (_setupProvider.HasSetupDatabase)
+            if (_setupProvider.HasDataSeeded())
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            if (_setupProvider.HasDatabaseSetup())
+            {
+                return RedirectToAction(nameof(SeedData));
+            }
+
+            if (User != null && User.Identity.IsAuthenticated)
+            {
+                await _loginManager.SignOutAsync();
             }
 
             var settings = _setupProvider.LoadSettings();
 
             try
             {
-                // Create Identity database
-                var identityDbScript = _fileProvider.ReadText(settings.CreateIdentityPath, Encoding.Default);
-                _identityDataSetupBusiness.SeedingIdentityDb(identityDbScript);
+                // Create database schema
+                var contentDbScript = _setupProvider.LoadFileText(settings.CreateDatabaseScriptFilePath);
+                await _dataSeedService.CreateDatabaseAsync(contentDbScript);
 
-                // Create Content database
-                var contentDbScript = _fileProvider.ReadText(settings.CreateContentDbPath, Encoding.Default);
-                _contentDataSetupBusiness.SeedingContentDb(contentDbScript);
+                _setupProvider.SetDatabaseHasBeenSetup();
+                return RedirectToAction(nameof(SeedData));
+            }
+            catch (Exception)
+            {
+                _setupProvider.DeleteSetupSettings();
+                return View();
+            }
+        }
 
+        [HttpGet]
+        public IActionResult SeedData()
+        {
+            if (_setupProvider.HasDataSeeded())
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            if (!_setupProvider.HasDatabaseSetup())
+            {
+                return RedirectToAction(nameof(StartSetup));
+            }
+
+            return View(new SetupModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SeedData(SetupModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            if (_setupProvider.HasDataSeeded())
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            if (!_setupProvider.HasDatabaseSetup())
+            {
+                return RedirectToAction(nameof(StartSetup));
+            }
+
+            try
+            {
+                var settings = _setupProvider.LoadSettings();
                 var initialUser = new ApplicationUser()
                 {
                     DisplayName = $"{model.Lastname} {model.Firstname}",
@@ -92,27 +143,32 @@ namespace Module.Web.SetupManagement.Controllers
                 initialUser.PasswordHash = _passwordHasher.HashPassword(initialUser, model.AdminPassword);
                 await _userSecurityStampStore.SetSecurityStampAsync(initialUser, _userManager.NewSecurityStamp(), default);
 
-                // Get Identity json data
-                var indentityJson = _fileProvider.ReadText(settings.PrepareIdentityDataPath, Encoding.Default);
+                // Get initial data in josn
+                var indentityJson = _setupProvider.LoadFileText(settings.SeedDataJsonFilePath);
                 var identitySetup = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
-                identitySetup.InitualUser = _mapper.Map<UserProjection>(initialUser);
+                identitySetup.InitualUser = new UserModifyRequest
+                {
+                    BirthDate = initialUser.BirthDate,
+                    Address = initialUser.Address,
+                    CountryId = initialUser.CountryId,
+                    Email = initialUser.Email,
+                    Firstname = initialUser.Firstname,
+                    Lastname = initialUser.Lastname,
+                    PasswordHash = initialUser.PasswordHash,
+                    SecurityStamp = initialUser.SecurityStamp,
+                    UserName = initialUser.UserName,
+                    DisplayName = initialUser.DisplayName,
+                };
 
-                // Initialize identity database
-                await _identityDataSetupBusiness.PrepareIdentityDataAsync(identitySetup);
+                // Initialize database
+                await _dataSeedService.SeedDataAsync(identitySetup);
 
-                // Get content json data
-                var contentJson = _fileProvider.ReadText(settings.PrepareContentDataPath, Encoding.Default);
-                var contentSetup = JsonConvert.DeserializeObject<SetupRequest>(contentJson);
-
-                // Initialize content database
-                await _contentDataSetupBusiness.PrepareContentDataAsync(contentSetup);
-
-                _setupProvider.SetDatabaseHasBeenSetup();
-                return RedirectToAction("Succeed");
+                _setupProvider.SetDataHasBeenSeeded();
+                return RedirectToAction(nameof(Succeed));
             }
             catch (Exception)
             {
-                _fileProvider.DeleteFile(SetupSettingsConst.FilePath);
+                _setupProvider.DeleteSetupSettings();
                 return View();
             }
         }

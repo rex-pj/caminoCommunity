@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using Camino.Core.Constants;
-using Camino.Core.Enums;
+﻿using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
-using Camino.Service.Business.Farms.Contracts;
-using Camino.Service.Projections.Farm;
-using Camino.Service.Projections.Filters;
+using Camino.Core.Contracts.Services.Farms;
+using Camino.Shared.Results.Farms;
+using Camino.Shared.Requests.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.FarmManagement.Models;
@@ -15,19 +13,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Farms;
 
 namespace Module.Web.FarmManagement.Controllers
 {
     public class FarmTypeController : BaseAuthController
     {
-        private readonly IFarmTypeBusiness _farmTypeBusiness;
+        private readonly IFarmTypeService _farmTypeService;
         private readonly IHttpHelper _httpHelper;
 
-        public FarmTypeController(IFarmTypeBusiness farmTypeBusiness, IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+        public FarmTypeController(IFarmTypeService farmTypeService, IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _farmTypeBusiness = farmTypeBusiness;
+            _farmTypeService = farmTypeService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
@@ -45,7 +45,7 @@ namespace Module.Web.FarmManagement.Controllers
                 UpdatedById = filter.UpdatedById
             };
 
-            var farmTypePageList = await _farmTypeBusiness.GetAsync(filterRequest);
+            var farmTypePageList = await _farmTypeService.GetAsync(filterRequest);
             var farmTypes = farmTypePageList.Collections.Select(x => new FarmTypeModel()
             {
                 Id = x.Id,
@@ -76,7 +76,7 @@ namespace Module.Web.FarmManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
         [LoadResultAuthorizations("FarmType", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -85,7 +85,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             try
             {
-                var farmType = _farmTypeBusiness.Find(id);
+                var farmType = await _farmTypeService.FindAsync(id);
                 if (farmType == null)
                 {
                     return RedirectToNotFoundPage();
@@ -119,9 +119,9 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarmType)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var farmType = _farmTypeBusiness.Find(id);
+            var farmType = await _farmTypeService.FindAsync(id);
             var model = new FarmTypeModel()
             {
                 Id = farmType.Id,
@@ -139,15 +139,15 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateFarmType)]
-        public IActionResult Create(FarmTypeModel model)
+        public async Task<IActionResult> Create(FarmTypeModel model)
         {
-            var exist = _farmTypeBusiness.FindByName(model.Name);
+            var exist = _farmTypeService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var farmType = new FarmTypeProjection()
+            var farmType = new FarmTypeModifyRequest()
             {
                 Description = model.Description,
                 Name = model.Name,
@@ -155,41 +155,41 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = LoggedUserId
             };
 
-            var id = _farmTypeBusiness.Create(farmType);
+            var id = await _farmTypeService.CreateAsync(farmType);
 
-            return RedirectToAction("Detail", new { id });
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarmType)]
-        public IActionResult Update(FarmTypeModel model)
+        public async Task<IActionResult> Update(FarmTypeModel model)
         {
             if (model.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = _farmTypeBusiness.Find(model.Id);
+            var exist = await _farmTypeService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var farmType = new FarmTypeProjection()
+            var farmType = new FarmTypeModifyRequest()
             {
                 Description = model.Description,
                 Name = model.Name,
                 UpdatedById = LoggedUserId
             };
-            _farmTypeBusiness.Update(farmType);
-            return RedirectToAction("Detail", new { id = farmType.Id });
+            await _farmTypeService.UpdateAsync(farmType);
+            return RedirectToAction(nameof(Detail), new { id = farmType.Id });
         }
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
         public async Task<IActionResult> Search(string q)
         {
-            var farmTypes = await _farmTypeBusiness.SearchAsync(q);
+            var farmTypes = await _farmTypeService.SearchAsync(q);
             if (farmTypes == null || !farmTypes.Any())
             {
                 return Json(new List<Select2ItemModel>());

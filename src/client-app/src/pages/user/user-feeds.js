@@ -12,7 +12,7 @@ import {
   mediaMutations,
 } from "../../graphql/fetching/mutations";
 import { feedqueries } from "../../graphql/fetching/queries";
-import ProfileEditorTabs from "../../components/organisms/ProfileEditors/ProfileEditorTabs";
+import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
@@ -34,6 +34,12 @@ export default withRouter((props) => {
   );
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
+  );
+  const [productAttributes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTES
+  );
+  const [productAttributeControlTypes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
   );
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
@@ -72,88 +78,6 @@ export default withRouter((props) => {
       },
     },
   });
-
-  // Selections mapping
-  const mapSelectListItems = (response) => {
-    var { data } = response;
-    var { categories } = data;
-    if (!categories) {
-      return [];
-    }
-    return categories.map((cat) => {
-      return {
-        value: cat.id,
-        label: cat.text,
-      };
-    });
-  };
-
-  // Search selections
-  const searchArticleCategories = async (inputValue) => {
-    return await articleCategories({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        return mapSelectListItems(response);
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
-  const searchProductCategories = async (inputValue, currentIds) => {
-    return await productCategories({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        return mapSelectListItems(response);
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
-  const searchFarms = async (inputValue, currentIds) => {
-    return await userFarms({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { userFarms } = data;
-        if (!userFarms) {
-          return [];
-        }
-        return userFarms.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
-  const searchFarmTypes = async (inputValue) => {
-    return await farmTypes({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        return mapSelectListItems(response);
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -276,14 +200,16 @@ export default withRouter((props) => {
     <ProfileEditorTabs
       convertImagefile={convertImagefile}
       onImageValidate={onImageValidate}
-      searchArticleCategories={searchArticleCategories}
+      searchArticleCategories={articleCategories}
       onArticlePost={onArticlePost}
       refetchNewsFeed={feedsRefetch}
       showValidationError={showValidationError}
-      searchProductCategories={searchProductCategories}
+      searchProductCategories={productCategories}
+      searchProductAttributes={productAttributes}
+      searchProductAttributeControlTypes={productAttributeControlTypes}
       onProductPost={onProductPost}
-      searchFarms={searchFarms}
-      searchFarmTypes={searchFarmTypes}
+      searchFarms={userFarms}
+      searchFarmTypes={farmTypes}
       onFarmPost={onFarmPost}
     ></ProfileEditorTabs>
   );
@@ -327,7 +253,7 @@ export default withRouter((props) => {
     }
 
     if (feed.pictureId > 0) {
-      feed.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+      feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
     }
 
     feed.creator = {

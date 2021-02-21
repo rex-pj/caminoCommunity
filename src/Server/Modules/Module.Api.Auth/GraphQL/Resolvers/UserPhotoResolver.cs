@@ -1,30 +1,28 @@
 ﻿using Module.Api.Auth.Models;
-using AutoMapper;
-using Camino.Data.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.GraphQL.Resolvers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
-using Camino.Service.Business.Users.Contracts;
-using Camino.Service.Projections.Media;
+using Camino.Shared.Results.Media;
+using Camino.Core.Contracts.Services.Users;
+using Camino.Core.Contracts.IdentityManager;
+using System.Linq;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class UserPhotoResolver : BaseResolver, IUserPhotoResolver
     {
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
+        private readonly IUserPhotoService _userPhotoService;
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
 
-        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, IUserManager<ApplicationUser> userManager, IMapper mapper, 
-            ISessionContext sessionContext) 
+        public UserPhotoResolver(IUserPhotoService userPhotoService, IUserManager<ApplicationUser> userManager,
+            ISessionContext sessionContext)
             : base(sessionContext)
         {
             _userManager = userManager;
-            _userPhotoBusiness = userPhotoBusiness;
-            _mapper = mapper;
+            _userPhotoService = userPhotoService;
         }
 
         public async Task<UserAvatarModel> GetUserAvatar(ApplicationUser currentUser, FindUserModel criterias)
@@ -40,7 +38,13 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            return _mapper.Map<UserAvatarModel>(GetUserPhoto(userId, UserPhotoKind.Avatar));
+            var photo = GetUserPhoto(userId, UserPhotoKind.Avatar);
+            return new UserAvatarModel
+            {
+                Code = photo.Code,
+                TypeId = photo.TypeId.ToString(),
+                Url = photo.Url
+            };
         }
 
         public async Task<UserCoverModel> GetUserCover(ApplicationUser currentUser, FindUserModel criterias)
@@ -56,10 +60,16 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            return _mapper.Map<UserCoverModel>(GetUserPhoto(userId, UserPhotoKind.Cover));
+            var photo = GetUserPhoto(userId, UserPhotoKind.Cover);
+            return new UserCoverModel
+            {
+                Code = photo.Code,
+                TypeId = photo.TypeId.ToString(),
+                Url = photo.Url
+            };
         }
 
-        public async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(ApplicationUser currentUser, FindUserModel criterias)
+        public async Task<IList<UserPhotoModel>> GetUserPhotos(ApplicationUser currentUser, FindUserModel criterias)
         {
             if (currentUser == null)
             {
@@ -72,19 +82,23 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var userPhotos = await GetUserPhotos(userId);
-            return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
+            return await GetUserPhotos(userId);
         }
 
-        private async Task<IEnumerable<UserPhotoModel>> GetUserPhotos(long userId)
+        private async Task<IList<UserPhotoModel>> GetUserPhotos(long userId)
         {
-            var userPhotos = await _userPhotoBusiness.GetUserPhotosAsync(userId);
-            return _mapper.Map<IEnumerable<UserPhotoModel>>(userPhotos);
+            var userPhotos = await _userPhotoService.GetUserPhotosAsync(userId);
+            return userPhotos.Select(x => new UserPhotoModel
+            {
+                Code = x.Code,
+                Id = x.Id,
+                PhotoType = (UserPhotoKind)x.TypeId
+            }).ToList();
         }
 
-        private UserPhotoProjection GetUserPhoto(long userId, UserPhotoKind type)
+        private UserPhotoResult GetUserPhoto(long userId, UserPhotoKind type)
         {
-            var userPhoto = _userPhotoBusiness.GetUserPhotoByUserId(userId, type);
+            var userPhoto = _userPhotoService.GetUserPhotoByUserId(userId, type);
             if (userPhoto != null)
             {
                 userPhoto.Url = userPhoto.Code;

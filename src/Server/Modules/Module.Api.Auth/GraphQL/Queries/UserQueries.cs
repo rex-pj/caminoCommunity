@@ -1,7 +1,7 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Queries;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Auth.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class UserQueries : BaseQueries
     {
         [GraphQlAuthentication]

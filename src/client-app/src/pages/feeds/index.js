@@ -68,7 +68,7 @@ export default withRouter((props) => {
     }
 
     if (feed.pictureId > 0) {
-      feed.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+      feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
     }
 
     feed.creator = {

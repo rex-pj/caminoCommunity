@@ -173,7 +173,7 @@ export default withRouter(function (props) {
                       <span onClick={onOpenDeleteConfirmation}>
                         <FontAwesomeIcon
                           icon="trash-alt"
-                          className="mr-2"
+                          className="me-2"
                         ></FontAwesomeIcon>
                         Delete
                       </span>
@@ -184,9 +184,9 @@ export default withRouter(function (props) {
             </div>
           </PostActions>
         </PanelHeading>
-        {article.thumbnailUrl ? (
+        {article.pictureUrl ? (
           <PostThumbnail>
-            <Thumbnail src={article.thumbnailUrl} alt="" />
+            <Thumbnail src={article.pictureUrl} alt="" />
           </PostThumbnail>
         ) : null}
 

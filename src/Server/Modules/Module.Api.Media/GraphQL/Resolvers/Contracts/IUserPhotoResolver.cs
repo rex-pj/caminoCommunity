@@ -1,8 +1,8 @@
 ﻿using Module.Api.Media.Models;
 using Camino.Framework.Models;
 using System.Threading.Tasks;
-using Camino.Service.Projections.Request;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
+using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Api.Media.GraphQL.Resolvers.Contracts
 {

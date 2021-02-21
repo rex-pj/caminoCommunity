@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthenticationManagement.Models;
@@ -9,36 +8,75 @@ using System.Collections.Generic;
 using System.Linq;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using System.Threading.Tasks;
-using Camino.Framework.Helpers.Contracts;
-using Camino.Service.Business.Users.Contracts;
+using Camino.Core.Contracts.Helpers;
+using Camino.Core.Contracts.Services.Users;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
     public class UserController : BaseAuthController
     {
-        private readonly IUserBusiness _userBusiness;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly IHttpHelper _httpHelper;
 
-        public UserController(IMapper mapper, IUserBusiness userBusiness, IHttpContextAccessor httpContextAccessor,
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,
             IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
-            _mapper = mapper;
             _httpHelper = httpHelper;
-            _userBusiness = userBusiness;
+            _userService = userService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var filterRequest = _mapper.Map<UserFilter>(filter);
-            var userPageList = await _userBusiness.GetAsync(filterRequest);
-            var users = _mapper.Map<List<UserModel>>(userPageList.Collections);
-            var userPage = new PageListModel<UserModel>(users) { 
+            var filterRequest = new UserFilter
+            {
+                Address = filter.Address,
+                BirthDateFrom = filter.BirthDateFrom,
+                BirthDateTo = filter.BirthDateTo,
+                CountryId = filter.CountryId,
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                GenderId = filter.GenderId,
+                IsEmailConfirmed = filter.IsEmailConfirmed,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                PhoneNumber = filter.PhoneNumber,
+                Search = filter.Search,
+                StatusId = filter.StatusId,
+                UpdatedById = filter.UpdatedById
+            };
+            var userPageList = await _userService.GetAsync(filterRequest);
+            var users = userPageList.Collections.Select(x => new UserModel
+            {
+                Address = x.Address,
+                UpdatedById = x.UpdatedById,
+                StatusId = x.StatusId,
+                StatusLabel = x.StatusLabel,
+                BirthDate = x.BirthDate,
+                CreatedById = x.CreatedById,
+                CreatedDate = x.CreatedDate,
+                CountryCode = x.CountryCode,
+                CountryId = x.CountryId,
+                CountryName = x.CountryName,
+                Description = x.Description,
+                DisplayName = x.DisplayName,
+                Email = x.Email,
+                Firstname = x.Firstname,
+                Lastname = x.Lastname,
+                GenderId = x.GenderId,
+                GenderLabel = x.GenderLabel,
+                Id = x.Id,
+                IsEmailConfirmed = x.IsEmailConfirmed,
+                PhoneNumber = x.PhoneNumber,
+                UpdatedDate = x.UpdatedDate
+            });
+            var userPage = new PageListModel<UserModel>(users)
+            {
                 Filter = filter,
                 TotalPage = userPageList.TotalPage,
                 TotalResult = userPageList.TotalResult
@@ -55,9 +93,32 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public async Task<IActionResult> Detail(long id)
         {
-            var userRequest = await _userBusiness.FindFullByIdAsync(id);
-            var user = _mapper.Map<UserModel>(userRequest);
-            
+            var userResult = await _userService.FindFullByIdAsync(id);
+            var user = new UserModel
+            {
+                Address = userResult.Address,
+                UpdatedById = userResult.UpdatedById,
+                StatusId = userResult.StatusId,
+                StatusLabel = userResult.StatusLabel,
+                BirthDate = userResult.BirthDate,
+                CreatedById = userResult.CreatedById,
+                CreatedDate = userResult.CreatedDate,
+                CountryCode = userResult.CountryCode,
+                CountryId = userResult.CountryId,
+                CountryName = userResult.CountryName,
+                Description = userResult.Description,
+                DisplayName = userResult.DisplayName,
+                Email = userResult.Email,
+                Firstname = userResult.Firstname,
+                Lastname = userResult.Lastname,
+                GenderId = userResult.GenderId,
+                GenderLabel = userResult.GenderLabel,
+                Id = userResult.Id,
+                IsEmailConfirmed = userResult.IsEmailConfirmed,
+                PhoneNumber = userResult.PhoneNumber,
+                UpdatedDate = userResult.UpdatedDate
+            };
+
             return View(user);
         }
 
@@ -65,7 +126,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public IActionResult Search(string q, List<long> currentUserIds)
         {
-            var users = _userBusiness.Search(q, currentUserIds);
+            var users = _userService.Search(q, currentUserIds);
             if (users == null || !users.Any())
             {
                 return Json(new
@@ -75,10 +136,10 @@ namespace Module.Web.AuthenticationManagement.Controllers
             }
 
             var userModels = users.Select(x => new Select2ItemModel
-                {
-                    Id = x.Id.ToString(),
-                    Text = x.Lastname + " " + x.Firstname
-                });
+            {
+                Id = x.Id.ToString(),
+                Text = x.Lastname + " " + x.Firstname
+            });
 
             return Json(userModels);
         }

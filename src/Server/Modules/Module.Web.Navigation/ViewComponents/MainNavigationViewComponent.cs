@@ -9,7 +9,6 @@ namespace Module.Web.Navigation.ViewComponents
     {
         public IViewComponentResult Invoke()
         {
-            var controllerName = RouteData.Values["controller"].ToString().ToLower();
             var mainNavigation = new MainNavigationModel()
             {
                 Name = "Camino",
@@ -27,34 +26,34 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "fa fa-home",
                                 Name = "Home",
-                                Code = "Home",
+                                Route = "Home",
                                 Url = "/Home"
                             },
                             new NavigationModel()
                             {
                                 Icon = "far fa-newspaper",
                                 Name = "Article",
-                                Code = "articleNav",
+                                Route = "articleNav",
                                 Url = "/Article",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Articles",
-                                        Code = "article",
+                                        Route = "article/index",
                                         Url = "/Article"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Article Categories",
-                                        Code = "ArticleCategory",
+                                        Route = "articlecategory/index",
                                         Url = "/ArticleCategory"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Article Pictures",
-                                        Code = "ArticlePicture",
-                                        Url = "/ArticlePicture"
+                                        Route = "article/pictures",
+                                        Url = "/Article/Pictures"
                                     }
                                 }
                             },
@@ -62,27 +61,27 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "fa fa-warehouse",
                                 Name = "Farm",
-                                Code = "farmNav",
+                                Route = "farmNav",
                                 Url = "/Farm",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Farms",
-                                        Code = "Farm",
+                                        Route = "farm/index",
                                         Url = "/Farm"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Farm Types",
-                                        Code = "FarmType",
+                                        Route = "farmtype/index",
                                         Url = "/FarmType"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Farm Pictures",
-                                        Code = "FarmPicture",
-                                        Url = "/FarmPicture"
+                                        Route = "farm/pictures",
+                                        Url = "/Farm/Pictures"
                                     }
                                 }
                             },
@@ -90,20 +89,20 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "far fa-flag",
                                 Name = "Community",
-                                Code = "CommunityNav",
+                                Route = "CommunityNav",
                                 Url = "/Community",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Farm Communities",
-                                        Code = "Community",
+                                        Route = "community/index",
                                         Url = "/Community"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Farm Community Types",
-                                        Code = "CommunityType",
+                                        Route = "communitytype/index",
                                         Url = "/CommunityType"
                                     }
                                 }
@@ -112,27 +111,33 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "fa fa-apple-alt",
                                 Name = "Product",
-                                Code = "productNav",
+                                Route = "productNav",
                                 Url = "/Product",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Products",
-                                        Code = "product",
+                                        Route = "product/index",
                                         Url = "/Product"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Product Categories",
-                                        Code = "productCategory",
+                                        Route = "productcategory/index",
                                         Url = "/ProductCategory"
                                     },
                                     new NavigationModel()
                                     {
+                                        Name = "Product Attributes",
+                                        Route = "productattribute/index",
+                                        Url = "/ProductAttribute"
+                                    },
+                                    new NavigationModel()
+                                    {
                                         Name = "Product Pictures",
-                                        Code = "productPicture",
-                                        Url = "/ProductPicture"
+                                        Route = "product/pictures",
+                                        Url = "/Product/Pictures"
                                     }
                                 }
                             }
@@ -148,14 +153,14 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "far fa-user",
                                 Name = "User",
-                                Code = "userNav",
+                                Route = "userNav",
                                 Url = "/User",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Users",
-                                        Code = "User",
+                                        Route = "user/index",
                                         Url = "/User"
                                     }
                                 }
@@ -164,25 +169,25 @@ namespace Module.Web.Navigation.ViewComponents
                             {
                                 Icon = "far fa-user-circle",
                                 Name = "Authorization",
-                                Code = "authorizationNav",
+                                Route = "authorizationNav",
                                 Url = "/AuthorizationPolicy",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Authorization Policies",
-                                        Code = "AuthorizationPolicy",
+                                        Route = "authorizationpolicy/index",
                                         SubRoutes = new List<string>()
                                         {
-                                            "UserAuthorizationPolicy",
-                                            "RoleAuthorizationPolicy"
+                                            "userauthorizationpolicy/index",
+                                            "roleauthorizationpolicy/index"
                                         },
                                         Url = "/AuthorizationPolicy"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "Roles",
-                                        Code = "Role",
+                                        Route = "role/index",
                                         Url = "/Role"
                                     }
                                 }
@@ -190,20 +195,20 @@ namespace Module.Web.Navigation.ViewComponents
                             new NavigationModel()
                             {
                                 Icon = "fas fa-fingerprint",
-                                Code = "identityNav",
+                                Route = "identityNav",
                                 Name = "Identity",
                                 SubNavigations = new List<NavigationModel>()
                                 {
                                     new NavigationModel()
                                     {
                                         Name = "Countries",
-                                        Code = "Country",
+                                        Route = "country/index",
                                         Url = "/Country"
                                     },
                                     new NavigationModel()
                                     {
                                         Name = "UserStatus",
-                                        Code = "UserStatus",
+                                        Route = "userstatus",
                                         Url = "/UserStatus"
                                     }
                                 }
@@ -213,21 +218,27 @@ namespace Module.Web.Navigation.ViewComponents
                 }
             };
 
+            var controllerName = RouteData.Values["controller"].ToString().ToLower();
+            var actionName = RouteData.Values["action"].ToString().ToLower();
             foreach (var tab in mainNavigation.TabNavigations)
             {
                 foreach (var navigation in tab.Navigations)
                 {
                     foreach (var subNavigation in navigation.SubNavigations)
                     {
-                        subNavigation.IsActived = subNavigation.Code.ToLower().Equals(controllerName);
-                        if (!subNavigation.IsActived)
+                        subNavigation.IsActived = subNavigation.Route.ToLower().Equals($"{controllerName}/{actionName}");
+                        if (!subNavigation.IsActived && !navigation.SubNavigations.Any(x => x.Route.Equals($"{controllerName}/{actionName}")))
                         {
-                            subNavigation.IsActived = subNavigation.SubRoutes.Any(x => x.ToLower() == controllerName);
+                            subNavigation.IsActived = subNavigation.Url.ToLower().Equals($"/{controllerName}");
+                        }
+
+                        if (!subNavigation.IsActived && subNavigation.SubRoutes.Any())
+                        {
+                            subNavigation.IsActived = subNavigation.SubRoutes.Any(x => x.ToLower() == $"{controllerName}/{actionName}");
                         }
                     }
 
-                    navigation.IsActived = controllerName == navigation.Code.ToLower()
-                        || navigation.SubNavigations.Any(x => x.IsActived);
+                    navigation.IsActived = controllerName == navigation.Route.ToLower() || navigation.SubNavigations.Any(x => x.IsActived);
                 }
 
                 tab.IsActived = tab.Navigations.Any(x => x.IsActived);

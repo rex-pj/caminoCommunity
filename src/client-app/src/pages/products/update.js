@@ -18,7 +18,7 @@ import { fileToBase64 } from "../../utils/Helper";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import productCreationModel from "../../models/productCreationModel";
-import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
+import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
 export default withRouter(function (props) {
@@ -30,11 +30,16 @@ export default withRouter(function (props) {
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
   );
+  const [productAttributeControlTypes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
+  );
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [updateProduct] = useMutation(productMutations.UPDATE_PRODUCT, {
     client: authClient,
   });
-
+  const [productAttributes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTES
+  );
   const { loading, data, error, refetch, called } = useQuery(
     productQueries.GET_PRODUCT_FOR_UPDATE,
     {
@@ -85,82 +90,31 @@ export default withRouter(function (props) {
     });
   };
 
-  // Selections mapping
-  const mapSelectListItems = (response) => {
-    var { data } = response;
-    var { categories } = data;
-    if (!categories) {
-      return [];
-    }
-    return categories.map((cat) => {
-      return {
-        value: cat.id,
-        label: cat.text,
-      };
-    });
-  };
-
-  const searchProductCategories = async (inputValue, currentIds) => {
-    return await productCategories({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        return mapSelectListItems(response);
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
-  const searchFarms = async (inputValue, currentIds) => {
-    return await userFarms({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { userFarms } = data;
-        if (!userFarms) {
-          return [];
-        }
-        return userFarms.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
   const onProductPost = async (data) => {
     return await updateProduct({
       variables: {
         criterias: data,
       },
     }).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { updateProduct: product } = data;
-        if (props.location.state && props.location.state.from) {
-          const referrefUri = props.location.state.from;
-          const productUpdateUrl = `/products/update/${product.id}`;
-          if (referrefUri !== productUpdateUrl) {
-            raiseProductUpdatedNotify(product);
-            props.history.push(referrefUri);
-            resolve({ product });
-            return;
+      refetch().then(() => {
+        return new Promise((resolve) => {
+          const { data } = response;
+          const { updateProduct: product } = data;
+          if (props.location.state && props.location.state.from) {
+            const referrefUri = props.location.state.from;
+            const productUpdateUrl = `/products/update/${product.id}`;
+            if (referrefUri !== productUpdateUrl) {
+              raiseProductUpdatedNotify(product);
+              props.history.push(referrefUri);
+              resolve({ product });
+              return;
+            }
           }
-        }
 
-        raiseProductUpdatedNotify(product);
-        props.history.push(`/products/${product.id}`);
-        resolve({ product });
+          raiseProductUpdatedNotify(product);
+          props.history.push(`/products/${product.id}`);
+          resolve({ product });
+        });
       });
     });
   };
@@ -251,10 +205,12 @@ export default withRouter(function (props) {
         height={350}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={searchProductCategories}
+        filterCategories={productCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}
-        filterFarms={searchFarms}
+        filterFarms={userFarms}
+        filterAttributes={productAttributes}
+        filterProductAttributeControlTypes={productAttributeControlTypes}
       />
     </DetailLayout>
   );

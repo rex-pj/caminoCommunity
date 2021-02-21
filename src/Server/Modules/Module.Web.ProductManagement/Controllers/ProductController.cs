@@ -1,37 +1,33 @@
-﻿using AutoMapper;
-using Camino.Service.Projections.Filters;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.ProductManagement.Models;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Camino.Service.Business.Products.Contracts;
-using Camino.Service.Projections.Product;
+using Camino.Core.Contracts.Services.Products;
 using System.Linq;
-using Camino.Service.Projections.Media;
+using Camino.Shared.Requests.Products;
+using Camino.Shared.Requests.Media;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductController : BaseAuthController
     {
-        private readonly IProductBusiness _productBusiness;
-        private readonly IMapper _mapper;
+        private readonly IProductService _productService;
         private readonly IHttpHelper _httpHelper;
 
-        public ProductController(IMapper mapper, IProductBusiness productBusiness, IHttpHelper httpHelper,
+        public ProductController(IProductService productService, IHttpHelper httpHelper,
             IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _mapper = mapper;
-            _productBusiness = productBusiness;
+            _productService = productService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
@@ -50,7 +46,7 @@ namespace Module.Web.ProductManagement.Controllers
                 CategoryId = filter.CategoryId
             };
 
-            var productPageList = await _productBusiness.GetAsync(filterRequest);
+            var productPageList = await _productService.GetAsync(filterRequest);
             var products = productPageList.Collections.Select(x => new ProductModel()
             {
                 Description = x.Description,
@@ -62,7 +58,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedDate = x.UpdatedDate,
                 Id = x.Id,
                 Name = x.Name,
-                ThumbnailId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0
+                PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0
             });
 
             var productPage = new PageListModel<ProductModel>(products)
@@ -91,7 +87,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var product = await _productBusiness.FindDetailAsync(id);
+                var product = await _productService.FindDetailAsync(id);
                 if (product == null)
                 {
                     return RedirectToNotFoundPage();
@@ -109,7 +105,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Description = product.Description,
                     Name = product.Name,
                     Price = product.Price,
-                    Thumbnails = product.Pictures.Select(y => new PictureRequestModel()
+                    Pictures = product.Pictures.Select(y => new PictureRequestModel()
                     {
                         PictureId = y.Id
                     }),
@@ -136,7 +132,7 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
         public async Task<IActionResult> Update(int id)
         {
-            var product = await _productBusiness.FindDetailAsync(id);
+            var product = await _productService.FindDetailAsync(id);
             var model = new ProductModel()
             {
                 Id = product.Id,
@@ -149,7 +145,7 @@ namespace Module.Web.ProductManagement.Controllers
                 Description = product.Description,
                 Name = product.Name,
                 Price = product.Price,
-                Thumbnails = product.Pictures.Select(y => new PictureRequestModel()
+                Pictures = product.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 }),
@@ -177,7 +173,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var product = new ProductProjection()
+            var product = new ProductModifyRequest()
             {
                 Id = model.Id,
                 UpdatedById = LoggedUserId,
@@ -185,11 +181,11 @@ namespace Module.Web.ProductManagement.Controllers
                 Name = model.Name,
                 Description = model.Description,
                 Price = model.Price,
-                Categories = model.ProductCategoryIds.Select(id => new ProductCategoryProjection()
+                Categories = model.ProductCategoryIds.Select(id => new ProductCategoryRequest()
                 {
                     Id = id
                 }),
-                Farms = model.ProductFarmIds.Select(id => new ProductFarmProjection()
+                Farms = model.ProductFarmIds.Select(id => new ProductFarmRequest()
                 {
                     FarmId = id
                 })
@@ -199,15 +195,15 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _productBusiness.FindAsync(model.Id);
+            var exist = await _productService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            if (model.Thumbnails != null && model.Thumbnails.Any())
+            if (model.Pictures != null && model.Pictures.Any())
             {
-                product.Pictures = model.Thumbnails.Select(x => new PictureRequestProjection()
+                product.Pictures = model.Pictures.Select(x => new PictureRequest()
                 {
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
@@ -217,8 +213,52 @@ namespace Module.Web.ProductManagement.Controllers
             }
 
             product.UpdatedById = LoggedUserId;
-            await _productBusiness.UpdateAsync(product);
-            return RedirectToAction("Detail", new { id = product.Id });
+            await _productService.UpdateAsync(product);
+            return RedirectToAction(nameof(Detail), new { id = product.Id });
+        }
+
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
+        [LoadResultAuthorizations("Picture", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        public async Task<IActionResult> Pictures(ProductPictureFilterModel filter)
+        {
+            var filterRequest = new ProductPictureFilter()
+            {
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search,
+                MimeType = filter.MimeType
+            };
+
+            var productPicturePageList = await _productService.GetPicturesAsync(filterRequest);
+            var productPictures = productPicturePageList.Collections.Select(x => new ProductPictureModel
+            {
+                ProductName = x.ProductName,
+                ProductId = x.ProductId,
+                PictureId = x.PictureId,
+                PictureName = x.PictureName,
+                PictureCreatedBy = x.PictureCreatedBy,
+                PictureCreatedById = x.PictureCreatedById,
+                PictureCreatedDate = x.PictureCreatedDate,
+                ProductPictureType = (ProductPictureType)x.ProductPictureTypeId,
+                ContentType = x.ContentType
+            });
+
+            var productPage = new PageListModel<ProductPictureModel>(productPictures)
+            {
+                Filter = filter,
+                TotalPage = productPicturePageList.TotalPage,
+                TotalResult = productPicturePageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_ProductPictureTable", productPage);
+            }
+
+            return View(productPage);
         }
     }
 }

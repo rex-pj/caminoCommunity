@@ -1,36 +1,37 @@
-﻿using Camino.Core.Models;
-using Camino.Framework.Models;
-using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Projections.Article;
+﻿using Camino.Framework.Models;
+using Camino.Core.Contracts.Services.Articles;
+using Camino.Shared.Results.Articles;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
+using Camino.Shared.General;
+using Module.Api.Article.Models;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleCategoryResolver : IArticleCategoryResolver
     {
-        private readonly IArticleCategoryBusiness _articleCategoryBusiness;
-        public ArticleCategoryResolver(IArticleCategoryBusiness articleCategoryBusiness)
+        private readonly IArticleCategoryService _articleCategoryService;
+        public ArticleCategoryResolver(IArticleCategoryService articleCategoryService)
         {
-            _articleCategoryBusiness = articleCategoryBusiness;
+            _articleCategoryService = articleCategoryService;
         }
 
-        public IEnumerable<SelectOption> GetArticleCategories(SelectFilterModel criterias)
+        public IEnumerable<SelectOption> GetArticleCategories(ArticleCategorySelectFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new SelectFilterModel();
+                criterias = new ArticleCategorySelectFilterModel();
             }
 
-            IList<ArticleCategoryProjection> categories;
+            IList<ArticleCategoryResult> categories;
             if (criterias.IsParentOnly)
             {
-                categories = _articleCategoryBusiness.SearchParents(criterias.Query, criterias.CurrentId);
+                categories = _articleCategoryService.SearchParents(criterias.Query, criterias.CurrentId);
             }
             else
             {
-                categories = _articleCategoryBusiness.Search(criterias.Query, criterias.CurrentId);
+                categories = _articleCategoryService.Search(criterias.Query, criterias.CurrentId);
             }
 
             if (categories == null || !categories.Any())

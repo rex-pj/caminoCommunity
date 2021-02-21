@@ -1,10 +1,9 @@
-﻿using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Identity;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +12,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Service.Business.Identities.Contracts;
+using Camino.Shared.Requests.Identifiers;
+using Camino.Core.Contracts.Services.Identities;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
     public class CountryController : BaseAuthController
     {
-        private readonly ICountryBusiness _countryBusiness;
+        private readonly ICountryService _countryService;
         private readonly IHttpHelper _httpHelper;
 
-        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryBusiness countryBusiness,
+        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryService countryService,
             IHttpHelper httpHelper) : base(httpContextAccessor)
         {
-            _countryBusiness = countryBusiness;
+            _countryService = countryService;
             _httpHelper = httpHelper;
         }
 
@@ -40,8 +40,9 @@ namespace Module.Web.IdentityManagement.Controllers
                 Search = filter.Search
             };
 
-            var countryPageList = await _countryBusiness.GetAsync(filterRequest);
-            var countries = countryPageList.Collections.Select(x => new CountryModel() { 
+            var countryPageList = await _countryService.GetAsync(filterRequest);
+            var countries = countryPageList.Collections.Select(x => new CountryModel()
+            {
                 Code = x.Code,
                 Id = x.Id,
                 Name = x.Name
@@ -73,7 +74,7 @@ namespace Module.Web.IdentityManagement.Controllers
 
             try
             {
-                var country = _countryBusiness.Find(id);
+                var country = _countryService.Find(id);
                 if (country == null)
                 {
                     return RedirectToNotFoundPage();
@@ -103,7 +104,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateCountry)]
         public IActionResult Update(int id)
         {
-            var country = _countryBusiness.Find(id);
+            var country = _countryService.Find(id);
             var model = new CountryModel()
             {
                 Id = country.Id,
@@ -116,24 +117,24 @@ namespace Module.Web.IdentityManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateCountry)]
-        public IActionResult Create(CountryModel model)
+        public async Task<IActionResult> Create(CountryModel model)
         {
-            var country = new CountryProjection()
+            var country = new CountryModifyRequest()
             {
                 Id = model.Id,
                 Name = model.Name,
                 Code = model.Code
             };
 
-            var exist = _countryBusiness.FindByName(model.Name);
+            var exist = _countryService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var id = _countryBusiness.Create(country);
+            var id = await _countryService.CreateAsync(country);
 
-            return RedirectToAction("Detail", new { id });
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         [HttpPost]
@@ -145,28 +146,28 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _countryBusiness.Find(model.Id);
+            var exist = _countryService.Find(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var country = new CountryProjection()
+            var country = new CountryModifyRequest()
             {
                 Id = model.Id,
                 Name = model.Name,
                 Code = model.Code
             };
 
-            _countryBusiness.Update(country);
-            return RedirectToAction("Detail", new { id = country.Id });
+            _countryService.UpdateAsync(country);
+            return RedirectToAction(nameof(Detail), new { id = country.Id });
         }
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
         public IActionResult Search(string q)
         {
-            var countries = _countryBusiness.Search(q);
+            var countries = _countryService.Search(q);
             if (countries == null || !countries.Any())
             {
                 return Json(new

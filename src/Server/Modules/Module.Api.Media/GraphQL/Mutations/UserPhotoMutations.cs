@@ -1,17 +1,17 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Mutations;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Models;
-using Camino.Service.Projections.Request;
+using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using Module.Api.Media.Models;
 using System.Threading.Tasks;
+using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Api.Media.GraphQL.Mutations
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType("Mutation")]
     public class UserPhotoMutations : BaseMutations
     {
         [GraphQlAuthentication]

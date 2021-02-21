@@ -5,11 +5,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="HotChocolate.Data" Version="11.0.9" />
+	  <PackageReference Include="HotChocolate.Data" Version="11.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
-		<ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
 </Project>

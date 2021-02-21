@@ -1,35 +1,25 @@
-﻿using Camino.Service.Projections.Filters;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Module.Web.ProductManagement.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Service.Business.Products.Contracts;
-using Camino.Service.Projections.Product;
-using Camino.Service.Business.Farms.Contracts;
-using Camino.Service.Projections.Farm;
+using Camino.Core.Contracts.Services.Farms;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductFarmController : BaseAuthController
     {
-        private readonly IFarmBusiness _farmBusiness;
-        private readonly IHttpHelper _httpHelper;
+        private readonly IFarmService _farmService;
 
-        public ProductFarmController(IFarmBusiness farmBusiness,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
-            _httpHelper = httpHelper;
-            _farmBusiness = farmBusiness;
+            _farmService = farmService;
         }
 
         [HttpGet]
@@ -47,7 +37,7 @@ namespace Module.Web.ProductManagement.Controllers
                 CurrentIds = currentIds,
                 Search = q
             };
-            var farms = await _farmBusiness.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter);
             if (farms == null || !farms.Any())
             {
                 return Json(new List<Select2ItemModel>());

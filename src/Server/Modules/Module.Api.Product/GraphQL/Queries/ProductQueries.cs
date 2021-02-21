@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Product.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class ProductQueries : BaseQueries
     {
         public async Task<ProductPageListModel> GetUserProductsAsync([Service] IProductResolver productResolver,

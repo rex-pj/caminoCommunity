@@ -8,7 +8,7 @@ using Module.Api.Media.Models;
 
 namespace Module.Api.Media.GraphQL.Mutations
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType("Mutation")]
     public class ImageMutations : BaseMutations
     {
         [GraphQlAuthentication]

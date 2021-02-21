@@ -1,4 +1,6 @@
 ﻿using Camino.Framework.Models;
+using HotChocolate;
+using HotChocolate.Types;
 
 namespace Module.Api.Article.Models
 {
@@ -10,6 +12,7 @@ namespace Module.Api.Article.Models
             PageSize = 10;
         }
 
+        [GraphQLType(typeof(LongType))]
         public long Id { get; set; }
         public string UserIdentityId { get; set; }
     }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Camino.Core.Modular.Contracts;
 using Module.Web.IdentityManagement.Infrastructure.Extensions;
+using Camino.Infrastructure.Modularity;
 
 namespace Module.Web.IdentityManagement
 {

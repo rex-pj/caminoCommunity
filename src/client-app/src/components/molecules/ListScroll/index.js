@@ -15,7 +15,7 @@ export default function (props) {
   return (
     <HorizontalList className={className}>
       {list
-        ? list
+        ? list()
             .filter((item, index) => {
               return index < numberOfDisplay;
             })

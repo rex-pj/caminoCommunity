@@ -22,6 +22,9 @@ import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 import { SessionContext } from "../../../store/context/session-context";
+import { VerticalList } from "../../atoms/List";
+import { LabelPrimary } from "../../atoms/Labels";
+import { BadgeOutlinePrimary } from "../../atoms/Badges";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primaryText};
@@ -38,12 +41,17 @@ const InteractiveItem = styled.li`
   }
 `;
 
+const AttributeLabel = styled(LabelPrimary)`
+  font-weight: 700;
+`;
+
 const TopBarInfo = styled.div`
   color: ${(p) => p.theme.color.neutralText};
   font-size: ${(p) => p.theme.fontSize.tiny};
   border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
   padding-bottom: ${(p) => p.theme.size.tiny};
   margin-bottom: ${(p) => p.theme.size.distance};
+  position: relative;
 
   ${ModuleMenuListItem} {
     margin-top: 0;
@@ -185,6 +193,8 @@ export default withRouter(function (props) {
     };
   });
 
+  const { productAttributes } = product;
+
   return (
     <Fragment>
       <PanelDefault>
@@ -227,7 +237,7 @@ export default withRouter(function (props) {
                         <span onClick={onOpenDeleteConfirmation}>
                           <FontAwesomeIcon
                             icon="trash-alt"
-                            className="mr-2"
+                            className="me-2"
                           ></FontAwesomeIcon>
                           Delete
                         </span>
@@ -256,6 +266,34 @@ export default withRouter(function (props) {
                 })
               : null}
 
+            {productAttributes
+              ? productAttributes.map((attr, index) => {
+                  return (
+                    <div key={index} className="mt-3">
+                      <AttributeLabel>{attr.name}:</AttributeLabel>
+                      {attr.attributeRelationValues
+                        ? attr.attributeRelationValues.map((av, cIndex) => {
+                            return (
+                              <VerticalList className="mt-2 mb-2" key={cIndex}>
+                                <li>
+                                  <BadgeOutlinePrimary size="xs">
+                                    {av.name} [
+                                    {av.priceAdjustment
+                                      ? `$${av.priceAdjustment}`
+                                      : av.pricePercentageAdjustment
+                                      ? `${av.pricePercentageAdjustment}%`
+                                      : null}
+                                    ]
+                                  </BadgeOutlinePrimary>
+                                </li>
+                              </VerticalList>
+                            );
+                          })
+                        : null}
+                    </div>
+                  );
+                })
+              : null}
             <ContentBody>
               <span
                 dangerouslySetInnerHTML={{ __html: product.description }}

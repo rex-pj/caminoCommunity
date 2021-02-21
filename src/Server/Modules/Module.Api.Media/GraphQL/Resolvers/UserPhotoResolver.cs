@@ -1,25 +1,25 @@
 ﻿using Module.Api.Media.Models;
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
-using Camino.Data.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
 using System;
 using System.Threading.Tasks;
-using Camino.Service.Business.Users.Contracts;
-using Camino.Service.Projections.Request;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
+using Camino.Core.Contracts.Services.Users;
+using Camino.Core.Domain.Identities;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class UserPhotoResolver : BaseResolver, IUserPhotoResolver
     {
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
+        private readonly IUserPhotoService _userPhotoService;
 
-        public UserPhotoResolver(IUserPhotoBusiness userPhotoBusiness, ISessionContext sessionContext)
+        public UserPhotoResolver(IUserPhotoService userPhotoService, ISessionContext sessionContext)
             : base(sessionContext)
         {
-            _userPhotoBusiness = userPhotoBusiness;
+            _userPhotoService = userPhotoService;
         }
 
         public async Task<CommonResult> UpdateAvatarAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias)
@@ -32,7 +32,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 criterias.UserPhotoType = UserPhotoKind.Avatar;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, currentUser.Id);
+                var result = await _userPhotoService.UpdateUserPhotoAsync(criterias, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
@@ -52,7 +52,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 criterias.UserPhotoType = UserPhotoKind.Cover;
-                var result = await _userPhotoBusiness.UpdateUserPhotoAsync(criterias, currentUser.Id);
+                var result = await _userPhotoService.UpdateUserPhotoAsync(criterias, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
@@ -71,7 +71,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Avatar);
+                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)
@@ -89,7 +89,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoBusiness.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Cover);
+                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Cover);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)

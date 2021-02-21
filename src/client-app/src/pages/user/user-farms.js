@@ -12,7 +12,7 @@ import {
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import authClient from "../../graphql/client/authClient";
-import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
+import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/session-context";
@@ -47,30 +47,6 @@ export default withRouter(function (props) {
 
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
-
-  const searchFarmTypes = async (inputValue) => {
-    return await farmTypes({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -147,7 +123,7 @@ export default withRouter(function (props) {
           height={230}
           convertImageCallback={convertImagefile}
           onImageValidate={onImageValidate}
-          filterCategories={searchFarmTypes}
+          filterCategories={farmTypes}
           onFarmPost={onFarmPost}
           refetchNews={fetchFarms}
           showValidationError={showValidationError}
@@ -185,10 +161,10 @@ export default withRouter(function (props) {
   const farms = collections.map((item) => {
     let farm = { ...item };
     farm.url = `${UrlConstant.Farm.url}${farm.id}`;
-    if (farm.thumbnails && farm.thumbnails.length > 0) {
-      const thumbnail = farm.thumbnails[0];
-      if (thumbnail.pictureId > 0) {
-        farm.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+    if (farm.pictures && farm.pictures.length > 0) {
+      const picture = farm.pictures[0];
+      if (picture.pictureId > 0) {
+        farm.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
       }
     }
 

@@ -33,9 +33,9 @@
                                         <a href="@navItem.Url"
                                            class="text-secondary @(navItem.IsActived ? "active" : "collapsed")"
                                            data-toggle="collapse"
-                                           data-target="#collapse@(navItem.Code)"
+                                           data-target="#collapse@(navItem.Route)"
                                            aria-expanded="true"
-                                           aria-controls="collapse@(navItem.Code)">
+                                           aria-controls="collapse@(navItem.Route)">
                                             <span class="mr-2">
                                                 <i class="@navItem.Icon"></i>
                                             </span>
@@ -58,9 +58,9 @@
 
                                 @if (navItem.SubNavigations.Any())
                                 {
-                                    <div id="collapse@(navItem.Code)"
+                                    <div id="collapse@(navItem.Route)"
                                          class="collapse @(navItem.IsActived ? "show" : "collapsed")"
-                                         aria-labelledby="heading@(navItem.Code)"
+                                         aria-labelledby="heading@(navItem.Route)"
                                          data-parent="#nav@(tab.Code)Accordion">
                                         <div class="list-group bg-secondary">
                                             @foreach (var subNav in navItem.SubNavigations)

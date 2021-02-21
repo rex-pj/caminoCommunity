@@ -1,38 +1,61 @@
-﻿using AutoMapper;
-using Camino.Framework.Controllers;
+﻿using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
-using Camino.Service.Projections.Filters;
-using Camino.Framework.Helpers.Contracts;
-using Camino.Service.Business.Authorization.Contracts;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Filters;
+using Camino.Core.Contracts.Helpers;
+using Camino.Core.Contracts.Services.Authorization;
+using System.Linq;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class RoleAuthorizationPolicyController : BaseAuthController
     {
-        private readonly IRoleAuthorizationPolicyBusiness _roleAuthorizationPolicyBusiness;
-        private readonly IMapper _mapper;
+        private readonly IRoleAuthorizationPolicyService _roleAuthorizationPolicyService;
         private readonly IHttpHelper _httpHelper;
-        public RoleAuthorizationPolicyController(IHttpContextAccessor httpContextAccessor, IRoleAuthorizationPolicyBusiness roleAuthorizationPolicyBusiness,
-            IMapper mapper, IHttpHelper httpHelper) : base(httpContextAccessor)
+        public RoleAuthorizationPolicyController(IHttpContextAccessor httpContextAccessor,
+            IRoleAuthorizationPolicyService roleAuthorizationPolicyService,
+            IHttpHelper httpHelper) : base(httpContextAccessor)
         {
-            _roleAuthorizationPolicyBusiness = roleAuthorizationPolicyBusiness;
+            _roleAuthorizationPolicyService = roleAuthorizationPolicyService;
             _httpHelper = httpHelper;
-            _mapper = mapper;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRoleAuthorizationPolicy)]
         [LoadResultAuthorizations("RoleAuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanDelete)]
         public IActionResult Index(RoleAuthorizationPolicyFilterModel filter)
         {
-            var filterRequest = _mapper.Map<RoleAuthorizationPolicyFilter>(filter);
-            var authorizationRoles = _roleAuthorizationPolicyBusiness.GetAuthoricationPolicyRoles(filter.Id, filterRequest);
-
-            var authorizationRolesPage = _mapper.Map<AuthorizationPolicyRolesModel>(authorizationRoles);
+            var filterRequest = new RoleAuthorizationPolicyFilter
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search
+            };
+            var authorizationRole = _roleAuthorizationPolicyService.GetAuthoricationPolicyRoles(filter.Id, filterRequest);
+            var roles = authorizationRole.Collections.Select(x => new RoleModel
+            {
+                CreatedById = x.CreatedById,
+                Name = x.Name,
+                CreatedByName = x.CreatedByName,
+                Description = x.Description,
+                CreatedDate = x.CreatedDate,
+                Id = x.Id,
+                UpdatedById = x.UpdatedById,
+                UpdatedByName = x.UpdatedByName,
+                UpdatedDate = x.UpdatedDate
+            });
+            var authorizationRolesPage = new AuthorizationPolicyRolesModel(roles)
+            {
+                Description = authorizationRole.Description,
+                Filter = filter,
+                Id = authorizationRole.Id,
+                Name = authorizationRole.Name,
+                TotalPage = authorizationRole.TotalPage,
+                TotalResult = authorizationRole.TotalResult,
+            };
             authorizationRolesPage.Filter = filter;
 
             if (_httpHelper.IsAjaxRequest(Request))
@@ -47,24 +70,24 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateRoleAuthorizationPolicy)]
         public IActionResult Grant(RoleAuthorizationPolicyModel model)
         {
-            var isSucceed = _roleAuthorizationPolicyBusiness.Create(model.RoleId, model.AuthorizationPolicyId, LoggedUserId);
+            var isSucceed = _roleAuthorizationPolicyService.Create(model.RoleId, model.AuthorizationPolicyId, LoggedUserId);
             if (isSucceed)
             {
-                return RedirectToAction("Index", new { id = model.AuthorizationPolicyId });
+                return RedirectToAction(nameof(Index), new { id = model.AuthorizationPolicyId });
             }
-            return RedirectToAction("Index", new { id = model.AuthorizationPolicyId });
+            return RedirectToAction(nameof(Index), new { id = model.AuthorizationPolicyId });
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteUserAuthorizationPolicy)]
         public IActionResult Ungrant(long roleId, short authorizationPolicyId)
         {
-            var isSucceed = _roleAuthorizationPolicyBusiness.Delete(roleId, authorizationPolicyId);
+            var isSucceed = _roleAuthorizationPolicyService.Delete(roleId, authorizationPolicyId);
             if (isSucceed)
             {
-                return RedirectToAction("Index", new { id = authorizationPolicyId });
+                return RedirectToAction(nameof(Index), new { id = authorizationPolicyId });
             }
-            return RedirectToAction("Index", new { id = authorizationPolicyId });
+            return RedirectToAction(nameof(Index), new { id = authorizationPolicyId });
         }
     }
 }

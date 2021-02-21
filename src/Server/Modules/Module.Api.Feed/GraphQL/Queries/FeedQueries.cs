@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Feed.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class FeedQueries : BaseQueries
     {
         public async Task<FeedPageListModel> GetUserFeedsAsync([Service] IFeedResolver farmResolver, FeedFilterModel criterias)

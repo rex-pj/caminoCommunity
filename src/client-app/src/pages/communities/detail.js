@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 export default () => {
   const community = {
     createdDate: "25/03/2019 00:00",
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
+    pictureUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
     info: {
       url: `${UrlConstant.Community.url}1`,
       title: "Hội trái cây sạch An Thạnh",
@@ -50,7 +50,7 @@ export default () => {
     },
     createdDate: "26/11/2018 9:28",
     updatedDate: "26/11/2018 9:28",
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/farmstay.jpg`,
+    pictureUrl: `${process.env.PUBLIC_URL}/photos/farmstay.jpg`,
     description:
       "Bọ rùa (Coccinellidae), hay còn gọi là bọ hoàng hậu, bọ cánh cam là tên gọi chung cho các loài côn trùng nhỏ, mình tròn hình cái trống, phủ giáp trụ, trên mặt cánh có những chấm đen (có loài không có). Người ta phân loại bọ rùa tùy theo số chấm và hình thái cơ thể Loài bọ rùa thường thấy nhất là bọ rùa 7 sao. Trên bộ cánh vỏ vàng cam có 7 nốt đen (mỗi cánh có ba nốt, còn một nốt ở chỗ giáp lại giữ hai cánh). Đây là loài bọ rùa to nhất và là một thợ săn đáng",
     url: `${UrlConstant.Article.url}1`,
@@ -62,7 +62,7 @@ export default () => {
   };
 
   const product = {
-    thumbnailUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
+    pictureUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
     description:
       "Ambrosia có nghĩa là “thức ăn của các vị thần” trong thần thoại Hy Lạp cổ đại và được lựa chọn bởi Wilfrid Mennell và vợ, họ phát hiện ra cây táo Ambrosia gốc trong vườn tại",
     name: "Đào ngâm thuốc sáu tháng không hư",

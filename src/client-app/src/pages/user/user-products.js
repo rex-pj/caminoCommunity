@@ -11,7 +11,7 @@ import {
   mediaMutations,
   farmMutations,
 } from "../../graphql/fetching/mutations";
-import ProductEditor from "../../components/organisms/ProfileEditors/ProductEditor";
+import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import { useStore } from "../../store/hook-store";
 import { productQueries } from "../../graphql/fetching/queries";
 import Loading from "../../components/atoms/Loading";
@@ -29,7 +29,12 @@ export default withRouter(function (props) {
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
   );
-
+  const [productAttributes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTES
+  );
+  const [productAttributeControlTypes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
+  );
   const [createProduct] = useMutation(productMutations.CREATE_PRODUCT, {
     client: authClient,
   });
@@ -38,7 +43,7 @@ export default withRouter(function (props) {
     client: authClient,
   });
 
-  const [farms] = useMutation(farmMutations.FILTER_FARMS);
+  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
 
   const {
     loading,
@@ -55,30 +60,6 @@ export default withRouter(function (props) {
       },
     },
   });
-
-  const searchProductCategories = async (inputValue, currentIds) => {
-    return await productCategories({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -121,30 +102,6 @@ export default withRouter(function (props) {
     });
   };
 
-  const searchFarms = async (inputValue, currentIds) => {
-    return await farms({
-      variables: {
-        criterias: { query: inputValue, currentIds },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { farms } = data;
-        if (!farms) {
-          return [];
-        }
-        return farms.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
-
   const onOpenDeleteConfirmation = (e) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
@@ -185,11 +142,13 @@ export default withRouter(function (props) {
           height={230}
           convertImageCallback={convertImagefile}
           onImageValidate={onImageValidate}
-          filterCategories={searchProductCategories}
+          filterCategories={productCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
           refetchNews={fetchNewProducts}
-          filterFarms={searchFarms}
+          filterFarms={userFarms}
+          filterAttributes={productAttributes}
+          filterProductAttributeControlTypes={productAttributeControlTypes}
         />
       );
     }
@@ -217,10 +176,10 @@ export default withRouter(function (props) {
   const products = collections.map((item) => {
     let product = { ...item };
     product.url = `${UrlConstant.Product.url}${product.id}`;
-    if (product.thumbnails && product.thumbnails.length > 0) {
-      const thumbnail = product.thumbnails[0];
-      if (thumbnail.pictureId > 0) {
-        product.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+    if (product.pictures && product.pictures.length > 0) {
+      const picture = product.pictures[0];
+      if (picture.pictureId > 0) {
+        product.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
       }
     }
 

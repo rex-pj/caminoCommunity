@@ -19,10 +19,10 @@ namespace Module.Web.ArticleManagement.Models
 
         [Required(AllowEmptyStrings = false)]
         public string Content { get; set; }
-        public long ThumbnailId { get; set; }
-        public string Thumbnail { get; set; }
-        public string ThumbnailFileType { get; set; }
-        public string ThumbnailFileName { get; set; }
+        public long PictureId { get; set; }
+        public string Picture { get; set; }
+        public string PictureFileType { get; set; }
+        public string PictureFileName { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdateById { get; set; }
         public string UpdatedBy { get; set; }

@@ -1,13 +1,12 @@
 ﻿using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Service.Business.Media.Contracts;
-using Camino.Service.FileStore.Contracts;
+using Camino.Core.Contracts.Services.Media;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using System;
 using System.Threading.Tasks;
+using Camino.Core.Contracts.FileStore;
 
 namespace Module.Web.UploadManagement.Controllers
 {
@@ -15,14 +14,14 @@ namespace Module.Web.UploadManagement.Controllers
     {
         private readonly IMediaFileStore _mediaFileStore;
         private readonly IFileStore _fileStore;
-        private readonly IPictureBusiness _pictureBusiness;
+        private readonly IPictureService _pictureService;
 
         public PictureController(IHttpContextAccessor httpContextAccessor,
-            IMediaFileStore mediaFileStore, IFileStore fileStore, IPictureBusiness pictureBusiness)
+            IMediaFileStore mediaFileStore, IFileStore fileStore, IPictureService pictureService)
             : base(httpContextAccessor)
         {
             _mediaFileStore = mediaFileStore;
-            _pictureBusiness = pictureBusiness;
+            _pictureService = pictureService;
             _fileStore = fileStore;
         }
 
@@ -103,8 +102,8 @@ namespace Module.Web.UploadManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
         public async Task<IActionResult> Get(long id)
         {
-            var picture = await _pictureBusiness.GetPicture(id);
-            return File(picture.BinaryData, picture.MimeType);
+            var picture = await _pictureService.FindPictureAsync(id);
+            return File(picture.BinaryData, picture.ContentType);
         }
     }
 }

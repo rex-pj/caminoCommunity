@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
-import About from "../../components/organisms/User/About";
+import About from "../../components/organisms/Profile/About";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Article.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class ArticleQueries : BaseQueries
     {
         public async Task<ArticlePageListModel> GetUserArticlesAsync([Service] IArticleResolver articleResolver, ArticleFilterModel criterias)

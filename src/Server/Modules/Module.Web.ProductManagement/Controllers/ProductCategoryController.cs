@@ -1,9 +1,8 @@
-﻿using Camino.Service.Projections.Filters;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +11,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Service.Business.Products.Contracts;
-using Camino.Service.Projections.Product;
+using Camino.Core.Contracts.Services.Products;
+using Camino.Shared.Results.Products;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Products;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductCategoryController : BaseAuthController
     {
-        private readonly IProductCategoryBusiness _productCategoryBusiness;
+        private readonly IProductCategoryService _productCategoryService;
         private readonly IHttpHelper _httpHelper;
 
-        public ProductCategoryController(IProductCategoryBusiness productCategoryBusiness,
+        public ProductCategoryController(IProductCategoryService productCategoryService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _productCategoryBusiness = productCategoryBusiness;
+            _productCategoryService = productCategoryService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
@@ -45,7 +46,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedById = filter.UpdatedById
             };
 
-            var categoryPageList = await _productCategoryBusiness.GetAsync(filterRequest);
+            var categoryPageList = await _productCategoryService.GetAsync(filterRequest);
             var categories = categoryPageList.Collections.Select(x => new ProductCategoryModel()
             {
                 Id = x.Id,
@@ -73,7 +74,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
         [LoadResultAuthorizations("ProductCategory", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -82,7 +83,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var category = _productCategoryBusiness.Find(id);
+                var category = await _productCategoryService.FindAsync(id);
                 if (category == null)
                 {
                     return RedirectToNotFoundPage();
@@ -121,14 +122,14 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductCategory)]
         public async Task<IActionResult> Create(ProductCategoryModel model)
         {
-            var category = new ProductCategoryProjection()
+            var category = new ProductCategoryRequest()
             {
                 Description = model.Description,
                 Name = model.Name,
                 ParentId = model.ParentId
             };
 
-            var exist = _productCategoryBusiness.FindByName(model.Name);
+            var exist = _productCategoryService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -136,15 +137,15 @@ namespace Module.Web.ProductManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = await _productCategoryBusiness.CreateAsync(category);
+            var id = await _productCategoryService.CreateAsync(category);
 
-            return RedirectToAction("Detail", new { id });
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var category = _productCategoryBusiness.Find(id);
+            var category = await _productCategoryService.FindAsync(id);
             var model = new ProductCategoryModel()
             {
                 Id = category.Id,
@@ -164,9 +165,9 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
-        public IActionResult Update(ProductCategoryModel model)
+        public async Task<IActionResult> Update(ProductCategoryModel model)
         {
-            var category = new ProductCategoryProjection()
+            var category = new ProductCategoryRequest()
             {
                 Description = model.Description,
                 Name = model.Name,
@@ -179,15 +180,15 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _productCategoryBusiness.Find(model.Id);
+            var exist = await _productCategoryService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
             category.UpdatedById = LoggedUserId;
-            _productCategoryBusiness.Update(category);
-            return RedirectToAction("Detail", new { id = category.Id });
+            await _productCategoryService.UpdateAsync(category);
+            return RedirectToAction(nameof(Detail), new { id = category.Id });
         }
 
         [HttpGet]
@@ -200,14 +201,14 @@ namespace Module.Web.ProductManagement.Controllers
                 currentIds = currentId.Split(',').Select(x => long.Parse(x)).ToArray();
             }
 
-            IList<ProductCategoryProjection> categories;
+            IList<ProductCategoryResult> categories;
             if (isParentOnly)
             {
-                categories = await _productCategoryBusiness.SearchParentsAsync(currentIds, q);
+                categories = await _productCategoryService.SearchParentsAsync(currentIds, q);
             }
             else
             {
-                categories = await _productCategoryBusiness.SearchAsync(currentIds, q);
+                categories = await _productCategoryService.SearchAsync(currentIds, q);
             }
 
             if (categories == null || !categories.Any())

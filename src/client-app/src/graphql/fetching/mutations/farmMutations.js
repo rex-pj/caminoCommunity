@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const FILTER_FARM_TYPES = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    categories: farmTypes(criterias: $criterias) {
+  mutation($criterias: BaseSelectFilterModelInput) {
+    selections: farmTypes(criterias: $criterias) {
       id
       isSelected
       text
@@ -11,8 +11,8 @@ export const FILTER_FARM_TYPES = gql`
 `;
 
 export const FILTER_FARMS = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    userFarms: selectUserFarms(criterias: $criterias) {
+  mutation($criterias: FarmSelectFilterModelInput) {
+    selections: selectUserFarms(criterias: $criterias) {
       id
       isSelected
       text

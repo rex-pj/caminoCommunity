@@ -1,23 +1,22 @@
-﻿using Module.Api.Auth.Models;
-using Module.Api.Auth.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Service.Business.Identities.Contracts;
-using Camino.Core.Models;
+using Camino.Core.Contracts.Services.Identities;
+using Camino.Shared.General;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class CountryResolver : ICountryResolver
     {
-        private readonly ICountryBusiness _countryBusiness;
-        public CountryResolver(ICountryBusiness countryBusiness)
+        private readonly ICountryService _countryService;
+        public CountryResolver(ICountryService countryService)
         {
-            _countryBusiness = countryBusiness;
+            _countryService = countryService;
         }
 
         public IEnumerable<SelectOption> GetSelections()
         {
-            var countries = _countryBusiness.Get();
+            var countries = _countryService.Get();
             if (countries == null || !countries.Any())
             {
                 return new List<SelectOption>();

@@ -2,9 +2,9 @@
 <tr>
     <th>@Model.Id</th>
     <td>
-        @if (Model.ThumbnailId > 0)
+        @if (Model.PictureId > 0)
         {
-            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.ThumbnailId })" alt="..." class="img-thumbnail">
+            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.PictureId })" alt="..." class="img-thumbnail">
         }
     </td>
     <td>

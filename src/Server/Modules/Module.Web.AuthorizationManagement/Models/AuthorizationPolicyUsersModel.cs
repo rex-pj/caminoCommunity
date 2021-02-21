@@ -5,13 +5,12 @@ namespace Module.Web.AuthorizationManagement.Models
 {
     public class AuthorizationPolicyUsersModel : PageListModel<UserModel>
     {
-        public AuthorizationPolicyUsersModel(IEnumerable<UserModel> collections):base(collections)
+        public AuthorizationPolicyUsersModel(IEnumerable<UserModel> collections) : base(collections)
         {
         }
 
-        public short Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long UserId { get; set; }
     }
 }

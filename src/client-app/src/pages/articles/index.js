@@ -49,8 +49,8 @@ export default withRouter(function (props) {
   const articles = collections.map((item) => {
     let article = { ...item };
     article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.thumbnail.pictureId) {
-      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnail.pictureId}`;
+    if (article.picture.pictureId) {
+      article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
     }
 
     article.creator = {

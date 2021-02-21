@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Data\Camino.Data\Camino.Data.csproj" />
-		<ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
 </Project>

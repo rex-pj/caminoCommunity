@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import Profile from "../../components/organisms/User/Profile";
+import Profile from "../../components/organisms/Profile/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
 import { useQuery, useMutation } from "@apollo/client";
@@ -16,13 +16,13 @@ import { userMutations } from "../../graphql/fetching/mutations";
 import { authClient } from "../../graphql/client";
 
 const ProfileAvatar = loadable(() =>
-    import("../../components/organisms/User/ProfileAvatar")
+    import("../../components/organisms/Profile/ProfileAvatar")
   ),
   ProfileCover = loadable(() =>
-    import("../../components/organisms/User/ProfileCover")
+    import("../../components/organisms/Profile/ProfileCover")
   ),
   ProfileNavigation = loadable(() =>
-    import("../../components/organisms/User/ProfileNavigation")
+    import("../../components/organisms/Profile/ProfileNavigation")
   );
 
 const CoverPageBlock = styled.div`

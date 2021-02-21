@@ -1,6 +1,6 @@
 ﻿using Camino.Core.Constants;
-using Camino.Service.FileStore;
-using Camino.Service.FileStore.Contracts;
+using Camino.Core.Contracts.FileStore;
+using Camino.Infrastructure.FileStores;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;

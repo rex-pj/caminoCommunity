@@ -2,7 +2,7 @@
 
     $('textarea#Content').tinymceEditor();
 
-    $('#thumbnailUpload').fileupload({
+    $('#pictureUpload').fileupload({
         dataType: "json",
         progress: function (e, data) {
             $('#uploadProgress').removeClass('d-none');
@@ -11,10 +11,10 @@
             $('#uploadProgress').addClass('d-none');
             var blobImage = base64toBlob(data.result.url, data.result.contentType);
             var blobUrl = URL.createObjectURL(blobImage);
-            $('#Thumbnail').val(data.result.url);
-            $('#ThumbnailFileType').val(data.result.contentType);
-            $('#ThumbnailFileName').val(data.result.name);
-            $('#articleThumbnail').html('<img src="' + blobUrl + '" alt="' + data.result.name + '" class="img-thumbnail">');
+            $('#picture').val(data.result.url);
+            $('#pictureFileType').val(data.result.contentType);
+            $('#pictureFileName').val(data.result.name);
+            $('#articlePicture').html('<img src="' + blobUrl + '" alt="' + data.result.name + '" class="img-thumbnail">');
         }
     });
     $(".select2-remote-ajax").select2Ajax();

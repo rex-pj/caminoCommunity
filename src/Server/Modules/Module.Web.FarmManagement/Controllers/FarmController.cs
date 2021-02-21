@@ -1,33 +1,33 @@
 ﻿using Camino.Core.Constants;
-using Camino.Core.Enums;
+using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
-using Camino.Service.Business.Farms.Contracts;
-using Camino.Service.Projections.Farm;
-using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Media;
+using Camino.Core.Contracts.Services.Farms;
+using Camino.Shared.Requests.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.FarmManagement.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Shared.Requests.Farms;
+using Camino.Shared.Requests.Media;
 
 namespace Module.Web.FarmManagement.Controllers
 {
     public class FarmController : BaseAuthController
     {
-        private readonly IFarmBusiness _farmBusiness;
+        private readonly IFarmService _farmService;
         private readonly IHttpHelper _httpHelper;
 
-        public FarmController(IFarmBusiness farmBusiness, IHttpHelper httpHelper,
+        public FarmController(IFarmService farmService, IHttpHelper httpHelper,
             IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _farmBusiness = farmBusiness;
+            _farmService = farmService;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
@@ -46,7 +46,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeId = filter.FarmTypeId
             };
 
-            var farmPageList = await _farmBusiness.GetAsync(filterRequest);
+            var farmPageList = await _farmService.GetAsync(filterRequest);
             var farms = farmPageList.Collections.Select(x => new FarmModel()
             {
                 Id = x.Id,
@@ -54,7 +54,7 @@ namespace Module.Web.FarmManagement.Controllers
                 Description = x.Description,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                ThumbnailId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0,
+                PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0,
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
             });
@@ -85,7 +85,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             try
             {
-                var farm = await _farmBusiness.FindDetailAsync(id);
+                var farm = await _farmService.FindDetailAsync(id);
                 if (farm == null)
                 {
                     return RedirectToNotFoundPage();
@@ -104,7 +104,7 @@ namespace Module.Web.FarmManagement.Controllers
                     FarmTypeName = farm.FarmTypeName,
                     Name = farm.Name,
                     Id = farm.Id,
-                    Thumbnails = farm.Pictures.Select(y => new PictureRequestModel()
+                    Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                     {
                         PictureId = y.Id
                     }),
@@ -121,7 +121,7 @@ namespace Module.Web.FarmManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
         public async Task<IActionResult> Update(int id)
         {
-            var farm = await _farmBusiness.FindDetailAsync(id);
+            var farm = await _farmService.FindDetailAsync(id);
             var model = new FarmModel()
             {
                 Description = farm.Description,
@@ -135,7 +135,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeName = farm.FarmTypeName,
                 Name = farm.Name,
                 Id = farm.Id,
-                Thumbnails = farm.Pictures.Select(y => new PictureRequestModel()
+                Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 }),
@@ -158,13 +158,13 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _farmBusiness.FindAsync(model.Id);
+            var exist = await _farmService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var farm = new FarmProjection()
+            var farm = new FarmModifyRequest()
             {
                 Id = model.Id,
                 UpdatedById = LoggedUserId,
@@ -174,9 +174,9 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeId = model.FarmTypeId
             };
 
-            if (model.Thumbnails != null && model.Thumbnails.Any())
+            if (model.Pictures != null && model.Pictures.Any())
             {
-                farm.Pictures = model.Thumbnails.Select(x => new PictureRequestProjection()
+                farm.Pictures = model.Pictures.Select(x => new PictureRequest()
                 {
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
@@ -186,8 +186,52 @@ namespace Module.Web.FarmManagement.Controllers
             }
 
             farm.UpdatedById = LoggedUserId;
-            await _farmBusiness.UpdateAsync(farm);
-            return RedirectToAction("Detail", new { id = farm.Id });
+            await _farmService.UpdateAsync(farm);
+            return RedirectToAction(nameof(Detail), new { id = farm.Id });
+        }
+
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
+        [LoadResultAuthorizations("Picture", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        public async Task<IActionResult> Pictures(FarmPictureFilterModel filter)
+        {
+            var filterRequest = new FarmPictureFilter()
+            {
+                CreatedById = filter.CreatedById,
+                CreatedDateFrom = filter.CreatedDateFrom,
+                CreatedDateTo = filter.CreatedDateTo,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                Search = filter.Search,
+                MimeType = filter.MimeType
+            };
+
+            var farmPicturePageList = await _farmService.GetPicturesAsync(filterRequest);
+            var farmPictures = farmPicturePageList.Collections.Select(x => new FarmPictureModel
+            {
+                FarmName = x.FarmName,
+                FarmId = x.FarmId,
+                PictureId = x.PictureId,
+                PictureName = x.PictureName,
+                PictureCreatedBy = x.PictureCreatedBy,
+                PictureCreatedById = x.PictureCreatedById,
+                PictureCreatedDate = x.PictureCreatedDate,
+                FarmPictureType = (FarmPictureType)x.FarmPictureTypeId,
+                ContentType = x.ContentType
+            });
+
+            var farmPage = new PageListModel<FarmPictureModel>(farmPictures)
+            {
+                Filter = filter,
+                TotalPage = farmPicturePageList.TotalPage,
+                TotalResult = farmPicturePageList.TotalResult
+            };
+
+            if (_httpHelper.IsAjaxRequest(Request))
+            {
+                return PartialView("_FarmPictureTable", farmPage);
+            }
+
+            return View(farmPage);
         }
     }
 }

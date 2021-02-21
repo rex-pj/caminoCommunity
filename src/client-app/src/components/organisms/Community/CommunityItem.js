@@ -82,8 +82,8 @@ export default (props) => {
   return (
     <Panel>
       <ThumbnailBox>
-        <AnchorLink to={community.thumbnailUrl}>
-          <PostThumbnail src={community.thumbnailUrl} alt="" />
+        <AnchorLink to={community.pictureUrl}>
+          <PostThumbnail src={community.pictureUrl} alt="" />
           <ThumbnailOverlay />
         </AnchorLink>
         <FollowButton icon="handshake" size="sm">

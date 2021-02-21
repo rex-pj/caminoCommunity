@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Farm.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class FarmQueries : BaseQueries
     {
         public async Task<FarmPageListModel> GetUserFarmsAsync([Service] IFarmResolver farmResolver, FarmFilterModel criterias)

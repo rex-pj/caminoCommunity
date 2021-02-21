@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const FILTER_ARTICLE_CATEGORIES = gql`
-  mutation($criterias: SelectFilterModelInput) {
-    categories: articleCategories(criterias: $criterias) {
+  mutation($criterias: ArticleCategorySelectFilterModelInput) {
+    selections: articleCategories(criterias: $criterias) {
       id
       isSelected
       text

@@ -10,11 +10,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
 </Project>

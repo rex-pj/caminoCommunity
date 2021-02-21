@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.Core.Modular.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Module.Web.Navigation.Infrastructure.Extensions;
+using Camino.Infrastructure.Modularity;
 
 namespace Module.Web.Navigation
 {

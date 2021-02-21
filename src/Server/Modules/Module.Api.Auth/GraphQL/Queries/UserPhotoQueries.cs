@@ -1,6 +1,6 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Queries;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Auth.GraphQL.Queries
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType("Query")]
     public class UserPhotoQueries : BaseQueries
     {
         public async Task<UserAvatarModel> GetUserAvatar([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userResolver, FindUserModel criterias)
@@ -18,9 +18,9 @@ namespace Module.Api.Auth.GraphQL.Queries
             return await userResolver.GetUserAvatar(currentUser, criterias);
         }
 
-        public async Task<List<UserPhotoModel>> GetUserPhotos([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userResolver, FindUserModel criterias)
+        public async Task<IList<UserPhotoModel>> GetUserPhotos([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userResolver, FindUserModel criterias)
         {
-            return (await userResolver.GetUserPhotos(currentUser, criterias)) as List<UserPhotoModel>;
+            return await userResolver.GetUserPhotos(currentUser, criterias);
         }
 
         public async Task<UserCoverModel> GetUserCover([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userResolver, FindUserModel criterias)

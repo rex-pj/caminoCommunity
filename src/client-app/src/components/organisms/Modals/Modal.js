@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStore } from "../../../store/hook-store";
 
 const Root = styled(PanelDefault)`
-  top: 45px;
+  top: 10%;
   left: 0;
   right: 0;
   bottom: auto;

@@ -13,7 +13,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import authClient from "../../graphql/client/authClient";
-import ArticleEditor from "../../components/organisms/ProfileEditors/ArticleEditor";
+import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 
@@ -51,30 +51,6 @@ export default withRouter(function (props) {
   const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
     client: authClient,
   });
-
-  const searchArticleCategories = async (inputValue) => {
-    return await articleCategories({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
 
   const onArticlePost = async (data) => {
     return await createArticle({
@@ -151,7 +127,7 @@ export default withRouter(function (props) {
           height={230}
           convertImageCallback={convertImagefile}
           onImageValidate={onImageValidate}
-          filterCategories={searchArticleCategories}
+          filterCategories={articleCategories}
           onArticlePost={onArticlePost}
           refetchNews={fetchArticles}
           showValidationError={showValidationError}
@@ -188,8 +164,8 @@ export default withRouter(function (props) {
   const articles = collections.map((item) => {
     let article = { ...item };
     article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.thumbnail.pictureId) {
-      article.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.thumbnail.pictureId}`;
+    if (article.picture.pictureId) {
+      article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
     }
 
     article.creator = {
@@ -220,7 +196,7 @@ export default withRouter(function (props) {
               article={item}
               convertImageCallback={convertImagefile}
               onImageValidate={onImageValidate}
-              filterCategories={searchArticleCategories}
+              filterCategories={articleCategories}
               refetchNews={fetchArticles}
               showValidationError={showValidationError}
               onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}

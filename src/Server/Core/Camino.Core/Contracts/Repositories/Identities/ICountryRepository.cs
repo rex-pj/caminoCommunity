@@ -1,0 +1,20 @@
+﻿using Camino.Shared.Requests.Filters;
+using Camino.Shared.Requests.Identifiers;
+using Camino.Shared.Results.Identifiers;
+using Camino.Shared.Results.PageList;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Camino.Core.Contracts.Repositories.Identities
+{
+    public interface ICountryRepository
+    {
+        List<CountryResult> Get();
+        Task<BasePageList<CountryResult>> GetAsync(CountryFilter filter);
+        IList<CountryResult> Search(string query = "", int page = 1, int pageSize = 10);
+        CountryResult Find(int id);
+        CountryResult FindByName(string name);
+        Task<int> CreateAsync(CountryModifyRequest request);
+        Task<bool> UpdateAsync(CountryModifyRequest request);
+    }
+}

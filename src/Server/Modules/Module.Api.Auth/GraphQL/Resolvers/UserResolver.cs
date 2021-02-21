@@ -1,29 +1,30 @@
 ﻿using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
-using Camino.Data.Enums;
+using Camino.Shared.Enums;
 using System;
 using System.Threading.Tasks;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
-using Camino.Framework.Providers.Contracts;
 using Camino.Core.Constants;
 using Camino.Core.Resources;
-using MimeKit.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Camino.Core.Exceptions;
-using Camino.Core.Enums;
 using Microsoft.Extensions.Options;
-using Camino.Core.Models;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using Camino.IdentityManager.Contracts.Core;
-using Camino.Framework.Models.Settings;
-using Camino.Service.Business.Users.Contracts;
-using Camino.Service.Projections.Request;
-using Camino.Service.Projections.Filters;
+using Camino.Shared.Configurations;
+using Camino.Core.Contracts.Services.Users;
+using Camino.Shared.Requests.Filters;
 using System.Collections.Generic;
-using Camino.Service.Projections.Media;
+using Camino.Shared.Results.Media;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.Requests.Authentication;
+using Camino.Shared.General;
+using Camino.Shared.Requests.UpdateItems;
+using Camino.Shared.Results.Identifiers;
+using Camino.Shared.Requests.Providers;
+using Camino.Core.Contracts.Providers;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -31,26 +32,26 @@ namespace Module.Api.Auth.GraphQL.Resolvers
     {
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
-        private readonly IUserBusiness _userBusiness;
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
+        private readonly IUserService _userService;
+        private readonly IUserPhotoService _userPhotoService;
         private readonly IEmailProvider _emailSender;
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender,
-            IUserBusiness userBusiness, IOptions<AppSettings> appSettings, ISessionContext sessionContext, IOptions<ResetPasswordSettings> resetPasswordSettings,
-            IUserPhotoBusiness userPhotoBusiness, IOptions<RegisterConfirmationSettings> registerConfirmationSettings)
+            IUserService userService, IOptions<AppSettings> appSettings, ISessionContext sessionContext, IOptions<ResetPasswordSettings> resetPasswordSettings,
+            IUserPhotoService userPhotoService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings)
             : base(sessionContext)
         {
             _userManager = userManager;
             _loginManager = loginManager;
-            _userBusiness = userBusiness;
+            _userService = userService;
             _appSettings = appSettings.Value;
             _registerConfirmationSettings = registerConfirmationSettings.Value;
             _resetPasswordSettings = resetPasswordSettings.Value;
             _emailSender = emailSender;
-            _userPhotoBusiness = userPhotoBusiness;
+            _userPhotoService = userPhotoService;
         }
 
         public UserInfoModel GetLoggedUser(ApplicationUser currentUser)
@@ -99,11 +100,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
             try
             {
-                var userPageList = await _userBusiness.GetAsync(filterRequest);
+                var userPageList = await _userService.GetAsync(filterRequest);
 
                 var userIds = userPageList.Collections.Select(x => x.Id);
-                var userPhotos = _userPhotoBusiness.GetUserPhotoByUserIds(userIds, UserPhotoKind.Avatar);
-                var users = await MapUsersProjectionToModelAsync(userPageList.Collections, userPhotos);
+                var userPhotos = _userPhotoService.GetUserPhotoByUserIds(userIds, UserPhotoKind.Avatar);
+                var users = await MapUsersResultToModelAsync(userPageList.Collections, userPhotos);
 
                 var userPage = new UserPageListModel(users)
                 {
@@ -128,7 +129,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var user = await _userBusiness.FindFullByIdAsync(userId);
+            var user = await _userService.FindFullByIdAsync(userId);
             if (user == null)
             {
                 return null;
@@ -180,7 +181,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     Value = criterias.Value
                 };
                 updatePerItem.Key = userId;
-                var updatedItem = await _userBusiness.UpdateInfoItemAsync(updatePerItem);
+                var updatedItem = await _userService.UpdateInfoItemAsync(updatePerItem);
                 return new UpdatePerItemModel()
                 {
                     Key = updatedItem.Key.ToString(),
@@ -345,32 +346,32 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        private async Task<IList<UserInfoModel>> MapUsersProjectionToModelAsync(IEnumerable<UserFullProjection> userProjections, IList<UserPhotoProjection> userPhotos)
+        private async Task<IList<UserInfoModel>> MapUsersResultToModelAsync(IEnumerable<UserFullResult> userResults, IList<UserPhotoResult> userPhotos)
         {
             var users = new List<UserInfoModel>();
-            foreach (var userProjection in userProjections)
+            foreach (var userResult in userResults)
             {
-                var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userProjection.Id);
+                var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userResult.Id);
                 var user = new UserInfoModel()
                 {
-                    Address = userProjection.Address,
-                    BirthDate = userProjection.BirthDate,
-                    CountryCode = userProjection.CountryCode,
-                    CountryId = userProjection.CountryId,
-                    CountryName = userProjection.CountryName,
-                    Email = userProjection.Email,
-                    CreatedDate = userProjection.CreatedDate,
-                    Description = userProjection.Description,
-                    DisplayName = userProjection.DisplayName,
-                    Firstname = userProjection.Firstname,
-                    GenderId = userProjection.GenderId,
-                    GenderLabel = userProjection.GenderLabel,
-                    Lastname = userProjection.Lastname,
-                    PhoneNumber = userProjection.PhoneNumber,
-                    StatusId = userProjection.StatusId,
-                    StatusLabel = userProjection.StatusLabel,
-                    UpdatedDate = userProjection.UpdatedDate,
-                    UserIdentityId = await _userManager.EncryptUserIdAsync(userProjection.Id),
+                    Address = userResult.Address,
+                    BirthDate = userResult.BirthDate,
+                    CountryCode = userResult.CountryCode,
+                    CountryId = userResult.CountryId,
+                    CountryName = userResult.CountryName,
+                    Email = userResult.Email,
+                    CreatedDate = userResult.CreatedDate,
+                    Description = userResult.Description,
+                    DisplayName = userResult.DisplayName,
+                    Firstname = userResult.Firstname,
+                    GenderId = userResult.GenderId,
+                    GenderLabel = userResult.GenderLabel,
+                    Lastname = userResult.Lastname,
+                    PhoneNumber = userResult.PhoneNumber,
+                    StatusId = userResult.StatusId,
+                    StatusLabel = userResult.StatusLabel,
+                    UpdatedDate = userResult.UpdatedDate,
+                    UserIdentityId = await _userManager.EncryptUserIdAsync(userResult.Id),
                     AvatarCode = userAvatar != null ? userAvatar.Code : null
                 };
 
@@ -426,7 +427,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
         {
             var activeUserUrl = $"{_registerConfirmationSettings.Url}/{user.Email}/{confirmationToken}";
-            await _emailSender.SendEmailAsync(new MailMessageModel()
+            await _emailSender.SendEmailAsync(new MailMessageRequest()
             {
                 Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appSettings.ApplicationName, activeUserUrl),
                 FromEmail = _registerConfirmationSettings.FromEmail,
@@ -434,7 +435,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
                 Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appSettings.ApplicationName),
-            }, TextFormat.Html);
+            }, EmailTextFormat.Html);
         }
 
         public async Task<CommonResult> ActiveAsync(ActiveUserModel criterias)
@@ -509,7 +510,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private async Task SendPasswordChangeAsync(ForgotPasswordModel criterias, ApplicationUser user, string token)
         {
             var activeUserUrl = $"{_resetPasswordSettings.Url}/{criterias.Email}/{token}";
-            await _emailSender.SendEmailAsync(new MailMessageModel()
+            await _emailSender.SendEmailAsync(new MailMessageRequest()
             {
                 Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appSettings.ApplicationName, activeUserUrl),
                 FromEmail = _resetPasswordSettings.FromEmail,
@@ -517,7 +518,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
                 Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appSettings.ApplicationName),
-            }, TextFormat.Html);
+            }, EmailTextFormat.Html);
         }
 
         public async Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias)

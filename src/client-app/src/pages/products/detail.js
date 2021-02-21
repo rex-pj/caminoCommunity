@@ -164,12 +164,12 @@ export default withRouter(function (props) {
     },
   ];
 
-  if (product.thumbnails && product.thumbnails.length > 0) {
-    product.images = product.thumbnails.map((item) => {
+  if (product.pictures && product.pictures.length > 0) {
+    product.images = product.pictures.map((item) => {
       let image = { ...item };
 
       if (image.pictureId > 0) {
-        image.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
+        image.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
         image.url = `${process.env.REACT_APP_CDN_PHOTO_URL}${image.pictureId}`;
       }
       return image;
@@ -194,10 +194,10 @@ export default withRouter(function (props) {
     const relevants = relevantProducts.map((item) => {
       let productItem = { ...item };
       productItem.url = `${UrlConstant.Product.url}${productItem.id}`;
-      if (productItem.thumbnails) {
-        const thumbnail = productItem.thumbnails[0];
-        if (thumbnail && thumbnail.pictureId > 0) {
-          productItem.thumbnailUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${thumbnail.pictureId}`;
+      if (productItem.pictures) {
+        const picture = productItem.pictures[0];
+        if (picture && picture.pictureId > 0) {
+          productItem.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
         }
       }
 

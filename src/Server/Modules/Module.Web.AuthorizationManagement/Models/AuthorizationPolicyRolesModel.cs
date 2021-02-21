@@ -10,9 +10,8 @@ namespace Module.Web.AuthorizationManagement.Models
             Filter = new RoleAuthorizationPolicyFilterModel();
         }
 
-        public short Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public byte RoleId { get; set; }
     }
 }

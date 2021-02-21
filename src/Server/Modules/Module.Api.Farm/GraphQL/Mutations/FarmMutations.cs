@@ -1,18 +1,18 @@
-﻿using Camino.Core.Models;
-using Camino.Framework.GraphQL.Attributes;
+﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Mutations;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Models;
+using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Camino.Shared.General;
 
 namespace Module.Api.Farm.GraphQL.Mutations
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType("Mutation")]
     public class FarmMutations : BaseMutations
     {
         [GraphQlAuthentication]
@@ -28,7 +28,7 @@ namespace Module.Api.Farm.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, FarmSelectFilterModel criterias)
         {
             return await farmResolver.SelectUserFarmsAsync(currentUser, criterias);
         }

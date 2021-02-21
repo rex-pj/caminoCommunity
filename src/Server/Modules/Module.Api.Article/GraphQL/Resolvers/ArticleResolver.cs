@@ -1,35 +1,36 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
-using Camino.Service.Business.Articles.Contracts;
-using Camino.Service.Projections.Article;
-using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Media;
+using Camino.Core.Domain.Identities;
+using Camino.Shared.Results.Articles;
+using Camino.Shared.Requests.Filters;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.Requests.Media;
+using Camino.Shared.Requests.Articles;
+using Camino.Core.Contracts.Services.Articles;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleResolver : BaseResolver, IArticleResolver
     {
-        private readonly IArticleBusiness _articleBusiness;
+        private readonly IArticleService _articleService;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public ArticleResolver(IArticleBusiness articleBusiness, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext)
+        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext)
             : base(sessionContext)
         {
-            _articleBusiness = articleBusiness;
+            _articleService = articleService;
             _userManager = userManager;
         }
 
         public async Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
         {
-            var article = new ArticleProjection()
+            var article = new ArticleModifyRequest()
             {
                 CreatedById = currentUser.Id,
                 UpdatedById = currentUser.Id,
@@ -38,24 +39,24 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 ArticleCategoryId = criterias.ArticleCategoryId
             };
 
-            if (criterias.Thumbnail != null)
+            if (criterias.Picture != null)
             {
-                article.Thumbnail = new PictureRequestProjection()
+                article.Picture = new PictureRequest()
                 {
-                    Base64Data = criterias.Thumbnail.Base64Data,
-                    ContentType = criterias.Thumbnail.ContentType,
-                    FileName = criterias.Thumbnail.FileName
+                    Base64Data = criterias.Picture.Base64Data,
+                    ContentType = criterias.Picture.ContentType,
+                    FileName = criterias.Picture.FileName
                 };
             }
 
-            var id = await _articleBusiness.CreateAsync(article);
+            var id = await _articleService.CreateAsync(article);
             criterias.Id = id;
             return criterias;
         }
 
         public async Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
         {
-            var exist = await _articleBusiness.FindAsync(criterias.Id);
+            var exist = await _articleService.FindAsync(criterias.Id);
             if (exist == null)
             {
                 throw new Exception("No article found");
@@ -66,7 +67,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 throw new UnauthorizedAccessException();
             }
 
-            var article = new ArticleProjection()
+            var article = new ArticleModifyRequest()
             {
                 Id = criterias.Id,
                 CreatedById = currentUser.Id,
@@ -76,19 +77,18 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 ArticleCategoryId = criterias.ArticleCategoryId
             };
 
-            if (criterias.Thumbnail != null)
+            if (criterias.Picture != null)
             {
-                article.Thumbnail = new PictureRequestProjection()
+                article.Picture = new PictureRequest()
                 {
-                    Base64Data = criterias.Thumbnail.Base64Data,
-                    ContentType = criterias.Thumbnail.ContentType,
-                    FileName = criterias.Thumbnail.FileName,
-                    Id = criterias.Thumbnail.PictureId
+                    Base64Data = criterias.Picture.Base64Data,
+                    ContentType = criterias.Picture.ContentType,
+                    FileName = criterias.Picture.FileName,
+                    Id = criterias.Picture.PictureId
                 };
             }
 
-            var updated = await _articleBusiness.UpdateAsync(article);
-            criterias.Id = updated.Id;
+            await _articleService.UpdateAsync(article);
             return criterias;
         }
 
@@ -118,8 +118,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articlePageList = await _articleBusiness.GetAsync(filterRequest);
-                var articles = await MapArticlesProjectionToModelAsync(articlePageList.Collections);
+                var articlePageList = await _articleService.GetAsync(filterRequest);
+                var articles = await MapArticlesResultToModelAsync(articlePageList.Collections);
 
                 var articlePage = new ArticlePageListModel(articles)
                 {
@@ -152,8 +152,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articlePageList = await _articleBusiness.GetAsync(filterRequest);
-                var articles = await MapArticlesProjectionToModelAsync(articlePageList.Collections);
+                var articlePageList = await _articleService.GetAsync(filterRequest);
+                var articles = await MapArticlesResultToModelAsync(articlePageList.Collections);
 
                 var articlePage = new ArticlePageListModel(articles)
                 {
@@ -179,9 +179,9 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var productProjection = await _articleBusiness.FindDetailAsync(criterias.Id);
-                var product = await MapArticleProjectionToModelAsync(productProjection);
-                return product;
+                var articleResult = await _articleService.FindDetailAsync(criterias.Id);
+                var article = await MapArticleResultToModelAsync(articleResult);
+                return article;
             }
             catch (Exception)
             {
@@ -205,8 +205,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var relevantArticles = await _articleBusiness.GetRelevantsAsync(criterias.Id, filterRequest);
-                var products = await MapArticlesProjectionToModelAsync(relevantArticles);
+                var relevantArticles = await _articleService.GetRelevantsAsync(criterias.Id, filterRequest);
+                var products = await MapArticlesResultToModelAsync(relevantArticles);
 
                 return products;
             }
@@ -220,13 +220,13 @@ namespace Module.Api.Article.GraphQL.Resolvers
         {
             try
             {
-                var exist = await _articleBusiness.FindAsync(criterias.Id);
+                var exist = await _articleService.FindAsync(criterias.Id);
                 if (exist == null || currentUser.Id != exist.CreatedById)
                 {
                     return false;
                 }
 
-                return await _articleBusiness.SoftDeleteAsync(criterias.Id);
+                return await _articleService.SoftDeleteAsync(criterias.Id);
             }
             catch (Exception)
             {
@@ -234,27 +234,27 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        private async Task<ArticleModel> MapArticleProjectionToModelAsync(ArticleProjection articleProjection)
+        private async Task<ArticleModel> MapArticleResultToModelAsync(ArticleResult articleResult)
         {
             var article = new ArticleModel()
             {
-                ArticleCategoryId = articleProjection.ArticleCategoryId,
-                ArticleCategoryName = articleProjection.ArticleCategoryName,
-                Content = articleProjection.Content,
-                Id = articleProjection.Id,
-                CreatedBy = articleProjection.CreatedBy,
-                CreatedById = articleProjection.CreatedById,
-                CreatedDate = articleProjection.CreatedDate,
-                Description = articleProjection.Description,
-                Name = articleProjection.Name,
-                CreatedByPhotoCode = articleProjection.CreatedByPhotoCode
+                ArticleCategoryId = articleResult.ArticleCategoryId,
+                ArticleCategoryName = articleResult.ArticleCategoryName,
+                Content = articleResult.Content,
+                Id = articleResult.Id,
+                CreatedBy = articleResult.CreatedBy,
+                CreatedById = articleResult.CreatedById,
+                CreatedDate = articleResult.CreatedDate,
+                Description = articleResult.Description,
+                Name = articleResult.Name,
+                CreatedByPhotoCode = articleResult.CreatedByPhotoCode
             };
 
-            if (articleProjection.Thumbnail != null)
+            if (articleResult.Picture != null)
             {
-                article.Thumbnail = new PictureRequestModel()
+                article.Picture = new PictureRequestModel()
                 {
-                    PictureId = articleProjection.Thumbnail.Id
+                    PictureId = articleResult.Picture.Id
                 };
             }
 
@@ -263,9 +263,9 @@ namespace Module.Api.Article.GraphQL.Resolvers
             return article;
         }
 
-        private async Task<IList<ArticleModel>> MapArticlesProjectionToModelAsync(IEnumerable<ArticleProjection> articleProjections)
+        private async Task<IList<ArticleModel>> MapArticlesResultToModelAsync(IEnumerable<ArticleResult> articleResults)
         {
-            var articles = articleProjections.Select(x => new ArticleModel()
+            var articles = articleResults.Select(x => new ArticleModel()
             {
                 ArticleCategoryId = x.ArticleCategoryId,
                 ArticleCategoryName = x.ArticleCategoryName,
@@ -276,12 +276,12 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 CreatedDate = x.CreatedDate,
                 Description = x.Description,
                 Name = x.Name,
-                Thumbnail = x.Thumbnail != null
+                Picture = x.Picture != null
                     ? new PictureRequestModel
                     {
-                        PictureId = x.Thumbnail.Id,
-                        ContentType = x.Thumbnail.ContentType,
-                        FileName = x.Thumbnail.FileName
+                        PictureId = x.Picture.Id,
+                        ContentType = x.Picture.ContentType,
+                        FileName = x.Picture.FileName
                     }
                     : new PictureRequestModel(),
                 CreatedByPhotoCode = x.CreatedByPhotoCode

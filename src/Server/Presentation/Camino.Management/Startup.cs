@@ -1,7 +1,7 @@
-using Camino.Core.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Extensions;
 using Camino.Framework.Infrastructure.Middlewares;
 using Camino.Framework.Infrastructure.ModelBinders;
+using Camino.Infrastructure.Infrastructure.Extensions;
 using Camino.Management.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,11 +14,9 @@ namespace Camino.Management
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public Startup(IConfiguration configuration)
         {
-            _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
         }
 

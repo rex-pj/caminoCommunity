@@ -12,7 +12,7 @@ namespace Module.Web.Navigation.Models
 
         public string Icon { get; set; }
         public string Name { get; set; }
-        public string Code { get; set; }
+        public string Route { get; set; }
         public string Url { get; set; }
         public bool IsActived { get; set; }
         public IEnumerable<string> SubRoutes { get; set; }

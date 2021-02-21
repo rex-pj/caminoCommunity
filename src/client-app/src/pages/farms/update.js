@@ -10,7 +10,7 @@ import { withRouter } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import Loading from "../../components/atoms/Loading";
-import FarmEditor from "../../components/organisms/ProfileEditors/FarmEditor";
+import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
@@ -58,30 +58,6 @@ export default withRouter(function (props) {
       },
     },
   });
-
-  const searchFarmTypes = async (inputValue) => {
-    return await farmTypes({
-      variables: {
-        criterias: { query: inputValue },
-      },
-    })
-      .then((response) => {
-        var { data } = response;
-        var { categories } = data;
-        if (!categories) {
-          return [];
-        }
-        return categories.map((cat) => {
-          return {
-            value: cat.id,
-            label: cat.text,
-          };
-        });
-      })
-      .catch((error) => {
-        return [];
-      });
-  };
 
   const convertImagefile = async (file) => {
     const url = await fileToBase64(file);
@@ -213,7 +189,7 @@ export default withRouter(function (props) {
         height={350}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={searchFarmTypes}
+        filterCategories={farmTypes}
         onFarmPost={onFarmPost}
         showValidationError={showValidationError}
         currentFarm={currentFarm}

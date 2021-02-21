@@ -1,38 +1,40 @@
-﻿using Camino.Core.Models;
-using Camino.Framework.GraphQL.Resolvers;
+﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Contracts;
-using Camino.IdentityManager.Models;
-using Camino.Service.Business.Farms.Contracts;
-using Camino.Service.Projections.Farm;
-using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Media;
+using Camino.Core.Domain.Identities;
+using Camino.Core.Contracts.Services.Farms;
+using Camino.Shared.Results.Farms;
+using Camino.Shared.Requests.Filters;
+using Camino.Shared.Results.Media;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.General;
+using Camino.Shared.Requests.Farms;
+using Camino.Shared.Requests.Media;
 
 namespace Module.Api.Farm.GraphQL.Resolvers
 {
     public class FarmResolver : BaseResolver, IFarmResolver
     {
-        private readonly IFarmBusiness _farmBusiness;
+        private readonly IFarmService _farmService;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public FarmResolver(ISessionContext sessionContext, IFarmBusiness farmBusiness, IUserManager<ApplicationUser> userManager)
+        public FarmResolver(ISessionContext sessionContext, IFarmService farmService, IUserManager<ApplicationUser> userManager)
             : base(sessionContext)
         {
-            _farmBusiness = farmBusiness;
+            _farmService = farmService;
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, SelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, FarmSelectFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new SelectFilterModel();
+                criterias = new FarmSelectFilterModel();
             }
 
             var filter = new SelectFilter()
@@ -42,7 +44,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Search = criterias.Query
             };
 
-            var farms = await _farmBusiness.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -60,7 +62,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
         public async Task<FarmModel> CreateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
         {
-            var farm = new FarmProjection()
+            var farm = new FarmModifyRequest()
             {
                 CreatedById = currentUser.Id,
                 UpdatedById = currentUser.Id,
@@ -68,7 +70,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
                 Address = criterias.Address,
-                Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                Pictures = criterias.Pictures.Select(x => new PictureRequest()
                 {
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
@@ -76,14 +78,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 }),
             };
 
-            var id = await _farmBusiness.CreateAsync(farm);
+            var id = await _farmService.CreateAsync(farm);
             criterias.Id = id;
             return criterias;
         }
 
         public async Task<FarmModel> UpdateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
         {
-            var exist = await _farmBusiness.FindAsync(criterias.Id);
+            var exist = await _farmService.FindAsync(criterias.Id);
             if (exist == null)
             {
                 throw new Exception("No article found");
@@ -94,7 +96,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 throw new UnauthorizedAccessException();
             }
 
-            var farm = new FarmProjection()
+            var farm = new FarmModifyRequest()
             {
                 Id = criterias.Id,
                 CreatedById = currentUser.Id,
@@ -105,9 +107,9 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Address = criterias.Address,
             };
 
-            if (criterias.Thumbnails != null && criterias.Thumbnails.Any())
+            if (criterias.Pictures != null && criterias.Pictures.Any())
             {
-                farm.Pictures = criterias.Thumbnails.Select(x => new PictureRequestProjection()
+                farm.Pictures = criterias.Pictures.Select(x => new PictureRequest()
                 {
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
@@ -116,8 +118,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 });
             }
 
-            var updated = await _farmBusiness.UpdateAsync(farm);
-            criterias.Id = updated.Id;
+            await _farmService.UpdateAsync(farm);
             return criterias;
         }
 
@@ -147,8 +148,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmPageList = await _farmBusiness.GetAsync(filterRequest);
-                var farms = await MapFarmsProjectionToModelAsync(farmPageList.Collections);
+                var farmPageList = await _farmService.GetAsync(filterRequest);
+                var farms = await MapFarmsResultToModelAsync(farmPageList.Collections);
 
                 var farmPage = new FarmPageListModel(farms)
                 {
@@ -186,8 +187,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmPageList = await _farmBusiness.GetAsync(filterRequest);
-                var farms = await MapFarmsProjectionToModelAsync(farmPageList.Collections);
+                var farmPageList = await _farmService.GetAsync(filterRequest);
+                var farms = await MapFarmsResultToModelAsync(farmPageList.Collections);
 
                 var farmPage = new FarmPageListModel(farms)
                 {
@@ -213,8 +214,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmProjection = await _farmBusiness.FindDetailAsync(criterias.Id);
-                var farm = await MapFarmProjectionToModelAsync(farmProjection);
+                var farmResult = await _farmService.FindDetailAsync(criterias.Id);
+                var farm = await MapFarmResultToModelAsync(farmResult);
                 return farm;
             }
             catch (Exception)
@@ -227,13 +228,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
         {
             try
             {
-                var exist = await _farmBusiness.FindAsync(criterias.Id);
+                var exist = await _farmService.FindAsync(criterias.Id);
                 if (exist == null || currentUser.Id != exist.CreatedById)
                 {
                     return false;
                 }
 
-                return await _farmBusiness.SoftDeleteAsync(criterias.Id);
+                return await _farmService.SoftDeleteAsync(criterias.Id);
             }
             catch (Exception)
             {
@@ -241,21 +242,21 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        private async Task<FarmModel> MapFarmProjectionToModelAsync(FarmProjection farmProjection)
+        private async Task<FarmModel> MapFarmResultToModelAsync(FarmResult farmResult)
         {
             var farm = new FarmModel()
             {
-                FarmTypeId = farmProjection.FarmTypeId,
-                FarmTypeName = farmProjection.FarmTypeName,
-                Description = farmProjection.Description,
-                Id = farmProjection.Id,
-                CreatedBy = farmProjection.CreatedBy,
-                CreatedById = farmProjection.CreatedById,
-                CreatedDate = farmProjection.CreatedDate,
-                Name = farmProjection.Name,
-                Address = farmProjection.Address,
-                CreatedByPhotoCode = farmProjection.CreatedByPhotoCode,
-                Thumbnails = farmProjection.Pictures.Select(y => new PictureRequestModel()
+                FarmTypeId = farmResult.FarmTypeId,
+                FarmTypeName = farmResult.FarmTypeName,
+                Description = farmResult.Description,
+                Id = farmResult.Id,
+                CreatedBy = farmResult.CreatedBy,
+                CreatedById = farmResult.CreatedById,
+                CreatedDate = farmResult.CreatedDate,
+                Name = farmResult.Name,
+                Address = farmResult.Address,
+                CreatedByPhotoCode = farmResult.CreatedByPhotoCode,
+                Pictures = farmResult.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 }),
@@ -266,9 +267,9 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return farm;
         }
 
-        private async Task<IList<FarmModel>> MapFarmsProjectionToModelAsync(IEnumerable<FarmProjection> farmProjections)
+        private async Task<IList<FarmModel>> MapFarmsResultToModelAsync(IEnumerable<FarmResult> farmResults)
         {
-            var farms = farmProjections.Select(x => new FarmModel()
+            var farms = farmResults.Select(x => new FarmModel()
             {
                 FarmTypeId = x.FarmTypeId,
                 FarmTypeName = x.FarmTypeName,
@@ -280,7 +281,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Name = x.Name,
                 Address = x.Address,
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
-                Thumbnails = x.Pictures.Select(y => new PictureRequestModel()
+                Pictures = x.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
                 }),

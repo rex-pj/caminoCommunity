@@ -1,17 +1,17 @@
-﻿using Camino.Core.Models;
-using Camino.Framework.GraphQL.Mutations;
-using Camino.Framework.Models;
+﻿using Camino.Framework.GraphQL.Mutations;
+using Camino.Shared.General;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
+using Module.Api.Article.Models;
 using System.Collections.Generic;
 
 namespace Module.Api.Article.GraphQL.Mutations
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType("Mutation")]
     public class ArticleCategoryMutations : BaseMutations
     {
-        public IEnumerable<SelectOption> GetArticleCategories([Service] IArticleCategoryResolver articleCategoryResolver, SelectFilterModel criterias)
+        public IEnumerable<SelectOption> GetArticleCategories([Service] IArticleCategoryResolver articleCategoryResolver, ArticleCategorySelectFilterModel criterias)
         {
             return articleCategoryResolver.GetArticleCategories(criterias);
         }

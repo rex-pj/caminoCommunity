@@ -39,6 +39,7 @@ const PanelHeader = styled(PanelHeading)`
 
 const ContentTopbar = styled.div`
   margin-bottom: ${(p) => p.theme.size.exSmall};
+  position: relative;
 
   ${ContentItemDropdown} {
     z-index: 10;
@@ -148,7 +149,7 @@ export default withRouter(function (props) {
     <Panel>
       <PanelHeader>
         <ContentTopbar>
-          <div className="row no-gutters">
+          <div className="row g-0">
             <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
               <AuthorProfile profile={loadCreatedInfo()} />
             </div>
@@ -167,7 +168,7 @@ export default withRouter(function (props) {
                     <span onClick={onEditMode}>
                       <FontAwesomeIcon
                         icon="pencil-alt"
-                        className="mr-2"
+                        className="me-2"
                       ></FontAwesomeIcon>
                       Edit
                     </span>
@@ -176,7 +177,7 @@ export default withRouter(function (props) {
                     <span onClick={onOpenDeleteConfirmation}>
                       <FontAwesomeIcon
                         icon="trash-alt"
-                        className="mr-2"
+                        className="me-2"
                       ></FontAwesomeIcon>
                       Delete
                     </span>
@@ -228,7 +229,7 @@ export default withRouter(function (props) {
                 state: { from: location.pathname },
               }}
             >
-              <ImageThumb src={product.thumbnailUrl} alt="" />
+              <ImageThumb src={product.pictureUrl} alt="" />
             </AnchorLink>
           </div>
 

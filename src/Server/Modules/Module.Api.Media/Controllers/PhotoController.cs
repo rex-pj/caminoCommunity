@@ -1,29 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Camino.Data.Enums;
-using Camino.Service.Business.Users.Contracts;
-using Camino.Service.Business.Media.Contracts;
+using Camino.Shared.Enums;
+using Camino.Core.Contracts.Services.Users;
+using Camino.Core.Contracts.Services.Media;
 
 namespace Module.Api.Media.Controllers
 {
     [Route("file-api/[controller]")]
     public class PhotoController : Controller
     {
-        private readonly IUserPhotoBusiness _userPhotoBusiness;
-        private readonly IPictureBusiness _pictureBusiness;
+        private readonly IUserPhotoService _userPhotoService;
+        private readonly IPictureService _pictureService;
 
-        public PhotoController(IUserPhotoBusiness userPhotoBusiness, IPictureBusiness pictureBusiness)
+        public PhotoController(IUserPhotoService userPhotoService, IPictureService pictureService)
         {
-            _userPhotoBusiness = userPhotoBusiness;
-            _pictureBusiness = pictureBusiness;
+            _userPhotoService = userPhotoService;
+            _pictureService = pictureService;
         }
 
         [HttpGet]
         [Route("avatar/{code}")]
         public async Task<IActionResult> GetAvatar(string code)
         {
-            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoKind.Avatar);
+            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Avatar);
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
             return File(bytes, "image/jpeg");
@@ -33,7 +33,7 @@ namespace Module.Api.Media.Controllers
         [Route("cover/{code}")]
         public async Task<IActionResult> GetCover(string code)
         {
-            var avatar = await _userPhotoBusiness.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
+            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
             var bytes = Convert.FromBase64String(avatar.ImageData);
 
             return File(bytes, "image/jpeg");
@@ -44,13 +44,13 @@ namespace Module.Api.Media.Controllers
         [Route("get/{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var picture = await _pictureBusiness.GetPicture(id);
+            var picture = await _pictureService.FindPictureAsync(id);
             if (picture == null)
             {
                 return null;
             }
 
-            return File(picture.BinaryData, picture.MimeType);
+            return File(picture.BinaryData, picture.ContentType);
         }
     }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import ProfileUpdateFrom from "../../components/organisms/User/ProfileUpdateForm";
+import ProfileUpdateFrom from "../../components/organisms/Profile/ProfileUpdateForm";
 import { userQueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
 import Loading from "../../components/atoms/Loading";

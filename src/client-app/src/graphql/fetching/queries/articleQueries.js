@@ -17,7 +17,7 @@ export const GET_USER_ARTICLES = gql`
         createdBy
         createdDate
         updatedDate
-        thumbnail {
+        picture {
           pictureId
         }
         createdByIdentityId
@@ -44,7 +44,7 @@ export const GET_ARTICLES = gql`
         createdBy
         createdDate
         updatedDate
-        thumbnail {
+        picture {
           pictureId
         }
         createdByIdentityId
@@ -63,7 +63,7 @@ export const GET_RELEVANT_ARTICLES = gql`
       createdBy
       createdDate
       updatedDate
-      thumbnail {
+      picture {
         pictureId
       }
       createdByIdentityId
@@ -81,7 +81,7 @@ export const GET_ARTICLE = gql`
       createdBy
       createdDate
       updatedDate
-      thumbnail {
+      picture {
         pictureId
       }
       createdByIdentityId
@@ -99,7 +99,7 @@ export const GET_ARTICLE_FOR_UPDATE = gql`
       createdBy
       createdDate
       updatedDate
-      thumbnail {
+      picture {
         pictureId
       }
       createdByIdentityId

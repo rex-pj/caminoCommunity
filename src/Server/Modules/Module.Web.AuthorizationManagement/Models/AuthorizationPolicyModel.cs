@@ -13,7 +13,7 @@ namespace Module.Web.AuthorizationManagement.Models
             SelectPermissionMethods = new List<SelectListItem>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]
@@ -22,7 +22,7 @@ namespace Module.Web.AuthorizationManagement.Models
         [MaxLength(1000)]
         public string Description { get; set; }
         public DateTime UpdatedDate { get; set; }
-        public long UpdateById { get; set; }
+        public long UpdatedById { get; set; }
         public string UpdatedByName { get; set; }
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }

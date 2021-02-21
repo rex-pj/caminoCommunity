@@ -20,7 +20,7 @@ export const GET_USER_FARMS = gql`
         createdByIdentityId
         createdByPhotoCode
         address
-        thumbnails {
+        pictures {
           pictureId
         }
       }
@@ -59,7 +59,7 @@ export const GET_FARMS = gql`
         createdByIdentityId
         createdByPhotoCode
         address
-        thumbnails {
+        pictures {
           pictureId
         }
       }
@@ -79,7 +79,7 @@ export const GET_FARM = gql`
       address
       createdByIdentityId
       createdByPhotoCode
-      thumbnails {
+      pictures {
         pictureId
       }
     }
@@ -100,7 +100,7 @@ export const GET_FARM_FOR_UPDATE = gql`
       createdByPhotoCode
       farmTypeName
       farmTypeId
-      thumbnails {
+      pictures {
         pictureId
       }
     }

@@ -24,7 +24,7 @@ export default {
     value: "",
     isValid: true,
   },
-  thumbnail: {
+  picture: {
     value: {
       pictureId: 0,
       fileName: "",

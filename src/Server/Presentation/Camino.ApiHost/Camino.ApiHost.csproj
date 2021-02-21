@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.9" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="11.2.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Camino.Framework\Camino.Framework.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
   </ItemGroup>
 
 

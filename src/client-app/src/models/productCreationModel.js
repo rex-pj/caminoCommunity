@@ -34,12 +34,16 @@ export default {
     },
     isValid: false,
   },
-  thumbnails: {
+  pictures: {
     value: [],
     isValid: true,
   },
   id: {
     value: 0,
+    isValid: true,
+  },
+  productAttributes: {
+    value: [],
     isValid: true,
   },
 };

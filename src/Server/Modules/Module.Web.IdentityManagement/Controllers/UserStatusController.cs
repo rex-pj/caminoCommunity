@@ -1,10 +1,8 @@
-﻿using Camino.Service.Projections.Filters;
-using Camino.Service.Projections.Identity;
+﻿using Camino.Shared.Requests.Filters;
 using Camino.Core.Constants;
-using Camino.Core.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Framework.Helpers.Contracts;
+using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +11,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Service.Business.Users.Contracts;
+using Camino.Core.Contracts.Services.Users;
+using Camino.Shared.Enums;
+using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
     public class UserStatusController : BaseController
     {
-        private readonly IUserStatusBusiness _userStatusBusiness;
+        private readonly IUserStatusService _userStatusService;
         private readonly IHttpHelper _httpHelper;
 
-        public UserStatusController(IHttpContextAccessor httpContextAccessor, IUserStatusBusiness userStatusBusiness,
+        public UserStatusController(IHttpContextAccessor httpContextAccessor, IUserStatusService userStatusService,
             IHttpHelper httpHelper)
             : base(httpContextAccessor)
         {
-            _userStatusBusiness = userStatusBusiness;
+            _userStatusService = userStatusService;
             _httpHelper = httpHelper;
         }
 
@@ -41,7 +41,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 Search = filter.Search
             };
 
-            var statusPageList = await _userStatusBusiness.GetAsync(filterRequest);
+            var statusPageList = await _userStatusService.GetAsync(filterRequest);
             var statuses = statusPageList.Collections.Select(x => new UserStatusModel()
             {
                 Id = x.Id,
@@ -68,7 +68,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]
         public IActionResult Search(string q)
         {
-            var statuses = _userStatusBusiness.Search(q);
+            var statuses = _userStatusService.Search(q);
             if (statuses == null || !statuses.Any())
             {
                 return Json(new
@@ -98,7 +98,7 @@ namespace Module.Web.IdentityManagement.Controllers
 
             try
             {
-                var status = _userStatusBusiness.Find(id);
+                var status = _userStatusService.Find(id);
                 if (status == null)
                 {
                     return RedirectToNotFoundPage();
@@ -128,7 +128,7 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUserStatus)]
         public IActionResult Update(int id)
         {
-            var status = _userStatusBusiness.Find(id);
+            var status = _userStatusService.Find(id);
             var model = new UserStatusModel()
             {
                 Id = status.Id,
@@ -141,48 +141,48 @@ namespace Module.Web.IdentityManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateUserStatus)]
-        public IActionResult Create(UserStatusModel model)
+        public async Task<IActionResult> Create(UserStatusModel model)
         {
-            var exist = _userStatusBusiness.FindByName(model.Name);
+            var exist = _userStatusService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusProjection()
+            var status = new UserStatusModifyRequest()
             {
                 Id = model.Id,
                 Name = model.Name,
                 Description = model.Description
             };
-            var id = _userStatusBusiness.Create(status);
 
-            return RedirectToAction("Detail", new { id });
+            var id = await _userStatusService.CreateAsync(status);
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUserStatus)]
-        public IActionResult Update(UserStatusModel model)
+        public async Task<IActionResult> Update(UserStatusModel model)
         {
             if (model.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = _userStatusBusiness.Find(model.Id);
+            var exist = _userStatusService.Find(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
             }
 
-            var status = new UserStatusProjection()
+            var status = new UserStatusModifyRequest()
             {
                 Id = model.Id,
                 Name = model.Name,
                 Description = model.Description
             };
-            _userStatusBusiness.Update(status);
-            return RedirectToAction("Detail", new { id = status.Id });
+            await _userStatusService.UpdateAsync(status);
+            return RedirectToAction(nameof(Detail), new { id = status.Id });
         }
     }
 }

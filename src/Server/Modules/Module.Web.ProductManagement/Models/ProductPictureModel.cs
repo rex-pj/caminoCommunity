@@ -1,4 +1,4 @@
-﻿using Camino.Data.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Models;
 using System;
 

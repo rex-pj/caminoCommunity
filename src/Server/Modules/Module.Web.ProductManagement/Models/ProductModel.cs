@@ -32,9 +32,9 @@ namespace Module.Web.ProductManagement.Models
         public IEnumerable<int> ProductCategoryIds { get; set; }
         public IEnumerable<ProductFarmModel> ProductFarms { get; set; }
         public IEnumerable<long> ProductFarmIds { get; set; }
-        public long ThumbnailId { get; set; }
-        public int Price { get; set; }
-        public IEnumerable<PictureRequestModel> Thumbnails { get; set; }
+        public long PictureId { get; set; }
+        public decimal Price { get; set; }
+        public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public IFormFile File { get; set; }
     }
 }

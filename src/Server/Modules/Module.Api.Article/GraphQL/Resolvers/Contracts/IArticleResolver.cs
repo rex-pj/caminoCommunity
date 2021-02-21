@@ -1,4 +1,4 @@
-﻿using Camino.IdentityManager.Models;
+﻿using Camino.Core.Domain.Identities;
 using Module.Api.Article.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Camino.Core.Modular.Contracts;
+using Camino.Infrastructure.Modularity;
 
 namespace Module.Api.Feed
 {
