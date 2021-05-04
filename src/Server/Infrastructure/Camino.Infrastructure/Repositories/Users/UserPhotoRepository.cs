@@ -14,6 +14,7 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using LinqToDB;
 using Microsoft.Extensions.DependencyInjection;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Users
 {
@@ -52,18 +53,18 @@ namespace Camino.Service.Repository.Users
                 throw new ArgumentException(request.PhotoUrl);
             }
 
-            if (request.UserPhotoType == UserPhotoKind.Avatar)
+            if (request.UserPhotoTypeId == (int)UserPhotoKind.Avatar)
             {
                 _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(request);
             }
-            else if (request.UserPhotoType == UserPhotoKind.Cover)
+            else if (request.UserPhotoTypeId == (int)UserPhotoKind.Cover)
             {
                 _validationStrategyContext.SetStrategy(new UserCoverValidationStrategy());
                 canUpdate = _validationStrategyContext.Validate(request);
             }
 
-            if (!canUpdate && request.UserPhotoType == UserPhotoKind.Avatar)
+            if (!canUpdate && request.UserPhotoTypeId == (int)UserPhotoKind.Avatar)
             {
                 throw new PhotoSizeInvalidException($"{nameof(UserPhotoKind.Avatar)}Should larger than 100px X 100px");
             }
@@ -72,11 +73,11 @@ namespace Camino.Service.Repository.Users
                 throw new PhotoSizeInvalidException($"{nameof(UserPhotoKind.Cover)}Should larger than 1000px X 300px");
             }
 
-            int maxSize = request.UserPhotoType == UserPhotoKind.Avatar ? 600 : 1000;
+            int maxSize = request.UserPhotoTypeId == (int)UserPhotoKind.Avatar ? 600 : 1000;
             var newImage = ImageUtil
                 .Crop(request.PhotoUrl, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, maxSize);
 
-            var userPhotoType = (byte)request.UserPhotoType;
+            var userPhotoType = (byte)request.UserPhotoTypeId;
             var userPhoto = _userPhotoRepository
                 .Get(x => x.UserId == userId && x.TypeId == userPhotoType)
                 .FirstOrDefault();
@@ -89,7 +90,7 @@ namespace Camino.Service.Repository.Users
                     CreatedById = userId,
                     CreatedDate = DateTime.UtcNow,
                     ImageData = newImage,
-                    TypeId = (byte)request.UserPhotoType,
+                    TypeId = (byte)request.UserPhotoTypeId,
                     UserId = userId,
                     Name = request.FileName,
                     Code = request.UserPhotoCode,
@@ -188,7 +189,7 @@ namespace Camino.Service.Repository.Users
         public IList<UserPhotoResult> GetUserPhotoByUserIds(IEnumerable<long> userIds, UserPhotoKind typeId)
         {
             var photoType = (byte)typeId;
-            var userPhotos = _userPhotoRepository.Get(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType));
+            var userPhotos = _userPhotoRepository.Get(x => x.UserId.In(userIds) && x.TypeId.Equals(photoType));
 
             return userPhotos.Select(x => new UserPhotoResult()
             {
@@ -214,7 +215,7 @@ namespace Camino.Service.Repository.Users
         public async Task<IList<UserPhotoResult>> GetUserPhotosByUserIds(IEnumerable<long> userIds, UserPhotoKind typeId)
         {
             var photoType = (byte)typeId;
-            var userPhotoCodes = await _userPhotoRepository.Get(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType))
+            var userPhotoCodes = await _userPhotoRepository.Get(x => x.UserId.In(userIds) && x.TypeId.Equals(photoType))
                 .Select(x => new UserPhotoResult
                 {
                     Code = x.Code,

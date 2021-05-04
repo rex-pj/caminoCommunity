@@ -37,9 +37,9 @@ namespace Camino.Services.Products
             return result;
         }
 
-        public async Task<IList<ProductAttributeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter)
         {
-            return await _productAttributeRepository.SearchAsync(search, page, pageSize);
+            return await _productAttributeRepository.SearchAsync(filter);
         }
 
         public async Task<int> CreateAsync(ProductAttributeModifyRequest request)

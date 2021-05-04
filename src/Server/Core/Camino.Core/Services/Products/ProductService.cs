@@ -168,13 +168,31 @@ namespace Camino.Services.Products
                 });
             }
 
-            if (request.ProductAttributes.Any())
+            if (request.ProductAttributes == null || !request.ProductAttributes.Any())
             {
-                foreach (var attribute in request.ProductAttributes)
+                return id;
+            }
+
+            var groupOfAttributes = new List<ProductAttributeRelationRequest>();
+            foreach (var attributeRelation in request.ProductAttributes)
+            {
+                var existAttribute = groupOfAttributes.FirstOrDefault(x => x.ProductAttributeId == attributeRelation.ProductAttributeId);
+                if (existAttribute != null)
                 {
-                    attribute.ProductId = id;
-                    await _productAttributeRepository.CreateAttributeRelationAsync(attribute);
+                    var attributeValues = existAttribute.AttributeRelationValues.ToList();
+                    attributeValues.AddRange(attributeRelation.AttributeRelationValues);
+                    existAttribute.AttributeRelationValues = attributeValues;
                 }
+                else
+                {
+                    groupOfAttributes.Add(attributeRelation);
+                }
+            }
+
+            foreach (var attributeRelation in groupOfAttributes)
+            {
+                attributeRelation.ProductId = id;
+                await _productAttributeRepository.CreateAttributeRelationAsync(attributeRelation);
             }
 
             return id;
@@ -205,6 +223,23 @@ namespace Camino.Services.Products
             {
                 await _productAttributeRepository.DeleteAttributeRelationByProductIdAsync(request.Id);
                 return isUpdated;
+            }
+
+            var groupOfAttributes = new List<ProductAttributeRelationRequest>();
+            foreach (var attributeRelation in request.ProductAttributes)
+            {
+                var existAttribute = groupOfAttributes.FirstOrDefault(x => x.ProductAttributeId == attributeRelation.ProductAttributeId);
+                if (existAttribute != null)
+                {
+                    var attributeValues = existAttribute.AttributeRelationValues.ToList();
+                    attributeValues.AddRange(attributeRelation.AttributeRelationValues);
+
+                    existAttribute.AttributeRelationValues = attributeValues;
+                }
+                else
+                {
+                    groupOfAttributes.Add(attributeRelation);
+                }
             }
 
             var productAttributeIds = request.ProductAttributes.Where(x => x.Id != 0).Select(x => x.Id);

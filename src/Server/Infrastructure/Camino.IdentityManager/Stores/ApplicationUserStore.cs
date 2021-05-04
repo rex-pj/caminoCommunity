@@ -25,7 +25,7 @@ namespace Camino.IdentityManager.Contracts.Stores
         IUserPasswordStore<TUser>, IUserAuthenticationTokenStore<TUser>,
         IUserEncryptionStore<TUser>, IUserSecurityStampStore<TUser>,
         IUserPolicyStore<TUser>
-        where TUser : IdentityUser<long>
+        where TUser : ApplicationUser
     {
         private readonly IMapper _mapper;
 
@@ -67,10 +67,27 @@ namespace Camino.IdentityManager.Contracts.Stores
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                var userRequest = _mapper.Map<UserModifyRequest>(user);
-                userRequest.PasswordHash = user.PasswordHash;
-
-                await _userService.CreateAsync(userRequest);
+                await _userService.CreateAsync(new UserModifyRequest
+                {
+                    Address = user.Address,
+                    BirthDate = user.BirthDate,
+                    CountryId = user.CountryId,
+                    CreatedById = user.CreatedById,
+                    Description = user.Description,
+                    DisplayName = user.DisplayName,
+                    Email = user.Email,
+                    Firstname = user.Firstname,
+                    GenderId = user.GenderId,
+                    Id = user.Id,
+                    IsEmailConfirmed = user.EmailConfirmed,
+                    Lastname = user.Lastname,
+                    PasswordHash = user.PasswordHash,
+                    PhoneNumber = user.PhoneNumber,
+                    SecurityStamp = user.SecurityStamp,
+                    StatusId = user.StatusId,
+                    UpdatedById = user.UpdatedById,
+                    UserName = user.UserName
+                });
 
                 return IdentityResult.Success;
             }
@@ -376,14 +393,13 @@ namespace Camino.IdentityManager.Contracts.Stores
             var entry = await FindUserLoginAsync(user.Id, loginProvider, providerKey, cancellationToken);
             if (entry != null)
             {
-                var userLogin = new UserLoginRequest
+                await _authenticationService.RemoveUserLoginAsync(new UserLoginRequest
                 {
                     LoginProvider = entry.LoginProvider,
                     ProviderDisplayName = entry.ProviderDisplayName,
                     ProviderKey = entry.ProviderKey,
                     UserId = entry.UserId
-                }; ;
-                _authenticationService.RemoveUserLogin(userLogin);
+                });
             }
         }
 
@@ -535,11 +551,30 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                var userRequest = _mapper.Map<UserModifyRequest>(user);
-                await _userService.UpdateAsync(userRequest);
+                await _userService.UpdateAsync(new UserModifyRequest
+                {
+                    Address = user.Address,
+                    BirthDate = user.BirthDate,
+                    CountryId = user.CountryId,
+                    CreatedById = user.CreatedById,
+                    Description = user.Description,
+                    DisplayName = user.DisplayName,
+                    Email = user.Email,
+                    Firstname = user.Firstname,
+                    GenderId = user.GenderId,
+                    Id = user.Id,
+                    IsEmailConfirmed = user.EmailConfirmed,
+                    Lastname = user.Lastname,
+                    PasswordHash = user.PasswordHash,
+                    PhoneNumber = user.PhoneNumber,
+                    SecurityStamp = user.SecurityStamp,
+                    StatusId = user.StatusId,
+                    UpdatedById = user.UpdatedById,
+                    UserName = user.UserName
+                });
             }
             // todo: check DbUpdateConcurrencyException
-            catch (Exception)
+            catch (Exception ex)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

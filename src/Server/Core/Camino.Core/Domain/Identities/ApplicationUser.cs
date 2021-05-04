@@ -11,9 +11,9 @@ namespace Camino.Core.Domain.Identities
         public string Address { get; set; }
         public string Description { get; set; }
         public DateTime? BirthDate { get; set; }
-        public long? CreatedById { get; set; }
+        public long CreatedById { get; set; }
         public DateTime CreatedDate { get; set; }
-        public long? UpdatedById { get; set; }
+        public long UpdatedById { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public byte? GenderId { get; set; }
         public string GenderLabel { get; set; }

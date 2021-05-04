@@ -14,7 +14,7 @@ namespace Camino.Core.Contracts.Services.Products
         ProductAttributeResult Find(long id);
         ProductAttributeResult FindByName(string name);
         Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter);
-        Task<IList<ProductAttributeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10);
+        Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter);
         Task<bool> UpdateAsync(ProductAttributeModifyRequest request);
         IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter);
     }

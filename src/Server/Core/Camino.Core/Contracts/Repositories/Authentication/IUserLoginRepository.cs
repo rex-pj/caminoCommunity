@@ -8,7 +8,7 @@ namespace Camino.Core.Contracts.Repositories.Authentication
     public interface IUserLoginRepository
     {
         void Create(UserLoginRequest userLoginRequest);
-        void Remove(UserLoginRequest userLoginRequest);
+        Task RemoveAsync(UserLoginRequest userLoginRequest);
         Task<UserLoginResult> FindAsync(long userId, string loginProvider, string providerKey);
         Task<UserLoginResult> FindAsync(string loginProvider, string providerKey);
         Task<IList<UserLoginResult>> GetByUserIdAsync(long userId);

@@ -26,7 +26,7 @@ const AttributeValuePanel = styled.div`
 `;
 
 export default (props) => {
-  const { attribute, onEditAttributeValue } = props;
+  const { attribute, onEditAttributeValue, price } = props;
   const { attributeRelationValues } = attribute;
 
   const onRemoveAttributeValue = (currentAttributeValue) => {
@@ -47,22 +47,22 @@ export default (props) => {
           <ButtonOutlinePrimary
             type="button"
             size="xs"
-            title="Add attribute value"
+            title="Thêm giá trị cho thuộc tính"
             onClick={() => props.onAddAttributeValue()}
           >
             <FontAwesomeIcon icon="plus" />
           </ButtonOutlinePrimary>
         </div>
         <div className="col-3 col-xl-3 ps-0 pt-1">
-          <LabelNormal className="me-1">Attribute:</LabelNormal>
+          <LabelNormal className="me-1">Tên thuộc tính:</LabelNormal>
           <LabelDark>{attribute.name}</LabelDark>
         </div>
         <div className="col-3 col-xl-3 pt-1">
-          <LabelNormal className="me-1">Control:</LabelNormal>
+          <LabelNormal className="me-1">Kiểu hiển thị:</LabelNormal>
           <LabelDark>{attribute.controlTypeName}</LabelDark>
         </div>
         <div className="col-2 col-xl-3 pt-1">
-          <LabelNormal className="me-1">Order:</LabelNormal>
+          <LabelNormal className="me-1">Thứ tự:</LabelNormal>
           <LabelDark>{attribute.displayOrder}</LabelDark>
         </div>
         <div className="col-auto">
@@ -78,7 +78,7 @@ export default (props) => {
           <ButtonOutlineDanger
             type="button"
             size="xs"
-            title="Remove"
+            title="Xóa thuộc tính"
             onClick={() => props.onRemoveAttribute(attribute)}
           >
             <FontAwesomeIcon icon="times" />
@@ -92,6 +92,7 @@ export default (props) => {
                 <ProductAttributeValueRow
                   className="p-2 row mb-2"
                   key={index}
+                  price={price}
                   attributeValue={attrVal}
                   onRemoveAttributeValue={onRemoveAttributeValue}
                   onEditAttributeValue={(e) => onEditAttributeValue(e, index)}

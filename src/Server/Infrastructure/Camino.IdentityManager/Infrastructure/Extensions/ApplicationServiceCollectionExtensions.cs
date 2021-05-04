@@ -1,5 +1,6 @@
 ﻿using Camino.Core.Constants;
 using Camino.Core.Contracts.IdentityManager;
+using Camino.Core.Domain.Identities;
 using Camino.IdentityManager.Contracts.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace Camino.IdentityManager.Infrastructure.Extensions
     public static class ApplicationServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationIdentity<TUser, TRole>(this IServiceCollection services)
-            where TUser : IdentityUser<long>
+            where TUser : ApplicationUser
             where TRole : IdentityRole<long>
         {
             services.AddIdentity<TUser, TRole>(x =>

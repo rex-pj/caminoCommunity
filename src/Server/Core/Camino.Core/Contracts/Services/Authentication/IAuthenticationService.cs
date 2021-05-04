@@ -22,7 +22,7 @@ namespace Camino.Core.Contracts.Services.Authentication
         Task<UserLoginResult> FindUserLoginAsync(string loginProvider, string providerKey);
         Task<IList<UserLoginResult>> GetUserLoginByUserIdAsync(long userId);
         void CreateUserLogin(UserLoginRequest request);
-        void RemoveUserLogin(UserLoginRequest request);
+        Task RemoveUserLoginAsync(UserLoginRequest request);
         Task<UserTokenResult> FindUserTokenAsync(long userId, string loginProvider, string name);
         void CreateUserToken(UserTokenRequest request);
         void RemoveUserToken(UserTokenRequest request);

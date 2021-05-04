@@ -7,7 +7,7 @@ export default {
     isValid: false,
   },
   price: {
-    value: "",
+    value: 0,
     validation: {
       isRequired: true,
     },

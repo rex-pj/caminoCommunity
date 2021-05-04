@@ -22,9 +22,7 @@ import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 import { SessionContext } from "../../../store/context/session-context";
-import { VerticalList } from "../../atoms/List";
-import { LabelPrimary } from "../../atoms/Labels";
-import { BadgeOutlinePrimary } from "../../atoms/Badges";
+import AttributesDetail from "../../organisms/Product/AttributesDetail";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.primaryText};
@@ -39,10 +37,6 @@ const InteractiveItem = styled.li`
   :last-child {
     margin-right: 0;
   }
-`;
-
-const AttributeLabel = styled(LabelPrimary)`
-  font-weight: 700;
 `;
 
 const TopBarInfo = styled.div`
@@ -266,34 +260,10 @@ export default withRouter(function (props) {
                 })
               : null}
 
-            {productAttributes
-              ? productAttributes.map((attr, index) => {
-                  return (
-                    <div key={index} className="mt-3">
-                      <AttributeLabel>{attr.name}:</AttributeLabel>
-                      {attr.attributeRelationValues
-                        ? attr.attributeRelationValues.map((av, cIndex) => {
-                            return (
-                              <VerticalList className="mt-2 mb-2" key={cIndex}>
-                                <li>
-                                  <BadgeOutlinePrimary size="xs">
-                                    {av.name} [
-                                    {av.priceAdjustment
-                                      ? `$${av.priceAdjustment}`
-                                      : av.pricePercentageAdjustment
-                                      ? `${av.pricePercentageAdjustment}%`
-                                      : null}
-                                    ]
-                                  </BadgeOutlinePrimary>
-                                </li>
-                              </VerticalList>
-                            );
-                          })
-                        : null}
-                    </div>
-                  );
-                })
-              : null}
+            <AttributesDetail
+              price={product.price}
+              productAttributes={productAttributes}
+            ></AttributesDetail>
             <ContentBody>
               <span
                 dangerouslySetInnerHTML={{ __html: product.description }}

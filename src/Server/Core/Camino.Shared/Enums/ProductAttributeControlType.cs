@@ -20,9 +20,6 @@ namespace Camino.Shared.Enums
         Checkboxes = 5,
 
         [Description("Color Boxes")]
-        ColorBoxes = 6,
-
-        [Description("Image Boxes")]
-        ImageBoxes = 7
+        ColorBoxes = 6
     }
 }

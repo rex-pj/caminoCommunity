@@ -1,4 +1,4 @@
-﻿namespace Camino.Core.Resources
+﻿namespace Camino.Infrastructure.Resources
 {
     public static class MailTemplateResources
     {

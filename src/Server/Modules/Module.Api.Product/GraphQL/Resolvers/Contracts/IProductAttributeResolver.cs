@@ -8,7 +8,7 @@ namespace Module.Api.Product.GraphQL.Resolvers.Contracts
 {
     public interface IProductAttributeResolver
     {
-        Task<IEnumerable<SelectOption>> GetProductAttributesAsync(BaseSelectFilterModel criterias);
+        Task<IEnumerable<SelectOption>> GetProductAttributesAsync(ProductAttributeSelectFilterModel criterias);
         IList<SelectOption> GetProductAttributeControlTypes(ProductAttributeControlTypeSelectFilterModel filter);
     }
 }

@@ -112,7 +112,7 @@ export default function (props) {
             onChange={(e, action) => handleAttributeSelectChange(e, action)}
             loadOptions={loadAttributeSelections}
             isClearable={true}
-            placeholder="Select attribute"
+            placeholder="Chọn thuộc tính"
           />
         </FormRow>
         <FormRow>
@@ -125,14 +125,14 @@ export default function (props) {
             onChange={(e, action) => handleControlTypeSelectChange(e, action)}
             loadOptions={loadAttributeControlTypeSelections}
             isClearable={true}
-            placeholder="Select control type"
+            placeholder="Chọn kiểu hiển thị"
           />
         </FormRow>
         <FormRow>
           <PrimaryTextbox
             name="displayOrder"
             value={displayOrder ? displayOrder : ""}
-            placeholder="Display Order"
+            placeholder="Thứ tự"
             onChange={(e) => handleInputChange(e, parseInt)}
           />
         </FormRow>
@@ -143,7 +143,7 @@ export default function (props) {
           onClick={() => editAttribute()}
           size="xs"
         >
-          {index || index === 0 ? "Update" : "Add"}
+          {index || index === 0 ? "Cập nhật" : "Thêm thuộc tính"}
         </ButtonPrimary>
       </PanelFooter>
     </Fragment>

@@ -25,7 +25,7 @@ export const LOGIN = gql`
 `;
 
 export const UPDATE_USER_IDENTIFIER = gql`
-  mutation UpdateIdentifier($criterias: UserIdentifierUpdateRequestInput) {
+  mutation UpdateIdentifier($criterias: UserIdentifierUpdateModelInput) {
     updateIdentifier(criterias: $criterias) {
       lastname
       firstname
@@ -43,7 +43,7 @@ export const UPDATE_USER_INFO_PER_ITEM = gql`
 `;
 
 export const UPDATE_USER_AVATAR = gql`
-  mutation UpdateAvatar($criterias: UserPhotoUpdateRequestInput!) {
+  mutation UpdateAvatar($criterias: UserPhotoUpdateModelInput!) {
     updateAvatar(criterias: $criterias) {
       isSucceed
       errors {
@@ -67,7 +67,7 @@ export const DELETE_USER_AVATAR = gql`
 `;
 
 export const UPDATE_USER_COVER = gql`
-  mutation UpdateCover($criterias: UserPhotoUpdateRequestInput!) {
+  mutation UpdateCover($criterias: UserPhotoUpdateModelInput!) {
     updateCover(criterias: $criterias) {
       isSucceed
       errors {
@@ -92,7 +92,7 @@ export const DELETE_USER_COVER = gql`
 `;
 
 export const UPDATE_USER_PASSWORD = gql`
-  mutation UpdatePassword($criterias: UserPasswordUpdateRequestInput!) {
+  mutation UpdatePassword($criterias: UserPasswordUpdateModelInput!) {
     updatePassword(criterias: $criterias) {
       authenticationToken
       isSucceed

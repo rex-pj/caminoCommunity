@@ -21,13 +21,13 @@ namespace Module.Api.Auth.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, UserIdentifierUpdateRequest criterias)
+        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, UserIdentifierUpdateModel criterias)
         {
             return await userResolver.UpdateIdentifierAsync(currentUser, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<UserTokenModel> UpdatePasswordAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, UserPasswordUpdateRequest criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, UserPasswordUpdateModel criterias)
         {
             return await userResolver.UpdatePasswordAsync(currentUser, criterias);
         }

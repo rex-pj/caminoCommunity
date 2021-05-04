@@ -10,6 +10,7 @@ using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Authorization
 {
@@ -96,7 +97,7 @@ namespace Camino.Service.Repository.Authorization
 
             var hasCurrentRoleIds = currentRoleIds != null && currentRoleIds.Any();
             var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query))
-                .Where(x => !hasCurrentRoleIds || !currentRoleIds.Contains(x.Id));
+                .Where(x => !hasCurrentRoleIds || x.Id.NotIn(currentRoleIds));
 
             if (pageSize > 0)
             {

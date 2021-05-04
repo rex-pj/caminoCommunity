@@ -8,10 +8,11 @@ using System.Security.Cryptography;
 using Camino.IdentityManager.Contracts.Core;
 using System.Security.Claims;
 using Camino.Core.Contracts.IdentityManager;
+using Camino.Core.Domain.Identities;
 
 namespace Camino.IdentityManager
 {
-    public class ApplicationUserManager<TUser> : UserManager<TUser>, IUserManager<TUser> where TUser : IdentityUser<long>
+    public class ApplicationUserManager<TUser> : UserManager<TUser>, IUserManager<TUser> where TUser : ApplicationUser
     {
         public ApplicationUserManager(IUserStore<TUser> store,
             IOptions<IdentityOptions> optionsAccessor,

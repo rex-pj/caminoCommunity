@@ -11,6 +11,7 @@ using Camino.Shared.Results.Products;
 using Camino.Core.Domain.Products;
 using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Products;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Products
 {
@@ -249,7 +250,7 @@ namespace Camino.Service.Repository.Products
             var farmIds = exist.Farms.Select(x => x.FarmId);
             var categoryIds = exist.Categories.Select(x => x.Id);
 
-            var farmQuery = from farm in _farmRepository.Get(x => farmIds.Contains(x.Id))
+            var farmQuery = from farm in _farmRepository.Get(x => x.Id.In(farmIds))
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -273,7 +274,7 @@ namespace Camino.Service.Repository.Products
                                         from price in prices.DefaultIfEmpty()
 
                                         where pr.CreatedById == exist.CreatedById
-                                        || categoryIds.Contains(categoryRelation.ProductCategoryId)
+                                        || categoryRelation.ProductCategoryId.In(categoryIds)
                                         || pr.UpdatedById == exist.UpdatedById
                                         select new ProductResult
                                         {
@@ -363,15 +364,15 @@ namespace Camino.Service.Repository.Products
             // Update Category
             var categoryIds = request.Categories.Select(x => x.Id);
             await _productCategoryRelationRepository
-                        .Get(x => x.ProductId == request.Id && !categoryIds.Contains(x.ProductCategoryId))
+                        .Get(x => x.ProductId == request.Id && x.ProductCategoryId.NotIn(categoryIds))
                         .DeleteAsync();
 
             var linkedCategoryIds = _productCategoryRelationRepository
-                .Get(x => x.ProductId == request.Id && categoryIds.Contains(x.ProductCategoryId))
+                .Get(x => x.ProductId == request.Id && x.ProductCategoryId.In(categoryIds))
                 .Select(x => x.ProductCategoryId)
                 .ToList();
 
-            var unlinkedCategories = request.Categories.Where(x => !linkedCategoryIds.Contains(x.Id));
+            var unlinkedCategories = request.Categories.Where(x => x.Id.NotIn(linkedCategoryIds));
             if (unlinkedCategories != null && unlinkedCategories.Any())
             {
                 foreach (var category in unlinkedCategories)
@@ -387,15 +388,15 @@ namespace Camino.Service.Repository.Products
             // Update Farm
             var farmIds = request.Farms.Select(x => x.FarmId);
             await _farmProductRepository
-                        .Get(x => x.ProductId == request.Id && !farmIds.Contains(x.FarmId))
+                        .Get(x => x.ProductId == request.Id && x.FarmId.NotIn(farmIds))
                         .DeleteAsync();
 
             var linkedFarmIds = _farmProductRepository
-                .Get(x => x.ProductId == request.Id && farmIds.Contains(x.FarmId))
+                .Get(x => x.ProductId == request.Id && x.FarmId.In(farmIds))
                 .Select(x => x.FarmId)
                 .ToList();
 
-            var unlinkedFarms = request.Farms.Where(x => !linkedFarmIds.Contains(x.FarmId));
+            var unlinkedFarms = request.Farms.Where(x => x.FarmId.NotIn(linkedFarmIds));
             if (unlinkedFarms != null && unlinkedFarms.Any())
             {
                 foreach (var farm in unlinkedFarms)

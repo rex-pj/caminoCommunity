@@ -13,6 +13,7 @@ using Camino.Shared.Requests.Products;
 using Camino.Shared.General;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Products
 {
@@ -88,8 +89,9 @@ namespace Camino.Service.Repository.Products
             return result;
         }
 
-        public async Task<IList<ProductAttributeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter)
         {
+            string search = filter.Search;
             if (search == null)
             {
                 search = string.Empty;
@@ -103,9 +105,14 @@ namespace Camino.Service.Repository.Products
                         || x.Description.ToLower().Contains(search));
             }
 
-            if (pageSize > 0)
+            if (filter.ExcludedIds.Any())
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Where(x => x.Id.NotIn(filter.ExcludedIds));
+            }
+
+            if (filter.PageSize > 0)
+            {
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var productAttributes = await query
@@ -171,14 +178,14 @@ namespace Camino.Service.Repository.Products
         public async Task<int> DeleteAttributeRelationNotInIdsAsync(long productId, IEnumerable<long> ids)
         {
             var productAttributeRelations = _productAttributeRelationRepository
-                .Get(x => x.ProductId == productId && !ids.Contains(x.Id));
+                .Get(x => x.ProductId == productId && x.Id.NotIn(ids));
             var productAttributeRelationIds = await productAttributeRelations.Select(x => x.Id).ToListAsync();
             if (!productAttributeRelationIds.Any())
             {
                 return 0;
             }
 
-            await _productAttributeRelationValueRepository.Get(x => productAttributeRelationIds.Contains(x.ProductAttributeRelationId))
+            await _productAttributeRelationValueRepository.Get(x => x.ProductAttributeRelationId.In(productAttributeRelationIds))
                 .DeleteAsync();
             var deleted = await productAttributeRelations.DeleteAsync();
             return deleted;
@@ -230,7 +237,7 @@ namespace Camino.Service.Repository.Products
 
             var attributeRelationValueIds = request.AttributeRelationValues.Where(x => x.Id != 0).Select(x => x.Id);
             await _productAttributeRelationValueRepository
-                .Get(x => x.ProductAttributeRelationId == request.Id && !attributeRelationValueIds.Contains(x.Id)).DeleteAsync();
+                .Get(x => x.ProductAttributeRelationId == request.Id && x.Id.NotIn(attributeRelationValueIds)).DeleteAsync();
 
             foreach (var attributeValue in request.AttributeRelationValues)
             {
@@ -309,7 +316,7 @@ namespace Camino.Service.Repository.Products
         {
             var productAttributeRelations = _productAttributeRelationRepository.Get(x => x.ProductId == productId);
             var productAttributeRelationIds = await productAttributeRelations.Select(x => x.Id).ToListAsync();
-            await _productAttributeRelationValueRepository.Get(x => productAttributeRelationIds.Contains(x.ProductAttributeRelationId)).DeleteAsync();
+            await _productAttributeRelationValueRepository.Get(x => x.ProductAttributeRelationId.In(productAttributeRelationIds)).DeleteAsync();
             await productAttributeRelations.DeleteAsync();
         }
     }

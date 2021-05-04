@@ -23,6 +23,25 @@ export default function (props) {
   const { attributeValue, attributeIndex, attributeValueIndex } = data;
   const [formData, setFormData] = useState(attributeValue);
 
+  const parseValueToFloat = (value) => {
+    if (!value || isNaN(value)) {
+      return 0;
+    }
+    return parseFloat(value);
+  };
+
+  const handleInputBlur = (evt, formatFunc) => {
+    let attributeValue = { ...formData };
+    const { name, value } = evt.target;
+    if (formatFunc) {
+      attributeValue[name] = formatFunc(value);
+    } else {
+      attributeValue[name] = value;
+    }
+
+    setFormData({ ...attributeValue });
+  };
+
   const handleInputChange = (evt, formatFunc) => {
     let attributeValue = { ...formData };
     const { name, value } = evt.target;
@@ -55,30 +74,34 @@ export default function (props) {
           <PrimaryTextbox
             name="name"
             value={name}
-            placeholder="Name"
+            placeholder="Tên"
             onChange={handleInputChange}
           />
         </FormRow>
         <FormRow>
           <PrimaryTextbox
             name="priceAdjustment"
-            placeholder="Price adjustment"
-            onChange={(e) => handleInputChange(e, parseFloat)}
+            disabled={pricePercentageAdjustment}
+            placeholder="Giá điều chỉnh"
+            onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputBlur(e, parseValueToFloat)}
             value={priceAdjustment ? priceAdjustment : ""}
           />
         </FormRow>
         <FormRow>
           <PrimaryTextbox
             name="pricePercentageAdjustment"
-            placeholder="Price percentage adjustment"
-            onChange={(e) => handleInputChange(e, parseFloat)}
+            placeholder="Giá điều chỉnh theo phần trăm"
+            disabled={priceAdjustment}
+            onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputBlur(e, parseValueToFloat)}
             value={pricePercentageAdjustment ? pricePercentageAdjustment : ""}
           />
         </FormRow>
         <FormRow>
           <PrimaryTextbox
             name="displayOrder"
-            placeholder="Display Order"
+            placeholder="Thứ tự"
             onChange={(e) => handleInputChange(e, parseInt)}
             value={displayOrder ? displayOrder : ""}
           />
@@ -90,7 +113,9 @@ export default function (props) {
           onClick={() => editAttributeValue()}
           size="xs"
         >
-          {attributeValueIndex || attributeValueIndex === 0 ? "Update" : "Add"}
+          {attributeValueIndex || attributeValueIndex === 0
+            ? "Cập nhật"
+            : "Thêm giá trị thuộc tính"}
         </ButtonPrimary>
       </PanelFooter>
     </Fragment>

@@ -88,13 +88,13 @@ namespace Camino.Service.Repository.Authentication
             _userLoginRepository.Add(userLogin);
         }
 
-        public void Remove(UserLoginRequest userLoginRequest)
+        public async Task RemoveAsync(UserLoginRequest userLoginRequest)
         {
-            var userLogin = _userLoginRepository
-                .Get(x => x.LoginProvider == userLoginRequest.LoginProvider && x.ProviderKey == userLoginRequest.ProviderKey
-                && x.ProviderDisplayName == userLoginRequest.ProviderDisplayName && x.UserId == userLoginRequest.UserId);
-
-            _userLoginRepository.Delete(userLogin);
+            await _userLoginRepository.Get(x => x.LoginProvider == userLoginRequest.LoginProvider
+                    && x.ProviderKey == userLoginRequest.ProviderKey
+                    && x.ProviderDisplayName == userLoginRequest.ProviderDisplayName
+                    && x.UserId == userLoginRequest.UserId)
+                .DeleteAsync();
         }
     }
 }

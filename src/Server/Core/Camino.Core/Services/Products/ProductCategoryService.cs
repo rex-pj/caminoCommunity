@@ -25,7 +25,7 @@ namespace Camino.Services.Products
             _userRepository = userRepository;
         }
 
-        public async Task<ProductCategoryResult> FindAsync(long id)
+        public async Task<ProductCategoryResult> FindAsync(int id)
         {
             var category = await _productCategoryRepository.FindAsync(id);
             if (category == null)
@@ -73,12 +73,12 @@ namespace Camino.Services.Products
             return _productCategoryRepository.Get(filter);
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             return await _productCategoryRepository.SearchParentsAsync(currentIds, search, page, pageSize);
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             return await _productCategoryRepository.SearchAsync(currentIds, search, page, pageSize);
         }

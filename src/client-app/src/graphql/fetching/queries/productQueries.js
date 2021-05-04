@@ -86,11 +86,13 @@ export const GET_PRODUCT = gql`
       productAttributes {
         name
         controlTypeName
+        controlTypeId
         displayOrder
         id
         isRequired
         textPrompt
         attributeRelationValues {
+          id
           displayOrder
           name
           priceAdjustment

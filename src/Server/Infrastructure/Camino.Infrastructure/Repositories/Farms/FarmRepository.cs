@@ -12,6 +12,7 @@ using Camino.Core.Domain.Products;
 using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
 using Camino.Core.Contracts.Repositories.Products;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Farms
 {
@@ -101,7 +102,7 @@ namespace Camino.Service.Repository.Farms
 
             if (filter.CurrentIds.Any())
             {
-                query = query.Where(x => !filter.CurrentIds.Contains(x.Id));
+                query = query.Where(x => x.Id.NotIn(filter.CurrentIds));
             }
 
             filter.Search = filter.Search.ToLower();
@@ -278,14 +279,14 @@ namespace Camino.Service.Repository.Farms
 
             await farmProducts.DeleteAsync();
 
-            await _productPriceRepository.Get(x => productIds.Contains(x.ProductId))
+            await _productPriceRepository.Get(x => x.ProductId.In(productIds))
                 .DeleteAsync();
 
             await _productCategoryRelationRepository
-                .Get(x => productIds.Contains(x.ProductId))
+                .Get(x => x.ProductId.In(productIds))
                 .DeleteAsync();
 
-            await _productRepository.Get(x => productIds.Contains(x.Id))
+            await _productRepository.Get(x => x.Id.In(productIds))
                 .DeleteAsync();
         }
 
@@ -309,7 +310,7 @@ namespace Camino.Service.Repository.Farms
 
             await _productPictureRepository.SoftDeleteByProductIdsAsync(productIds);
 
-            await _productRepository.Get(x => productIds.Contains(x.Id))
+            await _productRepository.Get(x => x.Id.In(productIds))
                 .Set(x => x.IsDeleted, true)
                 .UpdateAsync();
         }

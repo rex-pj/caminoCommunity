@@ -33,7 +33,7 @@ export const DELETE_PRODUCT = gql`
 `;
 
 export const FILTER_PRODUCT_ATTRIBUTES = gql`
-  mutation($criterias: BaseSelectFilterModelInput) {
+  mutation($criterias: ProductAttributeSelectFilterModelInput) {
     selections: productAttributes(criterias: $criterias) {
       id
       isSelected

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.Requests.Farms;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Farms
 {
@@ -111,7 +112,7 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId)
         {
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => farmIds.Contains(x.FarmId) && x.PictureTypeId == farmPictureTypeId)
+            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId.In(farmIds) && x.PictureTypeId == farmPictureTypeId)
                                       join picture in _pictureRepository.Get(x => !x.IsDeleted)
                                       on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult
@@ -159,14 +160,14 @@ namespace Camino.Service.Repository.Farms
         {
             var pictureIds = request.Pictures.Select(x => x.Id);
             var deleteFarmPictures = _farmPictureRepository
-                        .Get(x => x.FarmId == request.FarmId && !pictureIds.Contains(x.PictureId));
+                        .Get(x => x.FarmId == request.FarmId && x.PictureId.NotIn(pictureIds));
 
             var deletePictureIds = deleteFarmPictures.Select(x => x.PictureId).ToList();
             if (deletePictureIds.Any())
             {
                 await deleteFarmPictures.DeleteAsync();
 
-                await _pictureRepository.Get(x => deletePictureIds.Contains(x.Id))
+                await _pictureRepository.Get(x => x.Id.In(deletePictureIds))
                     .DeleteAsync();
             }
 
@@ -223,7 +224,7 @@ namespace Camino.Service.Repository.Farms
             var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
             await farmPictures.DeleteAsync();
 
-            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+            await _pictureRepository.Get(x => x.Id.In(pictureIds))
                 .DeleteAsync();
 
             return true;

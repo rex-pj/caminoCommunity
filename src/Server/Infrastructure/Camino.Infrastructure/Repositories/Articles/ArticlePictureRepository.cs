@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Articles
 {
@@ -111,7 +112,7 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds)
         {
-            var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => articleIds.Contains(x.ArticleId))
+            var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
                                         join picture in _pictureRepository.Get(x => !x.IsDeleted)
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult
@@ -164,7 +165,7 @@ namespace Camino.Service.Repository.Articles
                     var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
                     await articlePictures.DeleteAsync();
 
-                    await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+                    await _pictureRepository.Get(x => x.Id.In(pictureIds))
                         .DeleteAsync();
                 }
             }
@@ -201,7 +202,7 @@ namespace Camino.Service.Repository.Articles
             var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
             await articlePictures.DeleteAsync();
 
-            await _pictureRepository.Get(x => pictureIds.Contains(x.Id))
+            await _pictureRepository.Get(x => x.Id.In(pictureIds))
                 .DeleteAsync();
 
             return true;

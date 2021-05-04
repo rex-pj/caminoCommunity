@@ -15,13 +15,13 @@ namespace Module.Api.Media.GraphQL.Mutations
     public class UserPhotoMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<CommonResult> UpdateAvatarAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userPhotoResolver, UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateAvatarAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userPhotoResolver, UserPhotoUpdateModel criterias)
         {
             return await userPhotoResolver.UpdateAvatarAsync(currentUser, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<CommonResult> UpdateCoverAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userPhotoResolver, UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateCoverAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserPhotoResolver userPhotoResolver, UserPhotoUpdateModel criterias)
         {
             return await userPhotoResolver.UpdateCoverAsync(currentUser, criterias);
         }

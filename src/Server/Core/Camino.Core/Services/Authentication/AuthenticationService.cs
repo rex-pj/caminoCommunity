@@ -101,9 +101,9 @@ namespace Camino.Services.Authentication
             _userLoginRepository.Create(request);
         }
 
-        public void RemoveUserLogin(UserLoginRequest request)
+        public async Task RemoveUserLoginAsync(UserLoginRequest request)
         {
-            _userLoginRepository.Remove(request);
+            await _userLoginRepository.RemoveAsync(request);
         }
         #endregion
 

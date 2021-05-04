@@ -18,14 +18,18 @@ namespace Module.Api.Product.GraphQL.Resolvers
             _productAttributeService = productAttributeService;
         }
 
-        public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync(BaseSelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync(ProductAttributeSelectFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new BaseSelectFilterModel();
+                criterias = new ProductAttributeSelectFilterModel();
             }
 
-            var attributes = await _productAttributeService.SearchAsync(criterias.Query);
+            var attributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
+            {
+                ExcludedIds = criterias.ExcludedIds,
+                Search = criterias.Query
+            });
             if (attributes == null || !attributes.Any())
             {
                 return new List<SelectOption>();

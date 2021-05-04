@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
 using Camino.Core.Constants;
-using Camino.Core.Resources;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Camino.Core.Exceptions;
@@ -25,6 +24,7 @@ using Camino.Shared.Requests.UpdateItems;
 using Camino.Shared.Results.Identifiers;
 using Camino.Shared.Requests.Providers;
 using Camino.Core.Contracts.Providers;
+using Camino.Infrastructure.Resources;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -215,26 +215,19 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
         public async Task<CommonResult> LogoutAsync(ApplicationUser currentUser)
         {
-            try
+            var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, currentUser.AuthenticationToken);
+            if (!result.Succeeded)
             {
-                var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, currentUser.AuthenticationToken);
-                if (!result.Succeeded)
+                return CommonResult.Failed(new CommonError()
                 {
-                    return CommonResult.Failed(new CommonError()
-                    {
-                        Code = ErrorMessageConst.EXCEPTION,
-                        Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
-                    });
-                }
-                return CommonResult.Success();
+                    Code = ErrorMessageConst.EXCEPTION,
+                    Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
+                });
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            return CommonResult.Success();
         }
 
-        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateRequest criterias)
+        public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateModel criterias)
         {
             try
             {
@@ -261,7 +254,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        public async Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateRequest criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync(ApplicationUser currentUser, UserPasswordUpdateModel criterias)
         {
             try
             {
@@ -307,7 +300,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        private void ComparePassword(UserPasswordUpdateRequest criterias)
+        private void ComparePassword(UserPasswordUpdateModel criterias)
         {
             if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
             {

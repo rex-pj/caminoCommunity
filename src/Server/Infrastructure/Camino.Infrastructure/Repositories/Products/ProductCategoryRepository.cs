@@ -11,6 +11,7 @@ using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Products;
 using Camino.Core.Domain.Products;
 using Camino.Shared.Requests.Products;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Products
 {
@@ -23,7 +24,7 @@ namespace Camino.Service.Repository.Products
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public async Task<ProductCategoryResult> FindAsync(long id)
+        public async Task<ProductCategoryResult> FindAsync(int id)
         {
             var category = await (from child in _productCategoryRepository.Table
                             join parent in _productCategoryRepository.Table
@@ -130,7 +131,7 @@ namespace Camino.Service.Repository.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -174,7 +175,7 @@ namespace Camino.Service.Repository.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(long[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
@@ -187,8 +188,8 @@ namespace Camino.Service.Repository.Products
             var queryChildrens = _productCategoryRepository.Get(x => x.ParentId.HasValue);
             if (currentIds != null && currentIds.Any())
             {
-                queryParents = queryParents.Where(x => !currentIds.Contains(x.Id));
-                queryChildrens = queryChildrens.Where(x => !currentIds.Contains(x.Id));
+                queryParents = queryParents.Where(x => x.Id.NotIn(currentIds));
+                queryChildrens = queryChildrens.Where(x => x.Id.NotIn(currentIds));
             }
 
             var query = from parent in queryParents

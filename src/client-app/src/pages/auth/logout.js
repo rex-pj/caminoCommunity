@@ -14,6 +14,7 @@ export default withRouter((props) => {
     renderCount: 0,
   });
 
+  console.log(error);
   if (error) {
     return <Redirect to="/error" />;
   }

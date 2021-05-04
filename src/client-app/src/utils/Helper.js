@@ -1,9 +1,5 @@
 import Alerts from "./LangData/Alerts";
 
-export function formatNumber(num) {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-}
-
 export function langExtract(langData, key, lang) {
   return langData && langData[key] && langData[key][lang]
     ? langData[key][lang]

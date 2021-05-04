@@ -5,4 +5,13 @@ const FeedType = {
   Community: 4,
 };
 
-export { FeedType };
+const ProductAttributeControlType = {
+  HorizontalList: 1,
+  VerticalList: 2,
+  DropdownList: 3,
+  RadioList: 4,
+  Checkboxes: 5,
+  ColorBoxes: 6,
+};
+
+export { FeedType, ProductAttributeControlType };

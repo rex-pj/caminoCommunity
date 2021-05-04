@@ -166,7 +166,9 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
         public async Task<IActionResult> Search(string q, string currentId = null)
         {
-            var productAttributes = await _productAttributeService.SearchAsync(q);
+            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter { 
+                Search = q
+            });
             if (productAttributes == null || !productAttributes.Any())
             {
                 return Json(new List<Select2ItemModel>());

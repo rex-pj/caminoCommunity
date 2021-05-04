@@ -16,7 +16,7 @@ namespace Module.Api.Product.GraphQL.Mutations
     {
         [GraphQlAuthentication]
         public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync([Service] IProductAttributeResolver productAttributeResolver,
-            BaseSelectFilterModel criterias)
+            ProductAttributeSelectFilterModel criterias)
         {
             return await productAttributeResolver.GetProductAttributesAsync(criterias);
         }

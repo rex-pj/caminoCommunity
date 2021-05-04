@@ -8,6 +8,6 @@ namespace Module.Api.Product.Models
     {
         [GraphQLType(typeof(BooleanType))]
         public bool IsParentOnly { get; set; }
-        public long[] CurrentIds { get; set; }
+        public int[] CurrentIds { get; set; }
     }
 }

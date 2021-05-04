@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { formatNumber } from "../../utils/Helper";
+import { formatPrice } from "../../utils/PriceUtils";
 
 const Root = styled.p`
   margin-bottom: 0;
@@ -27,7 +27,7 @@ function PriceLabel(props) {
     price = 0;
   }
 
-  const priceFormatted = formatNumber(price);
+  const priceFormatted = formatPrice(price);
 
   return (
     <Root className={className}>

@@ -9,6 +9,7 @@ using Camino.Shared.Results.Identifiers;
 using LinqToDB;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Data;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Users
 {
@@ -96,7 +97,7 @@ namespace Camino.Service.Repository.Users
             var keys = userAttributes.Select(x => x.Key);
 
             var exists = _userAttributeRepository
-                .Get(x => userIds.Contains(x.UserId) && keys.Contains(x.Key))
+                .Get(x => x.UserId.In(userIds) && x.Key.In(keys))
                 .ToList();
 
             if (exists == null || !exists.Any())

@@ -121,7 +121,11 @@ export default withRouter((props) => {
     const name = "price";
 
     data[name].isValid = checkValidity(data, value, name);
-    data[name].value = parseInt(value);
+    if (!value || isNaN(value)) {
+      data[name].value = 0;
+    } else {
+      data[name].value = parseFloat(value);
+    }
 
     setFormData({
       ...data,
@@ -323,9 +327,17 @@ export default withRouter((props) => {
 
   /// Attribute features
   const loadAttributeSelections = (value) => {
+    const {
+      productAttributes: { ...productAttributes },
+    } = { ...formData };
+    let {
+      value: [...attributes],
+    } = productAttributes;
+    const attributeIds = attributes.map((item) => parseInt(item.attributeId));
+
     return filterAttributes({
       variables: {
-        criterias: { query: value },
+        criterias: { query: value, excludedIds: attributeIds },
       },
     })
       .then((response) => {
@@ -364,7 +376,7 @@ export default withRouter((props) => {
           controlTypeId: 0,
           displayOrder: 0,
         },
-        title: "Add new product attribute",
+        title: "Thêm thuộc tính sản phẩm",
       },
       execution: {
         onEditAttribute: onAddAttribute,
@@ -383,7 +395,7 @@ export default withRouter((props) => {
     dispatch("OPEN_MODAL", {
       data: {
         attribute: currentAttr,
-        title: "Edit product attribute",
+        title: "Sửa thuộc tính sản phẩm",
         index: index,
       },
       execution: {
@@ -485,7 +497,7 @@ export default withRouter((props) => {
           quantity: 0,
           displayOrder: 0,
         },
-        title: "Edit product attribute value",
+        title: "Thêm giá trị của thuộc tính sản phẩm",
         attributeIndex: attributeIndex,
       },
       execution: {
@@ -506,7 +518,7 @@ export default withRouter((props) => {
     dispatch("OPEN_MODAL", {
       data: {
         attributeValue: currentAttributeValue,
-        title: "Edit product attribute value",
+        title: "Sửa giá trị của thuộc tính sản phẩm",
         attributeIndex: attributeIndex,
         attributeValueIndex: attributeValueIndex,
       },
@@ -662,17 +674,6 @@ export default withRouter((props) => {
           <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
         </div>
       </FormRow>
-      <FormRow>
-        <label className="me-1">Attributes</label>
-        <ButtonOutlinePrimary
-          type="button"
-          size="xs"
-          title="Add product attributes"
-          onClick={openAddAttributeModal}
-        >
-          <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
-        </ButtonOutlinePrimary>
-      </FormRow>
       {pictures.value ? (
         <FormRow className="row">
           {pictures.value.map((item, index) => {
@@ -695,6 +696,17 @@ export default withRouter((props) => {
           })}
         </FormRow>
       ) : null}
+      <FormRow>
+        <label className="me-1">Thuộc tính sản phẩm</label>
+        <ButtonOutlinePrimary
+          type="button"
+          size="xs"
+          title="Thêm thuộc tính sản phẩm"
+          onClick={openAddAttributeModal}
+        >
+          <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
+        </ButtonOutlinePrimary>
+      </FormRow>
       <FormRow className="mb-4">
         {productAttributes && productAttributes.value
           ? productAttributes.value.map((attr, index) => {
@@ -702,6 +714,7 @@ export default withRouter((props) => {
                 <ProductAttributeRow
                   key={index}
                   attribute={attr}
+                  price={price.value ? price.value : 0}
                   onRemoveAttribute={onRemoveAttribute}
                   onAttributeChange={(e) => onAttributeChange(e, index)}
                   onEditAttribute={(e) => onOpenEditAttributeModal(e, index)}

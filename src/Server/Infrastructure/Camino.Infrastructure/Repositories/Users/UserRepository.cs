@@ -15,6 +15,7 @@ using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using Camino.Infrastructure.Data;
+using LinqToDB.Tools;
 
 namespace Camino.Service.Repository.Users
 {
@@ -293,7 +294,7 @@ namespace Camino.Service.Repository.Users
         public async Task<IList<UserResult>> GetNameByIdsAsync(IEnumerable<long> ids)
         {
             var existUsers = await _userRepository
-                .Get(x => ids.Contains(x.Id))
+                .Get(x => x.Id.In(ids))
                 .Select(x => new UserResult()
                 {
                     DisplayName = x.DisplayName,
@@ -350,7 +351,7 @@ namespace Camino.Service.Repository.Users
             var hasCurrentUserIds = currentUserIds != null && currentUserIds.Any();
             var data = _userRepository.Get(x => string.IsNullOrEmpty(query) || x.Lastname.ToLower().Contains(query)
                 || x.Firstname.ToLower().Contains(query) || x.DisplayName.ToLower().Contains(query))
-                .Where(x => !hasCurrentUserIds || !currentUserIds.Contains(x.Id));
+                .Where(x => !hasCurrentUserIds || x.Id.NotIn(currentUserIds));
 
             if (pageSize > 0)
             {

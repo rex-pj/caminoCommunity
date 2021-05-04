@@ -1,8 +1,10 @@
 ﻿using Camino.Shared.Enums;
+using HotChocolate;
+using HotChocolate.Types;
 
-namespace Camino.Shared.Requests.Identifiers
+namespace Module.Api.Media.Models
 {
-    public class UserPhotoUpdateRequest
+    public class UserPhotoUpdateModel
     {
         public string PhotoUrl { get; set; }
         public double XAxis { get; set; }
@@ -10,8 +12,11 @@ namespace Camino.Shared.Requests.Identifiers
         public double Width { get; set; }
         public double Height { get; set; }
         public double Scale { get; set; }
+        public string ContentType { get; set; }
+        public bool CanEdit { get; set; }
         public string FileName { get; set; }
         public string UserPhotoCode { get; set; }
-        public int UserPhotoTypeId { get; set; }
+        [GraphQLType(typeof(IntType))]
+        public UserPhotoKind UserPhotoType { get; set; }
     }
 }

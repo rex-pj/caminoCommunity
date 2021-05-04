@@ -22,7 +22,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
             _userPhotoService = userPhotoService;
         }
 
-        public async Task<CommonResult> UpdateAvatarAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateAvatarAsync(ApplicationUser currentUser, UserPhotoUpdateModel criterias)
         {
             try
             {
@@ -31,8 +31,17 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                criterias.UserPhotoType = UserPhotoKind.Avatar;
-                var result = await _userPhotoService.UpdateUserPhotoAsync(criterias, currentUser.Id);
+                var result = await _userPhotoService.UpdateUserPhotoAsync(new UserPhotoUpdateRequest
+                {
+                    PhotoUrl = criterias.PhotoUrl,
+                    FileName = criterias.FileName,
+                    Width = criterias.Width,
+                    Height = criterias.Height,
+                    Scale = criterias.Scale,
+                    UserPhotoTypeId = (int)UserPhotoKind.Avatar,
+                    XAxis = criterias.XAxis,
+                    YAxis = criterias.YAxis
+                }, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
@@ -42,7 +51,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
             }
         }
 
-        public async Task<CommonResult> UpdateCoverAsync(ApplicationUser currentUser, UserPhotoUpdateRequest criterias)
+        public async Task<CommonResult> UpdateCoverAsync(ApplicationUser currentUser, UserPhotoUpdateModel criterias)
         {
             try
             {
@@ -51,8 +60,17 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                criterias.UserPhotoType = UserPhotoKind.Cover;
-                var result = await _userPhotoService.UpdateUserPhotoAsync(criterias, currentUser.Id);
+                var result = await _userPhotoService.UpdateUserPhotoAsync(new UserPhotoUpdateRequest
+                {
+                    PhotoUrl = criterias.PhotoUrl,
+                    FileName = criterias.FileName,
+                    Width = criterias.Width,
+                    Height = criterias.Height,
+                    Scale = criterias.Scale,
+                    XAxis = criterias.XAxis,
+                    YAxis = criterias.YAxis,
+                    UserPhotoTypeId = (int)UserPhotoKind.Cover
+                }, currentUser.Id);
 
                 return CommonResult.Success(result);
             }
