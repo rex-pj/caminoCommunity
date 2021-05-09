@@ -18,17 +18,17 @@ const NavMenu = styled(NavigationMenu)`
 
 function Header() {
   return (
-    <NavRoot className="navbar">
+    <NavRoot className="navbar px-0 px-sm-3 px-md-1 px-lg-3">
       <div className="container-fluid">
-        <div className="row justify-content-sm-center">
-          <div className="col-xs-4 col-sm-4 col-md-auto col-lg-auto">
+        <div className="row gx-0 gx-lg-4">
+          <div className="col-auto col-sm-1 col-md-auto col-lg-auto pe-2 pe-sm-0 pe-md-4 ">
             <Logo />
           </div>
 
-          <div className="col-xs-8 col-sm-8 col-md-5 col-lg-auto">
-            <SearchBar />
+          <div className="col-8 col-sm-7 col-md-6 col-lg-auto me-auto">
+            <SearchBar className="ms-1 ms-sm-0" />
           </div>
-          <div className="col offset-1 offset-sm-0 offset-md-0 offset-lg-1">
+          <div className="col">
             <div className="clearfix">
               <NavMenu />
             </div>

@@ -93,7 +93,9 @@ export default function (props) {
             <EmptyAvatar />
           )}
 
-          <UserName>{userInfo ? userInfo.displayName : ""}</UserName>
+          <UserName className="d-none d-sm-inline">
+            {userInfo ? userInfo.displayName : ""}
+          </UserName>
         </ProfileButton>
         <DropdownButton
           className="profile-dropdown"

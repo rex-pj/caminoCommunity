@@ -70,7 +70,7 @@ export default function (props) {
   };
 
   return (
-    <SearchForm isOnFocus={isOnFocus}>
+    <SearchForm isOnFocus={isOnFocus} className={props.className}>
       <SearchButton type="submit">
         <FontAwesomeIcon icon={faSearch} />
       </SearchButton>

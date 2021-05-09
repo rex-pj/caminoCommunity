@@ -33,7 +33,7 @@ const Wrap = styled.div`
 `;
 
 // The layout for login, signup or forgot password
-function AuthLayout({ component: Component, ...rest }) {
+export default ({ component: Component, ...rest }) => {
   const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   return (
     <MasterLayout
@@ -59,6 +59,4 @@ function AuthLayout({ component: Component, ...rest }) {
       )}
     />
   );
-}
-
-export default AuthLayout;
+};

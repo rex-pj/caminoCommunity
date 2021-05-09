@@ -29,7 +29,7 @@ const Wrap = styled.div`
   }
 `;
 
-export default function ({ component: Component, ...rest }) {
+export default ({ component: Component, ...rest }) => {
   return (
     <MasterLayout
       {...rest}
@@ -44,4 +44,4 @@ export default function ({ component: Component, ...rest }) {
       )}
     />
   );
-}
+};

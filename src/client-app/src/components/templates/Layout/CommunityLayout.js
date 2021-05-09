@@ -29,7 +29,7 @@ const Column = styled.div`
 `;
 
 // The layout of Communitys
-export default function (props) {
+export default (props) => {
   const { info, children } = props;
 
   return (
@@ -74,4 +74,4 @@ export default function (props) {
       </div>
     </Wrapper>
   );
-}
+};

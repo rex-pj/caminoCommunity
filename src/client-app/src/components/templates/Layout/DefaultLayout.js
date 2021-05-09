@@ -64,7 +64,7 @@ export default (props) => {
   return (
     <Wrapper className="container-fluid px-lg-5">
       <div className="row px-lg-3">
-        <div className="col col-4 col-sm-4 col-md-2 col-lg-2">
+        <div className="col col-12 col-sm-12 col-md-12 col-lg-2">
           <PageColumnPanel>
             <LoggedInCard />
           </PageColumnPanel>
@@ -75,8 +75,8 @@ export default (props) => {
             <Interesting />
           </PageColumnPanel>
         </div>
-        <div className="col col-8 col-sm-8 col-md-7 col-lg-7">{children}</div>
-        <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
+        <div className="col col-12 col-sm-8 col-md-9 col-lg-7">{children}</div>
+        <div className="col col-12 col-sm-4 col-md-3 col-lg-3">
           <PageColumnPanel>
             <FarmSuggestions
               loading={suggestFarmloading}

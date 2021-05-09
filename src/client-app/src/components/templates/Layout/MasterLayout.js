@@ -6,7 +6,7 @@ import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
 /// the layout with popup and notifications
-function MasterLayout({ component: Component, ...rest }) {
+export default ({ component: Component, ...rest }) => {
   return (
     <ThemeProvider theme={theme}>
       <Route
@@ -21,6 +21,4 @@ function MasterLayout({ component: Component, ...rest }) {
       />
     </ThemeProvider>
   );
-}
-
-export default MasterLayout;
+};
