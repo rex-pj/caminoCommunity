@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import ArticleEditor from "../Article/ArticleEditor";
 import ProductEditor from "../Product/ProductEditor";
 import FarmEditor from "../Farm/FarmEditor";
@@ -19,12 +19,9 @@ export default (props) => {
     searchFarms,
     searchFarmTypes,
     onFarmPost,
+    editorMode,
+    onToggleCreateMode,
   } = props;
-
-  const [editorMode, setEditorMode] = useState("ARTICLE");
-  const onToggleCreateMode = (name) => {
-    setEditorMode(name);
-  };
 
   if (editorMode === "ARTICLE") {
     return (

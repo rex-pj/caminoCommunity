@@ -10,9 +10,11 @@ import {
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 import { SessionContext } from "../../../store/context/session-context";
-import ToggleSidebar from "../../organisms/Containers/ToggleSidebar";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
 
+const ToggleSidebar = loadable(() =>
+  import("../../organisms/Containers/ToggleSidebar")
+);
 const Shortcut = loadable(() => import("../../organisms/Shortcut"));
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const LoggedInCard = loadable(() =>
@@ -36,13 +38,13 @@ export default (props) => {
   const { children } = props;
   const { currentUser } = useContext(SessionContext);
   const [sidebarState, setSidebarState] = useState({
-    isLeftShown: true,
+    isLeftShown: false,
+    isRightShown: false,
     isCenterShown: true,
-    isRightShown: true,
     isInit: true,
   });
 
-  const windowSize = useWindowSize();
+  const [windowSize, resetWindowSize] = useWindowSize();
 
   const { loading: suggestFarmloading, data: suggestFarmData } = useQuery(
     farmQueries.GET_FARMS,
@@ -73,22 +75,22 @@ export default (props) => {
   useEffect(() => {
     if (windowSize.isSizeTypeChanged && !sidebarState.isInit) {
       setSidebarState({
-        isLeftShown: true,
+        isLeftShown: false,
+        isRightShown: false,
         isCenterShown: true,
-        isRightShown: true,
         isInit: true,
       });
 
-      windowSize.resetWindowSize();
+      resetWindowSize();
     }
-  }, [setSidebarState, windowSize, sidebarState.isInit]);
+  }, [setSidebarState, windowSize, resetWindowSize, sidebarState.isInit]);
 
   const showLeftSidebar = () => {
     setSidebarState({
       isInit: false,
       isLeftShown: true,
-      isCenterShown: false,
       isRightShown: false,
+      isCenterShown: false,
     });
   };
 
@@ -96,8 +98,8 @@ export default (props) => {
     setSidebarState({
       isInit: false,
       isLeftShown: false,
-      isCenterShown: false,
       isRightShown: true,
+      isCenterShown: false,
     });
   };
 
@@ -105,8 +107,8 @@ export default (props) => {
     setSidebarState({
       isInit: false,
       isLeftShown: false,
-      isRightShown: false,
       isCenterShown: true,
+      isRightShown: false,
     });
   };
 
@@ -117,7 +119,9 @@ export default (props) => {
         className="mb-4 d-lg-none"
         showRightSidebar={showRightSidebar}
         showLeftSidebar={showLeftSidebar}
-        showCentral={showCentral}
+        resetSidebars={showCentral}
+        isLeftShown={isLeftShown}
+        isRightShown={isRightShown}
       />
       <div className="row px-lg-3">
         {isLeftShown || isInit ? (

@@ -17,8 +17,7 @@ const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 
   ${PrimaryTextbox} {
-    max-width: 100%;
-    width: 500px;
+    width: 100%;
   }
 
   .cate-selection {
@@ -246,7 +245,7 @@ export default withRouter((props) => {
     <Fragment>
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
         <FormRow className="row">
-          <div className="col-12 col-lg-6 pr-lg-1">
+          <div className="col-12 col-lg-6 pr-lg-1 mb-2 mb-lg-0">
             <PrimaryTextbox
               name="name"
               value={name.value}
@@ -255,7 +254,7 @@ export default withRouter((props) => {
               placeholder="Post title"
             />
           </div>
-          <div className="col-10 col-lg-4 px-lg-1 pr-1">
+          <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
             <AsyncSelect
               key={JSON.stringify(articleCategoryId)}
               className="cate-selection"
@@ -268,7 +267,7 @@ export default withRouter((props) => {
               isClearable={true}
             />
           </div>
-          <div className="col-2 col-lg-2 pl-lg-1 pl-1">
+          <div className="col-auto pl-1">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>

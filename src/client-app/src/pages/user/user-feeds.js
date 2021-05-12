@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { Pagination } from "../../components/organisms/Paging";
@@ -19,6 +19,8 @@ import { FeedType } from "../../utils/Enums";
 import Loading from "../../components/atoms/Loading";
 import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/session-context";
+import { useWindowSize } from "../../store/hook-store/window-size-store";
+import { usePrevious } from "../../store/hook-store/use-previous-store";
 
 export default withRouter((props) => {
   const { location, pageNumber, pageSize, match } = props;
@@ -26,6 +28,7 @@ export default withRouter((props) => {
   const { userId } = params;
   const { currentUser, isLogin } = useContext(SessionContext);
   const [state, dispatch] = useStore(false);
+  const [windowSize] = useWindowSize();
 
   // Mutations
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
@@ -196,6 +199,12 @@ export default withRouter((props) => {
     });
   };
 
+  const [editorMode, setEditorMode] = useState("ARTICLE");
+  const prevEditorMode = usePrevious(editorMode);
+  const onToggleCreateMode = (name) => {
+    setEditorMode(name);
+  };
+
   const renderProfileEditorTabs = () => (
     <ProfileEditorTabs
       convertImagefile={convertImagefile}
@@ -211,8 +220,16 @@ export default withRouter((props) => {
       searchFarms={userFarms}
       searchFarmTypes={farmTypes}
       onFarmPost={onFarmPost}
+      editorMode={editorMode}
+      onToggleCreateMode={onToggleCreateMode}
     ></ProfileEditorTabs>
   );
+
+  useEffect(() => {
+    if (windowSize.isResized && prevEditorMode !== editorMode) {
+      setEditorMode(prevEditorMode);
+    }
+  }, [windowSize, editorMode, prevEditorMode]);
 
   useEffect(() => {
     if (state.store === "UPDATE" && state.id) {

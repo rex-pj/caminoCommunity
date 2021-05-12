@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 function getBreakPoint(windowWidth) {
   if (!windowWidth) {
@@ -24,9 +24,6 @@ function getBreakPoint(windowWidth) {
 
 export const useWindowSize = () => {
   const isWindowClient = typeof window === "object";
-  const handleResetWindowSize = useCallback(() => {
-    resetWindowSize();
-  }, []);
 
   const resetWindowSize = () => {
     setWindowSize({
@@ -34,7 +31,6 @@ export const useWindowSize = () => {
       isSizeTypeChanged: false,
       size: window.innerWidth,
       sizeType: isWindowClient ? getBreakPoint(window.innerWidth) : undefined,
-      resetWindowSize: handleResetWindowSize,
     });
   };
 
@@ -43,7 +39,6 @@ export const useWindowSize = () => {
     isSizeTypeChanged: false,
     size: window.innerWidth,
     sizeType: isWindowClient ? getBreakPoint(window.innerWidth) : undefined,
-    resetWindowSize: handleResetWindowSize,
   });
 
   useEffect(() => {
@@ -51,10 +46,9 @@ export const useWindowSize = () => {
       const sizeType = getBreakPoint(window.innerWidth);
       setWindowSize({
         isResized: window.innerWidth !== windowSize.size,
-        isSizeTypeChanged: sizeType !== windowSize.sizeType,
         size: window.innerWidth,
         sizeType: getBreakPoint(window.innerWidth),
-        resetWindowSize: handleResetWindowSize,
+        isSizeTypeChanged: sizeType !== windowSize.sizeType,
       });
     }
 
@@ -63,7 +57,7 @@ export const useWindowSize = () => {
 
       return () => window.removeEventListener("resize", setSize);
     }
-  }, [isWindowClient, setWindowSize, windowSize, handleResetWindowSize]);
+  }, [isWindowClient, setWindowSize, windowSize]);
 
-  return windowSize;
+  return [windowSize, resetWindowSize];
 };

@@ -607,19 +607,13 @@ export default withRouter((props) => {
     }
   }, [currentProduct, formData]);
 
-  const {
-    name,
-    price,
-    pictures,
-    categories,
-    farms,
-    productAttributes,
-  } = formData;
+  const { name, price, pictures, categories, farms, productAttributes } =
+    formData;
 
   return (
     <form onSubmit={(e) => onProductPost(e)} method="POST">
       <FormRow className="row g-0">
-        <div className="col-12 col-lg-9 pe-1">
+        <div className="col-12 col-lg-9 mb-2 mb-lg-0 pe-lg-1">
           <PrimaryTextbox
             name="name"
             value={name.value}
@@ -628,7 +622,7 @@ export default withRouter((props) => {
             placeholder="Product title"
           />
         </div>
-        <div className="col-12 col-lg-3 ps-1">
+        <div className="col-12 col-lg-3 ps-lg-1">
           <PrimaryTextbox
             name="price"
             value={price.value}
@@ -638,8 +632,8 @@ export default withRouter((props) => {
           />
         </div>
       </FormRow>
-      <FormRow className="row mb-2">
-        <div className="col-12 col-lg-5 pe-1">
+      <FormRow className="row g-0 mb-2">
+        <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
           <AsyncSelect
             key={JSON.stringify(categories)}
             className="cate-selection"
@@ -656,7 +650,7 @@ export default withRouter((props) => {
             placeholder="Select categories"
           />
         </div>
-        <div className="col-12 col-lg-5 pe-1">
+        <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
           <AsyncSelect
             className="cate-selection"
             key={JSON.stringify(farms)}
@@ -670,7 +664,7 @@ export default withRouter((props) => {
             placeholder="Select farms"
           />
         </div>
-        <div className="col-12 col-lg-2 ps-1">
+        <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
           <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
         </div>
       </FormRow>

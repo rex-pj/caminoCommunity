@@ -53,7 +53,7 @@ export default (props) => {
 
   return (
     <List className={props.className}>
-      <ListItem>
+      <ListItem className="d-none d-sm-inline-block">
         <AuthButton to="/auth/signup">Sign Up</AuthButton>
       </ListItem>
 

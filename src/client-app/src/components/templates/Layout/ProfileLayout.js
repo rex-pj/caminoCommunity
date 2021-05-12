@@ -19,7 +19,7 @@ export default ({ component: Component, ...rest }) => {
     <FrameLayout
       {...rest}
       component={(matchProps) => (
-        <Wrapper className="container px-lg-5">
+        <Wrapper className="container container-md container-sm container-lg px-lg-5 px-md-2 px-sm-1">
           <Component {...matchProps} />
         </Wrapper>
       )}
