@@ -24,21 +24,21 @@ function getBreakPoint(windowWidth) {
 
 export const useWindowSize = () => {
   const isWindowClient = typeof window === "object";
-
-  const resetWindowSize = () => {
-    setWindowSize({
-      isResized: false,
-      isSizeTypeChanged: false,
-      size: window.innerWidth,
-      sizeType: isWindowClient ? getBreakPoint(window.innerWidth) : undefined,
-    });
-  };
-
-  const [windowSize, setWindowSize] = useState({
+  const defaultState = {
     isResized: false,
     isSizeTypeChanged: false,
     size: window.innerWidth,
     sizeType: isWindowClient ? getBreakPoint(window.innerWidth) : undefined,
+  };
+
+  const resetWindowSize = () => {
+    setWindowSize({
+      ...defaultState,
+    });
+  };
+
+  const [windowSize, setWindowSize] = useState({
+    ...defaultState,
   });
 
   useEffect(() => {

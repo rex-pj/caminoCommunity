@@ -125,6 +125,8 @@ const Wrap = styled.div`
       color: ${(p) => p.theme.color.lightText};
       border-radius: ${(p) => p.theme.borderRadius.medium};
       padding: ${(p) => p.theme.size.exSmall} 0;
+      border: 0;
+      background-color: ${(p) => p.theme.rgbaColor.dark};
 
       :hover {
         background-color: ${(p) => p.theme.rgbaColor.darker};
@@ -141,7 +143,6 @@ const Wrap = styled.div`
     }
   `,
   CancelEditButton = styled(ButtonTransparent)`
-    border: 0;
     width: ${(p) => p.theme.size.large};
     height: ${(p) => p.theme.size.large};
     font-size: ${(p) => p.theme.fontSize.large};
@@ -149,6 +150,8 @@ const Wrap = styled.div`
     margin-left: ${(p) => p.theme.size.exTiny};
     vertical-align: middle;
     border-radius: ${(p) => p.theme.borderRadius.medium};
+    border: 0;
+    background-color: ${(p) => p.theme.rgbaColor.dark};
 
     svg,
     path {

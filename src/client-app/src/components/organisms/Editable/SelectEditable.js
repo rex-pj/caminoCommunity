@@ -1,6 +1,7 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Selection } from "../../atoms/Selections";
+// import { Selection } from "../../atoms/Selections";
+import Select from "react-select";
 
 const TextLabel = styled.span`
   display: inline-block;
@@ -27,7 +28,7 @@ const TextLabel = styled.span`
   }
 `;
 
-const SelectBox = styled(Selection)`
+const SelectBox = styled(Select)`
   min-width: calc(${(p) => p.theme.size.large} * 2);
   cursor: pointer;
   border: 0;
@@ -49,26 +50,9 @@ const updateStatus = {
   fail: "fail",
 };
 
-function Options(props) {
-  const { selections, emptyText } = props;
-  return selections ? (
-    <Fragment>
-      <option value={0} disabled={true}>
-        {emptyText}
-      </option>
-      {selections.map((item) => (
-        <option key={item.id} value={item.id}>
-          {item.text}
-        </option>
-      ))}
-    </Fragment>
-  ) : null;
-}
-
 export default function (props) {
-  const { selections, value, name, disabled, text } = props;
+  const { selections, value, name, disabled, label } = props;
   const [status, setStatus] = useState("");
-  let statusTimer = null;
 
   let emptyText = "---Select---";
   if (props.emptyText) {
@@ -76,122 +60,129 @@ export default function (props) {
   }
 
   useEffect(() => {
-    return () => clearTimeout(statusTimer);
+    return () => clearTimeout();
   });
 
   let current = null;
   if (value && selections && selections.count > 0) {
     current = selections.find(
-      (item) => item.id.toString() === value.toString()
+      (item) => item.value.toString() === value.toString()
     );
-  } else if (value && text) {
-    current = { id: value, text: text };
+  } else if (value && label) {
+    current = { value, label };
   } else {
-    current = { id: 0, text: "Not selected" };
+    current = { value: 0, label: "Not selected" };
   }
 
   const [selectedValue, updateSelectedValue] = useState({
-    id: current ? current.id : null,
-    text: current ? current.text : null,
+    value: current?.value,
+    label: current?.label,
   });
 
   function onChanged(e) {
     const { name, primaryKey } = props;
-    const currentValue = selections
-      ? selections.find((element) => {
-          return element.id.toString() === e.target.value;
+
+    if (selections) {
+      const currentValue = selections.find((element) => {
+        return element.value.toString() === e.value;
+      });
+      const { onUpdated } = props;
+      if (onUpdated) {
+        onUpdated({
+          primaryKey,
+          value: currentValue.value,
+          propertyName: name,
         })
-      : { id: 0, text: emptyText };
-
-    if (currentValue) {
-      updateSelectedValue(currentValue);
-      if (props.onUpdated) {
-        props
-          .onUpdated({
-            primaryKey,
-            value: currentValue.id,
-            propertyName: name,
-          })
-          .then((response) => {
+          .then(() => {
+            updateSelectedValue(currentValue);
             showSuccess();
+            resetStatus();
           })
-          .catch((errors) => {
-            const oldValue = selections
-              ? selections.find((element) => {
-                  return element.id.toString() === value.toString();
-                })
-              : { id: 0, text: emptyText };
+          .catch(() => {
+            if (selections) {
+              const oldValue = selections.find((element) => {
+                return element.value.toString() === value.toString();
+              });
 
-            updateSelectedValue({
-              id: value,
-              text: oldValue.text,
-            });
+              updateSelectedValue(oldValue);
+            } else {
+              updateSelectedValue({ value: 0, label: emptyText });
+            }
 
             showError();
+            resetStatus();
           });
       }
     } else {
-      updateSelectedValue({ id: 0, text: emptyText });
+      updateSelectedValue({ value: 0, label: emptyText });
     }
+  }
+
+  function resetStatus(){
+    setTimeout(() => {
+      setStatus("");
+    }, 1000);
   }
 
   function showError() {
     setStatus(updateStatus.fail);
-    statusTimer = setTimeout(() => {
-      setStatus("");
-    }, 1000);
   }
 
   function showSuccess() {
     setStatus(updateStatus.success);
-    statusTimer = setTimeout(() => {
-      setStatus("");
-    }, 1000);
   }
 
   if (!props.disabled && !!selectedValue) {
+    const { value, label } = selectedValue;
     return (
       <SelectBox
         className={`${status}`}
         name={name}
         disabled={disabled}
         placeholder={emptyText}
-        value={selectedValue.id}
+        value={{
+          value,
+          label,
+        }}
         onChange={onChanged}
-      >
-        <Options selections={selections} emptyText={emptyText} />
-      </SelectBox>
-    );
-  } else if (!props.disabled && value) {
-    return (
-      <SelectBox
-        className={`${status}`}
-        name={name}
-        disabled={disabled}
-        placeholder={emptyText}
-        onChange={props.onChanged}
-        value={value}
-      >
-        <Options selections={selections} emptyText={emptyText} />
-      </SelectBox>
-    );
-  } else if (!props.disabled) {
-    return (
-      <SelectBox
-        className={`${status}`}
-        name={name}
-        disabled={disabled}
-        placeholder={emptyText}
-        onChange={props.onChanged}
-      >
-        <Options selections={selections} emptyText={emptyText} />
-      </SelectBox>
-    );
-  } else {
-    return (
-      <TextLabel className={`disabled ${status}`}>
-        {selectedValue ? selectedValue.text : emptyText}
-      </TextLabel>
+        options={selections}
+      />
     );
   }
+
+  if (!props.disabled && value) {
+    return (
+      <SelectBox
+        className={`${status}`}
+        name={name}
+        disabled={disabled}
+        placeholder={emptyText}
+        onChange={onChanged}
+        value={{
+          value,
+          label,
+        }}
+        options={selections}
+      />
+    );
+  }
+
+  if (!props.disabled) {
+    return (
+      <SelectBox
+        className={`${status}`}
+        name={name}
+        disabled={disabled}
+        placeholder={emptyText}
+        onChange={onChanged}
+        options={selections}
+      />
+    );
+  }
+
+  return (
+    <TextLabel className={`disabled ${status}`}>
+      {selectedValue ? selectedValue.text : emptyText}
+    </TextLabel>
+  );
 }

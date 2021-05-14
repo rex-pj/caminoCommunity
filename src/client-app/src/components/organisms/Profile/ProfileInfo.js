@@ -61,29 +61,35 @@ const UnserInfoChild = (props) => {
 
 export default function (props) {
   const { userInfo } = props;
+
   return (
     <Root>
       {userInfo ? (
-        <InfoList>
+        <InfoList className="row">
           <UnserInfoChild className="text-justify">
             {userInfo.description}
           </UnserInfoChild>
-          <UnserInfoChild icon="map-marked-alt">
+          <UnserInfoChild
+            className="col col-6 col-md-4 col-lg-12"
+            icon="map-marked-alt"
+          >
             {userInfo.address}
           </UnserInfoChild>
-          <UnserInfoChild icon="map-marker-alt">
+          <UnserInfoChild
+            className="col col-6 col-md-4 col-lg-12"
+            icon="map-marker-alt"
+          >
             {userInfo.country}
           </UnserInfoChild>
-          <UnserInfoChild icon="baby">
+          <UnserInfoChild className="col col-6 col-md-4 col-lg-12" icon="baby">
             {format(userInfo.birthDate, "MMMM, DD YYYY")}
           </UnserInfoChild>
-          <UnserInfoChild icon="calendar-alt">
+          <UnserInfoChild
+            className="col col-6 col-md-4 col-lg-12"
+            icon="calendar-alt"
+          >
             {format(userInfo.createdDate, "MMMM, DD YYYY")}
           </UnserInfoChild>
-          <UnserInfoChild icon="envelope" isEmail={true}>
-            {userInfo.email}
-          </UnserInfoChild>
-          <UnserInfoChild icon="mobile-alt">{userInfo.mobile}</UnserInfoChild>
         </InfoList>
       ) : null}
     </Root>

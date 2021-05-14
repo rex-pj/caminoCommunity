@@ -8,6 +8,7 @@ import SelectEditable from "../Editable/SelectEditable";
 import DateTimeEditable from "../Editable/DateTimeEditable";
 import TextAreaEditable from "../Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
+import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -70,13 +71,13 @@ export default (props) => {
             <LabelAndInfo label="Sex">
               <SelectEditable
                 value={userInfo.genderId}
-                text={userInfo.genderLabel}
+                label={userInfo.genderLabel}
                 primaryKey={userInfo.userIdentityId}
                 name="genderId"
                 emptyText="Your sex"
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
-                selections={genderSelections}
+                selections={mapSelectOptions(genderSelections)}
               />
             </LabelAndInfo>
             <LabelAndInfo label="Address">
@@ -91,13 +92,13 @@ export default (props) => {
             <LabelAndInfo label="Country">
               <SelectEditable
                 value={userInfo.countryId}
-                text={userInfo.countryName}
+                label={userInfo.countryName}
                 primaryKey={userInfo.userIdentityId}
                 name="countryId"
                 emptyText="Select your country"
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
-                selections={countrySelections}
+                selections={mapSelectOptions(countrySelections)}
               />
               {userInfo.country}
             </LabelAndInfo>
