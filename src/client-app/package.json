@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.3.16",
+    "@apollo/client": "^3.3.19",
     "@babel/polyfill": "^7.12.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
@@ -58,7 +58,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-env": "^7.14.2",
     "@loadable/babel-plugin": "^5.13.2",
     "@loadable/webpack-plugin": "^5.15.0"
   }
