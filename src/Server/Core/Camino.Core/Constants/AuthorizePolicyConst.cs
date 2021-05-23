@@ -68,5 +68,13 @@
         public const string CanReadProductAttribute = "CanReadProductAttribute";
         public const string CanUpdateProductAttribute = "CanUpdateProductAttribute";
         public const string CanDeleteProductAttribute = "CanDeleteProductAttribute";
+        public const string CanCreateShortcut = "CanCreateShortcut";
+        public const string CanReadShortcut = "CanReadShortcut";
+        public const string CanUpdateShortcut = "CanUpdateShortcut";
+        public const string CanDeleteShortcut = "CanDeleteShortcut";
+        public const string CanCreateShortcutType = "CanCreateShortcutType";
+        public const string CanReadShortcutType = "CanReadShortcutType";
+        public const string CanUpdateShortcutType = "CanUpdateShortcutType";
+        public const string CanDeleteShortcutType = "CanDeleteShortcutType";
     }
 }

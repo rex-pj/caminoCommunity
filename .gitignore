@@ -88,3 +88,5 @@ src/Server/Core/Camino.Core/bin/
 src/Server/Core/Camino.Core/obj/
 src/Server/Core/Camino.Shared/bin/
 src/Server/Core/Camino.Shared/obj/
+src/Server/Modules/Module.Web.NavigationManagement/bin/
+src/Server/Modules/Module.Web.NavigationManagement/obj/

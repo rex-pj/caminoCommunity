@@ -46,6 +46,10 @@ using Camino.Service.Repository.Products;
 using Camino.Service.Repository.Feeds;
 using Camino.Core.Contracts.Repositories.Feeds;
 using LinqToDB;
+using Camino.Infrastructure.Repositories.Navigations;
+using Camino.Core.Contracts.Repositories.Navigations;
+using Camino.Core.Services.Navigations;
+using Camino.Core.Contracts.Services.Navigations;
 
 namespace Camino.Infrastructure.Infrastructure.Extensions
 {
@@ -89,7 +93,8 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
                 .AddScoped<IProductCategoryRepository, ProductCategoryRepository>()
                 .AddScoped<IProductPictureRepository, ProductPictureRepository>()
                 .AddScoped<IFeedRepository, FeedRepository>()
-                .AddScoped<IProductAttributeRepository, ProductAttributeRepository>();
+                .AddScoped<IProductAttributeRepository, ProductAttributeRepository>()
+                .AddScoped<IShortcutRepository, ShortcutRepository>();
         }
 
         public static void AddDataAccessServices(this IServiceCollection services)
@@ -131,7 +136,8 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
                 .AddScoped<IProductService, ProductService>()
                 .AddScoped<IProductCategoryService, ProductCategoryService>()
                 .AddScoped<IFeedService, FeedService>()
-                .AddScoped<IProductAttributeService, ProductAttributeService>();
+                .AddScoped<IProductAttributeService, ProductAttributeService>()
+                .AddScoped<IShortcutService, ShortcutService>();
         }
     }
 }

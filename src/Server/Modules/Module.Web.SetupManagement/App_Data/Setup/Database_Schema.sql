@@ -951,3 +951,20 @@ GO
 ALTER TABLE dbo.[ProductPicture]
 ADD CONSTRAINT PK_ProductPicture
 PRIMARY KEY (Id);
+
+-- USER SHORTCUT--
+GO
+CREATE TABLE [dbo].[Shortcut]
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL,
+	[Url] NVARCHAR(2000) NULL,
+	[Icon] NVARCHAR(2000) NULL,
+	[TypeId] INT NULL
+)
+
+GO
+ALTER TABLE [dbo].[Shortcut]
+ADD CONSTRAINT PK_Shortcut
+PRIMARY KEY (Id);

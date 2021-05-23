@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.DashboardManagem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.IdentityManager", "Infrastructure\Camino.IdentityManager\Camino.IdentityManager.csproj", "{910081C4-F9E3-44E1-82D3-3A0B036583DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.Navigation", "Modules\Module.Web.Navigation\Module.Web.Navigation.csproj", "{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.NavigationManagement", "Modules\Module.Web.NavigationManagement\Module.Web.NavigationManagement.csproj", "{BCD9337B-8F1F-44B2-81A0-5A69AF939D82}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Web.IdentityManagement", "Modules\Module.Web.IdentityManagement\Module.Web.IdentityManagement.csproj", "{7A4D8107-9A3B-4769-BCED-10744CCFA7FC}"
 EndProject

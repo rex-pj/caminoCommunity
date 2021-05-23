@@ -1,0 +1,46 @@
+﻿@using Camino.Infrastructure.Enums
+@model ShortcutModel
+@{
+    ViewData["Title"] = "Shortcut Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <a asp-action="Index" asp-controller="Shortcut" class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanUpdate)
+            {
+                <a asp-action="Update" asp-controller="Shortcut" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="form-group">
+        <label>Name</label>
+        <span class="form-control" readonly>@Model.Name</span>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <span class="form-control" readonly>@Model.Description</span>
+    </div>
+    <div class="form-group">
+        <label>Icon</label>
+        <span class="form-control" readonly>@Model.Icon</span>
+    </div>
+    <div class="form-group">
+        <label>Url</label>
+        <span class="form-control" readonly>@Model.Url</span>
+    </div>
+    <div class="form-group">
+        <label>Type</label>
+        <span class="form-control" readonly>@(((ShortcutType)Model.TypeId).ToString())</span>
+    </div>
+</div>

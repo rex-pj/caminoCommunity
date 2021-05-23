@@ -314,6 +314,38 @@
     {
       "Name": "CanDeleteProductAttribute",
       "Description": "Can delete product attribute"
+    },
+    {
+      "Name": "CanCreateShortcut",
+      "Description": "Can create shortcut"
+    },
+    {
+      "Name": "CanReadShortcut",
+      "Description": "Can read shortcut"
+    },
+    {
+      "Name": "CanUpdateShortcut",
+      "Description": "Can update shortcut"
+    },
+    {
+      "Name": "CanDeleteShortcut",
+      "Description": "Can delete shortcut"
+    },
+    {
+      "Name": "CanCreateShortcutType",
+      "Description": "Can create shortcut type"
+    },
+    {
+      "Name": "CanReadShortcutType",
+      "Description": "Can read shortcut type"
+    },
+    {
+      "Name": "CanUpdateShortcutType",
+      "Description": "Can update shortcut type"
+    },
+    {
+      "Name": "CanDeleteShortcutType",
+      "Description": "Can delete shortcut type"
     }
   ],
   "Countries": [
