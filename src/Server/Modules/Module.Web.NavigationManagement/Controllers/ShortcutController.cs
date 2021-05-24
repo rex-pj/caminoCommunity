@@ -4,6 +4,7 @@ using Camino.Core.Contracts.Services.Navigations;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
+using Camino.Infrastructure.Enums;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
 using Camino.Shared.Results.Navigations;
@@ -49,8 +50,9 @@ namespace Module.Web.NavigationManagement.Controllers
                 Id = x.Id,
                 Name = x.Name,
                 Icon = x.Icon,
-                TypeId = x.TypeId,
-                Url = x.Url
+                TypeId = (ShortcutType)x.TypeId,
+                Url = x.Url,
+                Order = x.Order
             });
             var shortcutPage = new PageListModel<ShortcutModel>(shortcuts)
             {
@@ -89,9 +91,10 @@ namespace Module.Web.NavigationManagement.Controllers
                     Description = shortcut.Description,
                     Name = shortcut.Name,
                     Icon = shortcut.Icon,
-                    TypeId = shortcut.TypeId,
+                    TypeId = (ShortcutType)shortcut.TypeId,
                     Url = shortcut.Url,
-                    Id = shortcut.Id
+                    Id = shortcut.Id,
+                    Order = shortcut.Order
                 };
                 return View(model);
             }
@@ -117,8 +120,9 @@ namespace Module.Web.NavigationManagement.Controllers
                 Description = model.Description,
                 Name = model.Name,
                 Icon = model.Icon,
-                TypeId = model.TypeId,
-                Url = model.Url
+                TypeId = (int)model.TypeId,
+                Url = model.Url,
+                Order = model.Order
             };
             var exist = await _shortcutService.FindByNameAsync(model.Name);
             if (exist != null)
@@ -140,9 +144,10 @@ namespace Module.Web.NavigationManagement.Controllers
                 Description = shortcut.Description,
                 Name = shortcut.Name,
                 Icon = shortcut.Icon,
-                TypeId = shortcut.TypeId,
+                TypeId = (ShortcutType)shortcut.TypeId,
                 Url = shortcut.Url,
-                Id = shortcut.Id
+                Id = shortcut.Id,
+                Order = shortcut.Order
             };
             return View(model);
         }
@@ -156,9 +161,10 @@ namespace Module.Web.NavigationManagement.Controllers
                 Description = model.Description,
                 Name = model.Name,
                 Icon = model.Icon,
-                TypeId = model.TypeId,
+                TypeId = (int)model.TypeId,
                 Url = model.Url,
-                Id = model.Id
+                Id = model.Id,
+                Order = model.Order
             };
             if (shortcut.Id <= 0)
             {

@@ -1,6 +1,7 @@
 ﻿using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Shared.Requests.Media;
+using Camino.Shared.Results.Navigations;
 using System.Collections.Generic;
 
 namespace Camino.Shared.Requests.Setup
@@ -14,5 +15,6 @@ namespace Camino.Shared.Requests.Setup
         public IEnumerable<RoleModifyRequest> Roles { get; set; }
         public IEnumerable<AuthorizationPolicyRequest> AuthorizationPolicies { get; set; }
         public IEnumerable<UserPhotoTypeRequest> UserPhotoTypes { get; set; }
+        public IEnumerable<ShortcutModifyRequest> Shortcuts { get; set; }
     }
 }

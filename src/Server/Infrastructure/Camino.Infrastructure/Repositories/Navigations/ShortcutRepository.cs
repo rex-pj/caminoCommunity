@@ -34,7 +34,8 @@ namespace Camino.Infrastructure.Repositories.Navigations
                     Name = x.Name,
                     Icon = x.Icon,
                     TypeId = x.TypeId,
-                    Url = x.Url
+                    Url = x.Url,
+                    Order = x.Order
                 })).FirstOrDefaultAsync();
 
             return shortcut;
@@ -50,7 +51,8 @@ namespace Camino.Infrastructure.Repositories.Navigations
                    Name = x.Name,
                    Icon = x.Icon,
                    TypeId = x.TypeId,
-                   Url = x.Url
+                   Url = x.Url,
+                   Order = x.Order
                })).FirstOrDefaultAsync();
 
             return shortcut;
@@ -73,12 +75,15 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Name = x.Name,
                 Icon = x.Icon,
                 TypeId = x.TypeId,
-                Url = x.Url
+                Url = x.Url,
+                Order = x.Order
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
 
-            var categories = await query.Skip(filter.PageSize * (filter.Page - 1))
+            var categories = await query
+                .OrderBy(x => x.Order)
+                .Skip(filter.PageSize * (filter.Page - 1))
                                          .Take(filter.PageSize).ToListAsync();
 
             var result = new BasePageList<ShortcutResult>(categories)
@@ -116,7 +121,8 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Name = request.Name,
                 Icon = request.Icon,
                 TypeId = request.TypeId,
-                Url = request.Url
+                Url = request.Url,
+                Order = request.Order
             };
 
             var id = await _shortcutRepository.AddWithInt32EntityAsync(newCategory);
@@ -131,6 +137,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 .Set(x => x.Icon, request.Icon)
                 .Set(x => x.TypeId, request.TypeId)
                 .Set(x => x.Url, request.Url)
+                .Set(x => x.Order, request.Order)
                 .UpdateAsync();
 
             return true;

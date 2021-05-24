@@ -145,8 +145,8 @@ namespace Module.Web.SetupManagement.Controllers
 
                 // Get initial data in josn
                 var indentityJson = _setupProvider.LoadFileText(settings.SeedDataJsonFilePath);
-                var identitySetup = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
-                identitySetup.InitualUser = new UserModifyRequest
+                var setupRequest = JsonConvert.DeserializeObject<SetupRequest>(indentityJson);
+                setupRequest.InitualUser = new UserModifyRequest
                 {
                     BirthDate = initialUser.BirthDate,
                     Address = initialUser.Address,
@@ -161,7 +161,7 @@ namespace Module.Web.SetupManagement.Controllers
                 };
 
                 // Initialize database
-                await _dataSeedService.SeedDataAsync(identitySetup);
+                await _dataSeedService.SeedDataAsync(setupRequest);
 
                 _setupProvider.SetDataHasBeenSeeded();
                 return RedirectToAction(nameof(Succeed));

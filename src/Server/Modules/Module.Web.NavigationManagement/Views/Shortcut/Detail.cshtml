@@ -1,5 +1,4 @@
-﻿@using Camino.Infrastructure.Enums
-@model ShortcutModel
+﻿@model ShortcutModel
 @{
     ViewData["Title"] = "Shortcut Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -41,6 +40,10 @@
     </div>
     <div class="form-group">
         <label>Type</label>
-        <span class="form-control" readonly>@(((ShortcutType)Model.TypeId).ToString())</span>
+        <span class="form-control" readonly>@(EnumUtil.GetDescription(Model.TypeId))</span>
+    </div>
+    <div class="form-group">
+        <label>Order</label>
+        <span class="form-control" readonly>@Model.Order</span>
     </div>
 </div>

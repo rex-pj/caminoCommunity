@@ -11,6 +11,7 @@ import {
 } from "../../organisms/Suggestions";
 import { SessionContext } from "../../../store/context/session-context";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
+import { navigationQueries } from "../../../graphql/fetching/queries";
 
 const ToggleSidebar = loadable(() =>
   import("../../organisms/Containers/ToggleSidebar")
@@ -70,6 +71,10 @@ export default (props) => {
         },
       },
     }
+  );
+
+  const { loading: shortcutLoading, data: shortcutData } = useQuery(
+    navigationQueries.GET_SHORTCUTS
   );
 
   useEffect(() => {
@@ -134,7 +139,7 @@ export default (props) => {
               <LoggedInCard />
             </PageColumnPanel>
             <PageColumnPanel>
-              <Shortcut />
+              <Shortcut loading={shortcutLoading} data={shortcutData} />
             </PageColumnPanel>
             <PageColumnPanel>
               <Interesting />

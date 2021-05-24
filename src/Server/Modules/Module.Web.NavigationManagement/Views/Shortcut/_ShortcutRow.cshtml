@@ -18,7 +18,10 @@
         <div>@Model.Icon</div>
     </td>
     <td>
-        <div>@(((ShortcutType)Model.TypeId).ToString())</div>
+        <div>@(EnumUtil.GetDescription(Model.TypeId))</div>
+    </td>
+    <td>
+        <div>@Model.Order</div>
     </td>
     <td>
         @if (Model.CanUpdate)

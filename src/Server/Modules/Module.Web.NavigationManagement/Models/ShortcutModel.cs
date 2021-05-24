@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Camino.Infrastructure.Enums;
 
 namespace Module.Web.NavigationManagement.Models
 {
@@ -9,6 +10,7 @@ namespace Module.Web.NavigationManagement.Models
         public string Description { get; set; }
         public string Url { get; set; }
         public string Icon { get; set; }
-        public int TypeId { get; set; }
+        public ShortcutType TypeId { get; set; }
+        public int Order { get; set; }
     }
 }

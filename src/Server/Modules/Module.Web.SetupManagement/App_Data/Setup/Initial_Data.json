@@ -1,4 +1,4 @@
-{
+﻿{
   "Statuses": [
     {
       "Name": "New",
@@ -355,7 +355,7 @@
     },
     {
       "Code": "ALA",
-      "Name": "�land Islands"
+      "Name": "Åland Islands"
     },
     {
       "Code": "ALB",
@@ -567,7 +567,7 @@
     },
     {
       "Code": "CIV",
-      "Name": "C�te d'Ivoire"
+      "Name": "Côte d'Ivoire"
     },
     {
       "Code": "HRV",
@@ -579,7 +579,7 @@
     },
     {
       "Code": "CUW",
-      "Name": "Cura�ao"
+      "Name": "Curaçao"
     },
     {
       "Code": "CYP",
@@ -1075,7 +1075,7 @@
     },
     {
       "Code": "REU",
-      "Name": "R�union"
+      "Name": "Réunion"
     },
     {
       "Code": "ROU",
@@ -1091,7 +1091,7 @@
     },
     {
       "Code": "BLM",
-      "Name": "Saint Barth�lemy"
+      "Name": "Saint Barthélemy"
     },
     {
       "Code": "SHN",
@@ -1354,6 +1354,43 @@
     {
       "Name": "Cover",
       "Description": "The cover of the user porfile page"
+    }
+  ],
+  "shortcuts": [
+    {
+      "Name": "Tổng hợp",
+      "Description": "Tổng hợp",
+      "Url": "/",
+      "Icon": "list-alt",
+      "TypeId": 2
+    },
+    {
+      "Name": "Nông trại",
+      "Description": "Nông trại",
+      "Url": "/farms",
+      "Icon": "warehouse",
+      "TypeId": 2
+    },
+    {
+      "Name": "Sản phẩm",
+      "Description": "Sản phẩm",
+      "Url": "/products",
+      "Icon": "apple",
+      "TypeId": 2
+    },
+    {
+      "Name": "Cộng đồng",
+      "Description": "Cộng đồng",
+      "Url": "/communities",
+      "Icon": "flag",
+      "TypeId": 2
+    },
+    {
+      "Name": "Bài viết",
+      "Description": "Bài viết",
+      "Url": "/articles",
+      "Icon": "book",
+      "TypeId": 2
     }
   ]
 }

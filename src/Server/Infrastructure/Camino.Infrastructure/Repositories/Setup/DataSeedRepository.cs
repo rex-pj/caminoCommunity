@@ -7,6 +7,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Core.Domain.Media;
 using Camino.Shared.Requests.Setup;
 using Camino.Infrastructure.Data;
+using Camino.Core.Domain.Navigations;
 
 namespace Camino.Service.Repository.Setup
 {
@@ -50,6 +51,19 @@ namespace Camino.Service.Repository.Setup
                 {
                     Name = userPhotoType.Name,
                     Description = userPhotoType.Description
+                });
+            }
+
+            // Insert Shortcuts
+            foreach (var shortcut in setupRequest.Shortcuts)
+            {
+                await _caminoDataConnection.InsertAsync(new Shortcut()
+                {
+                    Name = shortcut.Name,
+                    Description = shortcut.Description,
+                    Icon = shortcut.Icon,
+                    TypeId = shortcut.TypeId,
+                    Url = shortcut.Url
                 });
             }
         }

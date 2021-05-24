@@ -20,9 +20,9 @@ namespace Camino.Services.Setup
             await _dbCreationRepository.CreateDatabaseAsync(sql);
         }
 
-        public async Task SeedDataAsync(SetupRequest installationRequest)
+        public async Task SeedDataAsync(SetupRequest setupRequest)
         {
-            await _dataSeedRepository.SeedDataAsync(installationRequest);
+            await _dataSeedRepository.SeedDataAsync(setupRequest);
         }
     }
 }
