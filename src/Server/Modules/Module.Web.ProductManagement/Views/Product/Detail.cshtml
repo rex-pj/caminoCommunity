@@ -1,6 +1,6 @@
 ﻿@model ProductModel
 @{
-    ViewData["Title"] = "Product " + @Model.Name;
+    ViewData["Title"] = "Product " + Model.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,7 +24,7 @@
 </div>
 <div class="card-body">
     <div class="form-row">
-        <div class="col-12 col-sm-9 col-md-8 col-lg-7">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
             <div class="form-group">
                 <h2>@Model.Name</h2>
             </div>
@@ -41,6 +41,17 @@
         }
     </div>
     <div class="form-row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
+            <div class="form-group">
+                <label>Attributes</label>
+                @foreach (var attribute in Model.ProductAttributes)
+                {
+                    <partial name="_Attribute" model="attribute" />
+                }
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
                 <label>Price</label>
@@ -49,7 +60,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="col-12 col-sm-9 col-md-8 col-lg-7">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
             <div class="form-group">
                 <p>@Html.Raw(Model.Description)</p>
             </div>
@@ -67,7 +78,7 @@
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
                 <label>Created date</label>
-                <span class="form-control" readonly>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                <span class="form-control" readonly>@Model.CreatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>
@@ -83,7 +94,7 @@
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
                 <label>Updated date</label>
-                <span class="form-control" readonly>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>

@@ -14,6 +14,7 @@ using Camino.Core.Contracts.Services.Products;
 using System.Linq;
 using Camino.Shared.Requests.Products;
 using Camino.Shared.Requests.Media;
+using Camino.Core.Utils;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -118,6 +119,26 @@ namespace Module.Web.ProductManagement.Controllers
                     {
                         FarmId = x.FarmId,
                         FarmName = x.Name
+                    }),
+                    ProductAttributes = product.ProductAttributes.Select(x => new ProductAttributeRelationModel
+                    {
+                        AttributeId = x.AttributeId,
+                        ControlTypeId = x.AttributeControlTypeId,
+                        DisplayOrder = x.DisplayOrder,
+                        Id = x.Id,
+                        IsRequired = x.IsRequired,
+                        TextPrompt = x.TextPrompt,
+                        Name = x.AttributeName,
+                        ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
+                        AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueModel
+                        {
+                            Id = c.Id,
+                            DisplayOrder = c.DisplayOrder,
+                            Name = c.Name,
+                            PriceAdjustment = c.PriceAdjustment,
+                            PricePercentageAdjustment = c.PricePercentageAdjustment,
+                            Quantity = c.Quantity
+                        })
                     })
                 };
                 return View(model);

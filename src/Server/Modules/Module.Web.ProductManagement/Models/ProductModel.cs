@@ -12,6 +12,7 @@ namespace Module.Web.ProductManagement.Models
         {
             ProductCategories = new List<ProductCategoryRelationModel>();
             ProductFarms = new List<ProductFarmModel>();
+            ProductAttributes = new List<ProductAttributeRelationModel>();
         }
 
         public long Id { get; set; }
@@ -36,5 +37,6 @@ namespace Module.Web.ProductManagement.Models
         public decimal Price { get; set; }
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public IFormFile File { get; set; }
+        public IEnumerable<ProductAttributeRelationModel> ProductAttributes { get; set; }
     }
 }

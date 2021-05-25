@@ -18,7 +18,7 @@
         <p><b>Content Type:</b> @Model.ContentType</p>
     </td>
     <td>
-        <div>@Model.PictureCreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <div>@Model.PictureCreatedDate.ToDateHourMinusFormat()</div>
         <p class="text-muted">by: @Model.PictureCreatedBy</p>
     </td>
 </tr>

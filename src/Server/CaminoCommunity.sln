@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Shared", "Core\Camin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Infrastructure", "Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj", "{A342EC96-53F3-4D63-BEE1-F7F56AAEF1E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Api.Navigation", "Modules\Module.Api.Navigation\Module.Api.Navigation.csproj", "{DBA515A4-A9BA-49A0-A399-DF978EE8B722}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Navigation", "Modules\Module.Api.Navigation\Module.Api.Navigation.csproj", "{DBA515A4-A9BA-49A0-A399-DF978EE8B722}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

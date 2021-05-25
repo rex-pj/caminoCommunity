@@ -49,9 +49,9 @@
                                         <a href="@navItem.Url"
                                            class="text-secondary @(navItem.IsActived ? "active" : "")">
                                             <span class="mr-2">
-                                                <i class="fa fa-home"></i>
+                                                <i class="@navItem.Icon"></i>
                                             </span>
-                                            Home
+                                            @navItem.Name
                                         </a>
                                     }
                                 </span>

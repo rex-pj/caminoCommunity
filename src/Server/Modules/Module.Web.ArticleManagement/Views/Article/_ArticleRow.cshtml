@@ -13,11 +13,11 @@
         </a>
     </td>
     <td>
-        <div>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <div>@Model.CreatedDate.ToDateHourMinusFormat()</div>
         <p class="text-muted">by: @Model.CreatedBy</p>
     </td>
     <td>
-        <div>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+        <div>@Model.UpdatedDate.ToDateHourMinusFormat()</div>
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>

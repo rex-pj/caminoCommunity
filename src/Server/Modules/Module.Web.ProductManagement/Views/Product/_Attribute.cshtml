@@ -1,0 +1,24 @@
+﻿@model ProductAttributeRelationModel
+
+<div class="card mb-3">
+    <div class="card-header">
+        <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseAttribute-@Model.Id" aria-expanded="false" aria-controls="collapseAttribute-@Model.Id">
+            +
+        </button>
+        <span>Thuộc tính: @Model.Name</span>
+        <span class="mx-2">-</span>
+        <span>Kiểu hiển thị: @Model.ControlTypeName</span>
+        <span class="mx-2">-</span>
+        <span>Thứ tự: @Model.DisplayOrder</span>
+    </div>
+    <div class="collapse" id="collapseAttribute-@Model.Id">
+        <ul class="list-group">
+            @foreach (var attributeValue in Model.AttributeRelationValues)
+            {
+                <li class="list-group-item">
+                    <partial name="_AttributeValue" model="attributeValue" />
+                </li>
+            }
+        </ul>
+    </div>
+</div>

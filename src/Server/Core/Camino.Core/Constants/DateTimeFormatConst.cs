@@ -2,6 +2,7 @@
 {
     public class DateTimeFormatConst
     {
+        public const string FullDateTimeFormat = "dd/MM/yyyy hh:mm:ss";
         public const string DateHourMinusFormat = "dd/MM/yyyy hh:mm";
         public const string DateFormat = "dd/MM/yyyy";
 

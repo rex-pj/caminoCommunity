@@ -15,7 +15,8 @@ namespace Module.Web.NavigationManagement.ViewComponents
                 SubName = "Community",
                 Logo = "/img/logo.png",
                 Url = "/",
-                TabNavigations = new List<TabNavigationModel> {
+                TabNavigations = new List<TabNavigationModel> 
+                {
                     new TabNavigationModel
                     {
                         Name = "Content",

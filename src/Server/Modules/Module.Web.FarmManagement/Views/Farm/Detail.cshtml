@@ -59,7 +59,7 @@
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
                 <label>Created date</label>
-                <span class="form-control" readonly>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                <span class="form-control" readonly>@Model.CreatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
             <div class="form-group">
                 <label>Updated date</label>
-                <span class="form-control" readonly>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>
