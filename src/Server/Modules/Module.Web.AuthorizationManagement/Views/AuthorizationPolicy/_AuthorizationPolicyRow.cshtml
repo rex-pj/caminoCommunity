@@ -3,7 +3,7 @@
 <tr>
     <th>@Model.Id</th>
     <td>
-        <a asp-action="Detail" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="common-tooltip" data-toggle="tooltip" data-placement="top" title="@Model.Description">
+        <a asp-action="Detail" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id">
             @Model.Name
         </a>
     </td>
@@ -20,7 +20,7 @@
             @if (Model.CanUpdate)
             {
                 <a asp-action="Update" asp-controller="AuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
-                   data-toggle="tooltip" data-placement="top" title="Edit authorization policy @Model.Name">
+                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit authorization policy @Model.Name">
                     <i class="fa fa-edit"></i>
                 </a>
             }
@@ -28,7 +28,7 @@
             @if (Model.CanViewUserAuthorizationPolicy)
             {
                 <a asp-action="Index" asp-controller="UserAuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
-                   data-toggle="tooltip" data-placement="top" title="View user authorization policy">
+                   data-bs-toggle="tooltip" data-bs-placement="top" title="View user authorization policy">
                     <i class="fa fa-eye"></i>
                     <i class="fa fa-users"></i>
                 </a>
@@ -37,7 +37,7 @@
             @if (Model.CanViewRoleAuthorizationPolicy)
             {
                 <a asp-action="Index" asp-controller="RoleAuthorizationPolicy" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark common-tooltip"
-                   data-toggle="tooltip" data-placement="top" title="View role authorization policy">
+                   data-bs-toggle="tooltip" data-bs-placement="top" title="View role authorization policy">
                     <i class="fa fa-eye"></i>
                     <i class="fa fa-id-card"></i>
                 </a>

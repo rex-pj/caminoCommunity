@@ -1,0 +1,78 @@
+﻿@model ArticleModel
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        @if (Model.PictureId > 0)
+        {
+            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.PictureId })" alt="..." class="img-thumbnail">
+        }
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.CreatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.CreatedBy</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.UpdatedBy</p>
+    </td>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="Article" asp-route-id="@Model.Id" alt="@Model." class="btn btn-sm btn-outline-dark mb-2">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="Article" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark mb-2">
+            <i class="fa fa-eye"></i>
+        </a>
+        @if (Model.StatusId != ArticleStatus.Inactived && !Model.IsDeleted)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#articleDeactivateModal"
+                    class="btn btn-sm btn-outline-warning mb-2">
+                <span class="common-tooltip" data-bs-toggle="tooltip" title="Deactivate this article">
+                    <i class="fa fa-lock"></i>
+                </span>
+            </button>
+        }
+        else if (Model.StatusId == ArticleStatus.Inactived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#articleActivateModal"
+                    class="btn btn-sm btn-outline-primary mb-2">
+                <span class="common-tooltip" data-bs-toggle="tooltip" title="Activate this article">
+                    <i class="fa fa-unlock"></i>
+                </span>
+            </button>
+        }
+
+        @if (Model.IsDeleted)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#articleRestoreModal"
+                    class="btn btn-sm btn-outline-info mb-2">
+                <span class="common-tooltip" data-bs-toggle="tooltip" title="Restore this article">
+                    <i class="fa fa-redo"></i>
+                </span>
+
+            </button>
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#articlePermanentlyDeleteModal"
+                    class="btn btn-sm btn-danger mb-2">
+                <span class="common-tooltip" data-bs-toggle="tooltip" title="Delete this article permanently">
+                    <i class="fa fa-times"></i>
+                </span>
+            </button>
+        }
+        else
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#articleTemporaryDeleteModal"
+                    class="btn btn-sm btn-outline-danger mb-2">
+                <span class="common-tooltip" data-bs-toggle="tooltip" title="Temporary delete this article">
+                    <i class="fa fa-trash-alt"></i>
+                </span>
+            </button>
+        }
+    </td>
+</tr>

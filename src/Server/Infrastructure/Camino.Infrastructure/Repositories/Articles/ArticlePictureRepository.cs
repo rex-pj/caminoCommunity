@@ -126,7 +126,8 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<long> CreateAsync(ArticlePictureModifyRequest request)
         {
-            var pictureData = Convert.FromBase64String(request.Picture.Base64Data);
+            var base64Data = ImageUtil.EncodeJavascriptBase64(request.Picture.Base64Data);
+            var pictureData = Convert.FromBase64String(base64Data);
             var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture()
             {
                 CreatedById = request.UpdatedById,

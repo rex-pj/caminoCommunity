@@ -18,6 +18,7 @@ namespace Camino.Core.Contracts.Services.Farms
         Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10);
         Task<bool> DeleteAsync(long id);
         Task<bool> SoftDeleteAsync(long id);
+        Task<bool> DeactivateAsync(long id);
         Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter);
     }
 }

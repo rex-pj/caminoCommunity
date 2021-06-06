@@ -1,18 +1,18 @@
 ﻿@model FarmModel
 
 <input asp-for="Id" type="hidden" />
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="name">Name</label>
             <input class="form-control" type="text" asp-for="Name">
         </div>
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label>Farm Type</label>
             <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "FarmType")" asp-for="FarmTypeId">
                 <option value="@Model.FarmTypeId" selected="selected">@Model.FarmTypeName</option>
@@ -21,18 +21,18 @@
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="Description">Description</label>
             <textarea class="form-control" asp-for="Description" rows="3"></textarea>
         </div>
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label>Pictures</label>
             <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
                    type="file" asp-for="File" id="pictureUpload" />
@@ -43,13 +43,13 @@
     </div>
 </div>
 
-<div class="form-row mb-3" id="farmPictures">
+<div class="row mb-3" id="farmPictures">
     @{
         int index = 0;
         foreach (var item in Model.Pictures)
         {
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 picture-item">
-                <div class="form-group mb-3">
+                <div class="mb-3 mb-3">
                     <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
                 </div>
                 <input type="hidden" name="Pictures[@index].PictureId" value="@item.PictureId" />

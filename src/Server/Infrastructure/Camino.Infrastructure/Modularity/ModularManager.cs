@@ -49,26 +49,30 @@ namespace Camino.Infrastructure.Modularity
 
         private ModuleInfo GetModuleByFile(FileSystemInfo fileSystemInfo, DirectoryInfo moduleFolder, DirectoryInfo binFolder)
         {
-            Assembly assembly;
+            var assembly = GetModuleAssembly(fileSystemInfo);
+            if (assembly == null)
+            {
+                throw new FileLoadException($"No assembly of {fileSystemInfo.FullName} has been found!", fileSystemInfo.FullName);
+            }
+
+            if (!assembly.FullName.Contains(moduleFolder.Name))
+            {
+                return null;
+            }
+
+            return new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName };
+        }
+
+        private Assembly GetModuleAssembly(FileSystemInfo fileSystemInfo)
+        {
             try
             {
-                assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileSystemInfo.FullName);
+                return AssemblyLoadContext.Default.LoadFromAssemblyPath(fileSystemInfo.FullName);
             }
             catch (FileLoadException)
             {
-                assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(fileSystemInfo.Name)));
-                if (assembly == null)
-                {
-                    throw;
-                }
+                return Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(fileSystemInfo.Name)));
             }
-
-            if (assembly.FullName.Contains(moduleFolder.Name))
-            {
-                return new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName };
-            }
-
-            return null;
         }
     }
 }

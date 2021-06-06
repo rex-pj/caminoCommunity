@@ -14,7 +14,7 @@
             foreach (var articlePic in Model.Collections)
             {
                 articlePic.SetPageAuthorizationForModel(Model);
-                <partial name="_ArticlePictureRow" model="articlePic" />
+                <partial name="Partial/_ArticlePictureRow" model="articlePic" />
             }
         }
         else

@@ -2,7 +2,7 @@
 @model FarmPictureModel
 <tr>
     <td>
-        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.FarmId" class="common-tooltip" data-toggle="tooltip">
+        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.FarmId">
             @Model.FarmName
         </a>
         <p><b>Type: </b> @EnumUtil.GetDescription(Model.FarmPictureType)</p>

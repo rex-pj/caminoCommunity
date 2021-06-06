@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -33,6 +34,7 @@ namespace Module.Web.FarmManagement.Models
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public long PictureId { get; set; }
         public IFormFile File { get; set; }
+        public FarmStatus StatusId { get; set; }
 
         public IEnumerable<SelectListItem> SelectTypes { get; set; }
     }

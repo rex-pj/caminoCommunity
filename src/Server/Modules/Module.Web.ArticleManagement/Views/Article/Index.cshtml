@@ -10,9 +10,9 @@
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
-            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
-                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+        <div class="col-auto me-auto">
+            <button class="btn btn-sm text-light mr-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
                 <i class="fa fa-search"></i>
             </button>
             @ViewData["Title"]
@@ -20,11 +20,17 @@
     </div>
 </div>
 
-<partial name="_SearchForm" model="Model.Filter" />
+<partial name="Partial/_SearchForm" model="Model.Filter" />
 
 <div class="data-table table-responsive">
-    <partial name="_ArticleTable" />
-    <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+    <partial name="Partial/_ArticleTable" />
+    <div class="spinner-grow loading my-3 d-none me-auto ml-auto" role="status">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
+<partial name="Partial/_ArticleActivateModal" />
+<partial name="Partial/_ArticleDeactivateModal" />
+<partial name="Partial/_ArticleRestoreModal" />
+<partial name="Partial/_PermanentlyDeleteModal" />
+<partial name="Partial/_TemporaryDeleteModal" />

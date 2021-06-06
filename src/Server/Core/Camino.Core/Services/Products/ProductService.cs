@@ -275,6 +275,11 @@ namespace Camino.Services.Products
             return await _productRepository.SoftDeleteAsync(id);
         }
 
+        public async Task<bool> DeactivateAsync(long id)
+        {
+            return await _productRepository.DeactivateAsync(id);
+        }
+
         public async Task<BasePageList<ProductPictureResult>> GetPicturesAsync(ProductPictureFilter filter)
         {
             var productPicturesPageList = await _productPictureRepository.GetAsync(filter);

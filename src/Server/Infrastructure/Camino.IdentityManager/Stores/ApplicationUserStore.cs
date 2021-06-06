@@ -574,7 +574,7 @@ namespace Camino.IdentityManager.Contracts.Stores
                 });
             }
             // todo: check DbUpdateConcurrencyException
-            catch (Exception ex)
+            catch (Exception)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

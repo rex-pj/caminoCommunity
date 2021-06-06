@@ -24,6 +24,7 @@ namespace Camino.Shared.Results.Products
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }
         public decimal Price { get; set; }
+        public int StatusId { get; set; }
         public IEnumerable<ProductCategoryResult> Categories { get; set; }
         public IEnumerable<ProductFarmResult> Farms { get; set; }
         public IEnumerable<PictureResult> Pictures { get; set; }

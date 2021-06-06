@@ -2,8 +2,8 @@
 
 <div class="card mb-3">
     <div class="card-header">
-        <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseAttribute-@Model.Id" aria-expanded="false" aria-controls="collapseAttribute-@Model.Id">
-            +
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAttribute-@Model.Id" aria-expanded="false" aria-controls="collapseAttribute-@Model.Id">
+            <i class="fa fa-angle-down"></i>
         </button>
         <span>Thuộc tính: @Model.Name</span>
         <span class="mx-2">-</span>
@@ -16,7 +16,7 @@
             @foreach (var attributeValue in Model.AttributeRelationValues)
             {
                 <li class="list-group-item">
-                    <partial name="_AttributeValue" model="attributeValue" />
+                    <partial name="_ProductAttributeValue" model="attributeValue" />
                 </li>
             }
         </ul>

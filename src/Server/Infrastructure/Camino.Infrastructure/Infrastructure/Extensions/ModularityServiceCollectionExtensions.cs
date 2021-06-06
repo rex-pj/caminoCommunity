@@ -8,11 +8,16 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Core.Contracts.Modularity;
 using Camino.Infrastructure.Modularity;
+using System.Collections.Generic;
+using Camino.Shared.Modularity;
 
 namespace Camino.Infrastructure.Infrastructure.Extensions
 {
     public static class ModularCoreServiceCollectionExtensions
     {
+        private const string _modularPath = "Modular:Path";
+        private const string _modularPrefix = "Modular:Prefix";
+
         public static IMvcBuilder AddModular(this IMvcBuilder mvcBuilder)
         {
             var services = mvcBuilder.Services;
@@ -20,23 +25,7 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
 
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.FullName;
-            var modulesPath = $"{rootPath}{configuration["Modular:Path"]}";
-            var prefix = configuration["Modular:Prefix"];
-
-            return AddModular(mvcBuilder, modulesPath, prefix);
-        }
-
-        public static IMvcBuilder AddModular(this IMvcBuilder mvcBuilder, string modulesPath, string prefix = null)
-        {
-            var services = mvcBuilder.Services;
-            services.AddSingleton<IModularManager, ModularManager>();
-            var serviceProvider = services.BuildServiceProvider();
-            var modularManager = serviceProvider.GetRequiredService<IModularManager>();
-
-            var modules = modularManager.LoadModules(modulesPath, prefix);
-            services.AddSingleton(modules);
-
+            var modules = services.GetModules(configuration, webHostEnvironment);
             var moduleStartupInterfaceType = typeof(IModuleStartup);
             foreach (var module in modules)
             {
@@ -50,6 +39,23 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
             }
 
             return mvcBuilder;
+        }
+
+        private static IList<ModuleInfo> GetModules(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        {
+            services.AddSingleton<IModularManager, ModularManager>();
+
+            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.FullName;
+            var modulesPath = $"{rootPath}{configuration[_modularPath]}";
+            var prefix = configuration[_modularPrefix];
+
+            var modularManager = services.BuildServiceProvider()
+                .GetRequiredService<IModularManager>();
+
+            var modules = modularManager.LoadModules(modulesPath, prefix);
+            services.AddSingleton(modules);
+
+            return modules;
         }
 
         private static void AddApplicationPart(IMvcBuilder mvcBuilder, Assembly assembly)

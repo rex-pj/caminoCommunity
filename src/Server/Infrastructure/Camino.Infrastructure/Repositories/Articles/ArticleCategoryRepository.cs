@@ -10,6 +10,7 @@ using Camino.Core.Contracts.Data;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.Enums;
 
 namespace Camino.Service.Repository.Articles
 {
@@ -25,22 +26,22 @@ namespace Camino.Service.Repository.Articles
         public async Task<ArticleCategoryResult> FindAsync(long id)
         {
             var category = await (from child in _articleCategoryRepository.Table
-                            join parent in _articleCategoryRepository.Table
-                            on child.ParentId equals parent.Id into categories
-                            from cate in categories.DefaultIfEmpty()
-                            where child.Id == id
-                            select new ArticleCategoryResult
-                            {
-                                Description = child.Description,
-                                CreatedDate = child.CreatedDate,
-                                CreatedById = child.CreatedById,
-                                Id = child.Id,
-                                Name = child.Name,
-                                ParentId = child.ParentId,
-                                UpdatedById = child.UpdatedById,
-                                UpdatedDate = child.UpdatedDate,
-                                ParentCategoryName = cate != null ? cate.Name : null
-                            }).FirstOrDefaultAsync();
+                                  join parent in _articleCategoryRepository.Table
+                                  on child.ParentId equals parent.Id into categories
+                                  from cate in categories.DefaultIfEmpty()
+                                  where child.Id == id
+                                  select new ArticleCategoryResult
+                                  {
+                                      Description = child.Description,
+                                      CreatedDate = child.CreatedDate,
+                                      CreatedById = child.CreatedById,
+                                      Id = child.Id,
+                                      Name = child.Name,
+                                      ParentId = child.ParentId,
+                                      UpdatedById = child.UpdatedById,
+                                      UpdatedDate = child.UpdatedDate,
+                                      ParentCategoryName = cate != null ? cate.Name : null
+                                  }).FirstOrDefaultAsync();
 
             return category;
         }

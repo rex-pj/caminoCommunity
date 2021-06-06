@@ -6,7 +6,7 @@
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
+        <div class="col-auto me-auto">
             <a asp-action="Index" asp-controller="Product" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-arrow-left"></i>
             </a>
@@ -23,99 +23,99 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
-            <div class="form-group">
+            <div class="mb-3">
                 <h2>@Model.Name</h2>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         @foreach (var item in Model.Pictures)
         {
             <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-                <div class="form-group mb-3">
+                <div class="mb-3">
                     <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
                 </div>
             </div>
         }
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Attributes</label>
                 @foreach (var attribute in Model.ProductAttributes)
                 {
-                    <partial name="_Attribute" model="attribute" />
+                    <partial name="_ProductAttribute" model="attribute" />
                 }
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Price</label>
                 <span class="form-control" readonly>@Model.Price</span>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
-            <div class="form-group">
+            <div class="mb-3">
                 <p>@Html.Raw(Model.Description)</p>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Created by</label>
                 <span class="form-control" readonly>@Model.CreatedBy</span>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Created date</label>
                 <span class="form-control" readonly>@Model.CreatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Updated by</label>
                 <span class="form-control" readonly>@Model.UpdatedBy</span>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Updated date</label>
                 <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Categories</label>
                 @foreach (var category in Model.ProductCategories)
                 {
-                    <span class="form-control" readonly>@category.Name</span>
+                    <span class="form-control mb-2" readonly>@category.Name</span>
                 }
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Farms</label>
                 @foreach (var farm in Model.ProductFarms)
                 {
-                    <span class="form-control" readonly>@farm.FarmName</span>
+                    <span class="form-control mb-2" readonly>@farm.FarmName</span>
                 }
             </div>
         </div>

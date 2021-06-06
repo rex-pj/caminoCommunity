@@ -18,6 +18,7 @@ namespace Camino.Core.Contracts.Services.Products
         Task<IList<ProductResult>> GetRelevantsAsync(long id, ProductFilter filter);
         Task<bool> DeleteAsync(long id);
         Task<bool> SoftDeleteAsync(long id);
+        Task<bool> DeactivateAsync(long id);
         Task<BasePageList<ProductPictureResult>> GetPicturesAsync(ProductPictureFilter filter);
     }
 }

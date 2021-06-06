@@ -34,7 +34,7 @@
 
             var base64Data = 'data:' + data.result.contentType + ';base64,' + data.result.url;
             var appendedHtml = '<div class="col-6 col-sm-6 col-md-4 col-lg-3 picture-item">';
-            appendedHtml += '<div class="form-group mb-3">';
+            appendedHtml += '<div class="mb-3">';
             appendedHtml += '<img src="' + blobUrl + '" alt="' + data.result.name + '" class="img-thumbnail">';
             appendedHtml += '</div>';
             appendedHtml += '<input type="hidden" name="Picturess[' + appendedIndex + '].Base64Data" value="' + base64Data + '" />';

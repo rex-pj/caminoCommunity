@@ -6,52 +6,52 @@
     </div>
     <div class="card-body">
         <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Search">Keyword</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <input type="text" class="form-control form-control-sm" asp-for="Search">
                     </div>
                 </div>
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="CountryId">Country</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "Country")" asp-for="CountryId"></select>
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Address">Address</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <input type="text" class="form-control form-control-sm" asp-for="Address">
                     </div>
                 </div>
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="PhoneNumber">Phone Number</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <input type="text" class="form-control form-control-sm" asp-for="PhoneNumber">
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedById">Created By</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="CreatedById"></select>
                     </div>
                 </div>
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="UpdatedById">Updated By</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="UpdatedById"></select>
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label">Registered Date</label>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <div class="input-group datetimepicker" id="createdDateFromPicker" data-target-input="nearest">
                             <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
                                    data-target="#createdDateFromPicker" data-toggle="datetimepicker" asp-for="CreatedDateFrom">
@@ -67,7 +67,7 @@
                     </label>
                 </div>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <div class="input-group datetimepicker" id="createdDateToPicker" data-target-input="nearest">
                             <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
                                    data-target="#createdDateToPicker" data-toggle="datetimepicker" asp-for="CreatedDateTo">
@@ -78,10 +78,10 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label">Birthdate</label>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <div class="input-group datetimepicker" id="birthDateFromPicker" data-target-input="nearest">
                             <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
                                    data-target="#birthDateFromPicker" data-toggle="datetimepicker" asp-for="BirthDateFrom">
@@ -97,7 +97,7 @@
                     </label>
                 </div>
                 <div class="col-5 col-sm-9 col-md-4 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <div class="input-group datetimepicker" id="birthDateToPicker" data-target-input="nearest">
                             <input type="text" class="form-control form-control-sm datetimepicker-input" autocomplete="off"
                                    data-target="#birthDateToPicker" data-toggle="datetimepicker" asp-for="BirthDateTo">
@@ -108,15 +108,15 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="StatusId">Status</label>
                 <div class="col-12 col-sm-9 col-md-9 col-lg-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "UserStatus")" asp-for="StatusId"></select>
                     </div>
                 </div>
                 <div class="col-6 col-sm-6 col-md-6 col-lg-2">
-                    <div class="form-group form-check ml-lg-3 ml-0">
+                    <div class="mb-3 form-check ml-lg-3 ml-0">
                         <input class="form-check-input" checkbox-group="EmailConfirmed" type="checkbox"
                                id="IsEmail_UnConfirmed" name="IsEmailConfirmed" value="true"
                                @(Model.IsEmailConfirmed == true ? "checked" : "")>
@@ -126,7 +126,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-sm-6 col-md-6 col-lg-2">
-                    <div class="form-group form-check ml-lg-3 ml-0">
+                    <div class="mb-3 form-check ml-lg-3 ml-0">
                         <input class="form-check-input" checkbox-group="EmailConfirmed" type="checkbox"
                                id="IsEmail_Confirmed" name="IsEmailConfirmed" value="false"
                                @(Model.IsEmailConfirmed == false ? "checked" : "")>
@@ -136,7 +136,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row mb-3">
+            <div class="row mb-3">
                 <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="GenderId">Gender</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="form-check form-check-inline">

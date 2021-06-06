@@ -13,6 +13,7 @@ using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
 using Camino.Core.Contracts.Repositories.Products;
 using LinqToDB.Tools;
+using Camino.Shared.Enums;
 
 namespace Camino.Service.Repository.Farms
 {
@@ -202,7 +203,8 @@ namespace Camino.Service.Repository.Farms
                             CreatedDate = farm.CreatedDate,
                             Description = farm.Description,
                             UpdatedById = farm.UpdatedById,
-                            UpdatedDate = farm.UpdatedDate
+                            UpdatedDate = farm.UpdatedDate,
+                            StatusId = farm.StatusId
                         };
 
             var farms = await query
@@ -313,6 +315,15 @@ namespace Camino.Service.Repository.Farms
             await _productRepository.Get(x => x.Id.In(productIds))
                 .Set(x => x.IsDeleted, true)
                 .UpdateAsync();
+        }
+
+        public async Task<bool> DeactivateAsync(long id)
+        {
+            await _farmRepository.Get(x => x.Id == id)
+                .Set(x => x.StatusId, (int)FarmStatus.Inactived)
+                .UpdateAsync();
+
+            return true;
         }
     }
 }

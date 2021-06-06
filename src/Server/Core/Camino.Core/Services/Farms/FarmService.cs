@@ -10,7 +10,6 @@ using System.Linq;
 using Camino.Core.Contracts.Repositories.Users;
 using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Articles;
 using System;
 
 namespace Camino.Services.Farms
@@ -166,6 +165,11 @@ namespace Camino.Services.Farms
             // Soft delete farm pictures
             await _farmPictureRepository.SoftDeleteByFarmIdAsync(id);
             return await _farmRepository.SoftDeleteAsync(id);
+        }
+
+        public async Task<bool> DeactivateAsync(long id)
+        {
+            return await _farmRepository.DeactivateAsync(id);
         }
 
         public async Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter)

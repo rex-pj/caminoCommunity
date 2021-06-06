@@ -6,7 +6,7 @@
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
+        <div class="col-auto me-auto">
             <a asp-action="Index" asp-controller="UserStatus" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-arrow-left"></i>
             </a>
@@ -23,11 +23,11 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="form-group">
+    <div class="mb-3">
         <label>Name</label>
         <span class="form-control" readonly>@Model.Name</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Description</label>
         <span class="form-control" readonly>@Model.Description</span>
     </div>

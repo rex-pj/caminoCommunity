@@ -56,6 +56,9 @@ namespace Camino.Services.Articles
 
             var createdByUserName = (await _userRepository.FindByIdAsync(article.CreatedById)).DisplayName;
             article.CreatedBy = createdByUserName;
+
+            var updatedByUserName = (await _userRepository.FindByIdAsync(article.UpdatedById)).DisplayName;
+            article.UpdatedBy = updatedByUserName;
             return article;
         }
 
@@ -177,6 +180,12 @@ namespace Camino.Services.Articles
         {
             await _articlePictureRepository.SoftDeleteByArticleIdAsync(id);
             return await _articleRepository.SoftDeleteAsync(id);
+        }
+
+
+        public async Task<bool> DeactivateAsync(long id)
+        {
+            return await _articleRepository.DeactivateAsync(id);
         }
 
         public async Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter)

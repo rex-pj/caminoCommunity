@@ -48,7 +48,7 @@ namespace Module.Web.ProductManagement.Controllers
             };
 
             var productPageList = await _productService.GetAsync(filterRequest);
-            var products = productPageList.Collections.Select(x => new ProductModel()
+            var products = productPageList.Collections.Select(x => new ProductModel
             {
                 Description = x.Description,
                 CreatedBy = x.CreatedBy,
@@ -59,6 +59,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedDate = x.UpdatedDate,
                 Id = x.Id,
                 Name = x.Name,
+                StatusId = (ProductStatus)x.StatusId,
                 PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0
             });
 
@@ -179,6 +180,26 @@ namespace Module.Web.ProductManagement.Controllers
                 {
                     FarmId = x.FarmId,
                     FarmName = x.Name
+                }),
+                ProductAttributes = product.ProductAttributes.Select(x => new ProductAttributeRelationModel
+                {
+                    AttributeId = x.AttributeId,
+                    ControlTypeId = x.AttributeControlTypeId,
+                    DisplayOrder = x.DisplayOrder,
+                    Id = x.Id,
+                    IsRequired = x.IsRequired,
+                    TextPrompt = x.TextPrompt,
+                    Name = x.AttributeName,
+                    ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
+                    AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueModel
+                    {
+                        Id = c.Id,
+                        DisplayOrder = c.DisplayOrder,
+                        Name = c.Name,
+                        PriceAdjustment = c.PriceAdjustment,
+                        PricePercentageAdjustment = c.PricePercentageAdjustment,
+                        Quantity = c.Quantity
+                    })
                 })
             };
 
@@ -236,6 +257,42 @@ namespace Module.Web.ProductManagement.Controllers
             product.UpdatedById = LoggedUserId;
             await _productService.UpdateAsync(product);
             return RedirectToAction(nameof(Detail), new { id = product.Id });
+        }
+
+        [HttpDelete]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProduct)]
+        public async Task<IActionResult> Delete(ProductModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _productService.DeleteAsync(model.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        public async Task<IActionResult> Deactivate(ProductModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _productService.DeactivateAsync(model.Id);
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]

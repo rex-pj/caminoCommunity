@@ -6,7 +6,7 @@
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
+        <div class="col-auto me-auto">
             <a asp-action="Index" asp-controller="User" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-arrow-left"></i>
             </a>
@@ -23,31 +23,31 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="form-group">
+    <div class="mb-3">
         <label>Name</label>
         <span class="form-control" readonly>@Model.Lastname @Model.Firstname</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Display Name</label>
         <span class="form-control" readonly>@Model.DisplayName</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Email</label>
         <span class="form-control" readonly>@Model.Email</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Phone</label>
         <span class="form-control" readonly>@Model.Address</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Email</label>
         <span class="form-control" readonly>@Model.Email</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Description</label>
         <span class="form-control" readonly>@Model.Description</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Birthdate</label>
         <span class="form-control" readonly>
             @if (Model.BirthDate.HasValue)
@@ -56,23 +56,23 @@
             }
         </span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Joined date</label>
         <span class="form-control" readonly>
             @Model.CreatedDate.ToString(DateTimeFormatConst.DateFormat)
         </span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Updated date</label>
         <span class="form-control" readonly>
             @Model.UpdatedDate.ToString(DateTimeFormatConst.DateFormat)
         </span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Gender</label>
         <span class="form-control" readonly>@Model.GenderLabel</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Country</label>
         <span class="form-control" readonly>
             @if (Model.CountryCode != null)
@@ -81,11 +81,11 @@
             }
         </span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Status</label>
         <span class="badge badge-info">@Model.StatusLabel</span>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
         <label>Email Confirmed</label>
         @if (Model.IsEmailConfirmed)
         {

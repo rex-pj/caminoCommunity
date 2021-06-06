@@ -18,5 +18,6 @@ namespace Camino.Core.Contracts.Repositories.Articles
         Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter);
         Task<bool> DeleteAsync(long id);
         Task<bool> SoftDeleteAsync(long id);
+        Task<bool> DeactivateAsync(long id);
     }
 }

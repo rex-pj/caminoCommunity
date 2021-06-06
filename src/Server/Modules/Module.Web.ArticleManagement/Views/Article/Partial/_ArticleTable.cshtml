@@ -16,7 +16,7 @@
             foreach (var article in Model.Collections)
             {
                 article.SetPageAuthorizationForModel(Model);
-                <partial name="_ArticleRow" model="article" />
+                <partial name="Partial/_ArticleRow" model="article" />
             }
         }
         else

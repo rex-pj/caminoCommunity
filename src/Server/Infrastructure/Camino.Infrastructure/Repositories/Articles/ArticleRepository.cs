@@ -10,6 +10,7 @@ using Camino.Core.Contracts.Data;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.Enums;
 
 namespace Camino.Service.Repository.Articles
 {
@@ -89,7 +90,7 @@ namespace Camino.Service.Repository.Articles
         public async Task<BasePageList<ArticleResult>> GetAsync(ArticleFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var articleQuery = _articleRepository.Get(x => !x.IsDeleted);
+            var articleQuery = _articleRepository.Get(x => filter.IsGettingDeleted || !x.IsDeleted);
             if (!string.IsNullOrEmpty(search))
             {
                 articleQuery = articleQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -143,7 +144,9 @@ namespace Camino.Service.Repository.Articles
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            Content = ar.Content
+                            Content = ar.Content,
+                            StatusId = ar.StatusId,
+                            IsDeleted = ar.IsDeleted
                         };
 
             var articles = await query
@@ -236,6 +239,15 @@ namespace Camino.Service.Repository.Articles
         {
             await _articleRepository.Get(x => x.Id == id)
                 .Set(x => x.IsDeleted, true)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeactivateAsync(long id)
+        {
+            await _articleRepository.Get(x => x.Id == id)
+                .Set(x => x.StatusId, (int)ArticleStatus.Inactived)
                 .UpdateAsync();
 
             return true;

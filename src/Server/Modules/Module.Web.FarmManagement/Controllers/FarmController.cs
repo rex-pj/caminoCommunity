@@ -47,7 +47,7 @@ namespace Module.Web.FarmManagement.Controllers
             };
 
             var farmPageList = await _farmService.GetAsync(filterRequest);
-            var farms = farmPageList.Collections.Select(x => new FarmModel()
+            var farms = farmPageList.Collections.Select(x => new FarmModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -57,6 +57,7 @@ namespace Module.Web.FarmManagement.Controllers
                 PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0,
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
+                StatusId = (FarmStatus)x.StatusId
             });
 
             var farmPage = new PageListModel<FarmModel>(farms)
@@ -188,6 +189,42 @@ namespace Module.Web.FarmManagement.Controllers
             farm.UpdatedById = LoggedUserId;
             await _farmService.UpdateAsync(farm);
             return RedirectToAction(nameof(Detail), new { id = farm.Id });
+        }
+
+        [HttpDelete]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteFarm)]
+        public async Task<IActionResult> Delete(FarmModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _farmService.DeleteAsync(model.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
+        public async Task<IActionResult> Deactivate(FarmModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _farmService.DeactivateAsync(model.Id);
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]

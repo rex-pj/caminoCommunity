@@ -43,7 +43,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 PageSize = filter.PageSize,
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
-                CategoryId = filter.CategoryId
+                CategoryId = filter.CategoryId,
+                IsGettingDeleted = true
             };
 
             var articlePageList = await _articleService.GetAsync(filterRequest);
@@ -57,7 +58,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 Content = x.Content,
                 Description = x.Description,
                 Name = x.Name,
-                PictureId = x.Picture.Id
+                PictureId = x.Picture.Id,
+                StatusId = (ArticleStatus)x.StatusId,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                IsDeleted = x.IsDeleted
             });
             var articlePage = new PageListModel<ArticleModel>(articles)
             {
@@ -103,7 +108,9 @@ namespace Module.Web.ArticleManagement.Controllers
                     Name = article.Name,
                     PictureId = article.Picture.Id,
                     UpdateById = article.UpdatedById,
-                    UpdatedDate = article.UpdatedDate
+                    UpdatedDate = article.UpdatedDate,
+                    UpdatedBy = article.UpdatedBy,
+                    CreatedBy = article.CreatedBy
                 };
                 return View(model);
             }
@@ -182,6 +189,42 @@ namespace Module.Web.ArticleManagement.Controllers
 
             await _articleService.UpdateAsync(article);
             return RedirectToAction(nameof(Detail), new { id = article.Id });
+        }
+
+        [HttpDelete]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteArticle)]
+        public async Task<IActionResult> Delete(ArticleModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _articleService.DeleteAsync(model.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Deactivate(ArticleModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _articleService.DeactivateAsync(model.Id);
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]

@@ -13,7 +13,7 @@
             @foreach (var tab in Model.TabNavigations)
             {
                 <li class="nav-item ml-1">
-                    <a class="nav-link @(tab.IsActived ? "active":"")" id="@tab.Name-tab" data-toggle="tab" href="#@tab.Code" role="tab" aria-controls="@tab.Name" aria-selected="true">@tab.Name</a>
+                    <button class="nav-link @(tab.IsActived ? "active":"")" id="@tab.Name-tab" data-bs-toggle="tab" data-bs-target="#@tab.Code" role="tab" aria-controls="@tab.Name" aria-selected="true">@tab.Name</button>
                 </li>
             }
         </ul>
@@ -32,8 +32,8 @@
                                     {
                                         <a href="@navItem.Url"
                                            class="text-secondary @(navItem.IsActived ? "active" : "collapsed")"
-                                           data-toggle="collapse"
-                                           data-target="#collapse@(navItem.Route)"
+                                           data-bs-toggle="collapse"
+                                           data-bs-target="#collapse@(navItem.Route)"
                                            aria-expanded="true"
                                            aria-controls="collapse@(navItem.Route)">
                                             <span class="mr-2">

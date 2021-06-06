@@ -1,18 +1,18 @@
 ﻿@model ArticleModel
 
 <input asp-for="Id" type="hidden" />
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="name">Name</label>
             <input class="form-control" type="text" asp-for="Name">
         </div>
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label>Category</label>
             @if (Model.ArticleCategoryId > 0)
             {
@@ -29,18 +29,18 @@
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="Description">Description</label>
             <textarea class="form-control" asp-for="Description" rows="3"></textarea>
         </div>
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="form-group">
+        <div class="mb-3">
             <label>Picture</label>
             <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
                    type="file" asp-for="File" id="pictureUpload" />
@@ -54,7 +54,7 @@
     </div>
 </div>
 
-<div class="form-row mb-3">
+<div class="row mb-3">
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div id="articleThumbnail">
             @if (Model.PictureId > 0)
@@ -65,9 +65,9 @@
     </div>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col-12 col-sm-9 col-md-8 col-lg-9">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="Content">Content</label>
             <textarea class="form-control" asp-for="Content"></textarea>
         </div>
