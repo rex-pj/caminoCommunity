@@ -188,6 +188,11 @@ namespace Camino.Services.Articles
             return await _articleRepository.DeactivateAsync(id);
         }
 
+        public async Task<bool> ActiveAsync(long id)
+        {
+            return await _articleRepository.ActiveAsync(id);
+        }
+
         public async Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter)
         {
             var articlePictureListPage = await _articlePictureRepository.GetAsync(filter);

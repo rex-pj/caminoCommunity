@@ -1,5 +1,4 @@
-﻿using Camino.Core.Utils;
-using Camino.Core.Contracts.Data;
+﻿using Camino.Core.Contracts.Data;
 using Camino.Shared.Enums;
 using Camino.Core.Contracts.Repositories.Feeds;
 using Camino.Shared.Results.Feed;
@@ -12,8 +11,8 @@ using System.Threading.Tasks;
 using Camino.Core.Domain.Articles;
 using Camino.Core.Domain.Farms;
 using Camino.Core.Domain.Products;
-using Camino.Core.Domain.Identifiers;
 using Camino.Core.Domain.Media;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Feeds
 {
@@ -48,9 +47,9 @@ namespace Camino.Service.Repository.Feeds
 
         public async Task<BasePageList<FeedResult>> GetAsync(FeedFilter filter)
         {
-            var articleQuery = _articleRepository.Get(x => !x.IsDeleted);
-            var productQuery = _productRepository.Get(x => !x.IsDeleted);
-            var farmQuery = _farmRepository.Get(x => !x.IsDeleted);
+            var articleQuery = _articleRepository.Get(x => x.StatusId != ArticleStatus.Deleted.GetCode());
+            var productQuery = _productRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode());
+            var farmQuery = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode());
             if (filter.CreatedById.HasValue)
             {
                 articleQuery = articleQuery.Where(x => x.CreatedById == filter.CreatedById);

@@ -34,6 +34,5 @@ namespace Module.Web.ArticleManagement.Models
         public string ArticleCategoryName { get; set; }
         public ArticleStatus StatusId { get; set; }
         public IFormFile File { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

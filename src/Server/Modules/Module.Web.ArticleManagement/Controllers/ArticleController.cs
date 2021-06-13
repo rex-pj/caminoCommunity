@@ -34,7 +34,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
-            var filterRequest = new ArticleFilter()
+            var filterRequest = new ArticleFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -52,6 +52,7 @@ namespace Module.Web.ArticleManagement.Controllers
             {
                 Id = x.Id,
                 CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate,
                 CreatedById = x.CreatedById,
                 ArticleCategoryId = x.ArticleCategoryId,
                 ArticleCategoryName = x.ArticleCategoryName,
@@ -61,8 +62,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 PictureId = x.Picture.Id,
                 StatusId = (ArticleStatus)x.StatusId,
                 CreatedBy = x.CreatedBy,
-                UpdatedBy = x.UpdatedBy,
-                IsDeleted = x.IsDeleted
+                UpdatedBy = x.UpdatedBy
             });
             var articlePage = new PageListModel<ArticleModel>(articles)
             {
@@ -191,16 +191,16 @@ namespace Module.Web.ArticleManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = article.Id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteArticle)]
-        public async Task<IActionResult> Delete(ArticleModel model)
+        public async Task<IActionResult> Delete(ArticleIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _articleService.DeleteAsync(model.Id);
+            var isDeleted = await _articleService.DeleteAsync(request.Id);
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -211,15 +211,51 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
-        public async Task<IActionResult> Deactivate(ArticleModel model)
+        public async Task<IActionResult> TemporaryDelete(ArticleIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _articleService.DeactivateAsync(model.Id);
+            var isDeleted = await _articleService.SoftDeleteAsync(request.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Deactivate(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _articleService.DeactivateAsync(request.Id);
             if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Active(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _articleService.ActiveAsync(request.Id);
+            if (!isActived)
             {
                 return RedirectToErrorPage();
             }

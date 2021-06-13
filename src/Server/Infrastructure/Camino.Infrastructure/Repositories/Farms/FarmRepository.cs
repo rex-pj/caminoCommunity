@@ -14,6 +14,7 @@ using Camino.Shared.Requests.Farms;
 using Camino.Core.Contracts.Repositories.Products;
 using LinqToDB.Tools;
 using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Farms
 {
@@ -43,7 +44,7 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<FarmResult> FindAsync(long id)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && x.StatusId != FarmStatus.Deleted.GetCode())
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
                                select new FarmResult
@@ -65,7 +66,7 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<FarmResult> FindDetailAsync(long id)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && x.StatusId != FarmStatus.Deleted.GetCode())
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
                                select new FarmResult
@@ -87,7 +88,7 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
         {
-            var query = _farmRepository.Get(x => !x.IsDeleted)
+            var query = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(c => new FarmResult
                 {
                     Id = c.Id,
@@ -130,7 +131,7 @@ namespace Camino.Service.Repository.Farms
 
         public FarmResult FindByName(string name)
         {
-            var exist = _farmRepository.Get(x => x.Name == name && !x.IsDeleted)
+            var exist = _farmRepository.Get(x => x.Name == name && x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(x => new FarmResult()
                 {
                     Id = x.Id,
@@ -150,7 +151,7 @@ namespace Camino.Service.Repository.Farms
         public async Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Get(x => !x.IsDeleted);
+            var farmQuery = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -233,7 +234,7 @@ namespace Camino.Service.Repository.Farms
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
                 Description = request.Description,
-                IsPublished = true
+                StatusId = FarmStatus.Pending.GetCode()
             };
 
             return await _farmRepository.AddWithInt64EntityAsync(newFarm);
@@ -299,7 +300,7 @@ namespace Camino.Service.Repository.Farms
 
             // Delete farm
             await _farmRepository.Get(x => x.Id == id)
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, (int)FarmStatus.Deleted)
                 .UpdateAsync();
 
             return true;
@@ -313,14 +314,14 @@ namespace Camino.Service.Repository.Farms
             await _productPictureRepository.SoftDeleteByProductIdsAsync(productIds);
 
             await _productRepository.Get(x => x.Id.In(productIds))
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, FarmStatus.Deleted.GetCode())
                 .UpdateAsync();
         }
 
         public async Task<bool> DeactivateAsync(long id)
         {
             await _farmRepository.Get(x => x.Id == id)
-                .Set(x => x.StatusId, (int)FarmStatus.Inactived)
+                .Set(x => x.StatusId, FarmStatus.Inactived.GetCode())
                 .UpdateAsync();
 
             return true;

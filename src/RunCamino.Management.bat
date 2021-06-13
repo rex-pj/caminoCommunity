@@ -1,3 +1,3 @@
-dotnet build Server/Modules/**/**.csproj
-dotnet build Server/Presentation/Camino.Management/Camino.Management.csproj
-start dotnet run --project Server\Presentation\Camino.Management\Camino.Management.csproj
+Powershell.exe -executionpolicy remotesigned -File BuildCaminoServer.ps1
+
+dotnet run --project Server\Presentation\Camino.Management\Camino.Management.csproj

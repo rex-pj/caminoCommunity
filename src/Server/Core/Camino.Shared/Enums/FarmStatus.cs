@@ -2,12 +2,10 @@
 {
     public enum FarmStatus
     {
-        Undefined = 0,
         Pending = 1,
-        New = 2,
+        Actived = 2,
+        Inactived = 4,
         Reported = 3,
-        Actived = 4,
-        Inactived = 5,
-        Deleted = 6
+        Deleted = 5
     }
 }

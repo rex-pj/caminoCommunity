@@ -431,7 +431,7 @@ ADD CONSTRAINT PK_FarmType
 PRIMARY KEY (Id)
 --FARM--
 GO
-CREATE TABLE dbo.Farm
+CREATE TABLE [dbo].[Farm]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	[Name] NVARCHAR(255) NULL,
@@ -442,8 +442,6 @@ CREATE TABLE dbo.Farm
 	CreatedById BIGINT NOT NULL,
 	FarmTypeId BIGINT NOT NULL,
 	[Address] NVARCHAR(500) NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -553,8 +551,6 @@ CREATE TABLE dbo.Product(
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -799,8 +795,6 @@ CREATE TABLE dbo.Article
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ArticleCategoryId INT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 

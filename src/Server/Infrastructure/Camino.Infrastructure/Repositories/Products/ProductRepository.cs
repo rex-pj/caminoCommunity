@@ -13,6 +13,7 @@ using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
 using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Products
 {
@@ -40,7 +41,7 @@ namespace Camino.Service.Repository.Products
 
         public async Task<ProductResult> FindAsync(long id)
         {
-            var exist = await (from product in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = await (from product in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
                                select new ProductResult
                                {
                                    CreatedDate = product.CreatedDate,
@@ -56,7 +57,7 @@ namespace Camino.Service.Repository.Products
 
         public async Task<ProductResult> FindDetailAsync(long id)
         {
-            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
+            var farmQuery = from farm in _farmRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode())
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -78,7 +79,7 @@ namespace Camino.Service.Repository.Products
                                            Name = category.Name
                                        };
 
-            var product = await (from p in _productRepository.Get(x => !x.IsDeleted && x.Id == id)
+            var product = await (from p in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
                                  from price in prices.DefaultIfEmpty()
@@ -115,7 +116,7 @@ namespace Camino.Service.Repository.Products
 
         public ProductResult FindByName(string name)
         {
-            var exist = _productRepository.Get(x => x.Name == name && !x.IsDeleted)
+            var exist = _productRepository.Get(x => x.Name == name && x.StatusId != ProductStatus.Deleted.GetCode())
                 .FirstOrDefault();
 
             var product = new ProductResult()
@@ -135,7 +136,7 @@ namespace Camino.Service.Repository.Products
         public async Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Get(x => !x.IsDeleted);
+            var productQuery = _productRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -178,7 +179,7 @@ namespace Camino.Service.Repository.Products
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
-            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
+            var farmQuery = from farm in _farmRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode())
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -229,7 +230,7 @@ namespace Camino.Service.Repository.Products
 
         public async Task<IList<ProductResult>> GetRelevantsAsync(long id, ProductFilter filter)
         {
-            var exist = (from pr in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = (from pr in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
                          join fp in _farmProductRepository.Table
                          on pr.Id equals fp.ProductId into farmProducts
                          join productCategoryRelation in _productCategoryRelationRepository.Table
@@ -315,7 +316,7 @@ namespace Camino.Service.Repository.Products
                 UpdatedDate = modifiedDate,
                 Description = request.Description,
                 Name = request.Name,
-                IsPublished = true
+                StatusId = ProductStatus.Pending.GetCode()
             };
 
             var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
@@ -455,7 +456,7 @@ namespace Camino.Service.Repository.Products
         public async Task<bool> SoftDeleteAsync(long id)
         {
             await _productRepository.Get(x => x.Id == id)
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, (int)ProductStatus.Deleted)
                 .UpdateAsync();
 
             return true;

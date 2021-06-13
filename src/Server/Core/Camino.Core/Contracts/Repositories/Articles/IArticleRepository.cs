@@ -19,5 +19,6 @@ namespace Camino.Core.Contracts.Repositories.Articles
         Task<bool> DeleteAsync(long id);
         Task<bool> SoftDeleteAsync(long id);
         Task<bool> DeactivateAsync(long id);
+        Task<bool> ActiveAsync(long id);
     }
 }

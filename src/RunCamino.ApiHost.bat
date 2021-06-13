@@ -1,2 +1,3 @@
-start dotnet build --project Server\Presentation\Camino.ApiHost\Camino.ApiHost.csproj
-start dotnet run --project Server\Presentation\Camino.ApiHost\Camino.ApiHost.csproj
+Powershell.exe -executionpolicy remotesigned -File BuildCaminoServer.ps1
+
+dotnet run --project Server\Presentation\Camino.ApiHost\Camino.ApiHost.csproj

@@ -13,8 +13,6 @@ namespace Camino.Core.Domain.Farms
         public long CreatedById { get; set; }
         public long FarmTypeId { get; set; }
         public string Address { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsPublished { get; set; }
         public int StatusId { get; set; }
         public virtual FarmType FarmType { get; set; }
     }

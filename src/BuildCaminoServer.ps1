@@ -1,0 +1,1 @@
+Get-ChildItem Server -exclude .vscode | %{Write-Host -ForegroundColor DarkMagenta "Building $_..."; dotnet build $_;}
