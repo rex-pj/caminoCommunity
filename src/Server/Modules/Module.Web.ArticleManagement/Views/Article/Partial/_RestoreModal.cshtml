@@ -1,18 +1,18 @@
 ﻿@model ArticleIdRequestModel
-<div class="modal fade" id="temporaryDeleteModal" tabindex="-1" aria-labelledby="temporaryDeleteLabel" aria-hidden="true">
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="@Url.Action("TemporaryDelete")" method="post">
+        <form action="@Url.Action("Active")" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="temporaryDeleteLabel">Delete this Article temporary</h5>
+                    <h5 class="modal-title" id="restoreLabel">Restore this Article</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" asp-for="Id" class="identifier" id="temporaryDeleteId" />
+                    <input type="hidden" asp-for="Id" class="identifier" id="restoreId" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-outline-danger">Move to trash</button>
+                    <button type="submit" class="btn btn-outline-info">Restore</button>
                 </div>
             </div>
         </form>

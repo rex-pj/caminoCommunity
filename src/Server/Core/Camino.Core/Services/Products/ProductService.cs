@@ -280,6 +280,11 @@ namespace Camino.Services.Products
             return await _productRepository.DeactivateAsync(id);
         }
 
+        public async Task<bool> ActiveAsync(long id)
+        {
+            return await _productRepository.ActiveAsync(id);
+        }
+
         public async Task<BasePageList<ProductPictureResult>> GetPicturesAsync(ProductPictureFilter filter)
         {
             var productPicturesPageList = await _productPictureRepository.GetAsync(filter);

@@ -20,5 +20,6 @@ namespace Camino.Core.Contracts.Services.Products
         Task<bool> SoftDeleteAsync(long id);
         Task<bool> DeactivateAsync(long id);
         Task<BasePageList<ProductPictureResult>> GetPicturesAsync(ProductPictureFilter filter);
+        Task<bool> ActiveAsync(long id);
     }
 }

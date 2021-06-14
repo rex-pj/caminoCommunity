@@ -35,7 +35,7 @@ namespace Module.Web.ProductManagement.Controllers
         [LoadResultAuthorizations("Product", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ProductFilterModel filter)
         {
-            var filterRequest = new ProductFilter()
+            var filterRequest = new ProductFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -44,7 +44,8 @@ namespace Module.Web.ProductManagement.Controllers
                 PageSize = filter.PageSize,
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
-                CategoryId = filter.CategoryId
+                CategoryId = filter.CategoryId,
+                IsGettingDeleted = true
             };
 
             var productPageList = await _productService.GetAsync(filterRequest);
@@ -259,16 +260,34 @@ namespace Module.Web.ProductManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = product.Id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProduct)]
-        public async Task<IActionResult> Delete(ProductModel model)
+        public async Task<IActionResult> Delete(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _productService.DeleteAsync(model.Id);
+            var isDeleted = await _productService.DeleteAsync(request.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> TemporaryDelete(ProductIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _productService.SoftDeleteAsync(request.Id);
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -279,15 +298,33 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
-        public async Task<IActionResult> Deactivate(ProductModel model)
+        public async Task<IActionResult> Deactivate(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productService.DeactivateAsync(model.Id);
+            var isInactived = await _productService.DeactivateAsync(request.Id);
             if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Active(ProductIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productService.ActiveAsync(request.Id);
+            if (!isActived)
             {
                 return RedirectToErrorPage();
             }

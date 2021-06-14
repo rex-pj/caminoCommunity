@@ -26,19 +26,19 @@
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\ProductCategory\_ProductCategoryRow.cshtml">
+	  <Content Update="Views\ProductCategory\Partial\_ProductCategoryRow.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\ProductCategory\_ProductCategoryTable.cshtml">
+	  <Content Update="Views\ProductCategory\Partial\_ProductCategoryTable.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\ProductCategory\_CreateOrUpdateForm.cshtml">
+	  <Content Update="Views\ProductCategory\Partial\_CreateOrUpdateForm.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\ProductCategory\_SearchForm.cshtml">
+	  <Content Update="Views\ProductCategory\Partial\_SearchForm.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
@@ -54,19 +54,19 @@
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\Product\_ProductRow.cshtml">
+	  <Content Update="Views\Product\Partial\_ProductRow.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\Product\_ProductTable.cshtml">
+	  <Content Update="Views\Product\Partial\_ProductTable.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\Product\_UpdateForm.cshtml">
+	  <Content Update="Views\Product\Partial\_UpdateForm.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	  <Content Update="Views\Product\_SearchForm.cshtml">
+	  <Content Update="Views\Product\Partial\_SearchForm.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>

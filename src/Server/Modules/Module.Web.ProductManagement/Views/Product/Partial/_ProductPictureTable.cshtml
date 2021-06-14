@@ -14,7 +14,7 @@
             foreach (var productPic in Model.Collections)
             {
                 productPic.SetPageAuthorizationForModel(Model);
-                <partial name="_ProductPictureRow" model="productPic" />
+                <partial name="Partial/_ProductPictureRow" model="productPic" />
             }
         }
         else

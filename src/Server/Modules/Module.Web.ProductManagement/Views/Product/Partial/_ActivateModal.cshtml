@@ -1,18 +1,18 @@
-﻿@model ArticleIdRequestModel
-<div class="modal fade" id="articleRestoreModal" tabindex="-1" aria-labelledby="articleRestoreLabel" aria-hidden="true">
+﻿@model ProductIdRequestModel
+<div class="modal fade" id="activateModal" tabindex="-1" aria-labelledby="activateLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form action="@Url.Action("Active")" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="articleRestoreLabel">Restore this Article</h5>
+                    <h5 class="modal-title" id="activateLabel">Active this Article</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" asp-for="Id" class="article-id" />
+                    <input type="hidden" asp-for="Id" class="identifier" id="activeId" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-outline-info">Restore</button>
+                    <button type="submit" class="btn btn-outline-success">Active</button>
                 </div>
             </div>
         </form>

@@ -1,27 +1,28 @@
-﻿@model PageListModel<ProductAttributeModel>
+﻿@model PageListModel<ProductCategoryModel>
 
 <table class="table table-bordered">
     <thead>
         <tr class="bg-light">
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Description</th>
+            <th scope="col">Created</th>
+            <th scope="col">Updated</th>
             <th scope="col">Tools</th>
         </tr>
     </thead>
     <tbody>
         @if (Model != null && Model.Collections.Any())
         {
-            foreach (var attribute in Model.Collections)
+            foreach (var cate in Model.Collections)
             {
-                attribute.SetPageAuthorizationForModel(Model);
-                <partial name="_ProductAttributeRow" model="attribute" />
+                cate.SetPageAuthorizationForModel(Model);
+                <partial name="Partial/_ProductCategoryRow" model="cate" />
             }
         }
         else
         {
             <tr>
-                <td colspan="4" class="text-center">No data</td>
+                <td colspan="5" class="text-center">No data</td>
             </tr>
         }
     </tbody>

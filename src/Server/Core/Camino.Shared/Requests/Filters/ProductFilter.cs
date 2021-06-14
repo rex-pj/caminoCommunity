@@ -10,5 +10,6 @@ namespace Camino.Shared.Requests.Filters
         public long? UpdatedById { get; set; }
         public long? CategoryId { get; set; }
         public long? FarmId { get; set; }
+        public bool IsGettingDeleted { get; set; }
     }
 }

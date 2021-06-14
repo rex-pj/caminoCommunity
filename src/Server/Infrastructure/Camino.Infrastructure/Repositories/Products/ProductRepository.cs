@@ -136,7 +136,7 @@ namespace Camino.Service.Repository.Products
         public async Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode());
+            var productQuery = _productRepository.Get(x => filter.IsGettingDeleted || x.StatusId != ProductStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -466,6 +466,15 @@ namespace Camino.Service.Repository.Products
         {
             await _productRepository.Get(x => x.Id == id)
                 .Set(x => x.StatusId, (int)ProductStatus.Inactived)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(long id)
+        {
+            await _productRepository.Get(x => x.Id == id)
+                .Set(x => x.StatusId, (int)ProductStatus.Actived)
                 .UpdateAsync();
 
             return true;
