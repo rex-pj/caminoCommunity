@@ -33,7 +33,7 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<BasePageList<ArticlePictureResult>> GetAsync(ArticlePictureFilter filter)
         {
-            var pictureQuery = _pictureRepository.Get(x => !x.IsDeleted);
+            var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode());
             if (!string.IsNullOrEmpty(filter.Search))
             {
                 var search = filter.Search.ToLower();
@@ -99,7 +99,7 @@ namespace Camino.Service.Repository.Articles
         public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(long articleId)
         {
             var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == articleId)
-                                        join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                        join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode())
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult
                                         {
@@ -113,7 +113,7 @@ namespace Camino.Service.Repository.Articles
         public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds)
         {
             var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
-                                        join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                        join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode())
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult
                                         {
@@ -128,7 +128,7 @@ namespace Camino.Service.Repository.Articles
         {
             var base64Data = ImageUtil.EncodeJavascriptBase64(request.Picture.Base64Data);
             var pictureData = Convert.FromBase64String(base64Data);
-            var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture()
+            var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture
             {
                 CreatedById = request.UpdatedById,
                 CreatedDate = request.CreatedDate,
@@ -137,7 +137,7 @@ namespace Camino.Service.Repository.Articles
                 UpdatedById = request.UpdatedById,
                 UpdatedDate = request.UpdatedDate,
                 BinaryData = pictureData,
-                IsPublished = true
+                StatusId = PictureStatus.Pending.GetCode()
             });
 
             var id = await _articlePictureRepository.AddWithInt64EntityAsync(new ArticlePicture()
@@ -209,13 +209,15 @@ namespace Camino.Service.Repository.Articles
             return true;
         }
 
-        public async Task<bool> SoftDeleteByArticleIdAsync(long articleId)
+        public async Task<bool> UpdateStatusByArticleIdAsync(ArticlePictureModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == articleId)
+            await (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == request.ArticleId)
                    join picture in _pictureRepository.Table
                    on articlePicture.PictureId equals picture.Id
                    select picture)
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, pictureStatus.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

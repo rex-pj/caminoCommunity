@@ -17,9 +17,9 @@ namespace Camino.Core.Contracts.Services.Articles
         Task<BasePageList<ArticleResult>> GetAsync(ArticleFilter filter);
         Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter);
         Task<bool> DeleteAsync(long id);
-        Task<bool> SoftDeleteAsync(long id);
-        Task<bool> DeactivateAsync(long id);
-        Task<bool> ActiveAsync(long id);
+        Task<bool> SoftDeleteAsync(ArticleModifyRequest request);
+        Task<bool> DeactivateAsync(ArticleModifyRequest request);
+        Task<bool> ActiveAsync(ArticleModifyRequest request);
         Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter);
     }
 }

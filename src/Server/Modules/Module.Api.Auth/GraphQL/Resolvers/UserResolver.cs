@@ -384,7 +384,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
                 GenderId = (byte)criterias.GenderId,
-                StatusId = (byte)UserStatus.New,
+                StatusId = (byte)UserStatus.Pending,
                 UserName = criterias.Email,
             };
 

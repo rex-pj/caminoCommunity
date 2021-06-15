@@ -151,7 +151,7 @@ namespace Camino.Service.Repository.Farms
         public async Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode());
+            var farmQuery = _farmRepository.Get(x => filter.IsGettingDeleted || x.StatusId != FarmStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -293,35 +293,62 @@ namespace Camino.Service.Repository.Farms
                 .DeleteAsync();
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(FarmModifyRequest request)
         {
             // Delete farm products
-            await SoftDeleteProductByFarmIdAsync(id);
+            await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Deleted);
 
             // Delete farm
-            await _farmRepository.Get(x => x.Id == id)
+            await _farmRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)FarmStatus.Deleted)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
         }
 
-        private async Task SoftDeleteProductByFarmIdAsync(long farmId)
+        private async Task UpdateProductStatusByFarmIdAsync(FarmModifyRequest request, ProductStatus productStatus)
         {
-            var productIds = _farmProductRepository.Get(x => x.FarmId == farmId)
+            var productIds = _farmProductRepository.Get(x => x.FarmId == request.Id)
                 .Select(x => x.ProductId);
-
-            await _productPictureRepository.SoftDeleteByProductIdsAsync(productIds);
+            
+            var pictureStatus = productStatus switch
+            {
+                ProductStatus.Pending => PictureStatus.Pending,
+                ProductStatus.Actived => PictureStatus.Actived,
+                ProductStatus.Reported => PictureStatus.Reported,
+                ProductStatus.Deleted => PictureStatus.Deleted,
+                _ => PictureStatus.Inactived,
+            };
+            await _productPictureRepository.UpdateStatusByProductIdsAsync(productIds, request.UpdatedById, pictureStatus);
 
             await _productRepository.Get(x => x.Id.In(productIds))
-                .Set(x => x.StatusId, FarmStatus.Deleted.GetCode())
+                .Set(x => x.StatusId, productStatus.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
         }
 
-        public async Task<bool> DeactivateAsync(long id)
+        public async Task<bool> DeactivateAsync(FarmModifyRequest request)
         {
-            await _farmRepository.Get(x => x.Id == id)
+            await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Inactived);
+
+            await _farmRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, FarmStatus.Inactived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(FarmModifyRequest request)
+        {
+            await _farmRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

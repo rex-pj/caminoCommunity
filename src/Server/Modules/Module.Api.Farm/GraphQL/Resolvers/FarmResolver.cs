@@ -234,7 +234,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _farmService.SoftDeleteAsync(criterias.Id);
+                return await _farmService.SoftDeleteAsync(new FarmModifyRequest { 
+                    UpdatedById = currentUser.Id,
+                    Id = criterias.Id
+                });
             }
             catch (Exception)
             {

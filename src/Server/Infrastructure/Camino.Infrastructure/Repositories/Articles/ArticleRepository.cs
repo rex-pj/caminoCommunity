@@ -129,7 +129,7 @@ namespace Camino.Service.Repository.Articles
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
             }
 
             var filteredNumber = articleQuery.Select(x => x.Id).Count();
@@ -234,28 +234,34 @@ namespace Camino.Service.Repository.Articles
             return true;
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == id)
+            await _articleRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)ArticleStatus.Deleted)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
         }
 
-        public async Task<bool> DeactivateAsync(long id)
+        public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == id)
+            await _articleRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)ArticleStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
         }
 
-        public async Task<bool> ActiveAsync(long id)
+        public async Task<bool> ActiveAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == id)
+            await _articleRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)ArticleStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

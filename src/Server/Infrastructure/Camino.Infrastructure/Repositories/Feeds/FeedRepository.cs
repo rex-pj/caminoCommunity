@@ -79,7 +79,7 @@ namespace Camino.Service.Repository.Feeds
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var articlePictureTypeId = (int)ArticlePictureType.Thumbnail;
             var articlePictures = from articlePic in _articlePictureRepository.Get(x => x.PictureTypeId == articlePictureTypeId)
-                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                   on articlePic.PictureId equals picture.Id
                                   select articlePic;
 
@@ -105,7 +105,7 @@ namespace Camino.Service.Repository.Feeds
 
             var productPictureTypeId = (int)ProductPictureType.Thumbnail;
             var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == productPictureTypeId)
-                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                   on productPic.PictureId equals picture.Id
                                   select productPic;
 
@@ -119,7 +119,7 @@ namespace Camino.Service.Repository.Feeds
                                 join pho in _userPhotoRepository.Get(x => x.TypeId == avatarTypeId)
                                 on product.CreatedById equals pho.UserId into photos
                                 from photo in photos.DefaultIfEmpty()
-                                select new FeedResult()
+                                select new FeedResult
                                 {
                                     CreatedById = product.CreatedById,
                                     CreatedDate = product.CreatedDate,
@@ -134,7 +134,7 @@ namespace Camino.Service.Repository.Feeds
 
             var farmPictureTypeId = (int)FarmPictureType.Thumbnail;
             var farmPictures = from farmPic in _farmPictureRepository.Get(x => x.PictureTypeId == farmPictureTypeId)
-                                  join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                   on farmPic.PictureId equals picture.Id
                                   select farmPic;
 

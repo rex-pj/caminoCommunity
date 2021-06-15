@@ -1,14 +1,14 @@
-﻿@model ProductModel
+﻿@model FarmModel
 <tr>
     <th>@Model.Id</th>
     <td>
         @if (Model.CanUpdate)
         {
-            <a asp-action="Update" asp-controller="Product" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <a asp-action="Update" asp-controller="Farm" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
                 <i class="fa fa-edit"></i>
             </a>
         }
-        <a asp-action="Detail" asp-controller="Product" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info">
+        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
             <i class="fa fa-eye"></i>
         </a>
     </td>
@@ -19,7 +19,7 @@
         }
     </td>
     <td>
-        <a asp-action="Detail" asp-controller="Product" asp-route-id="@Model.Id">
+        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.Id">
             @Model.Name
         </a>
     </td>
@@ -32,67 +32,67 @@
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>
-        @if (Model.StatusId == ProductStatus.Pending)
+        @if (Model.StatusId == FarmStatus.Pending)
         {
             <span class="badge rounded-pill bg-info">@Model.StatusId</span>
         }
-        else if (Model.StatusId == ProductStatus.Actived)
+        else if (Model.StatusId == FarmStatus.Actived)
         {
             <span class="badge rounded-pill bg-success">@Model.StatusId</span>
         }
-        else if (Model.StatusId == ProductStatus.Inactived)
+        else if (Model.StatusId == FarmStatus.Inactived)
         {
             <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
         }
-        else if (Model.StatusId == ProductStatus.Reported)
+        else if (Model.StatusId == FarmStatus.Reported)
         {
             <span class="badge rounded-pill bg-warning">@Model.StatusId</span>
         }
-        else if (Model.StatusId == ProductStatus.Deleted)
+        else if (Model.StatusId == FarmStatus.Deleted)
         {
             <span class="badge rounded-pill bg-danger">@Model.StatusId</span>
         }
     </td>
     <td>
-        @if (Model.StatusId == ProductStatus.Pending)
+        @if (Model.StatusId == FarmStatus.Pending)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
-                    title="Activate this product"
+                    title="Activate this farm"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip">
                 <i class="fa fa-unlock"></i>
             </button>
         }
 
-        @if (Model.StatusId != ProductStatus.Inactived && Model.StatusId != ProductStatus.Deleted)
+        @if (Model.StatusId != FarmStatus.Inactived && Model.StatusId != FarmStatus.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
-                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this product">
+                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == ProductStatus.Inactived)
+        else if (Model.StatusId == FarmStatus.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
-                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this product">
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm">
                 <i class="fa fa-unlock"></i>
             </button>
         }
 
-        @if (Model.StatusId == ProductStatus.Deleted)
+        @if (Model.StatusId == FarmStatus.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
-                    class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this product">
+                    class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this farm">
                 <i class="fa fa-redo"></i>
             </button>
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
-                    class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this product">
+                    class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this farm">
                 <i class="fa fa-times"></i>
             </button>
         }
         else
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
-                    class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this product to trash">
+                    class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this farm to trash">
                 <i class="fa fa-trash-alt"></i>
             </button>
         }

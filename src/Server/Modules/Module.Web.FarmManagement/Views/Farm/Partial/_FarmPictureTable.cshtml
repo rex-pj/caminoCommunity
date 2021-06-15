@@ -14,7 +14,7 @@
             foreach (var farmPic in Model.Collections)
             {
                 farmPic.SetPageAuthorizationForModel(Model);
-                <partial name="_FarmPictureRow" model="farmPic" />
+                <partial name="Partial/_FarmPictureRow" model="farmPic" />
             }
         }
         else

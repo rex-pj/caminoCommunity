@@ -226,7 +226,11 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _articleService.SoftDeleteAsync(criterias.Id);
+                return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
+                {
+                    Id = criterias.Id,
+                    UpdatedById = currentUser.Id,
+                });
             }
             catch (Exception)
             {

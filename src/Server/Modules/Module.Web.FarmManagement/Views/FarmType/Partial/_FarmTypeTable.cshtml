@@ -16,7 +16,7 @@
             foreach (var cate in Model.Collections)
             {
                 cate.SetPageAuthorizationForModel(Model);
-                <partial name="_FarmTypeRow" model="cate" />
+                <partial name="Partial/_FarmTypeRow" model="cate" />
             }
         }
         else

@@ -33,7 +33,7 @@ namespace Camino.Service.Repository.Products
 
         public async Task<BasePageList<ProductPictureResult>> GetAsync(ProductPictureFilter filter)
         {
-            var pictureQuery = _pictureRepository.Get(x => !x.IsDeleted);
+            var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(filter.Search))
             {
                 var search = filter.Search.ToLower();
@@ -70,7 +70,7 @@ namespace Camino.Service.Repository.Products
                         on ap.PictureId equals p.Id
                         join a in _productRepository.Table
                         on ap.ProductId equals a.Id
-                        select new ProductPictureResult()
+                        select new ProductPictureResult
                         {
                             ProductId = a.Id,
                             ProductName = a.Name,
@@ -99,7 +99,7 @@ namespace Camino.Service.Repository.Products
         public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(long productId, int? productPictureTypeId = null)
         {
             var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId == productId && (!productPictureTypeId.HasValue || x.PictureTypeId == productPictureTypeId))
-                                         join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                         join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                            on productPic.PictureId equals picture.Id
                                          select new ProductPictureResult
                                          {
@@ -113,7 +113,7 @@ namespace Camino.Service.Repository.Products
         public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId)
         {
             var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId.In(productIds) && x.PictureTypeId == productPictureTypeId)
-                                         join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                         join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                          on productPic.PictureId equals picture.Id
                                          select new ProductPictureResult
                                          {
@@ -140,7 +140,7 @@ namespace Camino.Service.Repository.Products
                     UpdatedById = request.UpdatedById,
                     UpdatedDate = request.UpdatedDate,
                     BinaryData = pictureData,
-                    IsPublished = true
+                    StatusId = PictureStatus.Pending.GetCode()
                 });
 
                 var productPictureTypeId = index == 0 ? (int)ProductPictureType.Thumbnail : (int)ProductPictureType.Secondary;
@@ -194,7 +194,7 @@ namespace Camino.Service.Repository.Products
                         UpdatedById = request.UpdatedById,
                         UpdatedDate = request.UpdatedDate,
                         BinaryData = pictureData,
-                        IsPublished = true
+                        StatusId = PictureStatus.Pending.GetCode()
                     });
 
                     var productPictureTypeId = shouldAddPicture ? pictureTypeId : (int)ProductPictureType.Secondary;
@@ -230,13 +230,15 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
-        public async Task<bool> SoftDeleteByProductIdAsync(long id)
+        public async Task<bool> UpdateStatusByProductIdAsync(ProductPicturesModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from productPicture in _productPictureRepository.Get(x => x.ProductId == id)
+            await (from productPicture in _productPictureRepository.Get(x => x.ProductId == request.ProductId)
                    join picture in _pictureRepository.Table
                    on productPicture.PictureId equals picture.Id
                    select picture)
-                    .Set(x => x.IsDeleted, true)
+                    .Set(x => x.StatusId, pictureStatus.GetCode())
+                    .Set(x => x.UpdatedById, request.UpdatedById)
+                    .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                     .UpdateAsync();
 
             return true;
@@ -254,13 +256,15 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
-        public async Task<bool> SoftDeleteByProductIdsAsync(IEnumerable<long> ids)
+        public async Task<bool> UpdateStatusByProductIdsAsync(IEnumerable<long> ids, long updatedById, PictureStatus status)
         {
             await (from productPicture in _productPictureRepository.Get(x => x.ProductId.In(ids))
                    join picture in _pictureRepository.Table
                           on productPicture.PictureId equals picture.Id
                    select picture)
-                    .Set(x => x.IsDeleted, true)
+                    .Set(x => x.StatusId, status.GetCode())
+                    .Set(x => x.UpdatedById, updatedById)
+                    .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                     .UpdateAsync();
 
             return true;

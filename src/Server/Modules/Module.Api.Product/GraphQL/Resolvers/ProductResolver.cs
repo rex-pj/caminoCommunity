@@ -298,7 +298,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     return false;
                 }
 
-                return await _productService.DeleteAsync(criterias.Id);
+                return await _productService.SoftDeleteAsync(new ProductModifyRequest
+                {
+                    UpdatedById = currentUser.Id,
+                    Id = criterias.Id
+                });
             }
             catch (Exception)
             {

@@ -160,16 +160,36 @@ namespace Camino.Services.Farms
             return await _farmRepository.DeleteAsync(id);
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(FarmModifyRequest request)
         {
             // Soft delete farm pictures
-            await _farmPictureRepository.SoftDeleteByFarmIdAsync(id);
-            return await _farmRepository.SoftDeleteAsync(id);
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Deleted);
+            return await _farmRepository.SoftDeleteAsync(request);
         }
 
-        public async Task<bool> DeactivateAsync(long id)
+        public async Task<bool> DeactivateAsync(FarmModifyRequest request)
         {
-            return await _farmRepository.DeactivateAsync(id);
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Inactived);
+            return await _farmRepository.DeactivateAsync(request);
+        }
+
+        public async Task<bool> ActivateAsync(FarmModifyRequest request)
+        {
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Actived);
+
+            return await _farmRepository.ActiveAsync(request);
         }
 
         public async Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter)

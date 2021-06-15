@@ -218,7 +218,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _articleService.SoftDeleteAsync(request.Id);
+            var isDeleted = await _articleService.SoftDeleteAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -236,7 +240,12 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _articleService.DeactivateAsync(request.Id);
+            var isInactived = await _articleService.DeactivateAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
             if (!isInactived)
             {
                 return RedirectToErrorPage();
@@ -254,7 +263,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _articleService.ActiveAsync(request.Id);
+            var isActived = await _articleService.ActiveAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isActived)
             {
                 return RedirectToErrorPage();

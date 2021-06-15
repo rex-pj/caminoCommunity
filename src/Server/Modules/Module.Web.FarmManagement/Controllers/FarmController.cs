@@ -34,7 +34,7 @@ namespace Module.Web.FarmManagement.Controllers
         [LoadResultAuthorizations("Farm", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(FarmFilterModel filter)
         {
-            var filterRequest = new FarmFilter()
+            var filterRequest = new FarmFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -43,7 +43,8 @@ namespace Module.Web.FarmManagement.Controllers
                 PageSize = filter.PageSize,
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
-                FarmTypeId = filter.FarmTypeId
+                FarmTypeId = filter.FarmTypeId,
+                IsGettingDeleted = true
             };
 
             var farmPageList = await _farmService.GetAsync(filterRequest);
@@ -193,14 +194,36 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpDelete]
         [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteFarm)]
-        public async Task<IActionResult> Delete(FarmModel model)
+        public async Task<IActionResult> Delete(FarmIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _farmService.DeleteAsync(model.Id);
+            var isDeleted = await _farmService.DeleteAsync(request.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> TemporaryDelete(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _farmService.SoftDeleteAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -211,15 +234,43 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
-        public async Task<IActionResult> Deactivate(FarmModel model)
+        public async Task<IActionResult> Deactivate(FarmIdRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _farmService.DeactivateAsync(model.Id);
+            var isInactived = await _farmService.DeactivateAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
             if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
+        public async Task<IActionResult> Active(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _farmService.ActivateAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
             {
                 return RedirectToErrorPage();
             }

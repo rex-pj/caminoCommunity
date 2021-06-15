@@ -20,11 +20,17 @@
     </div>
 </div>
 
-<partial name="_SearchForm" model="Model.Filter" />
+<partial name="Partial/_SearchForm" model="Model.Filter" />
 
 <div class="data-table table-responsive">
-    <partial name="_FarmTable" />
+    <partial name="Partial/_FarmTable" />
     <div class="spinner-grow loading my-3 d-none me-auto ml-auto" role="status">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
+<partial name="Partial/_ActivateModal" model="new FarmIdRequestModel()" />
+<partial name="Partial/_DeactivateModal" model="new FarmIdRequestModel()" />
+<partial name="Partial/_RestoreModal" model="new FarmIdRequestModel()" />
+<partial name="Partial/_PermanentlyDeleteModal" model="new FarmIdRequestModel()" />
+<partial name="Partial/_TemporaryDeleteModal" model="new FarmIdRequestModel()" />

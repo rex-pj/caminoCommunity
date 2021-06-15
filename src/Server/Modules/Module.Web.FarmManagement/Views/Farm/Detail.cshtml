@@ -23,11 +23,9 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="row">
+    <div class="rowmb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
-            <div class="mb-3">
-                <h2>@Model.Name</h2>
-            </div>
+            <h2>@Model.Name</h2>
         </div>
     </div>
     <div class="row">
@@ -40,50 +38,52 @@
             </div>
         }
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
-            <div class="mb-3">
-                <p>@Html.Raw(Model.Description)</p>
+            <div class="card">
+                <div class="card-body">
+                    @Html.Raw(Model.Description)
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="mb-3">
-                <label>Created by</label>
-                <span class="form-control" readonly>@Model.CreatedBy</span>
+            <label class="form-label">Created by:</label>
+            <div>
+                <strong>@Model.CreatedBy</strong>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="mb-3">
-                <label>Created date</label>
-                <span class="form-control" readonly>@Model.CreatedDate.ToDateHourMinusFormat()</span>
+            <label class="form-label">Created date:</label>
+            <div>
+                <strong>@Model.CreatedDate.ToDateHourMinusFormat()</strong>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="mb-3">
-                <label>Updated by</label>
-                <span class="form-control" readonly>@Model.UpdatedBy</span>
+            <label class="form-label">Updated by:</label>
+            <div>
+                <strong>@Model.UpdatedBy</strong>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="mb-3">
-                <label>Updated date</label>
-                <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
+            <label class="form-label">Updated date:</label>
+            <div>
+                <strong>@Model.UpdatedDate.ToDateHourMinusFormat()</strong>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="mb-3">
-                <label>Farm Type</label>
-                <span class="form-control" readonly>@Model.FarmTypeName</span>
+            <label class="form-label">Farm Type:</label>
+            <div>
+                <span class="badge bg-info">@Model.FarmTypeName</span>
             </div>
         </div>
     </div>

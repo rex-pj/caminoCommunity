@@ -279,7 +279,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
         public async Task<IActionResult> TemporaryDelete(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -287,7 +287,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _productService.SoftDeleteAsync(request.Id);
+            var isDeleted = await _productService.SoftDeleteAsync(new ProductModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -305,7 +309,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productService.DeactivateAsync(request.Id);
+            var isInactived = await _productService.DeactivateAsync(new ProductModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isInactived)
             {
                 return RedirectToErrorPage();
@@ -315,7 +323,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
         public async Task<IActionResult> Active(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -323,7 +331,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productService.ActiveAsync(request.Id);
+            var isActived = await _productService.ActiveAsync(new ProductModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
             if (!isActived)
             {
                 return RedirectToErrorPage();

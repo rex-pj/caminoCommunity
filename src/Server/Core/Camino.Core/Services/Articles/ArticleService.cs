@@ -176,21 +176,35 @@ namespace Camino.Services.Articles
             return await _articleRepository.DeleteAsync(id);
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
-            await _articlePictureRepository.SoftDeleteByArticleIdAsync(id);
-            return await _articleRepository.SoftDeleteAsync(id);
+            await _articlePictureRepository.UpdateStatusByArticleIdAsync(new ArticlePictureModifyRequest
+            {
+                ArticleId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Deleted);
+            return await _articleRepository.SoftDeleteAsync(request);
         }
 
 
-        public async Task<bool> DeactivateAsync(long id)
+        public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
         {
-            return await _articleRepository.DeactivateAsync(id);
+            await _articlePictureRepository.UpdateStatusByArticleIdAsync(new ArticlePictureModifyRequest
+            {
+                ArticleId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Inactived);
+            return await _articleRepository.DeactivateAsync(request);
         }
 
-        public async Task<bool> ActiveAsync(long id)
+        public async Task<bool> ActiveAsync(ArticleModifyRequest request)
         {
-            return await _articleRepository.ActiveAsync(id);
+            await _articlePictureRepository.UpdateStatusByArticleIdAsync(new ArticlePictureModifyRequest
+            {
+                ArticleId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Actived);
+            return await _articleRepository.ActiveAsync(request);
         }
 
         public async Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter)

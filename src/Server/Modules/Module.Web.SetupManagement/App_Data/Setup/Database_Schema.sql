@@ -863,8 +863,6 @@ CREATE TABLE dbo.[Picture](
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
