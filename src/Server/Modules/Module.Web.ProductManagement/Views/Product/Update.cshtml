@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head{ 
+@section Head{
     <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
     <link rel="stylesheet" href="~/productmanagement/css/product-update.css" />
 }
@@ -27,3 +27,8 @@
         <partial name="Partial/_UpdateForm" />
     </form>
 </div>
+<partial name="Partial/_ActivateModal" model="new ProductIdRequestModel { Id = Model.Id }" />
+<partial name="Partial/_DeactivateModal" model="new ProductIdRequestModel { Id = Model.Id }" />
+<partial name="Partial/_RestoreModal" model="new ProductIdRequestModel { Id = Model.Id }" />
+<partial name="Partial/_PermanentlyDeleteModal" model="new ProductIdRequestModel { Id = Model.Id }" />
+<partial name="Partial/_TemporaryDeleteModal" model="new ProductIdRequestModel { Id = Model.Id }" />

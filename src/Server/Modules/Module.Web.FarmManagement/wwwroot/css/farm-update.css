@@ -1,4 +1,9 @@
-﻿#farmPictures .remove-picture {
+﻿#farmPictures .picture-item {
+    position: relative;
+}
+
+
+#farmPictures .remove-picture {
     position: absolute;
     top: -5px;
     right: -3px;

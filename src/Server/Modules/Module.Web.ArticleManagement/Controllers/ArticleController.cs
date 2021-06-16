@@ -110,7 +110,8 @@ namespace Module.Web.ArticleManagement.Controllers
                     UpdateById = article.UpdatedById,
                     UpdatedDate = article.UpdatedDate,
                     UpdatedBy = article.UpdatedBy,
-                    CreatedBy = article.CreatedBy
+                    CreatedBy = article.CreatedBy,
+                    StatusId = (ArticleStatus)article.StatusId
                 };
                 return View(model);
             }
@@ -145,7 +146,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 Name = article.Name,
                 PictureId = article.Picture.Id,
                 UpdateById = article.UpdatedById,
-                UpdatedDate = article.UpdatedDate
+                UpdatedDate = article.UpdatedDate,
+                StatusId = (ArticleStatus)article.StatusId
             };
 
             return View(model);

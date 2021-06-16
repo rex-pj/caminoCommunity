@@ -32,26 +32,7 @@
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>
-        @if (Model.StatusId == ArticleStatus.Pending)
-        {
-            <span class="badge rounded-pill bg-info">@Model.StatusId</span>
-        }
-        else if (Model.StatusId == ArticleStatus.Actived)
-        {
-            <span class="badge rounded-pill bg-success">@Model.StatusId</span>
-        }
-        else if (Model.StatusId == ArticleStatus.Inactived)
-        {
-            <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
-        }
-        else if (Model.StatusId == ArticleStatus.Reported)
-        {
-            <span class="badge rounded-pill bg-warning">@Model.StatusId</span>
-        }
-        else if (Model.StatusId == ArticleStatus.Deleted)
-        {
-            <span class="badge rounded-pill bg-danger">@Model.StatusId</span>
-        }
+        <partial name="Partial/_StatusBadge" />
     </td>
     <td>
         @if (Model.StatusId == ArticleStatus.Pending)

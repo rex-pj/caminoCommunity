@@ -80,7 +80,8 @@ namespace Camino.Service.Repository.Farms
                                    UpdatedById = farm.UpdatedById,
                                    UpdatedDate = farm.UpdatedDate,
                                    FarmTypeName = farmType.Name,
-                                   FarmTypeId = farm.FarmTypeId
+                                   FarmTypeId = farm.FarmTypeId,
+                                   StatusId = farm.StatusId,
                                }).FirstOrDefaultAsync();
             
             return exist;

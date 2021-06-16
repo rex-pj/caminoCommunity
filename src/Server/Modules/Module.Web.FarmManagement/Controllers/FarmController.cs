@@ -106,6 +106,7 @@ namespace Module.Web.FarmManagement.Controllers
                     FarmTypeName = farm.FarmTypeName,
                     Name = farm.Name,
                     Id = farm.Id,
+                    StatusId = (FarmStatus)farm.StatusId,
                     Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                     {
                         PictureId = y.Id
@@ -137,6 +138,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeName = farm.FarmTypeName,
                 Name = farm.Name,
                 Id = farm.Id,
+                StatusId = (FarmStatus)farm.StatusId,
                 Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id

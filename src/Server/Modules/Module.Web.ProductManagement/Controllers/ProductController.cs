@@ -108,6 +108,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Description = product.Description,
                     Name = product.Name,
                     Price = product.Price,
+                    StatusId = (ProductStatus)product.StatusId,
                     Pictures = product.Pictures.Select(y => new PictureRequestModel()
                     {
                         PictureId = y.Id
@@ -168,6 +169,7 @@ namespace Module.Web.ProductManagement.Controllers
                 Description = product.Description,
                 Name = product.Name,
                 Price = product.Price,
+                StatusId = (ProductStatus)product.StatusId,
                 Pictures = product.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id

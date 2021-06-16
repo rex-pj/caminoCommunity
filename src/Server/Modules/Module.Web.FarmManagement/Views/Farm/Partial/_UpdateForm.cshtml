@@ -1,32 +1,35 @@
 ﻿@model FarmModel
 
 <input asp-for="Id" type="hidden" />
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="name">Name</label>
-            <input class="form-control" type="text" asp-for="Name">
+        <label for="name">Name</label>
+        <input class="form-control" type="text" asp-for="Name">
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label>Farm Type</label>
+        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "FarmType")" asp-for="FarmTypeId">
+            <option value="@Model.FarmTypeId" selected="selected">@Model.FarmTypeName</option>
+        </select>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label>Farm Type</label>
-            <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "FarmType")" asp-for="FarmTypeId">
-                <option value="@Model.FarmTypeId" selected="selected">@Model.FarmTypeName</option>
-            </select>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="Description">Description</label>
-            <textarea class="form-control" asp-for="Description" rows="3"></textarea>
-        </div>
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <label for="Description">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="3"></textarea>
     </div>
 </div>
 
@@ -60,11 +63,72 @@
     }
 </div>
 
-@if (Model.Id <= 0)
-{
-    <button type="submit" class="btn btn-primary">Create</button>
-}
-else
-{
-    <button type="submit" class="btn btn-primary">Update</button>
-}
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-auto me-auto">
+                @if (Model.Id <= 0)
+                {
+                    <button type="submit" class="btn btn-primary">Create</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Update</button>
+                }
+            </div>
+            <div class="col-auto">
+                @if (Model.Id > 0)
+                {
+                    @if (Model.StatusId == FarmStatus.Pending)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                title="Activate this farm"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId != FarmStatus.Inactived && Model.StatusId != FarmStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                                class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm">
+                            <i class="fa fa-lock"></i>
+                            <span class="ms-1">Block</span>
+                        </button>
+                    }
+                    else if (Model.StatusId == FarmStatus.Inactived)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Re-activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId == FarmStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
+                                class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this farm">
+                            <i class="fa fa-redo"></i>
+                            <span class="ms-1">Restore</span>
+                        </button>
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this farm">
+                            <i class="fa fa-times"></i>
+                            <span class="ms-1">Delete</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
+                                class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this farm to trash">
+                            <i class="fa fa-trash-alt"></i>
+                            <span class="ms-1">Move To Trash</span>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

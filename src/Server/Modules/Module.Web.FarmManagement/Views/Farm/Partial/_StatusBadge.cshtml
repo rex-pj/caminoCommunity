@@ -1,0 +1,21 @@
+﻿@model FarmModel
+@if (Model.StatusId == FarmStatus.Pending)
+{
+    <span class="badge rounded-pill bg-info">@Model.StatusId</span>
+}
+else if (Model.StatusId == FarmStatus.Actived)
+{
+    <span class="badge rounded-pill bg-success">@Model.StatusId</span>
+}
+else if (Model.StatusId == FarmStatus.Inactived)
+{
+    <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
+}
+else if (Model.StatusId == FarmStatus.Reported)
+{
+    <span class="badge rounded-pill bg-warning">@Model.StatusId</span>
+}
+else if (Model.StatusId == FarmStatus.Deleted)
+{
+    <span class="badge rounded-pill bg-danger">@Model.StatusId</span>
+}

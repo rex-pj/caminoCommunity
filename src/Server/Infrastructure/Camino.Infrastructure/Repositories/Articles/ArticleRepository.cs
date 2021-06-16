@@ -61,7 +61,8 @@ namespace Camino.Service.Repository.Articles
                                    UpdatedDate = article.UpdatedDate,
                                    ArticleCategoryName = category.Name,
                                    ArticleCategoryId = article.ArticleCategoryId,
-                                   Content = article.Content
+                                   Content = article.Content,
+                                   StatusId = article.StatusId
                                }).FirstOrDefaultAsync();
 
             return exist;

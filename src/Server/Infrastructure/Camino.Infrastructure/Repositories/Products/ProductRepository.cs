@@ -99,6 +99,7 @@ namespace Camino.Service.Repository.Products
                                      UpdatedById = p.UpdatedById,
                                      UpdatedDate = p.UpdatedDate,
                                      Price = price.Price,
+                                     StatusId = p.StatusId,
                                      Categories = productCategories.Select(x => new ProductCategoryResult()
                                      {
                                          Id = x.CategoryId,

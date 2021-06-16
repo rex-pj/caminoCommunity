@@ -1,56 +1,48 @@
 ﻿@model ArticleModel
 
 <input asp-for="Id" type="hidden" />
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="name">Name</label>
-            <input class="form-control" type="text" asp-for="Name">
-        </div>
+        <label for="name">Name</label>
+        <input class="form-control" type="text" asp-for="Name">
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label>Category</label>
-            @if (Model.ArticleCategoryId > 0)
-            {
-                <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="ArticleCategoryId">
-                    <option value="@Model.ArticleCategoryId" selected="selected">@Model.ArticleCategoryName</option>
-                </select>
-            }
-            else
-            {
-                <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="ArticleCategoryId">
-                </select>
-            }
-        </div>
+        <label>Category</label>
+        @if (Model.ArticleCategoryId > 0)
+        {
+            <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="ArticleCategoryId">
+                <option value="@Model.ArticleCategoryId" selected="selected">@Model.ArticleCategoryName</option>
+            </select>
+        }
+        else
+        {
+            <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="ArticleCategoryId">
+            </select>
+        }
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="Description">Description</label>
-            <textarea class="form-control" asp-for="Description" rows="3"></textarea>
-        </div>
+        <label for="Description">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="3"></textarea>
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label>Picture</label>
-            <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
-                   type="file" asp-for="File" id="pictureUpload" />
-            <input type="hidden" asp-for="Picture" />
-            <input type="hidden" asp-for="PictureFileType" />
-            <input type="hidden" asp-for="PictureFileName" />
-        </div>
-        <div class="progress d-none" id="uploadProgress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-        </div>
+        <label>Picture</label>
+        <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
+               type="file" asp-for="File" id="pictureUpload" />
+        <input type="hidden" asp-for="Picture" />
+        <input type="hidden" asp-for="PictureFileType" />
+        <input type="hidden" asp-for="PictureFileName" />
+    </div>
+    <div class="progress d-none" id="uploadProgress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
     </div>
 </div>
 
@@ -65,20 +57,90 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
-        <div class="mb-3">
-            <label for="Content">Content</label>
-            <textarea class="form-control" asp-for="Content"></textarea>
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
         </div>
     </div>
 </div>
 
-@if (Model.Id <= 0)
-{
-    <button type="submit" class="btn btn-primary">Create</button>
-}
-else
-{
-    <button type="submit" class="btn btn-primary">Update</button>
-}
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <label for="Content">Content</label>
+        <textarea class="form-control" asp-for="Content"></textarea>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-auto me-auto">
+                @if (Model.Id <= 0)
+                {
+                    <button type="submit" class="btn btn-primary">Create</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Update</button>
+                }
+            </div>
+            <div class="col-auto">
+                @if (Model.Id > 0)
+                {
+                    @if (Model.StatusId == ArticleStatus.Pending)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                title="Activate this article"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId != ArticleStatus.Inactived && Model.StatusId != ArticleStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                                class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this article">
+                            <i class="fa fa-lock"></i>
+                            <span class="ms-1">Block</span>
+                        </button>
+                    }
+                    else if (Model.StatusId == ArticleStatus.Inactived)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this article">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Re-activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId == ArticleStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
+                                class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this article">
+                            <i class="fa fa-redo"></i>
+                            <span class="ms-1">Restore</span>
+                        </button>
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this article">
+                            <i class="fa fa-times"></i>
+                            <span class="ms-1">Delete</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
+                                class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this article to trash">
+                            <i class="fa fa-trash-alt"></i>
+                            <span class="ms-1">Move To Trash</span>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
