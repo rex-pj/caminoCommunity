@@ -44,7 +44,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
-                IsGettingDeleted = true
+                CanGetDeleted = true
             };
 
             var articlePageList = await _articleService.GetAsync(filterRequest);
@@ -90,7 +90,11 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var article = await _articleService.FindDetailAsync(id);
+                var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = id,
+                    CanGetDeleted = true
+                });
                 if (article == null)
                 {
                     return RedirectToNotFoundPage();
@@ -133,7 +137,15 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public async Task<IActionResult> Update(int id)
         {
-            var article = await _articleService.FindDetailAsync(id);
+            var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true
+            });
+            if (article == null)
+            {
+                return RedirectToNotFoundPage();
+            }
             var model = new ArticleModel
             {
                 Id = article.Id,
@@ -183,7 +195,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _articleService.FindAsync(model.Id);
+            var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = article.Id,
+                CanGetDeleted = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -225,9 +241,15 @@ namespace Module.Web.ArticleManagement.Controllers
                 Id = request.Id,
                 UpdatedById = LoggedUserId
             });
+
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));
@@ -253,6 +275,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -270,9 +297,15 @@ namespace Module.Web.ArticleManagement.Controllers
                 Id = request.Id,
                 UpdatedById = LoggedUserId
             });
+
             if (!isActived)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));

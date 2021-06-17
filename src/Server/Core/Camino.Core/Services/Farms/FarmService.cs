@@ -30,9 +30,9 @@ namespace Camino.Services.Farms
             _userPhotoRepository = userPhotoRepository;
         }
 
-        public async Task<FarmResult> FindAsync(long id)
+        public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await _farmRepository.FindAsync(id);
+            var exist = await _farmRepository.FindAsync(filter);
             return exist;
         }
 
@@ -41,15 +41,17 @@ namespace Camino.Services.Farms
             return _farmRepository.FindByName(name);
         }
 
-        public async Task<FarmResult> FindDetailAsync(long id)
+        public async Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await _farmRepository.FindDetailAsync(id);
+            var exist = await _farmRepository.FindDetailAsync(filter);
             if (exist == null)
             {
                 return null;
             }
 
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(id);
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(new IdRequestFilter<long> {
+                Id = filter.Id
+            });
             exist.Pictures = pictures.Select(x => new PictureResult
             {
                 Id = x.PictureId

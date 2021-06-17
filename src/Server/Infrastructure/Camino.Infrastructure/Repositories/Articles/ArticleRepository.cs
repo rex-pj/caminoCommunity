@@ -26,9 +26,10 @@ namespace Camino.Service.Repository.Articles
             _articleCategoryRepository = articleCategoryRepository;
         }
 
-        public async Task<ArticleResult> FindAsync(long id)
+        public async Task<ArticleResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from article in _articleRepository.Get(x => x.Id == id && x.StatusId != ArticleStatus.Deleted.GetCode())
+            var exist = await (from article in _articleRepository
+                               .Get(x => x.Id == filter.Id  && (filter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode()))
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
                                select new ArticleResult
@@ -45,9 +46,10 @@ namespace Camino.Service.Repository.Articles
             return exist;
         }
 
-        public async Task<ArticleResult> FindDetailAsync(long id)
+        public async Task<ArticleResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from article in _articleRepository.Get(x => x.Id == id && x.StatusId != ArticleStatus.Deleted.GetCode())
+            var exist = await (from article in _articleRepository
+                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode()))
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
                                select new ArticleResult
@@ -91,7 +93,7 @@ namespace Camino.Service.Repository.Articles
         public async Task<BasePageList<ArticleResult>> GetAsync(ArticleFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var articleQuery = _articleRepository.Get(x => filter.IsGettingDeleted || x.StatusId != ArticleStatus.Deleted.GetCode());
+            var articleQuery = _articleRepository.Get(x => filter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 articleQuery = articleQuery.Where(user => user.Name.ToLower().Contains(search)

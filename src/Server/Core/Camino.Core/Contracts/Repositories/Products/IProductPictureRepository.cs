@@ -17,7 +17,7 @@ namespace Camino.Core.Contracts.Repositories.Products
         Task<bool> UpdateStatusByProductIdsAsync(IEnumerable<long> ids, long updatedById, PictureStatus status);
         Task<bool> CreateAsync(ProductPicturesModifyRequest request);
         Task<bool> UpdateAsync(ProductPicturesModifyRequest request);
-        Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(long productId, int? productPictureTypeId = null);
+        Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(IdRequestFilter<long> filter, int? productPictureTypeId = null);
         Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId);
     }
 }

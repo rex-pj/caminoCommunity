@@ -96,9 +96,9 @@ namespace Camino.Service.Repository.Products
             return result;
         }
 
-        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(long productId, int? productPictureTypeId = null)
+        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(IdRequestFilter<long> filter, int? productPictureTypeId = null)
         {
-            var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId == productId && (!productPictureTypeId.HasValue || x.PictureTypeId == productPictureTypeId))
+            var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId == filter.Id && (!productPictureTypeId.HasValue || x.PictureTypeId == productPictureTypeId))
                                          join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                            on productPic.PictureId equals picture.Id
                                          select new ProductPictureResult

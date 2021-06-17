@@ -45,7 +45,7 @@ namespace Module.Web.ProductManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
-                IsGettingDeleted = true
+                CanGetDeleted = true
             };
 
             var productPageList = await _productService.GetAsync(filterRequest);
@@ -90,7 +90,11 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var product = await _productService.FindDetailAsync(id);
+                var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = id,
+                    CanGetDeleted = true
+                });
                 if (product == null)
                 {
                     return RedirectToNotFoundPage();
@@ -156,7 +160,15 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
         public async Task<IActionResult> Update(int id)
         {
-            var product = await _productService.FindDetailAsync(id);
+            var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true
+            });
+            if (product == null)
+            {
+                return RedirectToNotFoundPage();
+            }
             var model = new ProductModel()
             {
                 Id = product.Id,
@@ -240,7 +252,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _productService.FindAsync(model.Id);
+            var exist = await _productService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = model.Id,
+                CanGetDeleted = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -299,6 +315,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -316,9 +337,15 @@ namespace Module.Web.ProductManagement.Controllers
                 Id = request.Id,
                 UpdatedById = LoggedUserId
             });
+
             if (!isInactived)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));
@@ -338,9 +365,15 @@ namespace Module.Web.ProductManagement.Controllers
                 Id = request.Id,
                 UpdatedById = LoggedUserId
             });
+
             if (!isActived)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));

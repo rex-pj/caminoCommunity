@@ -96,9 +96,9 @@ namespace Camino.Service.Repository.Articles
             return result;
         }
 
-        public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(long articleId)
+        public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(IdRequestFilter<long> filter)
         {
-            var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == articleId)
+            var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == filter.Id)
                                         join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode())
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult

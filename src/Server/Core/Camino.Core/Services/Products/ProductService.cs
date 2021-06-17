@@ -32,26 +32,31 @@ namespace Camino.Services.Products
             _productAttributeRepository = productAttributeRepository;
         }
 
-        public async Task<ProductResult> FindAsync(long id)
+        public async Task<ProductResult> FindAsync(IdRequestFilter<long> filter)
         {
-            return await _productRepository.FindAsync(id);
+            return await _productRepository.FindAsync(filter);
         }
 
-        public async Task<ProductResult> FindDetailAsync(long id)
+        public async Task<ProductResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var product = await _productRepository.FindDetailAsync(id);
+            var product = await _productRepository.FindDetailAsync(filter);
             if (product == null)
             {
                 return null;
             }
 
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdAsync(id);
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdAsync(new IdRequestFilter<long> { 
+                Id = filter.Id
+            });
             product.Pictures = pictures.Select(x => new PictureResult
             {
                 Id = x.PictureId
             });
 
-            product.ProductAttributes = await _productAttributeRepository.GetAttributeRelationsByProductIdAsync(id);
+            product.ProductAttributes = await _productAttributeRepository.GetAttributeRelationsByProductIdAsync(new IdRequestFilter<long>
+            {
+                Id = filter.Id
+            });
 
             product.CreatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;
             product.UpdatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;

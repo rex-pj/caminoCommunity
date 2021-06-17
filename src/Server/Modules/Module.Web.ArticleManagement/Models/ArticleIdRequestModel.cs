@@ -3,5 +3,6 @@
     public class ArticleIdRequestModel
     {
         public long Id { get; set; }
+        public bool ShouldBackToDetail { get; set; }
     }
 }

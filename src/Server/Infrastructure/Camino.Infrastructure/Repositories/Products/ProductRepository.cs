@@ -39,9 +39,10 @@ namespace Camino.Service.Repository.Products
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public async Task<ProductResult> FindAsync(long id)
+        public async Task<ProductResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from product in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
+            var exist = await (from product in _productRepository
+                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
                                select new ProductResult
                                {
                                    CreatedDate = product.CreatedDate,
@@ -55,9 +56,10 @@ namespace Camino.Service.Repository.Products
             return exist;
         }
 
-        public async Task<ProductResult> FindDetailAsync(long id)
+        public async Task<ProductResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var farmQuery = from farm in _farmRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode())
+            var farmQuery = from farm in _farmRepository
+                            .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -79,7 +81,8 @@ namespace Camino.Service.Repository.Products
                                            Name = category.Name
                                        };
 
-            var product = await (from p in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
+            var product = await (from p in _productRepository
+                                 .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
                                  from price in prices.DefaultIfEmpty()
@@ -137,7 +140,7 @@ namespace Camino.Service.Repository.Products
         public async Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Get(x => filter.IsGettingDeleted || x.StatusId != ProductStatus.Deleted.GetCode());
+            var productQuery = _productRepository.Get(x => filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)

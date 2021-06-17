@@ -56,7 +56,9 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
         public async Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
         {
-            var exist = await _articleService.FindAsync(criterias.Id);
+            var exist = await _articleService.FindAsync(new IdRequestFilter<long> { 
+                Id = criterias.Id
+            });
             if (exist == null)
             {
                 throw new Exception("No article found");
@@ -179,7 +181,10 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articleResult = await _articleService.FindDetailAsync(criterias.Id);
+                var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 var article = await MapArticleResultToModelAsync(articleResult);
                 return article;
             }
@@ -220,7 +225,10 @@ namespace Module.Api.Article.GraphQL.Resolvers
         {
             try
             {
-                var exist = await _articleService.FindAsync(criterias.Id);
+                var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 if (exist == null || currentUser.Id != exist.CreatedById)
                 {
                     return false;

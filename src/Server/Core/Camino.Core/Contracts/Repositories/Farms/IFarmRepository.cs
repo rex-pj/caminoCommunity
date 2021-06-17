@@ -9,8 +9,8 @@ namespace Camino.Core.Contracts.Repositories.Farms
 {
     public interface IFarmRepository
     {
-        Task<FarmResult> FindAsync(long id);
-        Task<FarmResult> FindDetailAsync(long id);
+        Task<FarmResult> FindAsync(IdRequestFilter<long> filter);
+        Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter);
         FarmResult FindByName(string name);
         Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter);
         Task<long> CreateAsync(FarmModifyRequest request);

@@ -11,7 +11,7 @@ namespace Camino.Core.Contracts.Repositories.Articles
     public interface IArticlePictureRepository
     {
         Task<BasePageList<ArticlePictureResult>> GetAsync(ArticlePictureFilter filter);
-        Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(long articleId);
+        Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(IdRequestFilter<long> filter);
         Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds);
         Task<long> CreateAsync(ArticlePictureModifyRequest request);
         Task<bool> UpdateAsync(ArticlePictureModifyRequest request);

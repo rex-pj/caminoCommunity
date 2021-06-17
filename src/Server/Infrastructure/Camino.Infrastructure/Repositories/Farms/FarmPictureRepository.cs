@@ -96,9 +96,9 @@ namespace Camino.Service.Repository.Farms
             return result;
         }
 
-        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(long farmId, int? farmPictureTypeId = null)
+        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(IdRequestFilter<long> filter, int? farmPictureTypeId = null)
         {
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == farmId && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
+            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == filter.Id && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
                                       join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
                                         on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult

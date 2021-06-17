@@ -44,7 +44,7 @@ namespace Module.Web.FarmManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 FarmTypeId = filter.FarmTypeId,
-                IsGettingDeleted = true
+                CanGetDeleted = true
             };
 
             var farmPageList = await _farmService.GetAsync(filterRequest);
@@ -87,7 +87,11 @@ namespace Module.Web.FarmManagement.Controllers
 
             try
             {
-                var farm = await _farmService.FindDetailAsync(id);
+                var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = id,
+                    CanGetDeleted = true
+                });
                 if (farm == null)
                 {
                     return RedirectToNotFoundPage();
@@ -124,7 +128,15 @@ namespace Module.Web.FarmManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
         public async Task<IActionResult> Update(int id)
         {
-            var farm = await _farmService.FindDetailAsync(id);
+            var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true
+            });
+            if (farm == null)
+            {
+                return RedirectToNotFoundPage();
+            }
             var model = new FarmModel()
             {
                 Description = farm.Description,
@@ -162,7 +174,11 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _farmService.FindAsync(model.Id);
+            var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = model.Id,
+                CanGetDeleted = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -226,9 +242,15 @@ namespace Module.Web.FarmManagement.Controllers
                 Id = request.Id,
                 UpdatedById = LoggedUserId
             });
+
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));
@@ -254,6 +276,11 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -275,6 +302,11 @@ namespace Module.Web.FarmManagement.Controllers
             if (!isActived)
             {
                 return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));

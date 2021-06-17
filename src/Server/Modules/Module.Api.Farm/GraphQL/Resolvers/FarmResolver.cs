@@ -85,7 +85,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
         public async Task<FarmModel> UpdateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
         {
-            var exist = await _farmService.FindAsync(criterias.Id);
+            var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = criterias.Id
+            });
             if (exist == null)
             {
                 throw new Exception("No article found");
@@ -214,7 +217,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmResult = await _farmService.FindDetailAsync(criterias.Id);
+                var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 var farm = await MapFarmResultToModelAsync(farmResult);
                 return farm;
             }
@@ -228,7 +234,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
         {
             try
             {
-                var exist = await _farmService.FindAsync(criterias.Id);
+                var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 if (exist == null || currentUser.Id != exist.CreatedById)
                 {
                     return false;

@@ -177,7 +177,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productResult = await _productService.FindDetailAsync(criterias.Id);
+                var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 var product = await MapProductResultToModelAsync(productResult);
                 return product;
             }
@@ -232,7 +235,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
         public async Task<ProductModel> UpdateProductAsync(ApplicationUser currentUser, ProductModel criterias)
         {
-            var exist = await _productService.FindAsync(criterias.Id);
+            var exist = await _productService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = criterias.Id
+            });
             if (exist == null)
             {
                 throw new CaminoApplicationException("No article found");
@@ -292,7 +298,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
         {
             try
             {
-                var exist = await _productService.FindAsync(criterias.Id);
+                var exist = await _productService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id
+                });
                 if (exist == null || currentUser.Id != exist.CreatedById)
                 {
                     return false;

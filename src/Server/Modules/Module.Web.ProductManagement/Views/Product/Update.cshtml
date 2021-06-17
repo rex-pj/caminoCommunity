@@ -27,8 +27,12 @@
         <partial name="Partial/_UpdateForm" />
     </form>
 </div>
-<partial name="Partial/_ActivateModal" model="new ProductIdRequestModel { Id = Model.Id }" />
-<partial name="Partial/_DeactivateModal" model="new ProductIdRequestModel { Id = Model.Id }" />
-<partial name="Partial/_RestoreModal" model="new ProductIdRequestModel { Id = Model.Id }" />
-<partial name="Partial/_PermanentlyDeleteModal" model="new ProductIdRequestModel { Id = Model.Id }" />
-<partial name="Partial/_TemporaryDeleteModal" model="new ProductIdRequestModel { Id = Model.Id }" />
+
+@{
+    var productIdModel = new ProductIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+}
+<partial name="Partial/_ActivateModal" model="productIdModel" />
+<partial name="Partial/_DeactivateModal" model="productIdModel" />
+<partial name="Partial/_RestoreModal" model="productIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="productIdModel" />
+<partial name="Partial/_TemporaryDeleteModal" model="productIdModel" />

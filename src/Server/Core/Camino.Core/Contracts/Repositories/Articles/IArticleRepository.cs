@@ -10,8 +10,8 @@ namespace Camino.Core.Contracts.Repositories.Articles
     public interface IArticleRepository
     {
         Task<int> CreateAsync(ArticleModifyRequest request);
-        Task<ArticleResult> FindAsync(long id);
-        Task<ArticleResult> FindDetailAsync(long id);
+        Task<ArticleResult> FindAsync(IdRequestFilter<long> filter);
+        Task<ArticleResult> FindDetailAsync(IdRequestFilter<long> filter);
         ArticleResult FindByName(string name);
         Task<bool> UpdateAsync(ArticleModifyRequest request);
         Task<BasePageList<ArticleResult>> GetAsync(ArticleFilter filter);

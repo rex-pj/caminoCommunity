@@ -31,20 +31,23 @@ namespace Camino.Services.Articles
             _userPhotoRepository = userPhotoRepository;
         }
 
-        public async Task<ArticleResult> FindAsync(long id)
+        public async Task<ArticleResult> FindAsync(IdRequestFilter<long> filter)
         {
-            return await _articleRepository.FindAsync(id);
+            return await _articleRepository.FindAsync(filter);
         }
 
-        public async Task<ArticleResult> FindDetailAsync(long id)
+        public async Task<ArticleResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var article = await _articleRepository.FindDetailAsync(id);
+            var article = await _articleRepository.FindDetailAsync(filter);
             if (article == null)
             {
                 return null;
             }
 
-            var picture = await _articlePictureRepository.GetArticlePictureByArticleIdAsync(id);
+            var picture = await _articlePictureRepository.GetArticlePictureByArticleIdAsync(new IdRequestFilter<long>
+            {
+                Id = filter.Id
+            });
 
             if (picture != null)
             {

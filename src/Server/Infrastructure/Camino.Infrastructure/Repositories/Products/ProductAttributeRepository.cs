@@ -264,7 +264,7 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
-        public async Task<IList<ProductAttributeRelationResult>> GetAttributeRelationsByProductIdAsync(long productId)
+        public async Task<IList<ProductAttributeRelationResult>> GetAttributeRelationsByProductIdAsync(IdRequestFilter<long> filter)
         {
             var productAttributes = await (from pattr in _productAttributeRelationRepository.Table
                                            join attr in _productAttributeRepository.Table
@@ -273,7 +273,7 @@ namespace Camino.Service.Repository.Products
                                            join attrv in _productAttributeRelationValueRepository.Table
                                            on pattr.Id equals attrv.ProductAttributeRelationId into attributeRelationValues
 
-                                           where pattr.ProductId == productId
+                                           where pattr.ProductId == filter.Id
                                            select new ProductAttributeRelationResult
                                            {
                                                AttributeControlTypeId = pattr.AttributeControlTypeId,

@@ -3,5 +3,6 @@
     public class FarmIdRequestModel
     {
         public long Id { get; set; }
+        public bool ShouldBackToDetail { get; set; }
     }
 }

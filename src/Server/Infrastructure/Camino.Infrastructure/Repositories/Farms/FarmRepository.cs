@@ -42,9 +42,10 @@ namespace Camino.Service.Repository.Farms
             _productPictureRepository = productPictureRepository;
         }
 
-        public async Task<FarmResult> FindAsync(long id)
+        public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && x.StatusId != FarmStatus.Deleted.GetCode())
+            var exist = await (from farm in _farmRepository
+                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode()))
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
                                select new FarmResult
@@ -64,9 +65,10 @@ namespace Camino.Service.Repository.Farms
             return exist;
         }
 
-        public async Task<FarmResult> FindDetailAsync(long id)
+        public async Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && x.StatusId != FarmStatus.Deleted.GetCode())
+            var exist = await (from farm in _farmRepository
+                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode()))
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
                                select new FarmResult
@@ -152,7 +154,7 @@ namespace Camino.Service.Repository.Farms
         public async Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter)
         {
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Get(x => filter.IsGettingDeleted || x.StatusId != FarmStatus.Deleted.GetCode());
+            var farmQuery = _farmRepository.Get(x => filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode());
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
