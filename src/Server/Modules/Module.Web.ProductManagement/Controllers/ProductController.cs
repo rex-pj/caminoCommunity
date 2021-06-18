@@ -332,7 +332,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productService.DeactivateAsync(new ProductModifyRequest
+            var isInactived = await _productService.DeactiveAsync(new ProductModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId

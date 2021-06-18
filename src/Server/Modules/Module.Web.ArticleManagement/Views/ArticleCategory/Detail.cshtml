@@ -46,8 +46,17 @@
         <label>Updated date</label>
         <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
     </div>
-    <div class="mb-3">
-        <label>Parent</label>
-        <span class="form-control" readonly>@Model.ParentCategoryName</span>
+    @if (Model.ParentId.HasValue)
+    {
+        <div class="mb-3">
+            <label>Parent</label>
+            <span class="form-control" readonly>@Model.ParentCategoryName</span>
+        </div>
+    }
+    <div class="row mb-3">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
+        </div>
     </div>
 </div>

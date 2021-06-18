@@ -57,7 +57,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 ParentCategoryName = x.ParentCategoryName,
                 ParentId = x.ParentId,
                 UpdateById = x.UpdatedById,
-                UpdatedDate = x.UpdatedDate
+                UpdatedDate = x.UpdatedDate,
+                StatusId = (ArticleCategoryStatus)x.StatusId
             });
             var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
             {
@@ -103,7 +104,8 @@ namespace Module.Web.ArticleManagement.Controllers
                     CreatedDate = category.CreatedDate,
                     CreatedBy = category.CreatedBy,
                     UpdatedBy = category.UpdatedBy,
-                    ParentCategoryName = category.ParentCategoryName
+                    ParentCategoryName = category.ParentCategoryName,
+                    StatusId = (ArticleCategoryStatus)category.StatusId
                 };
                 return View(model);
             }
@@ -159,7 +161,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdateById = category.UpdatedById,
                 CreatedById = category.CreatedById,
                 CreatedDate = category.CreatedDate,
-                ParentCategoryName = category.ParentCategoryName
+                ParentCategoryName = category.ParentCategoryName,
+                StatusId = (ArticleCategoryStatus)category.StatusId
             };
             return View(model);
         }
@@ -191,6 +194,81 @@ namespace Module.Web.ArticleManagement.Controllers
             category.UpdatedById = LoggedUserId;
             await _articleCategoryService.UpdateAsync(category);
             return RedirectToAction(nameof(Detail), new { id = category.Id });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        public async Task<IActionResult> Deactivate(ArticleCategoryIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _articleCategoryService.DeactiveAsync(new ArticleCategoryModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        public async Task<IActionResult> Active(ArticleCategoryIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _articleCategoryService.ActiveAsync(new ArticleCategoryModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteArticleCategory)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _articleCategoryService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]

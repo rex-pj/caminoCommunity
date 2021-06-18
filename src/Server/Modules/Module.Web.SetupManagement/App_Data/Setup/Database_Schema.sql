@@ -421,8 +421,7 @@ CREATE TABLE dbo.FarmType
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO
@@ -527,8 +526,7 @@ CREATE TABLE dbo.[ProductCategory]
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO
@@ -768,8 +766,7 @@ CREATE TABLE dbo.ArticleCategory
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO

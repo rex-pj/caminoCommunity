@@ -20,8 +20,7 @@ namespace Camino.Core.Domain.Products
         public long CreatedById { get; set; }
 
         public int? ParentId { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsPublished { get; set; }
+        public int StatusId { get; set; }
 
         public virtual ProductCategory ParentCategory { get; set; }
 

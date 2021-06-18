@@ -284,14 +284,14 @@ namespace Camino.Services.Products
             return await _productRepository.SoftDeleteAsync(request);
         }
 
-        public async Task<bool> DeactivateAsync(ProductModifyRequest request)
+        public async Task<bool> DeactiveAsync(ProductModifyRequest request)
         {
             await _productPictureRepository.UpdateStatusByProductIdAsync(new ProductPicturesModifyRequest
             {
                 UpdatedById = request.UpdatedById,
                 ProductId = request.Id
             }, PictureStatus.Inactived);
-            return await _productRepository.DeactivateAsync(request);
+            return await _productRepository.DeactiveAsync(request);
         }
 
         public async Task<bool> ActiveAsync(ProductModifyRequest request)

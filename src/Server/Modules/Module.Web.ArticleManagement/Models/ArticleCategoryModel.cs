@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace Module.Web.ArticleManagement.Models
         public string CreatedBy { get; set; }
         public int? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
+        public ArticleCategoryStatus StatusId { get; set; }
         public IEnumerable<SelectListItem> SelectCategories { get; set; }
     }
 }

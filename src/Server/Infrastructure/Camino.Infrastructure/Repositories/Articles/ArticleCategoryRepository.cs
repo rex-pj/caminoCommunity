@@ -11,6 +11,7 @@ using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Articles
 {
@@ -40,6 +41,7 @@ namespace Camino.Service.Repository.Articles
                                       ParentId = child.ParentId,
                                       UpdatedById = child.UpdatedById,
                                       UpdatedDate = child.UpdatedDate,
+                                      StatusId = child.StatusId,
                                       ParentCategoryName = cate != null ? cate.Name : null
                                   }).FirstOrDefaultAsync();
 
@@ -58,8 +60,8 @@ namespace Camino.Service.Repository.Articles
                     Name = x.Name,
                     ParentId = x.ParentId,
                     UpdatedById = x.UpdatedById,
-                    UpdatedDate = x.UpdatedDate
-
+                    UpdatedDate = x.UpdatedDate,
+                    StatusId = x.StatusId
                 })
                 .FirstOrDefaultAsync();
 
@@ -109,7 +111,8 @@ namespace Camino.Service.Repository.Articles
                 Name = a.Name,
                 ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -261,7 +264,7 @@ namespace Camino.Service.Repository.Articles
                 UpdatedById = category.UpdatedById,
                 UpdatedDate = DateTime.UtcNow,
                 CreatedDate = DateTime.UtcNow,
-                IsPublished = true
+                StatusId = ArticleCategoryStatus.Actived.GetCode()
             };
 
             var id = await _articleCategoryRepository.AddWithInt32EntityAsync(newCategory);
@@ -279,6 +282,34 @@ namespace Camino.Service.Repository.Articles
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactiveAsync(ArticleCategoryModifyRequest request)
+        {
+            await _articleCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ArticleCategoryModifyRequest request)
+        {
+            await _articleCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _articleCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

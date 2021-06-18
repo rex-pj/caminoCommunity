@@ -10,6 +10,8 @@ using Camino.Shared.Results.Farms;
 using Camino.Core.Contracts.Repositories.Farms;
 using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Farms
 {
@@ -156,7 +158,7 @@ namespace Camino.Service.Repository.Farms
                 Description = farmType.Description,
                 CreatedById = farmType.CreatedById,
                 UpdatedById = farmType.UpdatedById,
-                IsPublished = true
+                StatusId = FarmTypeStatus.Actived.GetCode()
             };
             newFarmType.UpdatedDate = DateTimeOffset.UtcNow;
             newFarmType.CreatedDate = DateTimeOffset.UtcNow;

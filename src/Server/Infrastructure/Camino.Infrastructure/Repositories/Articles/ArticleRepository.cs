@@ -29,7 +29,7 @@ namespace Camino.Service.Repository.Articles
         public async Task<ArticleResult> FindAsync(IdRequestFilter<long> filter)
         {
             var exist = await (from article in _articleRepository
-                               .Get(x => x.Id == filter.Id  && (filter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode()))
+                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode()))
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
                                select new ArticleResult
@@ -227,6 +227,25 @@ namespace Camino.Service.Repository.Articles
                 .Take(filter.PageSize).ToListAsync();
 
             return relevantArticles;
+        }
+
+        public async Task<IList<ArticleResult>> GetArticleByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter)
+        {
+            return await _articleRepository
+                .Get(x => x.ArticleCategoryId == categoryIdFilter.Id
+                && (categoryIdFilter.CanGetDeleted || x.StatusId != ArticleStatus.Deleted.GetCode()))
+                .Select(x => new ArticleResult
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedById = x.CreatedById,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    UpdatedById = x.UpdatedById,
+                    UpdatedDate = x.UpdatedDate,
+                    Content = x.Content,
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> DeleteAsync(long id)

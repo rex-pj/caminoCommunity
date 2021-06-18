@@ -16,5 +16,8 @@ namespace Camino.Core.Contracts.Services.Articles
         Task<int> CreateAsync(ArticleCategoryModifyRequest category);
         Task<bool> UpdateAsync(ArticleCategoryModifyRequest category);
         Task<ArticleCategoryResult> FindByNameAsync(string name);
+        Task<bool> ActiveAsync(ArticleCategoryModifyRequest request);
+        Task<bool> DeactiveAsync(ArticleCategoryModifyRequest request);
+        Task<bool> DeleteAsync(int id);
     }
 }

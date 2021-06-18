@@ -12,6 +12,8 @@ using Camino.Shared.Results.Products;
 using Camino.Core.Domain.Products;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Products
 {
@@ -267,7 +269,7 @@ namespace Camino.Service.Repository.Products
                 UpdatedById = category.UpdatedById,
                 UpdatedDate = DateTimeOffset.UtcNow,
                 CreatedDate = DateTimeOffset.UtcNow,
-                IsPublished = true
+                StatusId = ProductCategoryStatus.Actived.GetCode()
             };
 
             var id = await _productCategoryRepository.AddWithInt32EntityAsync(newCategory);

@@ -20,5 +20,6 @@ namespace Camino.Core.Contracts.Repositories.Articles
         Task<bool> SoftDeleteAsync(ArticleModifyRequest request);
         Task<bool> DeactivateAsync(ArticleModifyRequest request);
         Task<bool> ActiveAsync(ArticleModifyRequest request);
+        Task<IList<ArticleResult>> GetArticleByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter);
     }
 }

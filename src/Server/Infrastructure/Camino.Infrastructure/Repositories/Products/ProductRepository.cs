@@ -468,7 +468,7 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
-        public async Task<bool> DeactivateAsync(ProductModifyRequest request)
+        public async Task<bool> DeactiveAsync(ProductModifyRequest request)
         {
             await _productRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)ProductStatus.Inactived)

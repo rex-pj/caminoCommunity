@@ -8,6 +8,8 @@ using Camino.Core.Contracts.Services.Articles;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
+using System;
+using Camino.Core.Exceptions;
 
 namespace Camino.Services.Articles
 {
@@ -15,11 +17,14 @@ namespace Camino.Services.Articles
     {
         private readonly IArticleCategoryRepository _articleCategoryRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IArticleRepository _articleRepository;
 
-        public ArticleCategoryService(IArticleCategoryRepository articleCategoryRepository, IUserRepository userRepository)
+        public ArticleCategoryService(IArticleCategoryRepository articleCategoryRepository, IUserRepository userRepository,
+            IArticleRepository articleRepository)
         {
             _articleCategoryRepository = articleCategoryRepository;
             _userRepository = userRepository;
+            _articleRepository = articleRepository;
         }
 
         public async Task<ArticleCategoryResult> FindAsync(long id)
@@ -47,7 +52,7 @@ namespace Camino.Services.Articles
         public async Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
         {
             var categoryPageList = await _articleCategoryRepository.GetAsync(filter);
-            
+
             var createdByIds = categoryPageList.Collections.Select(x => x.CreatedById).ToArray();
             var updatedByIds = categoryPageList.Collections.Select(x => x.UpdatedById).ToArray();
 
@@ -84,6 +89,32 @@ namespace Camino.Services.Articles
         public async Task<bool> UpdateAsync(ArticleCategoryModifyRequest category)
         {
             return await _articleCategoryRepository.UpdateAsync(category);
+        }
+
+        public async Task<bool> ActiveAsync(ArticleCategoryModifyRequest request)
+        {
+            return await _articleCategoryRepository.ActiveAsync(request);
+        }
+
+        public async Task<bool> DeactiveAsync(ArticleCategoryModifyRequest request)
+        {
+            return await _articleCategoryRepository.DeactiveAsync(request);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var articles = await _articleRepository.GetArticleByCategoryIdAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetDeleted = true
+            });
+
+            if (articles.Any())
+            {
+                throw new CaminoApplicationException($"Some {nameof(articles)} belong to this category need to be deleted or move to another category");
+            }
+
+            return await _articleCategoryRepository.DeleteAsync(id);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Camino.Shared.Results.Articles
         public int? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
         public ArticleCategoryResult ParentCategory { get; set; }
+        public int StatusId { get; set; }
 
         public IEnumerable<ArticleCategoryResult> ChildCategories { get; set; }
     }

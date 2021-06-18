@@ -229,7 +229,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
         public async Task<IActionResult> TemporaryDelete(FarmIdRequestModel request)
         {
             if (!ModelState.IsValid)
