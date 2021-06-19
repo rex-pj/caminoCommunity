@@ -1,16 +1,14 @@
 ﻿using Camino.Shared.Requests.Filters;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Farms;
 using Camino.Core.Contracts.Services.Farms;
-using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
 using Camino.Core.Contracts.Repositories.Farms;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
+using Camino.Core.Exceptions;
 
 namespace Camino.Services.Farms
 {
@@ -18,11 +16,14 @@ namespace Camino.Services.Farms
     {
         private readonly IFarmTypeRepository _farmTypeRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IFarmRepository _farmRepository;
 
-        public FarmTypeService(IFarmTypeRepository farmTypeRepository, IUserRepository userRepository)
+        public FarmTypeService(IFarmTypeRepository farmTypeRepository, IUserRepository userRepository,
+            IFarmRepository farmRepository)
         {
             _farmTypeRepository = farmTypeRepository;
             _userRepository = userRepository;
+            _farmRepository = farmRepository;
         }
 
         public async Task<FarmTypeResult> FindAsync(long id)
@@ -80,6 +81,33 @@ namespace Camino.Services.Farms
         public async Task<bool> UpdateAsync(FarmTypeModifyRequest farmType)
         {
             return await _farmTypeRepository.UpdateAsync(farmType);
+        }
+
+        public async Task<bool> DeactivateAsync(FarmTypeModifyRequest farmType)
+        {
+            return await _farmTypeRepository.DeactivateAsync(farmType);
+        }
+
+        public async Task<bool> ActiveAsync(FarmTypeModifyRequest farmType)
+        {
+            return await _farmTypeRepository.ActiveAsync(farmType);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var farms = await _farmRepository.GetFarmByTypeIdAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+
+            if (farms.Any())
+            {
+                throw new CaminoApplicationException($"Some {nameof(farms)} belong to this farm type need to be deleted or move to another farm type");
+            }
+
+            return await _farmTypeRepository.DeleteAsync(id);
         }
     }
 }

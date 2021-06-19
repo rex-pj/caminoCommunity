@@ -19,5 +19,6 @@ namespace Camino.Shared.Results.Farms
 
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
+        public int StatusId { get; set; }
     }
 }

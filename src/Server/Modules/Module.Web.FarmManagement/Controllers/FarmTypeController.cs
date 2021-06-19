@@ -56,7 +56,8 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedById = x.CreatedById,
                 UpdateById = x.UpdatedById,
                 UpdatedBy = x.UpdatedBy,
-                UpdatedDate = x.UpdatedDate
+                UpdatedDate = x.UpdatedDate,
+                StatusId = (FarmTypeStatus)x.StatusId
             });
 
             var farmTypePage = new PageListModel<FarmTypeModel>(farmTypes)
@@ -68,7 +69,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_FarmTypeTable", farmTypePage);
+                return PartialView("Partial/_FarmTypeTable", farmTypePage);
             }
 
             return View(farmTypePage);
@@ -101,7 +102,8 @@ namespace Module.Web.FarmManagement.Controllers
                     CreatedById = farmType.CreatedById,
                     UpdateById = farmType.UpdatedById,
                     UpdatedBy = farmType.UpdatedBy,
-                    UpdatedDate = farmType.UpdatedDate
+                    UpdatedDate = farmType.UpdatedDate,
+                    StatusId = (FarmTypeStatus)farmType.StatusId
                 };
                 return View(model);
             }
@@ -132,9 +134,85 @@ namespace Module.Web.FarmManagement.Controllers
                 Name = farmType.Name,
                 UpdateById = farmType.UpdatedById,
                 UpdatedBy = farmType.UpdatedBy,
-                UpdatedDate = farmType.UpdatedDate
+                UpdatedDate = farmType.UpdatedDate,
+                StatusId = (FarmTypeStatus)farmType.StatusId
             };
             return View(model);
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarmType)]
+        public async Task<IActionResult> Deactivate(FarmTypeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _farmTypeService.DeactivateAsync(new FarmTypeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarmType)]
+        public async Task<IActionResult> Active(FarmTypeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _farmTypeService.ActiveAsync(new FarmTypeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteFarmType)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _farmTypeService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -175,11 +253,12 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var farmType = new FarmTypeModifyRequest()
+            var farmType = new FarmTypeModifyRequest
             {
                 Description = model.Description,
                 Name = model.Name,
-                UpdatedById = LoggedUserId
+                UpdatedById = LoggedUserId,
+                Id = model.Id
             };
             await _farmTypeService.UpdateAsync(farmType);
             return RedirectToAction(nameof(Detail), new { id = farmType.Id });

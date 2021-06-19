@@ -284,7 +284,7 @@ namespace Camino.Service.Repository.Articles
             return true;
         }
 
-        public async Task<bool> DeactiveAsync(ArticleCategoryModifyRequest request)
+        public async Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request)
         {
             await _articleCategoryRepository.Get(x => x.Id == request.Id)
                 .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)

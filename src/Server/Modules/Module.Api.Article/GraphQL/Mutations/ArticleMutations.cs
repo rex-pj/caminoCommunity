@@ -31,9 +31,9 @@ namespace Module.Api.Article.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<ArticleModel> GetArticleAsync([Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
         {
-            return await articleResolver.GetArticleAsync(criterias);
+            return await articleResolver.GetArticleAsync(currentUser, criterias);
         }
     }
 }

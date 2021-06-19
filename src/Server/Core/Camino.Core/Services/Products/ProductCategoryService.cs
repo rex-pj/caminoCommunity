@@ -11,6 +11,7 @@ using Camino.Shared.Requests.Products;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
+using Camino.Core.Exceptions;
 
 namespace Camino.Services.Products
 {
@@ -18,11 +19,14 @@ namespace Camino.Services.Products
     {
         private readonly IProductCategoryRepository _productCategoryRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ProductCategoryService(IProductCategoryRepository productCategoryRepository, IUserRepository userRepository)
+        public ProductCategoryService(IProductCategoryRepository productCategoryRepository, IUserRepository userRepository,
+            IProductRepository productRepository)
         {
             _productCategoryRepository = productCategoryRepository;
             _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<ProductCategoryResult> FindAsync(int id)
@@ -91,6 +95,33 @@ namespace Camino.Services.Products
         public async Task<bool> UpdateAsync(ProductCategoryRequest request)
         {
             return await _productCategoryRepository.UpdateAsync(request);
+        }
+
+        public async Task<bool> DeactivateAsync(ProductCategoryRequest farmType)
+        {
+            return await _productCategoryRepository.DeactivateAsync(farmType);
+        }
+
+        public async Task<bool> ActiveAsync(ProductCategoryRequest farmType)
+        {
+            return await _productCategoryRepository.ActiveAsync(farmType);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var farms = await _productRepository.GetProductByCategoryIdAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+
+            if (farms.Any())
+            {
+                throw new CaminoApplicationException($"Some {nameof(farms)} belong to this farm type need to be deleted or move to another farm type");
+            }
+
+            return await _productCategoryRepository.DeleteAsync(id);
         }
     }
 }

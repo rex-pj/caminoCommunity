@@ -31,7 +31,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             _productService = productService;
         }
 
-        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias)
+        public async Task<ProductPageListModel> GetUserProductsAsync(ApplicationUser currentUser, ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -52,7 +52,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Page = criterias.Page,
                 PageSize = criterias.PageSize,
                 Search = criterias.Search,
-                CreatedById = userId
+                CreatedById = userId,
+                CanGetInactived = currentUser.Id == userId
             };
 
             try
@@ -168,7 +169,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias)
+        public async Task<ProductModel> GetProductAsync(ApplicationUser currentUser, ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -179,8 +180,15 @@ namespace Module.Api.Product.GraphQL.Resolvers
             {
                 var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id
+                    Id = criterias.Id,
+                    CanGetInactived = true
                 });
+
+                if (currentUser.Id != productResult.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
                 var product = await MapProductResultToModelAsync(productResult);
                 return product;
             }
@@ -237,8 +245,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
         {
             var exist = await _productService.FindAsync(new IdRequestFilter<long>
             {
-                Id = criterias.Id
+                Id = criterias.Id,
+                CanGetInactived = true
             });
+
             if (exist == null)
             {
                 throw new CaminoApplicationException("No article found");
@@ -300,11 +310,18 @@ namespace Module.Api.Product.GraphQL.Resolvers
             {
                 var exist = await _productService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id
+                    Id = criterias.Id,
+                    CanGetInactived = true
                 });
-                if (exist == null || currentUser.Id != exist.CreatedById)
+
+                if (exist == null)
                 {
                     return false;
+                }
+
+                if (currentUser.Id != exist.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
                 }
 
                 return await _productService.SoftDeleteAsync(new ProductModifyRequest

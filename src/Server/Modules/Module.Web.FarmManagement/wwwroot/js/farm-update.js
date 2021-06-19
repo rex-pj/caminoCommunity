@@ -1,11 +1,4 @@
-﻿$(function () {
-    $('#farmPictures').on('click', '.remove-picture', function () {
-        $(this).parent('.picture-item').remove();
-        rerenderPictureIndexes();
-    });
-});
-
-; (function (global) {
+﻿; (function (global) {
     'use strict';
     var features = {
         selectors: {

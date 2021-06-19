@@ -14,6 +14,7 @@ namespace Camino.Core.Contracts.Repositories.Farms
         FarmResult FindByName(string name);
         Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter);
         Task<long> CreateAsync(FarmModifyRequest request);
+        Task<IList<FarmResult>> GetFarmByTypeIdAsync(IdRequestFilter<int> typeIdFilter);
         Task<bool> UpdateAsync(FarmModifyRequest request);
         Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10);
         Task<bool> DeleteAsync(long id);

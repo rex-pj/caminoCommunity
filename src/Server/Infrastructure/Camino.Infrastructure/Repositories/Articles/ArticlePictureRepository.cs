@@ -98,8 +98,13 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(IdRequestFilter<long> filter)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == filter.Id)
-                                        join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode())
+                                        join picture in _pictureRepository
+                                        .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult
                                         {
@@ -110,17 +115,22 @@ namespace Camino.Service.Repository.Articles
             return articlePicture;
         }
 
-        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds)
+        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
-                                        join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode())
-                                        on articlePic.PictureId equals picture.Id
-                                        select new ArticlePictureResult
-                                        {
-                                            ArticleId = articlePic.ArticleId,
-                                            ArticlePictureTypeId = articlePic.PictureTypeId,
-                                            PictureId = articlePic.PictureId
-                                        }).ToListAsync();
+                                         join picture in _pictureRepository
+                                         .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                                         on articlePic.PictureId equals picture.Id
+                                         select new ArticlePictureResult
+                                         {
+                                             ArticleId = articlePic.ArticleId,
+                                             ArticlePictureTypeId = articlePic.PictureTypeId,
+                                             PictureId = articlePic.PictureId
+                                         }).ToListAsync();
             return articlePictures;
         }
 

@@ -15,5 +15,8 @@ namespace Camino.Core.Contracts.Repositories.Farms
         Task<IList<FarmTypeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10);
         Task<int> CreateAsync(FarmTypeModifyRequest farmType);
         Task<bool> UpdateAsync(FarmTypeModifyRequest farmType);
+        Task<bool> DeactivateAsync(FarmTypeModifyRequest request);
+        Task<bool> ActiveAsync(FarmTypeModifyRequest request);
+        Task<bool> DeleteAsync(int id);
     }
 }

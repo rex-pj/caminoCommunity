@@ -58,7 +58,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ProductAttributeTable", productAttributePage);
+                return PartialView("Partial/_ProductAttributeTable", productAttributePage);
             }
 
             return View(productAttributePage);

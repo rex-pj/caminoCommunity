@@ -12,7 +12,7 @@ namespace Camino.Core.Contracts.Repositories.Farms
     {
         Task<BasePageList<FarmPictureResult>> GetAsync(FarmPictureFilter filter);
         Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(IdRequestFilter<long> filter, int? farmPictureTypeId = null);
-        Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId);
+        Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId, IdRequestFilter<long> filter);
         Task<bool> CreateAsync(FarmPicturesModifyRequest request);
         Task<bool> UpdateAsync(FarmPicturesModifyRequest request);
         Task<bool> DeleteByFarmIdAsync(long farmId);

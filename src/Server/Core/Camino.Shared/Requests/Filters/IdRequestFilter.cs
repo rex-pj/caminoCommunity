@@ -4,5 +4,6 @@
     {
         public TKey Id { get; set; }
         public bool CanGetDeleted { get; set; }
+        public bool CanGetInactived { get; set; }
     }
 }

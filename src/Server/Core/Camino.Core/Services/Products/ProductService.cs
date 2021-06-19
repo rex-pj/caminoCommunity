@@ -45,18 +45,18 @@ namespace Camino.Services.Products
                 return null;
             }
 
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdAsync(new IdRequestFilter<long> { 
-                Id = filter.Id
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdAsync(new IdRequestFilter<long>
+            {
+                Id = filter.Id,
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
             });
             product.Pictures = pictures.Select(x => new PictureResult
             {
                 Id = x.PictureId
             });
 
-            product.ProductAttributes = await _productAttributeRepository.GetAttributeRelationsByProductIdAsync(new IdRequestFilter<long>
-            {
-                Id = filter.Id
-            });
+            product.ProductAttributes = await _productAttributeRepository.GetAttributeRelationsByProductIdAsync(filter.Id);
 
             product.CreatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;
             product.UpdatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;
@@ -79,7 +79,11 @@ namespace Camino.Services.Products
 
             var productIds = productPageList.Collections.Select(x => x.Id);
             var pictureTypeId = (int)ProductPictureType.Thumbnail;
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId);
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
 
             var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
             foreach (var product in productPageList.Collections)
@@ -119,7 +123,11 @@ namespace Camino.Services.Products
 
             var productIds = products.Select(x => x.Id);
             var pictureTypeId = (int)ProductPictureType.Thumbnail;
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId);
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
 
             var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
             foreach (var product in products)

@@ -54,7 +54,8 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedBy = x.CreatedBy,
                 CreatedById = x.CreatedById,
                 CreatedDate = x.CreatedDate,
-                Name = x.Name
+                Name = x.Name,
+                StatusId = (ProductCategoryStatus)x.StatusId
             });
 
             var categoryPage = new PageListModel<ProductCategoryModel>(categories)
@@ -66,7 +67,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ProductCategoryTable", categoryPage);
+                return PartialView("Partial/_ProductCategoryTable", categoryPage);
             }
 
             return View(categoryPage);
@@ -101,7 +102,8 @@ namespace Module.Web.ProductManagement.Controllers
                     ParentId = category.ParentId,
                     ParentCategoryName = category.ParentCategoryName,
                     UpdatedBy = category.UpdatedBy,
-                    UpdatedDate = category.UpdatedDate
+                    UpdatedDate = category.UpdatedDate,
+                    StatusId = (ProductCategoryStatus)category.StatusId
                 };
                 return View(model);
             }
@@ -122,23 +124,22 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductCategory)]
         public async Task<IActionResult> Create(ProductCategoryModel model)
         {
-            var category = new ProductCategoryRequest()
-            {
-                Description = model.Description,
-                Name = model.Name,
-                ParentId = model.ParentId
-            };
-
             var exist = _productCategoryService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            category.UpdatedById = LoggedUserId;
-            category.CreatedById = LoggedUserId;
-            var id = await _productCategoryService.CreateAsync(category);
+            var category = new ProductCategoryRequest
+            {
+                Description = model.Description,
+                Name = model.Name,
+                ParentId = model.ParentId,
+                UpdatedById = LoggedUserId,
+                CreatedById = LoggedUserId
+            };
 
+            var id = await _productCategoryService.CreateAsync(category);
             return RedirectToAction(nameof(Detail), new { id });
         }
 
@@ -158,7 +159,8 @@ namespace Module.Web.ProductManagement.Controllers
                 ParentId = category.ParentId,
                 ParentCategoryName = category.ParentCategoryName,
                 UpdatedBy = category.UpdatedBy,
-                UpdatedDate = category.UpdatedDate
+                UpdatedDate = category.UpdatedDate,
+                StatusId = (ProductCategoryStatus)category.StatusId
             };
             return View(model);
         }
@@ -167,15 +169,7 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
         public async Task<IActionResult> Update(ProductCategoryModel model)
         {
-            var category = new ProductCategoryRequest()
-            {
-                Description = model.Description,
-                Name = model.Name,
-                ParentId = model.ParentId,
-                Id = model.Id
-            };
-
-            if (category.Id <= 0)
+            if (model.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
@@ -186,9 +180,92 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            category.UpdatedById = LoggedUserId;
+            var category = new ProductCategoryRequest()
+            {
+                Description = model.Description,
+                Name = model.Name,
+                ParentId = model.ParentId,
+                Id = model.Id,
+                UpdatedById = LoggedUserId
+            };
+
             await _productCategoryService.UpdateAsync(category);
             return RedirectToAction(nameof(Detail), new { id = category.Id });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        public async Task<IActionResult> Deactivate(ProductCategoryIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _productCategoryService.DeactivateAsync(new ProductCategoryRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        public async Task<IActionResult> Active(ProductCategoryIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productCategoryService.ActiveAsync(new ProductCategoryRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProductCategory)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productCategoryService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]

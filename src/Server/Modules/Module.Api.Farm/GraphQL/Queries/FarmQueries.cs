@@ -1,4 +1,6 @@
-﻿using Camino.Framework.GraphQL.Queries;
+﻿using Camino.Core.Domain.Identities;
+using Camino.Framework.GraphQL.Attributes;
+using Camino.Framework.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
@@ -10,9 +12,9 @@ namespace Module.Api.Farm.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class FarmQueries : BaseQueries
     {
-        public async Task<FarmPageListModel> GetUserFarmsAsync([Service] IFarmResolver farmResolver, FarmFilterModel criterias)
+        public async Task<FarmPageListModel> GetUserFarmsAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, FarmFilterModel criterias)
         {
-            return await farmResolver.GetUserFarmsAsync(criterias);
+            return await farmResolver.GetUserFarmsAsync(currentUser, criterias);
         }
 
         public async Task<FarmPageListModel> GetFarmsAsync([Service] IFarmResolver farmResolver, FarmFilterModel criterias)
@@ -20,9 +22,9 @@ namespace Module.Api.Farm.GraphQL.Queries
             return await farmResolver.GetFarmsAsync(criterias);
         }
 
-        public async Task<FarmModel> GetFarmAsync([Service] IFarmResolver farmResolver, FarmFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IFarmResolver farmResolver, FarmFilterModel criterias)
         {
-            return await farmResolver.GetFarmAsync(criterias);
+            return await farmResolver.GetFarmAsync(currentUser, criterias);
         }
     }
 }

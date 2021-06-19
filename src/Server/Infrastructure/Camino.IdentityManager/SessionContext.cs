@@ -55,6 +55,12 @@ namespace Camino.IdentityManager
             return user;
         }
 
+        public async ValueTask<bool> IsAuthenticatedAsync()
+        {
+            var currentUser = await GetCurrentUserAsync();
+            return currentUser != null && currentUser.Id > 0;
+        }
+
         private void UpdateAuthenticate(ApplicationUser user)
         {
             user.AuthenticationToken = AuthorizationHeaders.AuthenticationToken;

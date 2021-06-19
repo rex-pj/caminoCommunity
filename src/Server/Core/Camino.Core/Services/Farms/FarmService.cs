@@ -49,8 +49,11 @@ namespace Camino.Services.Farms
                 return null;
             }
 
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(new IdRequestFilter<long> {
-                Id = filter.Id
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(new IdRequestFilter<long>
+            {
+                Id = filter.Id,
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
             });
             exist.Pictures = pictures.Select(x => new PictureResult
             {
@@ -83,7 +86,11 @@ namespace Camino.Services.Farms
 
             var farmIds = famrsPageList.Collections.Select(x => x.Id);
             var pictureTypeId = (int)FarmPictureType.Thumbnail;
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, pictureTypeId);
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, pictureTypeId, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
 
             var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
             foreach (var farm in famrsPageList.Collections)

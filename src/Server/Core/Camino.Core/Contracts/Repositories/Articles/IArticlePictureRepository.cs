@@ -12,7 +12,7 @@ namespace Camino.Core.Contracts.Repositories.Articles
     {
         Task<BasePageList<ArticlePictureResult>> GetAsync(ArticlePictureFilter filter);
         Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(IdRequestFilter<long> filter);
-        Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds);
+        Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter);
         Task<long> CreateAsync(ArticlePictureModifyRequest request);
         Task<bool> UpdateAsync(ArticlePictureModifyRequest request);
         Task<bool> DeleteByArticleIdAsync(long articleId);

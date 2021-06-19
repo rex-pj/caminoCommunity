@@ -1,4 +1,6 @@
-﻿using Camino.Framework.GraphQL.Queries;
+﻿using Camino.Core.Domain.Identities;
+using Camino.Framework.GraphQL.Attributes;
+using Camino.Framework.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
@@ -11,10 +13,10 @@ namespace Module.Api.Product.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class ProductQueries : BaseQueries
     {
-        public async Task<ProductPageListModel> GetUserProductsAsync([Service] IProductResolver productResolver,
+        public async Task<ProductPageListModel> GetUserProductsAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IProductResolver productResolver,
             ProductFilterModel criterias)
         {
-            return await productResolver.GetUserProductsAsync(criterias);
+            return await productResolver.GetUserProductsAsync(currentUser, criterias);
         }
 
         public async Task<ProductPageListModel> GetProductsAsync([Service] IProductResolver productResolver,
@@ -29,10 +31,10 @@ namespace Module.Api.Product.GraphQL.Queries
             return await productResolver.GetRelevantProductsAsync(criterias);
         }
 
-        public async Task<ProductModel> GetProductAsync([Service] IProductResolver productResolver,
+        public async Task<ProductModel> GetProductAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IProductResolver productResolver,
             ProductFilterModel criterias)
         {
-            return await productResolver.GetProductAsync(criterias);
+            return await productResolver.GetProductAsync(currentUser, criterias);
         }
     }
 }

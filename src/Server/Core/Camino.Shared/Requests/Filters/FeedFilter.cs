@@ -9,5 +9,7 @@ namespace Camino.Shared.Requests.Filters
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public long? FeedTypeId { get; set; }
+        public bool CanGetInactived { get; set; }
+        public bool CanGetDeleted { get; set; }
     }
 }

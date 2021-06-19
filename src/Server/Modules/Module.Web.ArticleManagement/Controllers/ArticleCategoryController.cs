@@ -69,7 +69,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ArticleCategoryTable", categoryPage);
+                return PartialView("Partial/_ArticleCategoryTable", categoryPage);
             }
 
             return View(categoryPage);
@@ -171,16 +171,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public async Task<IActionResult> Update(ArticleCategoryModel model)
         {
-            var category = new ArticleCategoryModifyRequest
-            {
-                Description = model.Description,
-                ParentId = model.ParentId,
-                Name = model.Name,
-                UpdatedById = LoggedUserId,
-                CreatedById = LoggedUserId,
-                Id = model.Id
-            };
-            if (category.Id <= 0)
+            if (model.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
@@ -191,7 +182,15 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            category.UpdatedById = LoggedUserId;
+            var category = new ArticleCategoryModifyRequest
+            {
+                Description = model.Description,
+                ParentId = model.ParentId,
+                Name = model.Name,
+                UpdatedById = LoggedUserId,
+                Id = model.Id
+            };
+
             await _articleCategoryService.UpdateAsync(category);
             return RedirectToAction(nameof(Detail), new { id = category.Id });
         }
@@ -205,7 +204,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _articleCategoryService.DeactiveAsync(new ArticleCategoryModifyRequest
+            var isInactived = await _articleCategoryService.DeactivateAsync(new ArticleCategoryModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId

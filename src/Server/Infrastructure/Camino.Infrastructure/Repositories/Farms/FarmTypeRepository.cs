@@ -37,6 +37,7 @@ namespace Camino.Service.Repository.Farms
                              Name = farmType.Name,
                              UpdatedById = farmType.UpdatedById,
                              UpdatedDate = farmType.UpdatedDate,
+                             StatusId = farmType.StatusId
                          }).FirstOrDefaultAsync();
 
             return exist;
@@ -48,7 +49,8 @@ namespace Camino.Service.Repository.Farms
                 .Select(x => new FarmTypeResult()
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    StatusId = x.StatusId
                 })
                 .FirstOrDefault();
 
@@ -97,7 +99,8 @@ namespace Camino.Service.Repository.Farms
                 Id = a.Id,
                 Name = a.Name,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -177,6 +180,34 @@ namespace Camino.Service.Repository.Farms
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(FarmTypeModifyRequest request)
+        {
+            await _farmTypeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmTypeStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(FarmTypeModifyRequest request)
+        {
+            await _farmTypeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmTypeStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _farmTypeRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

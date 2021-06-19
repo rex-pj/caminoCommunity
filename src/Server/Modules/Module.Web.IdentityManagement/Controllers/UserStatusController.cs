@@ -17,7 +17,7 @@ using Camino.Shared.Requests.Identifiers;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
-    public class UserStatusController : BaseController
+    public class UserStatusController : BaseAuthController
     {
         private readonly IUserStatusService _userStatusService;
         private readonly IHttpHelper _httpHelper;

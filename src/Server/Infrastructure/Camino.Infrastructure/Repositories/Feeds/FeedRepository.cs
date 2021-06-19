@@ -47,9 +47,23 @@ namespace Camino.Service.Repository.Feeds
 
         public async Task<BasePageList<FeedResult>> GetAsync(FeedFilter filter)
         {
-            var articleQuery = _articleRepository.Get(x => x.StatusId != ArticleStatus.Deleted.GetCode());
-            var productQuery = _productRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode());
-            var farmQuery = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode());
+            var articleDeletedStatus = ArticleStatus.Deleted.GetCode();
+            var articleInactivedStatus = ArticleStatus.Inactived.GetCode();
+            var articleQuery = _articleRepository.Get(x => (x.StatusId == articleDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == articleInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != articleDeletedStatus && x.StatusId != articleInactivedStatus));
+
+            var productDeletedStatus = ArticleStatus.Deleted.GetCode();
+            var productInactivedStatus = ArticleStatus.Inactived.GetCode();
+            var productQuery = _productRepository.Get(x => (x.StatusId == productDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == productInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != productDeletedStatus && x.StatusId != productInactivedStatus));
+
+            var farmDeletedStatus = ArticleStatus.Deleted.GetCode();
+            var farmInactivedStatus = ArticleStatus.Inactived.GetCode();
+            var farmQuery = _farmRepository.Get(x => (x.StatusId == farmDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == farmInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != farmDeletedStatus && x.StatusId != farmInactivedStatus));
             if (filter.CreatedById.HasValue)
             {
                 articleQuery = articleQuery.Where(x => x.CreatedById == filter.CreatedById);
@@ -76,10 +90,14 @@ namespace Camino.Service.Repository.Feeds
                 farmQuery = farmQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom);
             }
 
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var avatarTypeId = (byte)UserPhotoKind.Avatar;
             var articlePictureTypeId = (int)ArticlePictureType.Thumbnail;
             var articlePictures = from articlePic in _articlePictureRepository.Get(x => x.PictureTypeId == articlePictureTypeId)
-                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
+                                  join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                        || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                        || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                   on articlePic.PictureId equals picture.Id
                                   select articlePic;
 
@@ -105,7 +123,9 @@ namespace Camino.Service.Repository.Feeds
 
             var productPictureTypeId = (int)ProductPictureType.Thumbnail;
             var productPictures = from productPic in _productPictureRepository.Get(x => x.PictureTypeId == productPictureTypeId)
-                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
+                                  join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                        || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                        || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                   on productPic.PictureId equals picture.Id
                                   select productPic;
 
@@ -134,7 +154,9 @@ namespace Camino.Service.Repository.Feeds
 
             var farmPictureTypeId = (int)FarmPictureType.Thumbnail;
             var farmPictures = from farmPic in _farmPictureRepository.Get(x => x.PictureTypeId == farmPictureTypeId)
-                                  join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
+                                  join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                        || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                        || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                   on farmPic.PictureId equals picture.Id
                                   select farmPic;
 

@@ -43,6 +43,7 @@ namespace Camino.Service.Repository.Products
                                 ParentId = child.ParentId,
                                 UpdatedById = child.UpdatedById,
                                 UpdatedDate = child.UpdatedDate,
+                                StatusId = child.StatusId,
                                 ParentCategoryName = cate != null ? cate.Name : null
                             }).FirstOrDefaultAsync();
             return category;
@@ -55,6 +56,7 @@ namespace Camino.Service.Repository.Products
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    StatusId = x.StatusId,
                     Description = x.Description
                 })
                 .FirstOrDefault();
@@ -105,7 +107,8 @@ namespace Camino.Service.Repository.Products
                 Name = a.Name,
                 ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -287,6 +290,34 @@ namespace Camino.Service.Repository.Products
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ProductCategoryRequest request)
+        {
+            await _productCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ProductCategoryRequest request)
+        {
+            await _productCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _productCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

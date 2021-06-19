@@ -9,9 +9,9 @@ namespace Module.Api.Article.GraphQL.Resolvers.Contracts
     {
         Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias);
         Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias);
-        Task<ArticlePageListModel> GetUserArticlesAsync(ArticleFilterModel criterias);
+        Task<ArticlePageListModel> GetUserArticlesAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
         Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias);
-        Task<ArticleModel> GetArticleAsync(ArticleFilterModel criterias);
+        Task<ArticleModel> GetArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
         Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias);
         Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
     }

@@ -15,6 +15,7 @@ namespace Camino.Shared.Results.Products
         public string CreatedBy { get; set; }
         public int? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
+        public int StatusId { get; set; }
         public ProductCategoryResult ParentCategory { get; set; }
     }
 }

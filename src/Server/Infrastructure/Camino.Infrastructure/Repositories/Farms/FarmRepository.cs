@@ -44,10 +44,15 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
             var exist = await (from farm in _farmRepository
-                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode()))
+                               .Get(x => x.Id == filter.Id)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
+                               where (farm.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != deletedStatus && farm.StatusId != inactivedStatus)
                                select new FarmResult
                                {
                                    CreatedDate = farm.CreatedDate,
@@ -67,10 +72,15 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
             var exist = await (from farm in _farmRepository
-                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode()))
+                               .Get(x => x.Id == filter.Id)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
+                               where (farm.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != deletedStatus && farm.StatusId != inactivedStatus)
                                select new FarmResult
                                {
                                    Id = farm.Id,
@@ -85,7 +95,7 @@ namespace Camino.Service.Repository.Farms
                                    FarmTypeId = farm.FarmTypeId,
                                    StatusId = farm.StatusId,
                                }).FirstOrDefaultAsync();
-            
+
             return exist;
         }
 
@@ -153,8 +163,12 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter)
         {
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Get(x => filter.CanGetDeleted || x.StatusId != FarmStatus.Deleted.GetCode());
+            var farmQuery = _farmRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -222,6 +236,28 @@ namespace Camino.Service.Repository.Farms
                 TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
             };
             return result;
+        }
+
+        public async Task<IList<FarmResult>> GetFarmByTypeIdAsync(IdRequestFilter<int> typeIdFilter)
+        {
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
+            return await _farmRepository
+                .Get(x => x.FarmTypeId == typeIdFilter.Id
+                && ((x.StatusId == deletedStatus && typeIdFilter.CanGetDeleted)
+                    || (x.StatusId == inactivedStatus && typeIdFilter.CanGetInactived)
+                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus)))
+                .Select(x => new FarmResult
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedById = x.CreatedById,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    UpdatedById = x.UpdatedById,
+                    UpdatedDate = x.UpdatedDate
+                })
+                .ToListAsync();
         }
 
         public async Task<long> CreateAsync(FarmModifyRequest request)
@@ -315,7 +351,7 @@ namespace Camino.Service.Repository.Farms
         {
             var productIds = _farmProductRepository.Get(x => x.FarmId == request.Id)
                 .Select(x => x.ProductId);
-            
+
             var pictureStatus = productStatus switch
             {
                 ProductStatus.Pending => PictureStatus.Pending,
@@ -349,7 +385,7 @@ namespace Camino.Service.Repository.Farms
         public async Task<bool> ActiveAsync(FarmModifyRequest request)
         {
             await _farmRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleStatus.Actived)
+                .Set(x => x.StatusId, (int)FarmStatus.Actived)
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();

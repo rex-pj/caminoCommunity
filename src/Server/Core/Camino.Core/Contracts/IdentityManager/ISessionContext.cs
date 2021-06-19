@@ -7,5 +7,6 @@ namespace Camino.Core.Contracts.IdentityManager
     {
         string AuthenticationToken { get; }
         ValueTask<ApplicationUser> GetCurrentUserAsync();
+        ValueTask<bool> IsAuthenticatedAsync();
     }
 }

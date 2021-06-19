@@ -18,6 +18,6 @@ namespace Camino.Core.Contracts.Repositories.Products
         Task<bool> CreateAsync(ProductPicturesModifyRequest request);
         Task<bool> UpdateAsync(ProductPicturesModifyRequest request);
         Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(IdRequestFilter<long> filter, int? productPictureTypeId = null);
-        Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId);
+        Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId, IdRequestFilter<long> filter);
     }
 }

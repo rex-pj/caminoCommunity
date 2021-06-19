@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.FileStore;
+using Camino.Shared.Requests.Filters;
 
 namespace Module.Web.UploadManagement.Controllers
 {
+    [Route("pictures")]
     public class PictureController : BaseAuthController
     {
         private readonly IMediaFileStore _mediaFileStore;
@@ -100,10 +102,22 @@ namespace Module.Web.UploadManagement.Controllers
         [HttpGet]
         [IgnoreAntiforgeryToken]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
+        [Route("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var picture = await _pictureService.FindPictureAsync(id);
-            return File(picture.BinaryData, picture.ContentType);
+            var exist = await _pictureService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+
+            if (exist == null)
+            {
+                return null;
+            }
+
+            return File(exist.BinaryData, exist.ContentType);
         }
     }
 }

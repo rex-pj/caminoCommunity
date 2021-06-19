@@ -96,9 +96,9 @@ namespace Camino.Services.Articles
             return await _articleCategoryRepository.ActiveAsync(request);
         }
 
-        public async Task<bool> DeactiveAsync(ArticleCategoryModifyRequest request)
+        public async Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request)
         {
-            return await _articleCategoryRepository.DeactiveAsync(request);
+            return await _articleCategoryRepository.DeactivateAsync(request);
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -106,7 +106,8 @@ namespace Camino.Services.Articles
             var articles = await _articleRepository.GetArticleByCategoryIdAsync(new IdRequestFilter<int>
             {
                 Id = id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
 
             if (articles.Any())

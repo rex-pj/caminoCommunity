@@ -133,7 +133,6 @@ namespace Camino.Service.Repository.Users
         {
             var photoType = (byte)type;
             var userPhotos = await _userPhotoRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
-
             if (userPhotos == null || !userPhotos.Any())
             {
                 return null;

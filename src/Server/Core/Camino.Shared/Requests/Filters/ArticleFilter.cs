@@ -11,5 +11,6 @@ namespace Camino.Shared.Requests.Filters
         public long? UpdatedById { get; set; }
         public long? CategoryId { get; set; }
         public bool CanGetDeleted { get; set; }
+        public bool CanGetInactived { get; set; }
     }
 }

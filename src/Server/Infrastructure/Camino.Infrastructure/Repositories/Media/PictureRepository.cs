@@ -5,7 +5,9 @@ using LinqToDB;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Domain.Media;
-using Camino.Shared.Requests.Media;
+using Camino.Shared.Requests.Filters;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
 namespace Camino.Service.Repository.Media
 {
@@ -18,15 +20,24 @@ namespace Camino.Service.Repository.Media
             _pictureRepository = pictureRepository;
         }
 
-        public async Task<PictureResult> FindPictureAsync(long id)
+        public async Task<PictureResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var picture = await _pictureRepository.Get(x => x.Id == id).Select(pic => new PictureResult
-            {
-                Id = pic.Id,
-                FileName = pic.FileName,
-                BinaryData = pic.BinaryData,
-                ContentType = pic.MimeType
-            }).FirstOrDefaultAsync();
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var picture = await _pictureRepository
+                .Get(x => x.Id == filter.Id)
+                .Where(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                .Select(pic => new PictureResult
+                {
+                    Id = pic.Id,
+                    FileName = pic.FileName,
+                    BinaryData = pic.BinaryData,
+                    ContentType = pic.MimeType,
+                    CreatedById = pic.CreatedById,
+                    UpdatedById = pic.UpdatedById
+                }).FirstOrDefaultAsync();
 
             if (picture == null)
             {

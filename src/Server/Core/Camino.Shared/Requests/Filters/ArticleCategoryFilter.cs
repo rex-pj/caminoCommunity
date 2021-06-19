@@ -9,5 +9,6 @@ namespace Camino.Shared.Requests.Filters
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public bool CanGetDeleted { get; set; }
+        public bool CanGetInactived { get; set; }
     }
 }

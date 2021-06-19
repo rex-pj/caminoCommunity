@@ -45,7 +45,8 @@ namespace Module.Web.ProductManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             };
 
             var productPageList = await _productService.GetAsync(filterRequest);
@@ -73,7 +74,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ProductTable", productPage);
+                return PartialView("Partial/_ProductTable", productPage);
             }
 
             return View(productPage);
@@ -93,7 +94,8 @@ namespace Module.Web.ProductManagement.Controllers
                 var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = id,
-                    CanGetDeleted = true
+                    CanGetDeleted = true,
+                    CanGetInactived = true
                 });
                 if (product == null)
                 {
@@ -163,7 +165,8 @@ namespace Module.Web.ProductManagement.Controllers
             var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
             {
                 Id = id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (product == null)
             {
@@ -245,6 +248,22 @@ namespace Module.Web.ProductManagement.Controllers
                 Farms = model.ProductFarmIds.Select(id => new ProductFarmRequest()
                 {
                     FarmId = id
+                }),
+                ProductAttributes = model.ProductAttributes?.Select(x => new ProductAttributeRelationRequest
+                {
+                    Id = x.Id,
+                    ControlTypeId = x.ControlTypeId,
+                    DisplayOrder = x.DisplayOrder,
+                    ProductAttributeId = x.AttributeId,
+                    AttributeRelationValues = x.AttributeRelationValues?.Select(c => new ProductAttributeRelationValueRequest
+                    {
+                        Id = c.Id,
+                        DisplayOrder = c.DisplayOrder,
+                        Name = c.Name,
+                        PriceAdjustment = c.PriceAdjustment,
+                        PricePercentageAdjustment = c.PricePercentageAdjustment,
+                        Quantity = c.Quantity
+                    })
                 })
             };
             if (product.Id <= 0)
@@ -255,7 +274,8 @@ namespace Module.Web.ProductManagement.Controllers
             var exist = await _productService.FindAsync(new IdRequestFilter<long>
             {
                 Id = model.Id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (exist == null)
             {
@@ -417,7 +437,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ProductPictureTable", productPage);
+                return PartialView("Partial/_ProductPictureTable", productPage);
             }
 
             return View(productPage);

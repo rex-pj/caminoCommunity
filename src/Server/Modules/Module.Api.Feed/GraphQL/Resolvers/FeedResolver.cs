@@ -25,7 +25,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             _userManager = userManager;
         }
 
-        public async Task<FeedPageListModel> GetUserFeedsAsync(FeedFilterModel criterias)
+        public async Task<FeedPageListModel> GetUserFeedsAsync(ApplicationUser currentUser, FeedFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -41,12 +41,13 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             }
 
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
-            var filterRequest = new FeedFilter()
+            var filterRequest = new FeedFilter
             {
                 Page = criterias.Page,
                 PageSize = criterias.PageSize,
                 Search = criterias.Search,
-                CreatedById = userId
+                CreatedById = userId,
+                CanGetInactived = currentUser.Id == userId
             };
 
             try

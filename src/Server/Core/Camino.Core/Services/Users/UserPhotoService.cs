@@ -5,6 +5,7 @@ using Camino.Shared.Results.Media;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Users;
+using System;
 
 namespace Camino.Services.Users
 {
@@ -28,7 +29,9 @@ namespace Camino.Services.Users
 
         public async Task<UserPhotoResult> GetUserPhotoByCodeAsync(string code, UserPhotoKind typeId)
         {
-            return await _userPhotoRepository.GetUserPhotoByCodeAsync(code, typeId);
+            var picture = await _userPhotoRepository.GetUserPhotoByCodeAsync(code, typeId);
+            picture.BinaryData = Convert.FromBase64String(picture.ImageData);
+            return picture;
         }
 
         public async Task<IEnumerable<UserPhotoResult>> GetUserPhotosAsync(long userId)

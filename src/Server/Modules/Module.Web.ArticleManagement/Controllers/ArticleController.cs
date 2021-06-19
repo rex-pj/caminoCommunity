@@ -44,7 +44,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             };
 
             var articlePageList = await _articleService.GetAsync(filterRequest);
@@ -73,7 +74,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ArticleTable", articlePage);
+                return PartialView("Partial/_ArticleTable", articlePage);
             }
 
             return View(articlePage);
@@ -93,7 +94,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = id,
-                    CanGetDeleted = true
+                    CanGetDeleted = true,
+                    CanGetInactived = true
                 });
                 if (article == null)
                 {
@@ -140,7 +142,8 @@ namespace Module.Web.ArticleManagement.Controllers
             var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
             {
                 Id = id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (article == null)
             {
@@ -198,7 +201,8 @@ namespace Module.Web.ArticleManagement.Controllers
             var exist = await _articleService.FindAsync(new IdRequestFilter<long>
             {
                 Id = article.Id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (exist == null)
             {
@@ -349,7 +353,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ArticlePictureTable", articlePage);
+                return PartialView("Partial/_ArticlePictureTable", articlePage);
             }
 
             return View(articlePage);

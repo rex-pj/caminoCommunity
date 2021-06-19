@@ -4,7 +4,6 @@ using Camino.Core.Domain.Identities;
 using Camino.Core.Contracts.Services.Farms;
 using Camino.Shared.Results.Farms;
 using Camino.Shared.Requests.Filters;
-using Camino.Shared.Results.Media;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
@@ -87,8 +86,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
         {
             var exist = await _farmService.FindAsync(new IdRequestFilter<long>
             {
-                Id = criterias.Id
+                Id = criterias.Id,
+                CanGetInactived = true
             });
+
             if (exist == null)
             {
                 throw new Exception("No article found");
@@ -125,7 +126,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<FarmPageListModel> GetUserFarmsAsync(FarmFilterModel criterias)
+        public async Task<FarmPageListModel> GetUserFarmsAsync(ApplicationUser currentUser, FarmFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -141,12 +142,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
 
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
-            var filterRequest = new FarmFilter()
+            var filterRequest = new FarmFilter
             {
                 Page = criterias.Page,
                 PageSize = criterias.PageSize,
                 Search = criterias.Search,
-                CreatedById = userId
+                CreatedById = userId,
+                CanGetInactived = currentUser.Id == userId
             };
 
             try
@@ -208,7 +210,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        public async Task<FarmModel> GetFarmAsync(FarmFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync(ApplicationUser currentUser, FarmFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -219,8 +221,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             {
                 var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id
+                    Id = criterias.Id,
+                    CanGetInactived = true
                 });
+
+                if (currentUser.Id != farmResult.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
                 var farm = await MapFarmResultToModelAsync(farmResult);
                 return farm;
             }
@@ -236,11 +244,18 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             {
                 var exist = await _farmService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id
+                    Id = criterias.Id,
+                    CanGetInactived = true
                 });
-                if (exist == null || currentUser.Id != exist.CreatedById)
+
+                if (exist == null)
                 {
                     return false;
+                }
+
+                if (currentUser.Id != exist.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
                 }
 
                 return await _farmService.SoftDeleteAsync(new FarmModifyRequest { 

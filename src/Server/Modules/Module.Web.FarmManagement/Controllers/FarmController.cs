@@ -44,7 +44,8 @@ namespace Module.Web.FarmManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 FarmTypeId = filter.FarmTypeId,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             };
 
             var farmPageList = await _farmService.GetAsync(filterRequest);
@@ -70,7 +71,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_FarmTable", farmPage);
+                return PartialView("Partial/_FarmTable", farmPage);
             }
 
             return View(farmPage);
@@ -90,7 +91,8 @@ namespace Module.Web.FarmManagement.Controllers
                 var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = id,
-                    CanGetDeleted = true
+                    CanGetDeleted = true,
+                    CanGetInactived = true
                 });
                 if (farm == null)
                 {
@@ -131,7 +133,8 @@ namespace Module.Web.FarmManagement.Controllers
             var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
             {
                 Id = id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (farm == null)
             {
@@ -177,7 +180,8 @@ namespace Module.Web.FarmManagement.Controllers
             var exist = await _farmService.FindAsync(new IdRequestFilter<long>
             {
                 Id = model.Id,
-                CanGetDeleted = true
+                CanGetDeleted = true,
+                CanGetInactived = true
             });
             if (exist == null)
             {
@@ -350,7 +354,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_FarmPictureTable", farmPage);
+                return PartialView("Partial/_FarmPictureTable", farmPage);
             }
 
             return View(farmPage);

@@ -28,7 +28,7 @@ namespace Camino.Service.Repository.Products
 
         public ProductRepository(IRepository<Product> productRepository,
             IRepository<ProductCategoryRelation> productCategoryRelationRepository,
-            IRepository<ProductPrice> productPriceRepository, IRepository<FarmProduct> farmProductRepository, 
+            IRepository<ProductPrice> productPriceRepository, IRepository<FarmProduct> farmProductRepository,
             IRepository<Farm> farmRepository, IRepository<ProductCategory> productCategoryRepository)
         {
             _productRepository = productRepository;
@@ -41,8 +41,13 @@ namespace Camino.Service.Repository.Products
 
         public async Task<ProductResult> FindAsync(IdRequestFilter<long> filter)
         {
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
             var exist = await (from product in _productRepository
-                               .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
+                               .Get(x => x.Id == filter.Id)
+                               .Where(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                select new ProductResult
                                {
                                    CreatedDate = product.CreatedDate,
@@ -58,10 +63,15 @@ namespace Camino.Service.Repository.Products
 
         public async Task<ProductResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
+            var farmDeletedStatus = ProductStatus.Deleted.GetCode();
+            var farmInactivedStatus = ProductStatus.Inactived.GetCode();
             var farmQuery = from farm in _farmRepository
-                            .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
+                            .Get(x => x.Id == filter.Id)
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
+                            where (farm.StatusId == farmDeletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == farmInactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != farmDeletedStatus && farm.StatusId != farmInactivedStatus)
                             select new
                             {
                                 Id = farmProduct.Id,
@@ -81,8 +91,10 @@ namespace Camino.Service.Repository.Products
                                            Name = category.Name
                                        };
 
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
             var product = await (from p in _productRepository
-                                 .Get(x => x.Id == filter.Id && (filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode()))
+                                 .Get(x => x.Id == filter.Id)
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
                                  from price in prices.DefaultIfEmpty()
@@ -92,6 +104,9 @@ namespace Camino.Service.Repository.Products
 
                                  join fp in farmQuery
                                  on p.Id equals fp.ProductId into farmProducts
+                                 where (p.StatusId == deletedStatus && filter.CanGetDeleted)
+                                     || (p.StatusId == inactivedStatus && filter.CanGetInactived)
+                                     || (p.StatusId != deletedStatus && p.StatusId != inactivedStatus)
                                  select new ProductResult
                                  {
                                      Description = p.Description,
@@ -139,8 +154,12 @@ namespace Camino.Service.Repository.Products
 
         public async Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter)
         {
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Get(x => filter.CanGetDeleted || x.StatusId != ProductStatus.Deleted.GetCode());
+            var productQuery = _productRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -438,6 +457,28 @@ namespace Camino.Service.Repository.Products
             _productRepository.Update(product);
 
             return true;
+        }
+
+        public async Task<IList<ProductResult>> GetProductByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter)
+        {
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
+            return await (from relation in _productCategoryRelationRepository.Get(x => x.ProductCategoryId == categoryIdFilter.Id)
+                          join product in _productRepository.Get(x => (x.StatusId == deletedStatus && categoryIdFilter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && categoryIdFilter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                          on relation.ProductId equals product.Id
+                          select new ProductResult
+                          {
+                              Id = product.Id,
+                              Name = product.Name,
+                              CreatedById = product.CreatedById,
+                              CreatedDate = product.CreatedDate,
+                              Description = product.Description,
+                              UpdatedById = product.UpdatedById,
+                              UpdatedDate = product.UpdatedDate,
+                          })
+                .ToListAsync();
         }
 
         public async Task<bool> DeleteAsync(long id)

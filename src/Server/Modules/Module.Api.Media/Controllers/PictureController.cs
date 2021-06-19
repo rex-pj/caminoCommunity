@@ -4,53 +4,56 @@ using System.Threading.Tasks;
 using Camino.Shared.Enums;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Core.Contracts.Services.Media;
+using Camino.Shared.Requests.Filters;
+using Camino.Framework.Controllers;
 
 namespace Module.Api.Media.Controllers
 {
-    [Route("file-api/[controller]")]
-    public class PhotoController : Controller
+    [Route("pictures")]
+    public class PictureController : BaseController
     {
         private readonly IUserPhotoService _userPhotoService;
         private readonly IPictureService _pictureService;
 
-        public PhotoController(IUserPhotoService userPhotoService, IPictureService pictureService)
+        public PictureController(IUserPhotoService userPhotoService, IPictureService pictureService)
         {
             _userPhotoService = userPhotoService;
             _pictureService = pictureService;
         }
 
         [HttpGet]
-        [Route("avatar/{code}")]
+        [Route("avatars/{code}")]
         public async Task<IActionResult> GetAvatar(string code)
         {
             var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Avatar);
-            var bytes = Convert.FromBase64String(avatar.ImageData);
-
-            return File(bytes, "image/jpeg");
+            return File(avatar.BinaryData, "image/jpeg");
         }
 
         [HttpGet]
-        [Route("cover/{code}")]
+        [Route("covers/{code}")]
         public async Task<IActionResult> GetCover(string code)
         {
-            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
-            var bytes = Convert.FromBase64String(avatar.ImageData);
-
-            return File(bytes, "image/jpeg");
+            var cover = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
+            return File(cover.BinaryData, "image/jpeg");
         }
 
         [HttpGet]
         [IgnoreAntiforgeryToken]
-        [Route("get/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var picture = await _pictureService.FindPictureAsync(id);
-            if (picture == null)
+            var exist = await _pictureService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetInactived = true
+            });
+
+            if (exist == null)
             {
                 return null;
             }
 
-            return File(picture.BinaryData, picture.ContentType);
+            return File(exist.BinaryData, exist.ContentType);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Camino.Framework.Models;
-using Camino.Core.Contracts.Services.Articles;
+﻿using Camino.Core.Contracts.Services.Articles;
 using Camino.Shared.Results.Articles;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;

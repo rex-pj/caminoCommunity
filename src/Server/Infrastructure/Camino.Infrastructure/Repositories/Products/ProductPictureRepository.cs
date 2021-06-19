@@ -98,9 +98,14 @@ namespace Camino.Service.Repository.Products
 
         public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdAsync(IdRequestFilter<long> filter, int? productPictureTypeId = null)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId == filter.Id && (!productPictureTypeId.HasValue || x.PictureTypeId == productPictureTypeId))
-                                         join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
-                                           on productPic.PictureId equals picture.Id
+                                         join picture in _pictureRepository
+                                            .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                                          on productPic.PictureId equals picture.Id
                                          select new ProductPictureResult
                                          {
                                              ProductId = productPic.ProductId,
@@ -110,10 +115,15 @@ namespace Camino.Service.Repository.Products
             return productPictures;
         }
 
-        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId)
+        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId, IdRequestFilter<long> filter)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId.In(productIds) && x.PictureTypeId == productPictureTypeId)
-                                         join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
+                                         join picture in _pictureRepository
+                                         .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                          on productPic.PictureId equals picture.Id
                                          select new ProductPictureResult
                                          {

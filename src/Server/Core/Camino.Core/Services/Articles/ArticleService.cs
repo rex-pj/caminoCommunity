@@ -46,7 +46,9 @@ namespace Camino.Services.Articles
 
             var picture = await _articlePictureRepository.GetArticlePictureByArticleIdAsync(new IdRequestFilter<long>
             {
-                Id = filter.Id
+                Id = filter.Id,
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
             });
 
             if (picture != null)
@@ -80,7 +82,11 @@ namespace Camino.Services.Articles
             var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
 
             var articleIds = articlePageList.Collections.Select(x => x.Id);
-            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds);
+            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
             var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
             foreach (var article in articlePageList.Collections)
             {
@@ -157,7 +163,12 @@ namespace Camino.Services.Articles
             var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
 
             var articleIds = articles.Select(x => x.Id);
-            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds);
+            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
+
             foreach (var article in articles)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);

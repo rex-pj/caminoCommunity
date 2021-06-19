@@ -3,6 +3,17 @@
 <tr>
     <th>@Model.Id</th>
     <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="ProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="ProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+    <td>
         <a asp-action="Detail" asp-controller="ProductCategory" asp-route-id="@Model.Id" class="common-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" title="@Model.Description">
             @Model.Name
         </a>
@@ -16,14 +27,27 @@
         <p class="text-muted">by: @Model.UpdatedBy</p>
     </td>
     <td>
-        @if (Model.CanUpdate)
+        <partial name="Partial/_StatusBadge" />
+    </td>
+    <td>
+        @if (Model.StatusId == ProductCategoryStatus.Actived)
         {
-            <a asp-action="Update" asp-controller="ProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
-                <i class="fa fa-edit"></i>
-            </a>
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this category">
+                <i class="fa fa-lock"></i>
+            </button>
         }
-        <a asp-action="Detail" asp-controller="ProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
-            <i class="fa fa-eye"></i>
-        </a>
+        else if (Model.StatusId == ProductCategoryStatus.Inactived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this category">
+                <i class="fa fa-unlock"></i>
+            </button>
+        }
+
+        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this category">
+            <i class="fa fa-times"></i>
+        </button>
     </td>
 </tr>

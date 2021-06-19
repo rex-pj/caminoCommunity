@@ -20,5 +20,6 @@ namespace Camino.Core.Contracts.Repositories.Products
         Task<bool> SoftDeleteAsync(ProductModifyRequest request);
         Task<bool> DeactiveAsync(ProductModifyRequest request);
         Task<bool> ActiveAsync(ProductModifyRequest request);
+        Task<IList<ProductResult>> GetProductByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter);
     }
 }

@@ -20,5 +20,8 @@ namespace Camino.Core.Contracts.Services.Products
         Task<int> CreateAsync(ProductCategoryRequest request);
         Task<bool> UpdateAsync(ProductCategoryRequest request);
         ProductCategoryResult FindByName(string name);
+        Task<bool> DeactivateAsync(ProductCategoryRequest request);
+        Task<bool> ActiveAsync(ProductCategoryRequest request);
+        Task<bool> DeleteAsync(int id);
     }
 }

@@ -98,9 +98,15 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(IdRequestFilter<long> filter, int? farmPictureTypeId = null)
         {
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == filter.Id && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
-                                      join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
-                                        on farmPic.PictureId equals picture.Id
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var farmPictures = await (from farmPic in _farmPictureRepository
+                                      .Get(x => x.FarmId == filter.Id && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
+                                      join picture in _pictureRepository
+                                      .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                                      on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult
                                       {
                                           FarmId = farmPic.FarmId,
@@ -110,10 +116,15 @@ namespace Camino.Service.Repository.Farms
             return farmPictures;
         }
 
-        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId)
+        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId, IdRequestFilter<long> filter)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
             var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId.In(farmIds) && x.PictureTypeId == farmPictureTypeId)
-                                      join picture in _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode())
+                                      join picture in _pictureRepository
+                                      .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                       on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult
                                       {
