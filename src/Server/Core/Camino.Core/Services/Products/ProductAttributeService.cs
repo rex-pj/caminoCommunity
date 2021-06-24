@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Camino.Shared.Requests.Products;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Shared.General;
+using Camino.Core.Exceptions;
 
 namespace Camino.Services.Products
 {
@@ -19,15 +20,15 @@ namespace Camino.Services.Products
             _productAttributeRepository = productAttributeRepository;
         }
 
-        public ProductAttributeResult Find(long id)
+        public async Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var productAttribute = _productAttributeRepository.Find(id);
+            var productAttribute = await _productAttributeRepository.FindAsync(filter);
             return productAttribute;
         }
 
-        public ProductAttributeResult FindByName(string name)
+        public async Task<ProductAttributeResult> FindByNameAsync(string name)
         {
-            var productAttribute = _productAttributeRepository.FindByName(name);
+            var productAttribute = await _productAttributeRepository.FindByNameAsync(name);
             return productAttribute;
         }
 
@@ -55,6 +56,22 @@ namespace Camino.Services.Products
         public IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter)
         {
             return _productAttributeRepository.GetAttributeControlTypes(filter);
+        }
+
+        public async Task<bool> ActiveAsync(ProductAttributeModifyRequest request)
+        {
+            return await _productAttributeRepository.ActiveAsync(request);
+        }
+
+        public async Task<bool> DeactivateAsync(ProductAttributeModifyRequest request)
+        {
+            return await _productAttributeRepository.DeactivateAsync(request);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            await _productAttributeRepository.DeleteAttributeRelationByAttributeIdAsync(id);
+            return await _productAttributeRepository.DeleteAsync(id);
         }
     }
 }

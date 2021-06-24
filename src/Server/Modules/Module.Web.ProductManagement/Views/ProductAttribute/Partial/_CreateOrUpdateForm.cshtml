@@ -1,28 +1,68 @@
 ﻿@model ProductAttributeModel
 
 <input asp-for="Id" type="hidden" />
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="name">Name</label>
-            <input class="form-control" type="text" asp-for="Name">
-        </div>
+        <label for="name">Name</label>
+        <input class="form-control" type="text" asp-for="Name">
     </div>
 </div>
-<div class="row">
+<div class="row mb-3">
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-        <div class="mb-3">
-            <label for="description">Description</label>
-            <textarea class="form-control" asp-for="Description"></textarea>
+        <label for="description">Description</label>
+        <textarea class="form-control" asp-for="Description"></textarea>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
         </div>
     </div>
 </div>
 
-@if (Model.Id <= 0)
-{
-    <button type="submit" class="btn btn-primary">Create</button>
-}
-else
-{
-    <button type="submit" class="btn btn-primary">Update</button>
-}
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-auto me-auto">
+                @if (Model.Id <= 0)
+                {
+                    <button type="submit" class="btn btn-primary">Create</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Update</button>
+                }
+            </div>
+            <div class="col-auto">
+                @if (Model.Id > 0)
+                {
+                    @if (Model.StatusId == ProductAttributeStatus.Actived)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                                class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this attribute">
+                            <i class="fa fa-lock"></i>
+                            <span class="ms-1">Block</span>
+                        </button>
+                    }
+                    else if (Model.StatusId == ProductAttributeStatus.Inactived)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this attribute">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Re-activate</span>
+                        </button>
+                    }
+
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                            class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this attribute">
+                        <i class="fa fa-times"></i>
+                        <span class="ms-1">Delete</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

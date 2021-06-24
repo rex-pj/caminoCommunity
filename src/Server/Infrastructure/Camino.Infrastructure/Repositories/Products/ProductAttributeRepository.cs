@@ -32,48 +32,56 @@ namespace Camino.Service.Repository.Products
             _productAttributeRelationValueRepository = productAttributeRelationValueRepository;
         }
 
-        public ProductAttributeResult Find(long id)
+        public async Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var productAttribute = _productAttributeRepository.Get(x => x.Id == id)
+            var productAttribute = await _productAttributeRepository.Get(x => x.Id == filter.Id)
                 .Select(x => new ProductAttributeResult
                 {
                     Description = x.Description,
                     Id = x.Id,
                     Name = x.Name,
-                }).FirstOrDefault();
+                    StatusId = x.StatusId
+                }).FirstOrDefaultAsync();
 
             return productAttribute;
         }
 
-        public ProductAttributeResult FindByName(string name)
+        public async Task<ProductAttributeResult> FindByNameAsync(string name)
         {
-            var productAttribute = _productAttributeRepository.Get(x => x.Name == name)
+            var productAttribute = await _productAttributeRepository.Get(x => x.Name == name)
                 .Select(x => new ProductAttributeResult()
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    StatusId = x.StatusId
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return productAttribute;
         }
 
         public async Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter)
         {
+            var inactivedStatus = ProductAttributeStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productAttributeQuery = _productAttributeRepository.Table;
+            var productAttributeQuery = _productAttributeRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 productAttributeQuery = productAttributeQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
             }
 
-            var query = productAttributeQuery.Select(a => new ProductAttributeResult
+            var query = productAttributeQuery.Select(x => new ProductAttributeResult
             {
-                Description = a.Description,
-                Id = a.Id,
-                Name = a.Name
+                Description = x.Description,
+                Id = x.Id,
+                Name = x.Name,
+                StatusId = x.StatusId,
+                CreatedById = x.CreatedById,
+                UpdatedById = x.UpdatedById,
+                CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -97,8 +105,9 @@ namespace Camino.Service.Repository.Products
                 search = string.Empty;
             }
 
+            var inactivedStatus = ProductAttributeStatus.Inactived.GetCode();
             search = search.ToLower();
-            var query = _productAttributeRepository.Table;
+            var query = _productAttributeRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(x => x.Name.ToLower().Contains(search)
@@ -120,7 +129,12 @@ namespace Camino.Service.Repository.Products
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    StatusId = x.StatusId,
+                    CreatedById = x.CreatedById,
+                    UpdatedById = x.UpdatedById,
+                    CreatedDate = x.CreatedDate,
+                    UpdatedDate = x.UpdatedDate
                 }).ToListAsync();
 
             return productAttributes;
@@ -128,10 +142,15 @@ namespace Camino.Service.Repository.Products
 
         public async Task<int> CreateAsync(ProductAttributeModifyRequest productAttribute)
         {
-            var newProductAttribute = new ProductAttribute()
+            var newProductAttribute = new ProductAttribute
             {
                 Description = productAttribute.Description,
-                Name = productAttribute.Name
+                Name = productAttribute.Name,
+                StatusId = ProductAttributeStatus.Actived.GetCode(),
+                CreatedById = productAttribute.CreatedById,
+                UpdatedById = productAttribute.UpdatedById,
+                UpdatedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
             };
 
             var id = await _productAttributeRepository.AddWithInt32EntityAsync(newProductAttribute);
@@ -142,10 +161,39 @@ namespace Camino.Service.Repository.Products
         {
             await _productAttributeRepository.Get(x => x.Id == category.Id)
                 .Set(x => x.Description, category.Description)
+                .Set(x => x.UpdatedById, category.UpdatedById)
                 .Set(x => x.Name, category.Name)
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ProductAttributeModifyRequest request)
+        {
+            await _productAttributeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ProductAttributeModifyRequest request)
+        {
+            await _productAttributeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _productAttributeRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
 
         public IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter)
@@ -318,6 +366,14 @@ namespace Camino.Service.Repository.Products
             var productAttributeRelationIds = await productAttributeRelations.Select(x => x.Id).ToListAsync();
             await _productAttributeRelationValueRepository.Get(x => x.ProductAttributeRelationId.In(productAttributeRelationIds)).DeleteAsync();
             await productAttributeRelations.DeleteAsync();
+        }
+
+        public async Task<bool> DeleteAttributeRelationByAttributeIdAsync(int attributeId)
+        {
+            var productAttributeRelations = _productAttributeRelationRepository.Get(x => x.ProductAttributeId == attributeId);
+            var productAttributeRelationIds = await productAttributeRelations.Select(x => x.Id).ToListAsync();
+            await _productAttributeRelationValueRepository.Get(x => x.ProductAttributeRelationId.In(productAttributeRelationIds)).DeleteAsync();
+            return await productAttributeRelations.DeleteAsync() > 0;
         }
     }
 }

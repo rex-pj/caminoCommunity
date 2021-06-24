@@ -27,9 +27,9 @@ namespace Camino.Services.Articles
             _articleRepository = articleRepository;
         }
 
-        public async Task<ArticleCategoryResult> FindAsync(long id)
+        public async Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var category = await _articleCategoryRepository.FindAsync(id);
+            var category = await _articleCategoryRepository.FindAsync(filter);
             if (category == null)
             {
                 return null;
@@ -71,14 +71,14 @@ namespace Camino.Services.Articles
             return categoryPageList;
         }
 
-        public IList<ArticleCategoryResult> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
         {
-            return _articleCategoryRepository.SearchParents(search, currentId, page, pageSize);
+            return _articleCategoryRepository.SearchParents(filter, search, page, pageSize);
         }
 
-        public IList<ArticleCategoryResult> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
         {
-            return _articleCategoryRepository.Search(search, currentId, page, pageSize);
+            return _articleCategoryRepository.Search(filter, search, page, pageSize);
         }
 
         public async Task<int> CreateAsync(ArticleCategoryModifyRequest category)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Camino.Shared.General;
 using Module.Api.Article.Models;
+using Camino.Shared.Requests.Filters;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
@@ -26,11 +27,17 @@ namespace Module.Api.Article.GraphQL.Resolvers
             IList<ArticleCategoryResult> categories;
             if (criterias.IsParentOnly)
             {
-                categories = _articleCategoryService.SearchParents(criterias.Query, criterias.CurrentId);
+                categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
+                {
+                    Id = criterias.CurrentId
+                }, criterias.Query);
             }
             else
             {
-                categories = _articleCategoryService.Search(criterias.Query, criterias.CurrentId);
+                categories = _articleCategoryService.Search(new IdRequestFilter<int?>
+                {
+                    Id = criterias.CurrentId
+                }, criterias.Query);
             }
 
             if (categories == null || !categories.Any())

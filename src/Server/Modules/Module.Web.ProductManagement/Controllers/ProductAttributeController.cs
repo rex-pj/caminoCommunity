@@ -38,15 +38,21 @@ namespace Module.Web.ProductManagement.Controllers
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
-                Search = filter.Search
+                Search = filter.Search,
+                CanGetInactived = true
             };
 
             var productAttributePageList = await _productAttributeService.GetAsync(filterRequest);
-            var productAttributes = productAttributePageList.Collections.Select(x => new ProductAttributeModel()
+            var productAttributes = productAttributePageList.Collections.Select(x => new ProductAttributeModel
             {
                 Id = x.Id,
                 Description = x.Description,
-                Name = x.Name
+                Name = x.Name,
+                CreatedById = x.CreatedById,
+                UpdatedById = x.UpdatedById,
+                CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate,
+                StatusId = (ProductAttributeStatus)x.StatusId
             });
 
             var productAttributePage = new PageListModel<ProductAttributeModel>(productAttributes)
@@ -66,7 +72,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
         [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -75,7 +81,11 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var productAttribute = _productAttributeService.Find(id);
+                var productAttribute = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+                {
+                    Id = id,
+                    CanGetInactived = true
+                });
                 if (productAttribute == null)
                 {
                     return RedirectToNotFoundPage();
@@ -85,7 +95,8 @@ namespace Module.Web.ProductManagement.Controllers
                 {
                     Id = productAttribute.Id,
                     Description = productAttribute.Description,
-                    Name = productAttribute.Name
+                    Name = productAttribute.Name,
+                    StatusId = (ProductAttributeStatus)productAttribute.StatusId
                 };
                 return View(model);
             }
@@ -109,10 +120,12 @@ namespace Module.Web.ProductManagement.Controllers
             var productAttribute = new ProductAttributeModifyRequest()
             {
                 Description = model.Description,
-                Name = model.Name
+                Name = model.Name,
+                CreatedById = LoggedUserId,
+                UpdatedById = LoggedUserId
             };
 
-            var exist = _productAttributeService.FindByName(model.Name);
+            var exist = await _productAttributeService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -124,14 +137,19 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var exist = _productAttributeService.Find(id);
-            var model = new ProductAttributeModel()
+            var exist = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetInactived = true
+            });
+            var model = new ProductAttributeModel
             {
                 Id = exist.Id,
                 Description = exist.Description,
-                Name = exist.Name
+                Name = exist.Name,
+                StatusId = (ProductAttributeStatus)exist.StatusId
             };
             return View(model);
         }
@@ -144,7 +162,8 @@ namespace Module.Web.ProductManagement.Controllers
             {
                 Description = model.Description,
                 Name = model.Name,
-                Id = model.Id
+                Id = model.Id,
+                UpdatedById = LoggedUserId
             };
 
             if (productAttribute.Id <= 0)
@@ -152,7 +171,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _productAttributeService.Find(model.Id);
+            var exist = _productAttributeService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = model.Id,
+                CanGetInactived = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -162,11 +185,87 @@ namespace Module.Web.ProductManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = productAttribute.Id });
         }
 
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        public async Task<IActionResult> Deactivate(ProductAttributeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _productAttributeService.DeactivateAsync(new ProductAttributeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        public async Task<IActionResult> Active(ProductAttributeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productAttributeService.ActiveAsync(new ProductAttributeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProductAttribute)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productAttributeService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
         public async Task<IActionResult> Search(string q, string currentId = null)
         {
-            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter { 
+            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
+            {
                 Search = q
             });
             if (productAttributes == null || !productAttributes.Any())

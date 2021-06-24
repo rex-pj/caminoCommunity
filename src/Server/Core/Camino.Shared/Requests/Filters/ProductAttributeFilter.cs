@@ -11,6 +11,7 @@ namespace Camino.Shared.Requests.Filters
             Page = 1;
         }
 
+        public bool CanGetInactived { get; set; }
         public IEnumerable<int> ExcludedIds { get; set; }
     }
 }

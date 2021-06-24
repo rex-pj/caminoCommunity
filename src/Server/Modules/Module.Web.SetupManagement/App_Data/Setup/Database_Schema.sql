@@ -586,7 +586,12 @@ CREATE TABLE [dbo].[ProductAttribute]
 (
 	[Id] INT IDENTITY(1,1) NOT NULL,
 	[Name] NVARCHAR(MAX) NOT NULL,
-	[Description] NVARCHAR(MAX) NULL
+	[Description] NVARCHAR(MAX) NULL,
+	[StatusId] INT NOT NULL,
+	[CreatedById] BIGINT NOT NULL,
+	[CreatedDate] DATETIME2(7) NOT NULL,
+	[UpdatedById] BIGINT NOT NULL,
+	[UpdatedDate] DATETIME2(7) NOT NULL,
 )
 
 GO

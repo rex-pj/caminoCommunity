@@ -24,13 +24,14 @@ namespace Camino.Service.Repository.Articles
             _articleCategoryRepository = articleCategoryRepository;
         }
 
-        public async Task<ArticleCategoryResult> FindAsync(long id)
+        public async Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter)
         {
+            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             var category = await (from child in _articleCategoryRepository.Table
                                   join parent in _articleCategoryRepository.Table
                                   on child.ParentId equals parent.Id into categories
                                   from cate in categories.DefaultIfEmpty()
-                                  where child.Id == id
+                                  where child.Id == filter.Id && (filter.CanGetInactived || child.StatusId != inactivedStatus)
                                   select new ArticleCategoryResult
                                   {
                                       Description = child.Description,
@@ -70,8 +71,9 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
         {
+            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var categoryQuery = _articleCategoryRepository.Table;
+            var categoryQuery = _articleCategoryRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 categoryQuery = categoryQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -129,15 +131,16 @@ namespace Camino.Service.Repository.Articles
             return result;
         }
 
-        public IList<ArticleCategoryResult> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
                 search = string.Empty;
             }
 
+            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             search = search.ToLower();
-            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
+            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != inactivedStatus))
                 .Select(c => new ArticleCategoryResult
                 {
                     Id = c.Id,
@@ -146,9 +149,9 @@ namespace Camino.Service.Repository.Articles
                     ParentId = c.ParentId
                 });
 
-            if (currentId.HasValue)
+            if (filter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != currentId);
+                query = query.Where(x => x.Id != filter.Id);
             }
 
             if (!string.IsNullOrEmpty(search))
@@ -173,15 +176,16 @@ namespace Camino.Service.Repository.Articles
             return categories;
         }
 
-        public IList<ArticleCategoryResult> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
         {
             if (search == null)
             {
                 search = string.Empty;
             }
 
+            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             search = search.ToLower();
-            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue);
+            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != inactivedStatus));
             var queryChildrens = _articleCategoryRepository.Get(x => x.ParentId.HasValue);
 
             var query = from parent in queryParents
@@ -211,9 +215,9 @@ namespace Camino.Service.Repository.Articles
                         || x.ParentCategory.Description.ToLower().Contains(search));
             }
 
-            if (currentId.HasValue)
+            if (filter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != currentId);
+                query = query.Where(x => x.Id != filter.Id);
             }
 
             if (pageSize > 0)

@@ -86,7 +86,11 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var category = await _articleCategoryService.FindAsync(id);
+                var category = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+                {
+                    CanGetInactived = true,
+                    Id = id
+                });
                 if (category == null)
                 {
                     return RedirectToNotFoundPage();
@@ -150,7 +154,11 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _articleCategoryService.FindAsync(id);
+            var category = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+            {
+                CanGetInactived = true,
+                Id = id
+            });
             var model = new ArticleCategoryModel
             {
                 Description = category.Description,
@@ -176,7 +184,11 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _articleCategoryService.FindAsync(model.Id);
+            var exist = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+            {
+                CanGetInactived = true,
+                Id = model.Id
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -272,16 +284,24 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
-        public IActionResult Search(string q, long? currentId = null, bool isParentOnly = false)
+        public IActionResult Search(string q, int? currentId = null, bool isParentOnly = false)
         {
             IList<ArticleCategoryResult> categories;
             if (isParentOnly)
             {
-                categories = _articleCategoryService.SearchParents(q, currentId);
+                categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
+                {
+                    CanGetInactived = true,
+                    Id = currentId
+                }, q);
             }
             else
             {
-                categories = _articleCategoryService.Search(q, currentId);
+                categories = _articleCategoryService.Search(new IdRequestFilter<int?>
+                {
+                    CanGetInactived = true,
+                    Id = currentId
+                }, q);
             }
 
             if (categories == null || !categories.Any())
