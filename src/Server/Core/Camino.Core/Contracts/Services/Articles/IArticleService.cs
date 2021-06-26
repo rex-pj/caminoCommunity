@@ -4,6 +4,7 @@ using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Articles;
 using System.Collections.Generic;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.General;
 
 namespace Camino.Core.Contracts.Services.Articles
 {
@@ -21,5 +22,6 @@ namespace Camino.Core.Contracts.Services.Articles
         Task<bool> DeactivateAsync(ArticleModifyRequest request);
         Task<bool> ActiveAsync(ArticleModifyRequest request);
         Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

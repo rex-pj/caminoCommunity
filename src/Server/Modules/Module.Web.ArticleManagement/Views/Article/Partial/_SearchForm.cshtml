@@ -7,13 +7,13 @@
     <div class="card-body">
         <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
             <div class="row">
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Search">Keyword</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" asp-for="Search">Keyword</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="mb-3">
                         <input type="text" class="form-control form-control-sm" asp-for="Search">
                     </div>
                 </div>
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="Content">Content</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" asp-for="Content">Content</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="mb-3">
                         <input type="text" class="form-control form-control-sm" asp-for="Content">
@@ -21,13 +21,13 @@
                 </div>
             </div>
             <div class="row">
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedById">Created By</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" asp-for="CreatedById">Created By</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="CreatedById"></select>
                     </div>
                 </div>
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" for="UpdatedById">Updated By</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" asp-for="UpdatedById">Updated By</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "User")" asp-for="UpdatedById"></select>
@@ -65,10 +65,16 @@
                 </div>
             </div>
             <div class="row">
-                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="CreatedById">Category</label>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" asp-for="CreatedById">Category</label>
                 <div class="col-12 col-sm-9 col-md-8 col-lg-3">
                     <div class="mb-3">
                         <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "ArticleCategory")" asp-for="CategoryId"></select>
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" asp-for="StatusId">Status</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="mb-3">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("SearchStatus", "Article")" asp-for="StatusId"></select>
                     </div>
                 </div>
             </div>

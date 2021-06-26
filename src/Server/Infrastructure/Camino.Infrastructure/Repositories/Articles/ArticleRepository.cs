@@ -121,6 +121,11 @@ namespace Camino.Service.Repository.Articles
                 articleQuery = articleQuery.Where(user => user.Content.ToLower().Contains(content));
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.CreatedById.HasValue)
             {
                 articleQuery = articleQuery.Where(x => x.CreatedById == filter.CreatedById);

@@ -180,6 +180,11 @@ namespace Camino.Service.Repository.Farms
                 farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveCreatedById);
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                farmQuery = farmQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.CreatedById.HasValue)
             {
                 farmQuery = farmQuery.Where(x => x.CreatedById == filter.CreatedById);

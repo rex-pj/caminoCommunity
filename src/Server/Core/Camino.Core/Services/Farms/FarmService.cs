@@ -11,6 +11,7 @@ using Camino.Core.Contracts.Repositories.Users;
 using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
 using System;
+using Camino.Shared.General;
 
 namespace Camino.Services.Farms
 {
@@ -20,16 +21,19 @@ namespace Camino.Services.Farms
         private readonly IFarmPictureRepository _farmPictureRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserPhotoRepository _userPhotoRepository;
+        private readonly IFarmStatusRepository _farmStatusRepository;
 
         public FarmService(IFarmRepository farmRepository, IFarmPictureRepository farmPictureRepository, IUserRepository userRepository,
-            IUserPhotoRepository userPhotoRepository)
+            IUserPhotoRepository userPhotoRepository, IFarmStatusRepository farmStatusRepository)
         {
             _farmRepository = farmRepository;
             _farmPictureRepository = farmPictureRepository;
             _userRepository = userRepository;
             _userPhotoRepository = userPhotoRepository;
+            _farmStatusRepository = farmStatusRepository;
         }
 
+        #region get
         public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
             var exist = await _farmRepository.FindAsync(filter);
@@ -119,7 +123,9 @@ namespace Camino.Services.Farms
 
             return famrsPageList;
         }
+        #endregion
 
+        #region CRUD
         public async Task<long> CreateAsync(FarmModifyRequest request)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
@@ -200,7 +206,9 @@ namespace Camino.Services.Farms
 
             return await _farmRepository.ActiveAsync(request);
         }
+        #endregion
 
+        #region farm pictures
         public async Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter)
         {
             var farmPicturePageList = await _farmPictureRepository.GetAsync(filter);
@@ -216,5 +224,13 @@ namespace Camino.Services.Farms
 
             return farmPicturePageList;
         }
+        #endregion
+
+        #region farm status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _farmStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

@@ -4,6 +4,7 @@ using Camino.Shared.Results.PageList;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Camino.Shared.Requests.Farms;
+using Camino.Shared.General;
 
 namespace Camino.Core.Contracts.Services.Farms
 {
@@ -21,5 +22,6 @@ namespace Camino.Core.Contracts.Services.Farms
         Task<bool> DeactivateAsync(FarmModifyRequest request);
         Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter);
         Task<bool> ActivateAsync(FarmModifyRequest request);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

@@ -4,6 +4,7 @@ using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Products;
 using System.Collections.Generic;
 using Camino.Shared.Requests.Products;
+using Camino.Shared.General;
 
 namespace Camino.Core.Contracts.Services.Products
 {
@@ -21,5 +22,6 @@ namespace Camino.Core.Contracts.Services.Products
         Task<bool> SoftDeleteAsync(ProductModifyRequest request);
         Task<bool> DeactiveAsync(ProductModifyRequest request);
         Task<bool> ActiveAsync(ProductModifyRequest request);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

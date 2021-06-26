@@ -11,5 +11,6 @@ namespace Module.Web.FarmManagement.Models
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public long? FarmTypeId { get; set; }
+        public int? StatusId { get; set; }
     }
 }

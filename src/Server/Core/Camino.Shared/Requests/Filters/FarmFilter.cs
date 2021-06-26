@@ -11,6 +11,7 @@ namespace Camino.Shared.Requests.Filters
         public long? FarmTypeId { get; set; }
         public long? ExclusiveCreatedById { get; set; }
         public bool CanGetDeleted { get; set; }
+        public int? StatusId { get; set; }
         public bool CanGetInactived { get; set; }
     }
 }

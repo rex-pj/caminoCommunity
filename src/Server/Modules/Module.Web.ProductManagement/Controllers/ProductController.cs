@@ -15,6 +15,7 @@ using System.Linq;
 using Camino.Shared.Requests.Products;
 using Camino.Shared.Requests.Media;
 using Camino.Core.Utils;
+using System.Collections.Generic;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -35,7 +36,7 @@ namespace Module.Web.ProductManagement.Controllers
         [LoadResultAuthorizations("Product", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ProductFilterModel filter)
         {
-            var filterRequest = new ProductFilter
+            var productPageList = await _productService.GetAsync(new ProductFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -45,11 +46,10 @@ namespace Module.Web.ProductManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
+                StatusId = filter.StatusId,
                 CanGetDeleted = true,
                 CanGetInactived = true
-            };
-
-            var productPageList = await _productService.GetAsync(filterRequest);
+            });
             var products = productPageList.Collections.Select(x => new ProductModel
             {
                 Description = x.Description,
@@ -441,6 +441,30 @@ namespace Module.Web.ProductManagement.Controllers
             }
 
             return View(productPage);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _productService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

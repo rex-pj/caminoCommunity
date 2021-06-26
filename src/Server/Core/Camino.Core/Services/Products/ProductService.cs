@@ -11,6 +11,7 @@ using Camino.Core.Contracts.Repositories.Users;
 using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
 using System;
+using Camino.Shared.General;
 
 namespace Camino.Services.Products
 {
@@ -21,17 +22,21 @@ namespace Camino.Services.Products
         private readonly IUserRepository _userRepository;
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly IProductAttributeRepository _productAttributeRepository;
+        private readonly IProductStatusRepository _productStatusRepository;
 
         public ProductService(IProductRepository productRepository, IProductPictureRepository productPictureRepository,
-            IUserRepository userRepository, IUserPhotoRepository userPhotoRepository, IProductAttributeRepository productAttributeRepository)
+            IUserRepository userRepository, IUserPhotoRepository userPhotoRepository, 
+            IProductAttributeRepository productAttributeRepository, IProductStatusRepository productStatusRepository)
         {
             _productRepository = productRepository;
             _productPictureRepository = productPictureRepository;
             _userRepository = userRepository;
             _userPhotoRepository = userPhotoRepository;
             _productAttributeRepository = productAttributeRepository;
+            _productStatusRepository = productStatusRepository;
         }
 
+        #region get
         public async Task<ProductResult> FindAsync(IdRequestFilter<long> filter)
         {
             return await _productRepository.FindAsync(filter);
@@ -156,7 +161,9 @@ namespace Camino.Services.Products
 
             return products;
         }
+        #endregion
 
+        #region CRUD
         public async Task<long> CreateAsync(ProductModifyRequest request)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
@@ -311,7 +318,9 @@ namespace Camino.Services.Products
             }, PictureStatus.Actived);
             return await _productRepository.ActiveAsync(request);
         }
+        #endregion
 
+        #region product pictures
         public async Task<BasePageList<ProductPictureResult>> GetPicturesAsync(ProductPictureFilter filter)
         {
             var productPicturesPageList = await _productPictureRepository.GetAsync(filter);
@@ -326,5 +335,13 @@ namespace Camino.Services.Products
 
             return productPicturesPageList;
         }
+        #endregion
+
+        #region product status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _productStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

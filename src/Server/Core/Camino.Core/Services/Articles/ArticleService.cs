@@ -12,6 +12,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Results.Media;
 using System;
 using Camino.Shared.Enums;
+using Camino.Shared.General;
 
 namespace Camino.Services.Articles
 {
@@ -21,16 +22,19 @@ namespace Camino.Services.Articles
         private readonly IArticlePictureRepository _articlePictureRepository;
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IArticleStatusRepository _articleStatusRepository;
 
         public ArticleService(IArticleRepository articleRepository, IArticlePictureRepository articlePictureRepository,
-            IUserPhotoRepository userPhotoRepository, IUserRepository userRepository)
+            IUserPhotoRepository userPhotoRepository, IUserRepository userRepository, IArticleStatusRepository articleStatusRepository)
         {
             _articleRepository = articleRepository;
             _articlePictureRepository = articlePictureRepository;
             _userRepository = userRepository;
             _userPhotoRepository = userPhotoRepository;
+            _articleStatusRepository = articleStatusRepository;
         }
 
+        #region get
         public async Task<ArticleResult> FindAsync(IdRequestFilter<long> filter)
         {
             return await _articleRepository.FindAsync(filter);
@@ -113,6 +117,37 @@ namespace Camino.Services.Articles
             return articlePageList;
         }
 
+        public async Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter)
+        {
+            var articles = await _articleRepository.GetRelevantsAsync(id, filter);
+            var createdByIds = articles.Select(x => x.CreatedById).ToArray();
+            var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
+
+            var articleIds = articles.Select(x => x.Id);
+            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
+
+            foreach (var article in articles)
+            {
+                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);
+                article.CreatedBy = createdBy.DisplayName;
+
+                var picture = pictures.FirstOrDefault(x => x.ArticleId == article.Id);
+                if (picture != null)
+                {
+                    article.Picture = new PictureResult { Id = picture.PictureId };
+                }
+            }
+
+            return articles;
+        }
+
+        #endregion
+
+        #region CRUD
         public async Task<int> CreateAsync(ArticleModifyRequest article)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
@@ -156,34 +191,6 @@ namespace Camino.Services.Articles
             return true;
         }
 
-        public async Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter)
-        {
-            var articles = await _articleRepository.GetRelevantsAsync(id, filter);
-            var createdByIds = articles.Select(x => x.CreatedById).ToArray();
-            var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
-
-            var articleIds = articles.Select(x => x.Id);
-            var pictures = await _articlePictureRepository.GetArticlePicturesByArticleIdsAsync(articleIds, new IdRequestFilter<long>
-            {
-                CanGetDeleted = filter.CanGetDeleted,
-                CanGetInactived = filter.CanGetInactived
-            });
-
-            foreach (var article in articles)
-            {
-                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);
-                article.CreatedBy = createdBy.DisplayName;
-
-                var picture = pictures.FirstOrDefault(x => x.ArticleId == article.Id);
-                if (picture != null)
-                {
-                    article.Picture = new PictureResult { Id = picture.PictureId };
-                }
-            }
-
-            return articles;
-        }
-
         public async Task<bool> DeleteAsync(long id)
         {
             await _articlePictureRepository.DeleteByArticleIdAsync(id);
@@ -220,7 +227,9 @@ namespace Camino.Services.Articles
             }, PictureStatus.Actived);
             return await _articleRepository.ActiveAsync(request);
         }
+        #endregion
 
+        #region article picture
         public async Task<BasePageList<ArticlePictureResult>> GetPicturesAsync(ArticlePictureFilter filter)
         {
             var articlePictureListPage = await _articlePictureRepository.GetAsync(filter);
@@ -235,5 +244,13 @@ namespace Camino.Services.Articles
 
             return articlePictureListPage;
         }
+        #endregion
+
+        #region article status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _articleStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

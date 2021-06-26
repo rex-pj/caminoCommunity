@@ -16,7 +16,6 @@ namespace Camino.ApiHost.Infrastructure.Extensions
             services.AddApplicationServices(configuration);
 
             services.AddInfrastructureServices();
-            services.AddDomainServices();
             services.AddHttpContextAccessor();
             services.ConfigureCorsServices(services.BuildServiceProvider());
 

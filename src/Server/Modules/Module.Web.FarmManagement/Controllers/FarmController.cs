@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Requests.Media;
+using System.Collections.Generic;
 
 namespace Module.Web.FarmManagement.Controllers
 {
@@ -34,7 +35,7 @@ namespace Module.Web.FarmManagement.Controllers
         [LoadResultAuthorizations("Farm", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(FarmFilterModel filter)
         {
-            var filterRequest = new FarmFilter
+            var farmPageList = await _farmService.GetAsync(new FarmFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -44,11 +45,10 @@ namespace Module.Web.FarmManagement.Controllers
                 Search = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 FarmTypeId = filter.FarmTypeId,
+                StatusId = filter.StatusId,
                 CanGetDeleted = true,
                 CanGetInactived = true
-            };
-
-            var farmPageList = await _farmService.GetAsync(filterRequest);
+            });
             var farms = farmPageList.Collections.Select(x => new FarmModel
             {
                 Id = x.Id,
@@ -358,6 +358,30 @@ namespace Module.Web.FarmManagement.Controllers
             }
 
             return View(farmPage);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _farmService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

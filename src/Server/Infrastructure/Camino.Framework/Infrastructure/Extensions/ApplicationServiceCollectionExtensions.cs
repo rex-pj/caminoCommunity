@@ -1,7 +1,5 @@
 ﻿using Camino.Framework.Helpers;
 using Camino.Shared.Configurations;
-using Camino.Infrastructure.Providers;
-using Camino.Core.Contracts.Providers;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Infrastructure.Extensions;
 using Camino.Core.Domain.Identities;
@@ -23,10 +21,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>()
                 .AddTransient<IHttpHelper, HttpHelper>();
 
-            services
-                .AddSingleton<IFileProvider, FileProvider>()
-                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
-                .AddScoped<IEmailProvider, EmailProvider>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

@@ -171,6 +171,11 @@ namespace Camino.Service.Repository.Products
                 productQuery = productQuery.Where(x => x.CreatedById == filter.CreatedById);
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                productQuery = productQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.UpdatedById.HasValue)
             {
                 productQuery = productQuery.Where(x => x.UpdatedById == filter.UpdatedById);
