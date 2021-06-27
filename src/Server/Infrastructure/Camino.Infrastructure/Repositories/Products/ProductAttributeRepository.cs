@@ -15,7 +15,7 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductAttributeRepository : IProductAttributeRepository
     {
@@ -34,7 +34,8 @@ namespace Camino.Service.Repository.Products
 
         public async Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var productAttribute = await _productAttributeRepository.Get(x => x.Id == filter.Id)
+            var inactivedStatus = ProductAttributeStatus.Inactived.GetCode();
+            var productAttribute = await _productAttributeRepository.Get(x => x.Id == filter.Id && (filter.CanGetInactived || x.StatusId != inactivedStatus))
                 .Select(x => new ProductAttributeResult
                 {
                     Description = x.Description,

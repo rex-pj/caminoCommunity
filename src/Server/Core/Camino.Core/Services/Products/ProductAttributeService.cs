@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Camino.Shared.Requests.Products;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Shared.General;
+using Camino.Core.Contracts.Repositories.Users;
+using System.Linq;
 
 namespace Camino.Services.Products
 {
@@ -14,12 +16,15 @@ namespace Camino.Services.Products
     {
         private readonly IProductAttributeRepository _productAttributeRepository;
         private readonly IProductAttributeStatusRepository _productAttributeStatusRepository;
+        private readonly IUserRepository _userRepository;
 
         public ProductAttributeService(IProductAttributeRepository productAttributeRepository,
-            IProductAttributeStatusRepository productAttributeStatusRepository)
+            IProductAttributeStatusRepository productAttributeStatusRepository,
+             IUserRepository userRepository)
         {
             _productAttributeRepository = productAttributeRepository;
             _productAttributeStatusRepository = productAttributeStatusRepository;
+            _userRepository = userRepository;
         }
 
         #region get
@@ -37,8 +42,22 @@ namespace Camino.Services.Products
 
         public async Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter)
         {
-            var result = await _productAttributeRepository.GetAsync(filter);
-            return result;
+            var attributesPageList = await _productAttributeRepository.GetAsync(filter);
+            var createdByIds = attributesPageList.Collections.Select(x => x.CreatedById).ToArray();
+            var updatedByIds = attributesPageList.Collections.Select(x => x.UpdatedById).ToArray();
+
+            var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
+            var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
+
+            foreach (var category in attributesPageList.Collections)
+            {
+                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
+                category.CreatedBy = createdBy.DisplayName;
+
+                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
+                category.UpdatedBy = updatedBy.DisplayName;
+            }
+            return attributesPageList;
         }
 
         public async Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter)

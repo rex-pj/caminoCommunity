@@ -7,7 +7,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authentication;
 using Camino.Shared.Requests.Authentication;
 
-namespace Camino.Service.Repository.Authentication
+namespace Camino.Infrastructure.Repositories.Authentication
 {
     public class UserTokenRepository : IUserTokenRepository
     {

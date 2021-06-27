@@ -6,7 +6,7 @@ using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Products;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductStatusRepository : IProductStatusRepository
     {

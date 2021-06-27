@@ -1,16 +1,17 @@
 ﻿using Camino.Shared.Requests.Filters;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.General;
-using Camino.Core.Contracts.Repositories.Farms;
+using Camino.Core.Contracts.Repositories.Navigations;
+using Camino.Infrastructure.Enums;
+using Camino.Shared.Enums;
 
-namespace Camino.Infrastructure.Repositories.Products
+namespace Camino.Infrastructure.Repositories.Navigations
 {
-    public class FarmTypeStatusRepository : IFarmTypeStatusRepository
+    public class ShortcutStatusRepository : IShortcutStatusRepository
     {
-        public FarmTypeStatusRepository()
+        public ShortcutStatusRepository()
         {
         }
 
@@ -20,12 +21,12 @@ namespace Camino.Infrastructure.Repositories.Products
             var result = new List<SelectOption>();
             if (filter.Id.HasValue)
             {
-                var selected = (FarmTypeStatus)filter.Id;
+                var selected = (ShortcutStatus)filter.Id;
                 result = EnumUtil.ToSelectOptions(selected).ToList();
             }
             else
             {
-                result = EnumUtil.ToSelectOptions<FarmTypeStatus>().ToList();
+                result = EnumUtil.ToSelectOptions<ShortcutStatus>().ToList();
             }
 
             result = result.Where(x => string.IsNullOrEmpty(search) || x.Text.ToLower().Equals(search)).ToList();

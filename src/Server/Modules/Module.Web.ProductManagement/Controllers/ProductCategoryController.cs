@@ -53,6 +53,8 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedBy = x.CreatedBy,
                 CreatedById = x.CreatedById,
                 CreatedDate = x.CreatedDate,
+                UpdatedBy = x.UpdatedBy,
+                UpdatedDate = x.UpdatedDate,
                 Name = x.Name,
                 StatusId = (ProductCategoryStatus)x.StatusId
             });

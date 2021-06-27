@@ -955,7 +955,12 @@ CREATE TABLE [dbo].[Shortcut]
 	[Description] NVARCHAR(1000) NULL,
 	[Url] NVARCHAR(2000) NULL,
 	[Icon] NVARCHAR(2000) NULL,
-	[TypeId] INT NULL
+	[TypeId] INT NULL,
+	[StatusId] INT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedById BIGINT NOT NULL
 )
 
 GO

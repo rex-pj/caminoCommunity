@@ -23,6 +23,14 @@
         <partial name="Partial/_StatusBadge" />
     </td>
     <td>
+        <div>@Model.CreatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.CreatedBy</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.UpdatedBy</p>
+    </td>
+    <td>
         @if (Model.StatusId == ProductAttributeStatus.Actived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"

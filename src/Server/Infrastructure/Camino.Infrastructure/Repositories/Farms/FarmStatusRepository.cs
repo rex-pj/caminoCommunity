@@ -6,7 +6,7 @@ using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Farms;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmStatusRepository : IFarmStatusRepository
     {

@@ -16,7 +16,7 @@ using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmRepository : IFarmRepository
     {

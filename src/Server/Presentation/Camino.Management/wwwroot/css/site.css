@@ -83,7 +83,7 @@ body {
     }
 
         #navTab .nav-link.active {
-            background-color: #343a40;
+            background-color: #212529;
             border-bottom: 0;
             color: #778B53;
         }

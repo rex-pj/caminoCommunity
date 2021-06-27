@@ -49,6 +49,7 @@ namespace Module.Web.ArticleManagement.Controllers
             var categories = categoryPageList.Collections.Select(x => new ArticleCategoryModel
             {
                 CreatedById = x.CreatedById,
+                CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
                 Description = x.Description,
                 Id = x.Id,
@@ -57,6 +58,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 ParentId = x.ParentId,
                 UpdateById = x.UpdatedById,
                 UpdatedDate = x.UpdatedDate,
+                UpdatedBy = x.UpdatedBy,
                 StatusId = (ArticleCategoryStatus)x.StatusId
             });
             var categoryPage = new PageListModel<ArticleCategoryModel>(categories)

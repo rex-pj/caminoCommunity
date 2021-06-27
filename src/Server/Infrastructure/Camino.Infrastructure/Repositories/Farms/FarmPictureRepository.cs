@@ -15,7 +15,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Requests.Farms;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmPictureRepository : IFarmPictureRepository
     {

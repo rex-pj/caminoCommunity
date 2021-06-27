@@ -13,7 +13,7 @@ using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticleRepository : IArticleRepository
     {

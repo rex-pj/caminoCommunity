@@ -6,7 +6,7 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.General;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticleStatusRepository : IArticleStatusRepository
     {

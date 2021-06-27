@@ -17,7 +17,7 @@ using Camino.Infrastructure.Strategies.Validations;
 using Camino.Infrastructure.Data;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public partial class UserRepository : IUserRepository
     {

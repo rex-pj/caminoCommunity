@@ -35,15 +35,15 @@ namespace Module.Web.NavigationManagement.Controllers
         [LoadResultAuthorizations("Shortcut", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ShortcutFilterModel filter)
         {
-            var filterRequest = new ShortcutFilter()
+            var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                TypeId = filter.TypeId
-            };
-
-            var shortcutPageList = await _shortcutService.GetAsync(filterRequest);
+                TypeId = filter.TypeId,
+                CanGetInactived = true,
+                StatusId = filter.StatusId
+            });
             var shortcuts = shortcutPageList.Collections.Select(x => new ShortcutModel
             {
                 Description = x.Description,
@@ -52,7 +52,8 @@ namespace Module.Web.NavigationManagement.Controllers
                 Icon = x.Icon,
                 TypeId = (ShortcutType)x.TypeId,
                 Url = x.Url,
-                Order = x.Order
+                Order = x.Order,
+                StatusId = (ShortcutStatus)x.StatusId,
             });
             var shortcutPage = new PageListModel<ShortcutModel>(shortcuts)
             {
@@ -63,7 +64,7 @@ namespace Module.Web.NavigationManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ShortcutTable", shortcutPage);
+                return PartialView("Partial/_ShortcutTable", shortcutPage);
             }
 
             return View(shortcutPage);
@@ -80,7 +81,11 @@ namespace Module.Web.NavigationManagement.Controllers
 
             try
             {
-                var shortcut = await _shortcutService.FindAsync(id);
+                var shortcut = await _shortcutService.FindAsync(new IdRequestFilter<int>
+                {
+                    Id = id,
+                    CanGetInactived = true
+                });
                 if (shortcut == null)
                 {
                     return RedirectToNotFoundPage();
@@ -94,7 +99,8 @@ namespace Module.Web.NavigationManagement.Controllers
                     TypeId = (ShortcutType)shortcut.TypeId,
                     Url = shortcut.Url,
                     Id = shortcut.Id,
-                    Order = shortcut.Order
+                    Order = shortcut.Order,
+                    StatusId = (ShortcutStatus)shortcut.StatusId
                 };
                 return View(model);
             }
@@ -122,7 +128,9 @@ namespace Module.Web.NavigationManagement.Controllers
                 Icon = model.Icon,
                 TypeId = (int)model.TypeId,
                 Url = model.Url,
-                Order = model.Order
+                Order = model.Order,
+                UpdatedById = LoggedUserId,
+                CreatedById = LoggedUserId
             };
             var exist = await _shortcutService.FindByNameAsync(model.Name);
             if (exist != null)
@@ -138,7 +146,11 @@ namespace Module.Web.NavigationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
         public async Task<IActionResult> Update(int id)
         {
-            var shortcut = await _shortcutService.FindAsync(id);
+            var shortcut = await _shortcutService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetInactived = true
+            });
             var model = new ShortcutModel
             {
                 Description = shortcut.Description,
@@ -147,7 +159,8 @@ namespace Module.Web.NavigationManagement.Controllers
                 TypeId = (ShortcutType)shortcut.TypeId,
                 Url = shortcut.Url,
                 Id = shortcut.Id,
-                Order = shortcut.Order
+                Order = shortcut.Order,
+                StatusId = (ShortcutStatus)shortcut.StatusId
             };
             return View(model);
         }
@@ -164,14 +177,19 @@ namespace Module.Web.NavigationManagement.Controllers
                 TypeId = (int)model.TypeId,
                 Url = model.Url,
                 Id = model.Id,
-                Order = model.Order
+                Order = model.Order,
+                UpdatedById = LoggedUserId
             };
             if (shortcut.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = await _shortcutService.FindAsync(model.Id);
+            var exist = await _shortcutService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = model.Id,
+                CanGetInactived = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -181,13 +199,88 @@ namespace Module.Web.NavigationManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = shortcut.Id });
         }
 
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        public async Task<IActionResult> Deactivate(ShortcutIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _shortcutService.DeactivateAsync(new ShortcutModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        public async Task<IActionResult> Active(ShortcutIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _shortcutService.ActiveAsync(new ShortcutModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldBackToDetail)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteShortcut)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _shortcutService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadShortcutType)]
-        public IActionResult SearchShortcutTypes(string q, int? currentId = null)
+        public IActionResult SearchTypes(string q, int? currentId = null)
         {
             var shortcuts = _shortcutService.GetShortcutTypes(new ShortcutTypeFilter
             {
-                ShortcutTypeId = currentId.HasValue ? currentId.Value : 0,
+                Id = currentId,
                 Search = q,
                 Page = 1,
                 PageSize = 10
@@ -206,6 +299,30 @@ namespace Module.Web.NavigationManagement.Controllers
                 });
 
             return Json(shortcutSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _shortcutService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

@@ -9,7 +9,7 @@ using Camino.Shared.Requests.Filters;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Media
+namespace Camino.Infrastructure.Repositories.Media
 {
     public class PictureRepository : IPictureRepository
     {

@@ -15,7 +15,7 @@ using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductCategoryRepository : IProductCategoryRepository
     {

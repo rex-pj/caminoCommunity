@@ -8,7 +8,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class RoleClaimRepository : IRoleClaimRepository
     {

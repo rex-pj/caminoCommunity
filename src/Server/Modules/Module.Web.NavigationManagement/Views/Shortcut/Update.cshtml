@@ -16,6 +16,13 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="Shortcut">
-        <partial name="_CreateOrUpdateForm" />
+        <partial name="Partial/_CreateOrUpdateForm" />
     </form>
 </div>
+
+@{
+    var shortcutIdModel = new ShortcutIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+}
+<partial name="Partial/_ActivateModal" model="shortcutIdModel" />
+<partial name="Partial/_DeactivateModal" model="shortcutIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="shortcutIdModel" />

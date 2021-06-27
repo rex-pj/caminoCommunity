@@ -6,7 +6,7 @@ using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Articles;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticleCategoryStatusRepository : IArticleCategoryStatusRepository
     {

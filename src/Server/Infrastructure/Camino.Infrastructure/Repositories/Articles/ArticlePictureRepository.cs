@@ -15,7 +15,7 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticlePictureRepository : IArticlePictureRepository
     {

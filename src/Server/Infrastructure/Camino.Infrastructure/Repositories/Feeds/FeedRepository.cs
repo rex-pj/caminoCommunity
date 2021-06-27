@@ -14,7 +14,7 @@ using Camino.Core.Domain.Products;
 using Camino.Core.Domain.Media;
 using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Feeds
+namespace Camino.Infrastructure.Repositories.Feeds
 {
     public class FeedRepository : IFeedRepository
     {

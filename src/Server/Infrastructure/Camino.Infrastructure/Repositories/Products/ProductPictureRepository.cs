@@ -15,7 +15,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductPictureRepository : IProductPictureRepository
     {

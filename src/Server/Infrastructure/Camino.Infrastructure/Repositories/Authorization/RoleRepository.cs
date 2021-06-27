@@ -12,7 +12,7 @@ using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class RoleRepository : IRoleRepository
     {

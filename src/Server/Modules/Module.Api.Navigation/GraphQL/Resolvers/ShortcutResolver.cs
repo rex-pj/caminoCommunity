@@ -29,17 +29,15 @@ namespace Module.Api.Navigation.GraphQL.Resolvers
                 criterias = new ShortcutFilterModel();
             }
 
-            var filterRequest = new ShortcutFilter()
-            {
-                Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
-                TypeId = criterias.TypeId
-            };
-
             try
             {
-                var shortcutPageList = await _shortcutService.GetAsync(filterRequest);
+                var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter()
+                {
+                    Page = criterias.Page,
+                    PageSize = criterias.PageSize,
+                    Search = criterias.Search,
+                    TypeId = criterias.TypeId
+                });
                 var shortcuts = shortcutPageList.Collections.Select(x => new ShortcutModel
                 {
                     Description = x.Description,

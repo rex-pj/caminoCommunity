@@ -1,5 +1,7 @@
 ﻿using Camino.Framework.Models;
 using Camino.Infrastructure.Enums;
+using Camino.Shared.Enums;
+using System;
 
 namespace Module.Web.NavigationManagement.Models
 {
@@ -12,5 +14,10 @@ namespace Module.Web.NavigationManagement.Models
         public string Icon { get; set; }
         public ShortcutType TypeId { get; set; }
         public int Order { get; set; }
+        public ShortcutStatus StatusId { get; set; }
+        public long CreatedById { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public long UpdatedById { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; }
     }
 }

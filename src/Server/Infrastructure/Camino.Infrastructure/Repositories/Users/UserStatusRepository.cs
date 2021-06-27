@@ -11,7 +11,7 @@ using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public class UserStatusRepository : IUserStatusRepository
     {

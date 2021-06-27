@@ -16,7 +16,7 @@ using LinqToDB;
 using Microsoft.Extensions.DependencyInjection;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public class UserPhotoRepository : IUserPhotoRepository
     {

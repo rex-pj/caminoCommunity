@@ -4,11 +4,11 @@
     <thead>
         <tr class="bg-light">
             <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Description</th>
-            <th scope="col">Url</th>
-            <th scope="col">Icon</th>
             <th scope="col">Type</th>
+            <th scope="col">Status</th>
             <th scope="col">Order</th>
             <th scope="col"></th>
         </tr>
@@ -19,13 +19,13 @@
             foreach (var cate in Model.Collections)
             {
                 cate.SetPageAuthorizationForModel(Model);
-                <partial name="_ShortcutRow" model="cate" />
+                <partial name="Partial/_ShortcutRow" model="cate" />
             }
         }
         else
         {
             <tr>
-                <td colspan="6" class="text-center">No data</td>
+                <td colspan="8" class="text-center">No data</td>
             </tr>
         }
     </tbody>

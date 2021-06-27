@@ -51,7 +51,9 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedById = x.UpdatedById,
                 CreatedDate = x.CreatedDate,
                 UpdatedDate = x.UpdatedDate,
-                StatusId = (ProductAttributeStatus)x.StatusId
+                StatusId = (ProductAttributeStatus)x.StatusId,
+                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy
             });
 
             var productAttributePage = new PageListModel<ProductAttributeModel>(productAttributes)

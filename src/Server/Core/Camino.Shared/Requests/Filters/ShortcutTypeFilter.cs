@@ -2,6 +2,6 @@
 {
     public class ShortcutTypeFilter : BaseFilter
     {
-        public int ShortcutTypeId { get; set; }
+        public int? Id { get; set; }
     }
 }

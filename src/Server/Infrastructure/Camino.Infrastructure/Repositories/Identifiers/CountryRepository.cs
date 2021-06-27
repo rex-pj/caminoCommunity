@@ -11,7 +11,7 @@ using Camino.Core.Contracts.Repositories.Identities;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 
-namespace Camino.Service.Repository.Identifiers
+namespace Camino.Infrastructure.Repositories.Identifiers
 {
     public class CountryRepository : ICountryRepository
     {

@@ -9,7 +9,7 @@ using Camino.Shared.Requests.Setup;
 using Camino.Infrastructure.Data;
 using Camino.Core.Domain.Navigations;
 
-namespace Camino.Service.Repository.Setup
+namespace Camino.Infrastructure.Repositories.Setup
 {
     public class DataSeedRepository : IDataSeedRepository
     {

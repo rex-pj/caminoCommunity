@@ -10,7 +10,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository
     {

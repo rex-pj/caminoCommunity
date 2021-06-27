@@ -7,11 +7,9 @@ using LinqToDB;
 using Camino.Shared.Results.PageList;
 using Camino.Shared.Requests.Filters;
 using System;
-using System.Collections.Generic;
-using Camino.Shared.General;
-using Camino.Infrastructure.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.Repositories.Navigations;
+using Camino.Shared.Enums;
 
 namespace Camino.Infrastructure.Repositories.Navigations
 {
@@ -24,9 +22,10 @@ namespace Camino.Infrastructure.Repositories.Navigations
             _shortcutRepository = shortcutRepository;
         }
 
-        public async Task<ShortcutResult> FindAsync(int id)
+        public async Task<ShortcutResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var shortcut = await (_shortcutRepository.Get(x => x.Id == id)
+            var inactivedStatus = ShortcutStatus.Inactived.GetCode();
+            var shortcut = await (_shortcutRepository.Get(x => x.Id == filter.Id && (filter.CanGetInactived || x.StatusId != inactivedStatus))
                 .Select(x => new ShortcutResult
                 {
                     Description = x.Description,
@@ -35,7 +34,12 @@ namespace Camino.Infrastructure.Repositories.Navigations
                     Icon = x.Icon,
                     TypeId = x.TypeId,
                     Url = x.Url,
-                    Order = x.Order
+                    Order = x.Order,
+                    StatusId = x.StatusId,
+                    CreatedDate = x.CreatedDate,
+                    CreatedById = x.CreatedById,
+                    UpdatedDate = x.UpdatedDate,
+                    UpdatedById = x.UpdatedById
                 })).FirstOrDefaultAsync();
 
             return shortcut;
@@ -52,7 +56,12 @@ namespace Camino.Infrastructure.Repositories.Navigations
                    Icon = x.Icon,
                    TypeId = x.TypeId,
                    Url = x.Url,
-                   Order = x.Order
+                   Order = x.Order,
+                   StatusId = x.StatusId,
+                   CreatedDate = x.CreatedDate,
+                   CreatedById = x.CreatedById,
+                   UpdatedDate = x.UpdatedDate,
+                   UpdatedById = x.UpdatedById
                })).FirstOrDefaultAsync();
 
             return shortcut;
@@ -60,8 +69,9 @@ namespace Camino.Infrastructure.Repositories.Navigations
 
         public async Task<BasePageList<ShortcutResult>> GetAsync(ShortcutFilter filter)
         {
+            var inactivedStatus = ShortcutStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var shortcutQuery = _shortcutRepository.Table;
+            var shortcutQuery = _shortcutRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 shortcutQuery = shortcutQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -76,8 +86,23 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Icon = x.Icon,
                 TypeId = x.TypeId,
                 Url = x.Url,
-                Order = x.Order
+                Order = x.Order,
+                StatusId = x.StatusId,
+                CreatedDate = x.CreatedDate,
+                CreatedById = x.CreatedById,
+                UpdatedDate = x.UpdatedDate,
+                UpdatedById = x.UpdatedById
             });
+
+            if (filter.StatusId.HasValue)
+            {
+                query = query.Where(x => x.StatusId == filter.StatusId);
+            }
+
+            if (filter.TypeId.HasValue)
+            {
+                query = query.Where(x => x.TypeId == filter.TypeId);
+            }
 
             var filteredNumber = query.Select(x => x.Id).Count();
 
@@ -95,24 +120,6 @@ namespace Camino.Infrastructure.Repositories.Navigations
             return result;
         }
 
-        public IList<SelectOption> GetShortcutTypes(ShortcutTypeFilter filter)
-        {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var result = new List<SelectOption>();
-            if (filter.ShortcutTypeId > 0)
-            {
-                var selected = (ShortcutType)filter.ShortcutTypeId;
-                result = EnumUtil.ToSelectOptions(selected).ToList();
-            }
-            else
-            {
-                result = EnumUtil.ToSelectOptions<ShortcutType>().ToList();
-            }
-
-            result = result.Where(x => string.IsNullOrEmpty(search) || x.Text.ToLower().Equals(search)).ToList();
-            return result;
-        }
-
         public async Task<int> CreateAsync(ShortcutModifyRequest request)
         {
             var newCategory = new Shortcut()
@@ -122,7 +129,12 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Icon = request.Icon,
                 TypeId = request.TypeId,
                 Url = request.Url,
-                Order = request.Order
+                Order = request.Order,
+                CreatedById = request.CreatedById,
+                CreatedDate = DateTimeOffset.UtcNow,
+                UpdatedById = request.UpdatedById,
+                UpdatedDate = DateTimeOffset.UtcNow,
+                StatusId = ShortcutStatus.Actived.GetCode(),
             };
 
             var id = await _shortcutRepository.AddWithInt32EntityAsync(newCategory);
@@ -138,9 +150,39 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 .Set(x => x.TypeId, request.TypeId)
                 .Set(x => x.Url, request.Url)
                 .Set(x => x.Order, request.Order)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ShortcutModifyRequest request)
+        {
+            await _shortcutRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ShortcutModifyRequest request)
+        {
+            await _shortcutRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _shortcutRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }
