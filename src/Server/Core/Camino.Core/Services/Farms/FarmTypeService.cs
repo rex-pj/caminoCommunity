@@ -9,6 +9,7 @@ using Camino.Core.Contracts.Repositories.Farms;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
 using Camino.Core.Exceptions;
+using Camino.Shared.General;
 
 namespace Camino.Services.Farms
 {
@@ -17,15 +18,18 @@ namespace Camino.Services.Farms
         private readonly IFarmTypeRepository _farmTypeRepository;
         private readonly IUserRepository _userRepository;
         private readonly IFarmRepository _farmRepository;
+        private readonly IFarmTypeStatusRepository _farmTypeStatusRepository;
 
         public FarmTypeService(IFarmTypeRepository farmTypeRepository, IUserRepository userRepository,
-            IFarmRepository farmRepository)
+            IFarmRepository farmRepository, IFarmTypeStatusRepository farmTypeStatusRepository)
         {
             _farmTypeRepository = farmTypeRepository;
             _userRepository = userRepository;
             _farmRepository = farmRepository;
+            _farmTypeStatusRepository = farmTypeStatusRepository;
         }
 
+        #region get
         public async Task<FarmTypeResult> FindAsync(long id)
         {
             var exist = await _farmTypeRepository.FindAsync(id);
@@ -72,7 +76,9 @@ namespace Camino.Services.Farms
         {
             return await _farmTypeRepository.SearchAsync(search, page, pageSize);
         }
+        #endregion
 
+        #region CRUD
         public async Task<int> CreateAsync(FarmTypeModifyRequest farmType)
         {
             return await _farmTypeRepository.CreateAsync(farmType);
@@ -109,5 +115,13 @@ namespace Camino.Services.Farms
 
             return await _farmTypeRepository.DeleteAsync(id);
         }
+        #endregion
+
+        #region category status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _farmTypeStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

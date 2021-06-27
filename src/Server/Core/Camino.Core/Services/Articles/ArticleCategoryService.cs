@@ -8,8 +8,8 @@ using Camino.Core.Contracts.Services.Articles;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
-using System;
 using Camino.Core.Exceptions;
+using Camino.Shared.General;
 
 namespace Camino.Services.Articles
 {
@@ -18,15 +18,18 @@ namespace Camino.Services.Articles
         private readonly IArticleCategoryRepository _articleCategoryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IArticleRepository _articleRepository;
+        private readonly IArticleCategoryStatusRepository _articleCategoryStatusRepository;
 
         public ArticleCategoryService(IArticleCategoryRepository articleCategoryRepository, IUserRepository userRepository,
-            IArticleRepository articleRepository)
+            IArticleRepository articleRepository, IArticleCategoryStatusRepository articleCategoryStatusRepository)
         {
             _articleCategoryRepository = articleCategoryRepository;
             _userRepository = userRepository;
             _articleRepository = articleRepository;
+            _articleCategoryStatusRepository = articleCategoryStatusRepository;
         }
 
+        #region get
         public async Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter)
         {
             var category = await _articleCategoryRepository.FindAsync(filter);
@@ -80,7 +83,9 @@ namespace Camino.Services.Articles
         {
             return _articleCategoryRepository.Search(filter, search, page, pageSize);
         }
+        #endregion
 
+        #region CRUD
         public async Task<int> CreateAsync(ArticleCategoryModifyRequest category)
         {
             return await _articleCategoryRepository.CreateAsync(category);
@@ -117,5 +122,13 @@ namespace Camino.Services.Articles
 
             return await _articleCategoryRepository.DeleteAsync(id);
         }
+        #endregion
+
+        #region category status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _articleCategoryStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

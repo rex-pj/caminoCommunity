@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Articles;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.General;
 
 namespace Camino.Core.Contracts.Services.Articles
 {
@@ -19,5 +20,6 @@ namespace Camino.Core.Contracts.Services.Articles
         Task<bool> ActiveAsync(ArticleCategoryModifyRequest request);
         Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request);
         Task<bool> DeleteAsync(int id);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

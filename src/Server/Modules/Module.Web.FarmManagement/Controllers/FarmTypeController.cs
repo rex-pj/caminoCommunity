@@ -34,7 +34,7 @@ namespace Module.Web.FarmManagement.Controllers
         [LoadResultAuthorizations("FarmType", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(FarmTypeFilterModel filter)
         {
-            var filterRequest = new FarmTypeFilter()
+            var farmTypePageList = await _farmTypeService.GetAsync(new FarmTypeFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -42,10 +42,9 @@ namespace Module.Web.FarmManagement.Controllers
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                UpdatedById = filter.UpdatedById
-            };
-
-            var farmTypePageList = await _farmTypeService.GetAsync(filterRequest);
+                UpdatedById = filter.UpdatedById,
+                StatusId = filter.StatusId
+            });
             var farmTypes = farmTypePageList.Collections.Select(x => new FarmTypeModel()
             {
                 Id = x.Id,
@@ -282,6 +281,30 @@ namespace Module.Web.FarmManagement.Controllers
                 });
 
             return Json(farmTypesSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _farmTypeService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

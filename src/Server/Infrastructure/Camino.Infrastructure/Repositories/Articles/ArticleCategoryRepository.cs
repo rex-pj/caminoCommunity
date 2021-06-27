@@ -80,6 +80,11 @@ namespace Camino.Service.Repository.Articles
                          || user.Description.ToLower().Contains(search));
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.CreatedById.HasValue)
             {
                 categoryQuery = categoryQuery.Where(x => x.CreatedById == filter.CreatedById);

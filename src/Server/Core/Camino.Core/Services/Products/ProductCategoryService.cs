@@ -12,6 +12,7 @@ using Camino.Core.Contracts.Repositories.Products;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
 using Camino.Core.Exceptions;
+using Camino.Shared.General;
 
 namespace Camino.Services.Products
 {
@@ -20,15 +21,18 @@ namespace Camino.Services.Products
         private readonly IProductCategoryRepository _productCategoryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IProductCategoryStatusRepository _productCategoryStatusRepository;
 
         public ProductCategoryService(IProductCategoryRepository productCategoryRepository, IUserRepository userRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository, IProductCategoryStatusRepository productCategoryStatusRepository)
         {
             _productCategoryRepository = productCategoryRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _productCategoryStatusRepository = productCategoryStatusRepository;
         }
 
+        #region get
         public async Task<ProductCategoryResult> FindAsync(int id)
         {
             var category = await _productCategoryRepository.FindAsync(id);
@@ -72,11 +76,6 @@ namespace Camino.Services.Products
             return productCategoriesPageList;
         }
 
-        public List<ProductCategoryResult> Get(Expression<Func<ProductCategory, bool>> filter)
-        {
-            return _productCategoryRepository.Get(filter);
-        }
-
         public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
         {
             return await _productCategoryRepository.SearchParentsAsync(currentIds, search, page, pageSize);
@@ -86,7 +85,9 @@ namespace Camino.Services.Products
         {
             return await _productCategoryRepository.SearchAsync(currentIds, search, page, pageSize);
         }
+        #endregion
 
+        #region CRUD
         public async Task<int> CreateAsync(ProductCategoryRequest request)
         {
             return await _productCategoryRepository.CreateAsync(request);
@@ -123,5 +124,13 @@ namespace Camino.Services.Products
 
             return await _productCategoryRepository.DeleteAsync(id);
         }
+        #endregion
+
+        #region category status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _productCategoryStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

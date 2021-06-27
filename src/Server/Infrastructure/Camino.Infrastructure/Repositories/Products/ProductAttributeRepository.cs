@@ -84,6 +84,11 @@ namespace Camino.Service.Repository.Products
                 UpdatedDate = x.UpdatedDate
             });
 
+            if (filter.StatusId.HasValue)
+            {
+                query = query.Where(x => x.StatusId == filter.StatusId);
+            }
+
             var filteredNumber = query.Select(x => x.Id).Count();
 
             var productAttributes = await query.Skip(filter.PageSize * (filter.Page - 1))

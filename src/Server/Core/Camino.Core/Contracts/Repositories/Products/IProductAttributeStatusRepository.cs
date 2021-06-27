@@ -1,0 +1,12 @@
+﻿
+using Camino.Shared.General;
+using Camino.Shared.Requests.Filters;
+using System.Collections.Generic;
+
+namespace Camino.Core.Contracts.Repositories.Products
+{
+    public interface IProductAttributeStatusRepository
+    {
+        IList<SelectOption> Search(IdRequestFilter<int?> filter, string search = "");
+    }
+}

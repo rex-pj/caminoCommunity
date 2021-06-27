@@ -34,15 +34,14 @@ namespace Module.Web.ProductManagement.Controllers
         [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ProductAttributeFilterModel filter)
         {
-            var filterRequest = new ProductAttributeFilter()
+            var productAttributePageList = await _productAttributeService.GetAsync(new ProductAttributeFilter
             {
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                CanGetInactived = true
-            };
-
-            var productAttributePageList = await _productAttributeService.GetAsync(filterRequest);
+                CanGetInactived = true,
+                StatusId = filter.StatusId
+            });
             var productAttributes = productAttributePageList.Collections.Select(x => new ProductAttributeModel
             {
                 Id = x.Id,
@@ -281,6 +280,30 @@ namespace Module.Web.ProductManagement.Controllers
                 });
 
             return Json(attributeSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _productAttributeService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Module.Web.ArticleManagement.Controllers
         [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var filterRequest = new ArticleCategoryFilter()
+            var categoryPageList = await _articleCategoryService.GetAsync(new ArticleCategoryFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -43,10 +43,9 @@ namespace Module.Web.ArticleManagement.Controllers
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                UpdatedById = filter.UpdatedById
-            };
-
-            var categoryPageList = await _articleCategoryService.GetAsync(filterRequest);
+                UpdatedById = filter.UpdatedById,
+                StatusId = filter.StatusId
+            });
             var categories = categoryPageList.Collections.Select(x => new ArticleCategoryModel
             {
                 CreatedById = x.CreatedById,
@@ -314,6 +313,30 @@ namespace Module.Web.ArticleManagement.Controllers
                 {
                     Id = x.Id.ToString(),
                     Text = x.ParentId.HasValue ? $"-- {x.Name}" : x.Name
+                });
+
+            return Json(categorySeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _articleCategoryService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
                 });
 
             return Json(categorySeletions);

@@ -35,7 +35,7 @@ namespace Module.Web.ProductManagement.Controllers
         [LoadResultAuthorizations("ProductCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ProductCategoryFilterModel filter)
         {
-            var filterRequest = new ProductCategoryFilter()
+            var categoryPageList = await _productCategoryService.GetAsync(new ProductCategoryFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -43,10 +43,9 @@ namespace Module.Web.ProductManagement.Controllers
                 Page = filter.Page,
                 PageSize = filter.PageSize,
                 Search = filter.Search,
-                UpdatedById = filter.UpdatedById
-            };
-
-            var categoryPageList = await _productCategoryService.GetAsync(filterRequest);
+                UpdatedById = filter.UpdatedById,
+                StatusId = filter.StatusId
+            });
             var categories = categoryPageList.Collections.Select(x => new ProductCategoryModel()
             {
                 Id = x.Id,
@@ -298,6 +297,30 @@ namespace Module.Web.ProductManagement.Controllers
                 {
                     Id = x.Id.ToString(),
                     Text = x.ParentId.HasValue ? $"-- {x.Name}" : x.Name
+                });
+
+            return Json(categorySeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _productCategoryService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
                 });
 
             return Json(categorySeletions);

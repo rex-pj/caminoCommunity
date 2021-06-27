@@ -74,6 +74,11 @@ namespace Camino.Service.Repository.Products
                          || user.Description.ToLower().Contains(search));
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.CreatedById.HasValue)
             {
                 categoryQuery = categoryQuery.Where(x => x.CreatedById == filter.CreatedById);

@@ -18,9 +18,8 @@ namespace Camino.Core.Contracts.Services.Products
         Task<bool> UpdateAsync(ProductAttributeModifyRequest request);
         IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter);
         Task<bool> ActiveAsync(ProductAttributeModifyRequest request);
-
         Task<bool> DeactivateAsync(ProductAttributeModifyRequest request);
-
         Task<bool> DeleteAsync(int id);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

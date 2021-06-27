@@ -67,6 +67,11 @@ namespace Camino.Service.Repository.Farms
                          || user.Description.ToLower().Contains(search));
             }
 
+            if (filter.StatusId.HasValue)
+            {
+                farmTypeQuery = farmTypeQuery.Where(x => x.StatusId == filter.StatusId);
+            }
+
             if (filter.CreatedById.HasValue)
             {
                 farmTypeQuery = farmTypeQuery.Where(x => x.CreatedById == filter.CreatedById);

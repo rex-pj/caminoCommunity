@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -14,11 +13,10 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
             var assemblies = GetProjectsAssemblies(projectNames);
             foreach (var assembly in assemblies)
             {
-                var currentAssembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(assembly.FullName)));
-                var interfaceTypes = GetAssemblyInterfaceTypes(currentAssembly, interfaceNameSpaces);
+                var interfaceTypes = GetAssemblyInterfaceTypes(assembly, interfaceNameSpaces);
                 foreach (var interfaceType in interfaceTypes)
                 {
-                    var instanceTypes = GetInstanceTypes(currentAssembly, interfaceType);
+                    var instanceTypes = GetInstanceTypes(assembly, interfaceType);
                     foreach (var initializerType in instanceTypes)
                     {
                         services.AddScoped(interfaceType, initializerType);
@@ -33,10 +31,10 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
             return instanceTypes;
         }
 
-        private static IEnumerable<Type> GetAssemblyInterfaceTypes(Assembly assembly, string[] interNameSpaces)
+        private static IEnumerable<Type> GetAssemblyInterfaceTypes(Assembly assembly, string[] interfaceNameSpaces)
         {
             var interfaceTypes = assembly.GetTypes().SelectMany(x => x.GetInterfaces())
-                .Where(x => interNameSpaces.Any(i => x.Namespace.StartsWith(i)));
+                .Where(x => interfaceNameSpaces.Any(i => x.Namespace.StartsWith(i)));
 
             return interfaceTypes;
         }
