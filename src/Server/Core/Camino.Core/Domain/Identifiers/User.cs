@@ -35,9 +35,9 @@ namespace Camino.Core.Domain.Identifiers
         [Required]
         public string PasswordHash { get; set; }
         [Required]
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
         [Required]
-        public DateTime UpdatedDate { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; }
         [Required]
         public long CreatedById { get; set; }
         [Required]

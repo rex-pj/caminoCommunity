@@ -1,10 +1,10 @@
 ﻿@model PageListModel<UserModel>
 
-<table class="table table-bordered table-fixed-layout">
+<table class="table table-bordered">
     <thead>
         <tr class="bg-light">
-            <th scope="col" width="45">#</th>
-            <th scope="col">Name</th>
+            <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Display Name</th>
             <th scope="col">Email</th>
             <th scope="col">Birthdate</th>
@@ -19,7 +19,7 @@
         {
             foreach (var user in Model.Collections)
             {
-                <partial name="_UserRow" model="user" />
+                <partial name="Partial/_UserRow" model="user" />
             }
         }
         else

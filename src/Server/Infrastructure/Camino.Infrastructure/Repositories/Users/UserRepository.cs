@@ -16,6 +16,7 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using Camino.Infrastructure.Data;
 using LinqToDB.Tools;
+using Camino.Core.Utils;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
@@ -58,7 +59,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 Lastname = request.Lastname,
                 PasswordHash = request.PasswordHash,
                 SecurityStamp = request.SecurityStamp,
-                StatusId = 1,
+                StatusId = UserStatus.Pending.GetCode(),
                 UserName = request.UserName,
                 DisplayName = request.DisplayName,
                 IsEmailConfirmed = true
@@ -96,24 +97,55 @@ namespace Camino.Infrastructure.Repositories.Users
             return -1;
         }
 
-        public async Task DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(long id)
         {
-            var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            user.StatusId = (int)UserStatus.Deleted;
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.Get(x => x.Id == id)
+                .DeleteAsync();
+
+            return true;
         }
 
-        public async Task<bool> ActiveAsync(long id)
+        public async Task<bool> SoftDeleteAsync(UserModifyRequest request)
         {
-            var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            if (user.IsEmailConfirmed)
-            {
-                throw new InvalidOperationException($"User with email: {user.Email} is already actived");
-            }
+            var updatedRecords = (await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Deleted.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync());
 
-            user.IsEmailConfirmed = true;
-            user.StatusId = (int)UserStatus.Actived;
-            await _userRepository.UpdateAsync(user);
+            return updatedRecords > 0;
+        }
+
+        public async Task<bool> DeactivateAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Inactived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ConfirmAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.IsEmailConfirmed, true)
+                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
 
             return true;
         }
@@ -132,7 +164,6 @@ namespace Camino.Infrastructure.Repositories.Users
 
             var key = (long)request.Key;
             var userInfo = _userInfoRepository.FirstOrDefault(x => x.Id == key);
-
             if (userInfo == null)
             {
                 throw new ArgumentException(nameof(userInfo));
@@ -140,7 +171,6 @@ namespace Camino.Infrastructure.Repositories.Users
 
             _validationStrategyContext.SetStrategy(new UserInfoItemUpdationValidationStratergy(_validationStrategyContext));
             bool canUpdate = _validationStrategyContext.Validate(request);
-
             if (!canUpdate)
             {
                 throw new ArgumentException(request.PropertyName);
@@ -169,15 +199,13 @@ namespace Camino.Infrastructure.Repositories.Users
                 }
             }
 
-            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == request.Id);
-
-            user.UpdatedById = request.Id;
-            user.UpdatedDate = DateTime.UtcNow;
-            user.Lastname = request.Lastname;
-            user.Firstname = request.Firstname;
-            user.DisplayName = request.DisplayName;
-
-            _userRepository.Update(user);
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.UpdatedById, request.Id)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .Set(x => x.Lastname, request.Lastname)
+                .Set(x => x.Firstname, request.Firstname)
+                .Set(x => x.DisplayName, request.DisplayName)
+                .UpdateAsync();
 
             return request;
         }
@@ -309,11 +337,15 @@ namespace Camino.Infrastructure.Repositories.Users
             return existUsers;
         }
 
-        public async Task<UserFullResult> FindFullByIdAsync(long id)
+        public async Task<UserFullResult> FindFullByIdAsync(IdRequestFilter<long> filter)
         {
+            var deletedStatus = UserStatus.Deleted.GetCode();
+            var inactivedStatus = UserStatus.Inactived.GetCode();
             var existUser = await _userRepository
-                .Get(x => x.Id.Equals(id))
-                .Select(x => new UserFullResult()
+                .Get(x => x.Id.Equals(filter.Id) && (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                .Select(x => new UserFullResult
                 {
                     CreatedDate = x.CreatedDate,
                     DisplayName = x.DisplayName,
@@ -330,9 +362,11 @@ namespace Camino.Infrastructure.Repositories.Users
                     StatusId = x.StatusId,
                     StatusLabel = x.Status.Name,
                     Id = x.Id,
+                    UpdatedDate = x.UpdatedDate,
                     CountryId = x.UserInfo.CountryId,
                     CountryCode = x.UserInfo.Country.Code,
-                    CountryName = x.UserInfo.Country.Name
+                    CountryName = x.UserInfo.Country.Name,
+                    IsEmailConfirmed = x.IsEmailConfirmed
                 })
                 .FirstOrDefaultAsync();
 
@@ -374,8 +408,12 @@ namespace Camino.Infrastructure.Repositories.Users
 
         public async Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter)
         {
+            var deletedStatus = UserStatus.Deleted.GetCode();
+            var inactivedStatus = UserStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var userQuery = _userRepository.Table;
+            var userQuery = _userRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 userQuery = userQuery.Where(user => user.Lastname.ToLower().Contains(search)
@@ -478,6 +516,7 @@ namespace Camino.Infrastructure.Repositories.Users
                              PhoneNumber = user.UserInfo.PhoneNumber,
                              GenderLabel = user.UserInfo.Gender.Name,
                              StatusLabel = user.Status.Name,
+                             StatusId = user.StatusId,
                              CountryName = user.UserInfo.Country.Name
                          });
 

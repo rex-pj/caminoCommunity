@@ -129,7 +129,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var user = await _userService.FindFullByIdAsync(userId);
+            var user = await _userService.FindFullByIdAsync(new IdRequestFilter<long>
+            {
+                Id = userId,
+                CanGetInactived = currentUser.Id == userId
+            });
             if (user == null)
             {
                 return null;

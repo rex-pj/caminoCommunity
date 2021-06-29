@@ -125,7 +125,10 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                await _userService.DeleteAsync(user.Id);
+                await _userService.SoftDeleteAsync(new UserModifyRequest { 
+                    Id = user.Id,
+                    UpdatedById = user.UpdatedById
+                });
             }
             // Todo: check DbUpdateConcurrencyException
             catch (Exception)

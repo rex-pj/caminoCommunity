@@ -83,17 +83,86 @@
     </div>
     <div class="mb-3">
         <label>Status</label>
-        <span class="badge badge-info">@Model.StatusLabel</span>
+        <partial name="Partial/_StatusBadge" />
     </div>
     <div class="mb-3">
         <label>Email Confirmed</label>
         @if (Model.IsEmailConfirmed)
         {
-            <span class="badge badge-success">Confirmed</span>
+            <span class="badge rounded-pill bg-success">Confirmed</span>
         }
         else
         {
-            <span class="badge badge-danger">Unconfirmed</span>
+            <span class="badge rounded-pill bg-secondary">Unconfirmed</span>
         }
     </div>
+
+    <div class="row mb-3">
+        <div class="col-auto">
+            @if (Model.Id > 0)
+            {
+                @if (!Model.IsEmailConfirmed)
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#confirmEmailModal"
+                            title="Confirm this user"
+                            class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                        <i class="fas fa-check"></i>
+                    </button>
+                }
+
+                @if (Model.StatusId == UserStatus.Pending)
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                            title="Activate this user"
+                            class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                        <i class="fa fa-unlock"></i>
+                        <span class="ms-1">Activate</span>
+                    </button>
+                }
+
+                @if (Model.StatusId != UserStatus.Inactived && Model.StatusId != UserStatus.Deleted)
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                            class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this user">
+                        <i class="fa fa-lock"></i>
+                        <span class="ms-1">Block</span>
+                    </button>
+                }
+                else if (Model.StatusId == UserStatus.Inactived)
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                            class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this user">
+                        <i class="fa fa-unlock"></i>
+                        <span class="ms-1">Re-activate</span>
+                    </button>
+                }
+
+                @if (Model.StatusId == UserStatus.Deleted)
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
+                            class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this user">
+                        <i class="fa fa-redo"></i>
+                        <span class="ms-1">Restore</span>
+                    </button>
+                }
+                else
+                {
+                    <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
+                            class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this user to trash">
+                        <i class="fa fa-trash-alt"></i>
+                        <span class="ms-1">Move To Trash</span>
+                    </button>
+                }
+            }
+        </div>
+    </div>
 </div>
+
+@{
+    var userIdModel = new UserIdRequestModel { Id = Model.Id, ShouldKeepDetailPage = true };
+}
+<partial name="Partial/_ActivateModal" model="userIdModel" />
+<partial name="Partial/_DeactivateModal" model="userIdModel" />
+<partial name="Partial/_RestoreModal" model="userIdModel" />
+<partial name="Partial/_ConfirmEmailModal" model="userIdModel" />
+<partial name="Partial/_TemporaryDeleteModal" model="userIdModel" />

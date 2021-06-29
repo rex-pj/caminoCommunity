@@ -4,9 +4,8 @@
     {
         Pending = 1,
         Actived = 2,
-        Reported = 3,
-        Inactived = 4,
-        Blocked = 5,
-        Deleted = 6
+        Inactived = 3,
+        Reported = 4,
+        Deleted = 5
     }
 }

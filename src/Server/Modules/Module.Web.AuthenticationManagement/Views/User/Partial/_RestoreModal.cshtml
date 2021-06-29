@@ -1,15 +1,15 @@
-﻿@model ArticleIdRequestModel
+﻿@model UserIdRequestModel
 <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form action="@Url.Action("Active")" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="restoreLabel">Restore this Article</h5>
+                    <h5 class="modal-title" id="restoreLabel">Restore this user</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" asp-for="Id" class="identifier" id="restoreId" />
-                    <input type="hidden" asp-for="ShouldKeepUpdatePage" />
+                    <input type="hidden" asp-for="ShouldKeepDetailPage" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>

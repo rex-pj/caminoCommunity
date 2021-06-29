@@ -2,17 +2,16 @@
     'use strict';
     var features = {
         selectors: {
-            select2Ajax: '.select2-remote-ajax',
-            searchDropdownsParent: '#searchForm'
+            select2Ajax: '.select2-remote-ajax'
         },
-        loadSelect2Ajax: function (selector, dropdownParent) {
-            $(selector).select2Ajax({ dropdownParent: $(dropdownParent) });
+        loadSelect2Ajax: function (selector) {
+            $(selector).select2Ajax();
         }
     };
 
     global.initialize = function () {
         var selectors = features.selectors;
-        features.loadSelect2Ajax(selectors.select2Ajax, selectors.searchDropdownsParent);
+        features.loadSelect2Ajax(selectors.select2Ajax);
     };
 })(window, document);
 

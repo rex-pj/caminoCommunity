@@ -1,7 +1,7 @@
 ﻿{
   "Statuses": [
     {
-      "Name": "New",
+      "Name": "Pending",
       "Description": "New creating user"
     },
     {
@@ -9,16 +9,12 @@
       "Description": "Actived user"
     },
     {
-      "Name": "Reported",
-      "Description": "The user is being reported"
-    },
-    {
       "Name": "Inactived",
       "Description": "The user is Inactived"
     },
     {
-      "Name": "Blocked",
-      "Description": "The user is being blocked"
+      "Name": "Reported",
+      "Description": "The user is being reported"
     },
     {
       "Name": "Deleted",

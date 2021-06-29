@@ -21,7 +21,7 @@
 </div>
 
 @{
-    var productAttributeIdModel = new ProductAttributeIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var productAttributeIdModel = new ProductAttributeIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="productAttributeIdModel" />
 <partial name="Partial/_DeactivateModal" model="productAttributeIdModel" />

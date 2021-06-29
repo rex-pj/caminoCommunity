@@ -17,5 +17,7 @@ namespace Camino.Shared.Requests.Filters
         public int? StatusId { get; set; }
         public bool? IsEmailConfirmed { get; set; }
         public long? ExclusiveCreatedById { get; set; }
+        public bool CanGetDeleted { get; set; }
+        public bool CanGetInactived { get; set; }
     }
 }

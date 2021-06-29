@@ -37,7 +37,7 @@
     </div>
     <div class="mb-3">
         <label>Created date</label>
-        <span class="form-control" readonly>@Model.CreatedDate.ToShortDateString()</span>
+        <span class="form-control" readonly>@Model.CreatedDate.ToDateHourMinusFormat()</span>
     </div>
     <div class="mb-3">
         <label>Updated by</label>
@@ -45,6 +45,6 @@
     </div>
     <div class="mb-3">
         <label>Updated date</label>
-        <span class="form-control" readonly>@Model.UpdatedDate.ToShortDateString()</span>
+        <span class="form-control" readonly>@Model.UpdatedDate.ToDateHourMinusFormat()</span>
     </div>
 </div>

@@ -21,7 +21,7 @@
 </div>
 
 @{
-    var shortcutIdModel = new ShortcutIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var shortcutIdModel = new ShortcutIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="shortcutIdModel" />
 <partial name="Partial/_DeactivateModal" model="shortcutIdModel" />

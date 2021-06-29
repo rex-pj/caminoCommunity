@@ -279,7 +279,7 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleStatus.Deleted)
+                .Set(x => x.StatusId, ArticleStatus.Deleted.GetCode())
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
@@ -290,7 +290,7 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleStatus.Inactived)
+                .Set(x => x.StatusId, ArticleStatus.Inactived.GetCode())
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
@@ -301,7 +301,7 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> ActiveAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleStatus.Actived)
+                .Set(x => x.StatusId, ArticleStatus.Actived.GetCode())
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();

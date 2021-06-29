@@ -1,0 +1,21 @@
+﻿@model UserModel
+@if (Model.StatusId == UserStatus.Pending)
+{
+    <span class="badge rounded-pill bg-info">@Model.StatusId</span>
+}
+else if (Model.StatusId == UserStatus.Actived)
+{
+    <span class="badge rounded-pill bg-success">@Model.StatusId</span>
+}
+else if (Model.StatusId == UserStatus.Inactived)
+{
+    <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
+}
+else if (Model.StatusId == UserStatus.Reported)
+{
+    <span class="badge rounded-pill bg-warning">@Model.StatusId</span>
+}
+else if (Model.StatusId == UserStatus.Deleted)
+{
+    <span class="badge rounded-pill bg-danger">@Model.StatusId</span>
+}

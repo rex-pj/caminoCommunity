@@ -21,7 +21,7 @@
 </div>
 
 @{
-    var farmTypeIdModel = new FarmTypeIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var farmTypeIdModel = new FarmTypeIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="farmTypeIdModel" />
 <partial name="Partial/_DeactivateModal" model="farmTypeIdModel" />

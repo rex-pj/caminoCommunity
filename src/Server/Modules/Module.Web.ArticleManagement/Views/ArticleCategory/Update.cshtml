@@ -21,7 +21,7 @@
 </div>
 
 @{
-    var articleCategoryIdModel = new ArticleCategoryIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var articleCategoryIdModel = new ArticleCategoryIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="articleCategoryIdModel" />
 <partial name="Partial/_DeactivateModal" model="articleCategoryIdModel" />

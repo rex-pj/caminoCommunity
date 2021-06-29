@@ -29,7 +29,7 @@
 </div>
 
 @{
-    var productIdModel = new ProductIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var productIdModel = new ProductIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="productIdModel" />
 <partial name="Partial/_DeactivateModal" model="productIdModel" />

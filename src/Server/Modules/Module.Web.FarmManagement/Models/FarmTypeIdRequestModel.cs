@@ -3,6 +3,6 @@
     public class FarmTypeIdRequestModel
     {
         public int Id { get; set; }
-        public bool ShouldBackToDetail { get; set; }
+        public bool ShouldKeepUpdatePage { get; set; }
     }
 }

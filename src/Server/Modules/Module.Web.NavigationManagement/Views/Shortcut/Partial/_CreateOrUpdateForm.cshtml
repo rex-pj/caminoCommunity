@@ -57,7 +57,7 @@
             <div class="mb-3">
                 <label>Type</label>
                 <select class="form-control select2-remote-ajax"
-                        data-url="@Url.Action("SearchShortcutTypes", "Shortcut")" asp-for="TypeId">
+                        data-url="@Url.Action("SearchTypes", "Shortcut")" asp-for="TypeId">
                     <option value="@Model.TypeId" selected="selected">@(EnumUtil.GetDescription(Model.TypeId))</option>
                 </select>
             </div>

@@ -214,9 +214,9 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            if (request.ShouldBackToDetail)
+            if (request.ShouldKeepUpdatePage)
             {
-                return RedirectToAction(nameof(Detail), new { id = request.Id });
+                return RedirectToAction(nameof(Update), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));
@@ -242,9 +242,9 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            if (request.ShouldBackToDetail)
+            if (request.ShouldKeepUpdatePage)
             {
-                return RedirectToAction(nameof(Detail), new { id = request.Id });
+                return RedirectToAction(nameof(Update), new { id = request.Id });
             }
 
             return RedirectToAction(nameof(Index));

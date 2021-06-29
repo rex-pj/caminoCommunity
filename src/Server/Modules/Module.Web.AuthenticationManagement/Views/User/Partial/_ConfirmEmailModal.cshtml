@@ -1,19 +1,19 @@
-﻿@model ProductCategoryIdRequestModel
-<div class="modal fade" id="permanentlyDeleteModal" tabindex="-1" aria-labelledby="permanentlyDeleteLabel" aria-hidden="true">
+﻿@model UserIdRequestModel
+<div class="modal fade" id="confirmEmailModal" tabindex="-1" aria-labelledby="confirmEmailLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="@Url.Action("Delete")" method="post">
+        <form action="@Url.Action("Confirm")" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="permanentlyDeleteLabel">Delete this category</h5>
+                    <h5 class="modal-title" id="confirmEmailLabel">Confirm this user</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" asp-for="Id" class="identifier" id="permanentlyId" />
-                    <input type="hidden" asp-for="ShouldKeepUpdatePage" />
+                    <input type="hidden" asp-for="ShouldKeepDetailPage" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-success">Confirm</button>
                 </div>
             </div>
         </form>

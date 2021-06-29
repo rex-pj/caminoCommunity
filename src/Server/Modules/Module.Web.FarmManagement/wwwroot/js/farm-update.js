@@ -4,7 +4,6 @@
         selectors: {
             contentEditor: 'textarea#Description',
             select2Ajax: '.select2-remote-ajax',
-            searchDropdownsParent: '#searchForm',
             fileUploadSelector: '#pictureUpload',
             uploadProgressingBar: '#uploadProgress',
             farmPicturesBar: '#farmPictures',
@@ -14,8 +13,8 @@
         loadContentEditor: function (selector) {
             $(selector).tinymceEditor();
         },
-        loadSelect2Ajax: function (selector, dropdownParent) {
-            $(selector).select2Ajax({ dropdownParent: $(dropdownParent) });
+        loadSelect2Ajax: function (selector) {
+            $(selector).select2Ajax();
         },
         loadFileUploader: function (selector, progressingBar, callback) {
             $(selector).fileupload({
@@ -81,7 +80,7 @@
     global.initialize = function () {
         var selectors = features.selectors;
         features.loadContentEditor(selectors.contentEditor);
-        features.loadSelect2Ajax(selectors.select2Ajax, selectors.searchDropdownsParent);
+        features.loadSelect2Ajax(selectors.select2Ajax);
         features.loadFileUploader(selectors.fileUploadSelector, selectors.uploadProgressingBar, fileUploadCallback);
         selectors.initPictureRemoving();
     };

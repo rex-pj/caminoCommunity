@@ -27,7 +27,7 @@
     </form>
 </div>
 @{
-    var articleIdModel = new ArticleIdRequestModel { Id = Model.Id, ShouldBackToDetail = true };
+    var articleIdModel = new ArticleIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
 }
 <partial name="Partial/_ActivateModal" model="articleIdModel" />
 <partial name="Partial/_DeactivateModal" model="articleIdModel" />
