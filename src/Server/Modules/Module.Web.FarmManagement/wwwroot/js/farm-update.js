@@ -32,8 +32,8 @@
         },
         initPictureRemoving: function () {
             var selectors = features.selectors;
-            var removePictureSelector = '.' + selectors.removePictureSelector;
-            $(selectors.farmPictures).on('click', removePictureSelector, function () {
+            var removePictureSelector = selectors.removePictureSelector;
+            $(selectors.farmPicturesBar).on('click', removePictureSelector, function () {
                 var pictureItemSelector = '.' + selectors.pictureItemSelector;
                 $(this).parent(pictureItemSelector).remove();
                 rerenderPicturesIndexes();
@@ -72,7 +72,7 @@
         appendedHtml += '<input type="hidden" name="Pictures[' + appendedIndex + '].Base64Data" value="' + base64Data + '" />';
         appendedHtml += '<input type="hidden" name="Pictures[' + appendedIndex + '].FileName" value="' + data.result.name + '" />';
         appendedHtml += '<input type="hidden" name="Pictures[' + appendedIndex + '].ContentType" value="' + data.result.contentType + '" />';
-        appendedHtml += '<span class="remove-picture">X</span>';
+        appendedHtml += '<span class="remove-picture"><i class="fa fa-times"></i></span>';
         appendedHtml += '</div>';
         farmPictures.append(appendedHtml);
     };
@@ -82,7 +82,7 @@
         features.loadContentEditor(selectors.contentEditor);
         features.loadSelect2Ajax(selectors.select2Ajax);
         features.loadFileUploader(selectors.fileUploadSelector, selectors.uploadProgressingBar, fileUploadCallback);
-        selectors.initPictureRemoving();
+        features.initPictureRemoving();
     };
 })(window, document);
 

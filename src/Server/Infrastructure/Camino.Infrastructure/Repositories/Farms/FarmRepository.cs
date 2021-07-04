@@ -101,6 +101,12 @@ namespace Camino.Infrastructure.Repositories.Farms
 
         public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
         {
+            if (filter.Search == null)
+            {
+                filter.Search = string.Empty;
+            }
+
+            filter.Search = filter.Search.ToLower();
             var query = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(c => new FarmResult
                 {
@@ -115,7 +121,7 @@ namespace Camino.Infrastructure.Repositories.Farms
                 query = query.Where(x => x.CreatedById == filter.CreatedById);
             }
 
-            if (filter.CurrentIds.Any())
+            if (filter.CurrentIds != null && filter.CurrentIds.Any())
             {
                 query = query.Where(x => x.Id.NotIn(filter.CurrentIds));
             }

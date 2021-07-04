@@ -1,8 +1,11 @@
-﻿@{
+﻿@using Microsoft.Extensions.Options
+@using Camino.Shared.Configurations
+@inject IOptions<AppSettings> optionsAccessor
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>to <a href="@optionsAccessor.Value.CaminoClientAppUrl">Camino Community</a>.</p>
 </div>

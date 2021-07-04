@@ -6,6 +6,7 @@
         public string ApplicationName { get; set; }
         public string MyAllowSpecificOrigins { get; set; }
         public string[] AllowOrigins { get; set; }
-        public int DataConnectionCommandTimeout { get; set; }
+        public string CaminoClientAppUrl { get; set; }
+
     }
 }

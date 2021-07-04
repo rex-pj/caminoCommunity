@@ -23,7 +23,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
         public async Task<IActionResult> Search(string q, string currentId = null)
         {
             long[] currentIds = null;

@@ -56,7 +56,9 @@
                     <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
                 </div>
                 <input type="hidden" name="Pictures[@index].PictureId" value="@item.PictureId" />
-                <span class="remove-picture">X</span>
+                <span class="remove-picture">
+                    <i class="fa fa-times"></i>
+                </span>
             </div>
             index++;
         }

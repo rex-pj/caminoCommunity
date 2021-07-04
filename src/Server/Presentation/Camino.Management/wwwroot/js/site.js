@@ -11,6 +11,17 @@
 
     $.each(select2s, function (key, selection) {
         var select2 = $(selection);
+        loadSelect2Ajax(select2);
+
+        select2.on('select2:unselect', function (e) {
+            setTimeout(function () {
+                loadSelect2Ajax(select2);
+            }, 100);
+            clearTimeout();
+        })
+    });
+
+    function loadSelect2Ajax(select2) {
         var method = select2.attr("method") ? select2.attr("method") : "get";
         var url = select2.data("url");
         var selected = select2.val();
@@ -47,7 +58,7 @@
             minimumInputLength: settings.minimumInputLength,
             dropdownParent: settings.dropdownParent,
         });
-    });
+    }
 }
 
 $.fn.filterDataTable = function () {

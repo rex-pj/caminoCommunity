@@ -32,8 +32,8 @@
         },
         initPictureRemoving: function () {
             var selectors = features.selectors;
-            var removePictureSelector = '.' + selectors.removePictureSelector;
-            $(selectors.productPictures).on('click', removePictureSelector, function () {
+            var removePictureSelector = selectors.removePictureSelector;
+            $(selectors.productPicturesBar).on('click', removePictureSelector, function () {
                 var pictureItemSelector = '.' + selectors.pictureItemSelector;
                 $(this).parent(pictureItemSelector).remove();
                 rerenderPicturesIndexes();
@@ -72,7 +72,7 @@
         appendedHtml += '<input type="hidden" name="Picturess[' + appendedIndex + '].Base64Data" value="' + base64Data + '" />';
         appendedHtml += '<input type="hidden" name="Picturess[' + appendedIndex + '].FileName" value="' + data.result.name + '" />';
         appendedHtml += '<input type="hidden" name="Picturess[' + appendedIndex + '].ContentType" value="' + data.result.contentType + '" />';
-        appendedHtml += '<span class="remove-picture">X</span>';
+        appendedHtml += '<span class="remove-picture"><i class="fa fa-times"></i></span>';
         appendedHtml += '</div>';
         productPictures.append(appendedHtml);
     };
