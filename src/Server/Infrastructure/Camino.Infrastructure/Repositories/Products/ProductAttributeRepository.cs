@@ -125,6 +125,11 @@ namespace Camino.Infrastructure.Repositories.Products
                 query = query.Where(x => x.Id.NotIn(filter.ExcludedIds));
             }
 
+            if (filter.Id.HasValue)
+            {
+                query = query.Where(x => x.Id != filter.Id);
+            }
+
             if (filter.PageSize > 0)
             {
                 query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
@@ -204,18 +209,14 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var result = new List<SelectOption>();
+            var result = EnumUtil.ToSelectOptions<ProductAttributeControlType>().ToList();
+
             if (filter.ControlTypeId > 0)
             {
-                var selected = (ProductAttributeControlType)filter.ControlTypeId;
-                result = EnumUtil.ToSelectOptions(selected).ToList();
-            }
-            else
-            {
-                result = EnumUtil.ToSelectOptions<ProductAttributeControlType>().ToList();
+                result = result.Where(x => x.Id != filter.ControlTypeId.ToString()).ToList();
             }
 
+            var search = filter.Search != null ? filter.Search.ToLower() : "";
             result = result.Where(x => string.IsNullOrEmpty(search) || x.Text.ToLower().Equals(search)).ToList();
             return result;
         }
@@ -350,6 +351,26 @@ namespace Camino.Infrastructure.Repositories.Products
                                            }).ToListAsync();
 
             return productAttributes;
+        }
+
+        public async Task<ProductAttributeRelationResult> GetAttributeRelationByIdAsync(long id)
+        {
+            var productAttribute = await (from pattr in _productAttributeRelationRepository.Table
+                                          join attr in _productAttributeRepository.Table
+                                          on pattr.ProductAttributeId equals attr.Id
+                                          where pattr.Id == id
+                                          select new ProductAttributeRelationResult
+                                          {
+                                              AttributeControlTypeId = pattr.AttributeControlTypeId,
+                                              DisplayOrder = pattr.DisplayOrder,
+                                              Id = pattr.Id,
+                                              IsRequired = pattr.IsRequired,
+                                              AttributeId = pattr.ProductAttributeId,
+                                              TextPrompt = pattr.TextPrompt,
+                                              AttributeName = attr.Name
+                                          }).FirstOrDefaultAsync();
+
+            return productAttribute;
         }
 
         public async Task CreateAttributeRelationValueAsync(long productAttributeRelationId, ProductAttributeRelationValueRequest attributeValue)

@@ -25,7 +25,7 @@ namespace Camino.Services.Products
         private readonly IProductStatusRepository _productStatusRepository;
 
         public ProductService(IProductRepository productRepository, IProductPictureRepository productPictureRepository,
-            IUserRepository userRepository, IUserPhotoRepository userPhotoRepository, 
+            IUserRepository userRepository, IUserPhotoRepository userPhotoRepository,
             IProductAttributeRepository productAttributeRepository, IProductStatusRepository productStatusRepository)
         {
             _productRepository = productRepository;
@@ -66,6 +66,12 @@ namespace Camino.Services.Products
             product.CreatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;
             product.UpdatedBy = (await _userRepository.FindByIdAsync(product.CreatedById)).DisplayName;
             return product;
+        }
+
+        public async Task<ProductAttributeRelationResult> GetAttributeRelationByIdAsync(long id)
+        {
+            var productAttribute = await _productAttributeRepository.GetAttributeRelationByIdAsync(id);
+            return productAttribute;
         }
 
         public ProductResult FindByName(string name)

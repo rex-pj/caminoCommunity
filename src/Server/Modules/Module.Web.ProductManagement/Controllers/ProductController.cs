@@ -466,5 +466,35 @@ namespace Module.Web.ProductManagement.Controllers
 
             return Json(categorySeletions);
         }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public async Task<IActionResult> GetAttributeRelation(long id)
+        {
+            var attribute = await _productService.GetAttributeRelationByIdAsync(id);
+            if (attribute == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new ProductAttributeRelationModel
+            {
+                AttributeId = attribute.AttributeId,
+                Id = attribute.Id,
+                ControlTypeId = attribute.AttributeControlTypeId,
+                ControlTypeName = ((ProductAttributeControlType)attribute.AttributeControlTypeId).GetEnumDescription(),
+                DisplayOrder = attribute.DisplayOrder,
+                IsRequired = attribute.IsRequired,
+                Name = attribute.AttributeName,
+                TextPrompt = attribute.TextPrompt
+            });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        public IActionResult AddAttributeRelation(ProductAttributeRelationModel request)
+        {
+            return PartialView("Partial/_ProductAttributeUpdate", request);
+        }
     }
 }

@@ -1,0 +1,41 @@
+﻿@model ProductAttributeRelationModel
+
+<div class="modal fade" id="productAttributeUpdateModal" tabindex="-1" aria-labelledby="productAttributeUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productAttributeUpdateLabel">Sửa thuộc tính sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Thuộc tính</label>
+                    <div>
+                        <select asp-for="AttributeId"
+                                placeholder="Chọn thuộc tính"
+                                data-url="@Url.Action("Search", "ProductAttribute")">
+                        </select>
+                    </div>
+                    <input type="hidden" asp-for="Id" id="attributeRelationId" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kiểu hiển thị</label>
+                    <div>
+                        <select asp-for="ControlTypeId"
+                                placeholder="Chọn kiểu hiển thị"
+                                data-url="@Url.Action("SearchControlTypes", "ProductAttribute")">
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Display Order</label>
+                    <input type="number" class="form-control" asp-for="DisplayOrder" placeholder="Display Order" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitUpdateProductAttributeRelation">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>

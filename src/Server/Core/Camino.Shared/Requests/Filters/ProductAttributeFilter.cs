@@ -12,6 +12,7 @@ namespace Camino.Shared.Requests.Filters
         }
 
         public int? StatusId { get; set; }
+        public int? Id { get; set; }
         public bool CanGetInactived { get; set; }
         public IEnumerable<int> ExcludedIds { get; set; }
     }

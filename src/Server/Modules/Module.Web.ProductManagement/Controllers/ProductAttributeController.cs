@@ -263,11 +263,12 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
-        public async Task<IActionResult> Search(string q, string currentId = null)
+        public async Task<IActionResult> Search(string q, int? currentId = null)
         {
             var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
             {
-                Search = q
+                Search = q,
+                Id = currentId
             });
             if (productAttributes == null || !productAttributes.Any())
             {
@@ -279,6 +280,31 @@ namespace Module.Web.ProductManagement.Controllers
                 {
                     Id = x.Id.ToString(),
                     Text = x.Name
+                });
+
+            return Json(attributeSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public IActionResult SearchControlTypes(string q, int? currentId = null)
+        {
+            var controlTypeId = currentId.HasValue ? currentId.Value : 0;
+            var productAttributes = _productAttributeService.GetAttributeControlTypes(new ProductAttributeControlTypeFilter
+            {
+                Search = q,
+                ControlTypeId = controlTypeId
+            });
+            if (productAttributes == null || !productAttributes.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var attributeSeletions = productAttributes
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
                 });
 
             return Json(attributeSeletions);

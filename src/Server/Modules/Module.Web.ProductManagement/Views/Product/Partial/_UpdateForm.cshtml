@@ -50,12 +50,26 @@
 </div>
 
 <div class="row">
-    @foreach (var attribute in Model.ProductAttributes)
-    {
-        <div class="col-12 col-sm-12 col-md-8 col-lg-9">
-            <partial name="Partial/_UpdateProductAttribute" model="attribute" />
-        </div>
-    }
+    <div class="col-12 col-sm-12 col-md-8 col-lg-9 mb-2">
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                data-url="@Url.Action("AddAttributeRelation", "Product")"
+                data-bs-target="#productAttributeUpdateModal">
+            <i class="fa fa-plus"></i>
+            Thêm thuộc tính
+        </button>
+    </div>
+    <div class="col-12 col-sm-12 col-md-8 col-lg-9 list-product-attributes">
+        @{
+            int attributeIndex = 0;
+            foreach (var attribute in Model.ProductAttributes)
+            {
+                ViewData["attributeIndex"] = attributeIndex;
+
+                <partial name="Partial/_ProductAttributeUpdate" model="attribute" view-data="ViewData" />
+                attributeIndex += 1;
+            }
+        }
+    </div>
 </div>
 
 <div class="row mb-3">
