@@ -74,6 +74,12 @@ namespace Camino.Services.Products
             return productAttribute;
         }
 
+        public async Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id)
+        {
+            var productAttribute = await _productAttributeRepository.GetAttributeRelationValueByIdAsync(id);
+            return productAttribute;
+        }
+
         public ProductResult FindByName(string name)
         {
             return _productRepository.FindByName(name);

@@ -1,0 +1,83 @@
+﻿@model ProductAttributeRelationValueModel
+@{
+    int attributeValueIndex = ViewData["attributeValueIndex"] == null ? 0 : (int)ViewData["attributeValueIndex"];
+    int attributeIndex = ViewData["attributeIndex"] == null ? 0 : (int)ViewData["attributeIndex"];
+    var formIdentifier = Guid.NewGuid();
+}
+<li class="list-group-item">
+    <div class="row row-attribute-value row-attribute-value-@formIdentifier">
+        <div class="col-10">
+            <div class="row">
+                <div class="col col-12 col-md-4 col-lg-3">
+                    <div class="mb-1">
+                        <label class="me-1">Tên:</label>
+                        <span class="label-attribute-value-name">
+                            @Model.Name
+                        </span>
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].Name"
+                               class="field-attribute-value-name" value="@Model.Name" />
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].AttributeRelationId"
+                               class="field-attribute-value-relation-id" value="@Model.AttributeRelationId" />
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].AttributeId"
+                               class="field-attribute-value-attribute-id" value="@Model.AttributeId" />
+                        <input type="hidden" class="is-attribute-value-updated" />
+                    </div>
+                </div>
+                <div class="col col-12 col-md-6 col-lg-6">
+                    <div class="mb-1">
+                        <label class="me-1">Giá điều chỉnh:</label>
+                        <span class="label-attribute-value-price-adjustment">
+                            @Model.PriceAdjustment
+                        </span>
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].PriceAdjustment"
+                               class="field-attribute-value-price-adjustment" value="@Model.PriceAdjustment" />
+                    </div>
+                    <div class="mb-1">
+                        <label class="me-1">
+                            Giá điều chỉnh theo phần trăm:
+                        </label>
+                        <span class="label-attribute-value-price-percentage-adjustment">
+                            @Model.PricePercentageAdjustment
+                        </span>
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].PricePercentageAdjustment"
+                               class="field-attribute-value-price-percentage-adjustment" value="@Model.PricePercentageAdjustment" />
+                    </div>
+                </div>
+                <div class="col col-auto">
+                    <div class="mb-1">
+                        <label class="me-1">Thứ tự:</label>
+                        <span class="label-attribute-value-display-order">
+                            @Model.DisplayOrder
+                        </span>
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].DisplayOrder"
+                               class="field-attribute-value-display-order" value="@Model.DisplayOrder" />
+                    </div>
+                    <div class="mb-1">
+                        <label class="me-1">Số lượng:</label>
+                        <span class="label-attribute-value-quantity">
+                            @Model.Quantity
+                        </span>
+                        <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeRelationValues[@attributeValueIndex].Quantity"
+                               class="field-attribute-value-quantity" value="@Model.Quantity" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ms-auto col-auto">
+            <button type="button" class="btn btn-outline-danger btn-sm float-right ml-2"
+                    data-id="@Model.Id"
+                    data-formIdentifier="@formIdentifier"
+                    data-bs-toggle="modal" data-bs-target="#productAttributeValueDeleteModal">
+                <i class="fa fa-trash-alt"></i>
+            </button>
+            <button type="button" class="btn btn-outline-dark btn-sm float-right" data-bs-toggle="modal"
+                    data-id="@Model.Id"
+                    data-formIdentifier="@formIdentifier"
+                    data-attributeid="@Model.AttributeRelationId"
+                    data-url="@Url.Action("GetAttributeRelationValue")"
+                    data-bs-target="#productAttributeValueUpdateModal">
+                <i class="fa fa-pencil-alt"></i>
+            </button>
+        </div>
+    </div>
+</li>

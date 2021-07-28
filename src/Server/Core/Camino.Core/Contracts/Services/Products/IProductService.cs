@@ -15,6 +15,7 @@ namespace Camino.Core.Contracts.Services.Products
         Task<ProductResult> FindDetailAsync(IdRequestFilter<long> filter);
         ProductResult FindByName(string name);
         Task<ProductAttributeRelationResult> GetAttributeRelationByIdAsync(long id);
+        Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id);
         Task<bool> UpdateAsync(ProductModifyRequest request);
         Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter);
         Task<IList<ProductResult>> GetRelevantsAsync(long id, ProductFilter filter);

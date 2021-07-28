@@ -2,7 +2,9 @@
 {
     public class ProductAttributeRelationValueModel
     {
+        public int AttributeId { get; set; }
         public long Id { get; set; }
+        public long AttributeRelationId { get; set; }
         public string Name { get; set; }
         public decimal PriceAdjustment { get; set; }
         public decimal PricePercentageAdjustment { get; set; }

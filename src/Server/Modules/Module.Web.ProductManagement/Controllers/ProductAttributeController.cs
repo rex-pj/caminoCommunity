@@ -263,12 +263,19 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
-        public async Task<IActionResult> Search(string q, int? currentId = null)
+        public async Task<IActionResult> Search(string q, int? currentId = null, string excluded = null)
         {
+            var excludedIds = new List<int>();
+            if (!string.IsNullOrWhiteSpace(excluded))
+            {
+                excludedIds = excluded.Split(',').Select(int.Parse).ToList();
+            }
+
             var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
             {
                 Search = q,
-                Id = currentId
+                Id = currentId,
+                ExcludedIds = excludedIds
             });
             if (productAttributes == null || !productAttributes.Any())
             {

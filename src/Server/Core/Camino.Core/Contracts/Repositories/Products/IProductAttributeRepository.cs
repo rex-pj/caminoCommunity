@@ -23,6 +23,7 @@ namespace Camino.Core.Contracts.Repositories.Products
         Task DeleteAttributeRelationByProductIdAsync(long productId);
         Task<IList<ProductAttributeRelationResult>> GetAttributeRelationsByProductIdAsync(long productId);
         Task<ProductAttributeRelationResult> GetAttributeRelationByIdAsync(long id);
+        Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id);
         Task<bool> IsAttributeRelationExistAsync(long id);
         Task<int> DeleteAttributeRelationNotInIdsAsync(long productId, IEnumerable<long> ids);
         Task<bool> DeactivateAsync(ProductAttributeModifyRequest request);

@@ -1,0 +1,20 @@
+﻿@model ProductAttributeRelationValueModel
+
+<div class="modal fade" id="productAttributeValueDeleteModal" tabindex="-1" aria-labelledby="productAttributeValueUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productAttributeValueDeleteLabel">Xóa giá trị thuộc tính này</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" asp-for="Id" id="productAttributeValueDeleteId" />
+                <input type="hidden" id="formAttributeValueDeletionIdentifier" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="submitDeleteProductAttributeRelationValue">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>

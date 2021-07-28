@@ -168,10 +168,12 @@ namespace Module.Web.ProductManagement.Controllers
                 CanGetDeleted = true,
                 CanGetInactived = true
             });
+
             if (product == null)
             {
                 return RedirectToNotFoundPage();
             }
+
             var model = new ProductModel()
             {
                 Id = product.Id,
@@ -216,7 +218,9 @@ namespace Module.Web.ProductManagement.Controllers
                         Name = c.Name,
                         PriceAdjustment = c.PriceAdjustment,
                         PricePercentageAdjustment = c.PricePercentageAdjustment,
-                        Quantity = c.Quantity
+                        Quantity = c.Quantity,
+                        AttributeRelationId = x.Id,
+                        AttributeId = x.AttributeId
                     })
                 })
             };
@@ -233,6 +237,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
+            var attributeValues = model.ProductAttributes?.SelectMany(x => x.AttributeRelationValues);
             var product = new ProductModifyRequest()
             {
                 Id = model.Id,
@@ -255,7 +260,8 @@ namespace Module.Web.ProductManagement.Controllers
                     ControlTypeId = x.ControlTypeId,
                     DisplayOrder = x.DisplayOrder,
                     ProductAttributeId = x.AttributeId,
-                    AttributeRelationValues = x.AttributeRelationValues?.Select(c => new ProductAttributeRelationValueRequest
+                    AttributeRelationValues = attributeValues
+                    .Where(v => v.AttributeRelationId == x.Id && v.AttributeId == x.AttributeId)?.Select(c => new ProductAttributeRelationValueRequest
                     {
                         Id = c.Id,
                         DisplayOrder = c.DisplayOrder,
@@ -495,6 +501,34 @@ namespace Module.Web.ProductManagement.Controllers
         public IActionResult AddAttributeRelation(ProductAttributeRelationModel request)
         {
             return PartialView("Partial/_ProductAttributeUpdate", request);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public async Task<IActionResult> GetAttributeRelationValue(long id)
+        {
+            var attributeValue = await _productService.GetAttributeRelationValueByIdAsync(id);
+            if (attributeValue == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new ProductAttributeRelationValueModel
+            {
+                DisplayOrder = attributeValue.DisplayOrder,
+                Quantity = attributeValue.Quantity,
+                Id = attributeValue.Id,
+                PricePercentageAdjustment = attributeValue.PricePercentageAdjustment,
+                PriceAdjustment = attributeValue.PriceAdjustment,
+                Name = attributeValue.Name
+            });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        public IActionResult AddAttributeValue(ProductAttributeRelationValueModel request)
+        {
+            return PartialView("Partial/_ProductAttributeValueUpdate", request);
         }
     }
 }

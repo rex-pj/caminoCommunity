@@ -272,8 +272,8 @@ namespace Camino.Infrastructure.Repositories.Products
             if (!request.AttributeRelationValues.Any())
             {
                 /// Delete product attribute and all attribute values
-                await _productAttributeRelationRepository.Get(x => x.Id == request.Id).DeleteAsync();
                 await _productAttributeRelationValueRepository.Get(x => x.ProductAttributeRelationId == request.Id).DeleteAsync();
+                await _productAttributeRelationRepository.Get(x => x.Id == request.Id).DeleteAsync();
             }
 
             var attributeRelationUpdated = await (_productAttributeRelationRepository
@@ -371,6 +371,24 @@ namespace Camino.Infrastructure.Repositories.Products
                                           }).FirstOrDefaultAsync();
 
             return productAttribute;
+        }
+
+        public async Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id)
+        {
+            var productAttributeValue = await (from atv in _productAttributeRelationValueRepository.Table
+                                          where atv.Id == id
+                                          select new ProductAttributeRelationValueResult
+                                          {
+                                              DisplayOrder = atv.DisplayOrder,
+                                              Id = atv.Id,
+                                              Name = atv.Name,
+                                              PriceAdjustment = atv.PriceAdjustment,
+                                              PricePercentageAdjustment = atv.PricePercentageAdjustment,
+                                              ProductAttributeRelationId = atv.ProductAttributeRelationId,
+                                              Quantity = atv.Quantity
+                                          }).FirstOrDefaultAsync();
+
+            return productAttributeValue;
         }
 
         public async Task CreateAttributeRelationValueAsync(long productAttributeRelationId, ProductAttributeRelationValueRequest attributeValue)

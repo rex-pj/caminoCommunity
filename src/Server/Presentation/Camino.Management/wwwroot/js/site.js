@@ -27,8 +27,6 @@
         return;
     }
 
-
-
     $.each(select2s, function (key, selection) {
         var select2 = $(selection);
         loadSelect2Ajax(select2);
@@ -84,10 +82,11 @@
                 url: url,
                 type: method,
                 data: function (params) {
-                    var query = {
+                    var query = $.extend({}, {
                         q: params.term,
                         currentId: selected
-                    }
+                    }, settings.extendParams);
+
                     return query;
                 },
                 dataType: 'json',
