@@ -9,6 +9,6 @@ namespace Module.Api.Auth.Models
         public string Name { get; set; }
         public string Url { get; set; }
         public string Description { get; set; }
-        public UserPhotoKind PhotoType { get; set; }
+        public UserPictureType PhotoType { get; set; }
     }
 }

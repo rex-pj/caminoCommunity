@@ -38,7 +38,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var photo = GetUserPhoto(userId, UserPhotoKind.Avatar);
+            var photo = GetUserPhoto(userId, UserPictureType.Avatar);
             return new UserAvatarModel
             {
                 Code = photo.Code,
@@ -60,7 +60,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var photo = GetUserPhoto(userId, UserPhotoKind.Cover);
+            var photo = GetUserPhoto(userId, UserPictureType.Cover);
             return new UserCoverModel
             {
                 Code = photo.Code,
@@ -92,11 +92,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             {
                 Code = x.Code,
                 Id = x.Id,
-                PhotoType = (UserPhotoKind)x.TypeId
+                PhotoType = (UserPictureType)x.TypeId
             }).ToList();
         }
 
-        private UserPhotoResult GetUserPhoto(long userId, UserPhotoKind type)
+        private UserPhotoResult GetUserPhoto(long userId, UserPictureType type)
         {
             var userPhoto = _userPhotoService.GetUserPhotoByUserId(userId, type);
             if (userPhoto != null)

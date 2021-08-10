@@ -117,14 +117,20 @@ namespace Camino.Infrastructure.Repositories.Articles
 
         public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter)
         {
+            return await GetArticlePicturesByArticleIdsAsync(articleIds, filter, null);
+        }
+
+        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter, ArticlePictureType? articlePictureType)
+        {
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var articlePictureTypeId = articlePictureType.HasValue ? articlePictureType.Value.GetCode() : 0;
             var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
-                                         join picture in _pictureRepository
-                                         .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                         join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
                                             || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                          on articlePic.PictureId equals picture.Id
+                                         where articlePictureTypeId == 0 || articlePic.PictureTypeId == articlePictureTypeId
                                          select new ArticlePictureResult
                                          {
                                              ArticleId = articlePic.ArticleId,

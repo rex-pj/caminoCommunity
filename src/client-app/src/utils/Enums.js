@@ -3,6 +3,7 @@ const FeedType = {
   Product: 2,
   Farm: 3,
   Community: 4,
+  User: 5,
 };
 
 const ProductAttributeControlType = {

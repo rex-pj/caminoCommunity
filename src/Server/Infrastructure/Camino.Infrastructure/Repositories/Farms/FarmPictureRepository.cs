@@ -116,10 +116,11 @@ namespace Camino.Infrastructure.Repositories.Farms
             return farmPictures;
         }
 
-        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId, IdRequestFilter<long> filter)
+        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, IdRequestFilter<long> filter, FarmPictureType farmPictureType)
         {
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var farmPictureTypeId = farmPictureType.GetCode();
             var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId.In(farmIds) && x.PictureTypeId == farmPictureTypeId)
                                       join picture in _pictureRepository
                                       .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)

@@ -95,14 +95,13 @@ namespace Camino.Services.Products
             var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
 
             var productIds = productPageList.Collections.Select(x => x.Id);
-            var pictureTypeId = (int)ProductPictureType.Thumbnail;
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId, new IdRequestFilter<long>
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, new IdRequestFilter<long>
             {
                 CanGetDeleted = filter.CanGetDeleted,
                 CanGetInactived = filter.CanGetInactived
-            });
+            }, ProductPictureType.Thumbnail);
 
-            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
+            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIdsAsync(createdByIds, UserPictureType.Avatar);
             foreach (var product in productPageList.Collections)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == product.CreatedById);
@@ -139,14 +138,13 @@ namespace Camino.Services.Products
             var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
 
             var productIds = products.Select(x => x.Id);
-            var pictureTypeId = (int)ProductPictureType.Thumbnail;
-            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, pictureTypeId, new IdRequestFilter<long>
+            var pictures = await _productPictureRepository.GetProductPicturesByProductIdsAsync(productIds, new IdRequestFilter<long>
             {
                 CanGetDeleted = filter.CanGetDeleted,
                 CanGetInactived = filter.CanGetInactived
-            });
+            }, ProductPictureType.Thumbnail);
 
-            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
+            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIdsAsync(createdByIds, UserPictureType.Avatar);
             foreach (var product in products)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == product.CreatedById);

@@ -91,7 +91,7 @@ namespace Camino.Services.Articles
                 CanGetDeleted = filter.CanGetDeleted,
                 CanGetInactived = filter.CanGetInactived
             });
-            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
+            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIdsAsync(createdByIds, UserPictureType.Avatar);
             foreach (var article in articlePageList.Collections)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == article.CreatedById);

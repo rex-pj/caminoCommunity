@@ -103,7 +103,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 var userPageList = await _userService.GetAsync(filterRequest);
 
                 var userIds = userPageList.Collections.Select(x => x.Id);
-                var userPhotos = _userPhotoService.GetUserPhotoByUserIds(userIds, UserPhotoKind.Avatar);
+                var userPhotos = await _userPhotoService.GetUserPhotoByUserIdsAsync(userIds, UserPictureType.Avatar);
                 var users = await MapUsersResultToModelAsync(userPageList.Collections, userPhotos);
 
                 var userPage = new UserPageListModel(users)

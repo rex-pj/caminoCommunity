@@ -115,10 +115,11 @@ namespace Camino.Infrastructure.Repositories.Products
             return productPictures;
         }
 
-        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, int productPictureTypeId, IdRequestFilter<long> filter)
+        public async Task<IList<ProductPictureResult>> GetProductPicturesByProductIdsAsync(IEnumerable<long> productIds, IdRequestFilter<long> filter, ProductPictureType productPictureType)
         {
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var productPictureTypeId = productPictureType.GetCode();
             var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId.In(productIds) && x.PictureTypeId == productPictureTypeId)
                                          join picture in _pictureRepository
                                          .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)

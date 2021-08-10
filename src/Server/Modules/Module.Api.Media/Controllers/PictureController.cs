@@ -25,7 +25,7 @@ namespace Module.Api.Media.Controllers
         [Route("avatars/{code}")]
         public async Task<IActionResult> GetAvatar(string code)
         {
-            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Avatar);
+            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPictureType.Avatar);
             return File(avatar.BinaryData, "image/jpeg");
         }
 
@@ -33,7 +33,7 @@ namespace Module.Api.Media.Controllers
         [Route("covers/{code}")]
         public async Task<IActionResult> GetCover(string code)
         {
-            var cover = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPhotoKind.Cover);
+            var cover = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPictureType.Cover);
             return File(cover.BinaryData, "image/jpeg");
         }
 

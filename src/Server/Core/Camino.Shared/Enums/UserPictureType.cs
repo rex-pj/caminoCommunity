@@ -1,6 +1,6 @@
 ﻿namespace Camino.Shared.Enums
 {
-    public enum UserPhotoKind : byte
+    public enum UserPictureType : byte
     {
         Undefined = 0,
         Avatar = 1,

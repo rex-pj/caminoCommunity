@@ -1,11 +1,11 @@
 ﻿namespace Camino.Shared.Enums
 {
-    public enum FeedType
+    public enum FeedFilterType
     {
         Article = 1,
         Product = 2,
         Farm = 3,
-        Association = 4,
-        User = 5
+        User = 4,
+        Community = 5
     }
 }

@@ -1,15 +1,14 @@
-﻿using Camino.Shared.Enums;
-using System;
+﻿using System;
 
 namespace Module.Api.Feed.Models
 {
     public class FeedModel
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-        public long PictureId { get; set; }
+        public string PictureId { get; set; }
         public long CreatedById { get; set; }
         public string CreatedByName { get; set; }
         public string Address { get; set; }

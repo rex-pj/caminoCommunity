@@ -17,6 +17,6 @@ namespace Module.Api.Media.Models
         public string FileName { get; set; }
         public string UserPhotoCode { get; set; }
         [GraphQLType(typeof(IntType))]
-        public UserPhotoKind UserPhotoType { get; set; }
+        public UserPictureType UserPhotoType { get; set; }
     }
 }

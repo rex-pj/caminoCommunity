@@ -1,15 +1,14 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Core.Domain.Identities;
 using Camino.Core.Contracts.Services.Feeds;
-using Camino.Shared.Results.Feed;
 using Camino.Shared.Requests.Filters;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.IdentityManager;
+using Module.Api.Feed.Services.Interfaces;
 
 namespace Module.Api.Feed.GraphQL.Resolvers
 {
@@ -17,12 +16,15 @@ namespace Module.Api.Feed.GraphQL.Resolvers
     {
         private readonly IFeedService _feedService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly IFeedModelService _feedModelService;
 
-        public FeedResolver(ISessionContext sessionContext, IFeedService feedService, IUserManager<ApplicationUser> userManager)
+        public FeedResolver(ISessionContext sessionContext, IFeedService feedService, IUserManager<ApplicationUser> userManager,
+            IFeedModelService feedModelService)
             : base(sessionContext)
         {
             _feedService = feedService;
             _userManager = userManager;
+            _feedModelService = feedModelService;
         }
 
         public async Task<FeedPageListModel> GetUserFeedsAsync(ApplicationUser currentUser, FeedFilterModel criterias)
@@ -53,7 +55,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             try
             {
                 var feedPageList = await _feedService.GetAsync(filterRequest);
-                var feeds = await MapFeedsResultToModelAsync(feedPageList.Collections);
+                var feeds = await _feedModelService.MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -87,7 +89,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             try
             {
                 var feedPageList = await _feedService.GetAsync(filterRequest);
-                var feeds = await MapFeedsResultToModelAsync(feedPageList.Collections);
+                var feeds = await _feedModelService.MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
                 {
@@ -102,35 +104,6 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             {
                 throw;
             }
-        }
-
-        private async Task<IList<FeedModel>> MapFeedsResultToModelAsync(IEnumerable<FeedResult> feedResults)
-        {
-            var feeds = feedResults.Select(x => new FeedModel()
-            {
-                Address = x.Address,
-                CreatedById = x.CreatedById,
-                CreatedByName = x.CreatedByName,
-                CreatedDate = x.CreatedDate,
-                Description = x.Description,
-                FeedType = (int)x.FeedType,
-                Id = x.Id,
-                Name = x.Name,
-                PictureId = x.PictureId,
-                Price = x.Price,
-                CreatedByPhotoCode = x.CreatedByPhotoCode
-            }).ToList();
-
-            foreach (var feed in feeds)
-            {
-                feed.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(feed.CreatedById);
-                if (!string.IsNullOrEmpty(feed.Description) && feed.Description.Length >= 150)
-                {
-                    feed.Description = $"{feed.Description.Substring(0, 150)}...";
-                }
-            }
-
-            return feeds;
         }
     }
 }

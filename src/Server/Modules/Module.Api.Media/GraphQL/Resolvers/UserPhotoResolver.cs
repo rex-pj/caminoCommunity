@@ -38,7 +38,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     Width = criterias.Width,
                     Height = criterias.Height,
                     Scale = criterias.Scale,
-                    UserPhotoTypeId = (int)UserPhotoKind.Avatar,
+                    UserPhotoTypeId = (int)UserPictureType.Avatar,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis
                 }, currentUser.Id);
@@ -69,7 +69,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     Scale = criterias.Scale,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
-                    UserPhotoTypeId = (int)UserPhotoKind.Cover
+                    UserPhotoTypeId = (int)UserPictureType.Cover
                 }, currentUser.Id);
 
                 return CommonResult.Success(result);
@@ -89,7 +89,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Avatar);
+                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPictureType.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)
@@ -107,7 +107,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPhotoKind.Cover);
+                await _userPhotoService.DeleteUserPhotoAsync(currentUser.Id, UserPictureType.Cover);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)

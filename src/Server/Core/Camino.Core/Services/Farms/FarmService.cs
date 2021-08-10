@@ -89,14 +89,13 @@ namespace Camino.Services.Farms
             var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
 
             var farmIds = famrsPageList.Collections.Select(x => x.Id);
-            var pictureTypeId = (int)FarmPictureType.Thumbnail;
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, pictureTypeId, new IdRequestFilter<long>
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, new IdRequestFilter<long>
             {
                 CanGetDeleted = filter.CanGetDeleted,
                 CanGetInactived = filter.CanGetInactived
-            });
+            }, FarmPictureType.Thumbnail);
 
-            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
+            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIdsAsync(createdByIds, UserPictureType.Avatar);
             foreach (var farm in famrsPageList.Collections)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == farm.CreatedById);

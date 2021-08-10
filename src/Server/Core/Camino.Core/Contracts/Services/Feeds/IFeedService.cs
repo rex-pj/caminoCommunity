@@ -8,5 +8,6 @@ namespace Camino.Core.Contracts.Services.Feeds
     public interface IFeedService
     {
         Task<BasePageList<FeedResult>> GetAsync(FeedFilter filter);
+        Task<SearchInGroupResult> LiveSearchInGroupAsync(FeedFilter filter);
     }
 }
