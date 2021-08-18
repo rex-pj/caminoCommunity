@@ -11,6 +11,17 @@ export const SecondaryHeading = styled.h2`
   }
 `;
 
+export const SecondaryDarkHeading = styled.h2`
+  font-size: ${(p) => p.theme.fontSize.normal};
+  color: ${(p) => p.theme.color.darkText};
+  line-height: 1;
+
+  svg,
+  path {
+    color: inherit;
+  }
+`;
+
 export const TertiaryHeading = styled.h3`
   font-size: ${(p) => p.theme.fontSize.small};
   color: ${(p) => p.theme.color.neutralText};

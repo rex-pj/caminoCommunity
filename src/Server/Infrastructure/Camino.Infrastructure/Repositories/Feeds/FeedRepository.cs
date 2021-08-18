@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Camino.Core.Domain.Articles;
 using Camino.Core.Domain.Farms;
 using Camino.Core.Domain.Products;
-using Camino.Core.Domain.Media;
 using Camino.Core.Utils;
 using Camino.Core.Domain.Identifiers;
 using System.Collections.Generic;
@@ -25,12 +24,7 @@ namespace Camino.Infrastructure.Repositories.Feeds
         private readonly IRepository<Article> _articleRepository;
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Farm> _farmRepository;
-        private readonly IRepository<ArticlePicture> _articlePictureRepository;
-        private readonly IRepository<ProductPicture> _productPictureRepository;
-        private readonly IRepository<FarmPicture> _farmPictureRepository;
         private readonly IRepository<ProductPrice> _productPriceRepository;
-        private readonly IRepository<UserPhoto> _userPhotoRepository;
-        private readonly IRepository<Picture> _pictureRepository;
         private readonly IRepository<User> _userRepository;
         private readonly int _articleDeletedStatus;
         private readonly int _articleInactivedStatus;
@@ -39,24 +33,14 @@ namespace Camino.Infrastructure.Repositories.Feeds
         private readonly int _farmDeletedStatus;
         private readonly int _farmInactivedStatus;
         private readonly int _userActivedStatus;
-        private readonly int _pictureDeletedStatus;
-        private readonly int _pictureInactivedStatus;
 
-        public FeedRepository(IRepository<ArticlePicture> articlePictureRepository,
-            IRepository<ProductPicture> productPictureRepository, IRepository<FarmPicture> farmPictureRepository,
-            IRepository<UserPhoto> userPhotoRepository,
-            IRepository<Picture> pictureRepository, IServiceScopeFactory serviceScopeFactory)
+        public FeedRepository(IServiceScopeFactory serviceScopeFactory)
         {
             _articleRepository = CreateServiceScope<IRepository<Article>>(serviceScopeFactory);
             _productRepository = CreateServiceScope<IRepository<Product>>(serviceScopeFactory);
             _farmRepository = CreateServiceScope<IRepository<Farm>>(serviceScopeFactory);
             _userRepository = CreateServiceScope<IRepository<User>>(serviceScopeFactory);
             _productPriceRepository = CreateServiceScope<IRepository<ProductPrice>>(serviceScopeFactory);
-            _farmPictureRepository = farmPictureRepository;
-            _articlePictureRepository = articlePictureRepository;
-            _productPictureRepository = productPictureRepository;
-            _userPhotoRepository = userPhotoRepository;
-            _pictureRepository = pictureRepository;
 
             _articleDeletedStatus = ArticleStatus.Deleted.GetCode();
             _articleInactivedStatus = ArticleStatus.Inactived.GetCode();
@@ -65,8 +49,6 @@ namespace Camino.Infrastructure.Repositories.Feeds
             _farmDeletedStatus = FarmStatus.Deleted.GetCode();
             _farmInactivedStatus = FarmStatus.Inactived.GetCode();
             _userActivedStatus = UserStatus.Actived.GetCode();
-            _pictureDeletedStatus = PictureStatus.Deleted.GetCode();
-            _pictureInactivedStatus = PictureStatus.Inactived.GetCode();
         }
 
         private TService CreateServiceScope<TService>(IServiceScopeFactory serviceScopeFactory)
@@ -191,30 +173,48 @@ namespace Camino.Infrastructure.Repositories.Feeds
 
         public async Task<SearchInGroupResult> GetInGroupAsync(FeedFilter filter)
         {
-            var articleQuery = _articleRepository.Get(x => (x.StatusId == _articleDeletedStatus && filter.CanGetDeleted)
+            var canFilterArticle = !filter.FilterType.HasValue || filter.FilterType == FeedFilterType.Article;
+            var articleQuery = _articleRepository.Get(x => canFilterArticle).Where(x => (x.StatusId == _articleDeletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == _articleInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _articleDeletedStatus && x.StatusId != _articleInactivedStatus));
 
-            var productQuery = _productRepository.Get(x => (x.StatusId == _productDeletedStatus && filter.CanGetDeleted)
+            var canFilterProduct = !filter.FilterType.HasValue || filter.FilterType == FeedFilterType.Product;
+            var productQuery = _productRepository.Get(x => canFilterProduct).Where(x => (x.StatusId == _productDeletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == _productInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _productDeletedStatus && x.StatusId != _productInactivedStatus));
 
-            var farmQuery = _farmRepository.Get(x => (x.StatusId == _farmDeletedStatus && filter.CanGetDeleted)
+            var canFilterFarm = !filter.FilterType.HasValue || filter.FilterType == FeedFilterType.Farm;
+            var farmQuery = _farmRepository.Get(x => canFilterFarm).Where(x => (x.StatusId == _farmDeletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == _farmInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _farmDeletedStatus && x.StatusId != _farmInactivedStatus));
 
-            var userQuery = _userRepository.Get(x => x.IsEmailConfirmed && (filter.CanGetInactived || x.StatusId == _userActivedStatus));
+            var canFilterUser = !filter.FilterType.HasValue || filter.FilterType == FeedFilterType.User;
+            var userQuery = _userRepository.Get(x => canFilterUser).Where(x => x.IsEmailConfirmed && (filter.CanGetInactived || x.StatusId == _userActivedStatus));
             if (!string.IsNullOrEmpty(filter.Search))
             {
                 filter.Search = filter.Search.ToLower();
+                if (canFilterArticle)
+                {
+                    articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                }
 
-                articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
-                productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
-                farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
-                userQuery = userQuery.Where(x => x.Lastname.ToLower().Contains(filter.Search)
-                || x.Firstname.ToLower().Contains(filter.Search)
-                || (x.Lastname + " " + x.Firstname).ToLower().Contains(filter.Search)
-                || (x.Firstname + " " + x.Lastname).ToLower().Contains(filter.Search));
+                if (canFilterProduct)
+                {
+                    productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                }
+
+                if (canFilterFarm)
+                {
+                    farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                }
+
+                if (canFilterUser)
+                {
+                    userQuery = userQuery.Where(x => x.Lastname.ToLower().Contains(filter.Search)
+                    || x.Firstname.ToLower().Contains(filter.Search)
+                    || (x.Lastname + " " + x.Firstname).ToLower().Contains(filter.Search)
+                    || (x.Firstname + " " + x.Lastname).ToLower().Contains(filter.Search));
+                }
             }
 
             if (filter.CreatedById.HasValue)

@@ -12,6 +12,7 @@ import { UrlConstant } from "../../../utils/Constants";
 import { AnchorLink } from "../../atoms/Links";
 import { ImageRound } from "../../atoms/Images";
 import NoImage from "../../atoms/NoImages/no-image";
+import { withRouter } from "react-router-dom";
 
 const DropdownPanel = styled.div`
   position: absolute;
@@ -142,11 +143,14 @@ const EmptyImage = styled(NoImage)`
   margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
-export default function (props) {
-  const [liveSearch] = useMutation(feedMutations.Live_Search);
-  const [keyword, setKeyword] = useState("");
+export default withRouter((props) => {
+  const { match, history } = props;
+  const { params } = match;
+  const { keyword: searchText } = params;
+  const [liveSearch] = useMutation(feedMutations.LIVE_SEARCH);
   const [searchData, setSearchData] = useState({
     searchResults: [],
+    keyword: searchText,
     isDropdownShown: false,
   });
   const inputRef = useRef({
@@ -155,11 +159,10 @@ export default function (props) {
   const dropdownRef = useRef();
 
   const onInputChange = (e) => {
-    const { value } = e.target;
+    const { value, name } = e.target;
     if (!value) {
-      setSearchData({ searchResults: [], isDropdownShown: false });
       inputRef.current.isSearching = false;
-      setKeyword("");
+      setSearchData({ searchResults: [], isDropdownShown: false, keyword: "" });
       return;
     }
 
@@ -167,7 +170,18 @@ export default function (props) {
       fetchSearchResults(value);
       inputRef.current.isSearching = true;
     }
-    setKeyword(value);
+
+    let searchFormData = searchData;
+    searchFormData[name] = value;
+    setSearchData({
+      ...searchData,
+    });
+  };
+
+  const onEnterExecuteSearch = (evt) => {
+    if (evt.keyCode === 13) {
+      history.push(`/search/${searchData.keyword}`);
+    }
   };
 
   const fetchSearchResults = async (value) => {
@@ -176,7 +190,7 @@ export default function (props) {
         criterias: {
           search: value,
           page: 1,
-          pageSize: 10,
+          pageSize: 4,
         },
       },
     })
@@ -185,7 +199,11 @@ export default function (props) {
         const { liveSearch } = data;
         const { articles, products, farms, users } = liveSearch;
         let collections = [...users, ...products, ...farms, ...articles];
-        setSearchData({ searchResults: collections, isDropdownShown: true });
+        setSearchData({
+          ...searchData,
+          searchResults: collections,
+          isDropdownShown: true,
+        });
       })
       .finally(() => {
         inputRef.current.isSearching = false;
@@ -193,9 +211,8 @@ export default function (props) {
   };
 
   const onClear = () => {
-    if (keyword) {
-      setSearchData({ searchResults: [], isDropdownShown: true });
-      setKeyword("");
+    if (searchData.keyword) {
+      setSearchData({ searchResults: [], isDropdownShown: true, keyword: "" });
     }
   };
 
@@ -219,7 +236,7 @@ export default function (props) {
     };
   });
 
-  const { searchResults, isDropdownShown } = searchData;
+  const { searchResults, isDropdownShown, keyword } = searchData;
   return (
     <SearchForm className={props.className}>
       <SearchButton type="submit">
@@ -231,10 +248,10 @@ export default function (props) {
         onChange={onInputChange}
         type="text"
         name="keyword"
-        value={keyword}
+        defaultValue={keyword}
         placeholder="Search"
-        aria-label="Search"
         autoComplete="off"
+        onKeyUp={onEnterExecuteSearch}
       />
       <ClearButton onClick={onClear}>
         <FontAwesomeIcon icon="times" />
@@ -274,7 +291,7 @@ export default function (props) {
             })}
           </Dropdown>
           <MoreSearchResultsFooter>
-            <AnchorLink to="Search">
+            <AnchorLink to={`/search/${keyword}`}>
               <FontAwesomeIcon className="me-1" icon="search" />
               Xem thêm kết quả của <strong>{keyword}</strong>
             </AnchorLink>
@@ -283,4 +300,4 @@ export default function (props) {
       ) : null}
     </SearchForm>
   );
-}
+});

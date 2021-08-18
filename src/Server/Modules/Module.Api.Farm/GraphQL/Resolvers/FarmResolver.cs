@@ -185,9 +185,9 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Search = criterias.Search
             };
 
-            if (!string.IsNullOrEmpty(criterias.ExclusiveCreatedIdentityId))
+            if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
             {
-                filterRequest.ExclusiveCreatedById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveCreatedIdentityId);
+                filterRequest.ExclusiveUserId = await _userManager.DecryptUserIdAsync(criterias.ExclusiveUserIdentityId);
             }
 
             try

@@ -19,7 +19,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
 
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>()
-                .AddTransient<IHttpHelper, HttpHelper>();
+                .AddScoped<IHttpHelper, HttpHelper>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

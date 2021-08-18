@@ -10,6 +10,8 @@ export default (props) => {
     pageNumber,
     disabled,
     pageQuery,
+    className,
+    size,
   } = props;
 
   let to = `${baseUrl}${"/page/"}${pageNumber}`;
@@ -28,21 +30,34 @@ export default (props) => {
   }
 
   let ButtonItem = null;
-  if (!pageNumber || disabled) {
+  if ((!pageNumber && !baseUrl) || disabled) {
     ButtonItem = (
-      <ButtonOutlineLight size="sm" disabled={true}>
+      <ButtonOutlineLight
+        size={size ? size : "sm"}
+        disabled={true}
+        className={className}
+      >
         {children}
       </ButtonOutlineLight>
     );
   } else if (currentPage === pageNumber) {
     ButtonItem = (
-      <RouterLinkButtonOutlineNeutral size="sm" to={to} disabled={true}>
+      <RouterLinkButtonOutlineNeutral
+        size={size ? size : "sm"}
+        to={to}
+        disabled={true}
+        className={className}
+      >
         {children}
       </RouterLinkButtonOutlineNeutral>
     );
   } else {
     ButtonItem = (
-      <RouterLinkButtonOutlineNeutral size="sm" to={to}>
+      <RouterLinkButtonOutlineNeutral
+        size={size ? size : "sm"}
+        to={to}
+        className={className}
+      >
         {children}
       </RouterLinkButtonOutlineNeutral>
     );

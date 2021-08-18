@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const PrimaryTextbox = styled.input.attrs((p) => ({
+export const PrimaryTextbox = styled.input.attrs((p) => ({
   type: p.type === "password" ? "password" : p.type,
 }))`
   height: ${(p) => p.theme.size.normal};
@@ -13,8 +13,10 @@ const PrimaryTextbox = styled.input.attrs((p) => ({
   }
 `;
 
-const SecondaryTextbox = styled(PrimaryTextbox)`
+export const SecondaryTextbox = styled(PrimaryTextbox)`
   border: 1px solid ${(p) => p.theme.color.secondaryBg};
 `;
 
-export { PrimaryTextbox, SecondaryTextbox };
+export const LightTextbox = styled(PrimaryTextbox)`
+  border: 1px solid ${(p) => p.theme.color.lightBg};
+`;

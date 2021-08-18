@@ -113,13 +113,23 @@ export const FORGOT_PASSWORD = gql`
 `;
 
 export const RESET_PASSWORD = gql`
-  mutation($criterias: ResetPasswordModelInput!) {
+  mutation ($criterias: ResetPasswordModelInput!) {
     resetPassword(criterias: $criterias) {
       isSucceed
       errors {
         code
         message
       }
+    }
+  }
+`;
+
+export const GET_SELECT_USERS = gql`
+  mutation ($criterias: UserFilterModelInput) {
+    selectUsers(criterias: $criterias) {
+      id
+      text
+      isSelected
     }
   }
 `;

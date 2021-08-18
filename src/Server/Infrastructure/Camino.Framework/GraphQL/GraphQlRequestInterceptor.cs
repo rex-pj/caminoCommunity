@@ -14,7 +14,7 @@ namespace Camino.Framework.GraphQL
         public override async ValueTask OnCreateAsync(HttpContext context, IRequestExecutor requestExecutor,
             IQueryRequestBuilder requestBuilder, CancellationToken cancellationToken)
         {
-            var sessionContext = context.RequestServices.GetService<ISessionContext>();
+            var sessionContext = context.RequestServices.GetRequiredService<ISessionContext>();
             var applicationUser = await sessionContext.GetCurrentUserAsync();
             if (applicationUser != null)
             {

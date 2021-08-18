@@ -347,5 +347,27 @@ namespace Camino.Infrastructure.Data
             await entities.DeleteAsync();
         }
         #endregion
+
+        #region Disposable
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _dataConnection.Dispose();
+                }
+            }
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

@@ -26,5 +26,6 @@ namespace Module.Api.Feed.Models
         public int TotalUser { get; set; }
         public int TotalUserPage { get; set; }
         public IList<FeedModel> Communities { get; set; }
+        public string UserFilterByName { get; set; }
     }
 }

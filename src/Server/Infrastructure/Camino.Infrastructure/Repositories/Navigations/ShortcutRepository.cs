@@ -99,7 +99,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 query = query.Where(x => x.StatusId == filter.StatusId);
             }
 
-            if (filter.TypeId.HasValue)
+            if (filter.TypeId.HasValue && filter.TypeId != 0)
             {
                 query = query.Where(x => x.TypeId == filter.TypeId);
             }

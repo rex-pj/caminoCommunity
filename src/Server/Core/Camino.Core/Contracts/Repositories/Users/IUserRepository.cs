@@ -25,6 +25,6 @@ namespace Camino.Core.Contracts.Repositories.Users
         Task<UpdateItemRequest> UpdateInfoItemAsync(UpdateItemRequest request);
         Task<bool> UpdateAsync(UserModifyRequest request);
         Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter);
-        List<UserFullResult> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10);
+        Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null);
     }
 }

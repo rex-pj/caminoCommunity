@@ -54,7 +54,7 @@ export default (props) => {
         criterias: {
           page: 1,
           pageSize: 3,
-          exclusiveCreatedIdentityId: currentUser?.userIdentityId,
+          exclusiveUserIdentityId: currentUser?.userIdentityId,
         },
       },
     }
@@ -67,7 +67,7 @@ export default (props) => {
         criterias: {
           page: 1,
           pageSize: 3,
-          exclusiveCreatedIdentityId: currentUser?.userIdentityId,
+          exclusiveUserIdentityId: currentUser?.userIdentityId,
         },
       },
     }

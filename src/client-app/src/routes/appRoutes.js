@@ -113,6 +113,12 @@ export default [
     layout: FrameLayout,
   },
   {
+    path: ["/search", "/search/:keyword"],
+    exact: true,
+    page: "feeds/search",
+    layout: FrameLayout,
+  },
+  {
     path: [
       "/user/active/:email/:key",
       "/user/active/:email/:key+",

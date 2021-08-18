@@ -29,5 +29,6 @@ namespace Camino.Core.Contracts.IdentityManager
         string NewSecurityStamp();
         Task<bool> HasPolicyAsync(TUser user, string policy);
         Task<bool> HasPolicyAsync(ClaimsPrincipal user, string policy);
+        Task<TUser> FindByIdentityIdAsync(string userIdentityId);
     }
 }

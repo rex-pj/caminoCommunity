@@ -181,9 +181,9 @@ namespace Camino.Infrastructure.Repositories.Farms
                          || user.Description.ToLower().Contains(search));
             }
 
-            if (filter.ExclusiveCreatedById.HasValue)
+            if (filter.ExclusiveUserId.HasValue)
             {
-                farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveCreatedById);
+                farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveUserId);
             }
 
             if (filter.StatusId.HasValue)

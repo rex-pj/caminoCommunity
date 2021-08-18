@@ -14,21 +14,25 @@ namespace Camino.Infrastructure.Repositories.Media
     public class PictureRepository : IPictureRepository
     {
         private readonly IRepository<Picture> _pictureRepository;
+        private readonly int _pictureDeletedStatus;
+        private readonly int _pictureInactivedStatus;
 
         public PictureRepository(IRepository<Picture> pictureRepository)
         {
             _pictureRepository = pictureRepository;
+            _pictureDeletedStatus = (int)PictureStatus.Deleted;
+            _pictureInactivedStatus = (int)PictureStatus.Inactived;
         }
 
         public async Task<PictureResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var deletedStatus = PictureStatus.Deleted.GetCode();
-            var inactivedStatus = PictureStatus.Inactived.GetCode();
-            var picture = await _pictureRepository
+            using (_pictureRepository)
+            {
+                var picture = await _pictureRepository
                 .Get(x => x.Id == filter.Id)
-                .Where(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
-                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
-                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                .Where(x => (x.StatusId == _pictureDeletedStatus && filter.CanGetDeleted)
+                    || (x.StatusId == _pictureInactivedStatus && filter.CanGetInactived)
+                    || (x.StatusId != _pictureDeletedStatus && x.StatusId != _pictureInactivedStatus))
                 .Select(pic => new PictureResult
                 {
                     Id = pic.Id,
@@ -39,12 +43,8 @@ namespace Camino.Infrastructure.Repositories.Media
                     UpdatedById = pic.UpdatedById
                 }).FirstOrDefaultAsync();
 
-            if (picture == null)
-            {
-                return null;
+                return picture;
             }
-
-            return picture;
         }
     }
 }

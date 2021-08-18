@@ -130,9 +130,14 @@ namespace Module.Web.AuthenticationManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
-        public IActionResult Search(string q, List<long> currentUserIds)
+        public async Task<IActionResult> Search(string q, List<long> currentUserIds)
         {
-            var users = _userService.Search(q, currentUserIds);
+            var users = await _userService.SearchAsync(new UserFilter
+            {
+                Search = q,
+                PageSize = 10,
+                Page = 1
+            }, currentUserIds);
             if (users == null || !users.Any())
             {
                 return Json(new

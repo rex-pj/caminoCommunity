@@ -33,7 +33,7 @@ namespace Camino.ApiHost
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.ConfigureAppBuilder(env);
         }
     }

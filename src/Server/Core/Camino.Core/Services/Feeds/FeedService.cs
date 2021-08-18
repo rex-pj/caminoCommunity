@@ -7,12 +7,13 @@ using Camino.Core.Contracts.Repositories.Feeds;
 using System.Linq;
 using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Utils;
-using Camino.Core.Contracts.Data;
-using Camino.Core.Domain.Media;
 using Camino.Shared.Enums;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Core.Contracts.Repositories.Farms;
+using System.Collections.Generic;
+using Camino.Shared.Results.Media;
+using Camino.Shared.Results.Identifiers;
 
 namespace Camino.Services.Feeds
 {
@@ -110,16 +111,39 @@ namespace Camino.Services.Feeds
             return feedsPageList;
         }
 
-        public async Task<SearchInGroupResult> LiveSearchInGroupAsync(FeedFilter filter)
+        public async Task<SearchInGroupResult> SearchInGroupAsync(FeedFilter filter)
         {
             var groupOfSearch = await _feedRepository.GetInGroupAsync(filter);
 
-            // Get articles picture
+            var createdByIds = groupOfSearch.Articles.Select(x => x.CreatedById)
+                .Concat(groupOfSearch.Products.Select(x => x.CreatedById))
+                .Concat(groupOfSearch.Farms.Select(x => x.CreatedById)).Distinct();
+            var createdByPictures = await _userPhotoRepository.GetUserPhotoByUserIdsAsync(createdByIds, UserPictureType.Avatar);
+            var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
+            await SetPicturesForSearchResultAsync(groupOfSearch, createdByUsers, createdByPictures);
+
+            return groupOfSearch;
+        }
+
+        public async Task<SearchInGroupResult> LiveSearchInGroupAsync(FeedFilter filter)
+        {
+            var groupOfSearch = await _feedRepository.GetInGroupAsync(filter);
+            await SetPicturesForSearchResultAsync(groupOfSearch);
+
+            return groupOfSearch;
+        }
+
+        private async Task SetPicturesForSearchResultAsync(SearchInGroupResult groupOfSearch, IEnumerable<UserResult> createdByUsers = null, IList<UserPhotoResult> createdByPictures = null)
+        {
+            // Get articles pictures
             var articleIds = groupOfSearch.Articles.Select(x => long.Parse(x.Id));
             var articlePictures = await _articlePictureRepository
                 .GetArticlePicturesByArticleIdsAsync(articleIds, new IdRequestFilter<long>(), ArticlePictureType.Thumbnail);
             foreach (var article in groupOfSearch.Articles)
             {
+                SetFeedCreatedPicture(article, createdByPictures);
+                SetFeedCreatedByName(article, createdByUsers);
+
                 var articlePicture = articlePictures.FirstOrDefault(x => x.ArticleId == long.Parse(article.Id));
                 if (articlePicture != null)
                 {
@@ -127,11 +151,15 @@ namespace Camino.Services.Feeds
                 }
             }
 
+            // Get product pictures
             var productIds = groupOfSearch.Products.Select(x => long.Parse(x.Id));
             var productPictures = await _productPictureRepository
                 .GetProductPicturesByProductIdsAsync(productIds, new IdRequestFilter<long>(), ProductPictureType.Thumbnail);
             foreach (var product in groupOfSearch.Products)
             {
+                SetFeedCreatedPicture(product, createdByPictures);
+                SetFeedCreatedByName(product, createdByUsers);
+
                 var productPicture = productPictures.FirstOrDefault(x => x.ProductId == long.Parse(product.Id));
                 if (productPicture != null)
                 {
@@ -139,11 +167,15 @@ namespace Camino.Services.Feeds
                 }
             }
 
+            // Get farm pictures
             var farmIds = groupOfSearch.Farms.Select(x => long.Parse(x.Id));
             var farmPictures = await _farmPictureRepository
                 .GetFarmPicturesByFarmIdsAsync(farmIds, new IdRequestFilter<long>(), FarmPictureType.Thumbnail);
             foreach (var farm in groupOfSearch.Farms)
             {
+                SetFeedCreatedPicture(farm, createdByPictures);
+                SetFeedCreatedByName(farm, createdByUsers);
+
                 var farmPicture = farmPictures.FirstOrDefault(x => x.FarmId == long.Parse(farm.Id));
                 if (farmPicture != null)
                 {
@@ -151,6 +183,7 @@ namespace Camino.Services.Feeds
                 }
             }
 
+            // Get user avatar pictures
             var userIds = groupOfSearch.Users.Select(x => long.Parse(x.Id));
             var userPictures = await _userPhotoRepository.GetUserPhotoByUserIdsAsync(userIds, UserPictureType.Avatar);
             foreach (var user in groupOfSearch.Users)
@@ -161,8 +194,34 @@ namespace Camino.Services.Feeds
                     user.PictureId = userPicture.Code;
                 }
             }
+        }
 
-            return groupOfSearch;
+        private void SetFeedCreatedByName(FeedResult feed,IEnumerable<UserResult> createdByUsers = null)
+        {
+            if (createdByUsers == null || !createdByUsers.Any())
+            {
+                return;
+            }
+
+            var user = createdByUsers.FirstOrDefault(x => x.Id == feed.CreatedById);
+            if (user != null)
+            {
+                feed.CreatedByName = user.DisplayName;
+            }
+        }
+
+        private void SetFeedCreatedPicture(FeedResult feed, IList<UserPhotoResult> createdByPictures = null)
+        {
+            if(createdByPictures== null || !createdByPictures.Any())
+            {
+                return;
+            }
+
+            var createdByUserPicture = createdByPictures.FirstOrDefault(x => x.UserId == feed.CreatedById);
+            if (createdByUserPicture != null)
+            {
+                feed.CreatedByPhotoCode = createdByUserPicture.Code;
+            }
         }
     }
 }

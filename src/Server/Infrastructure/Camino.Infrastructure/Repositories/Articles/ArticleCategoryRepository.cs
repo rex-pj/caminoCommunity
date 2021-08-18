@@ -18,20 +18,21 @@ namespace Camino.Infrastructure.Repositories.Articles
     public class ArticleCategoryRepository : IArticleCategoryRepository
     {
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
+        private readonly int _inactivedStatus;
 
         public ArticleCategoryRepository(IRepository<ArticleCategory> articleCategoryRepository)
         {
+            _inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             _articleCategoryRepository = articleCategoryRepository;
         }
 
         public async Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             var category = await (from child in _articleCategoryRepository.Table
                                   join parent in _articleCategoryRepository.Table
                                   on child.ParentId equals parent.Id into categories
                                   from cate in categories.DefaultIfEmpty()
-                                  where child.Id == filter.Id && (filter.CanGetInactived || child.StatusId != inactivedStatus)
+                                  where child.Id == filter.Id && (filter.CanGetInactived || child.StatusId != _inactivedStatus)
                                   select new ArticleCategoryResult
                                   {
                                       Description = child.Description,
@@ -71,9 +72,8 @@ namespace Camino.Infrastructure.Repositories.Articles
 
         public async Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
         {
-            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var categoryQuery = _articleCategoryRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
+            var categoryQuery = _articleCategoryRepository.Get(x => filter.CanGetInactived || x.StatusId != _inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 categoryQuery = categoryQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -143,9 +143,8 @@ namespace Camino.Infrastructure.Repositories.Articles
                 search = string.Empty;
             }
 
-            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             search = search.ToLower();
-            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != inactivedStatus))
+            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != _inactivedStatus))
                 .Select(c => new ArticleCategoryResult
                 {
                     Id = c.Id,
@@ -188,9 +187,8 @@ namespace Camino.Infrastructure.Repositories.Articles
                 search = string.Empty;
             }
 
-            var inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             search = search.ToLower();
-            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != inactivedStatus));
+            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != _inactivedStatus));
             var queryChildrens = _articleCategoryRepository.Get(x => x.ParentId.HasValue);
 
             var query = from parent in queryParents

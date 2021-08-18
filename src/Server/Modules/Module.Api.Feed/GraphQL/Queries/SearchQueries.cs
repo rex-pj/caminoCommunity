@@ -1,4 +1,4 @@
-﻿using Camino.Framework.GraphQL.Mutations;
+﻿using Camino.Framework.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Module.Api.Feed.GraphQL.Mutations
 {
-    [ExtendObjectType("Mutation")]
-    public class SearchMutations : BaseMutations
+    [ExtendObjectType("Query")]
+    public class SearchQueries : BaseQueries
     {
-        public async Task<SearchInGroupResultModel> LiveSearchAsync([Service] ISearchResolver farmResolver, FeedFilterModel criterias)
-        {
-            return await farmResolver.LiveSearchAsync(criterias);
-        }
-
         public async Task<SearchInGroupResultModel> AdvancedSearchAsync([Service] ISearchResolver farmResolver, FeedFilterModel criterias)
         {
             return await farmResolver.AdvancedSearchAsync(criterias);

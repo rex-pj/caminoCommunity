@@ -87,9 +87,9 @@ namespace Camino.Services.Users
             return await _userRepository.FindFullByIdAsync(filter);
         }
 
-        public List<UserFullResult> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10)
+        public async Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null)
         {
-            return _userRepository.Search(query, currentUserIds, page, pageSize);
+            return await _userRepository.SearchAsync(filter, currentUserIds);
         }
 
         public async Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter)

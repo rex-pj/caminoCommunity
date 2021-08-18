@@ -6,5 +6,6 @@ namespace Module.Api.Feed.GraphQL.Resolvers.Contracts
     public interface ISearchResolver
     {
         Task<SearchInGroupResultModel> LiveSearchAsync(FeedFilterModel criterias);
+        Task<SearchInGroupResultModel> AdvancedSearchAsync(FeedFilterModel criterias);
     }
 }

@@ -54,6 +54,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _userPhotoService = userPhotoService;
         }
 
+        #region Get
         public UserInfoModel GetLoggedUser(ApplicationUser currentUser)
         {
             return new UserInfoModel
@@ -86,22 +87,21 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 criterias = new UserFilterModel();
             }
 
-            var filterRequest = new UserFilter()
+            var filterRequest = new UserFilter
             {
                 Page = criterias.Page,
                 PageSize = criterias.PageSize,
-                Search = criterias.Search
+                Search = criterias.Search,
             };
 
-            if (!string.IsNullOrEmpty(criterias.ExclusiveCreatedIdentityId))
+            if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
             {
-                filterRequest.ExclusiveCreatedById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveCreatedIdentityId);
+                filterRequest.ExclusiveUserById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveUserIdentityId);
             }
 
             try
             {
                 var userPageList = await _userService.GetAsync(filterRequest);
-
                 var userIds = userPageList.Collections.Select(x => x.Id);
                 var userPhotos = await _userPhotoService.GetUserPhotoByUserIdsAsync(userIds, UserPictureType.Avatar);
                 var users = await MapUsersResultToModelAsync(userPageList.Collections, userPhotos);
@@ -121,6 +121,36 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
+        public async Task<IEnumerable<SelectOption>> SelectUsersAsync(UserFilterModel criterias)
+        {
+            if (criterias == null)
+            {
+                criterias = new UserFilterModel();
+            }
+
+            var exclusiveUserIds = new List<long>();
+            if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
+            {
+                exclusiveUserIds.Add(await _userManager.DecryptUserIdAsync(criterias.ExclusiveUserIdentityId));
+            }
+
+            var data = await _userService.SearchAsync(new UserFilter
+            {
+                Page = criterias.Page,
+                PageSize = criterias.PageSize,
+                Search = criterias.Search,
+            }, exclusiveUserIds);
+            var users = await MapUsersResultToModelAsync(data);
+
+            var userSelections = users.Select(x => new SelectOption
+            {
+                Id = x.UserIdentityId,
+                Text = x.DisplayName
+            });
+
+            return userSelections;
+        }
+
         public async Task<UserInfoModel> GetFullUserInfoAsync(ApplicationUser currentUser, FindUserModel criterias)
         {
             var userId = currentUser.Id;
@@ -134,6 +164,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 Id = userId,
                 CanGetInactived = currentUser.Id == userId
             });
+
             if (user == null)
             {
                 return null;
@@ -158,77 +189,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusId = user.StatusId,
                 StatusLabel = user.StatusLabel,
                 UpdatedDate = user.UpdatedDate,
-                CanEdit = userId == currentUser.Id
+                CanEdit = userId == currentUser.Id,
             };
 
             userInfo.UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
-
             return userInfo;
-        }
-
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias)
-        {
-            try
-            {
-                ValidateUserInfoItem(criterias);
-
-                var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
-                if (userId != currentUser.Id)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                var updatePerItem = new UpdateItemRequest()
-                {
-                    Key = criterias.Key,
-                    PropertyName = criterias.PropertyName,
-                    Value = criterias.Value
-                };
-                updatePerItem.Key = userId;
-                var updatedItem = await _userService.UpdateInfoItemAsync(updatePerItem);
-                return new UpdatePerItemModel()
-                {
-                    Key = updatedItem.Key.ToString(),
-                    PropertyName = updatedItem.PropertyName,
-                    Value = updatedItem.Value.ToString()
-                };
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private void ValidateUserInfoItem(UpdatePerItemModel criterias)
-        {
-            if (!criterias.CanEdit)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            if (criterias.PropertyName == null)
-            {
-                throw new ArgumentException(nameof(criterias.PropertyName));
-            }
-
-            if (criterias.Key == null || string.IsNullOrEmpty(criterias.Key.ToString()))
-            {
-                throw new ArgumentException(nameof(criterias.Key));
-            }
-        }
-
-        public async Task<CommonResult> LogoutAsync(ApplicationUser currentUser)
-        {
-            var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, currentUser.AuthenticationToken);
-            if (!result.Succeeded)
-            {
-                return CommonResult.Failed(new CommonError()
-                {
-                    Code = ErrorMessageConst.EXCEPTION,
-                    Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
-                });
-            }
-            return CommonResult.Success();
         }
 
         public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ApplicationUser currentUser, UserIdentifierUpdateModel criterias)
@@ -303,6 +268,74 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 return new UserTokenModel(false);
             }
         }
+        #endregion
+
+        #region CRUD
+        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ApplicationUser currentUser, UpdatePerItemModel criterias)
+        {
+            try
+            {
+                ValidateUserInfoItem(criterias);
+
+                var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
+                if (userId != currentUser.Id)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var updatePerItem = new UpdateItemRequest()
+                {
+                    Key = criterias.Key,
+                    PropertyName = criterias.PropertyName,
+                    Value = criterias.Value
+                };
+                updatePerItem.Key = userId;
+                var updatedItem = await _userService.UpdateInfoItemAsync(updatePerItem);
+                return new UpdatePerItemModel()
+                {
+                    Key = updatedItem.Key.ToString(),
+                    PropertyName = updatedItem.PropertyName,
+                    Value = updatedItem.Value.ToString()
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        private void ValidateUserInfoItem(UpdatePerItemModel criterias)
+        {
+            if (!criterias.CanEdit)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            if (criterias.PropertyName == null)
+            {
+                throw new ArgumentException(nameof(criterias.PropertyName));
+            }
+
+            if (criterias.Key == null || string.IsNullOrEmpty(criterias.Key.ToString()))
+            {
+                throw new ArgumentException(nameof(criterias.Key));
+            }
+        }
+
+        public async Task<CommonResult> LogoutAsync(ApplicationUser currentUser)
+        {
+            var result = await _userManager.RemoveLoginAsync(currentUser, ServiceProvidersNameConst.CAMINO_API_AUTH, currentUser.AuthenticationToken);
+            if (!result.Succeeded)
+            {
+                return CommonResult.Failed(new CommonError()
+                {
+                    Code = ErrorMessageConst.EXCEPTION,
+                    Message = ErrorMessageConst.UN_EXPECTED_EXCEPTION
+                });
+            }
+            return CommonResult.Success();
+        }
 
         private void ComparePassword(UserPasswordUpdateModel criterias)
         {
@@ -343,12 +376,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
         }
 
-        private async Task<IList<UserInfoModel>> MapUsersResultToModelAsync(IEnumerable<UserFullResult> userResults, IList<UserPhotoResult> userPhotos)
+        private async Task<IList<UserInfoModel>> MapUsersResultToModelAsync(IEnumerable<UserFullResult> userResults, IList<UserPhotoResult> userPhotos = null)
         {
             var users = new List<UserInfoModel>();
             foreach (var userResult in userResults)
             {
-                var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userResult.Id);
                 var user = new UserInfoModel()
                 {
                     Address = userResult.Address,
@@ -368,9 +400,14 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     StatusId = userResult.StatusId,
                     StatusLabel = userResult.StatusLabel,
                     UpdatedDate = userResult.UpdatedDate,
-                    UserIdentityId = await _userManager.EncryptUserIdAsync(userResult.Id),
-                    AvatarCode = userAvatar != null ? userAvatar.Code : null
+                    UserIdentityId = await _userManager.EncryptUserIdAsync(userResult.Id)
                 };
+
+                if (userPhotos != null && userPhotos.Any())
+                {
+                    var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userResult.Id);
+                    user.AvatarCode = userAvatar.Code;
+                }
 
                 users.Add(user);
             }

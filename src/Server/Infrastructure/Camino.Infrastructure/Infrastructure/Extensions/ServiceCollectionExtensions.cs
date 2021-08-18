@@ -26,7 +26,7 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
 
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddTransient<ValidationStrategyContext>();
+            services.AddScoped<ValidationStrategyContext>();
             services.AddRepositoryServices();
             services.AddProviders();
             services.AddScopedServices(_dependencyProjectNames, _dependencyInterfaceNamespaces);
@@ -41,7 +41,7 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
         public static void AddRepositoryServices(this IServiceCollection services)
         {
             services.AddDataAccessServices();
-            services.AddTransient(typeof(IRepository<>), typeof(CaminoRepository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(CaminoRepository<>));
         }
 
         public static void AddDataAccessServices(this IServiceCollection services)

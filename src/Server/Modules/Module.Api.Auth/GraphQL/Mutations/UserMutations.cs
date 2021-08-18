@@ -8,6 +8,8 @@ using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
 using System.Threading.Tasks;
 using Camino.Shared.Requests.Authentication;
+using System.Collections.Generic;
+using Camino.Shared.General;
 
 namespace Module.Api.Auth.GraphQL.Mutations
 {
@@ -50,6 +52,11 @@ namespace Module.Api.Auth.GraphQL.Mutations
         public async Task<CommonResult> ResetPasswordAsync([Service] IUserResolver userResolver, ResetPasswordModel criterias)
         {
             return await userResolver.ResetPasswordAsync(criterias);
+        }
+
+        public async Task<IEnumerable<SelectOption>> SelectUsersAsync([Service] IUserResolver userResolver, UserFilterModel criterias)
+        {
+            return await userResolver.SelectUsersAsync(criterias);
         }
     }
 }

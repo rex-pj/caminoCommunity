@@ -89,5 +89,17 @@ namespace Camino.IdentityManager
             var userPolicyStore = GetUserPolicyStore();
             return await userPolicyStore.HasPolicyAsync(user, NormalizeName(policy), CancellationToken);
         }
+
+        public async Task<TUser> FindByIdentityIdAsync(string userIdentityId)
+        {
+            var cast = Store as IUserStore<TUser>;
+            if (cast == null)
+            {
+                throw new NotSupportedException("Store is not UserEncryptionStore");
+            }
+
+            var userId = await DecryptUserIdAsync(userIdentityId);
+            return await cast.FindByIdAsync(userId.ToString(), CancellationToken);
+        }
     }
 }
