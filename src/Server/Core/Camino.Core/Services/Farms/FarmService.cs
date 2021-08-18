@@ -73,7 +73,7 @@ namespace Camino.Services.Farms
             return exist;
         }
 
-        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
+        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page, int pageSize)
         {
             var famrs = await _farmRepository.SelectAsync(filter, page, pageSize);
             return famrs;

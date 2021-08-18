@@ -18,7 +18,7 @@ import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber, pageSize } = props;
+  const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
   const [state, dispatch] = useStore(false);
@@ -39,7 +39,6 @@ export default withRouter(function (props) {
       criterias: {
         userIdentityId: userId,
         page: pageNumber ? parseInt(pageNumber) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });

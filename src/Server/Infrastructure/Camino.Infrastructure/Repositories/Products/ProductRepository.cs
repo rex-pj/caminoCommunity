@@ -156,7 +156,7 @@ namespace Camino.Infrastructure.Repositories.Products
         {
             var deletedStatus = ProductStatus.Deleted.GetCode();
             var inactivedStatus = ProductStatus.Inactived.GetCode();
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var productQuery = _productRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
                                             || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));

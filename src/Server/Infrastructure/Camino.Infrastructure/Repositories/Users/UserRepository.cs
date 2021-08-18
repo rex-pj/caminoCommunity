@@ -375,7 +375,7 @@ namespace Camino.Infrastructure.Repositories.Users
 
         public async Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var userQuery = _userRepository.Get(x => (x.StatusId == _userDeletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == _userInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus));
@@ -416,7 +416,7 @@ namespace Camino.Infrastructure.Repositories.Users
 
         public async Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var userQuery = _userRepository.Get(x => (x.StatusId == _userDeletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == _userInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus));

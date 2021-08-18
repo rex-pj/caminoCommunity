@@ -38,10 +38,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
+        private readonly PagerOptions _pagerOptions;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager, IEmailProvider emailSender,
             IUserService userService, IOptions<AppSettings> appSettings, ISessionContext sessionContext, IOptions<ResetPasswordSettings> resetPasswordSettings,
-            IUserPhotoService userPhotoService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings)
+            IUserPhotoService userPhotoService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _userManager = userManager;
@@ -52,6 +53,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _resetPasswordSettings = resetPasswordSettings.Value;
             _emailSender = emailSender;
             _userPhotoService = userPhotoService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         #region Get
@@ -90,8 +92,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var filterRequest = new UserFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search,
             };
 
             if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
@@ -137,8 +139,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var data = await _userService.SearchAsync(new UserFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
             }, exclusiveUserIds);
             var users = await MapUsersResultToModelAsync(data);
 

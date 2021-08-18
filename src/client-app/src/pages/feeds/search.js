@@ -46,7 +46,7 @@ export default withRouter((props) => {
     variables: {
       criterias: {
         page: 1,
-        pageSize: 2,
+        pageSize: 4,
         search: keyword,
         userIdentityId: userIdentityId,
         hoursCreatedFrom: hoursCreatedFrom ? parseInt(hoursCreatedFrom) : null,

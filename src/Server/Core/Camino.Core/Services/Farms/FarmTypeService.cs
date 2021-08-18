@@ -72,9 +72,9 @@ namespace Camino.Services.Farms
             return farmTypesPageList;
         }
 
-        public async Task<IList<FarmTypeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmTypeResult>> SearchAsync(BaseFilter filter)
         {
-            return await _farmTypeRepository.SearchAsync(search, page, pageSize);
+            return await _farmTypeRepository.SearchAsync(filter);
         }
         #endregion
 

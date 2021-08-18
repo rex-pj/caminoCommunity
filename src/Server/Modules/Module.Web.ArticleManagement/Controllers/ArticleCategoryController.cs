@@ -15,6 +15,8 @@ using Camino.Core.Contracts.Services.Articles;
 using Camino.Shared.Results.Articles;
 using Camino.Shared.Requests.Articles;
 using Camino.Core.Contracts.Helpers;
+using Microsoft.Extensions.Options;
+using Camino.Shared.Configurations;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -22,13 +24,16 @@ namespace Module.Web.ArticleManagement.Controllers
     {
         private readonly IArticleCategoryService _articleCategoryService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public ArticleCategoryController(IArticleCategoryService articleCategoryService,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _articleCategoryService = articleCategoryService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
@@ -41,8 +46,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 StatusId = filter.StatusId
             });
@@ -287,6 +292,12 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
         public IActionResult Search(string q, int? currentId = null, bool isParentOnly = false)
         {
+            var filter = new BaseFilter
+            {
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            };
             IList<ArticleCategoryResult> categories;
             if (isParentOnly)
             {
@@ -294,7 +305,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 {
                     CanGetInactived = true,
                     Id = currentId
-                }, q);
+                }, filter);
             }
             else
             {
@@ -302,7 +313,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 {
                     CanGetInactived = true,
                     Id = currentId
-                }, q);
+                }, filter);
             }
 
             if (categories == null || !categories.Any())

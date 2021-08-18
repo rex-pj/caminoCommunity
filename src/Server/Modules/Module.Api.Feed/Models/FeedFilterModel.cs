@@ -6,8 +6,6 @@ namespace Module.Api.Feed.Models
     {
         public FeedFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         public int? HoursCreatedFrom { get; set; }

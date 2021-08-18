@@ -9,17 +9,21 @@ using Module.Api.Navigation.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Infrastructure.Enums;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Navigation.GraphQL.Resolvers
 {
     public class ShortcutResolver : BaseResolver, IShortcutResolver
     {
         private readonly IShortcutService _shortcutService;
+        private readonly PagerOptions _pagerOptions;
 
-        public ShortcutResolver(IShortcutService shortcutService, ISessionContext sessionContext)
+        public ShortcutResolver(IShortcutService shortcutService, ISessionContext sessionContext, IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _shortcutService = shortcutService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<IList<ShortcutModel>> GetShortcutsAsync(ShortcutFilterModel criterias)
@@ -34,8 +38,8 @@ namespace Module.Api.Navigation.GraphQL.Resolvers
                 var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter()
                 {
                     Page = criterias.Page,
-                    PageSize = criterias.PageSize,
-                    Search = criterias.Search,
+                    PageSize = _pagerOptions.PageSize,
+                    Keyword = criterias.Search,
                     TypeId = criterias.TypeId
                 });
                 var shortcuts = shortcutPageList.Collections.Select(x => new ShortcutModel

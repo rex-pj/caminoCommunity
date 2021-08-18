@@ -6,8 +6,6 @@ namespace Module.Api.Auth.Models
     {
         public UserFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         public string ExclusiveUserIdentityId { get; set; }

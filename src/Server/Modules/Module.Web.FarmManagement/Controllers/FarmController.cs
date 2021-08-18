@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Requests.Media;
 using System.Collections.Generic;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.FarmManagement.Controllers
 {
@@ -22,13 +24,15 @@ namespace Module.Web.FarmManagement.Controllers
     {
         private readonly IFarmService _farmService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public FarmController(IFarmService farmService, IHttpHelper httpHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _farmService = farmService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
@@ -41,8 +45,8 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 FarmTypeId = filter.FarmTypeId,
                 StatusId = filter.StatusId,
@@ -326,8 +330,8 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 MimeType = filter.MimeType
             };
 

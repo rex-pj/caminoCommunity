@@ -7,8 +7,6 @@ namespace Camino.Shared.Requests.Filters
         public ProductAttributeFilter()
         {
             ExcludedIds = new List<int>();
-            PageSize = 20;
-            Page = 1;
         }
 
         public int? StatusId { get; set; }

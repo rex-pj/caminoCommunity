@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Requests.Identifiers;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -20,13 +22,16 @@ namespace Module.Web.AuthenticationManagement.Controllers
     {
         private readonly IUserService _userService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,
-            IHttpHelper httpHelper)
+            IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _userService = userService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
@@ -45,9 +50,9 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 GenderId = filter.GenderId,
                 IsEmailConfirmed = filter.IsEmailConfirmed,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
+                PageSize = _pagerOptions.PageSize,
                 PhoneNumber = filter.PhoneNumber,
-                Search = filter.Search,
+                Keyword = filter.Search,
                 StatusId = filter.StatusId,
                 UpdatedById = filter.UpdatedById,
                 CanGetDeleted = true,
@@ -134,9 +139,9 @@ namespace Module.Web.AuthenticationManagement.Controllers
         {
             var users = await _userService.SearchAsync(new UserFilter
             {
-                Search = q,
-                PageSize = 10,
-                Page = 1
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
             }, currentUserIds);
             if (users == null || !users.Any())
             {

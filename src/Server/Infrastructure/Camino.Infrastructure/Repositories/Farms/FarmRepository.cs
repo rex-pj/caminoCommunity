@@ -99,14 +99,14 @@ namespace Camino.Infrastructure.Repositories.Farms
             return exist;
         }
 
-        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
+        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page, int pageSize)
         {
-            if (filter.Search == null)
+            if (filter.Keyword == null)
             {
-                filter.Search = string.Empty;
+                filter.Keyword = string.Empty;
             }
 
-            filter.Search = filter.Search.ToLower();
+            filter.Keyword = filter.Keyword.ToLower();
             var query = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(c => new FarmResult
                 {
@@ -126,10 +126,10 @@ namespace Camino.Infrastructure.Repositories.Farms
                 query = query.Where(x => x.Id.NotIn(filter.CurrentIds));
             }
 
-            filter.Search = filter.Search.ToLower();
-            if (!string.IsNullOrEmpty(filter.Search))
+            filter.Keyword = filter.Keyword.ToLower();
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                query = query.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.ToLower().Contains(filter.Keyword));
             }
 
             if (pageSize > 0)
@@ -171,7 +171,7 @@ namespace Camino.Infrastructure.Repositories.Farms
         {
             var deletedStatus = FarmStatus.Deleted.GetCode();
             var inactivedStatus = FarmStatus.Inactived.GetCode();
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var farmQuery = _farmRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                     || (x.StatusId == inactivedStatus && filter.CanGetInactived)
                                     || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));

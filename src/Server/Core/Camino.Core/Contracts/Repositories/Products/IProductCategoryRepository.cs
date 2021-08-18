@@ -14,8 +14,8 @@ namespace Camino.Core.Contracts.Repositories.Products
     {
         Task<ProductCategoryResult> FindAsync(int id);
         Task<BasePageList<ProductCategoryResult>> GetAsync(ProductCategoryFilter filter);
-        Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10);
-        Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10);
+        Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, int[] currentIds);
+        Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, int[] currentIds);
         List<ProductCategoryResult> Get(Expression<Func<ProductCategory, bool>> filter);
         Task<int> CreateAsync(ProductCategoryRequest category);
         Task<bool> UpdateAsync(ProductCategoryRequest category);

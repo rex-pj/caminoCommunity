@@ -70,13 +70,13 @@ namespace Camino.Infrastructure.Repositories.Feeds
                             || (x.StatusId == _farmInactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != _farmDeletedStatus && x.StatusId != _farmInactivedStatus));
 
-            if (!string.IsNullOrEmpty(filter.Search))
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                filter.Search = filter.Search.ToLower();
+                filter.Keyword = filter.Keyword.ToLower();
 
-                articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.Contains(filter.Search));
-                productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.Contains(filter.Search));
-                farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.Contains(filter.Search));
+                articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.Contains(filter.Keyword));
+                productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.Contains(filter.Keyword));
+                farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.Contains(filter.Keyword));
             }
 
             if (filter.CreatedById.HasValue)
@@ -190,30 +190,30 @@ namespace Camino.Infrastructure.Repositories.Feeds
 
             var canFilterUser = !filter.FilterType.HasValue || filter.FilterType == FeedFilterType.User;
             var userQuery = _userRepository.Get(x => canFilterUser).Where(x => x.IsEmailConfirmed && (filter.CanGetInactived || x.StatusId == _userActivedStatus));
-            if (!string.IsNullOrEmpty(filter.Search))
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                filter.Search = filter.Search.ToLower();
+                filter.Keyword = filter.Keyword.ToLower();
                 if (canFilterArticle)
                 {
-                    articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                    articleQuery = articleQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.ToLower().Contains(filter.Keyword));
                 }
 
                 if (canFilterProduct)
                 {
-                    productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                    productQuery = productQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.ToLower().Contains(filter.Keyword));
                 }
 
                 if (canFilterFarm)
                 {
-                    farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                    farmQuery = farmQuery.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.ToLower().Contains(filter.Keyword));
                 }
 
                 if (canFilterUser)
                 {
-                    userQuery = userQuery.Where(x => x.Lastname.ToLower().Contains(filter.Search)
-                    || x.Firstname.ToLower().Contains(filter.Search)
-                    || (x.Lastname + " " + x.Firstname).ToLower().Contains(filter.Search)
-                    || (x.Firstname + " " + x.Lastname).ToLower().Contains(filter.Search));
+                    userQuery = userQuery.Where(x => x.Lastname.ToLower().Contains(filter.Keyword)
+                    || x.Firstname.ToLower().Contains(filter.Keyword)
+                    || (x.Lastname + " " + x.Firstname).ToLower().Contains(filter.Keyword)
+                    || (x.Firstname + " " + x.Lastname).ToLower().Contains(filter.Keyword));
                 }
             }
 

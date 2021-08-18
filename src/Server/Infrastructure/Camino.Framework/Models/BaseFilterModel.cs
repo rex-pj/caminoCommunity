@@ -8,13 +8,12 @@ namespace Camino.Framework.Models
         public BaseFilterModel()
         {
             Page = 1;
-            PageSize = 10;
         }
 
-        [GraphQLType(typeof(LongType))]
-        public int PageSize { get; set; }
-        [GraphQLType(typeof(LongType))]
+        [GraphQLType(typeof(IntType))]
         public int Page { get; set; }
+        [GraphQLType(typeof(IntType))]
+        public int? PageSize { get; set; }
         public string Search { get; set; }
     }
 }

@@ -16,6 +16,8 @@ using Camino.Shared.Requests.Media;
 using Camino.Core.Exceptions;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
@@ -23,12 +25,15 @@ namespace Module.Api.Product.GraphQL.Resolvers
     {
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IProductService _productService;
+        private readonly PagerOptions _pagerOptions;
 
-        public ProductResolver(IUserManager<ApplicationUser> userManager, ISessionContext sessionContext, IProductService productService)
+        public ProductResolver(IUserManager<ApplicationUser> userManager, ISessionContext sessionContext, IProductService productService, 
+            IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _userManager = userManager;
             _productService = productService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<ProductPageListModel> GetUserProductsAsync(ApplicationUser currentUser, ProductFilterModel criterias)
@@ -50,8 +55,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 CreatedById = userId,
                 CanGetInactived = currentUser.Id == userId
             };
@@ -86,8 +91,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 FarmId = criterias.FarmId
             };
 
@@ -121,8 +126,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try

@@ -17,9 +17,9 @@ namespace Camino.Services.Users
             _statusRepository = statusRepository;
         }
 
-        public IList<UserStatusResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<UserStatusResult> Search(BaseFilter filter)
         {
-            return _statusRepository.Search(query, page, pageSize);
+            return _statusRepository.Search(filter);
         }
 
         public async Task<BasePageList<UserStatusResult>> GetAsync(UserStatusFilter filter)

@@ -4,12 +4,12 @@
     {
         public SelectFilter()
         {
-            Search = string.Empty;
+            Keyword = string.Empty;
             CurrentIds = new long[0];
         }
 
         public long CreatedById { get; set; }
         public long[] CurrentIds { get; set; }
-        public string Search { get; set; }
+        public string Keyword { get; set; }
     }
 }

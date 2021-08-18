@@ -34,9 +34,9 @@ namespace Camino.Infrastructure.Repositories.Farms
         public async Task<BasePageList<FarmPictureResult>> GetAsync(FarmPictureFilter filter)
         {
             var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode());
-            if (!string.IsNullOrEmpty(filter.Search))
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                var search = filter.Search.ToLower();
+                var search = filter.Keyword.ToLower();
                 pictureQuery = pictureQuery.Where(pic => pic.Title.ToLower().Contains(search));
             }
 

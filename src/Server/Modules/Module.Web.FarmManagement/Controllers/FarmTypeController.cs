@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Farms;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.FarmManagement.Controllers
 {
@@ -22,12 +24,16 @@ namespace Module.Web.FarmManagement.Controllers
     {
         private readonly IFarmTypeService _farmTypeService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
-        public FarmTypeController(IFarmTypeService farmTypeService, IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+        public FarmTypeController(IFarmTypeService farmTypeService, IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper,
+            IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _farmTypeService = farmTypeService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
@@ -40,8 +46,8 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 StatusId = filter.StatusId
             });
@@ -267,7 +273,12 @@ namespace Module.Web.FarmManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarmType)]
         public async Task<IActionResult> Search(string q)
         {
-            var farmTypes = await _farmTypeService.SearchAsync(q);
+            var farmTypes = await _farmTypeService.SearchAsync(new BaseFilter
+            {
+                Keyword = q,
+                Page = _defaultPageSelection,
+                PageSize = _pagerOptions.PageSize
+            });
             if (farmTypes == null || !farmTypes.Any())
             {
                 return Json(new List<Select2ItemModel>());

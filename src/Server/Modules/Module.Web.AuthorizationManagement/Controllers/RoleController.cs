@@ -15,6 +15,8 @@ using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Authorization;
 using Camino.Core.Contracts.IdentityManager;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -23,14 +25,17 @@ namespace Module.Web.AuthorizationManagement.Controllers
         private readonly IRoleService _roleService;
         private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public RoleController(IRoleService roleService, IHttpContextAccessor httpContextAccessor,
-            IApplicationRoleManager<ApplicationRole> roleManager, IHttpHelper httpHelper)
+            IApplicationRoleManager<ApplicationRole> roleManager, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _roleService = roleService;
             _roleManager = roleManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
@@ -41,8 +46,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var rolePageList = await _roleService.GetAsync(new RoleFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             });
 
             var roleModels = rolePageList.Collections.Select(x => new RoleModel
@@ -77,7 +82,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
         public IActionResult Search(string q, List<long> currentRoleIds)
         {
-            var roles = _roleService.Search(q, currentRoleIds);
+            var roles = _roleService.Search(new BaseFilter
+            {
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            }, currentRoleIds);
             if (roles == null || !roles.Any())
             {
                 return Json(new

@@ -5,11 +5,13 @@ using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Camino.Infrastructure.Enums;
+using Camino.Shared.Configurations;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
 using Camino.Shared.Results.Navigations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Module.Web.NavigationManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -22,13 +24,16 @@ namespace Module.Web.NavigationManagement.Controllers
     {
         private readonly IShortcutService _shortcutService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public ShortcutController(IShortcutService shortcutService,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _shortcutService = shortcutService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadShortcut)]
@@ -38,8 +43,8 @@ namespace Module.Web.NavigationManagement.Controllers
             var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 TypeId = filter.TypeId,
                 CanGetInactived = true,
                 StatusId = filter.StatusId
@@ -281,9 +286,9 @@ namespace Module.Web.NavigationManagement.Controllers
             var shortcuts = _shortcutService.GetShortcutTypes(new ShortcutTypeFilter
             {
                 Id = currentId,
-                Search = q,
-                Page = 1,
-                PageSize = 10
+                Keyword = q,
+                Page = _defaultPageSelection,
+                PageSize = _pagerOptions.PageSize
             });
 
             if (shortcuts == null || !shortcuts.Any())

@@ -65,7 +65,7 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter)
         {
             var inactivedStatus = ProductAttributeStatus.Inactived.GetCode();
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var productAttributeQuery = _productAttributeRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
@@ -105,7 +105,7 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter)
         {
-            string search = filter.Search;
+            string search = filter.Keyword;
             if (search == null)
             {
                 search = string.Empty;
@@ -216,7 +216,7 @@ namespace Camino.Infrastructure.Repositories.Products
                 result = result.Where(x => x.Id != filter.ControlTypeId.ToString()).ToList();
             }
 
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             result = result.Where(x => string.IsNullOrEmpty(search) || x.Text.ToLower().Equals(search)).ToList();
             return result;
         }

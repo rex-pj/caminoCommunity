@@ -9,7 +9,7 @@ namespace Camino.Core.Contracts.Repositories.Users
 {
     public interface IUserStatusRepository
     {
-        IList<UserStatusResult> Search(string query = "", int page = 1, int pageSize = 10);
+        IList<UserStatusResult> Search(BaseFilter filter);
         Task<BasePageList<UserStatusResult>> GetAsync(UserStatusFilter filter);
         UserStatusResult Find(int id);
         UserStatusResult FindByName(string name);

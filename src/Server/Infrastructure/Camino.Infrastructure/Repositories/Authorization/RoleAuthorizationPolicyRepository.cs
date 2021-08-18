@@ -71,7 +71,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
 
         public AuthorizationPolicyRolesPageList GetAuthoricationPolicyRoles(long id, RoleAuthorizationPolicyFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
 
             var query = from roleAuthorization in _roleAuthorizationPolicyRepository.Get(x => x.AuthorizationPolicyId == id)
                 join role in _roleRepository.Table

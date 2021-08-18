@@ -16,7 +16,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
 
         public IList<SelectOption> Get(ShortcutTypeFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var result = new List<SelectOption>();
             if (filter.Id > 0)
             {

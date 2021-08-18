@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Products;
 using Camino.Shared.Requests.Products;
+using Microsoft.Extensions.Options;
+using Camino.Shared.Configurations;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -21,13 +23,16 @@ namespace Module.Web.ProductManagement.Controllers
     {
         private readonly IProductAttributeService _productAttributeService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public ProductAttributeController(IProductAttributeService productAttributeService,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _productAttributeService = productAttributeService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
@@ -37,8 +42,8 @@ namespace Module.Web.ProductManagement.Controllers
             var productAttributePageList = await _productAttributeService.GetAsync(new ProductAttributeFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 CanGetInactived = true,
                 StatusId = filter.StatusId
             });
@@ -273,10 +278,13 @@ namespace Module.Web.ProductManagement.Controllers
 
             var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
             {
-                Search = q,
+                Keyword = q,
                 Id = currentId,
-                ExcludedIds = excludedIds
+                ExcludedIds = excludedIds,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
             });
+
             if (productAttributes == null || !productAttributes.Any())
             {
                 return Json(new List<Select2ItemModel>());
@@ -299,7 +307,7 @@ namespace Module.Web.ProductManagement.Controllers
             var controlTypeId = currentId.HasValue ? currentId.Value : 0;
             var productAttributes = _productAttributeService.GetAttributeControlTypes(new ProductAttributeControlTypeFilter
             {
-                Search = q,
+                Keyword = q,
                 ControlTypeId = controlTypeId
             });
             if (productAttributes == null || !productAttributes.Any())

@@ -11,8 +11,8 @@ namespace Camino.Core.Contracts.Repositories.Articles
     {
         Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter);
         Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter);
-        IList<ArticleCategoryResult> Search(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10);
-        IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10);
+        IList<ArticleCategoryResult> Search(IdRequestFilter<int?> idRequestFilter, BaseFilter filter);
+        IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> idRequestFilter, BaseFilter filter);
         Task<int> CreateAsync(ArticleCategoryModifyRequest category);
         Task<bool> UpdateAsync(ArticleCategoryModifyRequest category);
         Task<ArticleCategoryResult> FindByNameAsync(string name);

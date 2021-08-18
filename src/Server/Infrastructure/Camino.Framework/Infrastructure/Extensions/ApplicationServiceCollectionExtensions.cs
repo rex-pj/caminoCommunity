@@ -17,6 +17,7 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.Configure<AppSettings>(configuration.GetSection(AppSettings.Name));
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
+            services.Configure<PagerOptions>(configuration.GetSection(PagerOptions.Name));
 
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>()
                 .AddScoped<IHttpHelper, HttpHelper>();

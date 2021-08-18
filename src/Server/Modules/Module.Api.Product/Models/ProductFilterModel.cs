@@ -8,8 +8,6 @@ namespace Module.Api.Product.Models
     {
         public ProductFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         [GraphQLType(typeof(LongType))]

@@ -74,14 +74,14 @@ namespace Camino.Services.Articles
             return categoryPageList;
         }
 
-        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            return _articleCategoryRepository.SearchParents(filter, search, page, pageSize);
+            return _articleCategoryRepository.SearchParents(idRequestFilter, filter);
         }
 
-        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            return _articleCategoryRepository.Search(filter, search, page, pageSize);
+            return _articleCategoryRepository.Search(idRequestFilter, filter);
         }
         #endregion
 

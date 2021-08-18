@@ -16,9 +16,14 @@ namespace Camino.ApiHost.Infrastructure.Extensions
             services.AddApplicationServices(configuration);
 
             services.AddInfrastructureServices();
-            services.AddHttpContextAccessor();
-            services.ConfigureCorsServices(services.BuildServiceProvider());
+            services.AddHttpContextAccessor()
+                .ConfigureCorsServices(services.BuildServiceProvider());
 
+            services.AddControllers()
+                .AddNewtonsoftJson()
+                .AddModular();
+            services.AddAutoMappingModular();
+            services.AddGraphQlModular();
             return services;
         }
 

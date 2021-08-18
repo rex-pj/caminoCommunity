@@ -82,7 +82,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
 
         public AuthorizationPolicyUsersPageList GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = from userAuthorization in _userAuthorizationPolicyRepository.Get(x => x.AuthorizationPolicyId == id)
                         join user in _userRepository.Table
                         on userAuthorization.UserId equals user.Id

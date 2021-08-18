@@ -34,9 +34,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<BasePageList<ArticlePictureResult>> GetAsync(ArticlePictureFilter filter)
         {
             var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode());
-            if (!string.IsNullOrEmpty(filter.Search))
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                var search = filter.Search.ToLower();
+                var search = filter.Keyword.ToLower();
                 pictureQuery = pictureQuery.Where(pic => pic.Title.ToLower().Contains(search));
             }
 

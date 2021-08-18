@@ -70,7 +70,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
         public async Task<BasePageList<ShortcutResult>> GetAsync(ShortcutFilter filter)
         {
             var inactivedStatus = ShortcutStatus.Inactived.GetCode();
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var shortcutQuery = _shortcutRepository.Get(x => filter.CanGetInactived || x.StatusId != inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {

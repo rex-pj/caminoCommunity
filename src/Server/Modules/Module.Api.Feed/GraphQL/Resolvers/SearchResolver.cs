@@ -2,8 +2,10 @@
 using Camino.Core.Contracts.Services.Feeds;
 using Camino.Core.Domain.Identities;
 using Camino.Framework.GraphQL.Resolvers;
+using Camino.Shared.Configurations;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
+using Microsoft.Extensions.Options;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
 using Module.Api.Feed.Services.Interfaces;
@@ -17,14 +19,16 @@ namespace Module.Api.Feed.GraphQL.Resolvers
         private readonly IFeedService _feedService;
         private readonly IFeedModelService _feedModelService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly PagerOptions _pagerOptions;
 
         public SearchResolver(ISessionContext sessionContext, IFeedService feedService, IFeedModelService feedModelService,
-              IUserManager<ApplicationUser> userManager)
+              IUserManager<ApplicationUser> userManager, IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _feedService = feedService;
             _feedModelService = feedModelService;
             _userManager = userManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<SearchInGroupResultModel> LiveSearchAsync(FeedFilterModel criterias)
@@ -37,8 +41,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             var groupOfSearch = await _feedService.LiveSearchInGroupAsync(new FeedFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = _pagerOptions.LiveSearchPageSize,
+                Keyword = criterias.Search
             });
             return new SearchInGroupResultModel
             {
@@ -70,8 +74,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             var filter = new FeedFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.AdvancedSearchPageSize,
+                Keyword = criterias.Search,
                 FilterType = criterias.FilterType.HasValue ? (FeedFilterType)criterias.FilterType : null,
                 CreatedDateFrom = createdDateFrom,
                 CreatedDateTo = createdDateTo

@@ -105,7 +105,7 @@ namespace Camino.Infrastructure.Repositories.Articles
         {
             var deletedStatus = ArticleStatus.Deleted.GetCode();
             var inactivedStatus = ArticleStatus.Inactived.GetCode();
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var articleQuery = _articleRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
                             || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));

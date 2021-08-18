@@ -190,7 +190,6 @@ export default withRouter((props) => {
         criterias: {
           search: value,
           page: 1,
-          pageSize: 4,
         },
       },
     })

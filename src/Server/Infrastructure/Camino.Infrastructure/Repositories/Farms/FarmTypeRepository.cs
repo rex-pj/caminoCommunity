@@ -59,7 +59,7 @@ namespace Camino.Infrastructure.Repositories.Farms
 
         public async Task<BasePageList<FarmTypeResult>> GetAsync(FarmTypeFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var farmTypeQuery = _farmTypeRepository.Table;
             if (!string.IsNullOrEmpty(search))
             {
@@ -121,14 +121,9 @@ namespace Camino.Infrastructure.Repositories.Farms
             return result;
         }
 
-        public async Task<IList<FarmTypeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmTypeResult>> SearchAsync(BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = _farmTypeRepository.Table
                 .Select(c => new FarmTypeResult
                 {
@@ -137,14 +132,14 @@ namespace Camino.Infrastructure.Repositories.Farms
                     Description = c.Description
                 });
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var farmTypes = await query

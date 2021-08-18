@@ -16,6 +16,8 @@ using Camino.Shared.Requests.Products;
 using Camino.Shared.Requests.Media;
 using Camino.Core.Utils;
 using System.Collections.Generic;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -23,13 +25,15 @@ namespace Module.Web.ProductManagement.Controllers
     {
         private readonly IProductService _productService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public ProductController(IProductService productService, IHttpHelper httpHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _productService = productService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
@@ -42,8 +46,8 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 CategoryId = filter.CategoryId,
                 StatusId = filter.StatusId,
@@ -415,8 +419,8 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 MimeType = filter.MimeType
             };
 

@@ -28,9 +28,9 @@ namespace Camino.Services.Identifiers
             return await _countryRepository.GetAsync(filter);
         }
 
-        public IList<CountryResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<CountryResult> Search(BaseFilter filter)
         {
-            return _countryRepository.Search(query, page, pageSize);
+            return _countryRepository.Search(filter);
         }
 
         public CountryResult Find(int id)

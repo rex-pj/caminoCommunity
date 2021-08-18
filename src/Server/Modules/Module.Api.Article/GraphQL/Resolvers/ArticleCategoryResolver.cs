@@ -6,15 +6,21 @@ using System.Linq;
 using Camino.Shared.General;
 using Module.Api.Article.Models;
 using Camino.Shared.Requests.Filters;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleCategoryResolver : IArticleCategoryResolver
     {
         private readonly IArticleCategoryService _articleCategoryService;
-        public ArticleCategoryResolver(IArticleCategoryService articleCategoryService)
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
+
+        public ArticleCategoryResolver(IArticleCategoryService articleCategoryService, IOptions<PagerOptions> pagerOptions)
         {
             _articleCategoryService = articleCategoryService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public IEnumerable<SelectOption> GetArticleCategories(ArticleCategorySelectFilterModel criterias)
@@ -24,20 +30,26 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 criterias = new ArticleCategorySelectFilterModel();
             }
 
+            var filter = new BaseFilter
+            {
+                Keyword = criterias.Query,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            };
             IList<ArticleCategoryResult> categories;
             if (criterias.IsParentOnly)
             {
                 categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
                 {
                     Id = criterias.CurrentId
-                }, criterias.Query);
+                }, filter);
             }
             else
             {
                 categories = _articleCategoryService.Search(new IdRequestFilter<int?>
                 {
                     Id = criterias.CurrentId
-                }, criterias.Query);
+                }, filter);
             }
 
             if (categories == null || !categories.Any())

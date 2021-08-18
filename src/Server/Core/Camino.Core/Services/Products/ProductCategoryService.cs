@@ -1,12 +1,9 @@
 ﻿using Camino.Shared.Requests.Filters;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Products;
 using Camino.Shared.Results.PageList;
 using Camino.Shared.Results.Products;
-using Camino.Core.Domain.Products;
 using Camino.Shared.Requests.Products;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Core.Contracts.Repositories.Users;
@@ -76,14 +73,14 @@ namespace Camino.Services.Products
             return productCategoriesPageList;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, int[] currentIds)
         {
-            return await _productCategoryRepository.SearchParentsAsync(currentIds, search, page, pageSize);
+            return await _productCategoryRepository.SearchParentsAsync(filter, currentIds);
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, int[] currentIds)
         {
-            return await _productCategoryRepository.SearchAsync(currentIds, search, page, pageSize);
+            return await _productCategoryRepository.SearchAsync(filter, currentIds);
         }
         #endregion
 

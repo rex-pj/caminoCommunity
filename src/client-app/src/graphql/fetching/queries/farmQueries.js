@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_FARMS = gql`
-  query($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmFilterModelInput) {
     userFarms(criterias: $criterias) {
       totalPage
       totalResult
@@ -28,8 +28,8 @@ export const GET_USER_FARMS = gql`
   }
 `;
 
-export const GET_USER_FARMS_TITLE = gql`
-  query($criterias: FarmFilterModelInput) {
+export const SELECT_USER_FARMS = gql`
+  query ($criterias: FarmFilterModelInput) {
     userFarms(criterias: $criterias) {
       collections {
         id
@@ -40,7 +40,7 @@ export const GET_USER_FARMS_TITLE = gql`
 `;
 
 export const GET_FARMS = gql`
-  query($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmFilterModelInput) {
     farms(criterias: $criterias) {
       totalPage
       totalResult
@@ -68,7 +68,7 @@ export const GET_FARMS = gql`
 `;
 
 export const GET_FARM = gql`
-  query($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmFilterModelInput) {
     farm(criterias: $criterias) {
       id
       description
@@ -87,7 +87,7 @@ export const GET_FARM = gql`
 `;
 
 export const GET_FARM_FOR_UPDATE = gql`
-  query($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmFilterModelInput) {
     farm(criterias: $criterias) {
       id
       description

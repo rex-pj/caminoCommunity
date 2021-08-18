@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.IdentityManager;
 using Module.Api.Feed.Services.Interfaces;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Feed.GraphQL.Resolvers
 {
@@ -17,14 +19,16 @@ namespace Module.Api.Feed.GraphQL.Resolvers
         private readonly IFeedService _feedService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IFeedModelService _feedModelService;
+        private readonly PagerOptions _pagerOptions;
 
         public FeedResolver(ISessionContext sessionContext, IFeedService feedService, IUserManager<ApplicationUser> userManager,
-            IFeedModelService feedModelService)
+            IFeedModelService feedModelService, IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _feedService = feedService;
             _userManager = userManager;
             _feedModelService = feedModelService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<FeedPageListModel> GetUserFeedsAsync(ApplicationUser currentUser, FeedFilterModel criterias)
@@ -46,8 +50,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             var filterRequest = new FeedFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 CreatedById = userId,
                 CanGetInactived = currentUser.Id == userId
             };
@@ -82,8 +86,8 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             var filterRequest = new FeedFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try

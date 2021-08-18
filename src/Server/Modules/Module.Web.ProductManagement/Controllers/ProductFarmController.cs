@@ -9,17 +9,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Farms;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductFarmController : BaseAuthController
     {
         private readonly IFarmService _farmService;
+        private readonly PagerOptions _pagerOptions;
 
-        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor)
+        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _farmService = farmService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
@@ -35,9 +39,9 @@ namespace Module.Web.ProductManagement.Controllers
             var filter = new SelectFilter()
             {
                 CurrentIds = currentIds,
-                Search = q
+                Keyword = q
             };
-            var farms = await _farmService.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter, 1, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return Json(new List<Select2ItemModel>());

@@ -14,6 +14,8 @@ using Camino.Shared.Requests.Media;
 using Camino.Shared.Requests.Articles;
 using Camino.Core.Contracts.Services.Articles;
 using Camino.Core.Exceptions;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
@@ -21,12 +23,15 @@ namespace Module.Api.Article.GraphQL.Resolvers
     {
         private readonly IArticleService _articleService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly PagerOptions _pagerOptions;
 
-        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext)
+        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext,
+            IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _articleService = articleService;
             _userManager = userManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<ArticlePageListModel> GetUserArticlesAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
@@ -48,8 +53,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
             var filterRequest = new ArticleFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 CreatedById = userId,
                 CanGetInactived = currentUser.Id == userId
             };
@@ -84,8 +89,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
             var filterRequest = new ArticleFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try
@@ -147,8 +152,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
             var filterRequest = new ArticleFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try

@@ -8,8 +8,6 @@ namespace Module.Api.Farm.Models
     {
         public FarmFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         [GraphQLType(typeof(LongType))]

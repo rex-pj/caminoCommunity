@@ -14,6 +14,8 @@ using Camino.Core.Contracts.IdentityManager;
 using Camino.Shared.General;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Requests.Media;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Farm.GraphQL.Resolvers
 {
@@ -21,12 +23,16 @@ namespace Module.Api.Farm.GraphQL.Resolvers
     {
         private readonly IFarmService _farmService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
-        public FarmResolver(ISessionContext sessionContext, IFarmService farmService, IUserManager<ApplicationUser> userManager)
+        public FarmResolver(ISessionContext sessionContext, IFarmService farmService, IUserManager<ApplicationUser> userManager,
+            IOptions<PagerOptions> pagerOptions)
             : base(sessionContext)
         {
             _farmService = farmService;
             _userManager = userManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, FarmSelectFilterModel criterias)
@@ -40,10 +46,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             {
                 CreatedById = currentUser.Id,
                 CurrentIds = criterias.CurrentIds,
-                Search = criterias.Query
+                Keyword = criterias.Query
             };
 
-            var farms = await _farmService.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter, _defaultPageSelection, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -145,8 +151,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             var filterRequest = new FarmFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 CreatedById = userId,
                 CanGetInactived = currentUser.Id == userId
             };
@@ -181,8 +187,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             var filterRequest = new FarmFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
@@ -258,7 +264,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                return await _farmService.SoftDeleteAsync(new FarmModifyRequest { 
+                return await _farmService.SoftDeleteAsync(new FarmModifyRequest
+                {
                     UpdatedById = currentUser.Id,
                     Id = criterias.Id
                 });

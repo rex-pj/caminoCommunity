@@ -66,7 +66,7 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task<BasePageList<ProductCategoryResult>> GetAsync(ProductCategoryFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var categoryQuery = _productCategoryRepository.Table;
             if (!string.IsNullOrEmpty(search))
             {
@@ -141,14 +141,9 @@ namespace Camino.Infrastructure.Repositories.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, int[] currentIds)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var query = _productCategoryRepository.Get(x => !x.ParentId.HasValue)
                 .Select(c => new ProductCategoryResult
                 {
@@ -163,14 +158,14 @@ namespace Camino.Infrastructure.Repositories.Products
                 query = query.Where(x => !currentIds.Contains(x.Id));
             }
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var categories = await query
@@ -185,14 +180,9 @@ namespace Camino.Infrastructure.Repositories.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, int[] currentIds)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var queryParents = _productCategoryRepository.Get(x => !x.ParentId.HasValue);
 
             var queryChildrens = _productCategoryRepository.Get(x => x.ParentId.HasValue);
@@ -221,17 +211,17 @@ namespace Camino.Infrastructure.Repositories.Products
                             }
                         };
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search)
-                        || x.Description.ToLower().Contains(search)
-                        || x.ParentCategory.Name.ToLower().Contains(search)
-                        || x.ParentCategory.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword)
+                        || x.Description.ToLower().Contains(keyword)
+                        || x.ParentCategory.Name.ToLower().Contains(keyword)
+                        || x.ParentCategory.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var data = await query

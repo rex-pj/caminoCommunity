@@ -18,24 +18,26 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber, pageSize } = props;
+  const { location, match, pageNumber } = props;
   const { params } = match;
   const { userId } = params;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
 
-  const { loading, data, error, refetch: fetchFarms, networkStatus } = useQuery(
-    farmQueries.GET_USER_FARMS,
-    {
-      variables: {
-        criterias: {
-          userIdentityId: userId,
-          page: pageNumber ? parseInt(pageNumber) : 1,
-          pageSize: pageSize ? parseInt(pageSize) : 10,
-        },
+  const {
+    loading,
+    data,
+    error,
+    refetch: fetchFarms,
+    networkStatus,
+  } = useQuery(farmQueries.GET_USER_FARMS, {
+    variables: {
+      criterias: {
+        userIdentityId: userId,
+        page: pageNumber ? parseInt(pageNumber) : 1,
       },
-    }
-  );
+    },
+  });
 
   const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
     client: authClient,

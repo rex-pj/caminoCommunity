@@ -72,7 +72,7 @@ namespace Camino.Infrastructure.Repositories.Articles
 
         public async Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var categoryQuery = _articleCategoryRepository.Get(x => filter.CanGetInactived || x.StatusId != _inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
@@ -136,15 +136,10 @@ namespace Camino.Infrastructure.Repositories.Articles
             return result;
         }
 
-        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != _inactivedStatus))
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (idRequestFilter.CanGetInactived || x.StatusId != _inactivedStatus))
                 .Select(c => new ArticleCategoryResult
                 {
                     Id = c.Id,
@@ -153,19 +148,19 @@ namespace Camino.Infrastructure.Repositories.Articles
                     ParentId = c.ParentId
                 });
 
-            if (filter.Id.HasValue)
+            if (idRequestFilter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != filter.Id);
+                query = query.Where(x => x.Id != idRequestFilter.Id);
             }
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var categories = query
@@ -180,15 +175,10 @@ namespace Camino.Infrastructure.Repositories.Articles
             return categories;
         }
 
-        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> filter, string search = "", int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (filter.CanGetInactived || x.StatusId != _inactivedStatus));
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (idRequestFilter.CanGetInactived || x.StatusId != _inactivedStatus));
             var queryChildrens = _articleCategoryRepository.Get(x => x.ParentId.HasValue);
 
             var query = from parent in queryParents
@@ -210,22 +200,22 @@ namespace Camino.Infrastructure.Repositories.Articles
                             }
                         };
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search)
-                        || x.Description.ToLower().Contains(search)
-                        || x.ParentCategory.Name.ToLower().Contains(search)
-                        || x.ParentCategory.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword)
+                        || x.Description.ToLower().Contains(keyword)
+                        || x.ParentCategory.Name.ToLower().Contains(keyword)
+                        || x.ParentCategory.Description.ToLower().Contains(keyword));
             }
 
-            if (filter.Id.HasValue)
+            if (idRequestFilter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != filter.Id);
+                query = query.Where(x => x.Id != idRequestFilter.Id);
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var data = query

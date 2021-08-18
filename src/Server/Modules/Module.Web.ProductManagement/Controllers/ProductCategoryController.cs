@@ -15,6 +15,8 @@ using Camino.Core.Contracts.Services.Products;
 using Camino.Shared.Results.Products;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Products;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -22,13 +24,16 @@ namespace Module.Web.ProductManagement.Controllers
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public ProductCategoryController(IProductCategoryService productCategoryService,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _productCategoryService = productCategoryService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
@@ -41,8 +46,8 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
                 StatusId = filter.StatusId
             });
@@ -280,13 +285,19 @@ namespace Module.Web.ProductManagement.Controllers
             }
 
             IList<ProductCategoryResult> categories;
+            var filter = new BaseFilter
+            {
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            };
             if (isParentOnly)
             {
-                categories = await _productCategoryService.SearchParentsAsync(currentIds, q);
+                categories = await _productCategoryService.SearchParentsAsync(filter, currentIds);
             }
             else
             {
-                categories = await _productCategoryService.SearchAsync(currentIds, q);
+                categories = await _productCategoryService.SearchAsync(filter, currentIds);
             }
 
             if (categories == null || !categories.Any())

@@ -11,7 +11,7 @@ namespace Camino.Core.Contracts.Services.Identities
     {
         List<CountryResult> Get();
         Task<BasePageList<CountryResult>> GetAsync(CountryFilter filter);
-        IList<CountryResult> Search(string query = "", int page = 1, int pageSize = 10);
+        IList<CountryResult> Search(BaseFilter filter);
         CountryResult Find(int id);
         CountryResult FindByName(string name);
         Task<int> CreateAsync(CountryModifyRequest request);
