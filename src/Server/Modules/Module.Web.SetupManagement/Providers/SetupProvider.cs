@@ -1,11 +1,11 @@
-﻿using Camino.Core.Constants;
-using Camino.Shared.Configurations;
+﻿using Camino.Shared.Configurations;
 using Newtonsoft.Json;
 using System;
 using System.Text;
 using Camino.Core.Contracts.Providers;
 using System.IO;
 using System.Reflection;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.SetupManagement.Providers
 {

@@ -1,18 +1,18 @@
-﻿using Camino.Core.Domain.Identities;
-using Module.Api.Product.Models;
+﻿using Module.Api.Product.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Api.Product.GraphQL.Resolvers.Contracts
 {
     public interface IProductResolver
     {
-        Task<ProductModel> CreateProductAsync(ApplicationUser currentUser, ProductModel criterias);
-        Task<ProductModel> UpdateProductAsync(ApplicationUser currentUser, ProductModel criterias);
-        Task<ProductPageListModel> GetUserProductsAsync(ApplicationUser currentUser, ProductFilterModel criterias);
+        Task<ProductModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias);
+        Task<ProductModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias);
+        Task<ProductPageListModel> GetUserProductsAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
         Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias);
-        Task<ProductModel> GetProductAsync(ApplicationUser currentUser, ProductFilterModel criterias);
+        Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
         Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias);
-        Task<bool> DeleteProductAsync(ApplicationUser currentUser, ProductFilterModel criterias);
+        Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
     }
 }

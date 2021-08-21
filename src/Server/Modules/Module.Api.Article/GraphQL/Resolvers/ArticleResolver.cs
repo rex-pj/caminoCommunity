@@ -16,6 +16,7 @@ using Camino.Core.Contracts.Services.Articles;
 using Camino.Core.Exceptions;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
@@ -25,16 +26,16 @@ namespace Module.Api.Article.GraphQL.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly PagerOptions _pagerOptions;
 
-        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext,
+        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager,
             IOptions<PagerOptions> pagerOptions)
-            : base(sessionContext)
+            : base()
         {
             _articleService = articleService;
             _userManager = userManager;
             _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<ArticlePageListModel> GetUserArticlesAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
+        public async Task<ArticlePageListModel> GetUserArticlesAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -49,6 +50,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 };
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
             var filterRequest = new ArticleFilter
             {
@@ -56,7 +58,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 PageSize = _pagerOptions.PageSize,
                 Keyword = criterias.Search,
                 CreatedById = userId,
-                CanGetInactived = currentUser.Id == userId
+                CanGetInactived = currentUserId == userId
             };
 
             try
@@ -113,7 +115,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> GetArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -128,7 +130,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     CanGetInactived = true
                 });
 
-                if (currentUser.Id != articleResult.CreatedById)
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != articleResult.CreatedById)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -169,12 +172,13 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
+        public async Task<ArticleModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
         {
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var article = new ArticleModifyRequest
             {
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Content = criterias.Content,
                 Name = criterias.Name,
                 ArticleCategoryId = criterias.ArticleCategoryId
@@ -195,7 +199,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
+        public async Task<ArticleModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
         {
             var exist = await _articleService.FindAsync(new IdRequestFilter<long>
             {
@@ -208,7 +212,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 throw new CaminoApplicationException($"The article with id {criterias.Id} has not been found");
             }
 
-            if (currentUser.Id != exist.CreatedById)
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            if (currentUserId != exist.CreatedById)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -216,8 +221,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
             var article = new ArticleModifyRequest
             {
                 Id = criterias.Id,
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Content = criterias.Content,
                 Name = criterias.Name,
                 ArticleCategoryId = criterias.ArticleCategoryId
@@ -238,7 +243,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
+        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             try
             {
@@ -253,7 +258,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     return false;
                 }
 
-                if (currentUser.Id != exist.CreatedById)
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != exist.CreatedById)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -261,7 +267,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
                 {
                     Id = criterias.Id,
-                    UpdatedById = currentUser.Id,
+                    UpdatedById = currentUserId,
                 });
             }
             catch (Exception)

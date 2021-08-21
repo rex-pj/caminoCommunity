@@ -1,4 +1,4 @@
-﻿namespace Camino.Core.Constants
+﻿namespace Camino.Infrastructure.Commons.Constants
 {
     public class AuthorizePolicyConst
     {

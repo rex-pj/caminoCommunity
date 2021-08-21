@@ -4,7 +4,7 @@ using System.Linq;
 using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Navigations;
-using Camino.Infrastructure.Enums;
+using Camino.Infrastructure.Commons.Enums;
 
 namespace Camino.Infrastructure.Repositories.Navigations
 {

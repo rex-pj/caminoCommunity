@@ -1,18 +1,18 @@
-﻿using Camino.Core.Domain.Identities;
-using Module.Api.Article.Models;
+﻿using Module.Api.Article.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Api.Article.GraphQL.Resolvers.Contracts
 {
     public interface IArticleResolver
     {
-        Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias);
-        Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias);
-        Task<ArticlePageListModel> GetUserArticlesAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
+        Task<ArticleModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias);
+        Task<ArticleModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias);
+        Task<ArticlePageListModel> GetUserArticlesAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias);
         Task<ArticlePageListModel> GetArticlesAsync(ArticleFilterModel criterias);
-        Task<ArticleModel> GetArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
+        Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias);
         Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias);
-        Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias);
+        Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias);
     }
 }

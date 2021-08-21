@@ -1,4 +1,4 @@
-﻿using Camino.Core.Constants;
+﻿using Camino.Infrastructure.Commons.Constants;
 using Camino.Infrastructure.MapBuilders;
 using LinqToDB.Mapping;
 using Camino.Core.Domain.Identifiers;

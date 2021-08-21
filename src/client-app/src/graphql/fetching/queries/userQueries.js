@@ -16,18 +16,6 @@ export const GET_LOGGED_USER = gql`
   }
 `;
 
-export const LOGOUT = gql`
-  query logout {
-    logout {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
 export const GET_USER_INFO = gql`
   query ($criterias: FindUserModelInput!) {
     userInfo: fullUserInfo(criterias: $criterias) {

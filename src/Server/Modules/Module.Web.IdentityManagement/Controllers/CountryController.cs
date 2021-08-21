@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
@@ -16,6 +15,7 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Services.Identities;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.IdentityManagement.Controllers
 {

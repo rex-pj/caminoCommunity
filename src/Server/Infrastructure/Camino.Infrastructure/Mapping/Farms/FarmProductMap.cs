@@ -1,7 +1,7 @@
-﻿using Camino.Core.Constants;
-using Camino.Infrastructure.MapBuilders;
+﻿using Camino.Infrastructure.MapBuilders;
 using LinqToDB.Mapping;
 using Camino.Core.Domain.Farms;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Camino.Infrastructure.Mapping.Farms
 {

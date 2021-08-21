@@ -18,9 +18,11 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
             services.Configure<PagerOptions>(configuration.GetSection(PagerOptions.Name));
+            services.Configure<JwtConfigOptions>(configuration.GetSection(JwtConfigOptions.Name));
 
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>()
-                .AddScoped<IHttpHelper, HttpHelper>();
+                .AddScoped<IHttpHelper, HttpHelper>()
+                .AddScoped<IJwtHelper, JwtHelper>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

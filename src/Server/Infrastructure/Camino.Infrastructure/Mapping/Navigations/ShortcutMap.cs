@@ -1,5 +1,5 @@
-﻿using Camino.Core.Constants;
-using Camino.Core.Domain.Navigations;
+﻿using Camino.Core.Domain.Navigations;
+using Camino.Infrastructure.Commons.Constants;
 using Camino.Infrastructure.MapBuilders;
 using LinqToDB.Mapping;
 

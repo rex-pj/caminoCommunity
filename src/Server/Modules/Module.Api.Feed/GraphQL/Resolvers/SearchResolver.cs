@@ -21,9 +21,9 @@ namespace Module.Api.Feed.GraphQL.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly PagerOptions _pagerOptions;
 
-        public SearchResolver(ISessionContext sessionContext, IFeedService feedService, IFeedModelService feedModelService,
+        public SearchResolver(IFeedService feedService, IFeedModelService feedModelService,
               IUserManager<ApplicationUser> userManager, IOptions<PagerOptions> pagerOptions)
-            : base(sessionContext)
+            : base()
         {
             _feedService = feedService;
             _feedModelService = feedModelService;

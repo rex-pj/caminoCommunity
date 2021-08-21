@@ -1,5 +1,5 @@
 ﻿using Camino.Framework.Models;
-using Camino.Infrastructure.Enums;
+using Camino.Infrastructure.Commons.Enums;
 using Camino.Shared.Enums;
 using System;
 

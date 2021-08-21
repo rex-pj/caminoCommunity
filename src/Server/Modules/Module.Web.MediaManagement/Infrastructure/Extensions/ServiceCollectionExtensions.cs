@@ -1,5 +1,5 @@
-﻿using Camino.Core.Constants;
-using Camino.Core.Contracts.FileStore;
+﻿using Camino.Core.Contracts.FileStore;
+using Camino.Infrastructure.Commons.Constants;
 using Camino.Infrastructure.FileStores;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;

@@ -33,8 +33,7 @@ namespace Camino.IdentityManager.Infrastructure.Extensions
                 .AddScoped<IUserPasswordStore<TUser>, ApplicationUserStore<TUser>>()
                 .AddScoped<IUserSecurityStampStore<TUser>, ApplicationUserStore<TUser>>()
                 .AddScoped<IRoleStore<TRole>, ApplicationRoleStore<TRole>>()
-                .AddScoped<ITextEncryption, TextEncryption>()
-                .AddScoped<ISessionContext, SessionContext>();
+                .AddScoped<ITextEncryption, TextEncryption>();
 
             return services;
         }

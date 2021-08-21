@@ -180,8 +180,12 @@ export default withRouter((props) => {
 
   const onEnterExecuteSearch = (evt) => {
     if (evt.keyCode === 13) {
-      history.push(`/search/${searchData.keyword}`);
+      onRedirectToSearch();
     }
+  };
+
+  const onRedirectToSearch = () => {
+    history.push(`/search/${searchData.keyword}`);
   };
 
   const fetchSearchResults = async (value) => {
@@ -238,7 +242,7 @@ export default withRouter((props) => {
   const { searchResults, isDropdownShown, keyword } = searchData;
   return (
     <SearchForm className={props.className}>
-      <SearchButton type="submit">
+      <SearchButton onClick={onRedirectToSearch}>
         <FontAwesomeIcon icon={faSearch} />
       </SearchButton>
       <SearchInput

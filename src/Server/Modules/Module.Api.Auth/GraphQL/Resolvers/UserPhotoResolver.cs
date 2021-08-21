@@ -9,6 +9,7 @@ using Camino.Shared.Results.Media;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Core.Contracts.IdentityManager;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -17,22 +18,17 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IUserPhotoService _userPhotoService;
         private readonly IUserManager<ApplicationUser> _userManager;
 
-        public UserPhotoResolver(IUserPhotoService userPhotoService, IUserManager<ApplicationUser> userManager,
-            ISessionContext sessionContext)
-            : base(sessionContext)
+        public UserPhotoResolver(IUserPhotoService userPhotoService, IUserManager<ApplicationUser> userManager)
+            : base()
         {
             _userManager = userManager;
             _userPhotoService = userPhotoService;
         }
 
-        public async Task<UserAvatarModel> GetUserAvatar(ApplicationUser currentUser, FindUserModel criterias)
+        public async Task<UserAvatarModel> GetUserAvatar(ClaimsPrincipal claimsPrincipal, FindUserModel criterias)
         {
-            if (currentUser == null)
-            {
-                return null;
-            }
-
-            var userId = currentUser.Id;
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            var userId = currentUserId;
             if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
             {
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
@@ -47,14 +43,10 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             };
         }
 
-        public async Task<UserCoverModel> GetUserCover(ApplicationUser currentUser, FindUserModel criterias)
+        public async Task<UserCoverModel> GetUserCover(ClaimsPrincipal claimsPrincipal, FindUserModel criterias)
         {
-            if (currentUser == null)
-            {
-                return null;
-            }
-
-            var userId = currentUser.Id;
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            var userId = currentUserId;
             if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
             {
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
@@ -69,14 +61,10 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             };
         }
 
-        public async Task<IList<UserPhotoModel>> GetUserPhotos(ApplicationUser currentUser, FindUserModel criterias)
+        public async Task<IList<UserPhotoModel>> GetUserPhotos(ClaimsPrincipal claimsPrincipal, FindUserModel criterias)
         {
-            if (currentUser == null)
-            {
-                return new List<UserPhotoModel>();
-            }
-
-            var userId = currentUser.Id;
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            var userId = currentUserId;
             if (criterias != null && !string.IsNullOrEmpty(criterias.UserId))
             {
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);

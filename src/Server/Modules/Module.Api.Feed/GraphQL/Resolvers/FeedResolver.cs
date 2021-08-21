@@ -11,6 +11,7 @@ using Camino.Core.Contracts.IdentityManager;
 using Module.Api.Feed.Services.Interfaces;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Module.Api.Feed.GraphQL.Resolvers
 {
@@ -21,9 +22,9 @@ namespace Module.Api.Feed.GraphQL.Resolvers
         private readonly IFeedModelService _feedModelService;
         private readonly PagerOptions _pagerOptions;
 
-        public FeedResolver(ISessionContext sessionContext, IFeedService feedService, IUserManager<ApplicationUser> userManager,
+        public FeedResolver(IFeedService feedService, IUserManager<ApplicationUser> userManager,
             IFeedModelService feedModelService, IOptions<PagerOptions> pagerOptions)
-            : base(sessionContext)
+            : base()
         {
             _feedService = feedService;
             _userManager = userManager;
@@ -31,7 +32,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<FeedPageListModel> GetUserFeedsAsync(ApplicationUser currentUser, FeedFilterModel criterias)
+        public async Task<FeedPageListModel> GetUserFeedsAsync(ClaimsPrincipal claimsPrincipal, FeedFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -46,6 +47,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 };
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
             var filterRequest = new FeedFilter
             {
@@ -53,7 +55,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 PageSize = _pagerOptions.PageSize,
                 Keyword = criterias.Search,
                 CreatedById = userId,
-                CanGetInactived = currentUser.Id == userId
+                CanGetInactived = currentUserId == userId
             };
 
             try

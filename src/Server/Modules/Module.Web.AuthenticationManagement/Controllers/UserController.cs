@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Helpers;
@@ -15,6 +14,7 @@ using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {

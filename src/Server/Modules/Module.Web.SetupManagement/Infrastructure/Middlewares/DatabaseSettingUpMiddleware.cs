@@ -1,5 +1,5 @@
-﻿using Camino.Core.Constants;
-using Camino.Core.Contracts.Providers;
+﻿using Camino.Core.Contracts.Providers;
+using Camino.Infrastructure.Commons.Constants;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;

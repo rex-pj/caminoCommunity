@@ -1,10 +1,10 @@
-﻿using Camino.Core.Constants;
-using Camino.Core.Contracts.Helpers;
+﻿using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Navigations;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
-using Camino.Infrastructure.Enums;
+using Camino.Infrastructure.Commons.Constants;
+using Camino.Infrastructure.Commons.Enums;
 using Camino.Shared.Configurations;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;

@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Core.Contracts.Helpers;
@@ -17,6 +16,7 @@ using Camino.Shared.Enums;
 using Camino.Shared.Requests.Products;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.ProductManagement.Controllers
 {

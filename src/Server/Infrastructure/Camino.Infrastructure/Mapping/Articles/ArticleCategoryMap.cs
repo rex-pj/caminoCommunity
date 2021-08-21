@@ -1,7 +1,7 @@
-﻿using Camino.Core.Constants;
-using LinqToDB.Mapping;
+﻿using LinqToDB.Mapping;
 using Camino.Core.Domain.Articles;
 using Camino.Infrastructure.MapBuilders;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Camino.Infrastructure.Mapping.Articles
 {

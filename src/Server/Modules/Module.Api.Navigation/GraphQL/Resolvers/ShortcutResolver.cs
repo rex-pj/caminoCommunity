@@ -2,15 +2,14 @@
 using Camino.Shared.Requests.Filters;
 using System;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
 using Module.Api.Navigation.GraphQL.Resolvers.Contracts;
 using Camino.Core.Contracts.Services.Navigations;
 using Module.Api.Navigation.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Infrastructure.Enums;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Enums;
 
 namespace Module.Api.Navigation.GraphQL.Resolvers
 {
@@ -19,8 +18,8 @@ namespace Module.Api.Navigation.GraphQL.Resolvers
         private readonly IShortcutService _shortcutService;
         private readonly PagerOptions _pagerOptions;
 
-        public ShortcutResolver(IShortcutService shortcutService, ISessionContext sessionContext, IOptions<PagerOptions> pagerOptions)
-            : base(sessionContext)
+        public ShortcutResolver(IShortcutService shortcutService, IOptions<PagerOptions> pagerOptions)
+            : base()
         {
             _shortcutService = shortcutService;
             _pagerOptions = pagerOptions.Value;

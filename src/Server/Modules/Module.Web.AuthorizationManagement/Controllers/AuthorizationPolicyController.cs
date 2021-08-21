@@ -8,7 +8,6 @@ using Camino.Framework.Models;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Core.Domain.Identities;
 using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
@@ -19,6 +18,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {

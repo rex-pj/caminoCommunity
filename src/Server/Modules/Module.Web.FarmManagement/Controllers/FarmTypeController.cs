@@ -1,10 +1,8 @@
-﻿using Camino.Core.Constants;
-using Camino.Framework.Attributes;
+﻿using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Camino.Core.Contracts.Services.Farms;
-using Camino.Shared.Results.Farms;
 using Camino.Shared.Requests.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +15,7 @@ using Camino.Shared.Enums;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.FarmManagement.Controllers
 {

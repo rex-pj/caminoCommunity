@@ -17,7 +17,7 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                //.UseWebSockets()
+                .UseWebSockets()
                 .UseCors(appSettings.MyAllowSpecificOrigins)
                 .UseEndpoints(endpoints =>
                 {

@@ -12,10 +12,11 @@ namespace Module.Api.Auth.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IUserResolver, UserResolver>();
-            services.AddTransient<ICountryResolver, CountryResolver>();
-            services.AddTransient<IGenderResolver, GenderResolver>();
-            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+            services.AddScoped<IAuthenticateResolver, AuthenticateResolver>();
+            services.AddScoped<IUserResolver, UserResolver>();
+            services.AddScoped<ICountryResolver, CountryResolver>();
+            services.AddScoped<IGenderResolver, GenderResolver>();
+            services.AddScoped<IUserPhotoResolver, UserPhotoResolver>();
 
             services.AddGraphQLServer()
                 .AddType<CountryQueries>()

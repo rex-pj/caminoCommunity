@@ -1,4 +1,4 @@
-﻿namespace Camino.Infrastructure.Enums
+﻿namespace Camino.Infrastructure.Commons.Enums
 {
     public enum ShortcutType
     {

@@ -5,7 +5,7 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import { AUTH_KEY, AUTH_USER_HASHED_ID } from "../../utils/AppSettings";
+import { AUTH_KEY } from "../../utils/AppSettings";
 
 const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
@@ -17,13 +17,11 @@ const httpLink = new HttpLink({
 
 const contextLink = setContext(async (_, { headers }) => {
   const token = localStorage.getItem(AUTH_KEY);
-  const userHash = localStorage.getItem(AUTH_USER_HASHED_ID);
 
   if (token) {
     headers = {
       ...headers,
       "x-header-authentication-token": token,
-      "x-header-user-hash": userHash,
     };
   }
 

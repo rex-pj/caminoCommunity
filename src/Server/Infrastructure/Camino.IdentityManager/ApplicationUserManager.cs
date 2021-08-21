@@ -92,13 +92,23 @@ namespace Camino.IdentityManager
 
         public async Task<TUser> FindByIdentityIdAsync(string userIdentityId)
         {
+            if (string.IsNullOrEmpty(userIdentityId))
+            {
+                throw new ArgumentNullException(nameof(userIdentityId));
+            }
+
+            var userId = await DecryptUserIdAsync(userIdentityId);
+            return await FindByIdAsync(userId);
+        }
+
+        public async Task<TUser> FindByIdAsync(long userId)
+        {
             var cast = Store as IUserStore<TUser>;
             if (cast == null)
             {
                 throw new NotSupportedException("Store is not UserEncryptionStore");
             }
 
-            var userId = await DecryptUserIdAsync(userIdentityId);
             return await cast.FindByIdAsync(userId.ToString(), CancellationToken);
         }
     }

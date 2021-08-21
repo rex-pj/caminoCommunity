@@ -3,15 +3,14 @@ using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Authorization;
-using Camino.Framework.Models;
 using System.Linq;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
