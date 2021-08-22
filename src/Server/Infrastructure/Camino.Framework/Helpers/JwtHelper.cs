@@ -1,6 +1,8 @@
-﻿using Camino.Core.Contracts.Helpers;
+﻿using Camino.Core.Constants;
+using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.IdentityManager;
 using Camino.Core.Domain.Identities;
+using Camino.Core.Exceptions;
 using Camino.Infrastructure.Commons.Constants;
 using Camino.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,29 +53,37 @@ namespace Camino.Framework.Helpers
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RequireExpirationTime = false,
-                ValidateLifetime = true,
-                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                ClockSkew = TimeSpan.Zero,
-                ValidIssuer = _jwtConfigOptions.Issuer,
-                ValidAudience = _jwtConfigOptions.Audience
-            }, out SecurityToken securityToken);
 
-            if (securityToken != null)
+            try
             {
-                var jwtToken = securityToken as JwtSecurityToken;
-                var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
-                var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
-                var claimIdentity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
-                claimIdentity.AddClaim(new Claim(HttpHeaderContants.USER_ID_CLAIM_KEY, userId.ToString()));
+                var claimPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = _jwtConfigOptions.Issuer,
+                    ValidAudience = _jwtConfigOptions.Audience
+                }, out SecurityToken securityToken);
 
-                return claimIdentity;
+                if (securityToken != null)
+                {
+                    var jwtToken = securityToken as JwtSecurityToken;
+                    var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
+                    var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
+                    var claimIdentity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
+                    claimIdentity.AddClaim(new Claim(HttpHeaderContants.USER_ID_CLAIM_KEY, userId.ToString()));
+
+                    return claimIdentity;
+                }
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                throw new CaminoAuthenticationException(ex.Message, ErrorMessageConst.TokenExpiredException);
             }
 
             return new ClaimsIdentity();

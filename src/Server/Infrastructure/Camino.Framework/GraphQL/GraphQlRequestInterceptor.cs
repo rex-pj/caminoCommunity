@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Camino.Core.Contracts.Helpers;
 using Camino.Infrastructure.Commons.Constants;
+using Camino.Core.Exceptions;
+using System;
 
 namespace Camino.Framework.GraphQL
 {
@@ -21,12 +23,23 @@ namespace Camino.Framework.GraphQL
             }
 
             var jwtHelper = context.RequestServices.GetRequiredService<IJwtHelper>();
-            var claimsIdentity = await jwtHelper.ValidateTokenAsync(token);
-            if (claimsIdentity.IsAuthenticated)
+            try
             {
-                context.User.AddIdentity(claimsIdentity);
+                var claimsIdentity = await jwtHelper.ValidateTokenAsync(token);
+                if (claimsIdentity.IsAuthenticated)
+                {
+                    context.User.AddIdentity(claimsIdentity);
+                }
             }
-
+            catch (CaminoAuthenticationException)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            }
+            catch (Exception)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            
             await base.OnCreateAsync(context, requestExecutor, requestBuilder, cancellationToken);
         }
     }

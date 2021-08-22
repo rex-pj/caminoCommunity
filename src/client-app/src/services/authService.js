@@ -8,6 +8,7 @@ import {
   setLocalStorage,
   getLocalStorageByKey,
 } from "./storageService";
+import jwtDecode from "jwt-decode";
 
 const removeUserToken = () => {
   removeLocalStorage(AUTH_KEY);
@@ -61,6 +62,14 @@ const setLogin = (userInfo, token) => {
   setLocalStorage(AUTH_LOGIN_KEY, true);
 };
 
+const isTokenInvalid = () => {
+  const token = getUserToken();
+  if (!token) {
+    return true;
+  }
+  return jwtDecode(token).exp < Date.now() / 1000;
+};
+
 const logOut = () => {
   removeUserToken();
   removeLocalStorage(AUTH_LOGIN_KEY);
@@ -73,5 +82,6 @@ export default {
   getUserToken,
   setLogin,
   logOut,
+  isTokenInvalid,
   parseUserInfo,
 };

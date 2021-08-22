@@ -4,6 +4,8 @@ using HotChocolate.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Camino.Infrastructure.Commons.Constants;
+using System;
+using Camino.Core.Exceptions;
 
 namespace Camino.Framework.GraphQL.DirectiveTypes
 {
@@ -25,10 +27,21 @@ namespace Camino.Framework.GraphQL.DirectiveTypes
                 }
 
                 var jwtHelper = context.Services.GetService<IJwtHelper>();
-                var claimsIdentity = await jwtHelper.ValidateTokenAsync(token);
-                if (!claimsIdentity.IsAuthenticated)
+                try
                 {
-                    context.Result = new ForbidResult();
+                    var claimsIdentity = await jwtHelper.ValidateTokenAsync(token);
+                    if (!claimsIdentity.IsAuthenticated)
+                    {
+                        context.Result = new ForbidResult();
+                    }
+                }
+                catch (CaminoAuthenticationException ex)
+                {
+                    context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+                }
+                catch (Exception)
+                {
+                    context.Result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
 
                 await next.Invoke(context);

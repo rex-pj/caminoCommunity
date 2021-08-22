@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import LoginForm from "../../components/organisms/Auth/LoginForm";
 import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../graphql/client";
@@ -15,12 +15,6 @@ export default withRouter((props) => {
   const { lang, relogin } = useContext(SessionContext);
   const [login] = useMutation(userMutations.LOGIN, {
     client: unauthClient,
-  });
-
-  useEffect(() => {
-    return () => {
-      clearTimeout();
-    };
   });
 
   const notifyError = (errors) => {
