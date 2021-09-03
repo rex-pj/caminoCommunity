@@ -13,9 +13,9 @@ namespace Module.Api.Feed.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IFeedResolver, FeedResolver>();
-            services.AddTransient<ISearchResolver, SearchResolver>();
-            services.AddTransient<IFeedModelService, FeedModelService>();
+            services.AddScoped<IFeedResolver, FeedResolver>();
+            services.AddScoped<ISearchResolver, SearchResolver>();
+            services.AddScoped<IFeedModelService, FeedModelService>();
 
             services.AddGraphQLServer()
                 .AddType<FeedQueries>()

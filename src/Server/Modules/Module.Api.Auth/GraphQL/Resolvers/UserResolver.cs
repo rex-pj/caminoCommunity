@@ -74,7 +74,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusId = currentUser.StatusId,
                 StatusLabel = currentUser.StatusLabel,
                 UpdatedDate = currentUser.UpdatedDate,
-                UserIdentityId = await _userManager.EncryptUserIdAsync(currentUserId)
+                UserIdentityId = userIdentityId
             };
         }
 

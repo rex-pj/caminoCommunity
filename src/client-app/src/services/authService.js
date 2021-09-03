@@ -1,7 +1,8 @@
 import {
   AUTH_KEY,
-  AUTH_LOGIN_KEY,
   AUTH_USER_LANGUAGE,
+  AUTH_REFRESH_TOKEN_KEY,
+  AUTH_REFRESH_TOKEN_EXPIRATION_KEY,
 } from "../utils/AppSettings";
 import {
   removeLocalStorage,
@@ -10,20 +11,12 @@ import {
 } from "./storageService";
 import jwtDecode from "jwt-decode";
 
-const removeUserToken = () => {
-  removeLocalStorage(AUTH_KEY);
-};
-
-const setUserToken = (token) => {
-  setLocalStorage(AUTH_KEY, token);
-};
-
-const getUserToken = () => {
+export const getUserToken = () => {
   return getLocalStorageByKey(AUTH_KEY);
 };
 
-const parseUserInfo = (response) => {
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
+export const parseUserInfo = (response) => {
+  const isLogin = isTokenValid();
   let userLanguage = getLocalStorageByKey(AUTH_USER_LANGUAGE);
 
   userLanguage = userLanguage ? userLanguage : "vn";
@@ -57,31 +50,38 @@ const parseUserInfo = (response) => {
   };
 };
 
-const setLogin = (userInfo, token) => {
-  setUserToken(token);
-  setLocalStorage(AUTH_LOGIN_KEY, true);
+export const setLogin = (tokenData) => {
+  const { authenticationToken, refreshToken, refreshTokenExpiryTime } =
+    tokenData;
+  setLocalStorage(AUTH_KEY, authenticationToken);
+  setLocalStorage(AUTH_REFRESH_TOKEN_KEY, refreshToken);
+  setLocalStorage(AUTH_REFRESH_TOKEN_EXPIRATION_KEY, refreshTokenExpiryTime);
 };
 
-const isTokenInvalid = () => {
+export const getAuthenticationToken = () => {
+  const authenticationToken = getUserToken();
+  const refreshToken = getLocalStorageByKey(AUTH_REFRESH_TOKEN_KEY);
+  if (!authenticationToken || !refreshToken) {
+    return null;
+  }
+
+  const refreshTokenExpiryTime = getLocalStorageByKey(
+    AUTH_REFRESH_TOKEN_EXPIRATION_KEY
+  );
+  return { authenticationToken, refreshToken, refreshTokenExpiryTime };
+};
+
+export const isTokenValid = () => {
   const token = getUserToken();
   if (!token) {
-    return true;
+    return false;
   }
-  return jwtDecode(token).exp < Date.now() / 1000;
+  return jwtDecode(token).exp >= Date.now() / 1000;
 };
 
-const logOut = () => {
-  removeUserToken();
-  removeLocalStorage(AUTH_LOGIN_KEY);
+export const logOut = () => {
+  removeLocalStorage(AUTH_KEY);
+  removeLocalStorage(AUTH_REFRESH_TOKEN_KEY);
+  removeLocalStorage(AUTH_REFRESH_TOKEN_EXPIRATION_KEY);
   return true;
-};
-
-export default {
-  removeUserToken,
-  setUserToken,
-  getUserToken,
-  setLogin,
-  logOut,
-  isTokenInvalid,
-  parseUserInfo,
 };

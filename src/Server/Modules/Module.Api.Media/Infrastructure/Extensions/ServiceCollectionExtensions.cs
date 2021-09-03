@@ -10,8 +10,8 @@ namespace Module.Api.Media.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IImageResolver, ImageResolver>();
-            services.AddTransient<IUserPhotoResolver, UserPhotoResolver>();
+            services.AddScoped<IImageResolver, ImageResolver>();
+            services.AddScoped<IUserPhotoResolver, UserPhotoResolver>();
 
             services.AddGraphQLServer()
                 .AddType<ImageMutations>()

@@ -54,10 +54,10 @@ namespace Camino.ApiHost.Infrastructure.Extensions
             });
 
             services.AddGraphQLServer()
+                .AddAuthorization()
                 .AddHttpRequestInterceptor<GraphQlRequestInterceptor>()
                 .AddQueryType(x => x.Name("Query"))
-                .AddMutationType(x => x.Name("Mutation"))
-                .AddAuthorization();
+                .AddMutationType(x => x.Name("Mutation"));
 
             return services;
         }

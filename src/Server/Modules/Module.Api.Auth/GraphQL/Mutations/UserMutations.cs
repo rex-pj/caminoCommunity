@@ -44,6 +44,11 @@ namespace Module.Api.Auth.GraphQL.Mutations
             return await authenticateResolver.LoginAsync(criterias);
         }
 
+        public async Task<UserTokenModel> RefreshTokenAsync([Service] IAuthenticateResolver authenticateResolver, RefreshTokenModel criterias)
+        {
+            return await authenticateResolver.RefreshTokenAsync(criterias);
+        }
+
         public async Task<CommonResult> ForgotPasswordAsync([Service] IAuthenticateResolver authenticateResolver, ForgotPasswordModel criterias)
         {
             return await authenticateResolver.ForgotPasswordAsync(criterias);

@@ -5,7 +5,7 @@ import { unauthClient } from "../../graphql/client";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import { SessionContext } from "../../store/context/session-context";
-import AuthService from "../../services/authService";
+import { setLogin } from "../../services/authService";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 
@@ -54,8 +54,7 @@ export default withRouter((props) => {
             notifyError(errors);
             setFormEnabled(true);
           } else {
-            const { userInfo, authenticationToken } = login;
-            AuthService.setLogin(userInfo, authenticationToken);
+            setLogin(login);
 
             await relogin();
             props.history.push("/");

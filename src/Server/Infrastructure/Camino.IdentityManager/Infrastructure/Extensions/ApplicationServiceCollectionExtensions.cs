@@ -28,6 +28,7 @@ namespace Camino.IdentityManager.Infrastructure.Extensions
                 .AddScoped<ILoginManager<TUser>, ApplicationLoginManager<TUser>>()
                 .AddScoped<IApplicationRoleManager<TRole>, ApplicationRoleManager<TRole>>()
                 .AddScoped<IUserEncryptionStore<TUser>, ApplicationUserStore<TUser>>()
+                .AddScoped<IUserTokenStore<TUser>, ApplicationUserStore<TUser>>()
                 .AddScoped<IUserPolicyStore<TUser>, ApplicationUserStore<TUser>>()
                 .AddScoped<IUserStore<TUser>, ApplicationUserStore<TUser>>()
                 .AddScoped<IUserPasswordStore<TUser>, ApplicationUserStore<TUser>>()

@@ -8,5 +8,6 @@ namespace Camino.Core.Contracts.Helpers
     {
         Task<ClaimsIdentity> ValidateTokenAsync(string token);
         string GenerateJwtToken(ApplicationUser user);
+        Task<ClaimsIdentity> GetPrincipalFromExpiredTokenAsync(string token);
     }
 }

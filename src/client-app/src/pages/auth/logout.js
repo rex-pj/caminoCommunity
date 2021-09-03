@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import AuthService from "../../services/authService";
+import { logOut } from "../../services/authService";
 import { withRouter } from "react-router-dom";
 import LogoutPanel from "../../components/organisms/Auth/LogoutPanel";
 import { SessionContext } from "../../store/context/session-context";
@@ -10,7 +10,7 @@ export default withRouter(() => {
   const { relogin } = useContext(SessionContext);
 
   useEffect(() => {
-    AuthService.logOut();
+    logOut();
     relogin();
   });
 

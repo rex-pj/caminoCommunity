@@ -11,8 +11,8 @@ namespace Module.Api.Article.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IArticleCategoryResolver, ArticleCategoryResolver>();
-            services.AddTransient<IArticleResolver, ArticleResolver>();
+            services.AddScoped<IArticleCategoryResolver, ArticleCategoryResolver>();
+            services.AddScoped<IArticleResolver, ArticleResolver>();
 
             services.AddGraphQLServer().AddType<ArticleMutations>()
                 .AddType<ArticleCategoryMutations>()

@@ -1,7 +1,7 @@
 import React from "react";
 import MasterLayout from "./MasterLayout";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import authService from "../../../services/authService";
+import { isTokenValid } from "../../../services/authService";
 import styled from "styled-components";
 
 const Root = styled.div`
@@ -33,7 +33,6 @@ const Wrap = styled.div`
 
 // The layout for login, signup or forgot password
 export default ({ component: Component, ...rest }) => {
-  const isTokenInvalid = authService.isTokenInvalid();
   return (
     <MasterLayout
       {...rest}
@@ -41,7 +40,7 @@ export default ({ component: Component, ...rest }) => {
         <Root>
           <Container>
             <Wrap>
-              {!isTokenInvalid ? (
+              {isTokenValid() ? (
                 <AuthBanner
                   icon="exclamation-triangle"
                   title="You are logged in"

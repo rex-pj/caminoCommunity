@@ -49,6 +49,36 @@ namespace Camino.Framework.Helpers
             return jwtTokenHandler.WriteToken(token);
         }
 
+        public async Task<ClaimsIdentity> GetPrincipalFromExpiredTokenAsync(string token)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
+            var claimsPrincipal = jwtTokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+                ValidIssuer = _jwtConfigOptions.Issuer,
+                ValidAudience = _jwtConfigOptions.Audience
+            }, out SecurityToken securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            var userIdentityId = claimsPrincipal.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
+            var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
+            var claimIdentity = new ClaimsIdentity(claimsPrincipal.Claims, JwtBearerDefaults.AuthenticationScheme);
+            claimIdentity.AddClaim(new Claim(HttpHeaderContants.USER_ID_CLAIM_KEY, userId.ToString()));
+
+            return claimIdentity;
+        }
+
         public async Task<ClaimsIdentity> ValidateTokenAsync(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -70,7 +100,8 @@ namespace Camino.Framework.Helpers
                     ValidAudience = _jwtConfigOptions.Audience
                 }, out SecurityToken securityToken);
 
-                if (securityToken != null)
+                var jwtSecurityToken = securityToken as JwtSecurityToken;
+                if (securityToken != null && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var jwtToken = securityToken as JwtSecurityToken;
                     var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;

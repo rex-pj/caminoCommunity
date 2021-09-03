@@ -20,6 +20,18 @@ export const LOGIN = gql`
         userIdentityId
       }
       authenticationToken
+      refreshToken
+      refreshTokenExpiryTime
+    }
+  }
+`;
+
+export const REFRESH_TOKEN = gql`
+  mutation refreshToken($criterias: RefreshTokenModelInput!) {
+    refreshToken(criterias: $criterias) {
+      authenticationToken
+      refreshToken
+      refreshTokenExpiryTime
     }
   }
 `;

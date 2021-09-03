@@ -10,7 +10,7 @@ namespace Module.Api.Navigation.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IShortcutResolver, ShortcutResolver>();
+            services.AddScoped<IShortcutResolver, ShortcutResolver>();
 
             services.AddGraphQLServer()
                 .AddType<ShortcutQueries>();

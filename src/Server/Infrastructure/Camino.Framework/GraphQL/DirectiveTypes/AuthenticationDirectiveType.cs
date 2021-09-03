@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Camino.Infrastructure.Commons.Constants;
 using System;
 using Camino.Core.Exceptions;
+using System.Net;
+using HotChocolate;
 
 namespace Camino.Framework.GraphQL.DirectiveTypes
 {
@@ -35,13 +37,17 @@ namespace Camino.Framework.GraphQL.DirectiveTypes
                         context.Result = new ForbidResult();
                     }
                 }
-                catch (CaminoAuthenticationException ex)
+                catch (CaminoAuthenticationException)
                 {
+                    context.ReportError(new Error(HttpStatusCode.Forbidden.ToString(), StatusCodes.Status403Forbidden.ToString()));
                     context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+                    return;
                 }
                 catch (Exception)
                 {
+                    context.ReportError(new Error(HttpStatusCode.InternalServerError.ToString(), StatusCodes.Status500InternalServerError.ToString()));
                     context.Result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return;
                 }
 
                 await next.Invoke(context);

@@ -294,7 +294,8 @@ CREATE TABLE [auth].[UserToken]
 	UserId BIGINT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL,
 	[Value] NVARCHAR(255) NOT NULL,
-	[LoginProvider] NVARCHAR(MAX) NOT NULL
+	[LoginProvider] NVARCHAR(MAX) NOT NULL,
+	[ExpiryTime] DATETIME2(7) NOT NULL
 )
 
 GO
