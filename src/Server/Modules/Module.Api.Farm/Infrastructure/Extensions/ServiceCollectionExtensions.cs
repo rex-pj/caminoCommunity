@@ -11,8 +11,8 @@ namespace Module.Api.Farm.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IFarmTypeResolver, FarmTypeResolver>();
-            services.AddTransient<IFarmResolver, FarmResolver>();
+            services.AddScoped<IFarmTypeResolver, FarmTypeResolver>();
+            services.AddScoped<IFarmResolver, FarmResolver>();
 
             services.AddGraphQLServer()
                 .AddType<FarmQueries>()

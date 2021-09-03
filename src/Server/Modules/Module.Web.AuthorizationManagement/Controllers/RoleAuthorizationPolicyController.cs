@@ -3,12 +3,14 @@ using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Authorization;
 using System.Linq;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -16,12 +18,15 @@ namespace Module.Web.AuthorizationManagement.Controllers
     {
         private readonly IRoleAuthorizationPolicyService _roleAuthorizationPolicyService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+
         public RoleAuthorizationPolicyController(IHttpContextAccessor httpContextAccessor,
-            IRoleAuthorizationPolicyService roleAuthorizationPolicyService,
-            IHttpHelper httpHelper) : base(httpContextAccessor)
+            IRoleAuthorizationPolicyService roleAuthorizationPolicyService, IHttpHelper httpHelper,
+            IOptions<PagerOptions> pagerOptions) : base(httpContextAccessor)
         {
             _roleAuthorizationPolicyService = roleAuthorizationPolicyService;
             _httpHelper = httpHelper;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadRoleAuthorizationPolicy)]
@@ -31,8 +36,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var filterRequest = new RoleAuthorizationPolicyFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             };
             var authorizationRole = _roleAuthorizationPolicyService.GetAuthoricationPolicyRoles(filter.Id, filterRequest);
             var roles = authorizationRole.Collections.Select(x => new RoleModel

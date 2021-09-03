@@ -16,6 +16,13 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="ArticleCategory">
-        <partial name="_CreateOrUpdateForm" />
+        <partial name="Partial/_CreateOrUpdateForm" />
     </form>
 </div>
+
+@{
+    var articleCategoryIdModel = new ArticleCategoryIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="articleCategoryIdModel" />
+<partial name="Partial/_DeactivateModal" model="articleCategoryIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="articleCategoryIdModel" />

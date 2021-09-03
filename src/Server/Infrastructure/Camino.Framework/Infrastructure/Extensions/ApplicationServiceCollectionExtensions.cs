@@ -1,7 +1,5 @@
 ﻿using Camino.Framework.Helpers;
 using Camino.Shared.Configurations;
-using Camino.Infrastructure.Providers;
-using Camino.Core.Contracts.Providers;
 using Camino.IdentityManager.Contracts.Core;
 using Camino.IdentityManager.Infrastructure.Extensions;
 using Camino.Core.Domain.Identities;
@@ -19,14 +17,14 @@ namespace Camino.Framework.Infrastructure.Extensions
             services.Configure<AppSettings>(configuration.GetSection(AppSettings.Name));
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
+            services.Configure<PagerOptions>(configuration.GetSection(PagerOptions.Name));
+            services.Configure<JwtConfigOptions>(configuration.GetSection(JwtConfigOptions.Name));
 
             services.AddApplicationIdentity<ApplicationUser, ApplicationRole>()
-                .AddTransient<IHttpHelper, HttpHelper>();
+                .AddScoped<IHttpHelper, HttpHelper>()
+                .AddScoped<IJwtHelper, JwtHelper>();
 
-            services
-                .AddSingleton<IFileProvider, FileProvider>()
-                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
-                .AddScoped<IEmailProvider, EmailProvider>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

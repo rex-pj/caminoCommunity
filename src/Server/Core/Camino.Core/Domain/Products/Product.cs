@@ -13,8 +13,6 @@ namespace Camino.Core.Domain.Products
         public long CreatedById { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsPublished { get; set; }
         public int StatusId { get; set; }
         public virtual ICollection<ProductCategoryRelation> ProductCategories { get; set; }
         public virtual ICollection<ProductPicture> ProductPictures { get; set; }

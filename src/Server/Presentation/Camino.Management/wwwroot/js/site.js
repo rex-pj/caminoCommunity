@@ -1,16 +1,71 @@
-﻿$.fn.select2Ajax = function (options) {
+﻿$.fn.select2Ajax = function (options, selectedData) {
+    var select2s = $(this);
+    if (typeof (options) === "string" && options === "val") {
+        $.each(select2s, function (key, selection) {
+            var select2 = $(selection);
+            setDefaultSelect2Ajax(select2, selectedData);
+        });
+
+        return;
+    }
+
+    if (typeof (options) === "string" && options === "remove") {
+        $.each(select2s, function (key, selection) {
+            var select2 = $(selection);
+            removeSelectedSelect2Ajax(select2);
+        });
+
+        return;
+    }
+
     var defaults = {
         minimumInputLength: 0
     };
 
     var settings = $.extend({}, defaults, options);
-    var select2s = $(this);
     if (select2s.length === 0) {
         return;
     }
 
     $.each(select2s, function (key, selection) {
         var select2 = $(selection);
+        loadSelect2Ajax(select2);
+
+        select2.on('change', function (e, value) {
+            setTimeout(function () {
+                loadSelect2Ajax(select2);
+            }, 100);
+            clearTimeout();
+        });
+
+        select2.on('select2:unselect', function (e) {
+            setTimeout(function () {
+                loadSelect2Ajax(select2);
+            }, 100);
+            clearTimeout();
+        })
+    });
+
+    function setDefaultSelect2Ajax(selector, selected) {
+        if (!selected.id) {
+            return;
+        }
+
+        if (!selector.find("option[value='" + selected.id + "']").length) {
+            selector.append(new Option(selected.text, selected.id, true, true));
+        }
+
+        selector.value = selected.id;
+        selector.trigger('change');
+    }
+
+    function removeSelectedSelect2Ajax(selector) {
+        selector.val(null);
+        selector.html('');
+        selector.select2('destroy');
+    }
+
+    function loadSelect2Ajax(select2) {
         var method = select2.attr("method") ? select2.attr("method") : "get";
         var url = select2.data("url");
         var selected = select2.val();
@@ -18,17 +73,20 @@
             selected = selected.join(',');
         }
 
+        var placeholder = select2.attr('placeholder');
+
         select2.select2({
             allowClear: true,
-            placeholder: 'select..',
+            placeholder: placeholder ? placeholder : 'select..',
             ajax: {
                 url: url,
                 type: method,
                 data: function (params) {
-                    var query = {
+                    var query = $.extend({}, {
                         q: params.term,
                         currentId: selected
-                    }
+                    }, settings.extendParams);
+
                     return query;
                 },
                 dataType: 'json',
@@ -47,7 +105,7 @@
             minimumInputLength: settings.minimumInputLength,
             dropdownParent: settings.dropdownParent,
         });
-    });
+    }
 }
 
 $.fn.filterDataTable = function () {

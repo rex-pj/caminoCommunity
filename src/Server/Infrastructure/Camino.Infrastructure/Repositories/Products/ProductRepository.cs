@@ -12,8 +12,10 @@ using Camino.Core.Domain.Products;
 using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductRepository : IProductRepository
     {
@@ -26,7 +28,7 @@ namespace Camino.Service.Repository.Products
 
         public ProductRepository(IRepository<Product> productRepository,
             IRepository<ProductCategoryRelation> productCategoryRelationRepository,
-            IRepository<ProductPrice> productPriceRepository, IRepository<FarmProduct> farmProductRepository, 
+            IRepository<ProductPrice> productPriceRepository, IRepository<FarmProduct> farmProductRepository,
             IRepository<Farm> farmRepository, IRepository<ProductCategory> productCategoryRepository)
         {
             _productRepository = productRepository;
@@ -37,9 +39,15 @@ namespace Camino.Service.Repository.Products
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public async Task<ProductResult> FindAsync(long id)
+        public async Task<ProductResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from product in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
+            var exist = await (from product in _productRepository
+                               .Get(x => x.Id == filter.Id)
+                               .Where(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                select new ProductResult
                                {
                                    CreatedDate = product.CreatedDate,
@@ -53,11 +61,17 @@ namespace Camino.Service.Repository.Products
             return exist;
         }
 
-        public async Task<ProductResult> FindDetailAsync(long id)
+        public async Task<ProductResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
+            var farmDeletedStatus = ProductStatus.Deleted.GetCode();
+            var farmInactivedStatus = ProductStatus.Inactived.GetCode();
+            var farmQuery = from farm in _farmRepository
+                            .Get(x => x.Id == filter.Id)
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
+                            where (farm.StatusId == farmDeletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == farmInactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != farmDeletedStatus && farm.StatusId != farmInactivedStatus)
                             select new
                             {
                                 Id = farmProduct.Id,
@@ -77,7 +91,10 @@ namespace Camino.Service.Repository.Products
                                            Name = category.Name
                                        };
 
-            var product = await (from p in _productRepository.Get(x => !x.IsDeleted && x.Id == id)
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
+            var product = await (from p in _productRepository
+                                 .Get(x => x.Id == filter.Id)
                                  join pr in _productPriceRepository.Get(x => x.IsCurrent)
                                  on p.Id equals pr.ProductId into prices
                                  from price in prices.DefaultIfEmpty()
@@ -87,6 +104,9 @@ namespace Camino.Service.Repository.Products
 
                                  join fp in farmQuery
                                  on p.Id equals fp.ProductId into farmProducts
+                                 where (p.StatusId == deletedStatus && filter.CanGetDeleted)
+                                     || (p.StatusId == inactivedStatus && filter.CanGetInactived)
+                                     || (p.StatusId != deletedStatus && p.StatusId != inactivedStatus)
                                  select new ProductResult
                                  {
                                      Description = p.Description,
@@ -97,6 +117,7 @@ namespace Camino.Service.Repository.Products
                                      UpdatedById = p.UpdatedById,
                                      UpdatedDate = p.UpdatedDate,
                                      Price = price.Price,
+                                     StatusId = p.StatusId,
                                      Categories = productCategories.Select(x => new ProductCategoryResult()
                                      {
                                          Id = x.CategoryId,
@@ -114,7 +135,7 @@ namespace Camino.Service.Repository.Products
 
         public ProductResult FindByName(string name)
         {
-            var exist = _productRepository.Get(x => x.Name == name && !x.IsDeleted)
+            var exist = _productRepository.Get(x => x.Name == name && x.StatusId != ProductStatus.Deleted.GetCode())
                 .FirstOrDefault();
 
             var product = new ProductResult()
@@ -133,8 +154,12 @@ namespace Camino.Service.Repository.Products
 
         public async Task<BasePageList<ProductResult>> GetAsync(ProductFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var productQuery = _productRepository.Get(x => !x.IsDeleted);
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var productQuery = _productRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 productQuery = productQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -144,6 +169,11 @@ namespace Camino.Service.Repository.Products
             if (filter.CreatedById.HasValue)
             {
                 productQuery = productQuery.Where(x => x.CreatedById == filter.CreatedById);
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                productQuery = productQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.UpdatedById.HasValue)
@@ -172,12 +202,12 @@ namespace Camino.Service.Repository.Products
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                productQuery = productQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+                productQuery = productQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
             }
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
-            var farmQuery = from farm in _farmRepository.Get(x => !x.IsDeleted)
+            var farmQuery = from farm in _farmRepository.Get(x => x.StatusId != ProductStatus.Deleted.GetCode())
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -204,6 +234,7 @@ namespace Camino.Service.Repository.Products
                             Description = product.Description,
                             UpdatedById = product.UpdatedById,
                             UpdatedDate = product.UpdatedDate,
+                            StatusId = product.StatusId,
                             Farms = farmProducts.Select(x => new ProductFarmResult
                             {
                                 Id = x.Id,
@@ -227,7 +258,7 @@ namespace Camino.Service.Repository.Products
 
         public async Task<IList<ProductResult>> GetRelevantsAsync(long id, ProductFilter filter)
         {
-            var exist = (from pr in _productRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = (from pr in _productRepository.Get(x => x.Id == id && x.StatusId != ProductStatus.Deleted.GetCode())
                          join fp in _farmProductRepository.Table
                          on pr.Id equals fp.ProductId into farmProducts
                          join productCategoryRelation in _productCategoryRelationRepository.Table
@@ -313,7 +344,7 @@ namespace Camino.Service.Repository.Products
                 UpdatedDate = modifiedDate,
                 Description = request.Description,
                 Name = request.Name,
-                IsPublished = true
+                StatusId = ProductStatus.Pending.GetCode()
             };
 
             var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
@@ -433,6 +464,28 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
+        public async Task<IList<ProductResult>> GetProductByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter)
+        {
+            var deletedStatus = ProductStatus.Deleted.GetCode();
+            var inactivedStatus = ProductStatus.Inactived.GetCode();
+            return await (from relation in _productCategoryRelationRepository.Get(x => x.ProductCategoryId == categoryIdFilter.Id)
+                          join product in _productRepository.Get(x => (x.StatusId == deletedStatus && categoryIdFilter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && categoryIdFilter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                          on relation.ProductId equals product.Id
+                          select new ProductResult
+                          {
+                              Id = product.Id,
+                              Name = product.Name,
+                              CreatedById = product.CreatedById,
+                              CreatedDate = product.CreatedDate,
+                              Description = product.Description,
+                              UpdatedById = product.UpdatedById,
+                              UpdatedDate = product.UpdatedDate,
+                          })
+                .ToListAsync();
+        }
+
         public async Task<bool> DeleteAsync(long id)
         {
             await _farmProductRepository.Get(x => x.ProductId == id)
@@ -450,10 +503,34 @@ namespace Camino.Service.Repository.Products
             return true;
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(ProductModifyRequest request)
         {
-            await _productRepository.Get(x => x.Id == id)
-                .Set(x => x.IsDeleted, true)
+            await _productRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductStatus.Deleted)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeactiveAsync(ProductModifyRequest request)
+        {
+            await _productRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ProductModifyRequest request)
+        {
+            await _productRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

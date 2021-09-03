@@ -15,7 +15,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Requests.Farms;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmPictureRepository : IFarmPictureRepository
     {
@@ -33,10 +33,10 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<BasePageList<FarmPictureResult>> GetAsync(FarmPictureFilter filter)
         {
-            var pictureQuery = _pictureRepository.Get(x => !x.IsDeleted);
-            if (!string.IsNullOrEmpty(filter.Search))
+            var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Deleted.GetCode());
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                var search = filter.Search.ToLower();
+                var search = filter.Keyword.ToLower();
                 pictureQuery = pictureQuery.Where(pic => pic.Title.ToLower().Contains(search));
             }
 
@@ -96,11 +96,17 @@ namespace Camino.Service.Repository.Farms
             return result;
         }
 
-        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(long farmId, int? farmPictureTypeId = null)
+        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdAsync(IdRequestFilter<long> filter, int? farmPictureTypeId = null)
         {
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId == farmId && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
-                                      join picture in _pictureRepository.Get(x => !x.IsDeleted)
-                                        on farmPic.PictureId equals picture.Id
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var farmPictures = await (from farmPic in _farmPictureRepository
+                                      .Get(x => x.FarmId == filter.Id && (!farmPictureTypeId.HasValue || x.PictureTypeId == farmPictureTypeId))
+                                      join picture in _pictureRepository
+                                      .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                                      on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult
                                       {
                                           FarmId = farmPic.FarmId,
@@ -110,10 +116,16 @@ namespace Camino.Service.Repository.Farms
             return farmPictures;
         }
 
-        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, int farmPictureTypeId)
+        public async Task<IList<FarmPictureResult>> GetFarmPicturesByFarmIdsAsync(IEnumerable<long> farmIds, IdRequestFilter<long> filter, FarmPictureType farmPictureType)
         {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var farmPictureTypeId = farmPictureType.GetCode();
             var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId.In(farmIds) && x.PictureTypeId == farmPictureTypeId)
-                                      join picture in _pictureRepository.Get(x => !x.IsDeleted)
+                                      join picture in _pictureRepository
+                                      .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                       on farmPic.PictureId equals picture.Id
                                       select new FarmPictureResult
                                       {
@@ -140,7 +152,7 @@ namespace Camino.Service.Repository.Farms
                     UpdatedById = request.UpdatedById,
                     UpdatedDate = request.UpdatedDate,
                     BinaryData = pictureData,
-                    IsPublished = true
+                    StatusId = PictureStatus.Pending.GetCode()
                 });
 
                 var farmPictureType = index == 0 ? (int)FarmPictureType.Thumbnail : (int)FarmPictureType.Secondary;
@@ -194,7 +206,7 @@ namespace Camino.Service.Repository.Farms
                         UpdatedById = request.UpdatedById,
                         UpdatedDate = request.UpdatedDate,
                         BinaryData = pictureData,
-                        IsPublished = true
+                        StatusId = PictureStatus.Pending.GetCode()
                     });
 
                     var farmPictureType = shouldAddPicture ? pictureTypeId : (int)FarmPictureType.Secondary;
@@ -230,13 +242,15 @@ namespace Camino.Service.Repository.Farms
             return true;
         }
 
-        public async Task<bool> SoftDeleteByFarmIdAsync(long farmId)
+        public async Task<bool> UpdateStatusByFarmIdAsync(FarmPicturesModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from farmPicture in _farmPictureRepository.Get(x => x.FarmId == farmId)
+            await (from farmPicture in _farmPictureRepository.Get(x => x.FarmId == request.FarmId)
                    join picture in _pictureRepository.Table
                    on farmPicture.PictureId equals picture.Id
                    select picture)
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, pictureStatus.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

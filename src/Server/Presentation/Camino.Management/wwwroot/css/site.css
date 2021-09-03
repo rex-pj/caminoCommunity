@@ -32,10 +32,6 @@ body {
     width: 100%;
 }
 
-    .top-nav .navbar {
-        padding: 5px 0;
-    }
-
     .top-nav .navbar-toggler {
         border: 0;
         padding-left: 0;
@@ -87,7 +83,7 @@ body {
     }
 
         #navTab .nav-link.active {
-            background-color: #343a40;
+            background-color: #212529;
             border-bottom: 0;
             color: #778B53;
         }
@@ -101,10 +97,6 @@ body {
     -o-transition: width 0s ease;
     transition: width 0s ease;
 }
-
-    #mainNavigation.collapse {
-        width: 0px;
-    }
 
 .nav-tool {
     height: 100%;

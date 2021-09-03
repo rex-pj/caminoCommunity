@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Users;
+using Camino.Shared.Requests.Identifiers;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
@@ -19,20 +22,23 @@ namespace Module.Web.AuthenticationManagement.Controllers
     {
         private readonly IUserService _userService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,
-            IHttpHelper httpHelper)
+            IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _userService = userService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var filterRequest = new UserFilter
+            var userPageList = await _userService.GetAsync(new UserFilter
             {
                 Address = filter.Address,
                 BirthDateFrom = filter.BirthDateFrom,
@@ -44,19 +50,19 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 GenderId = filter.GenderId,
                 IsEmailConfirmed = filter.IsEmailConfirmed,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
+                PageSize = _pagerOptions.PageSize,
                 PhoneNumber = filter.PhoneNumber,
-                Search = filter.Search,
+                Keyword = filter.Search,
                 StatusId = filter.StatusId,
-                UpdatedById = filter.UpdatedById
-            };
-            var userPageList = await _userService.GetAsync(filterRequest);
+                UpdatedById = filter.UpdatedById,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
             var users = userPageList.Collections.Select(x => new UserModel
             {
                 Address = x.Address,
                 UpdatedById = x.UpdatedById,
-                StatusId = x.StatusId,
-                StatusLabel = x.StatusLabel,
+                StatusId = (UserStatus)x.StatusId,
                 BirthDate = x.BirthDate,
                 CreatedById = x.CreatedById,
                 CreatedDate = x.CreatedDate,
@@ -93,12 +99,17 @@ namespace Module.Web.AuthenticationManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
         public async Task<IActionResult> Detail(long id)
         {
-            var userResult = await _userService.FindFullByIdAsync(id);
+            var userResult = await _userService.FindFullByIdAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
             var user = new UserModel
             {
                 Address = userResult.Address,
                 UpdatedById = userResult.UpdatedById,
-                StatusId = userResult.StatusId,
+                StatusId = (UserStatus)userResult.StatusId,
                 StatusLabel = userResult.StatusLabel,
                 BirthDate = userResult.BirthDate,
                 CreatedById = userResult.CreatedById,
@@ -124,9 +135,14 @@ namespace Module.Web.AuthenticationManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
-        public IActionResult Search(string q, List<long> currentUserIds)
+        public async Task<IActionResult> Search(string q, List<long> currentUserIds)
         {
-            var users = _userService.Search(q, currentUserIds);
+            var users = await _userService.SearchAsync(new UserFilter
+            {
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            }, currentUserIds);
             if (users == null || !users.Any())
             {
                 return Json(new
@@ -142,6 +158,118 @@ namespace Module.Web.AuthenticationManagement.Controllers
             });
 
             return Json(userModels);
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        public async Task<IActionResult> TemporaryDelete(UserIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _userService.SoftDeleteAsync(new UserModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepDetailPage)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        public async Task<IActionResult> Deactivate(UserIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _userService.DeactivateAsync(new UserModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepDetailPage)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        public async Task<IActionResult> Active(UserIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _userService.ActiveAsync(new UserModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepDetailPage)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        public async Task<IActionResult> Confirm(UserIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isConfirmed = await _userService.ConfirmAsync(new UserModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isConfirmed)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepDetailPage)
+            {
+                return RedirectToAction(nameof(Detail), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

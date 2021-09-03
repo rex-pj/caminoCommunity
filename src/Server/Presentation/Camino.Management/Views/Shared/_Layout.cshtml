@@ -13,12 +13,12 @@
     @RenderSection("Head", required: false)
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 col-sm-3 col-md-2 px-0 collapse show" id="mainNavigation">
+    <div class="page-container">
+        <div class="row g-0">
+            <div class="col col-12 col-sm-3 col-md-2 pe-0 collapse show" id="mainNavigation">
                 @await Component.InvokeAsync("MainNavigation")
             </div>
-            <div class="col px-0 main-col">
+            <div class="col col-12 col-sm-9 col-md-10 ps-0 main-col">
                 @await Component.InvokeAsync("TopNavigation")
 
                 <div class="main-body">
@@ -44,7 +44,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/select2/js/select2.full.min.js"></script>
     <script src="~/lib/tempus-dominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

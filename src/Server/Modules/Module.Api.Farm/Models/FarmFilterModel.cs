@@ -8,13 +8,11 @@ namespace Module.Api.Farm.Models
     {
         public FarmFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         [GraphQLType(typeof(LongType))]
         public long Id { get; set; }
-        public string ExclusiveCreatedIdentityId { get; set; }
+        public string ExclusiveUserIdentityId { get; set; }
         public string UserIdentityId { get; set; }
     }
 }

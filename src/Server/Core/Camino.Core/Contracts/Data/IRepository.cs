@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Camino.Core.Contracts.Data
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> : IDisposable where TEntity : class
     {
         /// <summary>
         /// Gets a table

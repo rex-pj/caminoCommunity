@@ -1,0 +1,34 @@
+﻿@model PageListModel<ProductAttributeModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col" width="200">Created</th>
+            <th scope="col" width="200">Updated</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var attribute in Model.Collections)
+            {
+                attribute.SetPageAuthorizationForModel(Model);
+                <partial name="Partial/_ProductAttributeRow" model="attribute" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

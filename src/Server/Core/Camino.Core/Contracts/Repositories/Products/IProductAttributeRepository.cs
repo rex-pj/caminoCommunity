@@ -12,8 +12,8 @@ namespace Camino.Core.Contracts.Repositories.Products
     public interface IProductAttributeRepository
     {
         Task<int> CreateAsync(ProductAttributeModifyRequest productAttribute);
-        ProductAttributeResult Find(long id);
-        ProductAttributeResult FindByName(string name);
+        Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter);
+        Task<ProductAttributeResult> FindByNameAsync(string name);
         Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter);
         Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter);
         Task<bool> UpdateAsync(ProductAttributeModifyRequest category);
@@ -22,7 +22,13 @@ namespace Camino.Core.Contracts.Repositories.Products
         Task<bool> UpdateAttributeRelationAsync(ProductAttributeRelationRequest request);
         Task DeleteAttributeRelationByProductIdAsync(long productId);
         Task<IList<ProductAttributeRelationResult>> GetAttributeRelationsByProductIdAsync(long productId);
+        Task<ProductAttributeRelationResult> GetAttributeRelationByIdAsync(long id);
+        Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id);
         Task<bool> IsAttributeRelationExistAsync(long id);
         Task<int> DeleteAttributeRelationNotInIdsAsync(long productId, IEnumerable<long> ids);
+        Task<bool> DeactivateAsync(ProductAttributeModifyRequest request);
+        Task<bool> ActiveAsync(ProductAttributeModifyRequest request);
+        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAttributeRelationByAttributeIdAsync(int attributeId);
     }
 }

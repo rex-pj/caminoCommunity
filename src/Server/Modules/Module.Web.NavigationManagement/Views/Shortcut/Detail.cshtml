@@ -1,0 +1,55 @@
+﻿@model ShortcutModel
+@{
+    ViewData["Title"] = "Shortcut Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto me-auto">
+            <a asp-action="Index" asp-controller="Shortcut" class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanUpdate)
+            {
+                <a asp-action="Update" asp-controller="Shortcut" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="mb-3">
+        <label>Name</label>
+        <span class="form-control" readonly>@Model.Name</span>
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <span class="form-control" readonly>@Model.Description</span>
+    </div>
+    <div class="mb-3">
+        <label>Icon</label>
+        <span class="form-control" readonly>@Model.Icon</span>
+    </div>
+    <div class="mb-3">
+        <label>Url</label>
+        <span class="form-control" readonly>@Model.Url</span>
+    </div>
+    <div class="mb-3">
+        <label>Type</label>
+        <span class="form-control" readonly>@(EnumUtil.GetDescription(Model.TypeId))</span>
+    </div>
+    <div class="mb-3">
+        <label>Order</label>
+        <span class="form-control" readonly>@Model.Order</span>
+    </div>
+    <div class="row mb-3">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
+        </div>
+    </div>
+</div>

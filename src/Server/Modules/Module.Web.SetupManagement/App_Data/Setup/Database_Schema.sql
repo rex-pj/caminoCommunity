@@ -294,7 +294,8 @@ CREATE TABLE [auth].[UserToken]
 	UserId BIGINT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL,
 	[Value] NVARCHAR(255) NOT NULL,
-	[LoginProvider] NVARCHAR(MAX) NOT NULL
+	[LoginProvider] NVARCHAR(MAX) NOT NULL,
+	[ExpiryTime] DATETIME2(7) NOT NULL
 )
 
 GO
@@ -421,8 +422,7 @@ CREATE TABLE dbo.FarmType
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO
@@ -431,7 +431,7 @@ ADD CONSTRAINT PK_FarmType
 PRIMARY KEY (Id)
 --FARM--
 GO
-CREATE TABLE dbo.Farm
+CREATE TABLE [dbo].[Farm]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1),
 	[Name] NVARCHAR(255) NULL,
@@ -442,8 +442,6 @@ CREATE TABLE dbo.Farm
 	CreatedById BIGINT NOT NULL,
 	FarmTypeId BIGINT NOT NULL,
 	[Address] NVARCHAR(500) NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -529,8 +527,7 @@ CREATE TABLE dbo.[ProductCategory]
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO
@@ -553,8 +550,6 @@ CREATE TABLE dbo.Product(
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -592,7 +587,12 @@ CREATE TABLE [dbo].[ProductAttribute]
 (
 	[Id] INT IDENTITY(1,1) NOT NULL,
 	[Name] NVARCHAR(MAX) NOT NULL,
-	[Description] NVARCHAR(MAX) NULL
+	[Description] NVARCHAR(MAX) NULL,
+	[StatusId] INT NOT NULL,
+	[CreatedById] BIGINT NOT NULL,
+	[CreatedDate] DATETIME2(7) NOT NULL,
+	[UpdatedById] BIGINT NOT NULL,
+	[UpdatedDate] DATETIME2(7) NOT NULL,
 )
 
 GO
@@ -772,8 +772,7 @@ CREATE TABLE dbo.ArticleCategory
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ParentId INT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL
+	StatusId INT NOT NULL
 )
 
 GO
@@ -799,8 +798,6 @@ CREATE TABLE dbo.Article
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
 	ArticleCategoryId INT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -869,8 +866,6 @@ CREATE TABLE dbo.[Picture](
 	UpdatedById BIGINT NOT NULL,
 	CreatedDate DATETIME2 NOT NULL,
 	CreatedById BIGINT NOT NULL,
-	IsDeleted BIT NOT NULL,
-	IsPublished BIT NOT NULL,
 	StatusId INT NOT NULL
 )
 
@@ -950,4 +945,26 @@ FOREIGN KEY (PictureId) REFERENCES dbo.[Picture](Id);
 GO
 ALTER TABLE dbo.[ProductPicture]
 ADD CONSTRAINT PK_ProductPicture
+PRIMARY KEY (Id);
+
+-- USER SHORTCUT--
+GO
+CREATE TABLE [dbo].[Shortcut]
+(
+	Id INT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(1000) NULL,
+	[Url] NVARCHAR(2000) NULL,
+	[Icon] NVARCHAR(2000) NULL,
+	[TypeId] INT NULL,
+	[StatusId] INT NOT NULL,
+	CreatedDate DATETIME2 NOT NULL,
+	UpdatedDate DATETIME2 NOT NULL,
+	UpdatedById BIGINT NOT NULL,
+	CreatedById BIGINT NOT NULL
+)
+
+GO
+ALTER TABLE [dbo].[Shortcut]
+ADD CONSTRAINT PK_Shortcut
 PRIMARY KEY (Id);

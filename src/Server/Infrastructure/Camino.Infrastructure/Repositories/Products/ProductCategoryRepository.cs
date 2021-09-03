@@ -12,8 +12,10 @@ using Camino.Shared.Results.Products;
 using Camino.Core.Domain.Products;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Products
+namespace Camino.Infrastructure.Repositories.Products
 {
     public class ProductCategoryRepository : IProductCategoryRepository
     {
@@ -41,6 +43,7 @@ namespace Camino.Service.Repository.Products
                                 ParentId = child.ParentId,
                                 UpdatedById = child.UpdatedById,
                                 UpdatedDate = child.UpdatedDate,
+                                StatusId = child.StatusId,
                                 ParentCategoryName = cate != null ? cate.Name : null
                             }).FirstOrDefaultAsync();
             return category;
@@ -53,6 +56,7 @@ namespace Camino.Service.Repository.Products
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    StatusId = x.StatusId,
                     Description = x.Description
                 })
                 .FirstOrDefault();
@@ -62,12 +66,17 @@ namespace Camino.Service.Repository.Products
 
         public async Task<BasePageList<ProductCategoryResult>> GetAsync(ProductCategoryFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var categoryQuery = _productCategoryRepository.Table;
             if (!string.IsNullOrEmpty(search))
             {
                 categoryQuery = categoryQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.CreatedById.HasValue)
@@ -103,7 +112,8 @@ namespace Camino.Service.Repository.Products
                 Name = a.Name,
                 ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -131,14 +141,9 @@ namespace Camino.Service.Repository.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, int[] currentIds)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var query = _productCategoryRepository.Get(x => !x.ParentId.HasValue)
                 .Select(c => new ProductCategoryResult
                 {
@@ -153,14 +158,14 @@ namespace Camino.Service.Repository.Products
                 query = query.Where(x => !currentIds.Contains(x.Id));
             }
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var categories = await query
@@ -175,14 +180,9 @@ namespace Camino.Service.Repository.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(int[] currentIds, string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, int[] currentIds)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var queryParents = _productCategoryRepository.Get(x => !x.ParentId.HasValue);
 
             var queryChildrens = _productCategoryRepository.Get(x => x.ParentId.HasValue);
@@ -211,17 +211,17 @@ namespace Camino.Service.Repository.Products
                             }
                         };
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search)
-                        || x.Description.ToLower().Contains(search)
-                        || x.ParentCategory.Name.ToLower().Contains(search)
-                        || x.ParentCategory.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword)
+                        || x.Description.ToLower().Contains(keyword)
+                        || x.ParentCategory.Name.ToLower().Contains(keyword)
+                        || x.ParentCategory.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var data = await query
@@ -267,7 +267,7 @@ namespace Camino.Service.Repository.Products
                 UpdatedById = category.UpdatedById,
                 UpdatedDate = DateTimeOffset.UtcNow,
                 CreatedDate = DateTimeOffset.UtcNow,
-                IsPublished = true
+                StatusId = ProductCategoryStatus.Actived.GetCode()
             };
 
             var id = await _productCategoryRepository.AddWithInt32EntityAsync(newCategory);
@@ -285,6 +285,34 @@ namespace Camino.Service.Repository.Products
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ProductCategoryRequest request)
+        {
+            await _productCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ProductCategoryRequest request)
+        {
+            await _productCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ProductCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _productCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

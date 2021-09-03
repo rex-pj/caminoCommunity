@@ -1,7 +1,7 @@
-﻿using Camino.Core.Constants;
-using Camino.Infrastructure.MapBuilders;
+﻿using Camino.Infrastructure.MapBuilders;
 using Camino.Core.Domain.Media;
 using LinqToDB.Mapping;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Camino.Infrastructure.Mapping.Media
 {

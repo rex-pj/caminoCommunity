@@ -10,12 +10,12 @@
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
+        <div class="col-auto me-auto">
             <a asp-action="Index" asp-controller="AuthorizationPolicy" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-arrow-left"></i>
             </a>
-            <button class="btn btn-sm text-light mr-2" type="button" data-toggle="collapse"
-                    data-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+            <button class="btn btn-sm text-light mr-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
                 <i class="fa fa-search"></i>
             </button>
             @ViewData["Title"]
@@ -23,7 +23,7 @@
         <div class="col-auto">
             @if (Model.CanCreate)
             {
-                <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#grantUserModal">
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#grantUserModal">
                     <i class="fa fa-plus"></i>
                 </button>
             }
@@ -40,7 +40,7 @@
 
     <div class="data-table">
         <partial name="_UserAuthorizationPolicyTable" />
-        <div class="spinner-grow loading my-3 d-none mr-auto ml-auto" role="status">
+        <div class="spinner-grow loading my-3 d-none me-auto ml-auto" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>

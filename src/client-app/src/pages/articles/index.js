@@ -14,7 +14,7 @@ import { authClient } from "../../graphql/client";
 export default withRouter(function (props) {
   const { match } = props;
   const { params } = match;
-  const { pageNumber, pageSize } = params;
+  const { pageNumber } = params;
   const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(
     articleQueries.GET_ARTICLES,
@@ -22,7 +22,6 @@ export default withRouter(function (props) {
       variables: {
         criterias: {
           page: pageNumber ? parseInt(pageNumber) : 1,
-          pageSize: pageSize ? parseInt(pageSize) : 10,
         },
       },
     }

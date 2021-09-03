@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head{ 
+@section Head{
     <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
     <link rel="stylesheet" href="~/productmanagement/css/product-update.css" />
 }
@@ -24,6 +24,19 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="Product">
-        <partial name="_UpdateForm" />
+        <partial name="Partial/_UpdateForm" />
     </form>
 </div>
+
+@{
+    var productIdModel = new ProductIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="productIdModel" />
+<partial name="Partial/_DeactivateModal" model="productIdModel" />
+<partial name="Partial/_RestoreModal" model="productIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="productIdModel" />
+<partial name="Partial/_TemporaryDeleteModal" model="productIdModel" />
+<partial name="Partial/_ProductAttributeUpdateModal" model="new ProductAttributeRelationModel()" />
+<partial name="Partial/_ProductAttributeDeleteModal" model="new ProductAttributeRelationModel()" />
+<partial name="Partial/_ProductAttributeValueUpdateModal" model="new ProductAttributeRelationValueModel()" />
+<partial name="Partial/_ProductAttributeValueDeleteModal" model="new ProductAttributeRelationValueModel()" />

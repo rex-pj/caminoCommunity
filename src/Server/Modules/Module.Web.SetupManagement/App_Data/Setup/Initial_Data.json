@@ -1,7 +1,7 @@
-{
+﻿{
   "Statuses": [
     {
-      "Name": "New",
+      "Name": "Pending",
       "Description": "New creating user"
     },
     {
@@ -9,16 +9,12 @@
       "Description": "Actived user"
     },
     {
-      "Name": "Reported",
-      "Description": "The user is being reported"
-    },
-    {
       "Name": "Inactived",
       "Description": "The user is Inactived"
     },
     {
-      "Name": "Blocked",
-      "Description": "The user is being blocked"
+      "Name": "Reported",
+      "Description": "The user is being reported"
     },
     {
       "Name": "Deleted",
@@ -314,6 +310,38 @@
     {
       "Name": "CanDeleteProductAttribute",
       "Description": "Can delete product attribute"
+    },
+    {
+      "Name": "CanCreateShortcut",
+      "Description": "Can create shortcut"
+    },
+    {
+      "Name": "CanReadShortcut",
+      "Description": "Can read shortcut"
+    },
+    {
+      "Name": "CanUpdateShortcut",
+      "Description": "Can update shortcut"
+    },
+    {
+      "Name": "CanDeleteShortcut",
+      "Description": "Can delete shortcut"
+    },
+    {
+      "Name": "CanCreateShortcutType",
+      "Description": "Can create shortcut type"
+    },
+    {
+      "Name": "CanReadShortcutType",
+      "Description": "Can read shortcut type"
+    },
+    {
+      "Name": "CanUpdateShortcutType",
+      "Description": "Can update shortcut type"
+    },
+    {
+      "Name": "CanDeleteShortcutType",
+      "Description": "Can delete shortcut type"
     }
   ],
   "Countries": [
@@ -323,7 +351,7 @@
     },
     {
       "Code": "ALA",
-      "Name": "�land Islands"
+      "Name": "Åland Islands"
     },
     {
       "Code": "ALB",
@@ -535,7 +563,7 @@
     },
     {
       "Code": "CIV",
-      "Name": "C�te d'Ivoire"
+      "Name": "Côte d'Ivoire"
     },
     {
       "Code": "HRV",
@@ -547,7 +575,7 @@
     },
     {
       "Code": "CUW",
-      "Name": "Cura�ao"
+      "Name": "Curaçao"
     },
     {
       "Code": "CYP",
@@ -1043,7 +1071,7 @@
     },
     {
       "Code": "REU",
-      "Name": "R�union"
+      "Name": "Réunion"
     },
     {
       "Code": "ROU",
@@ -1059,7 +1087,7 @@
     },
     {
       "Code": "BLM",
-      "Name": "Saint Barth�lemy"
+      "Name": "Saint Barthélemy"
     },
     {
       "Code": "SHN",
@@ -1322,6 +1350,43 @@
     {
       "Name": "Cover",
       "Description": "The cover of the user porfile page"
+    }
+  ],
+  "shortcuts": [
+    {
+      "Name": "Tổng hợp",
+      "Description": "Tổng hợp",
+      "Url": "/",
+      "Icon": "list-alt",
+      "TypeId": 2
+    },
+    {
+      "Name": "Nông trại",
+      "Description": "Nông trại",
+      "Url": "/farms",
+      "Icon": "warehouse",
+      "TypeId": 2
+    },
+    {
+      "Name": "Sản phẩm",
+      "Description": "Sản phẩm",
+      "Url": "/products",
+      "Icon": "apple",
+      "TypeId": 2
+    },
+    {
+      "Name": "Cộng đồng",
+      "Description": "Cộng đồng",
+      "Url": "/communities",
+      "Icon": "flag",
+      "TypeId": 2
+    },
+    {
+      "Name": "Bài viết",
+      "Description": "Bài viết",
+      "Url": "/articles",
+      "Icon": "book",
+      "TypeId": 2
     }
   ]
 }

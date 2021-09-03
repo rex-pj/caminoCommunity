@@ -16,6 +16,13 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="ProductAttribute">
-        <partial name="_CreateOrUpdateForm" />
+        <partial name="Partial/_CreateOrUpdateForm" />
     </form>
 </div>
+
+@{
+    var productAttributeIdModel = new ProductAttributeIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="productAttributeIdModel" />
+<partial name="Partial/_DeactivateModal" model="productAttributeIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="productAttributeIdModel" />

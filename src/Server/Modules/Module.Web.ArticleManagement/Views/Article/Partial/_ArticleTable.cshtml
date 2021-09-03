@@ -1,0 +1,33 @@
+﻿@model PageListModel<ArticleModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col" width="100"></th>
+            <th scope="col" colspan="2">Article</th>
+            <th scope="col" width="200">Created</th>
+            <th scope="col" width="200">Updated</th>
+            <th scope="col" width="200">Status</th>
+            <th scope="col" width="100"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var article in Model.Collections)
+            {
+                article.SetPageAuthorizationForModel(Model);
+                <partial name="Partial/_ArticleRow" model="article" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

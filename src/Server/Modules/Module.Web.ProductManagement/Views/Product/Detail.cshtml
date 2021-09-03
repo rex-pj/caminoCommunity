@@ -1,12 +1,12 @@
 ﻿@model ProductModel
 @{
-    ViewData["Title"] = "Product " + @Model.Name;
+    ViewData["Title"] = "Product " + Model.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="card-header bg-dark text-light">
     <div class="row">
-        <div class="col-auto mr-auto">
+        <div class="col-auto me-auto">
             <a asp-action="Index" asp-controller="Product" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-arrow-left"></i>
             </a>
@@ -23,89 +23,106 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="form-row">
-        <div class="col-12 col-sm-9 col-md-8 col-lg-7">
-            <div class="form-group">
-                <h2>@Model.Name</h2>
-            </div>
+    <div class="row mb-3">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
+            <h2>@Model.Name</h2>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row">
         @foreach (var item in Model.Pictures)
         {
             <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-                <div class="form-group mb-3">
+                <div class="mb-3">
                     <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
                 </div>
             </div>
         }
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7">
+            <label>Attributes</label>
+            @foreach (var attribute in Model.ProductAttributes)
+            {
+                <partial name="Partial/_ProductAttribute" model="attribute" />
+            }
+        </div>
+    </div>
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Price</label>
-                <span class="form-control" readonly>@Model.Price</span>
+            <label class="form-label">Price:</label>
+            <div>
+                <strong>@Model.Price</strong>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-7">
-            <div class="form-group">
-                <p>@Html.Raw(Model.Description)</p>
+            <div class="card">
+                <div class="card-body">
+                    @Html.Raw(Model.Description)
+                </div>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Created by</label>
-                <span class="form-control" readonly>@Model.CreatedBy</span>
+            <label class="form-label">Created by:</label>
+            <div>
+                <strong>@Model.CreatedBy</strong>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Created date</label>
-                <span class="form-control" readonly>@Model.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+            <label class="form-label">Created date:</label>
+            <div>
+                <strong>@Model.CreatedDate.ToDateHourMinusFormat()</strong>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Updated by</label>
-                <span class="form-control" readonly>@Model.UpdatedBy</span>
+            <label class="form-label">Updated by:</label>
+            <div>
+                <strong>@Model.UpdatedBy</strong>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Updated date</label>
-                <span class="form-control" readonly>@Model.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+            <label class="form-label">Updated date:</label>
+            <div>
+                <strong>@Model.UpdatedDate.ToDateHourMinusFormat()</strong>
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Categories</label>
+            <label class="form-label">Categories:</label>
+            <div>
                 @foreach (var category in Model.ProductCategories)
                 {
-                    <span class="form-control" readonly>@category.Name</span>
+                    <span class="badge bg-info">@category.Name</span>
                 }
             </div>
         </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
         <div class="col-12 col-sm-9 col-md-8 col-lg-6">
-            <div class="form-group">
-                <label>Farms</label>
+            <label class="form-label">Farms:</label>
+            <div>
                 @foreach (var farm in Model.ProductFarms)
                 {
-                    <span class="form-control" readonly>@farm.FarmName</span>
+                    <span class="badge bg-success">@farm.FarmName</span>
                 }
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+            <label class="form-label">Status:</label>
+            <div>
+                <partial name="Partial/_StatusBadge" />
             </div>
         </div>
     </div>

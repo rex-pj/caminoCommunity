@@ -12,7 +12,7 @@ using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class RoleRepository : IRoleRepository
     {
@@ -86,22 +86,16 @@ namespace Camino.Service.Repository.Authorization
             return existRole;
         }
 
-        public List<RoleResult> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10)
+        public List<RoleResult> Search(BaseFilter filter, List<long> currentRoleIds = null)
         {
-            if (query == null)
-            {
-                query = string.Empty;
-            }
-
-            query = query.ToLower();
-
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var hasCurrentRoleIds = currentRoleIds != null && currentRoleIds.Any();
-            var data = _roleRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query))
+            var data = _roleRepository.Get(x => string.IsNullOrEmpty(keyword) || x.Name.ToLower().Contains(keyword))
                 .Where(x => !hasCurrentRoleIds || x.Id.NotIn(currentRoleIds));
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                data = data.Skip((page - 1) * pageSize).Take(pageSize);
+                data = data.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var users = data
@@ -157,7 +151,7 @@ namespace Camino.Service.Repository.Authorization
 
         public async Task<BasePageList<RoleResult>> GetAsync(RoleFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = (from role in _roleRepository.Table
                          join createdBy in _userRepository.Table
                          on role.CreatedById equals createdBy.Id

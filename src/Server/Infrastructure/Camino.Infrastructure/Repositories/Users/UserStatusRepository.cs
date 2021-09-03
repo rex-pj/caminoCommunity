@@ -11,7 +11,7 @@ using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public class UserStatusRepository : IUserStatusRepository
     {
@@ -21,24 +21,18 @@ namespace Camino.Service.Repository.Users
             _statusRepository = statusRepository;
         }
 
-        public IList<UserStatusResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<UserStatusResult> Search(BaseFilter filter)
         {
-            if (query == null)
+            var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
+            var query = _statusRepository.Get(x => string.IsNullOrEmpty(keyword) || x.Name.ToLower().Contains(keyword)
+                || x.Description.ToLower().Contains(keyword));
+
+            if (filter.PageSize > 0)
             {
-                query = string.Empty;
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
-            query = query.ToLower();
-
-            var data = _statusRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query)
-                || x.Description.ToLower().Contains(query));
-
-            if (pageSize > 0)
-            {
-                data = data.Skip((page - 1) * pageSize).Take(pageSize);
-            }
-
-            var users = data
+            var users = query
                 .Select(x => new UserStatusResult()
                 {
                     Id = x.Id,
@@ -52,7 +46,7 @@ namespace Camino.Service.Repository.Users
 
         public async Task<BasePageList<UserStatusResult>> GetAsync(UserStatusFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = _statusRepository.Table
                 .Select(x => new UserStatusResult()
                 {

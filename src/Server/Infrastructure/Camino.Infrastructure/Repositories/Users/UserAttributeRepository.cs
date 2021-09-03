@@ -11,7 +11,7 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Data;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public class UserAttributeRepository : IUserAttributeRepository
     {

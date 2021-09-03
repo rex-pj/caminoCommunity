@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Camino.Framework.Infrastructure.AutoMap;
-using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Framework.GraphQL;
 using Camino.Shared.Modularity;
 
 namespace Camino.Framework.Infrastructure.Extensions
@@ -32,21 +30,6 @@ namespace Camino.Framework.Infrastructure.Extensions
             }
 
             services.AddAutoMapper(mappingProfileTypes.ToArray());
-        }
-
-        public static void AddGraphQlModular(this IServiceCollection services)
-        {
-            var serviceProvider = services.BuildServiceProvider();
-            var modules = serviceProvider.GetRequiredService<IList<ModuleInfo>>();
-            if (modules == null || !modules.Any())
-            {
-                return;
-            }
-
-            services.AddGraphQLServer()
-                .AddHttpRequestInterceptor<GraphQlRequestInterceptor>()
-                .AddQueryType(x => x.Name("Query"))
-                .AddMutationType(x => x.Name("Mutation"));
         }
     }
 }

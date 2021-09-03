@@ -11,5 +11,6 @@ namespace Module.Web.ArticleManagement.Models
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         public long? CategoryId { get; set; }
+        public int? StatusId { get; set; }
     }
 }

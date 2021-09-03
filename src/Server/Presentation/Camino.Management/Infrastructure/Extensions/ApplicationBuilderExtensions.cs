@@ -6,11 +6,11 @@ namespace Camino.Management.Infrastructure.Extensions
     {
         public static IApplicationBuilder UseManagementConfiguration(this IApplicationBuilder app)
         {
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization();
 
             return app;
         }

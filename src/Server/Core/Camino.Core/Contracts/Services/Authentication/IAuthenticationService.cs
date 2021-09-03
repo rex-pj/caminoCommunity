@@ -24,7 +24,10 @@ namespace Camino.Core.Contracts.Services.Authentication
         void CreateUserLogin(UserLoginRequest request);
         Task RemoveUserLoginAsync(UserLoginRequest request);
         Task<UserTokenResult> FindUserTokenAsync(long userId, string loginProvider, string name);
+        Task<UserTokenResult> FindUserTokenByValueAsync(long userId, string value, string name);
         void CreateUserToken(UserTokenRequest request);
-        void RemoveUserToken(UserTokenRequest request);
+        Task RemoveUserTokenAsync(UserTokenRequest request);
+
+        Task RemoveAuthenticationTokenByValueAsync(UserTokenRequest request);
     }
 }

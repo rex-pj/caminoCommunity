@@ -1,0 +1,43 @@
+﻿@model PageListModel<ShortcutModel>
+@{
+    ViewData["Title"] = "Shortcuts management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Scripts {
+    <script src="~/navigationmanagement/js/shortcut.js" asp-append-version="true"></script>
+}
+
+<div class="card-header bg-dark text-light">
+    <div class="row">
+        <div class="col-auto me-auto">
+            <button class="btn btn-sm text-light mr-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#searchPanel" aria-expanded="true" aria-controls="searchPanel">
+                <i class="fa fa-search"></i>
+            </button>
+            @ViewData["Title"]
+        </div>
+        <div class="col-auto">
+            @if (Model.CanCreate)
+            {
+                <a asp-action="Create" asp-controller="Shortcut" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-plus"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<partial name="Partial/_SearchForm" model="Model.Filter" />
+
+<div class="data-table table-responsive">
+    <partial name="Partial/_ShortcutTable" />
+    <div class="spinner-grow loading my-3 d-none me-auto ml-auto" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<partial name="Partial/_ActivateModal" model="new ShortcutIdRequestModel()" />
+<partial name="Partial/_DeactivateModal" model="new ShortcutIdRequestModel()" />
+<partial name="Partial/_PermanentlyDeleteModal" model="new ShortcutIdRequestModel()" />

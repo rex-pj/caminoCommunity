@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head{ 
+@section Head{
     <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
     <link rel="stylesheet" href="~/farmmanagement/css/farm-update.css" />
 }
@@ -24,6 +24,14 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="Farm">
-        <partial name="_UpdateForm" />
+        <partial name="Partial/_UpdateForm" />
     </form>
 </div>
+@{ 
+    var farmIdModel = new FarmIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="farmIdModel" />
+<partial name="Partial/_DeactivateModal" model="farmIdModel" />
+<partial name="Partial/_RestoreModal" model="farmIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="farmIdModel" />
+<partial name="Partial/_TemporaryDeleteModal" model="farmIdModel" />

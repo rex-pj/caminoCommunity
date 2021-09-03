@@ -1,0 +1,42 @@
+﻿@model ProductAttributeRelationValueModel
+
+<div class="modal fade" id="productAttributeValueUpdateModal" tabindex="-1" aria-labelledby="productAttributeValueUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productAttributeValueUpdateLabel">Sửa giá trị thuộc tính</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Tên</label>
+                    <input type="text" class="form-control" asp-for="Name" id="attributeValueName" placeholder="Tên thuộc tính" />
+                    <input type="hidden" asp-for="Id" id="attributeValueId" />
+                    <input type="hidden" id="idOfAttributeRelation" />
+                    <input type="hidden" asp-for="AttributeId" id="idOfAttribute" />
+                    <input type="hidden" id="formAttributeValueUpdateIdentifier" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giá điều chỉnh</label>
+                    <input type="number" class="form-control" asp-for="PriceAdjustment" placeholder="Giá điều chỉnh" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giá điều chỉnh theo phần trăm (%)</label>
+                    <input type="number" class="form-control" asp-for="PricePercentageAdjustment" placeholder="Giá điều chỉnh (%)" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số lượng</label>
+                    <input type="number" class="form-control" asp-for="Quantity" placeholder="Số lượng" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Display Order</label>
+                    <input type="number" class="form-control" asp-for="DisplayOrder" id="attributeValueDisplayOrder" placeholder="Display Order" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitUpdateProductAttributeValue">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>

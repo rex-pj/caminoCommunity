@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
@@ -14,6 +13,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Products;
 using Camino.Shared.Requests.Products;
+using Microsoft.Extensions.Options;
+using Camino.Shared.Configurations;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.ProductManagement.Controllers
 {
@@ -21,32 +23,42 @@ namespace Module.Web.ProductManagement.Controllers
     {
         private readonly IProductAttributeService _productAttributeService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public ProductAttributeController(IProductAttributeService productAttributeService,
-            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper)
+            IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _productAttributeService = productAttributeService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
         [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ProductAttributeFilterModel filter)
         {
-            var filterRequest = new ProductAttributeFilter()
+            var productAttributePageList = await _productAttributeService.GetAsync(new ProductAttributeFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
-            };
-
-            var productAttributePageList = await _productAttributeService.GetAsync(filterRequest);
-            var productAttributes = productAttributePageList.Collections.Select(x => new ProductAttributeModel()
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
+                CanGetInactived = true,
+                StatusId = filter.StatusId
+            });
+            var productAttributes = productAttributePageList.Collections.Select(x => new ProductAttributeModel
             {
                 Id = x.Id,
                 Description = x.Description,
-                Name = x.Name
+                Name = x.Name,
+                CreatedById = x.CreatedById,
+                UpdatedById = x.UpdatedById,
+                CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate,
+                StatusId = (ProductAttributeStatus)x.StatusId,
+                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy
             });
 
             var productAttributePage = new PageListModel<ProductAttributeModel>(productAttributes)
@@ -58,7 +70,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ProductAttributeTable", productAttributePage);
+                return PartialView("Partial/_ProductAttributeTable", productAttributePage);
             }
 
             return View(productAttributePage);
@@ -66,7 +78,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
         [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {
@@ -75,7 +87,11 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var productAttribute = _productAttributeService.Find(id);
+                var productAttribute = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+                {
+                    Id = id,
+                    CanGetInactived = true
+                });
                 if (productAttribute == null)
                 {
                     return RedirectToNotFoundPage();
@@ -85,7 +101,8 @@ namespace Module.Web.ProductManagement.Controllers
                 {
                     Id = productAttribute.Id,
                     Description = productAttribute.Description,
-                    Name = productAttribute.Name
+                    Name = productAttribute.Name,
+                    StatusId = (ProductAttributeStatus)productAttribute.StatusId
                 };
                 return View(model);
             }
@@ -109,10 +126,12 @@ namespace Module.Web.ProductManagement.Controllers
             var productAttribute = new ProductAttributeModifyRequest()
             {
                 Description = model.Description,
-                Name = model.Name
+                Name = model.Name,
+                CreatedById = LoggedUserId,
+                UpdatedById = LoggedUserId
             };
 
-            var exist = _productAttributeService.FindByName(model.Name);
+            var exist = await _productAttributeService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -124,14 +143,19 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var exist = _productAttributeService.Find(id);
-            var model = new ProductAttributeModel()
+            var exist = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = id,
+                CanGetInactived = true
+            });
+            var model = new ProductAttributeModel
             {
                 Id = exist.Id,
                 Description = exist.Description,
-                Name = exist.Name
+                Name = exist.Name,
+                StatusId = (ProductAttributeStatus)exist.StatusId
             };
             return View(model);
         }
@@ -144,7 +168,8 @@ namespace Module.Web.ProductManagement.Controllers
             {
                 Description = model.Description,
                 Name = model.Name,
-                Id = model.Id
+                Id = model.Id,
+                UpdatedById = LoggedUserId
             };
 
             if (productAttribute.Id <= 0)
@@ -152,7 +177,11 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _productAttributeService.Find(model.Id);
+            var exist = _productAttributeService.FindAsync(new IdRequestFilter<int>
+            {
+                Id = model.Id,
+                CanGetInactived = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -162,13 +191,100 @@ namespace Module.Web.ProductManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = productAttribute.Id });
         }
 
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        public async Task<IActionResult> Deactivate(ProductAttributeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _productAttributeService.DeactivateAsync(new ProductAttributeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        public async Task<IActionResult> Active(ProductAttributeIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productAttributeService.ActiveAsync(new ProductAttributeModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProductAttribute)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _productAttributeService.DeleteAsync(id);
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
-        public async Task<IActionResult> Search(string q, string currentId = null)
+        public async Task<IActionResult> Search(string q, int? currentId = null, string excluded = null)
         {
-            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter { 
-                Search = q
+            var excludedIds = new List<int>();
+            if (!string.IsNullOrWhiteSpace(excluded))
+            {
+                excludedIds = excluded.Split(',').Select(int.Parse).ToList();
+            }
+
+            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
+            {
+                Keyword = q,
+                Id = currentId,
+                ExcludedIds = excludedIds,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
             });
+
             if (productAttributes == null || !productAttributes.Any())
             {
                 return Json(new List<Select2ItemModel>());
@@ -182,6 +298,55 @@ namespace Module.Web.ProductManagement.Controllers
                 });
 
             return Json(attributeSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public IActionResult SearchControlTypes(string q, int? currentId = null)
+        {
+            var controlTypeId = currentId.HasValue ? currentId.Value : 0;
+            var productAttributes = _productAttributeService.GetAttributeControlTypes(new ProductAttributeControlTypeFilter
+            {
+                Keyword = q,
+                ControlTypeId = controlTypeId
+            });
+            if (productAttributes == null || !productAttributes.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var attributeSeletions = productAttributes
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(attributeSeletions);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _productAttributeService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

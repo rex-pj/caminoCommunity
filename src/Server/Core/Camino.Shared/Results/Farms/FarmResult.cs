@@ -24,6 +24,7 @@ namespace Camino.Shared.Results.Farms
         public string FarmTypeName { get; set; }
         public string CreatedByPhotoCode { get; set; }
         public string Address { get; set; }
+        public int StatusId { get; set; }
         public IEnumerable<PictureResult> Pictures { get; set; }
     }
 }

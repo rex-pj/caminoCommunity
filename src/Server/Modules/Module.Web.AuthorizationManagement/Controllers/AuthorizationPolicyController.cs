@@ -8,7 +8,6 @@ using Camino.Framework.Models;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Core.Domain.Identities;
 using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
@@ -17,6 +16,9 @@ using Camino.Core.Contracts.Services.Authorization;
 using Camino.Shared.Requests.Authorization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -25,14 +27,16 @@ namespace Module.Web.AuthorizationManagement.Controllers
         private readonly IAuthorizationPolicyService _authorizationPolicyService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public AuthorizationPolicyController(IAuthorizationPolicyService authorizationPolicyService, IHttpContextAccessor httpContextAccessor,
-            IUserManager<ApplicationUser> userManager, IHttpHelper httpHelper)
+            IUserManager<ApplicationUser> userManager, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _userManager = userManager;
             _httpHelper = httpHelper;
             _authorizationPolicyService = authorizationPolicyService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
@@ -43,8 +47,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var filterRequest = new AuthorizationPolicyFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             };
             var policiesPageList = _authorizationPolicyService.Get(filterRequest);
 

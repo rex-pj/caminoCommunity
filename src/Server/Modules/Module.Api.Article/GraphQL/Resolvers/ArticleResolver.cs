@@ -13,6 +13,10 @@ using Camino.Core.Contracts.IdentityManager;
 using Camino.Shared.Requests.Media;
 using Camino.Shared.Requests.Articles;
 using Camino.Core.Contracts.Services.Articles;
+using Camino.Core.Exceptions;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
@@ -20,79 +24,18 @@ namespace Module.Api.Article.GraphQL.Resolvers
     {
         private readonly IArticleService _articleService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly PagerOptions _pagerOptions;
 
-        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager, ISessionContext sessionContext)
-            : base(sessionContext)
+        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager,
+            IOptions<PagerOptions> pagerOptions)
+            : base()
         {
             _articleService = articleService;
             _userManager = userManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<ArticleModel> CreateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
-        {
-            var article = new ArticleModifyRequest()
-            {
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
-                Content = criterias.Content,
-                Name = criterias.Name,
-                ArticleCategoryId = criterias.ArticleCategoryId
-            };
-
-            if (criterias.Picture != null)
-            {
-                article.Picture = new PictureRequest()
-                {
-                    Base64Data = criterias.Picture.Base64Data,
-                    ContentType = criterias.Picture.ContentType,
-                    FileName = criterias.Picture.FileName
-                };
-            }
-
-            var id = await _articleService.CreateAsync(article);
-            criterias.Id = id;
-            return criterias;
-        }
-
-        public async Task<ArticleModel> UpdateArticleAsync(ApplicationUser currentUser, ArticleModel criterias)
-        {
-            var exist = await _articleService.FindAsync(criterias.Id);
-            if (exist == null)
-            {
-                throw new Exception("No article found");
-            }
-
-            if (currentUser.Id != exist.CreatedById)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var article = new ArticleModifyRequest()
-            {
-                Id = criterias.Id,
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
-                Content = criterias.Content,
-                Name = criterias.Name,
-                ArticleCategoryId = criterias.ArticleCategoryId
-            };
-
-            if (criterias.Picture != null)
-            {
-                article.Picture = new PictureRequest()
-                {
-                    Base64Data = criterias.Picture.Base64Data,
-                    ContentType = criterias.Picture.ContentType,
-                    FileName = criterias.Picture.FileName,
-                    Id = criterias.Picture.PictureId
-                };
-            }
-
-            await _articleService.UpdateAsync(article);
-            return criterias;
-        }
-
-        public async Task<ArticlePageListModel> GetUserArticlesAsync(ArticleFilterModel criterias)
+        public async Task<ArticlePageListModel> GetUserArticlesAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -107,13 +50,15 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 };
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
-            var filterRequest = new ArticleFilter()
+            var filterRequest = new ArticleFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
-                CreatedById = userId
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
+                CreatedById = userId,
+                CanGetInactived = currentUserId == userId
             };
 
             try
@@ -143,11 +88,11 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 criterias = new ArticleFilterModel();
             }
 
-            var filterRequest = new ArticleFilter()
+            var filterRequest = new ArticleFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try
@@ -170,7 +115,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> GetArticleAsync(ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -179,7 +124,18 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articleResult = await _articleService.FindDetailAsync(criterias.Id);
+                var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != articleResult.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
                 var article = await MapArticleResultToModelAsync(articleResult);
                 return article;
             }
@@ -199,8 +155,8 @@ namespace Module.Api.Article.GraphQL.Resolvers
             var filterRequest = new ArticleFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try
@@ -216,17 +172,103 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<bool> DeleteArticleAsync(ApplicationUser currentUser, ArticleFilterModel criterias)
+        public async Task<ArticleModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
+        {
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            var article = new ArticleModifyRequest
+            {
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
+                Content = criterias.Content,
+                Name = criterias.Name,
+                ArticleCategoryId = criterias.ArticleCategoryId
+            };
+
+            if (criterias.Picture != null)
+            {
+                article.Picture = new PictureRequest()
+                {
+                    Base64Data = criterias.Picture.Base64Data,
+                    ContentType = criterias.Picture.ContentType,
+                    FileName = criterias.Picture.FileName
+                };
+            }
+
+            var id = await _articleService.CreateAsync(article);
+            criterias.Id = id;
+            return criterias;
+        }
+
+        public async Task<ArticleModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
+        {
+            var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = criterias.Id,
+                CanGetInactived = true
+            });
+
+            if (exist == null)
+            {
+                throw new CaminoApplicationException($"The article with id {criterias.Id} has not been found");
+            }
+
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            if (currentUserId != exist.CreatedById)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var article = new ArticleModifyRequest
+            {
+                Id = criterias.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
+                Content = criterias.Content,
+                Name = criterias.Name,
+                ArticleCategoryId = criterias.ArticleCategoryId
+            };
+
+            if (criterias.Picture != null)
+            {
+                article.Picture = new PictureRequest
+                {
+                    Base64Data = criterias.Picture.Base64Data,
+                    ContentType = criterias.Picture.ContentType,
+                    FileName = criterias.Picture.FileName,
+                    Id = criterias.Picture.PictureId
+                };
+            }
+
+            await _articleService.UpdateAsync(article);
+            return criterias;
+        }
+
+        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
         {
             try
             {
-                var exist = await _articleService.FindAsync(criterias.Id);
-                if (exist == null || currentUser.Id != exist.CreatedById)
+                var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                if (exist == null)
                 {
                     return false;
                 }
 
-                return await _articleService.SoftDeleteAsync(criterias.Id);
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != exist.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
+                {
+                    Id = criterias.Id,
+                    UpdatedById = currentUserId,
+                });
             }
             catch (Exception)
             {
@@ -259,7 +301,6 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
 
             article.CreatedByIdentityId = await _userManager.EncryptUserIdAsync(article.CreatedById);
-
             return article;
         }
 

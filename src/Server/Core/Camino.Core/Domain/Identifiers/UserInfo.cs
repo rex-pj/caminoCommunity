@@ -17,7 +17,7 @@ namespace Camino.Core.Domain.Identifiers
         public string Description { get; set; }
         
         [Required]
-        public DateTime? BirthDate { get; set; }
+        public DateTimeOffset? BirthDate { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
         public virtual User User { get; set; }

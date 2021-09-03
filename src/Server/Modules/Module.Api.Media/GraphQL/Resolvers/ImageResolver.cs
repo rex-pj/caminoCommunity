@@ -11,8 +11,8 @@ namespace Module.Api.Media.GraphQL.Resolvers
     public class ImageResolver : BaseResolver, IImageResolver
     {
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public ImageResolver(ValidationStrategyContext validationStrategyContext, ISessionContext sessionContext)
-            : base(sessionContext)
+        public ImageResolver(ValidationStrategyContext validationStrategyContext)
+            : base()
         {
             _validationStrategyContext = validationStrategyContext;
         }

@@ -9,8 +9,10 @@ import {
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
-
+import { navigationQueries } from "../../../graphql/fetching/queries";
+import { useQuery } from "@apollo/client";
 import Shortcut from "../../organisms/Shortcut";
+
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const ToggleSidebar = loadable(() =>
   import("../../organisms/Containers/ToggleSidebar")
@@ -42,6 +44,9 @@ export default (props) => {
     isInit: true,
   });
   const [windowSize, resetWindowSize] = useWindowSize();
+  const { loading: shortcutLoading, data: shortcutData } = useQuery(
+    navigationQueries.GET_SHORTCUTS
+  );
 
   useEffect(() => {
     if (windowSize.isSizeTypeChanged && !sidebarState.isInit) {
@@ -106,7 +111,7 @@ export default (props) => {
                 <CommunityInfo info={info} />
               </PageColumnPanel>
               <PageColumnPanel>
-                <Shortcut />
+                <Shortcut loading={shortcutLoading} data={shortcutData} />
               </PageColumnPanel>
               <PageColumnPanel>
                 <Interesting />

@@ -89,5 +89,72 @@ namespace Camino.IdentityManager
             var userPolicyStore = GetUserPolicyStore();
             return await userPolicyStore.HasPolicyAsync(user, NormalizeName(policy), CancellationToken);
         }
+
+        public async Task<TUser> FindByIdentityIdAsync(string userIdentityId)
+        {
+            if (string.IsNullOrEmpty(userIdentityId))
+            {
+                throw new ArgumentNullException(nameof(userIdentityId));
+            }
+
+            var userId = await DecryptUserIdAsync(userIdentityId);
+            return await FindByIdAsync(userId);
+        }
+
+        public async Task<TUser> FindByIdAsync(long userId)
+        {
+            if (Store == null)
+            {
+                throw new NotSupportedException("Store is not UserEncryptionStore");
+            }
+
+            return await Store.FindByIdAsync(userId.ToString(), CancellationToken);
+        }
+
+        public virtual Task<ApplicationUserToken> GetUserTokenByValueAsync(TUser user, string value, string tokenName)
+        {
+            ThrowIfDisposed();
+            var store = GetUserTokenStore();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            if (tokenName == null)
+            {
+                throw new ArgumentNullException(nameof(tokenName));
+            }
+
+            return store.FindTokenByValueAsync(user, value, tokenName);
+        }
+
+        public virtual async Task RemoveAuthenticationTokenByValueAsync(long userId, string value)
+        {
+            ThrowIfDisposed();
+            var store = GetUserTokenStore();
+            if (userId <= 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            await store.RemoveAuthenticationTokenByValueAsync(userId, value);
+        }
+
+        private IUserTokenStore<TUser> GetUserTokenStore()
+        {
+            var cast = Store as IUserTokenStore<TUser>;
+            if (cast == null)
+            {
+                throw new NotSupportedException("StoreNotIUserTokenStore");
+            }
+            return cast;
+        }
     }
 }

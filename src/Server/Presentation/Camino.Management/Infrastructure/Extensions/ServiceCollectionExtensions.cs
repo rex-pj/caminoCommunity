@@ -14,7 +14,6 @@ namespace Camino.Management.Infrastructure.Extensions
             services.AddApplicationServices(configuration);
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA).AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
             services.AddInfrastructureServices();
-            services.AddDomainServices();
             services.AddDataProtection();
 
             services.AddSingleton<SetupSettings>();

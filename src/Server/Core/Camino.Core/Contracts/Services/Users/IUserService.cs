@@ -14,14 +14,16 @@ namespace Camino.Core.Contracts.Services.Users
         Task<long> CreateAsync(UserModifyRequest request);
         Task<UserResult> FindByEmailAsync(string email);
         Task<UserResult> FindByUsernameAsync(string username);
-        Task DeleteAsync(long id);
+        Task<bool> SoftDeleteAsync(UserModifyRequest request);
+        Task<bool> DeactivateAsync(UserModifyRequest request);
+        Task<bool> ActiveAsync(UserModifyRequest request);
+        Task<bool> ConfirmAsync(UserModifyRequest request);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest request);
         Task<UserResult> FindByIdAsync(long id);
-        Task<UserFullResult> FindFullByIdAsync(long id);
+        Task<UserFullResult> FindFullByIdAsync(IdRequestFilter<long> filter);
         Task<UpdateItemRequest> UpdateInfoItemAsync(UpdateItemRequest request);
-        Task<bool> ActiveAsync(long id);
         Task<bool> UpdateAsync(UserModifyRequest request);
         Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter);
-        List<UserFullResult> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10);
+        Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null);
     }
 }

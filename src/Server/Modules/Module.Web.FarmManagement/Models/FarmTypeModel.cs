@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Module.Web.FarmManagement.Models
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
+        public FarmTypeStatus StatusId { get; set; }
         public IEnumerable<SelectListItem> SelectFarmTypes { get; set; }
     }
 }

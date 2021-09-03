@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
@@ -14,6 +13,10 @@ using Camino.Shared.Requests.Articles;
 using Camino.Core.Contracts.Services.Articles;
 using System.Linq;
 using Camino.Shared.Requests.Media;
+using System.Collections.Generic;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
@@ -21,43 +24,51 @@ namespace Module.Web.ArticleManagement.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public ArticleController(IArticleService articleService, IHttpHelper httpHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _articleService = articleService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
         [LoadResultAuthorizations("Article", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
-            var filterRequest = new ArticleFilter()
+            var articlePageList = await _articleService.GetAsync(new ArticleFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
-                CategoryId = filter.CategoryId
-            };
+                CategoryId = filter.CategoryId,
+                StatusId = filter.StatusId,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
 
-            var articlePageList = await _articleService.GetAsync(filterRequest);
             var articles = articlePageList.Collections.Select(x => new ArticleModel
             {
                 Id = x.Id,
                 CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate,
                 CreatedById = x.CreatedById,
                 ArticleCategoryId = x.ArticleCategoryId,
                 ArticleCategoryName = x.ArticleCategoryName,
                 Content = x.Content,
                 Description = x.Description,
                 Name = x.Name,
-                PictureId = x.Picture.Id
+                PictureId = x.Picture.Id,
+                StatusId = (ArticleStatus)x.StatusId,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy
             });
             var articlePage = new PageListModel<ArticleModel>(articles)
             {
@@ -68,7 +79,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ArticleTable", articlePage);
+                return PartialView("Partial/_ArticleTable", articlePage);
             }
 
             return View(articlePage);
@@ -85,7 +96,12 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var article = await _articleService.FindDetailAsync(id);
+                var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = id,
+                    CanGetDeleted = true,
+                    CanGetInactived = true
+                });
                 if (article == null)
                 {
                     return RedirectToNotFoundPage();
@@ -103,7 +119,10 @@ namespace Module.Web.ArticleManagement.Controllers
                     Name = article.Name,
                     PictureId = article.Picture.Id,
                     UpdateById = article.UpdatedById,
-                    UpdatedDate = article.UpdatedDate
+                    UpdatedDate = article.UpdatedDate,
+                    UpdatedBy = article.UpdatedBy,
+                    CreatedBy = article.CreatedBy,
+                    StatusId = (ArticleStatus)article.StatusId
                 };
                 return View(model);
             }
@@ -125,7 +144,16 @@ namespace Module.Web.ArticleManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
         public async Task<IActionResult> Update(int id)
         {
-            var article = await _articleService.FindDetailAsync(id);
+            var article = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+            if (article == null)
+            {
+                return RedirectToNotFoundPage();
+            }
             var model = new ArticleModel
             {
                 Id = article.Id,
@@ -138,7 +166,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 Name = article.Name,
                 PictureId = article.Picture.Id,
                 UpdateById = article.UpdatedById,
-                UpdatedDate = article.UpdatedDate
+                UpdatedDate = article.UpdatedDate,
+                StatusId = (ArticleStatus)article.StatusId
             };
 
             return View(model);
@@ -174,7 +203,12 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _articleService.FindAsync(model.Id);
+            var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = article.Id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -182,6 +216,108 @@ namespace Module.Web.ArticleManagement.Controllers
 
             await _articleService.UpdateAsync(article);
             return RedirectToAction(nameof(Detail), new { id = article.Id });
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteArticle)]
+        public async Task<IActionResult> Delete(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _articleService.DeleteAsync(request.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> TemporaryDelete(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _articleService.SoftDeleteAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Deactivate(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _articleService.DeactivateAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
+        public async Task<IActionResult> Active(ArticleIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _articleService.ActiveAsync(new ArticleModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
@@ -194,8 +330,8 @@ namespace Module.Web.ArticleManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 MimeType = filter.MimeType
             };
 
@@ -222,10 +358,34 @@ namespace Module.Web.ArticleManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_ArticlePictureTable", articlePage);
+                return PartialView("Partial/_ArticlePictureTable", articlePage);
             }
 
             return View(articlePage);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticle)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _articleService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

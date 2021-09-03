@@ -53,7 +53,6 @@ namespace Camino.Core.Utils
             return default;
         }
 
-
         public static string GetDescription<TEnum>(TEnum value)
         {
             var type = value.GetType();
@@ -71,6 +70,11 @@ namespace Camino.Core.Utils
                 }
             }
             return value.ToString();
+        }
+
+        public static int GetCode<TEnum>(this TEnum value) where TEnum : struct, IConvertible, IFormattable
+        {
+            return Convert.ToInt32(value);
         }
     }
 }

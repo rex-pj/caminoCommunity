@@ -1,10 +1,10 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Mutations;
-using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Api.Article.GraphQL.Mutations
@@ -13,27 +13,27 @@ namespace Module.Api.Article.GraphQL.Mutations
     public class ArticleMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<ArticleModel> CreateArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleModel criterias)
+        public async Task<ArticleModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleModel criterias)
         {
-            return await articleResolver.CreateArticleAsync(currentUser, criterias);
+            return await articleResolver.CreateArticleAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<ArticleModel> UpdateArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleModel criterias)
+        public async Task<ArticleModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleModel criterias)
         {
-            return await articleResolver.UpdateArticleAsync(currentUser, criterias);
+            return await articleResolver.UpdateArticleAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<bool> DeleteArticleAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
         {
-            return await articleResolver.DeleteArticleAsync(currentUser, criterias);
+            return await articleResolver.DeleteArticleAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<ArticleModel> GetArticleAsync([Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
         {
-            return await articleResolver.GetArticleAsync(criterias);
+            return await articleResolver.GetArticleAsync(claimsPrincipal, criterias);
         }
     }
 }

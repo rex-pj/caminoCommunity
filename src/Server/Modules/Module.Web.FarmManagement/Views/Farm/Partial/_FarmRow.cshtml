@@ -1,0 +1,81 @@
+﻿@model FarmModel
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="Farm" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+    <td>
+        @if (Model.PictureId > 0)
+        {
+            <img width="100" src="@Url.Action("Get", "Picture", new { id = Model.PictureId })" alt="..." class="img-thumbnail">
+        }
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Farm" asp-route-id="@Model.Id">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.CreatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.CreatedBy</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.UpdatedBy</p>
+    </td>
+    <td>
+        <partial name="Partial/_StatusBadge" />
+    </td>
+    <td>
+        @if (Model.StatusId == FarmStatus.Pending)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                    title="Activate this farm"
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                <i class="fa fa-unlock"></i>
+            </button>
+        }
+
+        @if (Model.StatusId != FarmStatus.Inactived && Model.StatusId != FarmStatus.Deleted)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm">
+                <i class="fa fa-lock"></i>
+            </button>
+        }
+        else if (Model.StatusId == FarmStatus.Inactived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm">
+                <i class="fa fa-unlock"></i>
+            </button>
+        }
+
+        @if (Model.StatusId == FarmStatus.Deleted)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
+                    class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this farm">
+                <i class="fa fa-redo"></i>
+            </button>
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                    class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this farm">
+                <i class="fa fa-times"></i>
+            </button>
+        }
+        else
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
+                    class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this farm to trash">
+                <i class="fa fa-trash-alt"></i>
+            </button>
+        }
+    </td>
+</tr>

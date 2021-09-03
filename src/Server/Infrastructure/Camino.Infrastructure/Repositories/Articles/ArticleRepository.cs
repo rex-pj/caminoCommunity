@@ -10,8 +10,10 @@ using Camino.Core.Contracts.Data;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticleRepository : IArticleRepository
     {
@@ -24,11 +26,17 @@ namespace Camino.Service.Repository.Articles
             _articleCategoryRepository = articleCategoryRepository;
         }
 
-        public async Task<ArticleResult> FindAsync(long id)
+        public async Task<ArticleResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from article in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var deletedStatus = ArticleStatus.Deleted.GetCode();
+            var inactivedStatus = ArticleStatus.Inactived.GetCode();
+            var exist = await (from article in _articleRepository
+                               .Get(x => x.Id == filter.Id)
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
+                               where (article.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (article.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (article.StatusId != deletedStatus && article.StatusId != inactivedStatus)
                                select new ArticleResult
                                {
                                    CreatedDate = article.CreatedDate,
@@ -38,17 +46,23 @@ namespace Camino.Service.Repository.Articles
                                    UpdatedById = article.UpdatedById,
                                    UpdatedDate = article.UpdatedDate,
                                    ArticleCategoryName = category.Name,
-                                   ArticleCategoryId = article.ArticleCategoryId
+                                   ArticleCategoryId = article.ArticleCategoryId,
+                                   StatusId = article.StatusId
                                }).FirstOrDefaultAsync();
             return exist;
         }
 
-        public async Task<ArticleResult> FindDetailAsync(long id)
+        public async Task<ArticleResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from article in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var deletedStatus = ArticleStatus.Deleted.GetCode();
+            var inactivedStatus = ArticleStatus.Inactived.GetCode();
+            var exist = await (from article in _articleRepository
+                               .Get(x => x.Id == filter.Id)
                                join category in _articleCategoryRepository.Table
                                on article.ArticleCategoryId equals category.Id
-                               where article.Id == id && !article.IsDeleted
+                               where (article.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (article.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (article.StatusId != deletedStatus && article.StatusId != inactivedStatus)
                                select new ArticleResult
                                {
                                    Description = article.Description,
@@ -60,7 +74,8 @@ namespace Camino.Service.Repository.Articles
                                    UpdatedDate = article.UpdatedDate,
                                    ArticleCategoryName = category.Name,
                                    ArticleCategoryId = article.ArticleCategoryId,
-                                   Content = article.Content
+                                   Content = article.Content,
+                                   StatusId = article.StatusId
                                }).FirstOrDefaultAsync();
 
             return exist;
@@ -68,7 +83,7 @@ namespace Camino.Service.Repository.Articles
 
         public ArticleResult FindByName(string name)
         {
-            var article = _articleRepository.Get(x => x.Name == name && !x.IsDeleted)
+            var article = _articleRepository.Get(x => x.Name == name && x.StatusId != ArticleStatus.Deleted.GetCode())
                 .Select(x => new ArticleResult()
                 {
                     ArticleCategoryId = x.ArticleCategoryId,
@@ -88,8 +103,12 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<BasePageList<ArticleResult>> GetAsync(ArticleFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var articleQuery = _articleRepository.Get(x => !x.IsDeleted);
+            var deletedStatus = ArticleStatus.Deleted.GetCode();
+            var inactivedStatus = ArticleStatus.Inactived.GetCode();
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var articleQuery = _articleRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 articleQuery = articleQuery.Where(user => user.Name.ToLower().Contains(search)
@@ -100,6 +119,11 @@ namespace Camino.Service.Repository.Articles
             if (!string.IsNullOrEmpty(content))
             {
                 articleQuery = articleQuery.Where(user => user.Content.ToLower().Contains(content));
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                articleQuery = articleQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.CreatedById.HasValue)
@@ -128,7 +152,7 @@ namespace Camino.Service.Repository.Articles
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
+                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
             }
 
             var filteredNumber = articleQuery.Select(x => x.Id).Count();
@@ -143,7 +167,8 @@ namespace Camino.Service.Repository.Articles
                             Description = ar.Description,
                             UpdatedById = ar.UpdatedById,
                             UpdatedDate = ar.UpdatedDate,
-                            Content = ar.Content
+                            Content = ar.Content,
+                            StatusId = ar.StatusId
                         };
 
             var articles = await query
@@ -171,7 +196,7 @@ namespace Camino.Service.Repository.Articles
                 UpdatedDate = request.UpdatedDate,
                 Description = request.Description,
                 Name = request.Name,
-                IsPublished = true
+                StatusId = ArticleStatus.Pending.GetCode()
             };
 
             return await _articleRepository.AddWithInt32EntityAsync(newArticle);
@@ -192,7 +217,7 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter)
         {
-            var exist = (from ar in _articleRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var exist = (from ar in _articleRepository.Get(x => x.Id == id && x.StatusId != ArticleStatus.Deleted.GetCode())
                          select new ArticleResult
                          {
                              Id = ar.Id,
@@ -201,7 +226,7 @@ namespace Camino.Service.Repository.Articles
                              ArticleCategoryId = ar.ArticleCategoryId
                          }).FirstOrDefault();
 
-            var relevantArticleQuery = (from ar in _articleRepository.Get(x => x.Id != exist.Id && !x.IsDeleted)
+            var relevantArticleQuery = (from ar in _articleRepository.Get(x => x.Id != exist.Id && x.StatusId != ArticleStatus.Deleted.GetCode())
                                         where ar.CreatedById == exist.CreatedById
                                         || ar.ArticleCategoryId == exist.ArticleCategoryId
                                         || ar.UpdatedById == exist.UpdatedById
@@ -224,6 +249,25 @@ namespace Camino.Service.Repository.Articles
             return relevantArticles;
         }
 
+        public async Task<IList<ArticleResult>> GetArticleByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter)
+        {
+            return await _articleRepository
+                .Get(x => x.ArticleCategoryId == categoryIdFilter.Id)
+                .Where(x => categoryIdFilter.CanGetInactived || x.StatusId != ArticleCategoryStatus.Inactived.GetCode())
+                .Select(x => new ArticleResult
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedById = x.CreatedById,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    UpdatedById = x.UpdatedById,
+                    UpdatedDate = x.UpdatedDate,
+                    Content = x.Content,
+                })
+                .ToListAsync();
+        }
+
         public async Task<bool> DeleteAsync(long id)
         {
             await _articleRepository.Get(x => x.Id == id)
@@ -232,10 +276,34 @@ namespace Camino.Service.Repository.Articles
             return true;
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == id)
-                .Set(x => x.IsDeleted, true)
+            await _articleRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, ArticleStatus.Deleted.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
+        {
+            await _articleRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, ArticleStatus.Inactived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ArticleModifyRequest request)
+        {
+            await _articleRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, ArticleStatus.Actived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

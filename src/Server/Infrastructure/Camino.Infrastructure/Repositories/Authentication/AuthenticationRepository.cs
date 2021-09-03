@@ -10,7 +10,7 @@ using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Results.Authorization;
 using Camino.Infrastructure.Strategies.Validations;
 
-namespace Camino.Service.Repository.Authentication
+namespace Camino.Infrastructure.Repositories.Authentication
 {
     public partial class AuthenticationRepository : IAuthenticationRepository
     {

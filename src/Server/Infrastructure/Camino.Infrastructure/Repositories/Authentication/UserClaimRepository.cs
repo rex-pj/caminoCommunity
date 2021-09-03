@@ -9,7 +9,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
 
-namespace Camino.Service.Repository.Authentication
+namespace Camino.Infrastructure.Repositories.Authentication
 {
     public class UserClaimRepository : IUserClaimRepository
     {

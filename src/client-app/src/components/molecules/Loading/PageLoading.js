@@ -9,13 +9,15 @@ const LoadingBlock = styled(Loading)`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-function PageLoading(...rest) {
+export default (...rest) => {
+  const onSearching = (value) => {};
+
   return (
     <MasterLayout
       {...rest}
       component={(matchProps) => (
         <Fragment>
-          <Header />
+          <Header onSearching={onSearching} />
           <div className="container-fluid px-lg-5">
             <LoadingBlock>Loading</LoadingBlock>
           </div>
@@ -23,6 +25,4 @@ function PageLoading(...rest) {
       )}
     />
   );
-}
-
-export default PageLoading;
+};

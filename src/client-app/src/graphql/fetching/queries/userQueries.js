@@ -16,20 +16,8 @@ export const GET_LOGGED_USER = gql`
   }
 `;
 
-export const LOGOUT = gql`
-  query logout {
-    logout {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
 export const GET_USER_INFO = gql`
-  query($criterias: FindUserModelInput!) {
+  query ($criterias: FindUserModelInput!) {
     userInfo: fullUserInfo(criterias: $criterias) {
       canEdit
       email
@@ -50,7 +38,7 @@ export const GET_USER_INFO = gql`
 `;
 
 export const GET_SUGGESSTION_USERS = gql`
-  query($criterias: UserFilterModelInput) {
+  query ($criterias: UserFilterModelInput) {
     users(criterias: $criterias) {
       collections {
         countryCode
@@ -69,7 +57,7 @@ export const GET_SUGGESSTION_USERS = gql`
 `;
 
 export const GET_USER_IDENTIFY = gql`
-  query($criterias: FindUserModelInput!) {
+  query ($criterias: FindUserModelInput!) {
     userIdentityInfo: fullUserInfo(criterias: $criterias) {
       canEdit
       email
@@ -82,7 +70,7 @@ export const GET_USER_IDENTIFY = gql`
 `;
 
 export const GET_FULL_USER_INFO = gql`
-  query($criterias: FindUserModelInput!) {
+  query ($criterias: FindUserModelInput!) {
     fullUserInfo(criterias: $criterias) {
       canEdit
       birthDate
@@ -113,7 +101,7 @@ export const GET_FULL_USER_INFO = gql`
 `;
 
 export const ACTIVE_USER = gql`
-  query($criterias: ActiveUserModelInput!) {
+  query ($criterias: ActiveUserModelInput!) {
     active(criterias: $criterias) {
       isSucceed
       errors {

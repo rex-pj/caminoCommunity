@@ -1,7 +1,11 @@
-﻿#productPictures .remove-picture {
+﻿#productPictures .picture-item{
+    position: relative;
+}
+
+#productPictures .remove-picture {
     position: absolute;
-    top: -5px;
-    right: -3px;
+    top: -8px;
+    right: 2px;
     width: 25px;
     height: 25px;
     border-radius: 25px;

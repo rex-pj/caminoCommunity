@@ -17,6 +17,6 @@ namespace Camino.Core.Contracts.Services.Authorization
         Task<BasePageList<RoleResult>> GetAsync(RoleFilter filter);
         RoleResult FindByName(string name);
         Task<RoleResult> FindByNameAsync(string name);
-        List<RoleResult> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10);
+        List<RoleResult> Search(BaseFilter filter, List<long> currentRoleIds = null);
     }
 }

@@ -1,0 +1,29 @@
+﻿@model PageListModel<FarmPictureModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col" width="300">Farm</th>
+            <th scope="col" colspan="2">Picture</th>
+            <th scope="col">Picture Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var farmPic in Model.Collections)
+            {
+                farmPic.SetPageAuthorizationForModel(Model);
+                <partial name="Partial/_FarmPictureRow" model="farmPic" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

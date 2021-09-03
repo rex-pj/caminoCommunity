@@ -13,10 +13,16 @@ import configureContentChangeStore from "./store/hook-store/content-change-store
 import { useQuery } from "@apollo/client";
 import { userQueries } from "./graphql/fetching/queries";
 import { SessionContext } from "./store/context/session-context";
-import authService from "./services/authService";
-import { getLocalStorageByKey } from "./services/storageService";
-import { AUTH_LOGIN_KEY } from "./utils/AppSettings";
+import {
+  parseUserInfo,
+  isTokenValid,
+  getAuthenticationToken,
+} from "./services/authService";
 import { createBrowserHistory } from "history";
+const AsyncPage = loadable((props) => import(`${props.page}`), {
+  cacheKey: (props) => props.page,
+});
+
 const history = createBrowserHistory();
 
 configureModalStore();
@@ -25,13 +31,9 @@ configureNotifyStore();
 configureContentChangeStore();
 
 // Font Awesome
-const AsyncPage = loadable((props) => import(`${props.page}`), {
-  cacheKey: (props) => props.page,
-});
 library.add(fas);
 
 export default () => {
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   const { loading, data, refetch, error } = useQuery(
     userQueries.GET_LOGGED_USER,
     {
@@ -43,13 +45,8 @@ export default () => {
     return refetch();
   };
 
-  const parseLoggedUser = (response) => {
-    const currentUser = authService.parseUserInfo(response);
-
-    if (error) {
-      return { isLogin: false };
-    }
-
+  const parseUserResponse = (response) => {
+    const currentUser = parseUserInfo(response);
     return {
       lang: "vn",
       authenticationToken: currentUser.tokenkey,
@@ -58,12 +55,29 @@ export default () => {
     };
   };
 
-  const userObj = !!isLogin ? parseLoggedUser(data) : { isLogin: false };
+  const parseLoggedUser = () => {
+    if (error) {
+      return { isLogin: false };
+    }
+
+    const authToken = getAuthenticationToken();
+    if (!authToken) {
+      return { isLogin: false };
+    }
+
+    // Login success
+    const isValid = isTokenValid();
+    if (!isValid) {
+      return { isLogin: false };
+    }
+
+    return parseUserResponse(data);
+  };
 
   return (
     <ApolloProvider client={authClient}>
       <SessionContext.Provider
-        value={{ ...userObj, relogin, isLoading: loading }}
+        value={{ ...parseLoggedUser(), relogin, isLoading: loading }}
       >
         <Router history={history}>
           <Switch>

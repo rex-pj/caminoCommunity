@@ -21,14 +21,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter((props) => {
-  const {
-    location,
-    pageNumber,
-    pageSize,
-    match,
-    editorMode,
-    onToggleCreateMode,
-  } = props;
+  const { location, pageNumber, match, editorMode, onToggleCreateMode } = props;
   const { params } = match;
   const { userId } = params;
   const { currentUser, isLogin } = useContext(SessionContext);
@@ -81,7 +74,6 @@ export default withRouter((props) => {
       criterias: {
         userIdentityId: userId,
         page: pageNumber ? parseInt(pageNumber) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });

@@ -1,0 +1,30 @@
+﻿@model ProductAttributeFilterModel
+
+<div class="search-panel m-3 collapse card" id="searchPanel">
+    <div class="card-header">
+        <i class="fa fa-search mr-2"></i>Search
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="" class="filter-form" data-target=".data-table" id="searchForm">
+            <div class="row">
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label" for="Search">Keyword</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-sm" asp-for="Search">
+                    </div>
+                </div>
+                <label class="col-12 col-sm-3 col-md-3 col-lg-2 col-form-label ml-lg-3 ml-0" asp-for="StatusId">Status</label>
+                <div class="col-12 col-sm-9 col-md-8 col-lg-3">
+                    <div class="mb-3">
+                        <select class="form-control select2-remote-ajax" data-url="@Url.Action("SearchStatus", "ProductAttribute")" asp-for="StatusId"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-info">
+                    <i class="fa fa-search mr-2"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

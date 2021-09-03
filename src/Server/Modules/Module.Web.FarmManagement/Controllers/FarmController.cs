@@ -1,5 +1,4 @@
-﻿using Camino.Core.Constants;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Core.Contracts.Helpers;
@@ -14,6 +13,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Requests.Media;
+using System.Collections.Generic;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.FarmManagement.Controllers
 {
@@ -21,33 +24,36 @@ namespace Module.Web.FarmManagement.Controllers
     {
         private readonly IFarmService _farmService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public FarmController(IFarmService farmService, IHttpHelper httpHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _farmService = farmService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
         [LoadResultAuthorizations("Farm", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Index(FarmFilterModel filter)
         {
-            var filterRequest = new FarmFilter()
+            var farmPageList = await _farmService.GetAsync(new FarmFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 UpdatedById = filter.UpdatedById,
-                FarmTypeId = filter.FarmTypeId
-            };
-
-            var farmPageList = await _farmService.GetAsync(filterRequest);
-            var farms = farmPageList.Collections.Select(x => new FarmModel()
+                FarmTypeId = filter.FarmTypeId,
+                StatusId = filter.StatusId,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+            var farms = farmPageList.Collections.Select(x => new FarmModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -57,6 +63,7 @@ namespace Module.Web.FarmManagement.Controllers
                 PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0,
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
+                StatusId = (FarmStatus)x.StatusId
             });
 
             var farmPage = new PageListModel<FarmModel>(farms)
@@ -68,7 +75,7 @@ namespace Module.Web.FarmManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_FarmTable", farmPage);
+                return PartialView("Partial/_FarmTable", farmPage);
             }
 
             return View(farmPage);
@@ -85,7 +92,12 @@ namespace Module.Web.FarmManagement.Controllers
 
             try
             {
-                var farm = await _farmService.FindDetailAsync(id);
+                var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = id,
+                    CanGetDeleted = true,
+                    CanGetInactived = true
+                });
                 if (farm == null)
                 {
                     return RedirectToNotFoundPage();
@@ -104,6 +116,7 @@ namespace Module.Web.FarmManagement.Controllers
                     FarmTypeName = farm.FarmTypeName,
                     Name = farm.Name,
                     Id = farm.Id,
+                    StatusId = (FarmStatus)farm.StatusId,
                     Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                     {
                         PictureId = y.Id
@@ -121,7 +134,16 @@ namespace Module.Web.FarmManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
         public async Task<IActionResult> Update(int id)
         {
-            var farm = await _farmService.FindDetailAsync(id);
+            var farm = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+            {
+                Id = id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
+            if (farm == null)
+            {
+                return RedirectToNotFoundPage();
+            }
             var model = new FarmModel()
             {
                 Description = farm.Description,
@@ -135,6 +157,7 @@ namespace Module.Web.FarmManagement.Controllers
                 FarmTypeName = farm.FarmTypeName,
                 Name = farm.Name,
                 Id = farm.Id,
+                StatusId = (FarmStatus)farm.StatusId,
                 Pictures = farm.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
@@ -158,7 +181,12 @@ namespace Module.Web.FarmManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _farmService.FindAsync(model.Id);
+            var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = model.Id,
+                CanGetDeleted = true,
+                CanGetInactived = true
+            });
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -190,6 +218,108 @@ namespace Module.Web.FarmManagement.Controllers
             return RedirectToAction(nameof(Detail), new { id = farm.Id });
         }
 
+        [HttpDelete]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteFarm)]
+        public async Task<IActionResult> Delete(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _farmService.DeleteAsync(request.Id);
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
+        public async Task<IActionResult> TemporaryDelete(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isDeleted = await _farmService.SoftDeleteAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isDeleted)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
+        public async Task<IActionResult> Deactivate(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isInactived = await _farmService.DeactivateAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isInactived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
+        public async Task<IActionResult> Active(FarmIdRequestModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToErrorPage();
+            }
+
+            var isActived = await _farmService.ActivateAsync(new FarmModifyRequest
+            {
+                Id = request.Id,
+                UpdatedById = LoggedUserId
+            });
+
+            if (!isActived)
+            {
+                return RedirectToErrorPage();
+            }
+
+            if (request.ShouldKeepUpdatePage)
+            {
+                return RedirectToAction(nameof(Update), new { id = request.Id });
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
         [LoadResultAuthorizations("Picture", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
         public async Task<IActionResult> Pictures(FarmPictureFilterModel filter)
@@ -200,8 +330,8 @@ namespace Module.Web.FarmManagement.Controllers
                 CreatedDateFrom = filter.CreatedDateFrom,
                 CreatedDateTo = filter.CreatedDateTo,
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search,
                 MimeType = filter.MimeType
             };
 
@@ -228,10 +358,34 @@ namespace Module.Web.FarmManagement.Controllers
 
             if (_httpHelper.IsAjaxRequest(Request))
             {
-                return PartialView("_FarmPictureTable", farmPage);
+                return PartialView("Partial/_FarmPictureTable", farmPage);
             }
 
             return View(farmPage);
+        }
+
+        [HttpGet]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
+        public IActionResult SearchStatus(string q, int? currentId = null)
+        {
+            var statuses = _farmService.SearchStatus(new IdRequestFilter<int?>
+            {
+                Id = currentId
+            }, q);
+
+            if (statuses == null || !statuses.Any())
+            {
+                return Json(new List<Select2ItemModel>());
+            }
+
+            var categorySeletions = statuses
+                .Select(x => new Select2ItemModel
+                {
+                    Id = x.Id.ToString(),
+                    Text = x.Text
+                });
+
+            return Json(categorySeletions);
         }
     }
 }

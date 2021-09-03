@@ -114,14 +114,25 @@ namespace Camino.Services.Authentication
             return userToken;
         }
 
+        public async Task<UserTokenResult> FindUserTokenByValueAsync(long userId, string value, string name)
+        {
+            var userToken = await _userTokenRepository.FindByValueAsync(userId, value, name);
+            return userToken;
+        }
+
         public void CreateUserToken(UserTokenRequest request)
         {
             _userTokenRepository.Create(request);
         }
 
-        public void RemoveUserToken(UserTokenRequest request)
+        public async Task RemoveUserTokenAsync(UserTokenRequest request)
         {
-            _userTokenRepository.Remove(request);
+            await _userTokenRepository.RemoveAsync(request);
+        }
+
+        public async Task RemoveAuthenticationTokenByValueAsync(UserTokenRequest request)
+        {
+            await _userTokenRepository.RemoveByValueAsync(request);
         }
         #endregion
     }

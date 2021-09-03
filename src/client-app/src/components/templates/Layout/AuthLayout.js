@@ -1,8 +1,7 @@
 import React from "react";
 import MasterLayout from "./MasterLayout";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import { getLocalStorageByKey } from "../../../services/storageService";
-import { AUTH_LOGIN_KEY } from "../../../utils/AppSettings";
+import { isTokenValid } from "../../../services/authService";
 import styled from "styled-components";
 
 const Root = styled.div`
@@ -34,7 +33,6 @@ const Wrap = styled.div`
 
 // The layout for login, signup or forgot password
 export default ({ component: Component, ...rest }) => {
-  const isLogin = getLocalStorageByKey(AUTH_LOGIN_KEY);
   return (
     <MasterLayout
       {...rest}
@@ -42,7 +40,7 @@ export default ({ component: Component, ...rest }) => {
         <Root>
           <Container>
             <Wrap>
-              {isLogin ? (
+              {isTokenValid() ? (
                 <AuthBanner
                   icon="exclamation-triangle"
                   title="You are logged in"

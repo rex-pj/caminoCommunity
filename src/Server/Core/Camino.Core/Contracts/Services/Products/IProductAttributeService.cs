@@ -11,11 +11,15 @@ namespace Camino.Core.Contracts.Services.Products
     public interface IProductAttributeService
     {
         Task<int> CreateAsync(ProductAttributeModifyRequest request);
-        ProductAttributeResult Find(long id);
-        ProductAttributeResult FindByName(string name);
+        Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter);
+        Task<ProductAttributeResult> FindByNameAsync(string name);
         Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter);
         Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter);
         Task<bool> UpdateAsync(ProductAttributeModifyRequest request);
         IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter);
+        Task<bool> ActiveAsync(ProductAttributeModifyRequest request);
+        Task<bool> DeactivateAsync(ProductAttributeModifyRequest request);
+        Task<bool> DeleteAsync(int id);
+        IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "");
     }
 }

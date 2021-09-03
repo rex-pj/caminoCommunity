@@ -24,5 +24,6 @@ namespace Camino.Shared.Results.Articles
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
         public PictureResult Picture { get; set; }
+        public int StatusId { get; set; }
     }
 }

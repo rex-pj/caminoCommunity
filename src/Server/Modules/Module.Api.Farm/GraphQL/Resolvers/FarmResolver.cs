@@ -4,7 +4,6 @@ using Camino.Core.Domain.Identities;
 using Camino.Core.Contracts.Services.Farms;
 using Camino.Shared.Results.Farms;
 using Camino.Shared.Requests.Filters;
-using Camino.Shared.Results.Media;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
@@ -15,6 +14,9 @@ using Camino.Core.Contracts.IdentityManager;
 using Camino.Shared.General;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Requests.Media;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Module.Api.Farm.GraphQL.Resolvers
 {
@@ -22,29 +24,34 @@ namespace Module.Api.Farm.GraphQL.Resolvers
     {
         private readonly IFarmService _farmService;
         private readonly IUserManager<ApplicationUser> _userManager;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
-        public FarmResolver(ISessionContext sessionContext, IFarmService farmService, IUserManager<ApplicationUser> userManager)
-            : base(sessionContext)
+        public FarmResolver(IFarmService farmService, IUserManager<ApplicationUser> userManager,
+            IOptions<PagerOptions> pagerOptions)
+            : base()
         {
             _farmService = farmService;
             _userManager = userManager;
+            _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ApplicationUser currentUser, FarmSelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmSelectFilterModel criterias)
         {
             if (criterias == null)
             {
                 criterias = new FarmSelectFilterModel();
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var filter = new SelectFilter()
             {
-                CreatedById = currentUser.Id,
+                CreatedById = currentUserId,
                 CurrentIds = criterias.CurrentIds,
-                Search = criterias.Query
+                Keyword = criterias.Query
             };
 
-            var farms = await _farmService.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter, _defaultPageSelection, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -60,12 +67,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return farmSeletions;
         }
 
-        public async Task<FarmModel> CreateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
+        public async Task<FarmModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias)
         {
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var farm = new FarmModifyRequest()
             {
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Description = criterias.Description,
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
@@ -83,15 +91,21 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<FarmModel> UpdateFarmAsync(ApplicationUser currentUser, FarmModel criterias)
+        public async Task<FarmModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias)
         {
-            var exist = await _farmService.FindAsync(criterias.Id);
+            var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = criterias.Id,
+                CanGetInactived = true
+            });
+
             if (exist == null)
             {
                 throw new Exception("No article found");
             }
 
-            if (currentUser.Id != exist.CreatedById)
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            if (currentUserId != exist.CreatedById)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -99,8 +113,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             var farm = new FarmModifyRequest()
             {
                 Id = criterias.Id,
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Description = criterias.Description,
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
@@ -122,7 +136,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<FarmPageListModel> GetUserFarmsAsync(FarmFilterModel criterias)
+        public async Task<FarmPageListModel> GetUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -137,13 +151,15 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 };
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
-            var filterRequest = new FarmFilter()
+            var filterRequest = new FarmFilter
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
-                CreatedById = userId
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search,
+                CreatedById = userId,
+                CanGetInactived = currentUserId == userId
             };
 
             try
@@ -176,13 +192,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             var filterRequest = new FarmFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
-            if (!string.IsNullOrEmpty(criterias.ExclusiveCreatedIdentityId))
+            if (!string.IsNullOrEmpty(criterias.ExclusiveUserIdentityId))
             {
-                filterRequest.ExclusiveCreatedById = await _userManager.DecryptUserIdAsync(criterias.ExclusiveCreatedIdentityId);
+                filterRequest.ExclusiveUserId = await _userManager.DecryptUserIdAsync(criterias.ExclusiveUserIdentityId);
             }
 
             try
@@ -205,7 +221,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        public async Task<FarmModel> GetFarmAsync(FarmFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -214,7 +230,17 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmResult = await _farmService.FindDetailAsync(criterias.Id);
+                var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != farmResult.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
                 var farm = await MapFarmResultToModelAsync(farmResult);
                 return farm;
             }
@@ -224,17 +250,32 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        public async Task<bool> DeleteFarmAsync(ApplicationUser currentUser, FarmFilterModel criterias)
+        public async Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)
         {
             try
             {
-                var exist = await _farmService.FindAsync(criterias.Id);
-                if (exist == null || currentUser.Id != exist.CreatedById)
+                var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                if (exist == null)
                 {
                     return false;
                 }
 
-                return await _farmService.SoftDeleteAsync(criterias.Id);
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != exist.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                return await _farmService.SoftDeleteAsync(new FarmModifyRequest
+                {
+                    UpdatedById = currentUserId,
+                    Id = criterias.Id
+                });
             }
             catch (Exception)
             {

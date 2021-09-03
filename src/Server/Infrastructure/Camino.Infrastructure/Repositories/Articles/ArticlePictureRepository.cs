@@ -15,7 +15,7 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticlePictureRepository : IArticlePictureRepository
     {
@@ -33,10 +33,10 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<BasePageList<ArticlePictureResult>> GetAsync(ArticlePictureFilter filter)
         {
-            var pictureQuery = _pictureRepository.Get(x => !x.IsDeleted);
-            if (!string.IsNullOrEmpty(filter.Search))
+            var pictureQuery = _pictureRepository.Get(x => x.StatusId != PictureStatus.Pending.GetCode());
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                var search = filter.Search.ToLower();
+                var search = filter.Keyword.ToLower();
                 pictureQuery = pictureQuery.Where(pic => pic.Title.ToLower().Contains(search));
             }
 
@@ -96,10 +96,15 @@ namespace Camino.Service.Repository.Articles
             return result;
         }
 
-        public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(long articleId)
+        public async Task<ArticlePictureResult> GetArticlePictureByArticleIdAsync(IdRequestFilter<long> filter)
         {
-            var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == articleId)
-                                        join picture in _pictureRepository.Get(x => !x.IsDeleted)
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var articlePicture = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId == filter.Id)
+                                        join picture in _pictureRepository
+                                        .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
                                         on articlePic.PictureId equals picture.Id
                                         select new ArticlePictureResult
                                         {
@@ -110,24 +115,36 @@ namespace Camino.Service.Repository.Articles
             return articlePicture;
         }
 
-        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds)
+        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter)
         {
+            return await GetArticlePicturesByArticleIdsAsync(articleIds, filter, null);
+        }
+
+        public async Task<IList<ArticlePictureResult>> GetArticlePicturesByArticleIdsAsync(IEnumerable<long> articleIds, IdRequestFilter<long> filter, ArticlePictureType? articlePictureType)
+        {
+            var deletedStatus = PictureStatus.Deleted.GetCode();
+            var inactivedStatus = PictureStatus.Inactived.GetCode();
+            var articlePictureTypeId = articlePictureType.HasValue ? articlePictureType.Value.GetCode() : 0;
             var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
-                                        join picture in _pictureRepository.Get(x => !x.IsDeleted)
-                                        on articlePic.PictureId equals picture.Id
-                                        select new ArticlePictureResult
-                                        {
-                                            ArticleId = articlePic.ArticleId,
-                                            ArticlePictureTypeId = articlePic.PictureTypeId,
-                                            PictureId = articlePic.PictureId
-                                        }).ToListAsync();
+                                         join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                            || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                            || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
+                                         on articlePic.PictureId equals picture.Id
+                                         where articlePictureTypeId == 0 || articlePic.PictureTypeId == articlePictureTypeId
+                                         select new ArticlePictureResult
+                                         {
+                                             ArticleId = articlePic.ArticleId,
+                                             ArticlePictureTypeId = articlePic.PictureTypeId,
+                                             PictureId = articlePic.PictureId
+                                         }).ToListAsync();
             return articlePictures;
         }
 
         public async Task<long> CreateAsync(ArticlePictureModifyRequest request)
         {
-            var pictureData = Convert.FromBase64String(request.Picture.Base64Data);
-            var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture()
+            var base64Data = ImageUtil.EncodeJavascriptBase64(request.Picture.Base64Data);
+            var pictureData = Convert.FromBase64String(base64Data);
+            var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture
             {
                 CreatedById = request.UpdatedById,
                 CreatedDate = request.CreatedDate,
@@ -136,7 +153,7 @@ namespace Camino.Service.Repository.Articles
                 UpdatedById = request.UpdatedById,
                 UpdatedDate = request.UpdatedDate,
                 BinaryData = pictureData,
-                IsPublished = true
+                StatusId = PictureStatus.Pending.GetCode()
             });
 
             var id = await _articlePictureRepository.AddWithInt64EntityAsync(new ArticlePicture()
@@ -208,13 +225,15 @@ namespace Camino.Service.Repository.Articles
             return true;
         }
 
-        public async Task<bool> SoftDeleteByArticleIdAsync(long articleId)
+        public async Task<bool> UpdateStatusByArticleIdAsync(ArticlePictureModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == articleId)
+            await (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == request.ArticleId)
                    join picture in _pictureRepository.Table
                    on articlePicture.PictureId equals picture.Id
                    select picture)
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, pictureStatus.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

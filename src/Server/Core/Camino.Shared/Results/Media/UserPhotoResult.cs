@@ -10,5 +10,6 @@
         public string ImageData { get; set; }
         public long UserId { get; set; }
         public byte TypeId { get; set; }
+        public byte[] BinaryData { get; set; }
     }
 }

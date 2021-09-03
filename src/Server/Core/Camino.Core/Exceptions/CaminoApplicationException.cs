@@ -10,9 +10,9 @@ namespace Camino.Core.Exceptions
         public string Code { get; private set; }
         public IEnumerable<CommonError> Errors { get; protected set; }
         
-        public CaminoApplicationException() : base(ErrorMessageConst.UN_EXPECTED_EXCEPTION)
+        public CaminoApplicationException() : base(ErrorMessageConst.UnexpectedException)
         {
-            Code = ErrorMessageConst.UN_EXPECTED_EXCEPTION;
+            Code = ErrorMessageConst.UnexpectedException;
         }
 
         public CaminoApplicationException(CommonError error)
@@ -30,7 +30,7 @@ namespace Camino.Core.Exceptions
         public CaminoApplicationException(string message)
             : base(message)
         {
-            Code = ErrorMessageConst.EXCEPTION;
+            Code = ErrorMessageConst.Exception;
         }
 
         public CaminoApplicationException(string message, string code)
@@ -42,7 +42,7 @@ namespace Camino.Core.Exceptions
         public CaminoApplicationException(Exception exception)
             : base(exception.Message, exception)
         {
-            Code = ErrorMessageConst.EXCEPTION;
+            Code = ErrorMessageConst.Exception;
         }
     }
 }

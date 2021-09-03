@@ -61,7 +61,7 @@ export default withRouter(function (props) {
     },
   });
 
-  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS_TITLE, {
+  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
     skip: !userIdentityId,
     variables: {
       criterias: {

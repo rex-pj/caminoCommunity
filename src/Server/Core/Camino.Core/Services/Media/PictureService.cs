@@ -2,6 +2,7 @@
 using Camino.Shared.Results.Media;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Repositories.Media;
+using Camino.Shared.Requests.Filters;
 
 namespace Camino.Services.Media
 {
@@ -14,9 +15,9 @@ namespace Camino.Services.Media
             _pictureRepository = pictureRepository;
         }
 
-        public async Task<PictureResult> FindPictureAsync(long id)
+        public async Task<PictureResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var picture = await _pictureRepository.FindPictureAsync(id);
+            var picture = await _pictureRepository.FindAsync(filter);
             return picture;
         }
     }

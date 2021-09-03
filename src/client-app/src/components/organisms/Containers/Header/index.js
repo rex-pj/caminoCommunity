@@ -16,7 +16,7 @@ const NavMenu = styled(NavigationMenu)`
   float: right;
 `;
 
-export default () => {
+export default (props) => {
   return (
     <NavRoot className="navbar px-0 px-sm-3 px-md-1 px-lg-3">
       <div className="container-fluid">

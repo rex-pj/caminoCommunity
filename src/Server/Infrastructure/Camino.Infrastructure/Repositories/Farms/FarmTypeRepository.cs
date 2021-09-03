@@ -10,8 +10,10 @@ using Camino.Shared.Results.Farms;
 using Camino.Core.Contracts.Repositories.Farms;
 using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmTypeRepository : IFarmTypeRepository
     {
@@ -35,6 +37,7 @@ namespace Camino.Service.Repository.Farms
                              Name = farmType.Name,
                              UpdatedById = farmType.UpdatedById,
                              UpdatedDate = farmType.UpdatedDate,
+                             StatusId = farmType.StatusId
                          }).FirstOrDefaultAsync();
 
             return exist;
@@ -46,7 +49,8 @@ namespace Camino.Service.Repository.Farms
                 .Select(x => new FarmTypeResult()
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    StatusId = x.StatusId
                 })
                 .FirstOrDefault();
 
@@ -55,12 +59,17 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<BasePageList<FarmTypeResult>> GetAsync(FarmTypeFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var farmTypeQuery = _farmTypeRepository.Table;
             if (!string.IsNullOrEmpty(search))
             {
                 farmTypeQuery = farmTypeQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                farmTypeQuery = farmTypeQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.CreatedById.HasValue)
@@ -95,7 +104,8 @@ namespace Camino.Service.Repository.Farms
                 Id = a.Id,
                 Name = a.Name,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -111,14 +121,9 @@ namespace Camino.Service.Repository.Farms
             return result;
         }
 
-        public async Task<IList<FarmTypeResult>> SearchAsync(string search = "", int page = 1, int pageSize = 10)
+        public async Task<IList<FarmTypeResult>> SearchAsync(BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = _farmTypeRepository.Table
                 .Select(c => new FarmTypeResult
                 {
@@ -127,14 +132,14 @@ namespace Camino.Service.Repository.Farms
                     Description = c.Description
                 });
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var farmTypes = await query
@@ -156,7 +161,7 @@ namespace Camino.Service.Repository.Farms
                 Description = farmType.Description,
                 CreatedById = farmType.CreatedById,
                 UpdatedById = farmType.UpdatedById,
-                IsPublished = true
+                StatusId = FarmTypeStatus.Actived.GetCode()
             };
             newFarmType.UpdatedDate = DateTimeOffset.UtcNow;
             newFarmType.CreatedDate = DateTimeOffset.UtcNow;
@@ -175,6 +180,34 @@ namespace Camino.Service.Repository.Farms
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(FarmTypeModifyRequest request)
+        {
+            await _farmTypeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmTypeStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(FarmTypeModifyRequest request)
+        {
+            await _farmTypeRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmTypeStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _farmTypeRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

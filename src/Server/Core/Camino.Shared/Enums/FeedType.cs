@@ -5,6 +5,7 @@
         Article = 1,
         Product = 2,
         Farm = 3,
-        Association = 4
+        Association = 4,
+        User = 5
     }
 }

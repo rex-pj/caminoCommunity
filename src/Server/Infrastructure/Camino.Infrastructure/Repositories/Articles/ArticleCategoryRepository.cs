@@ -10,37 +10,42 @@ using Camino.Core.Contracts.Data;
 using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Articles
+namespace Camino.Infrastructure.Repositories.Articles
 {
     public class ArticleCategoryRepository : IArticleCategoryRepository
     {
         private readonly IRepository<ArticleCategory> _articleCategoryRepository;
+        private readonly int _inactivedStatus;
 
         public ArticleCategoryRepository(IRepository<ArticleCategory> articleCategoryRepository)
         {
+            _inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             _articleCategoryRepository = articleCategoryRepository;
         }
 
-        public async Task<ArticleCategoryResult> FindAsync(long id)
+        public async Task<ArticleCategoryResult> FindAsync(IdRequestFilter<int> filter)
         {
             var category = await (from child in _articleCategoryRepository.Table
-                            join parent in _articleCategoryRepository.Table
-                            on child.ParentId equals parent.Id into categories
-                            from cate in categories.DefaultIfEmpty()
-                            where child.Id == id
-                            select new ArticleCategoryResult
-                            {
-                                Description = child.Description,
-                                CreatedDate = child.CreatedDate,
-                                CreatedById = child.CreatedById,
-                                Id = child.Id,
-                                Name = child.Name,
-                                ParentId = child.ParentId,
-                                UpdatedById = child.UpdatedById,
-                                UpdatedDate = child.UpdatedDate,
-                                ParentCategoryName = cate != null ? cate.Name : null
-                            }).FirstOrDefaultAsync();
+                                  join parent in _articleCategoryRepository.Table
+                                  on child.ParentId equals parent.Id into categories
+                                  from cate in categories.DefaultIfEmpty()
+                                  where child.Id == filter.Id && (filter.CanGetInactived || child.StatusId != _inactivedStatus)
+                                  select new ArticleCategoryResult
+                                  {
+                                      Description = child.Description,
+                                      CreatedDate = child.CreatedDate,
+                                      CreatedById = child.CreatedById,
+                                      Id = child.Id,
+                                      Name = child.Name,
+                                      ParentId = child.ParentId,
+                                      UpdatedById = child.UpdatedById,
+                                      UpdatedDate = child.UpdatedDate,
+                                      StatusId = child.StatusId,
+                                      ParentCategoryName = cate != null ? cate.Name : null
+                                  }).FirstOrDefaultAsync();
 
             return category;
         }
@@ -57,8 +62,8 @@ namespace Camino.Service.Repository.Articles
                     Name = x.Name,
                     ParentId = x.ParentId,
                     UpdatedById = x.UpdatedById,
-                    UpdatedDate = x.UpdatedDate
-
+                    UpdatedDate = x.UpdatedDate,
+                    StatusId = x.StatusId
                 })
                 .FirstOrDefaultAsync();
 
@@ -67,12 +72,17 @@ namespace Camino.Service.Repository.Articles
 
         public async Task<BasePageList<ArticleCategoryResult>> GetAsync(ArticleCategoryFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var categoryQuery = _articleCategoryRepository.Table;
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var categoryQuery = _articleCategoryRepository.Get(x => filter.CanGetInactived || x.StatusId != _inactivedStatus);
             if (!string.IsNullOrEmpty(search))
             {
                 categoryQuery = categoryQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                categoryQuery = categoryQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.CreatedById.HasValue)
@@ -108,7 +118,8 @@ namespace Camino.Service.Repository.Articles
                 Name = a.Name,
                 ParentId = a.ParentId,
                 UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                StatusId = a.StatusId
             });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -125,15 +136,10 @@ namespace Camino.Service.Repository.Articles
             return result;
         }
 
-        public IList<ArticleCategoryResult> SearchParents(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> SearchParents(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue)
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var query = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (idRequestFilter.CanGetInactived || x.StatusId != _inactivedStatus))
                 .Select(c => new ArticleCategoryResult
                 {
                     Id = c.Id,
@@ -142,19 +148,19 @@ namespace Camino.Service.Repository.Articles
                     ParentId = c.ParentId
                 });
 
-            if (currentId.HasValue)
+            if (idRequestFilter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != currentId);
+                query = query.Where(x => x.Id != idRequestFilter.Id);
             }
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search) || x.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var categories = query
@@ -169,15 +175,10 @@ namespace Camino.Service.Repository.Articles
             return categories;
         }
 
-        public IList<ArticleCategoryResult> Search(string search = "", long? currentId = null, int page = 1, int pageSize = 10)
+        public IList<ArticleCategoryResult> Search(IdRequestFilter<int?> idRequestFilter, BaseFilter filter)
         {
-            if (search == null)
-            {
-                search = string.Empty;
-            }
-
-            search = search.ToLower();
-            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue);
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var queryParents = _articleCategoryRepository.Get(x => !x.ParentId.HasValue && (idRequestFilter.CanGetInactived || x.StatusId != _inactivedStatus));
             var queryChildrens = _articleCategoryRepository.Get(x => x.ParentId.HasValue);
 
             var query = from parent in queryParents
@@ -199,22 +200,22 @@ namespace Camino.Service.Repository.Articles
                             }
                         };
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(search)
-                        || x.Description.ToLower().Contains(search)
-                        || x.ParentCategory.Name.ToLower().Contains(search)
-                        || x.ParentCategory.Description.ToLower().Contains(search));
+                query = query.Where(x => x.Name.ToLower().Contains(keyword)
+                        || x.Description.ToLower().Contains(keyword)
+                        || x.ParentCategory.Name.ToLower().Contains(keyword)
+                        || x.ParentCategory.Description.ToLower().Contains(keyword));
             }
 
-            if (currentId.HasValue)
+            if (idRequestFilter.Id.HasValue)
             {
-                query = query.Where(x => x.Id != currentId);
+                query = query.Where(x => x.Id != idRequestFilter.Id);
             }
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                query = query.Skip((page - 1) * pageSize).Take(pageSize);
+                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var data = query
@@ -260,7 +261,7 @@ namespace Camino.Service.Repository.Articles
                 UpdatedById = category.UpdatedById,
                 UpdatedDate = DateTime.UtcNow,
                 CreatedDate = DateTime.UtcNow,
-                IsPublished = true
+                StatusId = ArticleCategoryStatus.Actived.GetCode()
             };
 
             var id = await _articleCategoryRepository.AddWithInt32EntityAsync(newCategory);
@@ -278,6 +279,34 @@ namespace Camino.Service.Repository.Articles
                 .UpdateAsync();
 
             return true;
+        }
+
+        public async Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request)
+        {
+            await _articleCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(ArticleCategoryModifyRequest request)
+        {
+            await _articleCategoryRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var deletedNumbers = await _articleCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            return deletedNumbers > 0;
         }
     }
 }

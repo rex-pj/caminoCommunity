@@ -1,11 +1,11 @@
 ﻿using Camino.Framework.GraphQL.Attributes;
 using Camino.Framework.GraphQL.Queries;
 using Camino.Framework.Models;
-using Camino.Core.Domain.Identities;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Api.Auth.GraphQL.Queries
@@ -14,9 +14,9 @@ namespace Module.Api.Auth.GraphQL.Queries
     public class UserQueries : BaseQueries
     {
         [GraphQlAuthentication]
-        public UserInfoModel GetLoggedUser([Service] IUserResolver userResolver, [ApplicationUserState] ApplicationUser currentUser)
+        public async Task<UserInfoModel> GetLoggedUserAsync([Service] IUserResolver userResolver, ClaimsPrincipal claimsPrincipal)
         {
-            return userResolver.GetLoggedUser(currentUser);
+            return await userResolver.GetLoggedUserAsync(claimsPrincipal);
         }
 
         [GraphQlAuthentication]
@@ -25,14 +25,9 @@ namespace Module.Api.Auth.GraphQL.Queries
             return await userResolver.GetUsersAsync(criterias);
         }
 
-        [GraphQlAuthentication]
-        public async Task<CommonResult> LogoutAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver)
+        public async Task<UserInfoModel> GetFullUserInfoAsync(ClaimsPrincipal claimsPrincipal, [Service] IUserResolver userResolver, FindUserModel criterias)
         {
-            return await userResolver.LogoutAsync(currentUser);
-        }
-        public async Task<UserInfoModel> GetFullUserInfoAsync([ApplicationUserState] ApplicationUser currentUser, [Service] IUserResolver userResolver, FindUserModel criterias)
-        {
-            return await userResolver.GetFullUserInfoAsync(currentUser, criterias);
+            return await userResolver.GetFullUserInfoAsync(claimsPrincipal, criterias);
         }
 
         public async Task<CommonResult> ActiveAsync([Service] IUserResolver userResolver, ActiveUserModel criterias)

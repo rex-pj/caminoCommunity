@@ -34,9 +34,9 @@ namespace Camino.Services.Authorization
             return await _roleRepository.FindAsync(id);
         }
 
-        public List<RoleResult> Search(string query = "", List<long> currentRoleIds = null, int page = 1, int pageSize = 10)
+        public List<RoleResult> Search(BaseFilter filter, List<long> currentRoleIds = null)
         {
-            return _roleRepository.Search(query, currentRoleIds, page, pageSize);
+            return _roleRepository.Search(filter, currentRoleIds);
         }
 
         public RoleResult FindByName(string name)

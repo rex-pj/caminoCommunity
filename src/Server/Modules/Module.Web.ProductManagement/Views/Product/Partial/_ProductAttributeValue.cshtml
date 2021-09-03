@@ -1,0 +1,32 @@
+﻿@model ProductAttributeRelationValueModel
+
+<div class="row">
+    <div class="col col-12 col-md-4 col-lg-3">
+        <div class="mb-1">
+            <label class="me-1">Tên:</label>
+            <span>
+                @Model.Name
+            </span>
+        </div>
+    </div>
+    <div class="col col-12 col-md-6 col-lg-6">
+        <div class="mb-1">
+            <label class="me-1">Giá điều chỉnh:</label>
+            <span>
+                @Model.PriceAdjustment
+            </span>
+        </div>
+        <div class="mb-1">
+            <label class="me-1">
+                Giá điều chỉnh theo phần trăm:
+            </label>
+            <span>
+                @Model.PricePercentageAdjustment
+            </span>
+        </div>
+    </div>
+    <div class="col col-auto">
+        <LabelNormal class="me-1">Thứ tự:</LabelNormal>
+        <LabelDark>@Model.DisplayOrder</LabelDark>
+    </div>
+</div>

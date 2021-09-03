@@ -10,7 +10,7 @@ using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class UserAuthorizationPolicyRepository : IUserAuthorizationPolicyRepository
     {
@@ -82,7 +82,7 @@ namespace Camino.Service.Repository.Authorization
 
         public AuthorizationPolicyUsersPageList GetAuthoricationPolicyUsers(long id, UserAuthorizationPolicyFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = from userAuthorization in _userAuthorizationPolicyRepository.Get(x => x.AuthorizationPolicyId == id)
                         join user in _userRepository.Table
                         on userAuthorization.UserId equals user.Id

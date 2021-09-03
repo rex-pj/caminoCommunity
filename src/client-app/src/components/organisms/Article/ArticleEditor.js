@@ -187,7 +187,7 @@ export default withRouter((props) => {
   const loadCategorySelections = (value) => {
     return filterCategories({
       variables: {
-        criterias: { query: value },
+        criterias: { query: value, isParentOnly: true },
       },
     })
       .then((response) => {

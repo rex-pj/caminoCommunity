@@ -1,21 +1,56 @@
-﻿$(function () {
-
-    $('textarea#Content').tinymceEditor();
-
-    $('#pictureUpload').fileupload({
-        dataType: "json",
-        progress: function (e, data) {
-            $('#uploadProgress').removeClass('d-none');
+﻿; (function (global) {
+    'use strict';
+    var features = {
+        selectors: {
+            contentEditor: 'textarea#Content',
+            select2Ajax: '.select2-remote-ajax',
+            fileUploadSelector: '#pictureUpload',
+            uploadProgressingBar: '#uploadProgress',
+            pictureSelector: '#picture',
+            pictureFileTypeSelector: '#pictureFileType',
+            pictureFileNameSelector: '#pictureFileName',
+            articlePictureSelector: '#articlePicture'
         },
-        done: function (e, data) {
-            $('#uploadProgress').addClass('d-none');
-            var blobImage = base64toBlob(data.result.url, data.result.contentType);
-            var blobUrl = URL.createObjectURL(blobImage);
-            $('#picture').val(data.result.url);
-            $('#pictureFileType').val(data.result.contentType);
-            $('#pictureFileName').val(data.result.name);
-            $('#articlePicture').html('<img src="' + blobUrl + '" alt="' + data.result.name + '" class="img-thumbnail">');
+        loadContentEditor: function (selector) {
+            $(selector).tinymceEditor();
+        },
+        loadSelect2Ajax: function (selector) {
+            $(selector).select2Ajax();
+        },
+        loadFileUploader: function (selector, progressingBar, callback) {
+            $(selector).fileupload({
+                dataType: "json",
+                progress: function (e, data) {
+                    $(progressingBar).removeClass('d-none');
+                },
+                done: function (e, data) {
+                    $(progressingBar).addClass('d-none');
+                    if (callback) {
+                        callback(data);
+                    }
+                }
+            });
         }
-    });
-    $(".select2-remote-ajax").select2Ajax();
+    };
+
+    var fileUploadCallback = function (data) {
+        var selectors = features.selectors;
+        var blobImage = base64toBlob(data.result.url, data.result.contentType);
+        var blobUrl = URL.createObjectURL(blobImage);
+        $(selectors.pictureSelector).val(data.result.url);
+        $(selectors.pictureFileTypeSelector).val(data.result.contentType);
+        $(selectors.pictureFileNameSelector).val(data.result.name);
+        $(selectors.articlePictureSelector).html('<img src="' + blobUrl + '" alt="' + data.result.name + '" class="img-thumbnail">');
+    };
+
+    global.initialize = function () {
+        var selectors = features.selectors;
+        features.loadContentEditor(selectors.contentEditor);
+        features.loadSelect2Ajax(selectors.select2Ajax);
+        features.loadFileUploader(selectors.fileUploadSelector, selectors.uploadProgressingBar, fileUploadCallback);
+    };
+})(window, document);
+
+$(function () {
+    window.onload = initialize;
 });

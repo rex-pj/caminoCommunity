@@ -1,0 +1,28 @@
+﻿@model ShortcutModel
+@{
+    ViewData["Title"] = $"Update shortcut {Model.Name}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts {
+    <script src="~/navigationmanagement/js/shortcut-update.js" asp-append-version="true"></script>
+}
+
+
+<div class="card-header bg-dark text-light">
+    <a asp-action="Index" asp-controller="Shortcut" class="btn btn-sm btn-outline-secondary">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    @ViewData["Title"]
+</div>
+<div class="card-body">
+    <form method="post" asp-action="Update" asp-controller="Shortcut">
+        <partial name="Partial/_CreateOrUpdateForm" />
+    </form>
+</div>
+
+@{
+    var shortcutIdModel = new ShortcutIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="shortcutIdModel" />
+<partial name="Partial/_DeactivateModal" model="shortcutIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="shortcutIdModel" />

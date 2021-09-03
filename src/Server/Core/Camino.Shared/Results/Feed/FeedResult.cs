@@ -5,11 +5,11 @@ namespace Camino.Shared.Results.Feed
 {
     public class FeedResult
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-        public long PictureId { get; set; }
+        public string PictureId { get; set; }
         public long CreatedById { get; set; }
         public string CreatedByName { get; set; }
         public string CreatedByPhotoCode { get; set; }

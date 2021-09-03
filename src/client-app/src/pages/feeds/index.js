@@ -20,13 +20,12 @@ export default withRouter((props) => {
   const { match } = props;
   const { params } = match;
 
-  const { pageNumber, pageSize } = params;
+  const { pageNumber } = params;
   const [state, dispatch] = useStore(true);
   const { loading, data, error, refetch } = useQuery(feedqueries.GET_FEEDS, {
     variables: {
       criterias: {
         page: pageNumber ? parseInt(pageNumber) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 10,
       },
     },
   });

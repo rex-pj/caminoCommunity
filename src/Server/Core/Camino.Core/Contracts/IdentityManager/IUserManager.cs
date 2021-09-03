@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Camino.Core.Domain.Identities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Camino.Core.Contracts.IdentityManager
@@ -12,6 +13,9 @@ namespace Camino.Core.Contracts.IdentityManager
         Task<IdentityResult> RemoveAuthenticationTokenAsync(TUser user, string loginProvider, string tokenName);
         Task<string> GenerateUserTokenAsync(TUser user, string tokenProvider, string purpose);
         Task<IdentityResult> SetAuthenticationTokenAsync(TUser user, string loginProvider, string tokenName, string tokenValue);
+        Task<string> GetAuthenticationTokenAsync(TUser user, string loginProvider, string tokenName);
+        Task<ApplicationUserToken> GetUserTokenByValueAsync(TUser user, string loginProvider, string tokenName);
+        Task RemoveAuthenticationTokenByValueAsync(long userId, string value);
         Task<IdentityResult> AddLoginAsync(TUser user, UserLoginInfo login);
         Task<IdentityResult> ChangePasswordAsync(TUser user, string currentPassword, string newPassword);
         Task<IdentityResult> ConfirmEmailAsync(TUser user, string token);
@@ -29,5 +33,7 @@ namespace Camino.Core.Contracts.IdentityManager
         string NewSecurityStamp();
         Task<bool> HasPolicyAsync(TUser user, string policy);
         Task<bool> HasPolicyAsync(ClaimsPrincipal user, string policy);
+        Task<TUser> FindByIdentityIdAsync(string userIdentityId);
+        Task<TUser> FindByIdAsync(long userId);
     }
 }

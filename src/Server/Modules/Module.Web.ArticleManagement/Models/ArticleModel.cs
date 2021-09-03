@@ -1,4 +1,5 @@
 ﻿using Camino.Framework.Models;
+using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,7 @@ namespace Module.Web.ArticleManagement.Models
         public string CreatedBy { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
+        public ArticleStatus StatusId { get; set; }
         public IFormFile File { get; set; }
     }
 }

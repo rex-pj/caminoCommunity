@@ -5,6 +5,7 @@ using Camino.Infrastructure.Mapping.Farms;
 using Camino.Infrastructure.Mapping.Identities;
 using Camino.Infrastructure.Mapping.Media;
 using Camino.Infrastructure.Mapping.Products;
+using Camino.Infrastructure.Mapping.Navigations;
 
 namespace Camino.Infrastructure.Data
 {
@@ -48,7 +49,8 @@ namespace Camino.Infrastructure.Data
                 .ApplyMappingBuilder<UserClaimMap>()
                 .ApplyMappingBuilder<UserLoginMap>()
                 .ApplyMappingBuilder<UserRoleMap>()
-                .ApplyMappingBuilder<UserTokenMap>();
+                .ApplyMappingBuilder<UserTokenMap>()
+                .ApplyMappingBuilder<ShortcutMap>();
         }
     }
 }

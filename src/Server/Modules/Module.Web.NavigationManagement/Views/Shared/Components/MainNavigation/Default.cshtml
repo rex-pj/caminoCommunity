@@ -1,0 +1,85 @@
+﻿@model MainNavigationModel
+
+<div class="sidebar bg-dark">
+    <div class="site-nav-logo bg-dark pl-2">
+        <a class="navbar-brand text-white" href="@Model.Url">
+            <img class="site-logo" src="@Model.Logo" width="35" />
+            @Model.Name<b>@Model.SubName</b>
+        </a>
+    </div>
+
+    <div class="bg-secondary pt-1">
+        <ul class="nav nav-tabs" role="tablist" id="navTab">
+            @foreach (var tab in Model.TabNavigations)
+            {
+                <li class="nav-item ml-1">
+                    <button class="nav-link @(tab.IsActived ? "active":"")" id="@tab.Name-tab" data-bs-toggle="tab" data-bs-target="#@tab.Code" role="tab" aria-controls="@tab.Name" aria-selected="true">@tab.Name</button>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="tab-content" id="navTabContent">
+        @foreach (var tab in Model.TabNavigations)
+        {
+            <div class="tab-pane mt-2 fade @(tab.IsActived ? "show active": "")" id="@tab.Code" role="tabpanel" aria-labelledby="@tab.Code-tab">
+                <div class="nav-tool">
+                    <div class="accordion" id="nav@(tab.Code)Accordion">
+                        @foreach (var navItem in tab.Navigations)
+                        {
+                            <div class="nav-tool-item">
+                                <span>
+                                    @if (navItem.SubNavigations.Any())
+                                    {
+                                        <a href="@navItem.Url"
+                                           class="text-secondary @(navItem.IsActived ? "active" : "collapsed")"
+                                           data-bs-toggle="collapse"
+                                           data-bs-target="#collapse@(navItem.Route)"
+                                           aria-expanded="true"
+                                           aria-controls="collapse@(navItem.Route)">
+                                            <span class="mr-2">
+                                                <i class="@navItem.Icon"></i>
+                                            </span>
+                                            @navItem.Name
+                                            <i class="fa fa-angle-up"></i>
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@navItem.Url"
+                                           class="text-secondary @(navItem.IsActived ? "active" : "")">
+                                            <span class="mr-2">
+                                                <i class="@navItem.Icon"></i>
+                                            </span>
+                                            @navItem.Name
+                                        </a>
+                                    }
+                                </span>
+
+                                @if (navItem.SubNavigations.Any())
+                                {
+                                    <div id="collapse@(navItem.Route)"
+                                         class="collapse @(navItem.IsActived ? "show" : "collapsed")"
+                                         aria-labelledby="heading@(navItem.Route)"
+                                         data-parent="#nav@(tab.Code)Accordion">
+                                        <div class="list-group bg-secondary">
+                                            @foreach (var subNav in navItem.SubNavigations)
+                                            {
+                                                <a href="@subNav.Url" class="list-group-item text-dark @(subNav.IsActived ? "active" : "")">
+                                                    <span class="mr-2">
+                                                        <i class="fa fa-angle-right"></i>
+                                                    </span>
+                                                    @subNav.Name
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
@@ -9,21 +8,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Farms;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductFarmController : BaseAuthController
     {
         private readonly IFarmService _farmService;
+        private readonly PagerOptions _pagerOptions;
 
-        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor)
+        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _farmService = farmService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
         public async Task<IActionResult> Search(string q, string currentId = null)
         {
             long[] currentIds = null;
@@ -35,9 +39,9 @@ namespace Module.Web.ProductManagement.Controllers
             var filter = new SelectFilter()
             {
                 CurrentIds = currentIds,
-                Search = q
+                Keyword = q
             };
-            var farms = await _farmService.SelectAsync(filter);
+            var farms = await _farmService.SelectAsync(filter, 1, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return Json(new List<Select2ItemModel>());

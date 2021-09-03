@@ -1,6 +1,4 @@
 using Camino.ApiHost.Infrastructure.Extensions;
-using Camino.Framework.Infrastructure.Extensions;
-using Camino.Infrastructure.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,10 +19,6 @@ namespace Camino.ApiHost
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureApiHostServices(Configuration);
-            var mvcBuilder = services.AddControllers().AddNewtonsoftJson();
-            mvcBuilder.AddModular();
-            services.AddAutoMappingModular();
-            services.AddGraphQlModular();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -33,7 +27,7 @@ namespace Camino.ApiHost
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.ConfigureAppBuilder(env);
         }
     }

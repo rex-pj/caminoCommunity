@@ -17,6 +17,9 @@ const UrlConstant = {
   Product: {
     url: "/products/",
   },
+  Profile: {
+    url: "/profile/",
+  },
 };
 
 export { PageInfo, UrlConstant };

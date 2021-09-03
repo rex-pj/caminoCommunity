@@ -3,13 +3,14 @@ using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Camino.Framework.Attributes;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Filters;
 using Camino.Core.Contracts.Helpers;
 using Camino.Core.Contracts.Services.Authorization;
-using Camino.Framework.Models;
 using System.Linq;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
@@ -17,12 +18,15 @@ namespace Module.Web.AuthorizationManagement.Controllers
     {
         private readonly IUserAuthorizationPolicyService _userAuthorizationPolicyService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
 
         public UserAuthorizationPolicyController(IHttpContextAccessor httpContextAccessor,
-            IUserAuthorizationPolicyService userAuthorizationPolicyService, IHttpHelper httpHelper) : base(httpContextAccessor)
+            IUserAuthorizationPolicyService userAuthorizationPolicyService, IHttpHelper httpHelper,
+            IOptions<PagerOptions> pagerOptions) : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
             _userAuthorizationPolicyService = userAuthorizationPolicyService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserAuthorizationPolicy)]
@@ -32,8 +36,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             var filterRequest = new UserAuthorizationPolicyFilter
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             };
             var authorizationPolicy = _userAuthorizationPolicyService.GetAuthoricationPolicyUsers(filter.Id, filterRequest);
 

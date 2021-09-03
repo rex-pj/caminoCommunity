@@ -1,0 +1,55 @@
+﻿@using Camino.Infrastructure.Commons.Enums
+@model ShortcutModel
+
+<tr>
+    <td>@Model.Id</td>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="Shortcut" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="Shortcut" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="Shortcut" asp-route-id="@Model.Id" class="common-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" title="@Model.Description">
+            @Model.Name
+        </a>
+    </td>
+    <td>
+        <div>@Model.Url</div>
+    </td>
+    <td>
+        <div>@(EnumUtil.GetDescription(Model.TypeId))</div>
+    </td>
+    <td>
+        <partial name="Partial/_StatusBadge" />
+    </td>
+    <td>
+        <div>@Model.Order</div>
+    </td>
+    <td>
+        @if (Model.StatusId == ShortcutStatus.Actived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this shortcut">
+                <i class="fa fa-lock"></i>
+            </button>
+        }
+        else if (Model.StatusId == ShortcutStatus.Inactived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this shortcut">
+                <i class="fa fa-unlock"></i>
+            </button>
+        }
+
+        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this shortcut">
+            <i class="fa fa-times"></i>
+        </button>
+    </td>
+</tr>

@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Core.Contracts.Helpers;
@@ -14,20 +13,26 @@ using System.Threading.Tasks;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Identifiers;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
-    public class UserStatusController : BaseController
+    public class UserStatusController : BaseAuthController
     {
         private readonly IUserStatusService _userStatusService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public UserStatusController(IHttpContextAccessor httpContextAccessor, IUserStatusService userStatusService,
-            IHttpHelper httpHelper)
+            IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _userStatusService = userStatusService;
             _httpHelper = httpHelper;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]
@@ -37,8 +42,8 @@ namespace Module.Web.IdentityManagement.Controllers
             var filterRequest = new UserStatusFilter()
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             };
 
             var statusPageList = await _userStatusService.GetAsync(filterRequest);
@@ -68,7 +73,12 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadUserStatus)]
         public IActionResult Search(string q)
         {
-            var statuses = _userStatusService.Search(q);
+            var statuses = _userStatusService.Search(new BaseFilter
+            {
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            });
             if (statuses == null || !statuses.Any())
             {
                 return Json(new

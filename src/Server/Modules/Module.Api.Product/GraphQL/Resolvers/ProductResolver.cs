@@ -16,6 +16,9 @@ using Camino.Shared.Requests.Media;
 using Camino.Core.Exceptions;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
@@ -23,15 +26,18 @@ namespace Module.Api.Product.GraphQL.Resolvers
     {
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IProductService _productService;
+        private readonly PagerOptions _pagerOptions;
 
-        public ProductResolver(IUserManager<ApplicationUser> userManager, ISessionContext sessionContext, IProductService productService)
-            : base(sessionContext)
+        public ProductResolver(IUserManager<ApplicationUser> userManager, IProductService productService, 
+            IOptions<PagerOptions> pagerOptions)
+            : base()
         {
             _userManager = userManager;
             _productService = productService;
+            _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<ProductPageListModel> GetUserProductsAsync(ProductFilterModel criterias)
+        public async Task<ProductPageListModel> GetUserProductsAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -46,13 +52,15 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 };
             }
 
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var userId = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
-                CreatedById = userId
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
+                CreatedById = userId,
+                CanGetInactived = currentUserId == userId
             };
 
             try
@@ -85,8 +93,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search,
+                PageSize = _pagerOptions.PageSize,
+                Keyword = criterias.Search,
                 FarmId = criterias.FarmId
             };
 
@@ -120,8 +128,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
-                PageSize = criterias.PageSize,
-                Search = criterias.Search
+                PageSize = criterias.PageSize.HasValue && criterias.PageSize < _pagerOptions.PageSize ? criterias.PageSize.Value : _pagerOptions.PageSize,
+                Keyword = criterias.Search
             };
 
             try
@@ -168,7 +176,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ProductFilterModel criterias)
+        public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -177,7 +185,18 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productResult = await _productService.FindDetailAsync(criterias.Id);
+                var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != productResult.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
                 var product = await MapProductResultToModelAsync(productResult);
                 return product;
             }
@@ -187,12 +206,13 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
-        public async Task<ProductModel> CreateProductAsync(ApplicationUser currentUser, ProductModel criterias)
+        public async Task<ProductModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias)
         {
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
             var product = new ProductModifyRequest()
             {
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Name = criterias.Name,
                 Description = criterias.Description,
                 Price = criterias.Price,
@@ -230,15 +250,21 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<ProductModel> UpdateProductAsync(ApplicationUser currentUser, ProductModel criterias)
+        public async Task<ProductModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias)
         {
-            var exist = await _productService.FindAsync(criterias.Id);
+            var exist = await _productService.FindAsync(new IdRequestFilter<long>
+            {
+                Id = criterias.Id,
+                CanGetInactived = true
+            });
+
             if (exist == null)
             {
                 throw new CaminoApplicationException("No article found");
             }
 
-            if (currentUser.Id != exist.CreatedById)
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            if (currentUserId != exist.CreatedById)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -246,8 +272,8 @@ namespace Module.Api.Product.GraphQL.Resolvers
             var product = new ProductModifyRequest()
             {
                 Id = criterias.Id,
-                CreatedById = currentUser.Id,
-                UpdatedById = currentUser.Id,
+                CreatedById = currentUserId,
+                UpdatedById = currentUserId,
                 Name = criterias.Name,
                 Description = criterias.Description,
                 Price = criterias.Price,
@@ -288,17 +314,32 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<bool> DeleteProductAsync(ApplicationUser currentUser, ProductFilterModel criterias)
+        public async Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias)
         {
             try
             {
-                var exist = await _productService.FindAsync(criterias.Id);
-                if (exist == null || currentUser.Id != exist.CreatedById)
+                var exist = await _productService.FindAsync(new IdRequestFilter<long>
+                {
+                    Id = criterias.Id,
+                    CanGetInactived = true
+                });
+
+                if (exist == null)
                 {
                     return false;
                 }
 
-                return await _productService.DeleteAsync(criterias.Id);
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                if (currentUserId != exist.CreatedById)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                return await _productService.SoftDeleteAsync(new ProductModifyRequest
+                {
+                    UpdatedById = currentUserId,
+                    Id = criterias.Id
+                });
             }
             catch (Exception)
             {

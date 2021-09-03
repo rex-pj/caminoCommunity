@@ -11,7 +11,7 @@ using Camino.Core.Contracts.Repositories.Identities;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 
-namespace Camino.Service.Repository.Identifiers
+namespace Camino.Infrastructure.Repositories.Identifiers
 {
     public class CountryRepository : ICountryRepository
     {
@@ -36,7 +36,7 @@ namespace Camino.Service.Repository.Identifiers
 
         public async Task<BasePageList<CountryResult>> GetAsync(CountryFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = _countryRepository.Table
                 .Select(x => new CountryResult()
                 {
@@ -45,9 +45,9 @@ namespace Camino.Service.Repository.Identifiers
                     Name = x.Name
                 });
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Code.ToLower().Contains(search) || x.Name.ToLower().Contains(search));
+                query = query.Where(x => x.Code.ToLower().Contains(keyword) || x.Name.ToLower().Contains(keyword));
             }
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -64,21 +64,15 @@ namespace Camino.Service.Repository.Identifiers
             return result;
         }
 
-        public IList<CountryResult> Search(string query = "", int page = 1, int pageSize = 10)
+        public IList<CountryResult> Search(BaseFilter filter)
         {
-            if (query == null)
+            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var data = _countryRepository.Get(x => string.IsNullOrEmpty(keyword) || x.Name.ToLower().Contains(keyword)
+                || x.Code.ToLower().Contains(keyword));
+
+            if (filter.PageSize > 0)
             {
-                query = string.Empty;
-            }
-
-            query = query.ToLower();
-
-            var data = _countryRepository.Get(x => string.IsNullOrEmpty(query) || x.Name.ToLower().Contains(query)
-                || x.Code.ToLower().Contains(query));
-
-            if (pageSize > 0)
-            {
-                data = data.Skip((page - 1) * pageSize).Take(pageSize);
+                data = data.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
             }
 
             var countries = data

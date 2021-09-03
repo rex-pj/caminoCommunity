@@ -51,7 +51,6 @@ namespace Camino.Framework.Attributes
             }
 
             var policies = _policyMethods.Select(x => $"{x}{_moduleName}").ToArray();
-
             var requestServices = httpContext.RequestServices;
             var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
             var numberOfPolicies = policies.Length;

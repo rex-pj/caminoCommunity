@@ -1,0 +1,136 @@
+﻿@model FarmModel
+
+<input asp-for="Id" type="hidden" />
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label for="name">Name</label>
+        <input class="form-control" type="text" asp-for="Name">
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label>Farm Type</label>
+        <select class="form-control select2-remote-ajax" data-url="@Url.Action("Search", "FarmType")" asp-for="FarmTypeId">
+            <option value="@Model.FarmTypeId" selected="selected">@Model.FarmTypeName</option>
+        </select>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <label class="form-label">Status:</label>
+        <div>
+            <partial name="Partial/_StatusBadge" />
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <label for="Description">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="3"></textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-6">
+        <div class="mb-3">
+            <label>Pictures</label>
+            <input class="form-control-file" data-url="@Url.Action("ConverToBase64", "Picture")"
+                   type="file" asp-for="File" id="pictureUpload" />
+        </div>
+        <div class="progress d-none" id="uploadProgress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3" id="farmPictures">
+    @{
+        int index = 0;
+        foreach (var item in Model.Pictures)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 picture-item">
+                <div class="mb-3 mb-3">
+                    <img src="@Url.Action("Get", "Picture", new { id = item.PictureId })" alt="..." class="img-thumbnail">
+                </div>
+                <input type="hidden" name="Pictures[@index].PictureId" value="@item.PictureId" />
+                <span class="remove-picture">
+                    <i class="fa fa-times"></i>
+                </span>
+            </div>
+            index++;
+        }
+    }
+</div>
+
+<div class="row mb-3">
+    <div class="col-12 col-sm-9 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-auto me-auto">
+                @if (Model.Id <= 0)
+                {
+                    <button type="submit" class="btn btn-primary">Create</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Update</button>
+                }
+            </div>
+            <div class="col-auto">
+                @if (Model.Id > 0)
+                {
+                    @if (Model.StatusId == FarmStatus.Pending)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                title="Activate this farm"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId != FarmStatus.Inactived && Model.StatusId != FarmStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                                class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm">
+                            <i class="fa fa-lock"></i>
+                            <span class="ms-1">Block</span>
+                        </button>
+                    }
+                    else if (Model.StatusId == FarmStatus.Inactived)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                                class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm">
+                            <i class="fa fa-unlock"></i>
+                            <span class="ms-1">Re-activate</span>
+                        </button>
+                    }
+
+                    @if (Model.StatusId == FarmStatus.Deleted)
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
+                                class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this farm">
+                            <i class="fa fa-redo"></i>
+                            <span class="ms-1">Restore</span>
+                        </button>
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this farm">
+                            <i class="fa fa-times"></i>
+                            <span class="ms-1">Delete</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#temporaryDeleteModal"
+                                class="btn btn-sm btn-outline-danger mb-2 common-tooltip" title="Move this farm to trash">
+                            <i class="fa fa-trash-alt"></i>
+                            <span class="ms-1">Move To Trash</span>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

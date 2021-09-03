@@ -16,8 +16,9 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using Camino.Infrastructure.Data;
 using LinqToDB.Tools;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Users
+namespace Camino.Infrastructure.Repositories.Users
 {
     public partial class UserRepository : IUserRepository
     {
@@ -26,6 +27,8 @@ namespace Camino.Service.Repository.Users
         private readonly IRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly CaminoDataConnection _dataConnection;
+        private int _userDeletedStatus;
+        private int _userInactivedStatus;
         #endregion
 
         #region Ctor
@@ -36,6 +39,8 @@ namespace Camino.Service.Repository.Users
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
+            _userDeletedStatus = UserStatus.Deleted.GetCode();
+            _userInactivedStatus = UserStatus.Inactived.GetCode();
         }
         #endregion
 
@@ -47,28 +52,26 @@ namespace Camino.Service.Repository.Users
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var user = new User
-            {
-                CreatedById = request.CreatedById,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedById = request.UpdatedById,
-                UpdatedDate = DateTime.UtcNow,
-                Email = request.Email,
-                Firstname = request.Firstname,
-                Lastname = request.Lastname,
-                PasswordHash = request.PasswordHash,
-                SecurityStamp = request.SecurityStamp,
-                StatusId = 1,
-                UserName = request.UserName,
-                DisplayName = request.DisplayName,
-                IsEmailConfirmed = true
-            };
-
             using (var transaction = _dataConnection.BeginTransaction())
             {
                 try
                 {
-                    var userId = await _userRepository.AddWithInt64EntityAsync(user);
+                    var userId = await _userRepository.AddWithInt64EntityAsync(new User
+                    {
+                        CreatedById = request.CreatedById,
+                        CreatedDate = DateTime.UtcNow,
+                        UpdatedById = request.UpdatedById,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = request.Email,
+                        Firstname = request.Firstname,
+                        Lastname = request.Lastname,
+                        PasswordHash = request.PasswordHash,
+                        SecurityStamp = request.SecurityStamp,
+                        StatusId = UserStatus.Pending.GetCode(),
+                        UserName = request.UserName,
+                        DisplayName = request.DisplayName,
+                        IsEmailConfirmed = true
+                    });
                     if (userId > 0)
                     {
                         await _userInfoRepository.AddWithInt64EntityAsync(new UserInfo
@@ -96,24 +99,55 @@ namespace Camino.Service.Repository.Users
             return -1;
         }
 
-        public async Task DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(long id)
         {
-            var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            user.StatusId = (int)UserStatus.Deleted;
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.Get(x => x.Id == id)
+                .DeleteAsync();
+
+            return true;
         }
 
-        public async Task<bool> ActiveAsync(long id)
+        public async Task<bool> SoftDeleteAsync(UserModifyRequest request)
         {
-            var user = _userRepository.FirstOrDefault(x => x.Id == id);
-            if (user.IsEmailConfirmed)
-            {
-                throw new InvalidOperationException($"User with email: {user.Email} is already actived");
-            }
+            var updatedRecords = (await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Deleted.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync());
 
-            user.IsEmailConfirmed = true;
-            user.StatusId = (int)UserStatus.Actived;
-            await _userRepository.UpdateAsync(user);
+            return updatedRecords > 0;
+        }
+
+        public async Task<bool> DeactivateAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Inactived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ConfirmAsync(UserModifyRequest request)
+        {
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.IsEmailConfirmed, true)
+                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
 
             return true;
         }
@@ -132,7 +166,6 @@ namespace Camino.Service.Repository.Users
 
             var key = (long)request.Key;
             var userInfo = _userInfoRepository.FirstOrDefault(x => x.Id == key);
-
             if (userInfo == null)
             {
                 throw new ArgumentException(nameof(userInfo));
@@ -140,7 +173,6 @@ namespace Camino.Service.Repository.Users
 
             _validationStrategyContext.SetStrategy(new UserInfoItemUpdationValidationStratergy(_validationStrategyContext));
             bool canUpdate = _validationStrategyContext.Validate(request);
-
             if (!canUpdate)
             {
                 throw new ArgumentException(request.PropertyName);
@@ -169,15 +201,13 @@ namespace Camino.Service.Repository.Users
                 }
             }
 
-            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == request.Id);
-
-            user.UpdatedById = request.Id;
-            user.UpdatedDate = DateTime.UtcNow;
-            user.Lastname = request.Lastname;
-            user.Firstname = request.Firstname;
-            user.DisplayName = request.DisplayName;
-
-            _userRepository.Update(user);
+            await _userRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.UpdatedById, request.Id)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .Set(x => x.Lastname, request.Lastname)
+                .Set(x => x.Firstname, request.Firstname)
+                .Set(x => x.DisplayName, request.DisplayName)
+                .UpdateAsync();
 
             return request;
         }
@@ -309,11 +339,13 @@ namespace Camino.Service.Repository.Users
             return existUsers;
         }
 
-        public async Task<UserFullResult> FindFullByIdAsync(long id)
+        public async Task<UserFullResult> FindFullByIdAsync(IdRequestFilter<long> filter)
         {
             var existUser = await _userRepository
-                .Get(x => x.Id.Equals(id))
-                .Select(x => new UserFullResult()
+                .Get(x => x.Id.Equals(filter.Id) && (x.StatusId == _userDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == _userInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus))
+                .Select(x => new UserFullResult
                 {
                     CreatedDate = x.CreatedDate,
                     DisplayName = x.DisplayName,
@@ -330,35 +362,45 @@ namespace Camino.Service.Repository.Users
                     StatusId = x.StatusId,
                     StatusLabel = x.Status.Name,
                     Id = x.Id,
+                    UpdatedDate = x.UpdatedDate,
                     CountryId = x.UserInfo.CountryId,
                     CountryCode = x.UserInfo.Country.Code,
-                    CountryName = x.UserInfo.Country.Name
+                    CountryName = x.UserInfo.Country.Name,
+                    IsEmailConfirmed = x.IsEmailConfirmed
                 })
                 .FirstOrDefaultAsync();
 
             return existUser;
         }
 
-        public List<UserFullResult> Search(string query = "", List<long> currentUserIds = null, int page = 1, int pageSize = 10)
+        public async Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null)
         {
-            if (query == null)
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var userQuery = _userRepository.Get(x => (x.StatusId == _userDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == _userInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus));
+
+            if (!string.IsNullOrEmpty(search))
             {
-                query = string.Empty;
+                userQuery = userQuery.Where(user => user.Lastname.ToLower().Contains(search)
+                         || user.Firstname.ToLower().Contains(search)
+                         || (user.Lastname + " " + user.Firstname).ToLower().Contains(search)
+                         || user.Email.Contains(search)
+                         || user.DisplayName.ToLower().Contains(search));
             }
 
-            query = query.ToLower();
-
-            var hasCurrentUserIds = currentUserIds != null && currentUserIds.Any();
-            var data = _userRepository.Get(x => string.IsNullOrEmpty(query) || x.Lastname.ToLower().Contains(query)
-                || x.Firstname.ToLower().Contains(query) || x.DisplayName.ToLower().Contains(query))
-                .Where(x => !hasCurrentUserIds || x.Id.NotIn(currentUserIds));
-
-            if (pageSize > 0)
+            if (currentUserIds != null && currentUserIds.Any())
             {
-                data = data.Skip((page - 1) * pageSize).Take(pageSize);
+                userQuery = userQuery.Where(x => x.Id.NotIn(currentUserIds));
             }
 
-            var users = data
+            if (filter.PageSize > 0)
+            {
+                userQuery = userQuery.Skip((filter.Page - 1) * filter.PageSize)
+                    .Take(filter.PageSize);
+            }
+
+            var users = await userQuery
                 .Select(x => new UserFullResult()
                 {
                     Id = x.Id,
@@ -367,15 +409,18 @@ namespace Camino.Service.Repository.Users
                     Firstname = x.Firstname,
                     DisplayName = x.DisplayName
                 })
-                .ToList();
+                .ToListAsync();
 
             return users;
         }
 
         public async Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var userQuery = _userRepository.Table;
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var userQuery = _userRepository.Get(x => (x.StatusId == _userDeletedStatus && filter.CanGetDeleted)
+                            || (x.StatusId == _userInactivedStatus && filter.CanGetInactived)
+                            || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus));
+
             if (!string.IsNullOrEmpty(search))
             {
                 userQuery = userQuery.Where(user => user.Lastname.ToLower().Contains(search)
@@ -400,9 +445,9 @@ namespace Camino.Service.Repository.Users
                 userQuery = userQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
-            if (filter.ExclusiveCreatedById.HasValue)
+            if (filter.ExclusiveUserById.HasValue)
             {
-                userQuery = userQuery.Where(x => x.Id != filter.ExclusiveCreatedById);
+                userQuery = userQuery.Where(x => x.Id != filter.ExclusiveUserById);
             }
 
             if (filter.IsEmailConfirmed.HasValue)
@@ -478,6 +523,7 @@ namespace Camino.Service.Repository.Users
                              PhoneNumber = user.UserInfo.PhoneNumber,
                              GenderLabel = user.UserInfo.Gender.Name,
                              StatusLabel = user.Status.Name,
+                             StatusId = user.StatusId,
                              CountryName = user.UserInfo.Country.Name
                          });
 

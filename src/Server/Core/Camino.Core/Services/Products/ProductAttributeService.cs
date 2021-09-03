@@ -7,34 +7,57 @@ using System.Threading.Tasks;
 using Camino.Shared.Requests.Products;
 using Camino.Core.Contracts.Repositories.Products;
 using Camino.Shared.General;
+using Camino.Core.Contracts.Repositories.Users;
+using System.Linq;
 
 namespace Camino.Services.Products
 {
     public class ProductAttributeService : IProductAttributeService
     {
         private readonly IProductAttributeRepository _productAttributeRepository;
+        private readonly IProductAttributeStatusRepository _productAttributeStatusRepository;
+        private readonly IUserRepository _userRepository;
 
-        public ProductAttributeService(IProductAttributeRepository productAttributeRepository)
+        public ProductAttributeService(IProductAttributeRepository productAttributeRepository,
+            IProductAttributeStatusRepository productAttributeStatusRepository,
+             IUserRepository userRepository)
         {
             _productAttributeRepository = productAttributeRepository;
+            _productAttributeStatusRepository = productAttributeStatusRepository;
+            _userRepository = userRepository;
         }
 
-        public ProductAttributeResult Find(long id)
+        #region get
+        public async Task<ProductAttributeResult> FindAsync(IdRequestFilter<int> filter)
         {
-            var productAttribute = _productAttributeRepository.Find(id);
+            var productAttribute = await _productAttributeRepository.FindAsync(filter);
             return productAttribute;
         }
 
-        public ProductAttributeResult FindByName(string name)
+        public async Task<ProductAttributeResult> FindByNameAsync(string name)
         {
-            var productAttribute = _productAttributeRepository.FindByName(name);
+            var productAttribute = await _productAttributeRepository.FindByNameAsync(name);
             return productAttribute;
         }
 
         public async Task<BasePageList<ProductAttributeResult>> GetAsync(ProductAttributeFilter filter)
         {
-            var result = await _productAttributeRepository.GetAsync(filter);
-            return result;
+            var attributesPageList = await _productAttributeRepository.GetAsync(filter);
+            var createdByIds = attributesPageList.Collections.Select(x => x.CreatedById).ToArray();
+            var updatedByIds = attributesPageList.Collections.Select(x => x.UpdatedById).ToArray();
+
+            var createdByUsers = await _userRepository.GetNameByIdsAsync(createdByIds);
+            var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
+
+            foreach (var category in attributesPageList.Collections)
+            {
+                var createdBy = createdByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
+                category.CreatedBy = createdBy.DisplayName;
+
+                var updatedBy = updatedByUsers.FirstOrDefault(x => x.Id == category.CreatedById);
+                category.UpdatedBy = updatedBy.DisplayName;
+            }
+            return attributesPageList;
         }
 
         public async Task<IList<ProductAttributeResult>> SearchAsync(ProductAttributeFilter filter)
@@ -42,6 +65,13 @@ namespace Camino.Services.Products
             return await _productAttributeRepository.SearchAsync(filter);
         }
 
+        public IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter)
+        {
+            return _productAttributeRepository.GetAttributeControlTypes(filter);
+        }
+        #endregion
+
+        #region CRUD
         public async Task<int> CreateAsync(ProductAttributeModifyRequest request)
         {
             return await _productAttributeRepository.CreateAsync(request);
@@ -52,9 +82,28 @@ namespace Camino.Services.Products
             return await _productAttributeRepository.UpdateAsync(request); ;
         }
 
-        public IList<SelectOption> GetAttributeControlTypes(ProductAttributeControlTypeFilter filter)
+        public async Task<bool> ActiveAsync(ProductAttributeModifyRequest request)
         {
-            return _productAttributeRepository.GetAttributeControlTypes(filter);
+            return await _productAttributeRepository.ActiveAsync(request);
         }
+
+        public async Task<bool> DeactivateAsync(ProductAttributeModifyRequest request)
+        {
+            return await _productAttributeRepository.DeactivateAsync(request);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            await _productAttributeRepository.DeleteAttributeRelationByAttributeIdAsync(id);
+            return await _productAttributeRepository.DeleteAsync(id);
+        }
+        #endregion
+
+        #region category status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _productAttributeStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

@@ -10,8 +10,8 @@ using System.Linq;
 using Camino.Core.Contracts.Repositories.Users;
 using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Articles;
 using System;
+using Camino.Shared.General;
 
 namespace Camino.Services.Farms
 {
@@ -21,19 +21,22 @@ namespace Camino.Services.Farms
         private readonly IFarmPictureRepository _farmPictureRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserPhotoRepository _userPhotoRepository;
+        private readonly IFarmStatusRepository _farmStatusRepository;
 
         public FarmService(IFarmRepository farmRepository, IFarmPictureRepository farmPictureRepository, IUserRepository userRepository,
-            IUserPhotoRepository userPhotoRepository)
+            IUserPhotoRepository userPhotoRepository, IFarmStatusRepository farmStatusRepository)
         {
             _farmRepository = farmRepository;
             _farmPictureRepository = farmPictureRepository;
             _userRepository = userRepository;
             _userPhotoRepository = userPhotoRepository;
+            _farmStatusRepository = farmStatusRepository;
         }
 
-        public async Task<FarmResult> FindAsync(long id)
+        #region get
+        public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await _farmRepository.FindAsync(id);
+            var exist = await _farmRepository.FindAsync(filter);
             return exist;
         }
 
@@ -42,15 +45,20 @@ namespace Camino.Services.Farms
             return _farmRepository.FindByName(name);
         }
 
-        public async Task<FarmResult> FindDetailAsync(long id)
+        public async Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await _farmRepository.FindDetailAsync(id);
+            var exist = await _farmRepository.FindDetailAsync(filter);
             if (exist == null)
             {
                 return null;
             }
 
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(id);
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdAsync(new IdRequestFilter<long>
+            {
+                Id = filter.Id,
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            });
             exist.Pictures = pictures.Select(x => new PictureResult
             {
                 Id = x.PictureId
@@ -65,7 +73,7 @@ namespace Camino.Services.Farms
             return exist;
         }
 
-        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
+        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page, int pageSize)
         {
             var famrs = await _farmRepository.SelectAsync(filter, page, pageSize);
             return famrs;
@@ -81,10 +89,13 @@ namespace Camino.Services.Farms
             var updatedByUsers = await _userRepository.GetNameByIdsAsync(updatedByIds);
 
             var farmIds = famrsPageList.Collections.Select(x => x.Id);
-            var pictureTypeId = (int)FarmPictureType.Thumbnail;
-            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, pictureTypeId);
+            var pictures = await _farmPictureRepository.GetFarmPicturesByFarmIdsAsync(farmIds, new IdRequestFilter<long>
+            {
+                CanGetDeleted = filter.CanGetDeleted,
+                CanGetInactived = filter.CanGetInactived
+            }, FarmPictureType.Thumbnail);
 
-            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIds(createdByIds, UserPhotoKind.Avatar);
+            var userAvatars = await _userPhotoRepository.GetUserPhotosByUserIdsAsync(createdByIds, UserPictureType.Avatar);
             foreach (var farm in famrsPageList.Collections)
             {
                 var createdBy = createdByUsers.FirstOrDefault(x => x.Id == farm.CreatedById);
@@ -111,7 +122,9 @@ namespace Camino.Services.Farms
 
             return famrsPageList;
         }
+        #endregion
 
+        #region CRUD
         public async Task<long> CreateAsync(FarmModifyRequest request)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
@@ -161,13 +174,40 @@ namespace Camino.Services.Farms
             return await _farmRepository.DeleteAsync(id);
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(FarmModifyRequest request)
         {
             // Soft delete farm pictures
-            await _farmPictureRepository.SoftDeleteByFarmIdAsync(id);
-            return await _farmRepository.SoftDeleteAsync(id);
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Deleted);
+            return await _farmRepository.SoftDeleteAsync(request);
         }
 
+        public async Task<bool> DeactivateAsync(FarmModifyRequest request)
+        {
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Inactived);
+            return await _farmRepository.DeactivateAsync(request);
+        }
+
+        public async Task<bool> ActivateAsync(FarmModifyRequest request)
+        {
+            await _farmPictureRepository.UpdateStatusByFarmIdAsync(new FarmPicturesModifyRequest
+            {
+                FarmId = request.Id,
+                UpdatedById = request.UpdatedById
+            }, PictureStatus.Actived);
+
+            return await _farmRepository.ActiveAsync(request);
+        }
+        #endregion
+
+        #region farm pictures
         public async Task<BasePageList<FarmPictureResult>> GetPicturesAsync(FarmPictureFilter filter)
         {
             var farmPicturePageList = await _farmPictureRepository.GetAsync(filter);
@@ -183,5 +223,13 @@ namespace Camino.Services.Farms
 
             return farmPicturePageList;
         }
+        #endregion
+
+        #region farm status
+        public IList<SelectOption> SearchStatus(IdRequestFilter<int?> filter, string search = "")
+        {
+            return _farmStatusRepository.Search(filter, search);
+        }
+        #endregion
     }
 }

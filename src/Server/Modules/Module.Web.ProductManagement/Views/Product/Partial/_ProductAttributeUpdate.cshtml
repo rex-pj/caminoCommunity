@@ -1,0 +1,77 @@
+﻿@model ProductAttributeRelationModel
+@{
+    int attributeIndex = ViewData["attributeIndex"] == null ? 0 : (int)ViewData["attributeIndex"];
+    var formIdentifier = Guid.NewGuid();
+}
+<div class="card mb-3 row-attribute-relation row-attribute-relation-@formIdentifier">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-10">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAttribute-@Model.Id" aria-expanded="false" aria-controls="collapseAttribute-@Model.Id">
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <button type="button" class="btn btn-outline-dark btn-sm float-right" data-bs-toggle="modal"
+                        data-attributeId="@Model.Id"
+                        data-formIdentifier="@formIdentifier"
+                        data-url="@Url.Action("AddAttributeValue", "Product")"
+                        data-bs-target="#productAttributeValueUpdateModal">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <label>
+                    Thuộc tính:
+                    <input type="hidden" name="ProductAttributes[@attributeIndex].AttributeId" class="field-attribute-id" value="@Model.AttributeId" />
+                    <input type="hidden" name="ProductAttributes[@attributeIndex].Id" class="field-attribute-relation-id" value="@Model.Id" />
+                    <input type="hidden" class="is-attribute-updated" />
+                </label>
+                <span class="label-attribute-name">
+                    @Model.Name
+                </span>
+                <span class="mx-2">-</span>
+                <label>
+                    Kiểu hiển thị:
+                    <input type="hidden" name="ProductAttributes[@attributeIndex].ControlTypeId" class="field-control-type-id" value="@Model.ControlTypeId" />
+                </label>
+                <span class="label-control-type">
+                    @Model.ControlTypeName
+                </span>
+                <span class="mx-2">-</span>
+                <label>
+                    Thứ tự:
+                    <input type="hidden" name="ProductAttributes[@attributeIndex].DisplayOrder" class="field-attribute-display-order" value="@Model.DisplayOrder" />
+                </label>
+                <span class="label-attribute-display-order">
+                    @Model.DisplayOrder
+                </span>
+            </div>
+            <div class="ms-auto col-auto">
+                <button type="button" class="btn btn-outline-danger btn-sm float-right ml-2"
+                        data-id="@Model.Id"
+                        data-formIdentifier="@formIdentifier"
+                        data-bs-toggle="modal" data-bs-target="#productAttributeDeleteModal">
+                    <i class="fa fa-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-outline-dark btn-sm float-right" data-bs-toggle="modal"
+                        data-id="@Model.Id"
+                        data-formIdentifier="@formIdentifier"
+                        data-url="@Url.Action("GetAttributeRelation")"
+                        data-bs-target="#productAttributeUpdateModal">
+                    <i class="fa fa-pencil-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse show" id="collapseAttribute-@Model.Id">
+        <ul class="list-group list-attribute-values list-attribute-@formIdentifier-values" data-attribute-relation-index="@attributeIndex" data-attributeId="@Model.Id">
+            @{
+                int attributeValueIndex = 0;
+                foreach (var attributeValue in Model.AttributeRelationValues)
+                {
+                    ViewData["attributeValueIndex"] = attributeValueIndex;
+
+                    <partial name="Partial/_ProductAttributeValueUpdate" model="attributeValue" view-data="ViewData" />
+                    attributeValueIndex += 1;
+                }
+            }
+        </ul>
+    </div>
+</div>

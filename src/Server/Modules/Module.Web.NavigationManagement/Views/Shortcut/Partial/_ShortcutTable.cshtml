@@ -1,0 +1,34 @@
+﻿@model PageListModel<ShortcutModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="bg-light">
+            <th scope="col">#</th>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Url</th>
+            <th scope="col">Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Order</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Collections.Any())
+        {
+            foreach (var cate in Model.Collections)
+            {
+                cate.SetPageAuthorizationForModel(Model);
+                <partial name="Partial/_ShortcutRow" model="cate" />
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">No data</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("PageNavigation", Model)

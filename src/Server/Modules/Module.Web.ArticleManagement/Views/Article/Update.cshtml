@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head{ 
+@section Head{
     <link rel="stylesheet" href="~/lib/fileupload/css/jquery.fileupload.css" />
 }
 
@@ -23,6 +23,14 @@
 </div>
 <div class="card-body">
     <form method="post" asp-action="Update" asp-controller="Article">
-        <partial name="_UpdateForm" />
+        <partial name="Partial/_UpdateForm" />
     </form>
 </div>
+@{
+    var articleIdModel = new ArticleIdRequestModel { Id = Model.Id, ShouldKeepUpdatePage = true };
+}
+<partial name="Partial/_ActivateModal" model="articleIdModel" />
+<partial name="Partial/_DeactivateModal" model="articleIdModel" />
+<partial name="Partial/_RestoreModal" model="articleIdModel" />
+<partial name="Partial/_PermanentlyDeleteModal" model="articleIdModel" />
+<partial name="Partial/_TemporaryDeleteModal" model="articleIdModel" />

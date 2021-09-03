@@ -6,15 +6,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Shared.General;
 using Module.Api.Product.Models;
+using Camino.Shared.Requests.Filters;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductCategoryResolver : IProductCategoryResolver
     {
         private readonly IProductCategoryService _productCategoryService;
-        public ProductCategoryResolver(IProductCategoryService productCategoryService)
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
+
+        public ProductCategoryResolver(IProductCategoryService productCategoryService, IOptions<PagerOptions> pagerOptions)
         {
             _productCategoryService = productCategoryService;
+            _pagerOptions = pagerOptions.Value;
         }
 
         public async Task<IEnumerable<SelectOption>> GetProductCategoriesAsync(ProductCategorySelectFilterModel criterias)
@@ -25,13 +32,19 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
 
             IList<ProductCategoryResult> categories;
+            var filter = new BaseFilter
+            {
+                Keyword = criterias.Query,
+                PageSize = _pagerOptions.PageSize,
+                Page = _defaultPageSelection
+            };
             if (criterias.IsParentOnly)
             {
-                categories = await _productCategoryService.SearchParentsAsync(criterias.CurrentIds, criterias.Query);
+                categories = await _productCategoryService.SearchParentsAsync(filter, criterias.CurrentIds);
             }
             else
             {
-                categories = await _productCategoryService.SearchAsync(criterias.CurrentIds, criterias.Query);
+                categories = await _productCategoryService.SearchAsync(filter, criterias.CurrentIds);
             }
 
             if (categories == null || !categories.Any())

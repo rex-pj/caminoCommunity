@@ -10,7 +10,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
 
-namespace Camino.Service.Repository.Authorization
+namespace Camino.Infrastructure.Repositories.Authorization
 {
     public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository
     {
@@ -70,7 +70,7 @@ namespace Camino.Service.Repository.Authorization
 
         public BasePageList<AuthorizationPolicyResult> Get(AuthorizationPolicyFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var query = (from policy in _authorizationPolicyRepository.Table
                          join createdBy in _userRepository.Table
                          on policy.CreatedById equals createdBy.Id

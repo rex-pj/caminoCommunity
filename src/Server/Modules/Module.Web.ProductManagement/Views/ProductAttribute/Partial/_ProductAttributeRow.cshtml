@@ -1,0 +1,54 @@
+﻿@model ProductAttributeModel
+
+<tr>
+    <th>@Model.Id</th>
+    <td>
+        @if (Model.CanUpdate)
+        {
+            <a asp-action="Update" asp-controller="ProductAttribute" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark">
+                <i class="fa fa-edit"></i>
+            </a>
+        }
+        <a asp-action="Detail" asp-controller="ProductAttribute" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info">
+            <i class="fa fa-eye"></i>
+        </a>
+    </td>
+    <td>
+        <a asp-action="Detail" asp-controller="ProductAttribute" asp-route-id="@Model.Id">
+            @Model.Name
+        </a>
+    </td>
+    <th>@Model.Description</th>
+    <td>
+        <partial name="Partial/_StatusBadge" />
+    </td>
+    <td>
+        <div>@Model.CreatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.CreatedBy</p>
+    </td>
+    <td>
+        <div>@Model.UpdatedDate.ToDateHourMinusFormat()</div>
+        <p class="text-muted">by: @Model.UpdatedBy</p>
+    </td>
+    <td>
+        @if (Model.StatusId == ProductAttributeStatus.Actived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
+                    class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this attribute">
+                <i class="fa fa-lock"></i>
+            </button>
+        }
+        else if (Model.StatusId == ProductAttributeStatus.Inactived)
+        {
+            <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
+                    class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this attribute">
+                <i class="fa fa-unlock"></i>
+            </button>
+        }
+
+        <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#permanentlyDeleteModal"
+                class="btn btn-sm btn-danger mb-2 common-tooltip" title="Delete this attribute">
+            <i class="fa fa-times"></i>
+        </button>
+    </td>
+</tr>

@@ -13,8 +13,10 @@ using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
 using Camino.Core.Contracts.Repositories.Products;
 using LinqToDB.Tools;
+using Camino.Shared.Enums;
+using Camino.Core.Utils;
 
-namespace Camino.Service.Repository.Farms
+namespace Camino.Infrastructure.Repositories.Farms
 {
     public class FarmRepository : IFarmRepository
     {
@@ -40,11 +42,17 @@ namespace Camino.Service.Repository.Farms
             _productPictureRepository = productPictureRepository;
         }
 
-        public async Task<FarmResult> FindAsync(long id)
+        public async Task<FarmResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
+            var exist = await (from farm in _farmRepository
+                               .Get(x => x.Id == filter.Id)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
+                               where (farm.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != deletedStatus && farm.StatusId != inactivedStatus)
                                select new FarmResult
                                {
                                    CreatedDate = farm.CreatedDate,
@@ -62,11 +70,17 @@ namespace Camino.Service.Repository.Farms
             return exist;
         }
 
-        public async Task<FarmResult> FindDetailAsync(long id)
+        public async Task<FarmResult> FindDetailAsync(IdRequestFilter<long> filter)
         {
-            var exist = await (from farm in _farmRepository.Get(x => x.Id == id && !x.IsDeleted)
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
+            var exist = await (from farm in _farmRepository
+                               .Get(x => x.Id == filter.Id)
                                join farmType in _farmTypeRepository.Table
                                on farm.FarmTypeId equals farmType.Id
+                               where (farm.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (farm.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (farm.StatusId != deletedStatus && farm.StatusId != inactivedStatus)
                                select new FarmResult
                                {
                                    Id = farm.Id,
@@ -78,15 +92,22 @@ namespace Camino.Service.Repository.Farms
                                    UpdatedById = farm.UpdatedById,
                                    UpdatedDate = farm.UpdatedDate,
                                    FarmTypeName = farmType.Name,
-                                   FarmTypeId = farm.FarmTypeId
+                                   FarmTypeId = farm.FarmTypeId,
+                                   StatusId = farm.StatusId,
                                }).FirstOrDefaultAsync();
-            
+
             return exist;
         }
 
-        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page = 1, int pageSize = 10)
+        public async Task<IList<FarmResult>> SelectAsync(SelectFilter filter, int page, int pageSize)
         {
-            var query = _farmRepository.Get(x => !x.IsDeleted)
+            if (filter.Keyword == null)
+            {
+                filter.Keyword = string.Empty;
+            }
+
+            filter.Keyword = filter.Keyword.ToLower();
+            var query = _farmRepository.Get(x => x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(c => new FarmResult
                 {
                     Id = c.Id,
@@ -100,15 +121,15 @@ namespace Camino.Service.Repository.Farms
                 query = query.Where(x => x.CreatedById == filter.CreatedById);
             }
 
-            if (filter.CurrentIds.Any())
+            if (filter.CurrentIds != null && filter.CurrentIds.Any())
             {
                 query = query.Where(x => x.Id.NotIn(filter.CurrentIds));
             }
 
-            filter.Search = filter.Search.ToLower();
-            if (!string.IsNullOrEmpty(filter.Search))
+            filter.Keyword = filter.Keyword.ToLower();
+            if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(filter.Search) || x.Description.ToLower().Contains(filter.Search));
+                query = query.Where(x => x.Name.ToLower().Contains(filter.Keyword) || x.Description.ToLower().Contains(filter.Keyword));
             }
 
             if (pageSize > 0)
@@ -129,7 +150,7 @@ namespace Camino.Service.Repository.Farms
 
         public FarmResult FindByName(string name)
         {
-            var exist = _farmRepository.Get(x => x.Name == name && !x.IsDeleted)
+            var exist = _farmRepository.Get(x => x.Name == name && x.StatusId != FarmStatus.Deleted.GetCode())
                 .Select(x => new FarmResult()
                 {
                     Id = x.Id,
@@ -148,17 +169,26 @@ namespace Camino.Service.Repository.Farms
 
         public async Task<BasePageList<FarmResult>> GetAsync(FarmFilter filter)
         {
-            var search = filter.Search != null ? filter.Search.ToLower() : "";
-            var farmQuery = _farmRepository.Get(x => !x.IsDeleted);
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
+            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
+            var farmQuery = _farmRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
+                                    || (x.StatusId == inactivedStatus && filter.CanGetInactived)
+                                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus));
             if (!string.IsNullOrEmpty(search))
             {
                 farmQuery = farmQuery.Where(user => user.Name.ToLower().Contains(search)
                          || user.Description.ToLower().Contains(search));
             }
 
-            if (filter.ExclusiveCreatedById.HasValue)
+            if (filter.ExclusiveUserId.HasValue)
             {
-                farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveCreatedById);
+                farmQuery = farmQuery.Where(x => x.CreatedById != filter.ExclusiveUserId);
+            }
+
+            if (filter.StatusId.HasValue)
+            {
+                farmQuery = farmQuery.Where(x => x.StatusId == filter.StatusId);
             }
 
             if (filter.CreatedById.HasValue)
@@ -202,7 +232,8 @@ namespace Camino.Service.Repository.Farms
                             CreatedDate = farm.CreatedDate,
                             Description = farm.Description,
                             UpdatedById = farm.UpdatedById,
-                            UpdatedDate = farm.UpdatedDate
+                            UpdatedDate = farm.UpdatedDate,
+                            StatusId = farm.StatusId
                         };
 
             var farms = await query
@@ -218,6 +249,28 @@ namespace Camino.Service.Repository.Farms
             return result;
         }
 
+        public async Task<IList<FarmResult>> GetFarmByTypeIdAsync(IdRequestFilter<int> typeIdFilter)
+        {
+            var deletedStatus = FarmStatus.Deleted.GetCode();
+            var inactivedStatus = FarmStatus.Inactived.GetCode();
+            return await _farmRepository
+                .Get(x => x.FarmTypeId == typeIdFilter.Id
+                && ((x.StatusId == deletedStatus && typeIdFilter.CanGetDeleted)
+                    || (x.StatusId == inactivedStatus && typeIdFilter.CanGetInactived)
+                    || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus)))
+                .Select(x => new FarmResult
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedById = x.CreatedById,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    UpdatedById = x.UpdatedById,
+                    UpdatedDate = x.UpdatedDate
+                })
+                .ToListAsync();
+        }
+
         public async Task<long> CreateAsync(FarmModifyRequest request)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
@@ -231,7 +284,7 @@ namespace Camino.Service.Repository.Farms
                 CreatedDate = modifiedDate,
                 UpdatedDate = modifiedDate,
                 Description = request.Description,
-                IsPublished = true
+                StatusId = FarmStatus.Pending.GetCode()
             };
 
             return await _farmRepository.AddWithInt64EntityAsync(newFarm);
@@ -290,29 +343,65 @@ namespace Camino.Service.Repository.Farms
                 .DeleteAsync();
         }
 
-        public async Task<bool> SoftDeleteAsync(long id)
+        public async Task<bool> SoftDeleteAsync(FarmModifyRequest request)
         {
             // Delete farm products
-            await SoftDeleteProductByFarmIdAsync(id);
+            await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Deleted);
 
             // Delete farm
-            await _farmRepository.Get(x => x.Id == id)
-                .Set(x => x.IsDeleted, true)
+            await _farmRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmStatus.Deleted)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
         }
 
-        private async Task SoftDeleteProductByFarmIdAsync(long farmId)
+        private async Task UpdateProductStatusByFarmIdAsync(FarmModifyRequest request, ProductStatus productStatus)
         {
-            var productIds = _farmProductRepository.Get(x => x.FarmId == farmId)
+            var productIds = _farmProductRepository.Get(x => x.FarmId == request.Id)
                 .Select(x => x.ProductId);
 
-            await _productPictureRepository.SoftDeleteByProductIdsAsync(productIds);
+            var pictureStatus = productStatus switch
+            {
+                ProductStatus.Pending => PictureStatus.Pending,
+                ProductStatus.Actived => PictureStatus.Actived,
+                ProductStatus.Reported => PictureStatus.Reported,
+                ProductStatus.Deleted => PictureStatus.Deleted,
+                _ => PictureStatus.Inactived,
+            };
+            await _productPictureRepository.UpdateStatusByProductIdsAsync(productIds, request.UpdatedById, pictureStatus);
 
             await _productRepository.Get(x => x.Id.In(productIds))
-                .Set(x => x.IsDeleted, true)
+                .Set(x => x.StatusId, productStatus.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
+        }
+
+        public async Task<bool> DeactivateAsync(FarmModifyRequest request)
+        {
+            await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Inactived);
+
+            await _farmRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, FarmStatus.Inactived.GetCode())
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ActiveAsync(FarmModifyRequest request)
+        {
+            await _farmRepository.Get(x => x.Id == request.Id)
+                .Set(x => x.StatusId, (int)FarmStatus.Actived)
+                .Set(x => x.UpdatedById, request.UpdatedById)
+                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .UpdateAsync();
+
+            return true;
         }
     }
 }

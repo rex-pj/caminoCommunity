@@ -66,3 +66,31 @@ export const base64toBlob = (dataURI, mineType) => {
   mineType = mineType ? mineType : "image/jpeg";
   return new Blob([buffers], { type: mineType });
 };
+
+export const getParameters = (urlParams) => {
+  const parameters = new URLSearchParams(urlParams);
+  const obj = {};
+
+  for (const key of parameters.keys()) {
+    if (parameters.getAll(key).length > 1) {
+      obj[key] = parameters.getAll(key);
+    } else {
+      obj[key] = parameters.get(key);
+    }
+  }
+
+  return obj;
+};
+
+export const generateQueryParameters = (parameters) => {
+  const urlParams = [];
+  for (const parameter in parameters) {
+    const paramValue = parameters[parameter];
+    if (paramValue) {
+      const value = encodeURIComponent(parameters[parameter]);
+      urlParams.push(`${encodeURIComponent(parameter)}=${value}`);
+    }
+  }
+
+  return urlParams.join("&");
+};

@@ -17,6 +17,7 @@ using Camino.Core.Contracts.IdentityManager;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Shared.Requests.Authorization;
+using Camino.Shared.Configurations;
 
 namespace Camino.IdentityManager.Contracts.Stores
 {
@@ -24,7 +25,7 @@ namespace Camino.IdentityManager.Contracts.Stores
         ApplicationUserRole, ApplicationUserLogin, ApplicationUserToken, ApplicationRoleClaim>,
         IUserPasswordStore<TUser>, IUserAuthenticationTokenStore<TUser>,
         IUserEncryptionStore<TUser>, IUserSecurityStampStore<TUser>,
-        IUserPolicyStore<TUser>
+        IUserPolicyStore<TUser>, IUserTokenStore<TUser>
         where TUser : ApplicationUser
     {
         private readonly IMapper _mapper;
@@ -37,6 +38,7 @@ namespace Camino.IdentityManager.Contracts.Stores
         private readonly IUserAuthorizationPolicyService _userAuthorizationPolicyService;
         private readonly ITextEncryption _textCrypter;
         private readonly CrypterSettings _crypterSettings;
+        private readonly JwtConfigOptions _jwtConfigOptions;
 
         public override IQueryable<TUser> Users { get; }
 
@@ -44,7 +46,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             IAuthenticationService authenticationService, IUserRoleService userRoleService, IRoleService roleService,
             IAuthorizationPolicyService authorizationPolicyService,
             IUserAuthorizationPolicyService userAuthorizationPolicyService, ITextEncryption textCrypter,
-            IMapper mapper, IOptions<CrypterSettings> crypterSettings)
+            IMapper mapper, IOptions<CrypterSettings> crypterSettings, IOptions<JwtConfigOptions> jwtConfigOptions)
             : base(describer)
         {
             _crypterSettings = crypterSettings.Value;
@@ -56,6 +58,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             _userAuthorizationPolicyService = userAuthorizationPolicyService;
             _mapper = mapper;
             _textCrypter = textCrypter;
+            _jwtConfigOptions = jwtConfigOptions.Value;
         }
 
         public override async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken = default)
@@ -125,7 +128,11 @@ namespace Camino.IdentityManager.Contracts.Stores
 
             try
             {
-                await _userService.DeleteAsync(user.Id);
+                await _userService.SoftDeleteAsync(new UserModifyRequest
+                {
+                    Id = user.Id,
+                    UpdatedById = user.UpdatedById
+                });
             }
             // Todo: check DbUpdateConcurrencyException
             catch (Exception)
@@ -332,20 +339,20 @@ namespace Camino.IdentityManager.Contracts.Stores
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
             if (login == null)
             {
                 throw new ArgumentNullException(nameof(login));
             }
 
             var userLogin = CreateUserLogin(user, login);
-            var userLoginRequest = new UserLoginRequest
+            _authenticationService.CreateUserLogin(new UserLoginRequest
             {
                 LoginProvider = userLogin.LoginProvider,
                 ProviderDisplayName = userLogin.ProviderDisplayName,
                 ProviderKey = userLogin.ProviderKey,
                 UserId = userLogin.UserId,
-            };
-            _authenticationService.CreateUserLogin(userLoginRequest);
+            });
             return Task.FromResult(false);
         }
 
@@ -470,6 +477,34 @@ namespace Camino.IdentityManager.Contracts.Stores
             }
         }
 
+        public override async Task SetTokenAsync(TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var token = await FindTokenByValueAsync(user, value, name);
+            if (token == null)
+            {
+                await AddUserTokenAsync(new ApplicationUserToken
+                {
+                    ExpiryTime = DateTimeOffset.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires),
+                    LoginProvider = loginProvider,
+                    Name = name,
+                    Value = value,
+                    UserId = user.Id
+                });
+            }
+            else
+            {
+                token.Value = value;
+            }
+        }
+
         protected override Task AddUserTokenAsync(ApplicationUserToken token)
         {
             var userToken = new UserTokenRequest
@@ -477,7 +512,8 @@ namespace Camino.IdentityManager.Contracts.Stores
                 LoginProvider = token.LoginProvider,
                 Name = token.Name,
                 Value = token.Value,
-                UserId = token.UserId
+                UserId = token.UserId,
+                ExpiryTime = token.ExpiryTime
             };
             _authenticationService.CreateUserToken(userToken);
             return Task.CompletedTask;
@@ -486,16 +522,42 @@ namespace Camino.IdentityManager.Contracts.Stores
         protected override async Task<ApplicationUserToken> FindTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
         {
             var userToken = await _authenticationService.FindUserTokenAsync(user.Id, loginProvider, name);
+            if (userToken == null)
+            {
+                return null;
+            }
+
             return new ApplicationUserToken
             {
+                Id = userToken.Id,
                 LoginProvider = userToken.LoginProvider,
                 Name = userToken.Name,
                 UserId = userToken.UserId,
-                Value = userToken.Value
+                Value = userToken.Value,
+                ExpiryTime = userToken.ExpiryTime
             };
         }
 
-        protected override Task RemoveUserTokenAsync(ApplicationUserToken token)
+        public async Task<ApplicationUserToken> FindTokenByValueAsync(TUser user, string value, string name)
+        {
+            var userToken = await _authenticationService.FindUserTokenByValueAsync(user.Id, value, name);
+            if (userToken == null)
+            {
+                return null;
+            }
+
+            return new ApplicationUserToken
+            {
+                Id = userToken.Id,
+                LoginProvider = userToken.LoginProvider,
+                Name = userToken.Name,
+                UserId = userToken.UserId,
+                Value = userToken.Value,
+                ExpiryTime = userToken.ExpiryTime
+            };
+        }
+
+        protected override async Task RemoveUserTokenAsync(ApplicationUserToken token)
         {
             var userToken = new UserTokenRequest
             {
@@ -504,8 +566,16 @@ namespace Camino.IdentityManager.Contracts.Stores
                 Value = token.Value,
                 UserId = token.UserId
             };
-            _authenticationService.RemoveUserToken(userToken);
-            return Task.CompletedTask;
+            await _authenticationService.RemoveUserTokenAsync(userToken);
+        }
+
+        public async Task RemoveAuthenticationTokenByValueAsync(long userId, string value)
+        {
+            await _authenticationService.RemoveAuthenticationTokenByValueAsync(new UserTokenRequest
+            {
+                Value = value,
+                UserId = userId
+            });
         }
 
         public override async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default)
@@ -574,7 +644,7 @@ namespace Camino.IdentityManager.Contracts.Stores
                 });
             }
             // todo: check DbUpdateConcurrencyException
-            catch (Exception ex)
+            catch (Exception)
             {
                 return IdentityResult.Failed(ErrorDescriber.ConcurrencyFailure());
             }

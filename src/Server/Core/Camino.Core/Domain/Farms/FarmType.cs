@@ -17,7 +17,6 @@ namespace Camino.Core.Domain.Farms
         public DateTimeOffset CreatedDate { get; set; }
 
         public long CreatedById { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsPublished { get; set; }
+        public int StatusId { get; set; }
     }
 }

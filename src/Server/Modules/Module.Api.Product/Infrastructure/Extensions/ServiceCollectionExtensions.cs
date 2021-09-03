@@ -11,9 +11,9 @@ namespace Module.Api.Product.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddTransient<IProductCategoryResolver, ProductCategoryResolver>();
-            services.AddTransient<IProductResolver, ProductResolver>();
-            services.AddTransient<IProductAttributeResolver, ProductAttributeResolver>();
+            services.AddScoped<IProductCategoryResolver, ProductCategoryResolver>();
+            services.AddScoped<IProductResolver, ProductResolver>();
+            services.AddScoped<IProductAttributeResolver, ProductAttributeResolver>();
 
             services.AddGraphQLServer()
                 .AddType<ProductQueries>()

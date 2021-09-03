@@ -8,8 +8,6 @@ namespace Module.Api.Article.Models
     {
         public ArticleFilterModel() : base()
         {
-            Page = 1;
-            PageSize = 10;
         }
 
         [GraphQLType(typeof(LongType))]

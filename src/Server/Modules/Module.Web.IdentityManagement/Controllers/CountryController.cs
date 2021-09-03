@@ -1,5 +1,4 @@
 ﻿using Camino.Shared.Requests.Filters;
-using Camino.Core.Constants;
 using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
@@ -14,6 +13,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Services.Identities;
+using Camino.Shared.Configurations;
+using Microsoft.Extensions.Options;
+using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
@@ -21,12 +23,15 @@ namespace Module.Web.IdentityManagement.Controllers
     {
         private readonly ICountryService _countryService;
         private readonly IHttpHelper _httpHelper;
+        private readonly PagerOptions _pagerOptions;
+        private const int _defaultPageSelection = 1;
 
         public CountryController(IHttpContextAccessor httpContextAccessor, ICountryService countryService,
-            IHttpHelper httpHelper) : base(httpContextAccessor)
+            IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions) : base(httpContextAccessor)
         {
             _countryService = countryService;
             _httpHelper = httpHelper;
+            _pagerOptions = pagerOptions.Value;
         }
 
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
@@ -36,8 +41,8 @@ namespace Module.Web.IdentityManagement.Controllers
             var filterRequest = new CountryFilter()
             {
                 Page = filter.Page,
-                PageSize = filter.PageSize,
-                Search = filter.Search
+                PageSize = _pagerOptions.PageSize,
+                Keyword = filter.Search
             };
 
             var countryPageList = await _countryService.GetAsync(filterRequest);
@@ -167,7 +172,11 @@ namespace Module.Web.IdentityManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
         public IActionResult Search(string q)
         {
-            var countries = _countryService.Search(q);
+            var countries = _countryService.Search(new BaseFilter { 
+                Page = _defaultPageSelection,
+                Keyword = q,
+                PageSize = _pagerOptions.PageSize
+            });
             if (countries == null || !countries.Any())
             {
                 return Json(new
