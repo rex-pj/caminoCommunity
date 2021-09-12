@@ -15,6 +15,7 @@ namespace Camino.ApiHost.Infrastructure.Extensions
             var appSettings = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
             app.UseHttpsRedirection()
                 .UseRouting()
+                .UseCookiePolicy()
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseWebSockets()

@@ -35,7 +35,7 @@ namespace Camino.Framework.Helpers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY, user.UserIdentityId.ToString()),
+                    new Claim(HttpHeaderContants.UserIdentityClaimKey, user.UserIdentityId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Name, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
@@ -71,10 +71,10 @@ namespace Camino.Framework.Helpers
                 throw new SecurityTokenException("Invalid token");
             }
 
-            var userIdentityId = claimsPrincipal.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
+            var userIdentityId = claimsPrincipal.Claims.First(x => x.Type == HttpHeaderContants.UserIdentityClaimKey).Value;
             var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
             var claimIdentity = new ClaimsIdentity(claimsPrincipal.Claims, JwtBearerDefaults.AuthenticationScheme);
-            claimIdentity.AddClaim(new Claim(HttpHeaderContants.USER_ID_CLAIM_KEY, userId.ToString()));
+            claimIdentity.AddClaim(new Claim(HttpHeaderContants.UserIdClaimKey, userId.ToString()));
 
             return claimIdentity;
         }
@@ -104,10 +104,10 @@ namespace Camino.Framework.Helpers
                 if (securityToken != null && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var jwtToken = securityToken as JwtSecurityToken;
-                    var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
+                    var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeaderContants.UserIdentityClaimKey).Value;
                     var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
                     var claimIdentity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
-                    claimIdentity.AddClaim(new Claim(HttpHeaderContants.USER_ID_CLAIM_KEY, userId.ToString()));
+                    claimIdentity.AddClaim(new Claim(HttpHeaderContants.UserIdClaimKey, userId.ToString()));
 
                     return claimIdentity;
                 }

@@ -30,6 +30,7 @@
     "react": "^17.0.2",
     "react-apollo": "^3.1.5",
     "react-avatar-editor": "^11.1.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "^17.0.2",
     "react-dropzone": "^10.2.2",
     "react-helmet": "^5.2.1",
@@ -42,7 +43,7 @@
     "surge": "^0.21.7"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/localhost.pem&&set SSL_KEY_FILE=./.cert/localhost-key.pem&&react-scripts start",
     "build": "react-scripts build",
     "publish": "npm run build",
     "test": "react-scripts test",

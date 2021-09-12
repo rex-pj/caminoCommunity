@@ -15,10 +15,6 @@ export const SIGNUP = gql`
 export const LOGIN = gql`
   mutation login($criterias: LoginModelInput!) {
     login(criterias: $criterias) {
-      userInfo {
-        displayName
-        userIdentityId
-      }
       authenticationToken
       refreshToken
       refreshTokenExpiryTime
@@ -27,8 +23,8 @@ export const LOGIN = gql`
 `;
 
 export const REFRESH_TOKEN = gql`
-  mutation refreshToken($criterias: RefreshTokenModelInput!) {
-    refreshToken(criterias: $criterias) {
+  mutation refreshToken {
+    refreshToken {
       authenticationToken
       refreshToken
       refreshTokenExpiryTime

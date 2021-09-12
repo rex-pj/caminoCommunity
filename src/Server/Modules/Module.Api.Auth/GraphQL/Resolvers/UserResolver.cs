@@ -223,53 +223,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 throw;
             }
         }
-
-        public async Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, UserPasswordUpdateModel criterias)
-        {
-            try
-            {
-                ComparePassword(criterias);
-                var currentUserId = GetCurrentUserId(claimsPrincipal);
-                var currentUser = await _userManager.FindByIdAsync(currentUserId);
-                var result = await _userManager.ChangePasswordAsync(currentUser, criterias.CurrentPassword, criterias.NewPassword);
-                if (!result.Succeeded)
-                {
-                    return new UserTokenModel(false);
-                }
-
-                return new UserTokenModel()
-                {
-                    AuthenticationToken = currentUser.AuthenticationToken,
-                    AccessMode = AccessMode.CanEdit,
-                    IsSucceed = true,
-                    UserInfo = new UserInfoModel()
-                    {
-                        Address = currentUser.Address,
-                        BirthDate = currentUser.BirthDate,
-                        CountryCode = currentUser.CountryCode,
-                        CountryId = currentUser.CountryId,
-                        CountryName = currentUser.CountryName,
-                        Email = currentUser.Email,
-                        CreatedDate = currentUser.CreatedDate,
-                        Description = currentUser.Description,
-                        DisplayName = currentUser.DisplayName,
-                        Firstname = currentUser.Firstname,
-                        GenderId = currentUser.GenderId,
-                        GenderLabel = currentUser.GenderLabel,
-                        Lastname = currentUser.Lastname,
-                        PhoneNumber = currentUser.PhoneNumber,
-                        StatusId = currentUser.StatusId,
-                        StatusLabel = currentUser.StatusLabel,
-                        UpdatedDate = currentUser.UpdatedDate,
-                        UserIdentityId = currentUser.UserIdentityId
-                    }
-                };
-            }
-            catch (Exception)
-            {
-                return new UserTokenModel(false);
-            }
-        }
         #endregion
 
         #region CRUD
@@ -322,14 +275,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             if (criterias.Key == null || string.IsNullOrEmpty(criterias.Key.ToString()))
             {
                 throw new ArgumentException(nameof(criterias.Key));
-            }
-        }
-
-        private void ComparePassword(UserPasswordUpdateModel criterias)
-        {
-            if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
-            {
-                throw new ArgumentException($"{nameof(criterias.NewPassword)} and {nameof(criterias.ConfirmPassword)} is not the same");
             }
         }
 

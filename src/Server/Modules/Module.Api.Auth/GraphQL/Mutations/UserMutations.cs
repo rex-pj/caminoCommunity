@@ -29,9 +29,9 @@ namespace Module.Api.Auth.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, [Service] IUserResolver userResolver, UserPasswordUpdateModel criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, [Service] IAuthenticateResolver authenticateResolver, UserPasswordUpdateModel criterias)
         {
-            return await userResolver.UpdatePasswordAsync(claimsPrincipal, criterias);
+            return await authenticateResolver.UpdatePasswordAsync(claimsPrincipal, criterias);
         }
 
         public async Task<CommonResult> SignupAsync([Service] IUserResolver userResolver, SignupModel criterias)
@@ -44,9 +44,9 @@ namespace Module.Api.Auth.GraphQL.Mutations
             return await authenticateResolver.LoginAsync(criterias);
         }
 
-        public async Task<UserTokenModel> RefreshTokenAsync([Service] IAuthenticateResolver authenticateResolver, RefreshTokenModel criterias)
+        public async Task<UserTokenModel> RefreshTokenAsync([Service] IAuthenticateResolver authenticateResolver)
         {
-            return await authenticateResolver.RefreshTokenAsync(criterias);
+            return await authenticateResolver.RefreshTokenAsync();
         }
 
         public async Task<CommonResult> ForgotPasswordAsync([Service] IAuthenticateResolver authenticateResolver, ForgotPasswordModel criterias)

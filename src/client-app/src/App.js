@@ -13,11 +13,7 @@ import configureContentChangeStore from "./store/hook-store/content-change-store
 import { useQuery } from "@apollo/client";
 import { userQueries } from "./graphql/fetching/queries";
 import { SessionContext } from "./store/context/session-context";
-import {
-  parseUserInfo,
-  isTokenValid,
-  getAuthenticationToken,
-} from "./services/authService";
+import { parseUserInfo, isTokenValid } from "./services/authService";
 import { createBrowserHistory } from "history";
 const AsyncPage = loadable((props) => import(`${props.page}`), {
   cacheKey: (props) => props.page,
@@ -57,11 +53,6 @@ export default () => {
 
   const parseLoggedUser = () => {
     if (error) {
-      return { isLogin: false };
-    }
-
-    const authToken = getAuthenticationToken();
-    if (!authToken) {
       return { isLogin: false };
     }
 

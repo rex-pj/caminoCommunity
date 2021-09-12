@@ -26,6 +26,7 @@ namespace Camino.ApiHost
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
             }
             
             app.ConfigureAppBuilder(env);
