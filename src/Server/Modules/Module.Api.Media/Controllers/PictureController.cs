@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using Camino.Shared.Enums;
 using Camino.Core.Contracts.Services.Users;

@@ -37,7 +37,7 @@ export default withRouter((props) => {
     });
   };
 
-  const onLogin = async (data) => {
+  const onLogin = async (data, isRemember) => {
     setFormEnabled(false);
 
     if (login) {
@@ -54,7 +54,7 @@ export default withRouter((props) => {
             notifyError(errors);
             setFormEnabled(true);
           } else {
-            setLogin(login);
+            setLogin(login, isRemember);
 
             await relogin();
             props.history.push("/");
@@ -72,7 +72,7 @@ export default withRouter((props) => {
 
   return (
     <LoginForm
-      onlogin={(data) => onLogin(data)}
+      onlogin={onLogin}
       showValidationError={showError}
       isFormEnabled={isFormEnabled}
     />

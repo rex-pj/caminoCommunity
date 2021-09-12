@@ -2,17 +2,17 @@ let model = {
   username: {
     value: "",
     validation: {
-      isRequired: true
+      isRequired: true,
     },
-    isValid: false
+    isValid: false,
   },
   password: {
     value: "",
     validation: {
-      isRequired: true
+      isRequired: true,
     },
-    isValid: false
-  }
+    isValid: false,
+  },
 };
 
 export default model;

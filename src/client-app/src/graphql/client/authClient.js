@@ -1,31 +1,28 @@
 import {
   ApolloClient,
-  HttpLink,
+  createHttpLink,
   InMemoryCache,
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import { AUTH_KEY } from "../../utils/AppSettings";
+import { getAuthenticationToken } from "../../services/authService";
 import errorLink from "./errorLink";
 
 const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;
 
-const httpLink = new HttpLink({
+const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API_URL,
+  credentials: "include",
 });
 
-const getAccessToken = () => {
-  return localStorage.getItem(AUTH_KEY);
-};
-
 const contextLink = setContext(async (_, { headers }) => {
-  const accessToken = getAccessToken();
-  if (accessToken) {
+  const { authenticationToken } = getAuthenticationToken();
+  if (authenticationToken) {
     headers = {
       ...headers,
-      "x-header-authentication-token": accessToken,
+      "x-header-authentication-access-token": authenticationToken,
     };
   }
 
@@ -48,27 +45,25 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
   });
 });
 
-const cache = new InMemoryCache({
-  typePolicies: {
-    UserInfoModel: {
-      keyFields: ["userIdentityId"],
-    },
-    FeedModel: {
-      keyFields: ["feedType", "id"],
-    },
-    SelectOption: {
-      keyFields: ["text", "id"],
-    },
-  },
-});
-
-let client = new ApolloClient({
+const client = new ApolloClient({
   link: ApolloLink.from([
     cleanTypeName,
     errorLink,
     contextLink.concat(httpLink),
   ]),
-  cache: cache,
+  cache: new InMemoryCache({
+    typePolicies: {
+      UserInfoModel: {
+        keyFields: ["userIdentityId"],
+      },
+      FeedModel: {
+        keyFields: ["feedType", "id"],
+      },
+      SelectOption: {
+        keyFields: ["text", "id"],
+      },
+    },
+  }),
   ssrMode: true,
   initialState: preloadedState,
   defaultOptions: {

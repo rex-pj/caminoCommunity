@@ -19,6 +19,7 @@ using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
@@ -65,110 +66,111 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
             await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
 
+            AddRefreshTokenToCookie(refreshToken);
             return new UserTokenModel(true)
             {
                 AuthenticationToken = accessToken,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires),
-                UserInfo = new UserInfoModel
-                {
-                    UserIdentityId = user.UserIdentityId,
-                    DisplayName = user.DisplayName
-                }
+                RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
             };
         }
 
-        public async Task<UserTokenModel> RefreshTokenAsync(RefreshTokenModel criterias)
+        public async Task<UserTokenModel> RefreshTokenAsync()
         {
-            try
+            var authenticationToken = GetAccessTokenFromCookie();
+            var clientRefreshToken = GetRefreshTokenFromCookie();
+            if (string.IsNullOrWhiteSpace(authenticationToken))
             {
-                var authenticationToken = _httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HEADER_AUTHORIZATION];
-                if (string.IsNullOrWhiteSpace(authenticationToken))
-                {
-                    throw new CaminoAuthenticationException();
-                }
-
-                if (string.IsNullOrWhiteSpace(criterias.RefreshToken))
-                {
-                    throw new CaminoAuthenticationException();
-                }
-
-                var claimsIdentity = await _jwtHelper.GetPrincipalFromExpiredTokenAsync(authenticationToken);
-                var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeaderContants.USER_IDENTITY_ID_CLAIM_KEY).Value;
-                if (string.IsNullOrEmpty(userIdentityId))
-                {
-                    return new UserTokenModel();
-                }
-
-                var user = await _userManager.FindByIdentityIdAsync(userIdentityId);
-                if (user == null)
-                {
-                    return new UserTokenModel();
-                }
-
-                var oldUserRefreshToken = await _userManager.GetUserTokenByValueAsync(user, criterias.RefreshToken, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-                if (oldUserRefreshToken == null || oldUserRefreshToken.ExpiryTime <= DateTimeOffset.Now)
-                {
-                    throw new CaminoAuthenticationException();
-                }
-
-                user.UserIdentityId = userIdentityId;
-                var accessToken = _jwtHelper.GenerateJwtToken(user);
-                
-                await _userManager.RemoveAuthenticationTokenByValueAsync(user.Id, criterias.RefreshToken);
-                var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-                await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
-
-                return new UserTokenModel(true)
-                {
-                    AuthenticationToken = accessToken,
-                    RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires),
-                    UserInfo = new UserInfoModel()
-                    {
-                        UserIdentityId = userIdentityId,
-                        DisplayName = user.DisplayName
-                    }
-                };
+                throw new CaminoAuthenticationException();
             }
-            catch (Exception)
+
+            if (string.IsNullOrWhiteSpace(clientRefreshToken))
             {
-                throw;
+                throw new CaminoAuthenticationException();
             }
+
+            var claimsIdentity = await _jwtHelper.GetPrincipalFromExpiredTokenAsync(authenticationToken);
+            var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeaderContants.UserIdentityClaimKey).Value;
+            if (string.IsNullOrEmpty(userIdentityId))
+            {
+                return new UserTokenModel();
+            }
+
+            var user = await _userManager.FindByIdentityIdAsync(userIdentityId);
+            if (user == null)
+            {
+                return new UserTokenModel();
+            }
+
+            var serverRefreshToken = await _userManager.GetUserTokenByValueAsync(user, clientRefreshToken, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
+            if (serverRefreshToken == null || serverRefreshToken.ExpiryTime <= DateTimeOffset.Now)
+            {
+                throw new CaminoAuthenticationException();
+            }
+
+            user.UserIdentityId = userIdentityId;
+            var accessToken = _jwtHelper.GenerateJwtToken(user);
+
+            await _userManager.RemoveAuthenticationTokenByValueAsync(user.Id, clientRefreshToken);
+            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
+            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
+
+            AddRefreshTokenToCookie(refreshToken);
+            return new UserTokenModel(true)
+            {
+                AuthenticationToken = accessToken,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
+            };
+        }
+
+        private void AddRefreshTokenToCookie(string refreshToken)
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeaderContants.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtConfigOptions.RefreshTokenHourExpires),
+                IsEssential = true,
+                Secure = true
+            });
+        }
+
+        private string GetRefreshTokenFromCookie()
+        {
+            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaderContants.CookieAuthenticationRefreshToken];
+        }
+
+        private string GetAccessTokenFromCookie()
+        {
+            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaderContants.HeaderAuthenticationAccessToken];
         }
 
         public async Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
         {
-            try
+            ValidateForgotPassword(criterias);
+
+            var user = await _userManager.FindByEmailAsync(criterias.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
-                ValidateForgotPassword(criterias);
-
-                var user = await _userManager.FindByEmailAsync(criterias.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    throw new CaminoApplicationException("ForgotPasswordConfirmation");
-                }
-
-                var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
-                if (!result.Succeeded)
-                {
-                    var errors = result.Errors.Select(x => new CommonError
-                    {
-                        Message = x.Description,
-                        Code = x.Code
-                    });
-                    return CommonResult.Failed(errors);
-                }
-
-                await SendPasswordChangeAsync(criterias, user, resetPasswordToken);
-
-                return CommonResult.Success();
+                throw new CaminoApplicationException("ForgotPasswordConfirmation");
             }
-            catch (Exception)
+
+            var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
+            if (!result.Succeeded)
             {
-                throw;
+                var errors = result.Errors.Select(x => new CommonError
+                {
+                    Message = x.Description,
+                    Code = x.Code
+                });
+                return CommonResult.Failed(errors);
             }
+
+            await SendPasswordChangeAsync(criterias, user, resetPasswordToken);
+
+            return CommonResult.Success();
         }
 
         private void ValidateForgotPassword(ForgotPasswordModel criterias)
@@ -193,36 +195,50 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }, EmailTextFormat.Html);
         }
 
-        public async Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias)
+        public async Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, UserPasswordUpdateModel criterias)
         {
             try
             {
-                ValidateResetPassword(criterias);
-                var user = await _userManager.FindByEmailAsync(criterias.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    throw new UnauthorizedAccessException("ResetPasswordFailed");
-                }
-
-                var result = await _userManager.ResetPasswordAsync(user, criterias.Key, criterias.Password);
+                ComparePassword(criterias);
+                var currentUserId = GetCurrentUserId(claimsPrincipal);
+                var currentUser = await _userManager.FindByIdAsync(currentUserId);
+                var result = await _userManager.ChangePasswordAsync(currentUser, criterias.CurrentPassword, criterias.NewPassword);
                 if (!result.Succeeded)
                 {
-                    var errors = result.Errors.Select(x => new CommonError()
-                    {
-                        Message = x.Description,
-                        Code = x.Code
-                    });
-
-                    return CommonResult.Failed(errors);
+                    return new UserTokenModel(false);
                 }
-                await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, criterias.Key);
 
-                return CommonResult.Success();
+                return await RefreshTokenAsync();
             }
             catch (Exception)
             {
-                throw;
+                return new UserTokenModel(false);
             }
+        }
+
+        public async Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias)
+        {
+            ValidateResetPassword(criterias);
+            var user = await _userManager.FindByEmailAsync(criterias.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                throw new UnauthorizedAccessException("ResetPasswordFailed");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, criterias.Key, criterias.Password);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(x => new CommonError()
+                {
+                    Message = x.Description,
+                    Code = x.Code
+                });
+
+                return CommonResult.Failed(errors);
+            }
+            await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, criterias.Key);
+
+            return CommonResult.Success();
         }
 
         private void ValidateResetPassword(ResetPasswordModel criterias)
@@ -235,6 +251,14 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             if (!criterias.Password.Equals(criterias.ConfirmPassword))
             {
                 throw new ArgumentException($"{nameof(criterias.Password)} and {nameof(criterias.ConfirmPassword)} is not the same");
+            }
+        }
+
+        private void ComparePassword(UserPasswordUpdateModel criterias)
+        {
+            if (!criterias.NewPassword.Equals(criterias.ConfirmPassword))
+            {
+                throw new ArgumentException($"{nameof(criterias.NewPassword)} and {nameof(criterias.ConfirmPassword)} is not the same");
             }
         }
     }

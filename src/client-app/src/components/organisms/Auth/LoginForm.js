@@ -75,6 +75,7 @@ const ForgotPasswordRow = styled(FormRow)`
 
 export default (props) => {
   const [, updateState] = useState();
+  const [isRemember, setRemember] = useState(false);
   const forceUpdate = useCallback(() => updateState({}), []);
   let formData = loginModel;
 
@@ -96,6 +97,11 @@ export default (props) => {
     formData[name].value = value;
 
     forceUpdate();
+  };
+
+  const handleCheckboxChange = (evt) => {
+    const { checked } = evt.target;
+    setRemember(checked);
   };
 
   const checkIsFormValid = () => {
@@ -131,7 +137,7 @@ export default (props) => {
         loginData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.onlogin(loginData);
+      props.onlogin(loginData, isRemember);
     }
   };
 
@@ -169,6 +175,15 @@ export default (props) => {
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
               />
+            </FormRow>
+            <FormRow className="mt-3">
+              <input
+                type="checkbox"
+                name="isRemember"
+                id="isRemember"
+                onChange={(e) => handleCheckboxChange(e)}
+              ></input>
+              <Label for="isRemember">Remember?</Label>
             </FormRow>
             <FormFooter>
               <SubmitButton

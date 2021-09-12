@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Camino.Framework.GraphQL;
-using System.Threading.Tasks;
-using Camino.Infrastructure.Commons.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace Camino.ApiHost.Infrastructure.Extensions
 {
@@ -18,24 +17,33 @@ namespace Camino.ApiHost.Infrastructure.Extensions
     {
         public static IServiceCollection ConfigureApiHostServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddJwtBearerServices(services.BuildServiceProvider())
-                .AddApplicationServices(configuration);
+            services.AddJwtBearerServices(services.BuildServiceProvider());
+
+            services.AddHttpContextAccessor()
+                .AddApplicationServices(configuration)
+                .ConfigureCorsServices(services.BuildServiceProvider());
 
             services.AddInfrastructureServices();
-            services.AddHttpContextAccessor()
-                .ConfigureCorsServices(services.BuildServiceProvider());
 
             services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddModular();
             services.AddAutoMappingModular();
+
             return services;
         }
 
         public static IServiceCollection AddJwtBearerServices(this IServiceCollection services, IServiceProvider serviceProvider)
         {
             var jwtConfigOptions = serviceProvider.GetRequiredService<IOptions<JwtConfigOptions>>().Value;
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(jwt =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwt =>
             {
                 var secretKey = Encoding.ASCII.GetBytes(jwtConfigOptions.SecretKey);
                 jwt.SaveToken = true;
@@ -51,6 +59,13 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                     ValidIssuer = jwtConfigOptions.Issuer,
                     ValidAudience = jwtConfigOptions.Audience
                 };
+            })
+            .AddCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             services.AddGraphQLServer()

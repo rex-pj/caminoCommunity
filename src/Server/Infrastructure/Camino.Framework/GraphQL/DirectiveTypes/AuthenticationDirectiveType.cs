@@ -22,7 +22,7 @@ namespace Camino.Framework.GraphQL.DirectiveTypes
             descriptor.Use(next => async context =>
             {
                 var httpContextAccessor = context.Services.GetService<IHttpContextAccessor>();
-                var token = httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HEADER_AUTHORIZATION];
+                var token = httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HeaderAuthenticationAccessToken];
                 if (string.IsNullOrEmpty(token))
                 {
                     context.Result = new ForbidResult();

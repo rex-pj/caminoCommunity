@@ -12,7 +12,7 @@ namespace Camino.Framework.Infrastructure.Extensions
 {
     public static class ApplicationServiceCollectionExtensions
     {
-        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AppSettings>(configuration.GetSection(AppSettings.Name));
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
@@ -25,6 +25,8 @@ namespace Camino.Framework.Infrastructure.Extensions
                 .AddScoped<IJwtHelper, JwtHelper>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            return services;
         }
     }
 }

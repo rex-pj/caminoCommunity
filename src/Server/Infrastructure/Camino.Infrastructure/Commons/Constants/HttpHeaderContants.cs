@@ -2,8 +2,9 @@
 {
     public class HttpHeaderContants
     {
-        public const string HEADER_AUTHORIZATION = "x-header-authentication-token";
-        public const string USER_IDENTITY_ID_CLAIM_KEY = "ClaimToken.UserIdentityId";
-        public const string USER_ID_CLAIM_KEY = "ClaimToken.UserId";
+        public const string HeaderAuthenticationAccessToken = "x-header-authentication-access-token";
+        public const string CookieAuthenticationRefreshToken = "x-user-authentication-refresh-token";
+        public const string UserIdentityClaimKey = "ClaimToken.UserIdentityId";
+        public const string UserIdClaimKey = "ClaimToken.UserId";
     }
 }
