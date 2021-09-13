@@ -122,27 +122,25 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 criterias = new ArticleFilterModel();
             }
 
-            try
+            if (!criterias.Id.HasValue || criterias.Id <= 0)
             {
-                var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
-                {
-                    Id = criterias.Id,
-                    CanGetInactived = true
-                });
-
-                var currentUserId = GetCurrentUserId(claimsPrincipal);
-                if (currentUserId != articleResult.CreatedById)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                var article = await MapArticleResultToModelAsync(articleResult);
-                return article;
+                return new ArticleModel();
             }
-            catch (Exception)
+
+            var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
             {
-                throw;
+                Id = criterias.Id.GetValueOrDefault(),
+                CanGetInactived = true
+            });
+
+            var currentUserId = GetCurrentUserId(claimsPrincipal);
+            if (currentUserId != articleResult.CreatedById)
+            {
+                throw new UnauthorizedAccessException();
             }
+
+            var article = await MapArticleResultToModelAsync(articleResult);
+            return article;
         }
 
         public async Task<IList<ArticleModel>> GetRelevantArticlesAsync(ArticleFilterModel criterias)
@@ -150,6 +148,11 @@ namespace Module.Api.Article.GraphQL.Resolvers
             if (criterias == null)
             {
                 criterias = new ArticleFilterModel();
+            }
+
+            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            {
+                return new List<ArticleModel>();
             }
 
             var filterRequest = new ArticleFilter()
@@ -161,7 +164,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var relevantArticles = await _articleService.GetRelevantsAsync(criterias.Id, filterRequest);
+                var relevantArticles = await _articleService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
                 var products = await MapArticlesResultToModelAsync(relevantArticles);
 
                 return products;
@@ -247,9 +250,14 @@ namespace Module.Api.Article.GraphQL.Resolvers
         {
             try
             {
+                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                {
+                    throw new ArgumentNullException(nameof(criterias.Id));
+                }
+
                 var exist = await _articleService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     CanGetInactived = true
                 });
 
@@ -266,7 +274,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
                 return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     UpdatedById = currentUserId,
                 });
             }

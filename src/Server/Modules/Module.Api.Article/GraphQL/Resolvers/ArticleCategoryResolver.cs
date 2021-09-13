@@ -37,7 +37,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 Page = _defaultPageSelection
             };
             IList<ArticleCategoryResult> categories;
-            if (criterias.IsParentOnly)
+            if (criterias.IsParentOnly.HasValue && criterias.IsParentOnly.GetValueOrDefault())
             {
                 categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
                 {

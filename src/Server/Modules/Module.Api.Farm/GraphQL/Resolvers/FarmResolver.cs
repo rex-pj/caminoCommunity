@@ -228,11 +228,16 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 criterias = new FarmFilterModel();
             }
 
+            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            {
+                throw new ArgumentNullException(nameof(criterias.Id));
+            }
+
             try
             {
                 var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     CanGetInactived = true
                 });
 
@@ -254,9 +259,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
         {
             try
             {
+                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                {
+                    throw new ArgumentNullException(nameof(criterias.Id));
+                }
+
                 var exist = await _farmService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     CanGetInactived = true
                 });
 
@@ -274,7 +284,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 return await _farmService.SoftDeleteAsync(new FarmModifyRequest
                 {
                     UpdatedById = currentUserId,
-                    Id = criterias.Id
+                    Id = criterias.Id.GetValueOrDefault()
                 });
             }
             catch (Exception)

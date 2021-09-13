@@ -43,7 +43,7 @@
     "surge": "^0.21.7"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/localhost.pem&&set SSL_KEY_FILE=./.cert/localhost-key.pem&&react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/cert.pem&&set SSL_KEY_FILE=./.cert/key.pem&&react-scripts start",
     "build": "react-scripts build",
     "publish": "npm run build",
     "test": "react-scripts test",

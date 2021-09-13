@@ -183,7 +183,7 @@ export default (props) => {
                 id="isRemember"
                 onChange={(e) => handleCheckboxChange(e)}
               ></input>
-              <Label for="isRemember">Remember?</Label>
+              <Label htmlFor="isRemember">Remember?</Label>
             </FormRow>
             <FormFooter>
               <SubmitButton

@@ -10,8 +10,7 @@ namespace Module.Api.Article.Models
         {
         }
 
-        [GraphQLType(typeof(LongType))]
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public string UserIdentityId { get; set; }
     }
 }

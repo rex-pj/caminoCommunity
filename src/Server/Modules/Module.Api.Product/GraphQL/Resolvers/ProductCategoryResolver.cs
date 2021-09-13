@@ -38,7 +38,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 PageSize = _pagerOptions.PageSize,
                 Page = _defaultPageSelection
             };
-            if (criterias.IsParentOnly)
+            if (criterias.IsParentOnly.HasValue && criterias.IsParentOnly.GetValueOrDefault())
             {
                 categories = await _productCategoryService.SearchParentsAsync(filter, criterias.CurrentIds);
             }

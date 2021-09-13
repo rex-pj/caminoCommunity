@@ -1,6 +1,4 @@
 ﻿using Camino.Framework.Models;
-using HotChocolate;
-using HotChocolate.Types;
 
 namespace Module.Api.Product.Models
 {
@@ -10,8 +8,7 @@ namespace Module.Api.Product.Models
         {
         }
 
-        [GraphQLType(typeof(LongType))]
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public long? FarmId { get; set; }
         public string UserIdentityId { get; set; }
     }

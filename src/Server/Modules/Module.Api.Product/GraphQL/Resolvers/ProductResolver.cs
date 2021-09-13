@@ -28,7 +28,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
         private readonly IProductService _productService;
         private readonly PagerOptions _pagerOptions;
 
-        public ProductResolver(IUserManager<ApplicationUser> userManager, IProductService productService, 
+        public ProductResolver(IUserManager<ApplicationUser> userManager, IProductService productService,
             IOptions<PagerOptions> pagerOptions)
             : base()
         {
@@ -125,6 +125,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 criterias = new ProductFilterModel();
             }
 
+            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            {
+                return new List<ProductModel>();
+            }
+
             var filterRequest = new ProductFilter()
             {
                 Page = criterias.Page,
@@ -134,7 +139,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var relevantProducts = await _productService.GetRelevantsAsync(criterias.Id, filterRequest);
+                var relevantProducts = await _productService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
                 var products = await MapProductsResultToModelAsync(relevantProducts);
 
                 return products;
@@ -183,11 +188,16 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 criterias = new ProductFilterModel();
             }
 
+            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            {
+                return new ProductModel();
+            }
+
             try
             {
                 var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     CanGetInactived = true
                 });
 
@@ -318,9 +328,14 @@ namespace Module.Api.Product.GraphQL.Resolvers
         {
             try
             {
+                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                {
+                    throw new ArgumentNullException(nameof(criterias.Id));
+                }
+
                 var exist = await _productService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id,
+                    Id = criterias.Id.GetValueOrDefault(),
                     CanGetInactived = true
                 });
 
@@ -338,7 +353,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 return await _productService.SoftDeleteAsync(new ProductModifyRequest
                 {
                     UpdatedById = currentUserId,
-                    Id = criterias.Id
+                    Id = criterias.Id.GetValueOrDefault()
                 });
             }
             catch (Exception)
