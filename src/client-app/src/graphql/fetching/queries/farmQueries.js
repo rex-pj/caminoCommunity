@@ -68,7 +68,7 @@ export const GET_FARMS = gql`
 `;
 
 export const GET_FARM = gql`
-  query ($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmIdFilterModelInput) {
     farm(criterias: $criterias) {
       id
       description
@@ -87,7 +87,7 @@ export const GET_FARM = gql`
 `;
 
 export const GET_FARM_FOR_UPDATE = gql`
-  query ($criterias: FarmFilterModelInput) {
+  query ($criterias: FarmIdFilterModelInput) {
     farm(criterias: $criterias) {
       id
       description

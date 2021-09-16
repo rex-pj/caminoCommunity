@@ -21,7 +21,7 @@ namespace Module.Api.Farm.GraphQL.Queries
             return await farmResolver.GetFarmsAsync(criterias);
         }
 
-        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmIdFilterModel criterias)
         {
             return await farmResolver.GetFarmAsync(claimsPrincipal, criterias);
         }

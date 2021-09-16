@@ -50,34 +50,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         }
 
         #region Get
-        public async Task<UserInfoModel> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal)
-        {
-            long currentUserId = GetCurrentUserId(claimsPrincipal);
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            var userIdentityId = await _userManager.EncryptUserIdAsync(currentUserId);
-            return new UserInfoModel
-            {
-                Address = currentUser.Address,
-                BirthDate = currentUser.BirthDate,
-                CountryCode = currentUser.CountryCode,
-                CountryId = currentUser.CountryId,
-                CountryName = currentUser.CountryName,
-                Email = currentUser.Email,
-                CreatedDate = currentUser.CreatedDate,
-                Description = currentUser.Description,
-                DisplayName = currentUser.DisplayName,
-                Firstname = currentUser.Firstname,
-                GenderId = currentUser.GenderId,
-                GenderLabel = currentUser.GenderLabel,
-                Lastname = currentUser.Lastname,
-                PhoneNumber = currentUser.PhoneNumber,
-                StatusId = currentUser.StatusId,
-                StatusLabel = currentUser.StatusLabel,
-                UpdatedDate = currentUser.UpdatedDate,
-                UserIdentityId = userIdentityId
-            };
-        }
-
         public async Task<UserPageListModel> GetUsersAsync(UserFilterModel criterias)
         {
             if (criterias == null)

@@ -33,7 +33,7 @@ namespace Module.Api.Farm.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmFilterModel criterias)
+        public async Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmIdFilterModel criterias)
         {
             return await farmResolver.DeleteFarmAsync(claimsPrincipal, criterias);
         }

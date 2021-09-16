@@ -10,7 +10,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IUserResolver
     {
-        Task<UserInfoModel> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal);
         Task<UserInfoModel> GetFullUserInfoAsync(ClaimsPrincipal claimsPrincipal, FindUserModel criterias);
         Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ClaimsPrincipal claimsPrincipal, UpdatePerItemModel criterias);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ClaimsPrincipal claimsPrincipal, UserIdentifierUpdateModel criterias);

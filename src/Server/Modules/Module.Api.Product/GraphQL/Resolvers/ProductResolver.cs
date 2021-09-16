@@ -181,14 +181,14 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias)
+        public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new ProductFilterModel();
+                criterias = new ProductIdFilterModel();
             }
 
-            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            if (criterias.Id <= 0)
             {
                 return new ProductModel();
             }
@@ -197,7 +197,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             {
                 var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     CanGetInactived = true
                 });
 
@@ -324,18 +324,18 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias)
+        public async Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias)
         {
             try
             {
-                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                if (criterias.Id <= 0)
                 {
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
                 var exist = await _productService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     CanGetInactived = true
                 });
 
@@ -353,7 +353,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 return await _productService.SoftDeleteAsync(new ProductModifyRequest
                 {
                     UpdatedById = currentUserId,
-                    Id = criterias.Id.GetValueOrDefault()
+                    Id = criterias.Id
                 });
             }
             catch (Exception)

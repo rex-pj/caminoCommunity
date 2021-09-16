@@ -14,12 +14,6 @@ namespace Module.Api.Auth.GraphQL.Queries
     public class UserQueries : BaseQueries
     {
         [GraphQlAuthentication]
-        public async Task<UserInfoModel> GetLoggedUserAsync([Service] IUserResolver userResolver, ClaimsPrincipal claimsPrincipal)
-        {
-            return await userResolver.GetLoggedUserAsync(claimsPrincipal);
-        }
-
-        [GraphQlAuthentication]
         public async Task<UserPageListModel> GetUsersAsync([Service] IUserResolver userResolver, UserFilterModel criterias)
         {
             return await userResolver.GetUsersAsync(criterias);

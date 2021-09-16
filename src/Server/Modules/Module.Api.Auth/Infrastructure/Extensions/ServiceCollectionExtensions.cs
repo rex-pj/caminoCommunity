@@ -23,7 +23,9 @@ namespace Module.Api.Auth.Infrastructure.Extensions
                 .AddType<GenderQueries>()
                 .AddType<UserPhotoQueries>()
                 .AddType<UserQueries>()
-                .AddType<UserMutations>();
+                .AddType<AuthenticationQueries>()
+                .AddType<UserMutations>()
+                .AddType<AuthenticationMutations>();
 
             return services;
         }

@@ -13,7 +13,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
         Task<FarmPageListModel> GetUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias);
         Task<FarmPageListModel> GetFarmsAsync(FarmFilterModel criterias);
         Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmSelectFilterModel criterias);
-        Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias);
-        Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias);
+        Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmIdFilterModel criterias);
+        Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, FarmIdFilterModel criterias);
     }
 }

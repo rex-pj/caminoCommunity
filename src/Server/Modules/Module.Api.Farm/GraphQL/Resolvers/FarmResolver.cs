@@ -221,14 +221,14 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmIdFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new FarmFilterModel();
+                criterias = new FarmIdFilterModel();
             }
 
-            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            if (criterias.Id <= 0)
             {
                 throw new ArgumentNullException(nameof(criterias.Id));
             }
@@ -237,7 +237,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             {
                 var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     CanGetInactived = true
                 });
 
@@ -255,18 +255,18 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
         }
 
-        public async Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)
+        public async Task<bool> DeleteFarmAsync(ClaimsPrincipal claimsPrincipal, FarmIdFilterModel criterias)
         {
             try
             {
-                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                if (criterias.Id <= 0)
                 {
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
                 var exist = await _farmService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     CanGetInactived = true
                 });
 
@@ -284,7 +284,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 return await _farmService.SoftDeleteAsync(new FarmModifyRequest
                 {
                     UpdatedById = currentUserId,
-                    Id = criterias.Id.GetValueOrDefault()
+                    Id = criterias.Id
                 });
             }
             catch (Exception)

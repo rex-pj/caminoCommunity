@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const FILTER_ARTICLE_CATEGORIES = gql`
-  mutation($criterias: ArticleCategorySelectFilterModelInput) {
+  mutation ($criterias: ArticleCategorySelectFilterModelInput) {
     selections: articleCategories(criterias: $criterias) {
       id
       isSelected
@@ -11,7 +11,7 @@ export const FILTER_ARTICLE_CATEGORIES = gql`
 `;
 
 export const CREATE_ARTICLE = gql`
-  mutation($criterias: ArticleModelInput!) {
+  mutation ($criterias: ArticleModelInput!) {
     createArticle(criterias: $criterias) {
       id
     }
@@ -19,7 +19,7 @@ export const CREATE_ARTICLE = gql`
 `;
 
 export const UPDATE_ARTICLE = gql`
-  mutation($criterias: ArticleModelInput!) {
+  mutation ($criterias: ArticleModelInput!) {
     updateArticle(criterias: $criterias) {
       id
     }
@@ -27,7 +27,7 @@ export const UPDATE_ARTICLE = gql`
 `;
 
 export const DELETE_ARTICLE = gql`
-  mutation($criterias: ArticleFilterModelInput!) {
+  mutation ($criterias: ArticleIdFilterModelInput!) {
     deleteArticle(criterias: $criterias)
   }
 `;

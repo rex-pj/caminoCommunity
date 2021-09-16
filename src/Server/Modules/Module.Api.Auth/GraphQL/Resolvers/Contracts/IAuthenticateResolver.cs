@@ -12,5 +12,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
         Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);
         Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias);
         Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, UserPasswordUpdateModel criterias);
+        Task<UserInfoModel> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal);
     }
 }

@@ -115,21 +115,21 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleIdFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new ArticleFilterModel();
+                criterias = new ArticleIdFilterModel();
             }
 
-            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            if (criterias.Id <= 0)
             {
                 return new ArticleModel();
             }
 
             var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
             {
-                Id = criterias.Id.GetValueOrDefault(),
+                Id = criterias.Id,
                 CanGetInactived = true
             });
 
@@ -150,7 +150,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 criterias = new ArticleFilterModel();
             }
 
-            if (!criterias.Id.HasValue || criterias.Id <= 0)
+            if (criterias.Id <= 0)
             {
                 return new List<ArticleModel>();
             }
@@ -246,18 +246,18 @@ namespace Module.Api.Article.GraphQL.Resolvers
             return criterias;
         }
 
-        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleFilterModel criterias)
+        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleIdFilterModel criterias)
         {
             try
             {
-                if (!criterias.Id.HasValue || criterias.Id <= 0)
+                if (criterias.Id <= 0)
                 {
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
                 var exist = await _articleService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     CanGetInactived = true
                 });
 
@@ -274,7 +274,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
                 return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
                 {
-                    Id = criterias.Id.GetValueOrDefault(),
+                    Id = criterias.Id,
                     UpdatedById = currentUserId,
                 });
             }

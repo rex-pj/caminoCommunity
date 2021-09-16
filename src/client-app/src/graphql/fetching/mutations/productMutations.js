@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const FILTER_PRODUCT_CATEGORIES = gql`
-  mutation($criterias: ProductCategorySelectFilterModelInput) {
+  mutation ($criterias: ProductCategorySelectFilterModelInput) {
     selections: productCategories(criterias: $criterias) {
       id
       isSelected
@@ -11,7 +11,7 @@ export const FILTER_PRODUCT_CATEGORIES = gql`
 `;
 
 export const UPDATE_PRODUCT = gql`
-  mutation($criterias: ProductModelInput!) {
+  mutation ($criterias: ProductModelInput!) {
     updateProduct(criterias: $criterias) {
       id
     }
@@ -19,7 +19,7 @@ export const UPDATE_PRODUCT = gql`
 `;
 
 export const CREATE_PRODUCT = gql`
-  mutation($criterias: ProductModelInput!) {
+  mutation ($criterias: ProductModelInput!) {
     createProduct(criterias: $criterias) {
       id
     }
@@ -27,13 +27,13 @@ export const CREATE_PRODUCT = gql`
 `;
 
 export const DELETE_PRODUCT = gql`
-  mutation($criterias: ProductFilterModelInput!) {
+  mutation ($criterias: ProductIdFilterModelInput!) {
     deleteProduct(criterias: $criterias)
   }
 `;
 
 export const FILTER_PRODUCT_ATTRIBUTES = gql`
-  mutation($criterias: ProductAttributeSelectFilterModelInput) {
+  mutation ($criterias: ProductAttributeSelectFilterModelInput) {
     selections: productAttributes(criterias: $criterias) {
       id
       isSelected
@@ -43,7 +43,7 @@ export const FILTER_PRODUCT_ATTRIBUTES = gql`
 `;
 
 export const FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES = gql`
-  mutation($criterias: ProductAttributeControlTypeSelectFilterModelInput) {
+  mutation ($criterias: ProductAttributeControlTypeSelectFilterModelInput) {
     selections: productAttributeControlTypes(criterias: $criterias) {
       id
       isSelected

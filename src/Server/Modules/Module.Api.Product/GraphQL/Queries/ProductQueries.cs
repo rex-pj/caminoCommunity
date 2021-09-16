@@ -31,7 +31,7 @@ namespace Module.Api.Product.GraphQL.Queries
         }
 
         public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
-            ProductFilterModel criterias)
+            ProductIdFilterModel criterias)
         {
             return await productResolver.GetProductAsync(claimsPrincipal, criterias);
         }

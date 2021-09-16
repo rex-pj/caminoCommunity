@@ -25,13 +25,13 @@ namespace Module.Api.Article.GraphQL.Mutations
         }
 
         [GraphQlAuthentication]
-        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
         {
             return await articleResolver.DeleteArticleAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
         {
             return await articleResolver.GetArticleAsync(claimsPrincipal, criterias);
         }

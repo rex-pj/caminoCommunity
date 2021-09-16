@@ -11,8 +11,8 @@ namespace Module.Api.Product.GraphQL.Resolvers.Contracts
         Task<ProductModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias);
         Task<ProductPageListModel> GetUserProductsAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
         Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias);
-        Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
+        Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias);
         Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias);
-        Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
+        Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias);
     }
 }

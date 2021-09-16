@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const FILTER_FARM_TYPES = gql`
-  mutation($criterias: BaseSelectFilterModelInput) {
+  mutation ($criterias: BaseSelectFilterModelInput) {
     selections: farmTypes(criterias: $criterias) {
       id
       isSelected
@@ -11,7 +11,7 @@ export const FILTER_FARM_TYPES = gql`
 `;
 
 export const FILTER_FARMS = gql`
-  mutation($criterias: FarmSelectFilterModelInput) {
+  mutation ($criterias: FarmSelectFilterModelInput) {
     selections: selectUserFarms(criterias: $criterias) {
       id
       isSelected
@@ -21,7 +21,7 @@ export const FILTER_FARMS = gql`
 `;
 
 export const CREATE_FARM = gql`
-  mutation($criterias: FarmModelInput!) {
+  mutation ($criterias: FarmModelInput!) {
     createFarm(criterias: $criterias) {
       id
     }
@@ -29,7 +29,7 @@ export const CREATE_FARM = gql`
 `;
 
 export const UPDATE_FARM = gql`
-  mutation($criterias: FarmModelInput!) {
+  mutation ($criterias: FarmModelInput!) {
     updateFarm(criterias: $criterias) {
       id
     }
@@ -37,7 +37,7 @@ export const UPDATE_FARM = gql`
 `;
 
 export const DELETE_FARM = gql`
-  mutation($criterias: FarmFilterModelInput!) {
+  mutation ($criterias: FarmIdFilterModelInput!) {
     deleteFarm(criterias: $criterias)
   }
 `;

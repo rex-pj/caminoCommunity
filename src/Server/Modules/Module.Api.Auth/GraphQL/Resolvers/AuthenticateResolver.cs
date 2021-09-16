@@ -51,6 +51,34 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<UserInfoModel> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            long currentUserId = GetCurrentUserId(claimsPrincipal);
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var userIdentityId = await _userManager.EncryptUserIdAsync(currentUserId);
+            return new UserInfoModel
+            {
+                Address = currentUser.Address,
+                BirthDate = currentUser.BirthDate,
+                CountryCode = currentUser.CountryCode,
+                CountryId = currentUser.CountryId,
+                CountryName = currentUser.CountryName,
+                Email = currentUser.Email,
+                CreatedDate = currentUser.CreatedDate,
+                Description = currentUser.Description,
+                DisplayName = currentUser.DisplayName,
+                Firstname = currentUser.Firstname,
+                GenderId = currentUser.GenderId,
+                GenderLabel = currentUser.GenderLabel,
+                Lastname = currentUser.Lastname,
+                PhoneNumber = currentUser.PhoneNumber,
+                StatusId = currentUser.StatusId,
+                StatusLabel = currentUser.StatusLabel,
+                UpdatedDate = currentUser.UpdatedDate,
+                UserIdentityId = userIdentityId
+            };
+        }
+
         public async Task<UserTokenModel> LoginAsync(LoginModel criterias)
         {
             var result = await _loginManager.PasswordSignInAsync(criterias.Username, criterias.Password, true, true);

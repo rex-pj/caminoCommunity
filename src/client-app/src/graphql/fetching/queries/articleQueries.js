@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_ARTICLES = gql`
-  query($criterias: ArticleFilterModelInput) {
+  query ($criterias: ArticleFilterModelInput) {
     userArticles(criterias: $criterias) {
       totalPage
       totalResult
@@ -28,7 +28,7 @@ export const GET_USER_ARTICLES = gql`
 `;
 
 export const GET_ARTICLES = gql`
-  query($criterias: ArticleFilterModelInput) {
+  query ($criterias: ArticleFilterModelInput) {
     articles(criterias: $criterias) {
       totalPage
       totalResult
@@ -55,7 +55,7 @@ export const GET_ARTICLES = gql`
 `;
 
 export const GET_RELEVANT_ARTICLES = gql`
-  query($criterias: ArticleFilterModelInput) {
+  query ($criterias: ArticleFilterModelInput) {
     relevantArticles(criterias: $criterias) {
       id
       description
@@ -73,7 +73,7 @@ export const GET_RELEVANT_ARTICLES = gql`
 `;
 
 export const GET_ARTICLE = gql`
-  query($criterias: ArticleFilterModelInput) {
+  query ($criterias: ArticleIdFilterModelInput) {
     article(criterias: $criterias) {
       id
       content
@@ -91,7 +91,7 @@ export const GET_ARTICLE = gql`
 `;
 
 export const GET_ARTICLE_FOR_UPDATE = gql`
-  query($criterias: ArticleFilterModelInput) {
+  query ($criterias: ArticleIdFilterModelInput) {
     article(criterias: $criterias) {
       id
       content
