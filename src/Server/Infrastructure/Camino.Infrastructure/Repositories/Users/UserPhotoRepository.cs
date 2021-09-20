@@ -13,7 +13,6 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using LinqToDB;
-using Microsoft.Extensions.DependencyInjection;
 using LinqToDB.Tools;
 
 namespace Camino.Infrastructure.Repositories.Users
@@ -23,11 +22,10 @@ namespace Camino.Infrastructure.Repositories.Users
         private readonly IRepository<UserPhoto> _userPhotoRepository;
         private readonly IRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoRepository(ValidationStrategyContext validationStrategyContext, IServiceScopeFactory serviceScopeFactory,
+        public UserPhotoRepository(ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
             IRepository<UserInfo> userInfoRepository)
         {
-            _userPhotoRepository = serviceScopeFactory.CreateScope().ServiceProvider
-                .GetRequiredService<IRepository<UserPhoto>>();
+            _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
         }

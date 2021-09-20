@@ -1,8 +1,6 @@
 ﻿using Camino.Core.Contracts.Repositories.Setup;
 using Camino.Core.Util;
 using Camino.Infrastructure.Data;
-using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 

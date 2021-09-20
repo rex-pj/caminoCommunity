@@ -15,7 +15,6 @@ using Camino.Core.Utils;
 using Camino.Core.Domain.Identifiers;
 using System.Collections.Generic;
 using Camino.Shared.Results.General;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Feeds
 {
@@ -34,13 +33,14 @@ namespace Camino.Infrastructure.Repositories.Feeds
         private readonly int _farmInactivedStatus;
         private readonly int _userActivedStatus;
 
-        public FeedRepository(IServiceScopeFactory serviceScopeFactory)
+        public FeedRepository(IRepository<Article> articleRepository, IRepository<Product> productRepository,
+            IRepository<Farm> farmRepository, IRepository<User> userRepository, IRepository<ProductPrice> productPriceRepository)
         {
-            _articleRepository = CreateServiceScope<IRepository<Article>>(serviceScopeFactory);
-            _productRepository = CreateServiceScope<IRepository<Product>>(serviceScopeFactory);
-            _farmRepository = CreateServiceScope<IRepository<Farm>>(serviceScopeFactory);
-            _userRepository = CreateServiceScope<IRepository<User>>(serviceScopeFactory);
-            _productPriceRepository = CreateServiceScope<IRepository<ProductPrice>>(serviceScopeFactory);
+            _articleRepository = articleRepository;
+            _productRepository = productRepository;
+            _farmRepository = farmRepository;
+            _userRepository = userRepository;
+            _productPriceRepository = productPriceRepository;
 
             _articleDeletedStatus = ArticleStatus.Deleted.GetCode();
             _articleInactivedStatus = ArticleStatus.Inactived.GetCode();
@@ -49,11 +49,6 @@ namespace Camino.Infrastructure.Repositories.Feeds
             _farmDeletedStatus = FarmStatus.Deleted.GetCode();
             _farmInactivedStatus = FarmStatus.Inactived.GetCode();
             _userActivedStatus = UserStatus.Actived.GetCode();
-        }
-
-        private TService CreateServiceScope<TService>(IServiceScopeFactory serviceScopeFactory)
-        {
-            return serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<TService>();
         }
 
         public async Task<BasePageList<FeedResult>> GetAsync(FeedFilter filter)

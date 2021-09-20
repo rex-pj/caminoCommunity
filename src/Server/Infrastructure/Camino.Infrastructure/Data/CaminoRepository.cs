@@ -2,6 +2,7 @@
 using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.Tools;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,9 @@ namespace Camino.Infrastructure.Data
 
         #region Ctor
 
-        public CaminoRepository(CaminoDataConnection dataConnection)
+        public CaminoRepository(IServiceScopeFactory serviceScopeFactory)
         {
-            _dataConnection = dataConnection;
+            _dataConnection = CreateServiceScope<CaminoDataConnection>(serviceScopeFactory);
         }
         #endregion
 
@@ -369,5 +370,10 @@ namespace Camino.Infrastructure.Data
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        private TService CreateServiceScope<TService>(IServiceScopeFactory serviceScopeFactory)
+        {
+            return serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<TService>();
+        }
     }
 }
