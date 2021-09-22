@@ -11,7 +11,7 @@ export const FILTER_ARTICLE_CATEGORIES = gql`
 `;
 
 export const CREATE_ARTICLE = gql`
-  mutation ($criterias: ArticleModelInput!) {
+  mutation ($criterias: CreateArticleModelInput!) {
     createArticle(criterias: $criterias) {
       id
     }
@@ -19,7 +19,7 @@ export const CREATE_ARTICLE = gql`
 `;
 
 export const UPDATE_ARTICLE = gql`
-  mutation ($criterias: ArticleModelInput!) {
+  mutation ($criterias: UpdateArticleModelInput!) {
     updateArticle(criterias: $criterias) {
       id
     }

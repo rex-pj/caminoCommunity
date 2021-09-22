@@ -15,13 +15,13 @@ namespace Module.Api.Farm.GraphQL.Mutations
     public class FarmMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<FarmModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmModel criterias)
+        public async Task<FarmIdResultModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, CreateFarmModel criterias)
         {
             return await farmResolver.CreateFarmAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<FarmModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, FarmModel criterias)
+        public async Task<FarmIdResultModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, [Service] IFarmResolver farmResolver, UpdateFarmModel criterias)
         {
             return await farmResolver.UpdateFarmAsync(claimsPrincipal, criterias);
         }

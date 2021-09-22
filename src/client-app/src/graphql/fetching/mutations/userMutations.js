@@ -42,9 +42,9 @@ export const UPDATE_USER_IDENTIFIER = gql`
   }
 `;
 
-export const UPDATE_USER_INFO_PER_ITEM = gql`
-  mutation UpdateUserInfoItem($criterias: UpdatePerItemModelInput!) {
-    updateUserInfoItem(criterias: $criterias) {
+export const PARTIAL_USER_UPDATE = gql`
+  mutation PartialUserUpdate($criterias: PartialUpdateRequestModelInput!) {
+    partialUserUpdate(criterias: $criterias) {
       propertyName
     }
   }

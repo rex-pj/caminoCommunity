@@ -21,7 +21,7 @@ namespace Camino.Core.Contracts.Services.Users
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest request);
         Task<UserResult> FindByIdAsync(long id);
         Task<UserFullResult> FindFullByIdAsync(IdRequestFilter<long> filter);
-        Task<UpdateItemRequest> UpdateInfoItemAsync(UpdateItemRequest request);
+        Task<PartialUpdateRequest> PartialUpdateAsync(PartialUpdateRequest request);
         Task<bool> UpdateAsync(UserModifyRequest request);
         Task<BasePageList<UserFullResult>> GetAsync(UserFilter filter);
         Task<List<UserFullResult>> SearchAsync(UserFilter filter, List<long> currentUserIds = null);

@@ -13,15 +13,15 @@ namespace Module.Api.Product.GraphQL.Mutations
     public class ProductMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<ProductModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
-            ProductModel criterias)
+        public async Task<ProductIdResultModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
+            CreateProductModel criterias)
         {
             return await productResolver.CreateProductAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]
-        public async Task<ProductModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
-            ProductModel criterias)
+        public async Task<ProductIdResultModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
+            UpdateProductModel criterias)
         {
             return await productResolver.UpdateProductAsync(claimsPrincipal, criterias);
         }

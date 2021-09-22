@@ -21,7 +21,7 @@ export const FILTER_FARMS = gql`
 `;
 
 export const CREATE_FARM = gql`
-  mutation ($criterias: FarmModelInput!) {
+  mutation ($criterias: CreateFarmModelInput!) {
     createFarm(criterias: $criterias) {
       id
     }
@@ -29,7 +29,7 @@ export const CREATE_FARM = gql`
 `;
 
 export const UPDATE_FARM = gql`
-  mutation ($criterias: FarmModelInput!) {
+  mutation ($criterias: UpdateFarmModelInput!) {
     updateFarm(criterias: $criterias) {
       id
     }

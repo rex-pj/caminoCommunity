@@ -216,7 +216,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
             }
         }
 
-        public async Task<ProductModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias)
+        public async Task<ProductIdResultModel> CreateProductAsync(ClaimsPrincipal claimsPrincipal, CreateProductModel criterias)
         {
             var currentUserId = GetCurrentUserId(claimsPrincipal);
             var product = new ProductModifyRequest()
@@ -256,11 +256,14 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 })
             };
 
-            criterias.Id = await _productService.CreateAsync(product);
-            return criterias;
+            var id = await _productService.CreateAsync(product);
+            return new ProductIdResultModel
+            {
+                Id = id
+            };
         }
 
-        public async Task<ProductModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, ProductModel criterias)
+        public async Task<ProductIdResultModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, UpdateProductModel criterias)
         {
             var exist = await _productService.FindAsync(new IdRequestFilter<long>
             {
@@ -321,7 +324,10 @@ namespace Module.Api.Product.GraphQL.Resolvers
             };
 
             await _productService.UpdateAsync(product);
-            return criterias;
+            return new ProductIdResultModel
+            {
+                Id = product.Id
+            };
         }
 
         public async Task<bool> DeleteProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias)
@@ -374,17 +380,17 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = productResult.Name,
                 Price = productResult.Price,
                 CreatedByPhotoCode = productResult.CreatedByPhotoCode,
-                Categories = productResult.Categories.Select(x => new ProductCategoryRelationModel()
+                Categories = productResult.Categories.Select(x => new ProductCategoryRelationModel
                 {
                     Id = x.Id,
                     Name = x.Name
                 }),
-                Farms = productResult.Farms.Select(x => new ProductFarmModel()
+                Farms = productResult.Farms.Select(x => new ProductFarmModel
                 {
                     Name = x.Name,
                     Id = x.FarmId
                 }),
-                Pictures = productResult.Pictures.Select(y => new PictureRequestModel()
+                Pictures = productResult.Pictures.Select(y => new PictureRequestModel
                 {
                     PictureId = y.Id
                 }),

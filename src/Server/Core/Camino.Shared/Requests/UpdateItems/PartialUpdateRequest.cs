@@ -1,6 +1,6 @@
 ﻿namespace Camino.Shared.Requests.UpdateItems
 {
-    public class UpdateItemRequest
+    public class PartialUpdateRequest
     {
         public object Key { get; set; }
         public string PropertyName { get; set; }

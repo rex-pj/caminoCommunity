@@ -198,11 +198,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         #endregion
 
         #region CRUD
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ClaimsPrincipal claimsPrincipal, UpdatePerItemModel criterias)
+        public async Task<PartialUpdateResultModel> PartialUserUpdateAsync(ClaimsPrincipal claimsPrincipal, PartialUpdateRequestModel criterias)
         {
             try
             {
-                ValidateUserInfoItem(criterias);
+                ValidatePartialUser(criterias);
                 var currentUserId = GetCurrentUserId(claimsPrincipal);
                 var userId = await _userManager.DecryptUserIdAsync(criterias.Key.ToString());
                 if (userId != currentUserId)
@@ -210,15 +210,14 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var updatePerItem = new UpdateItemRequest()
+                var updatedItem = await _userService.PartialUpdateAsync(new PartialUpdateRequest
                 {
-                    Key = criterias.Key,
+                    Key = userId,
                     PropertyName = criterias.PropertyName,
                     Value = criterias.Value
-                };
-                updatePerItem.Key = userId;
-                var updatedItem = await _userService.UpdateInfoItemAsync(updatePerItem);
-                return new UpdatePerItemModel()
+                });
+
+                return new PartialUpdateResultModel
                 {
                     Key = updatedItem.Key.ToString(),
                     PropertyName = updatedItem.PropertyName,
@@ -232,7 +231,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         }
         #endregion
 
-        private void ValidateUserInfoItem(UpdatePerItemModel criterias)
+        private void ValidatePartialUser(PartialUpdateRequestModel criterias)
         {
             if (!criterias.CanEdit)
             {
@@ -255,7 +254,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var users = new List<UserInfoModel>();
             foreach (var userResult in userResults)
             {
-                var user = new UserInfoModel()
+                var user = new UserInfoModel
                 {
                     Address = userResult.Address,
                     BirthDate = userResult.BirthDate,

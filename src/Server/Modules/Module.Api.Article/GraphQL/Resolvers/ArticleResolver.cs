@@ -175,7 +175,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
+        public async Task<ArticleIdResultModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, CreateArticleModel criterias)
         {
             var currentUserId = GetCurrentUserId(claimsPrincipal);
             var article = new ArticleModifyRequest
@@ -198,11 +198,13 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
 
             var id = await _articleService.CreateAsync(article);
-            criterias.Id = id;
-            return criterias;
+            return new ArticleIdResultModel
+            {
+                Id = id
+            };
         }
 
-        public async Task<ArticleModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleModel criterias)
+        public async Task<ArticleIdResultModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, UpdateArticleModel criterias)
         {
             var exist = await _articleService.FindAsync(new IdRequestFilter<long>
             {
@@ -243,7 +245,10 @@ namespace Module.Api.Article.GraphQL.Resolvers
             }
 
             await _articleService.UpdateAsync(article);
-            return criterias;
+            return new ArticleIdResultModel
+            {
+                Id = article.Id
+            };
         }
 
         public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleIdFilterModel criterias)
@@ -286,7 +291,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
         private async Task<ArticleModel> MapArticleResultToModelAsync(ArticleResult articleResult)
         {
-            var article = new ArticleModel()
+            var article = new ArticleModel
             {
                 ArticleCategoryId = articleResult.ArticleCategoryId,
                 ArticleCategoryName = articleResult.ArticleCategoryName,

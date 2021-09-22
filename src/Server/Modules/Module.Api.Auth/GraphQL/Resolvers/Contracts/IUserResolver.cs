@@ -11,7 +11,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
     public interface IUserResolver
     {
         Task<UserInfoModel> GetFullUserInfoAsync(ClaimsPrincipal claimsPrincipal, FindUserModel criterias);
-        Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ClaimsPrincipal claimsPrincipal, UpdatePerItemModel criterias);
+        Task<PartialUpdateResultModel> PartialUserUpdateAsync(ClaimsPrincipal claimsPrincipal, PartialUpdateRequestModel criterias);
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ClaimsPrincipal claimsPrincipal, UserIdentifierUpdateModel criterias);
         Task<UserPageListModel> GetUsersAsync(UserFilterModel criterias);
         Task<IEnumerable<SelectOption>> SelectUsersAsync(UserFilterModel criterias);

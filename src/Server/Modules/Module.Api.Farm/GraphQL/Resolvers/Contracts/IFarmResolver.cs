@@ -8,8 +8,8 @@ namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
 {
     public interface IFarmResolver
     {
-        Task<FarmModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias);
-        Task<FarmModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias);
+        Task<FarmIdResultModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, CreateFarmModel criterias);
+        Task<FarmIdResultModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, UpdateFarmModel criterias);
         Task<FarmPageListModel> GetUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias);
         Task<FarmPageListModel> GetFarmsAsync(FarmFilterModel criterias);
         Task<IEnumerable<SelectOption>> SelectUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmSelectFilterModel criterias);

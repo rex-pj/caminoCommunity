@@ -10,9 +10,7 @@ import ErrorBlock from "../../components/atoms/ErrorBlock";
 export default withRouter((props) => {
   const { userId } = props;
 
-  const [updateUserInfoItem] = useMutation(
-    userMutations.UPDATE_USER_INFO_PER_ITEM
-  );
+  const [partialUserUpdate] = useMutation(userMutations.PARTIAL_USER_UPDATE);
 
   const { loading, error, data, refetch } = useQuery(
     userQueries.GET_FULL_USER_INFO,
@@ -36,8 +34,8 @@ export default withRouter((props) => {
   const { canEdit } = fullUserInfo;
 
   const onEdited = async (e) => {
-    if (updateUserInfoItem) {
-      return await updateUserInfoItem({
+    if (partialUserUpdate) {
+      return await partialUserUpdate({
         variables: {
           criterias: {
             key: e.primaryKey,

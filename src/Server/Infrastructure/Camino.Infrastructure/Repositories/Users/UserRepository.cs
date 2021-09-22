@@ -152,7 +152,7 @@ namespace Camino.Infrastructure.Repositories.Users
             return true;
         }
 
-        public async Task<UpdateItemRequest> UpdateInfoItemAsync(UpdateItemRequest request)
+        public async Task<PartialUpdateRequest> PartialUpdateAsync(PartialUpdateRequest request)
         {
             if (request.PropertyName == null)
             {

@@ -17,9 +17,9 @@ namespace Module.Api.Auth.GraphQL.Mutations
     public class UserMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<UpdatePerItemModel> UpdateUserInfoItemAsync(ClaimsPrincipal claimsPrincipal, [Service] IUserResolver userResolver, UpdatePerItemModel criterias)
+        public async Task<PartialUpdateResultModel> PartialUserUpdateAsync(ClaimsPrincipal claimsPrincipal, [Service] IUserResolver userResolver, PartialUpdateRequestModel criterias)
         {
-            return await userResolver.UpdateUserInfoItemAsync(claimsPrincipal, criterias);
+            return await userResolver.PartialUserUpdateAsync(claimsPrincipal, criterias);
         }
 
         [GraphQlAuthentication]

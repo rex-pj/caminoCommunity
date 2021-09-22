@@ -19,7 +19,7 @@ namespace Camino.Infrastructure.Strategies.Validations
 
         public bool IsValid<T>(T value)
         {
-            var model = value as UpdateItemRequest;
+            var model = value as PartialUpdateRequest;
             var propertyName = model.PropertyName;
             UserInfo userInfo;
 

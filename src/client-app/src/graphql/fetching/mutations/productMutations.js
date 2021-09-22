@@ -11,7 +11,7 @@ export const FILTER_PRODUCT_CATEGORIES = gql`
 `;
 
 export const UPDATE_PRODUCT = gql`
-  mutation ($criterias: ProductModelInput!) {
+  mutation ($criterias: UpdateProductModelInput!) {
     updateProduct(criterias: $criterias) {
       id
     }
@@ -19,7 +19,7 @@ export const UPDATE_PRODUCT = gql`
 `;
 
 export const CREATE_PRODUCT = gql`
-  mutation ($criterias: ProductModelInput!) {
+  mutation ($criterias: CreateProductModelInput!) {
     createProduct(criterias: $criterias) {
       id
     }

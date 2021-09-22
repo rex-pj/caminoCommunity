@@ -1,12 +1,13 @@
 ﻿using Camino.Framework.Models;
-using System;
+using HotChocolate;
+using HotChocolate.Types;
 using System.Collections.Generic;
 
 namespace Module.Api.Product.Models
 {
-    public class ProductModel
+    public class UpdateProductModel
     {
-        public ProductModel()
+        public UpdateProductModel()
         {
             Pictures = new List<PictureRequestModel>();
             Farms = new List<ProductFarmModel>();
@@ -14,17 +15,10 @@ namespace Module.Api.Product.Models
             ProductAttributes = new List<ProductAttributeRelationModel>();
         }
 
+        [GraphQLType(typeof(LongType))]
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        
-        public string CreatedByIdentityId { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public long CreatedById { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
-        public long UpdatedById { get; set; }
-        public string CreatedBy { get; set; }
-        public string CreatedByPhotoCode { get; set; }
         public decimal Price { get; set; }
         public IEnumerable<ProductCategoryRelationModel> Categories { get; set; }
         public IEnumerable<ProductFarmModel> Farms { get; set; }

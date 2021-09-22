@@ -67,10 +67,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             return farmSeletions;
         }
 
-        public async Task<FarmModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias)
+        public async Task<FarmIdResultModel> CreateFarmAsync(ClaimsPrincipal claimsPrincipal, CreateFarmModel criterias)
         {
             var currentUserId = GetCurrentUserId(claimsPrincipal);
-            var farm = new FarmModifyRequest()
+            var farm = new FarmModifyRequest
             {
                 CreatedById = currentUserId,
                 UpdatedById = currentUserId,
@@ -78,7 +78,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Name = criterias.Name,
                 FarmTypeId = criterias.FarmTypeId,
                 Address = criterias.Address,
-                Pictures = criterias.Pictures.Select(x => new PictureRequest()
+                Pictures = criterias.Pictures.Select(x => new PictureRequest
                 {
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
@@ -87,11 +87,13 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             };
 
             var id = await _farmService.CreateAsync(farm);
-            criterias.Id = id;
-            return criterias;
+            return new FarmIdResultModel
+            {
+                Id = id
+            };
         }
 
-        public async Task<FarmModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, FarmModel criterias)
+        public async Task<FarmIdResultModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, UpdateFarmModel criterias)
         {
             var exist = await _farmService.FindAsync(new IdRequestFilter<long>
             {
@@ -110,7 +112,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 throw new UnauthorizedAccessException();
             }
 
-            var farm = new FarmModifyRequest()
+            var farm = new FarmModifyRequest
             {
                 Id = criterias.Id,
                 CreatedById = currentUserId,
@@ -133,7 +135,10 @@ namespace Module.Api.Farm.GraphQL.Resolvers
             }
 
             await _farmService.UpdateAsync(farm);
-            return criterias;
+            return new FarmIdResultModel
+            {
+                Id = farm.Id
+            };
         }
 
         public async Task<FarmPageListModel> GetUserFarmsAsync(ClaimsPrincipal claimsPrincipal, FarmFilterModel criterias)

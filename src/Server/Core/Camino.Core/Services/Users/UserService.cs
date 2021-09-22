@@ -50,9 +50,9 @@ namespace Camino.Services.Users
             return await _userRepository.ConfirmAsync(request);
         }
 
-        public async Task<UpdateItemRequest> UpdateInfoItemAsync(UpdateItemRequest request)
+        public async Task<PartialUpdateRequest> PartialUpdateAsync(PartialUpdateRequest request)
         {
-            return await _userRepository.UpdateInfoItemAsync(request);
+            return await _userRepository.PartialUpdateAsync(request);
         }
 
         public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest request)
