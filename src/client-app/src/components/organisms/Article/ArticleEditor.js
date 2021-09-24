@@ -154,6 +154,10 @@ export default withRouter((props) => {
       articleData[formIdentifier] = formData[formIdentifier].value;
     }
 
+    if (!articleData.id) {
+      delete articleData["id"];
+    }
+
     delete articleData["articleCategoryName"];
     await props.onArticlePost(articleData).then((response) => {
       if (response && response.id) {

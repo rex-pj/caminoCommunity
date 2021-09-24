@@ -8,10 +8,10 @@ namespace Module.Api.Product.Models
     {
         public ProductModel()
         {
-            Pictures = new List<PictureRequestModel>();
+            Pictures = new List<PictureResultModel>();
             Farms = new List<ProductFarmModel>();
             Categories = new List<ProductCategoryRelationModel>();
-            ProductAttributes = new List<ProductAttributeRelationModel>();
+            ProductAttributes = new List<AttributeRelationResultModel>();
         }
 
         public long Id { get; set; }
@@ -28,7 +28,7 @@ namespace Module.Api.Product.Models
         public decimal Price { get; set; }
         public IEnumerable<ProductCategoryRelationModel> Categories { get; set; }
         public IEnumerable<ProductFarmModel> Farms { get; set; }
-        public IEnumerable<PictureRequestModel> Pictures { get; set; }
-        public IEnumerable<ProductAttributeRelationModel> ProductAttributes { get; set; }
+        public IEnumerable<PictureResultModel> Pictures { get; set; }
+        public IEnumerable<AttributeRelationResultModel> ProductAttributes { get; set; }
     }
 }

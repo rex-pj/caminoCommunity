@@ -210,6 +210,10 @@ export default withRouter((props) => {
       }
     }
 
+    if (!productData.id) {
+      delete productData["id"];
+    }
+
     await props.onProductPost(productData).then((response) => {
       if (response && response.id) {
         clearFormData();

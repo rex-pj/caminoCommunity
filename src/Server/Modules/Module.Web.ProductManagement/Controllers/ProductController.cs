@@ -119,7 +119,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Name = product.Name,
                     Price = product.Price,
                     StatusId = (ProductStatus)product.StatusId,
-                    Pictures = product.Pictures.Select(y => new PictureRequestModel()
+                    Pictures = product.Pictures.Select(y => new PictureResultModel()
                     {
                         PictureId = y.Id
                     }),
@@ -178,7 +178,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToNotFoundPage();
             }
 
-            var model = new ProductModel()
+            var model = new UpdateProductModel()
             {
                 Id = product.Id,
                 UpdateById = product.UpdatedById,
@@ -234,7 +234,7 @@ namespace Module.Web.ProductManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
-        public async Task<IActionResult> Update(ProductModel model)
+        public async Task<IActionResult> Update(UpdateProductModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -299,7 +299,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
                     FileName = x.FileName,
-                    Id = x.PictureId
+                    Id = x.PictureId.GetValueOrDefault()
                 });
             }
 

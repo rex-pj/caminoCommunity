@@ -162,7 +162,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Name = x.Name,
                 Price = x.Price,
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
-                Pictures = x.Pictures.Select(y => new PictureRequestModel()
+                Pictures = x.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id
                 }),
@@ -295,7 +295,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     Base64Data = x.Base64Data,
                     FileName = x.FileName,
                     ContentType = x.ContentType,
-                    Id = x.PictureId
+                    Id = x.PictureId.GetValueOrDefault()
                 }),
                 Categories = criterias.Categories.Select(x => new ProductCategoryRequest()
                 {
@@ -307,13 +307,13 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 }),
                 ProductAttributes = criterias.ProductAttributes?.Select(x => new ProductAttributeRelationRequest
                 {
-                    Id = x.Id,
+                    Id = x.Id.GetValueOrDefault(),
                     ControlTypeId = x.ControlTypeId,
                     DisplayOrder = x.DisplayOrder,
                     ProductAttributeId = x.AttributeId,
                     AttributeRelationValues = x.AttributeRelationValues?.Select(c => new ProductAttributeRelationValueRequest
                     {
-                        Id = c.Id,
+                        Id = c.Id.GetValueOrDefault(),
                         DisplayOrder = c.DisplayOrder,
                         Name = c.Name,
                         PriceAdjustment = c.PriceAdjustment,
@@ -390,11 +390,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     Name = x.Name,
                     Id = x.FarmId
                 }),
-                Pictures = productResult.Pictures.Select(y => new PictureRequestModel
+                Pictures = productResult.Pictures.Select(y => new PictureResultModel
                 {
                     PictureId = y.Id
                 }),
-                ProductAttributes = productResult.ProductAttributes.Select(x => new ProductAttributeRelationModel
+                ProductAttributes = productResult.ProductAttributes.Select(x => new AttributeRelationResultModel
                 {
                     AttributeId = x.AttributeId,
                     ControlTypeId = x.AttributeControlTypeId,
@@ -404,7 +404,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     TextPrompt = x.TextPrompt,
                     Name = x.AttributeName,
                     ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
-                    AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueModel
+                    AttributeRelationValues = x.AttributeRelationValues.Select(c => new AttributeRelationValueResultModel
                     {
                         Id = c.Id,
                         DisplayOrder = c.DisplayOrder,

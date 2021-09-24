@@ -1,4 +1,4 @@
-﻿@model FarmModel
+﻿@model UpdateFarmModel
 
 <input asp-for="Id" type="hidden" />
 <div class="row mb-3">
@@ -21,7 +21,7 @@
     <div class="col-12 col-sm-9 col-md-8 col-lg-6">
         <label class="form-label">Status:</label>
         <div>
-            <partial name="Partial/_StatusBadge" />
+            <partial name="Partial/_StatusBadge" model="new FarmModel { StatusId = Model.StatusId }" />
         </div>
     </div>
 </div>

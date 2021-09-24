@@ -8,7 +8,7 @@ namespace Module.Api.Farm.Models
     {
         public FarmModel()
         {
-            Pictures = new List<PictureRequestModel>();
+            Pictures = new List<PictureResultModel>();
         }
 
         public long Id { get; set; }
@@ -24,6 +24,6 @@ namespace Module.Api.Farm.Models
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
         public string Address { get; set; }
-        public IEnumerable<PictureRequestModel> Pictures { get; set; }
+        public IEnumerable<PictureResultModel> Pictures { get; set; }
     }
 }

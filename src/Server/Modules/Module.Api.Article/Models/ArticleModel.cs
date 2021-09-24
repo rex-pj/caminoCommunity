@@ -9,7 +9,7 @@ namespace Module.Api.Article.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }
-        public PictureRequestModel Picture { get; set; }
+        public PictureResultModel Picture { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }

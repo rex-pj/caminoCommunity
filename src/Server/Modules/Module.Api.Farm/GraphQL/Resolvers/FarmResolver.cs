@@ -130,7 +130,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
                     FileName = x.FileName,
-                    Id = x.PictureId
+                    Id = x.PictureId.GetValueOrDefault()
                 });
             }
 
@@ -312,7 +312,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Name = farmResult.Name,
                 Address = farmResult.Address,
                 CreatedByPhotoCode = farmResult.CreatedByPhotoCode,
-                Pictures = farmResult.Pictures.Select(y => new PictureRequestModel()
+                Pictures = farmResult.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id
                 }),
@@ -337,7 +337,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Name = x.Name,
                 Address = x.Address,
                 CreatedByPhotoCode = x.CreatedByPhotoCode,
-                Pictures = x.Pictures.Select(y => new PictureRequestModel()
+                Pictures = x.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id
                 }),

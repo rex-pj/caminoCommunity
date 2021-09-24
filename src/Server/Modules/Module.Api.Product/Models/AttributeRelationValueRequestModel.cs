@@ -1,12 +1,8 @@
-﻿using HotChocolate;
-using HotChocolate.Types;
-
-namespace Module.Api.Product.Models
+﻿namespace Module.Api.Product.Models
 {
-    public class ProductAttributeRelationValueModel
+    public class AttributeRelationValueRequestModel
     {
-        [GraphQLType(typeof(LongType))]
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public string Name { get; set; }
         public decimal PriceAdjustment { get; set; }
         public decimal PricePercentageAdjustment { get; set; }

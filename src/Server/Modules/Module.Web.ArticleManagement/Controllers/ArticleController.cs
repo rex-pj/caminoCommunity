@@ -154,7 +154,7 @@ namespace Module.Web.ArticleManagement.Controllers
             {
                 return RedirectToNotFoundPage();
             }
-            var model = new ArticleModel
+            var model = new UpdateArticleModel
             {
                 Id = article.Id,
                 CreatedDate = article.CreatedDate,
@@ -175,7 +175,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticle)]
-        public async Task<IActionResult> Update(ArticleModel model)
+        public async Task<IActionResult> Update(UpdateArticleModel model)
         {
             if (!ModelState.IsValid)
             {

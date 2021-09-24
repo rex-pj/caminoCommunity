@@ -12,7 +12,7 @@ namespace Module.Api.Product.Models
             Pictures = new List<PictureRequestModel>();
             Farms = new List<ProductFarmModel>();
             Categories = new List<ProductCategoryRelationModel>();
-            ProductAttributes = new List<ProductAttributeRelationModel>();
+            ProductAttributes = new List<AttributeRelationRequestModel>();
         }
 
         [GraphQLType(typeof(LongType))]
@@ -23,6 +23,6 @@ namespace Module.Api.Product.Models
         public IEnumerable<ProductCategoryRelationModel> Categories { get; set; }
         public IEnumerable<ProductFarmModel> Farms { get; set; }
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
-        public IEnumerable<ProductAttributeRelationModel> ProductAttributes { get; set; }
+        public IEnumerable<AttributeRelationRequestModel> ProductAttributes { get; set; }
     }
 }

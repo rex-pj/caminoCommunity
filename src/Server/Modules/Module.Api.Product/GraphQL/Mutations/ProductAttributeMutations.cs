@@ -16,14 +16,14 @@ namespace Module.Api.Product.GraphQL.Mutations
     {
         [GraphQlAuthentication]
         public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync([Service] IProductAttributeResolver productAttributeResolver,
-            ProductAttributeSelectFilterModel criterias)
+            AttributeSelectFilterModel criterias)
         {
             return await productAttributeResolver.GetProductAttributesAsync(criterias);
         }
 
         [GraphQlAuthentication]
         public IEnumerable<SelectOption> GetProductAttributeControlTypes([Service] IProductAttributeResolver productAttributeResolver,
-            ProductAttributeControlTypeSelectFilterModel criterias)
+            AttributeControlTypeSelectFilterModel criterias)
         {
             return productAttributeResolver.GetProductAttributeControlTypes(criterias);
         }

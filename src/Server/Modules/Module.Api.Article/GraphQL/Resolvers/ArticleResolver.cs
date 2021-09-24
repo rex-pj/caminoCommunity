@@ -240,7 +240,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     Base64Data = criterias.Picture.Base64Data,
                     ContentType = criterias.Picture.ContentType,
                     FileName = criterias.Picture.FileName,
-                    Id = criterias.Picture.PictureId
+                    Id = criterias.Picture.PictureId.GetValueOrDefault()
                 };
             }
 
@@ -307,7 +307,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             if (articleResult.Picture != null)
             {
-                article.Picture = new PictureRequestModel()
+                article.Picture = new PictureResultModel()
                 {
                     PictureId = articleResult.Picture.Id
                 };
@@ -331,13 +331,13 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 Description = x.Description,
                 Name = x.Name,
                 Picture = x.Picture != null
-                    ? new PictureRequestModel
+                    ? new PictureResultModel
                     {
                         PictureId = x.Picture.Id,
                         ContentType = x.Picture.ContentType,
                         FileName = x.Picture.FileName
                     }
-                    : new PictureRequestModel(),
+                    : new PictureResultModel(),
                 CreatedByPhotoCode = x.CreatedByPhotoCode
             }).ToList();
 

@@ -1,21 +1,27 @@
 ﻿using Camino.Framework.Models;
 using Camino.Shared.Enums;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.FarmManagement.Models
 {
-    public class FarmModel : BaseModel
+    public class UpdateFarmModel
     {
-        public FarmModel()
+        public UpdateFarmModel()
         {
             Pictures = new List<PictureRequestModel>();
         }
 
         public long Id { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
+        [MaxLength(255)]
         public string Name { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
         public string Description { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdateById { get; set; }
@@ -26,7 +32,7 @@ namespace Module.Web.FarmManagement.Models
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
-        public long PictureId { get; set; }
+        public IFormFile File { get; set; }
         public FarmStatus StatusId { get; set; }
     }
 }

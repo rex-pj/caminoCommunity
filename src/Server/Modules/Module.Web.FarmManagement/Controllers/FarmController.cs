@@ -144,7 +144,7 @@ namespace Module.Web.FarmManagement.Controllers
             {
                 return RedirectToNotFoundPage();
             }
-            var model = new FarmModel()
+            var model = new UpdateFarmModel()
             {
                 Description = farm.Description,
                 CreatedDate = farm.CreatedDate,
@@ -169,7 +169,7 @@ namespace Module.Web.FarmManagement.Controllers
 
         [HttpPost]
         [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateFarm)]
-        public async Task<IActionResult> Update(FarmModel model)
+        public async Task<IActionResult> Update(UpdateFarmModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -209,7 +209,7 @@ namespace Module.Web.FarmManagement.Controllers
                     Base64Data = x.Base64Data,
                     ContentType = x.ContentType,
                     FileName = x.FileName,
-                    Id = x.PictureId
+                    Id = x.PictureId.GetValueOrDefault()
                 });
             }
 

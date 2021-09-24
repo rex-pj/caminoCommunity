@@ -23,11 +23,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
             _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync(ProductAttributeSelectFilterModel criterias)
+        public async Task<IEnumerable<SelectOption>> GetProductAttributesAsync(AttributeSelectFilterModel criterias)
         {
             if (criterias == null)
             {
-                criterias = new ProductAttributeSelectFilterModel();
+                criterias = new AttributeSelectFilterModel();
             }
 
             var attributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
@@ -52,11 +52,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
             return attributeSeletions;
         }
 
-        public IList<SelectOption> GetProductAttributeControlTypes(ProductAttributeControlTypeSelectFilterModel filter)
+        public IList<SelectOption> GetProductAttributeControlTypes(AttributeControlTypeSelectFilterModel filter)
         {
             var serviceFilter = new ProductAttributeControlTypeFilter
             {
-                ControlTypeId = filter.CurrentId,
+                ControlTypeId = filter.CurrentId.GetValueOrDefault(),
                 Keyword = filter.Query
             };
             return _productAttributeService.GetAttributeControlTypes(serviceFilter);

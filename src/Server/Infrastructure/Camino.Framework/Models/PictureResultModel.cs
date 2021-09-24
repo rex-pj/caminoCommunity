@@ -1,9 +1,8 @@
 ﻿namespace Camino.Framework.Models
 {
-    public class PictureRequestModel
+    public class PictureResultModel
     {
-        public long? PictureId { get; set; }
-        public string Base64Data { get; set; }
+        public long PictureId { get; set; }
         public string FileName { get; set; }
         public string ContentType { get; set; }
     }

@@ -1,17 +1,14 @@
-﻿using HotChocolate;
-using HotChocolate.Types;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Module.Api.Product.Models
 {
-    public class ProductAttributeRelationModel
+    public class AttributeRelationResultModel
     {
-        public ProductAttributeRelationModel()
+        public AttributeRelationResultModel()
         {
-            AttributeRelationValues = new List<ProductAttributeRelationValueModel>();
+            AttributeRelationValues = new List<AttributeRelationValueResultModel>();
         }
 
-        [GraphQLType(typeof(LongType))]
         public long Id { get; set; }
         public int AttributeId { get; set; }
         public string Name { get; set; }
@@ -21,6 +18,6 @@ namespace Module.Api.Product.Models
         public string TextPrompt { get; set; }
         public bool IsRequired { get; set; }
 
-        public IEnumerable<ProductAttributeRelationValueModel> AttributeRelationValues { get; set; }
+        public IEnumerable<AttributeRelationValueResultModel> AttributeRelationValues { get; set; }
     }
 }

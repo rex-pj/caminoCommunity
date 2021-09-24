@@ -156,6 +156,11 @@ export default withRouter((props) => {
       farmData[formIdentifier] = formData[formIdentifier].value;
     }
 
+    if (!farmData.id) {
+      delete farmData["id"];
+    }
+
+    delete farmData["farmTypeName"];
     await props.onFarmPost(farmData).then((response) => {
       if (response && response.id) {
         clearFormData();
