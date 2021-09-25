@@ -31,7 +31,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             _pagerOptions = pagerOptions.Value;
         }
 
-        public async Task<SearchInGroupResultModel> LiveSearchAsync(FeedFilterModel criterias)
+        public async Task<AdvancedSearchResultModel> LiveSearchAsync(FeedFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -44,7 +44,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 PageSize = _pagerOptions.LiveSearchPageSize,
                 Keyword = criterias.Search
             });
-            return new SearchInGroupResultModel
+            return new AdvancedSearchResultModel
             {
                 Articles = await _feedModelService.MapFeedsResultToModelAsync(groupOfSearch.Articles),
                 TotalArticle = groupOfSearch.TotalArticle,
@@ -61,7 +61,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             };
         }
 
-        public async Task<SearchInGroupResultModel> AdvancedSearchAsync(FeedFilterModel criterias)
+        public async Task<AdvancedSearchResultModel> AdvancedSearchAsync(FeedFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -87,7 +87,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
             }
 
             var groupOfSearch = await _feedService.SearchInGroupAsync(filter);
-            var searchResult = new SearchInGroupResultModel
+            var searchResult = new AdvancedSearchResultModel
             {
                 Articles = await _feedModelService.MapFeedsResultToModelAsync(groupOfSearch.Articles),
                 TotalArticle = groupOfSearch.TotalArticle,
@@ -101,6 +101,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 Users = await _feedModelService.MapFeedsResultToModelAsync(groupOfSearch.Users),
                 TotalUser = groupOfSearch.TotalUser,
                 TotalUserPage = groupOfSearch.TotalUserPage,
+                Page = filter.Page
             };
 
             if (!string.IsNullOrEmpty(criterias.UserIdentityId))

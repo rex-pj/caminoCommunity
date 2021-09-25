@@ -10,7 +10,7 @@ namespace Module.Api.Feed.GraphQL.Mutations
     [ExtendObjectType("Query")]
     public class SearchQueries : BaseQueries
     {
-        public async Task<SearchInGroupResultModel> AdvancedSearchAsync([Service] ISearchResolver farmResolver, FeedFilterModel criterias)
+        public async Task<AdvancedSearchResultModel> AdvancedSearchAsync([Service] ISearchResolver farmResolver, FeedFilterModel criterias)
         {
             return await farmResolver.AdvancedSearchAsync(criterias);
         }

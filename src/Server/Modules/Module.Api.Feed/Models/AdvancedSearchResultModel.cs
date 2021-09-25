@@ -2,9 +2,9 @@
 
 namespace Module.Api.Feed.Models
 {
-    public class SearchInGroupResultModel
+    public class AdvancedSearchResultModel
     {
-        public SearchInGroupResultModel()
+        public AdvancedSearchResultModel()
         {
             Articles = new List<FeedModel>();
             Products = new List<FeedModel>();
@@ -27,5 +27,6 @@ namespace Module.Api.Feed.Models
         public int TotalUserPage { get; set; }
         public IList<FeedModel> Communities { get; set; }
         public string UserFilterByName { get; set; }
+        public int Page { get; set; }
     }
 }

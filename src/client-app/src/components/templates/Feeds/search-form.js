@@ -85,7 +85,7 @@ export default withRouter((props) => {
   const loadUserSelections = (value) => {
     return selectUsers({
       variables: {
-        criterias: { search: value },
+        criterias: { search: value, page: 1 },
       },
     })
       .then((response) => {

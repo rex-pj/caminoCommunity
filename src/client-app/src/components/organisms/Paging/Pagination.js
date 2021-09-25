@@ -24,7 +24,7 @@ const PageItem = styled.li`
 
 export default (props) => {
   const { totalPage, baseUrl, pageQuery } = props;
-  if (totalPage === 0) {
+  if (totalPage <= 1) {
     return <Fragment></Fragment>;
   }
   let { currentPage } = props;

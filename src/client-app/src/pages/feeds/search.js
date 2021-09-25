@@ -40,13 +40,17 @@ export default withRouter((props) => {
     4: "Nông hội",
     5: "Thành viên",
   };
-  const { feedFilterType, userIdentityId, hoursCreatedFrom, hoursCreatedTo } =
-    getParameters(location.search);
+  const {
+    feedFilterType,
+    userIdentityId,
+    page,
+    hoursCreatedFrom,
+    hoursCreatedTo,
+  } = getParameters(location.search);
   const { loading, data, error } = useQuery(feedqueries.ADVANCED_SEARCH, {
     variables: {
       criterias: {
-        page: 1,
-        pageSize: 4,
+        page: page ? parseInt(page) : 1,
         search: keyword,
         userIdentityId: userIdentityId,
         hoursCreatedFrom: hoursCreatedFrom ? parseInt(hoursCreatedFrom) : null,
@@ -105,8 +109,9 @@ export default withRouter((props) => {
         </div>
         <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
           <SearchFeed
+            keyword={keyword}
             advancedSearchResult={advancedSearch}
-            baseUrl={`${baseUrl}${keyword}`}
+            baseUrl={baseUrl}
           ></SearchFeed>
         </div>
       </div>

@@ -6,9 +6,10 @@ import SearchBlock from "./search-blocks";
 import { FeedType } from "../../../utils/Enums";
 import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../../utils/Constants";
+import { getParameters, generateQueryParameters } from "../../../utils/Helper";
 
 export default withRouter((props) => {
-  const { advancedSearchResult, baseUrl, location } = props;
+  const { advancedSearchResult, baseUrl, location, keyword } = props;
   const mapSearchResults = (collections) => {
     return collections.map((item) => {
       let feed = { ...item };
@@ -43,13 +44,18 @@ export default withRouter((props) => {
   };
 
   const buildPageQuery = (filterType) => {
-    const pageQuery = location.search;
-    if (pageQuery.indexOf("feedFilterType") >= 0) {
-      return pageQuery;
-    }
-    return pageQuery
-      ? `${pageQuery}&feedFilterType=${filterType}`
-      : `?feedFilterType=${filterType}`;
+    const { userIdentityId, hoursCreatedFrom, hoursCreatedTo } = getParameters(
+      location.search
+    );
+
+    const query = generateQueryParameters({
+      userIdentityId,
+      hoursCreatedFrom,
+      hoursCreatedTo,
+      feedFilterType: filterType,
+    });
+
+    return keyword ? `${keyword}?${query}` : `?${query}`;
   };
 
   return (
@@ -63,8 +69,8 @@ export default withRouter((props) => {
           <SearchBlock
             feeds={mapSearchResults(advancedSearchResult.farms)}
             totalPage={advancedSearchResult.totalFarmPage}
-            baseUrl={baseUrl}
-            currentPage={1}
+            baseUrl={`${baseUrl}`}
+            currentPage={advancedSearchResult.page}
             pageQuery={buildPageQuery(FeedType.Farm)}
           />
         </Fragment>
@@ -79,8 +85,8 @@ export default withRouter((props) => {
           <SearchBlock
             feeds={mapSearchResults(advancedSearchResult.products)}
             totalPage={advancedSearchResult.totalProductPage}
-            baseUrl={baseUrl}
-            currentPage={1}
+            baseUrl={`${baseUrl}`}
+            currentPage={advancedSearchResult.page}
             pageQuery={buildPageQuery(FeedType.Product)}
           />
         </Fragment>
@@ -96,8 +102,8 @@ export default withRouter((props) => {
           <SearchBlock
             feeds={mapSearchResults(advancedSearchResult.articles)}
             totalPage={advancedSearchResult.totalArticlePage}
-            baseUrl={baseUrl}
-            currentPage={1}
+            baseUrl={`${baseUrl}`}
+            currentPage={advancedSearchResult.page}
             pageQuery={buildPageQuery(FeedType.Article)}
           />
         </Fragment>
@@ -111,8 +117,8 @@ export default withRouter((props) => {
           <SearchBlock
             feeds={mapSearchResults(advancedSearchResult.users)}
             totalPage={advancedSearchResult.totalUserPage}
-            baseUrl={baseUrl}
-            currentPage={1}
+            baseUrl={`${baseUrl}`}
+            currentPage={advancedSearchResult.page}
             pageQuery={buildPageQuery(FeedType.User)}
           />
         </Fragment>

@@ -118,6 +118,7 @@ export const ADVANCED_SEARCH = gql`
       totalUser
       totalUserPage
       userFilterByName
+      page
     }
   }
 `;

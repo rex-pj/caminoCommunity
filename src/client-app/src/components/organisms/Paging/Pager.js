@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Bullet from "./Bullet";
+import PagerBullet from "./PagerBullet";
 import { HorizontalList } from "../../atoms/List";
 
 const Root = styled.div`
@@ -24,7 +24,7 @@ const PageItem = styled.li`
 
 export default (props) => {
   const { totalPage, baseUrl, pageQuery, text, bulletSize } = props;
-  if (totalPage === 0) {
+  if (totalPage <= 1) {
     return <Fragment></Fragment>;
   }
   let { currentPage } = props;
@@ -36,16 +36,17 @@ export default (props) => {
     <Root className="pager">
       <HorizontalList className="pager">
         <PageItem>
-          {totalPage > 1 ? (
-            <Bullet
+          {totalPage > 1 && totalPage > currentPage ? (
+            <PagerBullet
               size={bulletSize}
               baseUrl={baseUrl}
               currentPage={currentPage}
               pageQuery={pageQuery}
+              totalPage={totalPage}
             >
               {text ? <span className="me-1">{text}</span> : null}
               <FontAwesomeIcon icon="angle-down" />
-            </Bullet>
+            </PagerBullet>
           ) : null}
         </PageItem>
       </HorizontalList>
