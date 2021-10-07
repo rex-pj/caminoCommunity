@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PagerBullet from "./PagerBullet";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 
 const Root = styled.div`
   text-align: center;

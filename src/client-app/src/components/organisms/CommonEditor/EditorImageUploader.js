@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import ImageUpload from "../UploadControl/ImageUpload";
 import styled from "styled-components";
-import { PanelBody } from "../../atoms/Panels";
+import { PanelBody } from "../../molecules/Panels";
 import EditorImageScalePreview from "./EditorImageScalePreview";
 
 const Body = styled(PanelBody)`

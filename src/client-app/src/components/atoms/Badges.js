@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const BadgeOutlinePrimary = styled.label`
+export const BadgeOutlinePrimary = styled.label`
   font-size: ${(p) => p.theme.fontSize.normal};
   color: ${(p) => p.theme.color.lightBg};
   border-color: ${(p) => p.theme.color.lightBg};
@@ -14,5 +14,3 @@ const BadgeOutlinePrimary = styled.label`
       : "10px 15px"};
   border-radius: ${(p) => p.theme.borderRadius.normal};
 `;
-
-export { BadgeOutlinePrimary };

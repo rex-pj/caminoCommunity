@@ -3,8 +3,10 @@ import { useQuery, useMutation } from "@apollo/client";
 import ProfileUpdateFrom from "../../components/organisms/Profile/ProfileUpdateForm";
 import { userQueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { SessionContext } from "../../store/context/session-context";
 
@@ -82,10 +84,10 @@ export default (props) => {
   };
 
   if (loading) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   }
   if (error) {
-    return <ErrorBlock>Error</ErrorBlock>;
+    return <ErrorBar>Error</ErrorBar>;
   }
 
   const { userIdentityInfo } = data;

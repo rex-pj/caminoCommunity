@@ -1,6 +1,10 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
-import { PanelDefault, PanelFooter, PanelHeading } from "../../atoms/Panels";
+import {
+  PanelDefault,
+  PanelFooter,
+  PanelHeading,
+} from "../../molecules/Panels";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStore } from "../../../store/hook-store";

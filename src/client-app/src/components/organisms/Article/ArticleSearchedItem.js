@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";

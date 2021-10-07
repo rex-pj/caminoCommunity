@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import Loading from "../../components/atoms/Loading";
 import { withRouter } from "react-router-dom";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import authClient from "../../graphql/client/authClient";
 import {
@@ -72,9 +74,9 @@ export default withRouter(function (props) {
   }, [refetch, called, loading]);
 
   if (loading || !data) {
-    return <Loading>Loading...</Loading>;
+    return <LoadingBar>Loading...</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const { article: articleResponse } = data;

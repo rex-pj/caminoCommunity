@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
-import { PanelBody } from "../../atoms/Panels";
+import { PanelBody } from "../../molecules/Panels";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { LabelNormal } from "../../atoms/Labels";
 import EditorImageScalePreview from "./EditorImageScalePreview";

@@ -4,8 +4,10 @@ import { useQuery, useMutation } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
 import About from "../../components/organisms/Profile/About";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 
 export default withRouter((props) => {
   const { userId } = props;
@@ -24,10 +26,10 @@ export default withRouter((props) => {
   );
 
   if (loading) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   }
   if (error) {
-    return <ErrorBlock>Error</ErrorBlock>;
+    return <ErrorBar>Error</ErrorBar>;
   }
 
   const { fullUserInfo, countrySelections, genderSelections } = data;

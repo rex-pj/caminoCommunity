@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Selection = styled.select`
+export const Selection = styled.select`
   height: ${(p) => p.theme.size.normal};
   border: 1px solid ${(p) => p.theme.color.neutralBg};
   padding: 6px 5px;
@@ -11,8 +11,6 @@ const Selection = styled.select`
   }
 `;
 
-const SelectionSecondary = styled(Selection)`
+export const SelectionSecondary = styled(Selection)`
   border: 1px solid ${(p) => p.theme.color.primaryBg};
 `;
-
-export { Selection, SelectionSecondary };

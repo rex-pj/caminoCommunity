@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import MasterLayout from "../../templates/Layout/MasterLayout";
 import { Header } from "../../organisms/Containers";
-import Loading from "../../atoms/Loading";
+import { LoadingBar } from "../../molecules/NotificationBars";
 import styled from "styled-components";
 
-const LoadingBlock = styled(Loading)`
+const LoadingBlock = styled(LoadingBar)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   margin-top: ${(p) => p.theme.size.distance};
 `;

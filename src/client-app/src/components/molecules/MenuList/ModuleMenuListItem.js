@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ListItem } from "../../atoms/List";
+import { ListItem } from "../../molecules/List";
 
 export default styled(ListItem)`
   margin-bottom: 3px;

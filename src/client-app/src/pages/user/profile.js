@@ -4,8 +4,10 @@ import Profile from "../../components/organisms/Profile/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
 import { useQuery, useMutation } from "@apollo/client";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
-import Loading from "../../components/atoms/Loading";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { parseUserInfo } from "../../services/userService";
 import UserProfileRoutes from "../../routes/userProfileRoutes";
@@ -108,15 +110,15 @@ export default withRouter((props) => {
   }, [state, refetch]);
 
   if (loading) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   }
 
   if (error) {
-    return <ErrorBlock>Error</ErrorBlock>;
+    return <ErrorBar>Error</ErrorBar>;
   }
 
   if (!data) {
-    return <ErrorBlock>Not Found</ErrorBlock>;
+    return <ErrorBar>Not Found</ErrorBar>;
   }
 
   const onToggleEditCoverMode = (e) => {

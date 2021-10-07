@@ -13,8 +13,10 @@ import { productMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
@@ -145,9 +147,9 @@ export default withRouter(function (props) {
   }, [state, refetch]);
 
   if (loading || !data) {
-    return <Loading>Loading...</Loading>;
+    return <LoadingBar>Loading...</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const { product: productData } = data;
@@ -186,9 +188,9 @@ export default withRouter(function (props) {
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
-      return <Loading className="mt-3">Loading...</Loading>;
+      return <LoadingBar className="mt-3">Loading...</LoadingBar>;
     } else if (relevantError) {
-      return <ErrorBlock>Error!</ErrorBlock>;
+      return <ErrorBar>Error!</ErrorBar>;
     }
     const { relevantProducts } = relevantData;
     const relevants = relevantProducts.map((item) => {

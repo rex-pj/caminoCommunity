@@ -7,14 +7,14 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ListItemCollapseCover from "../../molecules/Thumbnails/ListItemCollapseCover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { HorizontalReactBar } from "../../molecules/Reaction";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
@@ -148,83 +148,85 @@ export default withRouter((props) => {
   };
 
   return (
-    <Panel>
-      <PanelHeader>
-        <ContentTopbar>
-          <div className="row g-0">
-            <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <AuthorProfile profile={loadCreatedInfo()} />
-            </div>
+    <div className="px-1">
+      <Panel>
+        <PanelHeader>
+          <ContentTopbar>
+            <div className="row g-0">
+              <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                <AuthorProfile profile={loadCreatedInfo()} />
+              </div>
 
-            <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              {isLogin ? (
-                <PostActions ref={currentRef}>
-                  <ActionButton onClick={onActionDropdownShow}>
-                    <FontAwesomeIcon icon="angle-down" />
-                  </ActionButton>
-                </PostActions>
-              ) : null}
-              {isActionDropdownShown && isAuthor ? (
-                <ContentItemDropdown>
-                  <ModuleMenuListItem>
-                    <span onClick={onEditMode}>
-                      <FontAwesomeIcon
-                        icon="pencil-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Edit
-                    </span>
-                  </ModuleMenuListItem>
-                  <ModuleMenuListItem>
-                    <span onClick={onOpenDeleteConfirmation}>
-                      <FontAwesomeIcon
-                        icon="trash-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Delete
-                    </span>
-                  </ModuleMenuListItem>
-                </ContentItemDropdown>
-              ) : null}
+              <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
+                {isLogin ? (
+                  <PostActions ref={currentRef}>
+                    <ActionButton onClick={onActionDropdownShow}>
+                      <FontAwesomeIcon icon="angle-down" />
+                    </ActionButton>
+                  </PostActions>
+                ) : null}
+                {isActionDropdownShown && isAuthor ? (
+                  <ContentItemDropdown>
+                    <ModuleMenuListItem>
+                      <span onClick={onEditMode}>
+                        <FontAwesomeIcon
+                          icon="pencil-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Edit
+                      </span>
+                    </ModuleMenuListItem>
+                    <ModuleMenuListItem>
+                      <span onClick={onOpenDeleteConfirmation}>
+                        <FontAwesomeIcon
+                          icon="trash-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Delete
+                      </span>
+                    </ModuleMenuListItem>
+                  </ContentItemDropdown>
+                ) : null}
+              </div>
             </div>
+          </ContentTopbar>
+          <PostTitle>
+            <AnchorLink
+              to={{
+                pathname: article.url,
+                state: { from: location.pathname },
+              }}
+            >
+              {article.name}
+            </AnchorLink>
+          </PostTitle>
+        </PanelHeader>
+        <ListItemCollapseCover imageUrl={article.pictureUrl} />
+        <PanelBody>
+          <div className="panel-content">
+            <ContentBody>
+              <p dangerouslySetInnerHTML={{ __html: article.description }}></p>{" "}
+            </ContentBody>
           </div>
-        </ContentTopbar>
-        <PostTitle>
-          <AnchorLink
-            to={{
-              pathname: article.url,
-              state: { from: location.pathname },
-            }}
-          >
-            {article.name}
-          </AnchorLink>
-        </PostTitle>
-      </PanelHeader>
-      <ListItemCollapseCover imageUrl={article.pictureUrl} />
-      <PanelBody>
-        <div className="panel-content">
-          <ContentBody>
-            <p dangerouslySetInnerHTML={{ __html: article.description }}></p>{" "}
-          </ContentBody>
-        </div>
-      </PanelBody>
-      <InteractiveToolbar className="interactive-toolbar">
-        <HorizontalList>
-          <InteractiveItem>
-            <HorizontalReactBar reactionNumber={article.reactionNumber} />
-          </InteractiveItem>
-          <InteractiveItem>
-            <FontButtonItem
-              icon="comments"
-              title="Discussions"
-              dynamicText={article.commentNumber}
-            />
-          </InteractiveItem>
-          <InteractiveItem>
-            <FontButtonItem icon="bookmark" title="Save this article" />
-          </InteractiveItem>
-        </HorizontalList>
-      </InteractiveToolbar>
-    </Panel>
+        </PanelBody>
+        <InteractiveToolbar className="interactive-toolbar">
+          <HorizontalList>
+            <InteractiveItem>
+              <HorizontalReactBar reactionNumber={article.reactionNumber} />
+            </InteractiveItem>
+            <InteractiveItem>
+              <FontButtonItem
+                icon="comments"
+                title="Discussions"
+                dynamicText={article.commentNumber}
+              />
+            </InteractiveItem>
+            <InteractiveItem>
+              <FontButtonItem icon="bookmark" title="Save this article" />
+            </InteractiveItem>
+          </HorizontalList>
+        </InteractiveToolbar>
+      </Panel>
+    </div>
   );
 });

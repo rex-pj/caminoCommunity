@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
 const ColorBox = styled.div`

@@ -1,10 +1,10 @@
 import React from "react";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
-import Loading from "../../atoms/Loading";
+import { LoadingBar } from "../../molecules/NotificationBars";
 
 const IconBlock = styled.span`
   display: inline-block;
@@ -14,7 +14,7 @@ const IconBlock = styled.span`
 export default function (props) {
   const { data, loading } = props;
   if (loading) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   }
 
   if (!data) {

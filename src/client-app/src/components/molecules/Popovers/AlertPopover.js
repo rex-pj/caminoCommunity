@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { PanelDefault, PanelBody, PanelHeading } from "../../atoms/Panels";
+import { PanelDefault, PanelBody, PanelHeading } from "../../molecules/Panels";
 import {
   ButtonOutlineLight,
   ButtonOutlineDanger,

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Image } from "../../atoms/Images";
 import { AnchorLink } from "../../atoms/Links";
-import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoAvatar from "../../molecules/NoImages/no-avatar";
 
 const CreatorAvatar = styled(AnchorLink)`
   margin-right: ${(p) => p.theme.size.distance};

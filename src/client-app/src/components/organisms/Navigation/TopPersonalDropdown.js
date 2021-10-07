@@ -5,7 +5,7 @@ import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ImageRound } from "../../atoms/Images";
 import ButtonGroup from "../../atoms/ButtonGroup";
 import DropdownButton from "../../molecules/DropdownButton";
-import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoAvatar from "../../molecules/NoImages/no-avatar";
 
 const Root = styled.div`
   float: right;

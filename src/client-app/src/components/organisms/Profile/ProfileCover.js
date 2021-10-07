@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AvatarEditor from "react-avatar-editor";
 import Slider from "rc-slider";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoImage from "../../molecules/NoImages/no-image";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";

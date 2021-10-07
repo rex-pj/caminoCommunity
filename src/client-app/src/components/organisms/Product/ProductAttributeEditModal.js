@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useRef } from "react";
-import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import AsyncSelect from "react-select/async";
 import { PrimaryTextbox } from "../../atoms/Textboxes";

@@ -8,10 +8,10 @@ import React, {
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { PrimaryTitle } from "../../atoms/Titles";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { HorizontalReactBar } from "../../molecules/Reaction";
-import { PanelBody, PanelDefault } from "../../atoms/Panels";
+import { PanelBody, PanelDefault } from "../../molecules/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";

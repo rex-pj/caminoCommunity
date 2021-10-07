@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
 import { SelectionSecondary } from "../../../components/atoms/Selections";
-import { PanelBody, PanelFooter } from "../../../components/atoms/Panels";
+import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonLight } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";

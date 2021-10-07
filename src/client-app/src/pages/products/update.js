@@ -15,8 +15,10 @@ import {
 import { withRouter } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
@@ -141,9 +143,9 @@ export default withRouter(function (props) {
   }, [refetch, called, loading]);
 
   if (loading || !data) {
-    return <Loading>Loading...</Loading>;
+    return <LoadingBar>Loading...</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const { product } = data;

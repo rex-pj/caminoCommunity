@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import { ThumbnailRound } from "../../molecules/Thumbnails";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
 import Overlay from "../../atoms/Overlay";

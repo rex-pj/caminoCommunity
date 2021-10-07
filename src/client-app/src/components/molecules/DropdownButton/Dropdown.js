@@ -1,7 +1,7 @@
 import React from "react";
-import VerticalList from "../../atoms/List/VerticalList";
+import VerticalList from "../../molecules/List/VerticalList";
 
-export default props => {
+export default (props) => {
   return (
     <VerticalList className={props.className}>{props.children}</VerticalList>
   );

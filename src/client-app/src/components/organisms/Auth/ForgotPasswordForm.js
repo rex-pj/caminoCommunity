@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { LabelNormal } from "../../atoms/Labels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import ForgotPasswordNavigation from "../Navigation/ForgotPasswordNavigation";

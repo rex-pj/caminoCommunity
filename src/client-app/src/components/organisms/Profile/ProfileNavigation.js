@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import DropdownButton from "../../molecules/DropdownButton";
 import ProfileNavLink from "../../molecules/Links/ProfileNavLink";
 import { SessionContext } from "../../../store/context/session-context";

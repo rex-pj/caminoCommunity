@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { HorizontalList, ListItem } from "../../atoms/List";
+import { HorizontalList, ListItem } from "../../molecules/List";
 
 const Item = styled(ListItem)`
   width: ${(p) => `${p.percent}%`};

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VerticalList } from "../../atoms/List";
-import { PanelBody } from "../../atoms/Panels";
+import { VerticalList } from "../../molecules/List";
+import { PanelBody } from "../../molecules/Panels";
 import { LabelDark } from "../../atoms/Labels";
 import { Fragment } from "react";
 import { UrlConstant } from "../../../utils/Constants";

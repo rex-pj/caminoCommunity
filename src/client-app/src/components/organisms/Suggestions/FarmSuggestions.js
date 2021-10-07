@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import FarmSuggestionItem from "./FarmSuggestionItem";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { FifthHeadingSecondary } from "../../atoms/Heading";
-import Loading from "../../atoms/Loading";
+import { LoadingBar } from "../../molecules/NotificationBars";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
@@ -20,7 +20,7 @@ const List = styled(VerticalList)`
 export default (props) => {
   const { loading, data } = props;
   if (loading) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   }
 
   if (!data) {

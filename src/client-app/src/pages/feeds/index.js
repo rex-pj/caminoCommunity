@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { feedqueries } from "../../graphql/fetching/queries";
 import {
   articleMutations,
@@ -11,24 +11,24 @@ import {
   productMutations,
 } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+  NoDataBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter((props) => {
-  const { match } = props;
-  const { params } = match;
-
-  const { pageNumber } = params;
-  const [state, dispatch] = useStore(true);
-  const { loading, data, error, refetch } = useQuery(feedqueries.GET_FEEDS, {
-    variables: {
-      criterias: {
-        page: pageNumber ? parseInt(pageNumber) : 1,
-      },
+  const {
+    match: {
+      params: { pageNumber },
     },
-  });
+  } = props;
+  const [state, dispatch] = useStore(true);
+  const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });
+  const [feeds, setFeeds] = useState([]);
 
   const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
     client: authClient,
@@ -40,48 +40,92 @@ export default withRouter((props) => {
     client: authClient,
   });
 
+  const [fetchFeeds, { loading, data, error, refetch }] = useLazyQuery(
+    feedqueries.GET_FEEDS,
+    {
+      onCompleted: (data) => {
+        setPageInfo(data);
+        loadFeeds(data);
+      },
+    }
+  );
+
   useEffect(() => {
     if (state.store === "UPDATE" && state.id) {
       refetch();
     }
   }, [state, refetch]);
 
-  if (loading || !data) {
-    return <Loading>Loading</Loading>;
-  } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    fetchFeeds({
+      variables: {
+        criterias: {
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchFeeds]);
+
+  const setPageInfo = (data) => {
+    const {
+      feeds: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const loadFeeds = (data) => {
+    const {
+      feeds: { collections },
+    } = data;
+    const feedCollections = parseCollections(collections);
+    setFeeds([...feeds, ...feedCollections]);
+  };
+
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let feed = { ...item };
+      if (feed.feedType === FeedType.Farm) {
+        feed.url = `${UrlConstant.Farm.url}${feed.id}`;
+      } else if (feed.feedType === FeedType.Article) {
+        feed.url = `${UrlConstant.Article.url}${feed.id}`;
+      } else if (feed.feedType === FeedType.Product) {
+        feed.url = `${UrlConstant.Product.url}${feed.id}`;
+      }
+
+      if (feed.pictureId > 0) {
+        feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+      }
+
+      feed.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdByName,
+      };
+
+      if (item.createdByPhotoCode) {
+        feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      return feed;
+    });
+  };
+
+  if (loading && feeds.length === 0) {
+    return <LoadingBar>Loading</LoadingBar>;
   }
-
-  const { feeds: dataFeeds } = data;
-  const { totalPage, filter, collections } = dataFeeds;
-  const { page } = filter;
-
-  const feeds = collections.map((item) => {
-    let feed = { ...item };
-    if (feed.feedType === FeedType.Farm) {
-      feed.url = `${UrlConstant.Farm.url}${feed.id}`;
-    } else if (feed.feedType === FeedType.Article) {
-      feed.url = `${UrlConstant.Article.url}${feed.id}`;
-    } else if (feed.feedType === FeedType.Product) {
-      feed.url = `${UrlConstant.Product.url}${feed.id}`;
-    }
-
-    if (feed.pictureId > 0) {
-      feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
-    }
-
-    feed.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdByName,
-    };
-
-    if (item.createdByPhotoCode) {
-      feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    return feed;
-  });
+  if ((!data || !pageRef.current.totalResult) && feeds.length === 0) {
+    return <NoDataBar>No data</NoDataBar>;
+  }
+  if (error) {
+    return <ErrorBar>Error!</ErrorBar>;
+  }
 
   const onOpenDeleteConfirmation = (e, onDelete) => {
     const { title, innerModal, message, id } = e;
@@ -130,18 +174,37 @@ export default withRouter((props) => {
     });
   };
 
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
+    }
+    pageRef.current.pageNumber += 1;
+    fetchFeeds({
+      variables: {
+        criterias: {
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
+
   return (
     <DefaultLayout>
-      <Feeds
-        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-        onDeleteArticle={onDeleteArticle}
-        onDeleteFarm={onDeleteFarm}
-        onDeleteProduct={onDeleteProduct}
-        feeds={feeds}
-        totalPage={totalPage}
-        baseUrl="/feeds"
-        currentPage={page}
-      />
+      <InfiniteScroll
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        <Feeds
+          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+          onDeleteArticle={onDeleteArticle}
+          onDeleteFarm={onDeleteFarm}
+          onDeleteProduct={onDeleteProduct}
+          feeds={feeds}
+          baseUrl="/feeds"
+        />
+      </InfiniteScroll>
     </DefaultLayout>
   );
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import loadable from "@loadable/component";
 import styled from "styled-components";
-import { PageColumnPanel } from "../../atoms/Panels";
+import { PageColumnPanel } from "../../molecules/Panels";
 import CommunityInfo from "../Community/CommunityInfo";
 import {
   FarmSuggestions,

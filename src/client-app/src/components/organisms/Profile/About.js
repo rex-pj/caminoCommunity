@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { PanelBody } from "../../atoms/Panels";
-import { VerticalList } from "../../atoms/List";
+import { PanelBody } from "../../molecules/Panels";
+import { VerticalList } from "../../molecules/List";
 import { format } from "date-fns";
 import TextEditable from "../Editable/TextEditable";
 import SelectEditable from "../Editable/SelectEditable";

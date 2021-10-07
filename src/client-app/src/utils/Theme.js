@@ -70,7 +70,7 @@ export const borderRadius = {
 };
 
 export const shadow = {
-  BoxShadow: `0 1px 3px rgba(46,66,14,0.12), 0 1px 2px rgba(46,66,14,0.24)`,
+  BoxShadow: `0 1px 4px rgba(46,66,14,0.12), 0 1px 4px rgba(46,66,14,0.24)`,
   TextShadow: `0 0 3px rgba(46,66,14, 0.8)`,
   BoxShadowInside: `rgba(46,66,14, 0.2) 0px 1px 3px 0px, rgba(46,66,14, 0.14) 0px 1px 1px 0px, rgba(46,66,14, 0.12) 0px 2px 1px -1px`,
 };

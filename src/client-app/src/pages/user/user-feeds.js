@@ -16,8 +16,10 @@ import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorT
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter((props) => {
@@ -225,14 +227,14 @@ export default withRouter((props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
-        <Loading>Loading...</Loading>
+        <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
-        <ErrorBlock>Error!</ErrorBlock>
+        <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }

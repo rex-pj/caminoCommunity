@@ -11,7 +11,7 @@ import { FeedType } from "../../../utils/Enums";
 import { UrlConstant } from "../../../utils/Constants";
 import { AnchorLink } from "../../atoms/Links";
 import { ImageRound } from "../../atoms/Images";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoImage from "../../molecules/NoImages/no-image";
 import { withRouter } from "react-router-dom";
 
 const DropdownPanel = styled.div`

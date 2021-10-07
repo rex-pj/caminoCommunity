@@ -13,11 +13,7 @@ export default (props) => {
     size,
   } = props;
 
-  let to = `${baseUrl}`;
-  if (pageQuery) {
-    to += `${pageQuery}`;
-  }
-
+  let to = `${baseUrl}${pageQuery}`;
   if (currentPage) {
     to += `&page=${currentPage + 1}`;
   }

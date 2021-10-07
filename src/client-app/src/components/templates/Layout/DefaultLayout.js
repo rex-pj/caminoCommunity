@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import loadable from "@loadable/component";
 import styled from "styled-components";
-import { PageColumnPanel } from "../../atoms/Panels";
+import { PageColumnPanel } from "../../molecules/Panels";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import {
@@ -27,10 +27,6 @@ const Wrapper = styled.div`
   > .row {
     margin-left: -12px;
     margin-right: -12px;
-  }
-
-  > .row > .col {
-    padding: 0 12px;
   }
 `;
 
@@ -128,7 +124,7 @@ export default (props) => {
         isLeftShown={isLeftShown}
         isRightShown={isRightShown}
       />
-      <div className="row px-lg-3">
+      <div className="row px-lg-3 gx-3">
         {isLeftShown || isInit ? (
           <div
             className={`col col-12 col-sm-12 col-md-12 col-lg-2 ${

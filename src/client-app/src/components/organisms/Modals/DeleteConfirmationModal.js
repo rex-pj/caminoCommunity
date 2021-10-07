@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 
 export default function (props) {

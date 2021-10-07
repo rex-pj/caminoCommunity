@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
 import { FifthHeadingPrimary } from "../../atoms/Heading";

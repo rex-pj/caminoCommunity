@@ -3,8 +3,10 @@ import { useQuery, useMutation } from "@apollo/client";
 import { feedqueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { withRouter } from "react-router-dom";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import styled from "styled-components";
 import { getParameters, generateQueryParameters } from "../../utils/Helper";
 import SearchFeed from "../../components/templates/Feeds/search-feed";
@@ -64,9 +66,9 @@ export default withRouter((props) => {
   });
 
   if (loading || !data) {
-    return <Loading>Loading</Loading>;
+    return <LoadingBar>Loading</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const onSearch = (searchParams) => {

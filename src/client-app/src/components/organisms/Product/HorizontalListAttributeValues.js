@@ -1,6 +1,6 @@
 import React from "react";
-import { HorizontalList } from "../../atoms/List";
-import { BadgeOutlinePrimary } from "../../atoms/badges";
+import { HorizontalList } from "../../molecules/List";
+import { BadgeOutlinePrimary } from "../../atoms/Badges";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
 export default (props) => {

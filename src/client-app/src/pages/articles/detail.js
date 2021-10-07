@@ -10,11 +10,13 @@ import {
 import { articleMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
-import Loading from "../../components/atoms/Loading";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
 import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
@@ -144,9 +146,9 @@ export default withRouter(function (props) {
   }, [state, refetch]);
 
   if (loading || !data) {
-    return <Loading>Loading...</Loading>;
+    return <LoadingBar>Loading...</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const { article: articleResponse } = data;
@@ -169,9 +171,9 @@ export default withRouter(function (props) {
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
-      return <Loading>Loading...</Loading>;
+      return <LoadingBar>Loading...</LoadingBar>;
     } else if (relevantError) {
-      return <ErrorBlock>Error!</ErrorBlock>;
+      return <ErrorBar>Error!</ErrorBar>;
     }
     const { relevantArticles } = relevantData;
     const relevants = relevantArticles.map((item) => {

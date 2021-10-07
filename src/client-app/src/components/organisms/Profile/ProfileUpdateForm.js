@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PanelBody } from "../../atoms/Panels";
+import { PanelBody } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import { checkValidity } from "../../../utils/Validity";
-import { PanelFooter } from "../../../components/atoms/Panels";
+import { PanelFooter } from "../../../components/molecules/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 
 const MainPanel = styled(PanelBody)`

@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ImageRound } from "../../atoms/Images";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";

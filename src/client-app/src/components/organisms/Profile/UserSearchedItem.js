@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { AnchorLink } from "../../atoms/Links";
 import { HorizontalReactBar } from "../../molecules/Reaction";

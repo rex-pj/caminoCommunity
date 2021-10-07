@@ -8,8 +8,10 @@ import {
   articleMutations,
   mediaMutations,
 } from "../../graphql/fetching/mutations";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import authClient from "../../graphql/client/authClient";
@@ -146,14 +148,14 @@ export default withRouter(function (props) {
     return (
       <Fragment>
         {renderArticleEditor()}
-        <Loading>Loading...</Loading>
+        <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
         {renderArticleEditor()}
-        <ErrorBlock>Error!</ErrorBlock>
+        <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }

@@ -9,12 +9,12 @@ import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ListItemCollapseCover from "../../molecules/Thumbnails/ListItemCollapseCover";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
@@ -191,101 +191,105 @@ export default withRouter((props) => {
   };
 
   return (
-    <Panel>
-      <Cover>
-        <ListItemCollapseCover imageUrl={farm.pictureUrl} />
+    <div className="px-1">
+      <Panel>
+        <Cover>
+          <ListItemCollapseCover imageUrl={farm.pictureUrl} />
 
-        <ProfileBox profile={loadCreatedInfo()} />
-        <FollowButton icon="user-plus" size="sm">
-          Follow
-        </FollowButton>
-      </Cover>
+          <ProfileBox profile={loadCreatedInfo()} />
+          <FollowButton icon="user-plus" size="sm">
+            Follow
+          </FollowButton>
+        </Cover>
 
-      <PanelHeader>
-        <ContentTopbar>
-          <div className="row g-0">
-            <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <Title>
-                <AnchorLink
-                  to={{
-                    pathname: farm.url,
-                    state: { from: location.pathname },
-                  }}
-                >
-                  {farm.name}
-                </AnchorLink>
-              </Title>
+        <PanelHeader>
+          <ContentTopbar>
+            <div className="row g-0">
+              <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                <Title>
+                  <AnchorLink
+                    to={{
+                      pathname: farm.url,
+                      state: { from: location.pathname },
+                    }}
+                  >
+                    {farm.name}
+                  </AnchorLink>
+                </Title>
 
-              <TopBarInfo>
-                <span className="me-3">
-                  <FontAwesomeIcon icon="calendar-alt" />
-                  <span>{convertDateTimeToPeriod(farm.createdDate)}</span>
-                </span>
-                {farm.address ? (
-                  <Fragment>
-                    <FontAwesomeIcon icon="map-marker-alt" />
-                    <span>{farm.address}</span>
-                  </Fragment>
+                <TopBarInfo>
+                  <span className="me-3">
+                    <FontAwesomeIcon icon="calendar-alt" />
+                    <span>{convertDateTimeToPeriod(farm.createdDate)}</span>
+                  </span>
+                  {farm.address ? (
+                    <Fragment>
+                      <FontAwesomeIcon icon="map-marker-alt" />
+                      <span>{farm.address}</span>
+                    </Fragment>
+                  ) : null}
+                </TopBarInfo>
+              </div>
+
+              <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
+                {isLogin ? (
+                  <PostActions ref={currentRef}>
+                    <ActionButton onClick={onActionDropdownShow}>
+                      <FontAwesomeIcon icon="angle-down" />
+                    </ActionButton>
+                  </PostActions>
                 ) : null}
-              </TopBarInfo>
+                {isActionDropdownShown && isAuthor ? (
+                  <ContentItemDropdown>
+                    <ModuleMenuListItem>
+                      <span onClick={onEditMode}>
+                        <FontAwesomeIcon
+                          icon="pencil-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Edit
+                      </span>
+                    </ModuleMenuListItem>
+                    <ModuleMenuListItem>
+                      <span onClick={onOpenDeleteConfirmation}>
+                        <FontAwesomeIcon
+                          icon="trash-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Delete
+                      </span>
+                    </ModuleMenuListItem>
+                  </ContentItemDropdown>
+                ) : null}
+              </div>
             </div>
-
-            <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              {isLogin ? (
-                <PostActions ref={currentRef}>
-                  <ActionButton onClick={onActionDropdownShow}>
-                    <FontAwesomeIcon icon="angle-down" />
-                  </ActionButton>
-                </PostActions>
-              ) : null}
-              {isActionDropdownShown && isAuthor ? (
-                <ContentItemDropdown>
-                  <ModuleMenuListItem>
-                    <span onClick={onEditMode}>
-                      <FontAwesomeIcon
-                        icon="pencil-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Edit
-                    </span>
-                  </ModuleMenuListItem>
-                  <ModuleMenuListItem>
-                    <span onClick={onOpenDeleteConfirmation}>
-                      <FontAwesomeIcon
-                        icon="trash-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Delete
-                    </span>
-                  </ModuleMenuListItem>
-                </ContentItemDropdown>
-              ) : null}
-            </div>
+          </ContentTopbar>
+        </PanelHeader>
+        <PanelBody>
+          <div className="panel-content">
+            <Description>
+              <span
+                dangerouslySetInnerHTML={{ __html: farm.description }}
+              ></span>{" "}
+            </Description>
           </div>
-        </ContentTopbar>
-      </PanelHeader>
-      <PanelBody>
-        <div className="panel-content">
-          <Description>
-            <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>{" "}
-          </Description>
-        </div>
-      </PanelBody>
-      <InteractiveToolbar>
-        <HorizontalList>
-          <InteractiveItem>
-            <HorizontalReactBar reactionNumber={farm.reactionNumber} />
-          </InteractiveItem>
+        </PanelBody>
+        <InteractiveToolbar>
+          <HorizontalList>
+            <InteractiveItem>
+              <HorizontalReactBar reactionNumber={farm.reactionNumber} />
+            </InteractiveItem>
 
-          <InteractiveItem>
-            <FontButtonItem
-              icon="comments"
-              title="Discussions"
-              dynamicText={farm.commentNumber}
-            />
-          </InteractiveItem>
-        </HorizontalList>
-      </InteractiveToolbar>
-    </Panel>
+            <InteractiveItem>
+              <FontButtonItem
+                icon="comments"
+                title="Discussions"
+                dynamicText={farm.commentNumber}
+              />
+            </InteractiveItem>
+          </HorizontalList>
+        </InteractiveToolbar>
+      </Panel>
+    </div>
   );
 });

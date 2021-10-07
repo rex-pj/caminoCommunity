@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import CommunitySuggestionItem from "./CommunitySuggestionItem";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { FifthHeadingSecondary } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constants";
 

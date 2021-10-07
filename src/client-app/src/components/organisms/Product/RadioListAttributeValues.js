@@ -1,5 +1,5 @@
 import React from "react";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { LabelPrimary } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
 

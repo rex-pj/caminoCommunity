@@ -14,8 +14,10 @@ import {
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import { useStore } from "../../store/hook-store";
 import { productQueries } from "../../graphql/fetching/queries";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter(function (props) {
@@ -158,14 +160,14 @@ export default withRouter(function (props) {
     return (
       <Fragment>
         {renderProductEditor()}
-        <Loading>Loading...</Loading>
+        <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
         {renderProductEditor()}
-        <ErrorBlock>Error!</ErrorBlock>
+        <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }

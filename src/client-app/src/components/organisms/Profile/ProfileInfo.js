@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { format } from "date-fns";
 
 const Root = styled.div`

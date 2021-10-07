@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoImage from "../../molecules/NoImages/no-image";
 import { Image } from "../../atoms/Images";
 
 const ImageWrap = styled.div`

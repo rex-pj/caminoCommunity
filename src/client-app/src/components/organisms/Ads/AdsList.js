@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
-import { VerticalList } from "../../atoms/List";
+import { VerticalList } from "../../molecules/List";
 import { FifthHeadingSecondary } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoImage from "../../molecules/NoImages/no-image";
 import { Image } from "../../atoms/Images";
 
 export default (props) => {

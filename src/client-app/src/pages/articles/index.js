@@ -1,28 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
 import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
 import { withRouter } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { articleQueries } from "../../graphql/fetching/queries";
 import { articleMutations } from "../../graphql/fetching/mutations";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+  NoDataBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
+import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter(function (props) {
-  const { match } = props;
-  const { params } = match;
-  const { pageNumber } = params;
+  const {
+    match: {
+      params: { pageNumber },
+    },
+  } = props;
   const [state, dispatch] = useStore(false);
-  const { loading, data, error, refetch } = useQuery(
+  const [articles, setArticles] = useState([]);
+  const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });
+  const [fetchArticles, { loading, data, error, refetch }] = useLazyQuery(
     articleQueries.GET_ARTICLES,
     {
-      variables: {
-        criterias: {
-          page: pageNumber ? parseInt(pageNumber) : 1,
-        },
+      onCompleted: (data) => {
+        setPageInfo(data);
+        loadArticles(data);
       },
     }
   );
@@ -31,43 +39,75 @@ export default withRouter(function (props) {
     client: authClient,
   });
 
+  const setPageInfo = (data) => {
+    const {
+      articles: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const loadArticles = (data) => {
+    const {
+      articles: { collections },
+    } = data;
+    const articleCollections = parseCollections(collections);
+    setArticles([...articles, ...articleCollections]);
+  };
+
   useEffect(() => {
     if (state.type === "ARTICLE_UPDATE" || state.type === "ARTICLE_DELETE") {
       refetch();
     }
   }, [state, refetch]);
 
-  if (loading || !data) {
-    return <Loading>Loading</Loading>;
-  } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    fetchArticles({
+      variables: {
+        criterias: {
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchArticles]);
+
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let article = { ...item };
+      article.url = `${UrlConstant.Article.url}${article.id}`;
+      if (article.picture.pictureId) {
+        article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
+      }
+
+      article.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
+      };
+
+      if (item.createdByPhotoCode) {
+        article.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      return article;
+    });
+  };
+
+  if (loading && articles.length === 0) {
+    return <LoadingBar>Loading</LoadingBar>;
   }
-
-  const { articles: articlesResponse } = data;
-  const { collections } = articlesResponse;
-  const articles = collections.map((item) => {
-    let article = { ...item };
-    article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.picture.pictureId) {
-      article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
-    }
-
-    article.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdBy,
-    };
-
-    if (item.createdByPhotoCode) {
-      article.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    return article;
-  });
-
-  const baseUrl = "/articles";
-  const { totalPage, filter } = articlesResponse;
-  const { page } = filter;
+  if ((!data || !pageRef.current.totalResult) && articles.length === 0) {
+    return <NoDataBar>No data</NoDataBar>;
+  }
+  if (error) {
+    return <ErrorBar>Error!</ErrorBar>;
+  }
 
   const breadcrumbs = [
     {
@@ -103,16 +143,37 @@ export default withRouter(function (props) {
     });
   };
 
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
+    }
+    pageRef.current.pageNumber += 1;
+    fetchArticles({
+      variables: {
+        criterias: {
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
+
   return (
     <DefaultLayout>
-      <Article
-        onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-        articles={articles}
-        breadcrumbs={breadcrumbs}
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        currentPage={page}
-      />
+      <Breadcrumb list={breadcrumbs} className="px-2" />
+      <InfiniteScroll
+        style={{ overflowX: "hidden" }}
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        <Article
+          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+          articles={articles}
+          breadcrumbs={breadcrumbs}
+          baseUrl="/articles"
+        />
+      </InfiniteScroll>
     </DefaultLayout>
   );
 });

@@ -1,14 +1,10 @@
 import React from "react";
 import { Fragment } from "react";
-import { Pagination } from "../../organisms/Paging";
 import FeedItem from "../../organisms/Feeds/FeedItem";
 
 export default (props) => {
   const {
     feeds,
-    totalPage,
-    baseUrl,
-    currentPage,
     onDeleteArticle,
     onDeleteFarm,
     onDeleteProduct,
@@ -27,11 +23,6 @@ export default (props) => {
           onDeleteProduct={onDeleteProduct}
         />
       ))}
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        currentPage={currentPage}
-      />
     </Fragment>
   );
 };

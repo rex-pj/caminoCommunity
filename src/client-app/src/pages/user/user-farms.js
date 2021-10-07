@@ -13,8 +13,10 @@ import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import authClient from "../../graphql/client/authClient";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
-import Loading from "../../components/atoms/Loading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 
 export default withRouter(function (props) {
@@ -146,14 +148,14 @@ export default withRouter(function (props) {
     return (
       <Fragment>
         {renderFarmEditor()}
-        <Loading>Loading...</Loading>
+        <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
   } else if (error) {
     return (
       <Fragment>
         {renderFarmEditor()}
-        <ErrorBlock>Error!</ErrorBlock>
+        <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }

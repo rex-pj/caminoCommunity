@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ImageRound } from "../../atoms/Images";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoAvatar from "../../molecules/NoImages/no-avatar";
 import { useStore } from "../../../store/hook-store";
 import UpdateAvatarModal from "../../organisms/Modals/UpdateAvatarModal";
 

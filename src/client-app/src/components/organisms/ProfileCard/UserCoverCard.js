@@ -5,8 +5,8 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Menubar from "./CardToolbar";
 import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
-import NoAvatar from "../../atoms/NoImages/no-avatar";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoAvatar from "../../molecules/NoImages/no-avatar";
+import NoImage from "../../molecules/NoImages/no-image";
 
 const Root = styled.div`
   position: relative;

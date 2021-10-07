@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Thumbnail from "./Thumbnail";
-import NoImage from "../../atoms/NoImages/no-image";
+import NoImage from "../NoImages/no-image";
 import Overlay from "../../atoms/Overlay";
 import { ButtonOutlineCircleLight } from "../../atoms/Buttons/OutlineButtons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

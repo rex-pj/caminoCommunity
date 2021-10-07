@@ -5,7 +5,7 @@ import { Thumbnail } from "../../molecules/Thumbnails";
 import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
-import { PanelDefault } from "../../atoms/Panels";
+import { PanelDefault } from "../../molecules/Panels";
 
 const GroupThumbnail = styled.div`
   margin-top: 0;

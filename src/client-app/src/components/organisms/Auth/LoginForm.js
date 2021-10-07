@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { LabelNormal } from "../../atoms/Labels";
 import { ButtonLight } from "../../atoms/Buttons/Buttons";
 import AuthNavigation from "../Navigation/AuthNavigation";

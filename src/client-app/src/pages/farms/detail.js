@@ -13,10 +13,12 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import Loading from "../../components/atoms/Loading";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
-import ErrorBlock from "../../components/atoms/ErrorBlock";
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
@@ -152,9 +154,9 @@ export default withRouter(function (props) {
   }, [state, refetch, refetchProducts]);
 
   if (loading || !data) {
-    return <Loading>Loading...</Loading>;
+    return <LoadingBar>Loading...</LoadingBar>;
   } else if (error) {
-    return <ErrorBlock>Error!</ErrorBlock>;
+    return <ErrorBar>Error!</ErrorBar>;
   }
 
   const { farm: farmData } = data;
@@ -187,13 +189,13 @@ export default withRouter(function (props) {
     if (productLoading || !productData) {
       return (
         <div className="col-12">
-          <Loading>Loading...</Loading>
+          <LoadingBar>Loading...</LoadingBar>
         </div>
       );
     } else if (productError) {
       return (
         <div className="col-12">
-          <ErrorBlock>Error!</ErrorBlock>
+          <ErrorBar>Error!</ErrorBar>
         </div>
       );
     }

@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
-import { PanelFooter, PanelBody } from "../../atoms/Panels";
+import { PanelFooter, PanelBody } from "../../molecules/Panels";
 import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
 import {
   ButtonPrimary,
@@ -13,7 +13,7 @@ import Slider from "rc-slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
-import NoAvatar from "../../atoms/NoImages/no-avatar";
+import NoAvatar from "../../molecules/NoImages/no-avatar";
 
 const Wrap = styled.div`
   margin: auto;

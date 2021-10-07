@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { PanelBody, PanelFooter } from "../../atoms/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import styled from "styled-components";
@@ -59,12 +59,8 @@ export default function (props) {
     props.closeModal();
   };
 
-  const {
-    displayOrder,
-    pricePercentageAdjustment,
-    priceAdjustment,
-    name,
-  } = formData;
+  const { displayOrder, pricePercentageAdjustment, priceAdjustment, name } =
+    formData;
 
   const canSubmit = !!name;
   return (

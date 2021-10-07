@@ -10,12 +10,12 @@ import { withRouter } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
-import { PanelHeading, PanelDefault, PanelBody } from "../../atoms/Panels";
+import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
-import { HorizontalList } from "../../atoms/List";
+import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
@@ -146,122 +146,124 @@ export default withRouter(function (props) {
   };
 
   return (
-    <Panel>
-      <PanelHeader>
-        <ContentTopbar>
-          <div className="row g-0">
-            <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
-              <AuthorProfile profile={loadCreatedInfo()} />
+    <div className="px-1">
+      <Panel>
+        <PanelHeader>
+          <ContentTopbar>
+            <div className="row g-0">
+              <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
+                <AuthorProfile profile={loadCreatedInfo()} />
+              </div>
+
+              <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
+                {isLogin ? (
+                  <PostActions ref={currentRef}>
+                    <ActionButton onClick={onActionDropdownShow}>
+                      <FontAwesomeIcon icon="angle-down" />
+                    </ActionButton>
+                  </PostActions>
+                ) : null}
+                {isActionDropdownShown && isAuthor ? (
+                  <ContentItemDropdown>
+                    <ModuleMenuListItem>
+                      <span onClick={onEditMode}>
+                        <FontAwesomeIcon
+                          icon="pencil-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Edit
+                      </span>
+                    </ModuleMenuListItem>
+                    <ModuleMenuListItem>
+                      <span onClick={onOpenDeleteConfirmation}>
+                        <FontAwesomeIcon
+                          icon="trash-alt"
+                          className="me-2"
+                        ></FontAwesomeIcon>
+                        Delete
+                      </span>
+                    </ModuleMenuListItem>
+                  </ContentItemDropdown>
+                ) : null}
+              </div>
             </div>
+          </ContentTopbar>
 
-            <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-              {isLogin ? (
-                <PostActions ref={currentRef}>
-                  <ActionButton onClick={onActionDropdownShow}>
-                    <FontAwesomeIcon icon="angle-down" />
-                  </ActionButton>
-                </PostActions>
-              ) : null}
-              {isActionDropdownShown && isAuthor ? (
-                <ContentItemDropdown>
-                  <ModuleMenuListItem>
-                    <span onClick={onEditMode}>
-                      <FontAwesomeIcon
-                        icon="pencil-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Edit
-                    </span>
-                  </ModuleMenuListItem>
-                  <ModuleMenuListItem>
-                    <span onClick={onOpenDeleteConfirmation}>
-                      <FontAwesomeIcon
-                        icon="trash-alt"
-                        className="me-2"
-                      ></FontAwesomeIcon>
-                      Delete
-                    </span>
-                  </ModuleMenuListItem>
-                </ContentItemDropdown>
-              ) : null}
-            </div>
-          </div>
-        </ContentTopbar>
+          <Title>
+            {product.farms
+              ? product.farms.map((pf) => {
+                  if (!pf.id) {
+                    return null;
+                  }
+                  return (
+                    <Fragment>
+                      <AnchorLink
+                        to={{
+                          pathname: pf.url,
+                          state: { from: location.pathname },
+                        }}
+                      >
+                        {pf.name}
+                      </AnchorLink>
+                      <FontAwesomeIcon icon="angle-right" />
+                    </Fragment>
+                  );
+                })
+              : null}
 
-        <Title>
-          {product.farms
-            ? product.farms.map((pf) => {
-                if (!pf.id) {
-                  return null;
-                }
-                return (
-                  <Fragment>
-                    <AnchorLink
-                      to={{
-                        pathname: pf.url,
-                        state: { from: location.pathname },
-                      }}
-                    >
-                      {pf.name}
-                    </AnchorLink>
-                    <FontAwesomeIcon icon="angle-right" />
-                  </Fragment>
-                );
-              })
-            : null}
-
-          <AnchorLink
-            to={{
-              pathname: product.url,
-              state: { from: location.pathname },
-            }}
-          >
-            {product.name}
-          </AnchorLink>
-        </Title>
-      </PanelHeader>
-      <PanelBody>
-        <div className="row">
-          <div className="col col-6 col-sm-6 col-md-5 col-lg-5">
             <AnchorLink
               to={{
                 pathname: product.url,
                 state: { from: location.pathname },
               }}
             >
-              <ImageThumb src={product.pictureUrl} alt="" />
+              {product.name}
             </AnchorLink>
-          </div>
+          </Title>
+        </PanelHeader>
+        <PanelBody>
+          <div className="row">
+            <div className="col col-6 col-sm-6 col-md-5 col-lg-5">
+              <AnchorLink
+                to={{
+                  pathname: product.url,
+                  state: { from: location.pathname },
+                }}
+              >
+                <ImageThumb src={product.pictureUrl} alt="" />
+              </AnchorLink>
+            </div>
 
-          <div className="col col-6 col-sm-6 col-md-7 col-lg-7">
-            {product.price > 0 ? (
-              <PriceLabel price={product.price} currency="vnđ" />
-            ) : null}
+            <div className="col col-6 col-sm-6 col-md-7 col-lg-7">
+              {product.price > 0 ? (
+                <PriceLabel price={product.price} currency="vnđ" />
+              ) : null}
 
-            <div className="panel-content">
-              <Description>
-                <span
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                ></span>{" "}
-              </Description>
+              <div className="panel-content">
+                <Description>
+                  <span
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  ></span>{" "}
+                </Description>
+              </div>
             </div>
           </div>
-        </div>
-      </PanelBody>
-      <InteractiveToolbar>
-        <HorizontalList>
-          <InteractiveItem>
-            <HorizontalReactBar reactionNumber={product.reactionNumber} />
-          </InteractiveItem>
-          <InteractiveItem>
-            <FontButtonItem
-              icon="comments"
-              dynamicText={product.commentNumber}
-              title="Discussions"
-            />
-          </InteractiveItem>
-        </HorizontalList>
-      </InteractiveToolbar>
-    </Panel>
+        </PanelBody>
+        <InteractiveToolbar>
+          <HorizontalList>
+            <InteractiveItem>
+              <HorizontalReactBar reactionNumber={product.reactionNumber} />
+            </InteractiveItem>
+            <InteractiveItem>
+              <FontButtonItem
+                icon="comments"
+                dynamicText={product.commentNumber}
+                title="Discussions"
+              />
+            </InteractiveItem>
+          </HorizontalList>
+        </InteractiveToolbar>
+      </Panel>
+    </div>
   );
 });

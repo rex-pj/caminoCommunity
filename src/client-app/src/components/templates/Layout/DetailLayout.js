@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
-import { PageColumnPanel } from "../../atoms/Panels";
+import { PageColumnPanel } from "../../molecules/Panels";
 import AdsList from "../../organisms/Ads/AdsList";
 import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
