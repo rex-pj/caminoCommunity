@@ -14,5 +14,10 @@ namespace Module.Api.Feed.GraphQL.Mutations
         {
             return await farmResolver.AdvancedSearchAsync(criterias);
         }
+
+        public async Task<AdvancedSearchResultModel> LiveSearchAsync([Service] ISearchResolver farmResolver, FeedFilterModel criterias)
+        {
+            return await farmResolver.LiveSearchAsync(criterias);
+        }
     }
 }

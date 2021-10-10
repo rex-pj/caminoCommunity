@@ -1,8 +1,13 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { withRouter } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
-import { Pagination } from "../../components/organisms/Paging";
 import { articleQueries } from "../../graphql/fetching/queries";
 import {
   articleMutations,
@@ -11,6 +16,7 @@ import {
 import {
   ErrorBar,
   LoadingBar,
+  NoDataBar,
 } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
@@ -18,11 +24,15 @@ import authClient from "../../graphql/client/authClient";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber } = props;
-  const { params } = match;
-  const { userId } = params;
+  const {
+    match: {
+      params: { userId },
+    },
+    pageNumber,
+  } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
 
@@ -30,18 +40,19 @@ export default withRouter(function (props) {
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
-  const {
-    loading,
-    data,
-    error,
-    refetch: fetchArticles,
-    networkStatus,
-  } = useQuery(articleQueries.GET_USER_ARTICLES, {
-    variables: {
-      criterias: {
-        userIdentityId: userId,
-        page: pageNumber ? parseInt(pageNumber) : 1,
-      },
+
+  const [articles, setArticles] = useState([]);
+  const pageRef = useRef({
+    pageNumber: pageNumber ? pageNumber : 1,
+    userId: userId,
+  });
+  const [
+    fetchArticles,
+    { loading, data, error, refetch: refetchArticles, networkStatus },
+  ] = useLazyQuery(articleQueries.GET_USER_ARTICLES, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
     },
   });
 
@@ -63,7 +74,7 @@ export default withRouter(function (props) {
         const { data } = response;
         const { createArticle: article } = data;
         resolve(article);
-        fetchArticles();
+        refetchArticles();
       });
     });
   };
@@ -117,7 +128,7 @@ export default withRouter(function (props) {
         criterias: { id },
       },
     }).then(() => {
-      fetchArticles();
+      refetchArticles();
     });
   };
 
@@ -130,7 +141,7 @@ export default withRouter(function (props) {
           onImageValidate={onImageValidate}
           filterCategories={articleCategories}
           onArticlePost={onArticlePost}
-          refetchNews={fetchArticles}
+          refetchNews={refetchArticles}
           showValidationError={showValidationError}
         />
       );
@@ -138,78 +149,132 @@ export default withRouter(function (props) {
     return null;
   };
 
+  const setPageInfo = (data) => {
+    const {
+      userArticles: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const onFetchCompleted = (data) => {
+    const {
+      userArticles: { collections },
+    } = data;
+    const articleCollections = parseCollections(collections);
+    setArticles([...articles, ...articleCollections]);
+  };
+
   useEffect(() => {
     if (state.type === "ARTICLE_UPDATE" || state.type === "ARTICLE_DELETE") {
-      fetchArticles();
+      refetchArticles();
     }
-  }, [state, fetchArticles]);
+  }, [state, refetchArticles]);
 
-  if (loading || !data || networkStatus === 1) {
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    fetchArticles({
+      variables: {
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchArticles]);
+
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let article = { ...item };
+      article.url = `${UrlConstant.Article.url}${article.id}`;
+      if (article.picture.pictureId) {
+        article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
+      }
+
+      article.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
+      };
+
+      if (item.createdByPhotoCode) {
+        article.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      return article;
+    });
+  };
+
+  if ((loading || networkStatus === 1) && articles.length === 0) {
     return (
       <Fragment>
-        {renderArticleEditor()}
+        {currentUser && isLogin ? renderArticleEditor() : null}
         <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
-  } else if (error) {
+  }
+  if ((!data || !pageRef.current.totalResult) && articles.length === 0) {
     return (
       <Fragment>
-        {renderArticleEditor()}
+        {currentUser && isLogin ? renderArticleEditor() : null}
+        <NoDataBar>No Data!</NoDataBar>
+      </Fragment>
+    );
+  }
+  if (error) {
+    return (
+      <Fragment>
+        {currentUser && isLogin ? renderArticleEditor() : null}
         <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }
 
-  const { userArticles } = data;
-  const { collections } = userArticles;
-  const articles = collections.map((item) => {
-    let article = { ...item };
-    article.url = `${UrlConstant.Article.url}${article.id}`;
-    if (article.picture.pictureId) {
-      article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
     }
-
-    article.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdBy,
-    };
-
-    if (item.createdByPhotoCode) {
-      article.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    return article;
-  });
-
-  const pageQuery = location.search;
-  const baseUrl = props.userUrl + "/articles";
-  const { totalPage, filter } = userArticles;
-  const { page } = filter;
+    pageRef.current.pageNumber += 1;
+    fetchArticles({
+      variables: {
+        criterias: {
+          userId: pageRef.current.userId,
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
 
   return (
     <Fragment>
       {renderArticleEditor()}
-      {articles
-        ? articles.map((item) => (
-            <ArticleListItem
-              key={item.id}
-              article={item}
-              convertImageCallback={convertImagefile}
-              onImageValidate={onImageValidate}
-              filterCategories={articleCategories}
-              refetchNews={fetchArticles}
-              showValidationError={showValidationError}
-              onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-            />
-          ))
-        : null}
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        pageQuery={pageQuery}
-        currentPage={page}
-      />
+      <InfiniteScroll
+        style={{ overflowX: "hidden" }}
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        {articles
+          ? articles.map((item) => (
+              <ArticleListItem
+                key={item.id}
+                article={item}
+                convertImageCallback={convertImagefile}
+                onImageValidate={onImageValidate}
+                filterCategories={articleCategories}
+                refetchNews={refetchArticles}
+                showValidationError={showValidationError}
+                onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+              />
+            ))
+          : null}
+      </InfiniteScroll>
     </Fragment>
   );
 });

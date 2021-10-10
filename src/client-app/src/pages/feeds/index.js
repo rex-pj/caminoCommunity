@@ -45,7 +45,7 @@ export default withRouter((props) => {
     {
       onCompleted: (data) => {
         setPageInfo(data);
-        loadFeeds(data);
+        onFetchCompleted(data);
       },
     }
   );
@@ -80,7 +80,7 @@ export default withRouter((props) => {
     pageRef.current.totalResult = totalResult;
   };
 
-  const loadFeeds = (data) => {
+  const onFetchCompleted = (data) => {
     const {
       feeds: { collections },
     } = data;

@@ -30,7 +30,7 @@ export default withRouter(function (props) {
     {
       onCompleted: (data) => {
         setPageInfo(data);
-        loadFarms(data);
+        onFetchCompleted(data);
       },
     }
   );
@@ -52,7 +52,7 @@ export default withRouter(function (props) {
     pageRef.current.totalResult = totalResult;
   };
 
-  const loadFarms = (data) => {
+  const onFetchCompleted = (data) => {
     const {
       farms: { collections },
     } = data;

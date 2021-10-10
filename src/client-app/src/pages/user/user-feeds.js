@@ -1,9 +1,14 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { withRouter } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
-import { Pagination } from "../../components/organisms/Paging";
 import { fileToBase64 } from "../../utils/Helper";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import authClient from "../../graphql/client/authClient";
 import {
   articleMutations,
@@ -19,15 +24,27 @@ import { FeedType } from "../../utils/Enums";
 import {
   ErrorBar,
   LoadingBar,
+  NoDataBar,
 } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter((props) => {
-  const { location, pageNumber, match, editorMode, onToggleCreateMode } = props;
-  const { params } = match;
-  const { userId } = params;
+  const {
+    pageNumber,
+    match: {
+      params: { userId },
+    },
+    editorMode,
+    onToggleCreateMode,
+  } = props;
+  const pageRef = useRef({
+    pageNumber: pageNumber ? pageNumber : 1,
+    userId: userId,
+  });
   const { currentUser, isLogin } = useContext(SessionContext);
   const [state, dispatch] = useStore(false);
+  const [feeds, setFeeds] = useState([]);
 
   // Mutations
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
@@ -65,18 +82,13 @@ export default withRouter((props) => {
   });
 
   // Queries
-  const {
-    loading,
-    data,
-    error,
-    refetch: feedsRefetch,
-    networkStatus,
-  } = useQuery(feedqueries.GET_USER_FEEDS, {
-    variables: {
-      criterias: {
-        userIdentityId: userId,
-        page: pageNumber ? parseInt(pageNumber) : 1,
-      },
+  const [
+    fetchFeeds,
+    { loading, data, error, refetch: feedsRefetch, networkStatus },
+  ] = useLazyQuery(feedqueries.GET_USER_FEEDS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
     },
   });
 
@@ -197,6 +209,25 @@ export default withRouter((props) => {
     });
   };
 
+  useEffect(() => {
+    if (state.store === "UPDATE" && state.id) {
+      feedsRefetch();
+    }
+  }, [state, feedsRefetch]);
+
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    const userId = pageRef.current.userId;
+    fetchFeeds({
+      variables: {
+        criterias: {
+          userIdentityId: userId,
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchFeeds]);
+
   const renderProfileEditorTabs = () => (
     <ProfileEditorTabs
       convertImagefile={convertImagefile}
@@ -217,20 +248,73 @@ export default withRouter((props) => {
     ></ProfileEditorTabs>
   );
 
-  useEffect(() => {
-    if (state.store === "UPDATE" && state.id) {
-      feedsRefetch();
-    }
-  }, [state, feedsRefetch]);
+  const onFetchCompleted = (data) => {
+    const {
+      userFeeds: { collections },
+    } = data;
+    const feedCollections = parseCollections(collections);
+    setFeeds([...feeds, ...feedCollections]);
+  };
 
-  if (loading || !data || networkStatus === 1) {
+  const setPageInfo = (data) => {
+    const {
+      userFeeds: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let feed = { ...item };
+      if (feed.feedType === FeedType.Farm) {
+        feed.url = `${UrlConstant.Farm.url}${feed.id}`;
+      } else if (feed.feedType === FeedType.Article) {
+        feed.url = `${UrlConstant.Article.url}${feed.id}`;
+      } else if (feed.feedType === FeedType.Product) {
+        feed.url = `${UrlConstant.Product.url}${feed.id}`;
+      }
+
+      if (feed.pictureId > 0) {
+        feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+      }
+
+      feed.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdByName,
+      };
+
+      if (item.createdByPhotoCode) {
+        feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      return feed;
+    });
+  };
+
+  if ((loading || networkStatus === 1) && feeds.length === 0) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
         <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
-  } else if (error) {
+  }
+  if ((!data || !pageRef.current.totalResult) && feeds.length === 0) {
+    return (
+      <Fragment>
+        {currentUser && isLogin ? renderProfileEditorTabs() : null}
+        <NoDataBar>No Data!</NoDataBar>
+      </Fragment>
+    );
+  }
+  if (error) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
@@ -239,64 +323,46 @@ export default withRouter((props) => {
     );
   }
 
-  const { userFeeds } = data;
-  const { totalPage, filter, collections } = userFeeds;
-  const { page } = filter;
-  const baseUrl = props.userUrl + "/feeds";
-  const pageQuery = location.search;
-
-  const feeds = collections.map((item) => {
-    let feed = { ...item };
-    if (feed.feedType === FeedType.Farm) {
-      feed.url = `${UrlConstant.Farm.url}${feed.id}`;
-    } else if (feed.feedType === FeedType.Article) {
-      feed.url = `${UrlConstant.Article.url}${feed.id}`;
-    } else if (feed.feedType === FeedType.Product) {
-      feed.url = `${UrlConstant.Product.url}${feed.id}`;
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
     }
-
-    if (feed.pictureId > 0) {
-      feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
-    }
-
-    feed.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdByName,
-    };
-
-    if (item.createdByPhotoCode) {
-      feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    return feed;
-  });
+    pageRef.current.pageNumber += 1;
+    fetchFeeds({
+      variables: {
+        criterias: {
+          userIdentityId: userId,
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
 
   return (
     <Fragment>
       {currentUser && isLogin ? renderProfileEditorTabs() : null}
-
-      {feeds
-        ? feeds.map((item) => {
-            const key = `${item.feedType}_${item.id}`;
-            return (
-              <FeedItem
-                key={key}
-                feed={item}
-                onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-                onDeleteArticle={onDeleteArticle}
-                onDeleteFarm={onDeleteFarm}
-                onDeleteProduct={onDeleteProduct}
-              />
-            );
-          })
-        : null}
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        pageQuery={pageQuery}
-        currentPage={page}
-      />
+      <InfiniteScroll
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        {feeds
+          ? feeds.map((item) => {
+              const key = `${item.feedType}_${item.id}`;
+              return (
+                <FeedItem
+                  key={key}
+                  feed={item}
+                  onOpenDeleteConfirmation={onOpenDeleteConfirmation}
+                  onDeleteArticle={onDeleteArticle}
+                  onDeleteFarm={onDeleteFarm}
+                  onDeleteProduct={onDeleteProduct}
+                />
+              );
+            })
+          : null}
+      </InfiniteScroll>
     </Fragment>
   );
 });

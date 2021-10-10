@@ -1,8 +1,13 @@
-import React, { Fragment, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
-import { Pagination } from "../../components/organisms/Paging";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import authClient from "../../graphql/client/authClient";
 import { fileToBase64 } from "../../utils/Helper";
@@ -17,15 +22,25 @@ import { productQueries } from "../../graphql/fetching/queries";
 import {
   ErrorBar,
   LoadingBar,
+  NoDataBar,
 } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber } = props;
-  const { params } = match;
-  const { userId } = params;
+  const {
+    match: {
+      params: { userId },
+    },
+    pageNumber,
+  } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
+  const [products, setProducts] = useState([]);
+  const pageRef = useRef({
+    pageNumber: pageNumber ? pageNumber : 1,
+    userId: userId,
+  });
 
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [productCategories] = useMutation(
@@ -47,18 +62,13 @@ export default withRouter(function (props) {
 
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
 
-  const {
-    loading,
-    data,
-    error,
-    networkStatus,
-    refetch: fetchNewProducts,
-  } = useQuery(productQueries.GET_USER_PRODUCTS, {
-    variables: {
-      criterias: {
-        userIdentityId: userId,
-        page: pageNumber ? parseInt(pageNumber) : 1,
-      },
+  const [
+    fetchProducts,
+    { loading, data, error, networkStatus, refetch: refetchProducts },
+  ] = useLazyQuery(productQueries.GET_USER_PRODUCTS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
     },
   });
 
@@ -98,7 +108,7 @@ export default withRouter(function (props) {
         const { data } = response;
         const { createProduct: product } = data;
         resolve(product);
-        fetchNewProducts();
+        refetchProducts();
       });
     });
   };
@@ -126,15 +136,48 @@ export default withRouter(function (props) {
         criterias: { id },
       },
     }).then(() => {
-      fetchNewProducts();
+      refetchProducts();
     });
+  };
+
+  const setPageInfo = (data) => {
+    const {
+      userProducts: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const onFetchCompleted = (data) => {
+    const {
+      userProducts: { collections },
+    } = data;
+    const productCollections = parseCollections(collections);
+    setProducts([...products, ...productCollections]);
   };
 
   useEffect(() => {
     if (state.type === "PRODUCT_UPDATE" || state.type === "PRODUCT_DELETE") {
-      fetchNewProducts();
+      refetchProducts();
     }
-  }, [state, fetchNewProducts]);
+  }, [state, refetchProducts]);
+
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    fetchProducts({
+      variables: {
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchProducts]);
 
   const renderProductEditor = () => {
     if (currentUser && isLogin) {
@@ -146,7 +189,7 @@ export default withRouter(function (props) {
           filterCategories={productCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
-          refetchNews={fetchNewProducts}
+          refetchNews={refetchProducts}
           filterFarms={userFarms}
           filterAttributes={productAttributes}
           filterProductAttributeControlTypes={productAttributeControlTypes}
@@ -156,84 +199,105 @@ export default withRouter(function (props) {
     return null;
   };
 
-  if (loading || !data || networkStatus === 1) {
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let product = { ...item };
+      product.url = `${UrlConstant.Product.url}${product.id}`;
+      if (product.pictures && product.pictures.length > 0) {
+        const picture = product.pictures[0];
+        if (picture.pictureId > 0) {
+          product.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
+        }
+      }
+
+      product.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
+      };
+
+      if (item.createdByPhotoCode) {
+        product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      if (product.farms) {
+        product.farms = product.farms.map((pf) => {
+          let productFarm = { ...pf };
+          productFarm.url = `/farms/${pf.id}`;
+          return productFarm;
+        });
+      }
+
+      return product;
+    });
+  };
+
+  if ((loading || networkStatus === 1) && products.length === 0) {
     return (
       <Fragment>
-        {renderProductEditor()}
+        {currentUser && isLogin ? renderProductEditor() : null}
         <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
-  } else if (error) {
+  }
+  if ((!data || !pageRef.current.totalResult) && products.length === 0) {
     return (
       <Fragment>
-        {renderProductEditor()}
+        {currentUser && isLogin ? renderProductEditor() : null}
+        <NoDataBar>No Data!</NoDataBar>
+      </Fragment>
+    );
+  }
+  if (error) {
+    return (
+      <Fragment>
+        {currentUser && isLogin ? renderProductEditor() : null}
         <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }
 
-  const { userProducts } = data;
-  const { collections } = userProducts;
-  const products = collections.map((item) => {
-    let product = { ...item };
-    product.url = `${UrlConstant.Product.url}${product.id}`;
-    if (product.pictures && product.pictures.length > 0) {
-      const picture = product.pictures[0];
-      if (picture.pictureId > 0) {
-        product.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
-      }
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
     }
-
-    product.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdBy,
-    };
-
-    if (item.createdByPhotoCode) {
-      product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    if (product.farms) {
-      product.farms = product.farms.map((pf) => {
-        let productFarm = { ...pf };
-        productFarm.url = `/farms/${pf.id}`;
-        return productFarm;
-      });
-    }
-
-    return product;
-  });
-
-  const pageQuery = location.search;
-  const baseUrl = props.userUrl + "/articles";
-  const { totalPage, filter } = userProducts;
-  const { page } = filter;
+    pageRef.current.pageNumber += 1;
+    fetchProducts({
+      variables: {
+        criterias: {
+          userId: pageRef.current.userId,
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
 
   return (
     <Fragment>
       {renderProductEditor()}
-      <div className="row">
-        {products
-          ? products.map((item) => (
-              <div
-                key={item.id}
-                className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-              >
-                <ProductItem
-                  product={item}
-                  onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-                />
-              </div>
-            ))
-          : null}
-      </div>
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        pageQuery={pageQuery}
-        currentPage={page}
-      />
+      <InfiniteScroll
+        style={{ overflowX: "hidden" }}
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        <div className="row">
+          {products
+            ? products.map((item) => (
+                <div
+                  key={item.id}
+                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
+                >
+                  <ProductItem
+                    product={item}
+                    onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+                  />
+                </div>
+              ))
+            : null}
+        </div>
+      </InfiniteScroll>
     </Fragment>
   );
 });

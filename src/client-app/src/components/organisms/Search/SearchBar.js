@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import styled from "styled-components";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { feedMutations } from "../../../graphql/fetching/mutations";
+import { feedqueries } from "../../../graphql/fetching/queries";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import { FeedType } from "../../../utils/Enums";
 import { UrlConstant } from "../../../utils/Constants";
@@ -31,6 +31,10 @@ const DropdownItem = styled.li`
       background: ${(p) => p.theme.color.lightBg};
     }
     border-radius: ${(p) => p.theme.borderRadius.normal};
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
   }
 
   > a svg,
@@ -144,10 +148,18 @@ const EmptyImage = styled(NoImage)`
 `;
 
 export default withRouter((props) => {
-  const { match, history } = props;
-  const { params } = match;
-  const { keyword: searchText } = params;
-  const [liveSearch] = useMutation(feedMutations.LIVE_SEARCH);
+  const {
+    match: {
+      params: { keyword: searchText },
+    },
+    history,
+  } = props;
+  const [fetchResults] = useLazyQuery(feedqueries.LIVE_SEARCH, {
+    onCompleted: (response) => onSearchCompleted(response),
+    onError: (error) => onSearchError(error),
+    fetchPolicy: "no-cache",
+  });
+
   const [searchData, setSearchData] = useState({
     searchResults: [],
     keyword: searchText,
@@ -158,6 +170,50 @@ export default withRouter((props) => {
   });
   const dropdownRef = useRef();
 
+  const onSearchCompleted = (response) => {
+    const {
+      liveSearch: { articles, products, farms, users },
+    } = response;
+    setSearchData({
+      ...searchData,
+      searchResults: parseSearchResults([
+        ...users,
+        ...products,
+        ...farms,
+        ...articles,
+      ]),
+      isDropdownShown: true,
+    });
+    inputRef.current.isSearching = false;
+  };
+
+  const parseSearchResults = (data) => {
+    return data.map((rs) => {
+      let result = { ...rs };
+      if (result.feedType === FeedType.Farm) {
+        result.url = `${UrlConstant.Farm.url}${result.id}`;
+      } else if (result.feedType === FeedType.Article) {
+        result.url = `${UrlConstant.Article.url}${result.id}`;
+      } else if (result.feedType === FeedType.Product) {
+        result.url = `${UrlConstant.Product.url}${result.id}`;
+      } else if (result.feedType === FeedType.User) {
+        result.url = `${UrlConstant.Profile.url}${result.id}`;
+      }
+
+      if (result.feedType === FeedType.User) {
+        result.pictureUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${result.pictureId}`;
+      } else {
+        result.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${result.pictureId}`;
+      }
+
+      return result;
+    });
+  };
+
+  const onSearchError = (error) => {
+    inputRef.current.isSearching = false;
+  };
+
   const onInputChange = (e) => {
     const { value, name } = e.target;
     if (!value) {
@@ -167,8 +223,8 @@ export default withRouter((props) => {
     }
 
     if (!inputRef.current.isSearching) {
-      fetchSearchResults(value);
       inputRef.current.isSearching = true;
+      onFetchResults(value);
     }
 
     let searchFormData = searchData;
@@ -188,29 +244,15 @@ export default withRouter((props) => {
     history.push(`/search/${searchData.keyword}`);
   };
 
-  const fetchSearchResults = async (value) => {
-    return await liveSearch({
+  const onFetchResults = async (value) => {
+    return await fetchResults({
       variables: {
         criterias: {
           search: value,
           page: 1,
         },
       },
-    })
-      .then((response) => {
-        const { data } = response;
-        const { liveSearch } = data;
-        const { articles, products, farms, users } = liveSearch;
-        let collections = [...users, ...products, ...farms, ...articles];
-        setSearchData({
-          ...searchData,
-          searchResults: collections,
-          isDropdownShown: true,
-        });
-      })
-      .finally(() => {
-        inputRef.current.isSearching = false;
-      });
+    });
   };
 
   const onClear = () => {
@@ -263,22 +305,6 @@ export default withRouter((props) => {
         <DropdownPanel ref={dropdownRef}>
           <Dropdown>
             {searchResults.map((rs) => {
-              if (rs.feedType === FeedType.Farm) {
-                rs.url = `${UrlConstant.Farm.url}${rs.id}`;
-              } else if (rs.feedType === FeedType.Article) {
-                rs.url = `${UrlConstant.Article.url}${rs.id}`;
-              } else if (rs.feedType === FeedType.Product) {
-                rs.url = `${UrlConstant.Product.url}${rs.id}`;
-              } else if (rs.feedType === FeedType.User) {
-                rs.url = `${UrlConstant.Profile.url}${rs.id}`;
-              }
-
-              if (rs.feedType === FeedType.User) {
-                rs.pictureUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${rs.pictureId}`;
-              } else {
-                rs.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${rs.pictureId}`;
-              }
-
               return (
                 <DropdownItem key={`${rs.id}${rs.feedType}`}>
                   <AnchorLink to={rs.url}>

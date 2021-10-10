@@ -19,8 +19,7 @@ namespace Module.Api.Feed.Infrastructure.Extensions
 
             services.AddGraphQLServer()
                 .AddType<FeedQueries>()
-                .AddType<SearchQueries>()
-                .AddType<SearchMutations>();
+                .AddType<SearchQueries>();
 
             return services;
         }

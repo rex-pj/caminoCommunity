@@ -1,8 +1,13 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { withRouter } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
-import { Pagination } from "../../components/organisms/Paging";
 import FarmItem from "../../components/organisms/Farm/FarmItem";
 import { farmQueries } from "../../graphql/fetching/queries";
 import {
@@ -16,28 +21,33 @@ import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import {
   ErrorBar,
   LoadingBar,
+  NoDataBar,
 } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default withRouter(function (props) {
-  const { location, match, pageNumber } = props;
-  const { params } = match;
-  const { userId } = params;
+  const {
+    match: {
+      params: { userId },
+    },
+    pageNumber,
+  } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
+  const [farms, setFarms] = useState([]);
+  const pageRef = useRef({
+    pageNumber: pageNumber ? pageNumber : 1,
+    userId: userId,
+  });
 
-  const {
-    loading,
-    data,
-    error,
-    refetch: fetchFarms,
-    networkStatus,
-  } = useQuery(farmQueries.GET_USER_FARMS, {
-    variables: {
-      criterias: {
-        userIdentityId: userId,
-        page: pageNumber ? parseInt(pageNumber) : 1,
-      },
+  const [
+    fetchFarms,
+    { loading, data, error, refetch: refetchFarms, networkStatus },
+  ] = useLazyQuery(farmQueries.GET_USER_FARMS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
     },
   });
 
@@ -80,7 +90,7 @@ export default withRouter(function (props) {
         const { data } = response;
         const { createFarm: farm } = data;
         resolve(farm);
-        fetchFarms();
+        refetchFarms();
       });
     });
   };
@@ -116,7 +126,7 @@ export default withRouter(function (props) {
         criterias: { id },
       },
     }).then(() => {
-      fetchFarms();
+      refetchFarms();
     });
   };
 
@@ -129,7 +139,7 @@ export default withRouter(function (props) {
           onImageValidate={onImageValidate}
           filterCategories={farmTypes}
           onFarmPost={onFarmPost}
-          refetchNews={fetchFarms}
+          refetchNews={refetchFarms}
           showValidationError={showValidationError}
         />
       );
@@ -138,83 +148,137 @@ export default withRouter(function (props) {
     return null;
   };
 
+  const setPageInfo = (data) => {
+    const {
+      userFarms: {
+        totalPage,
+        totalResult,
+        filter: { page },
+      },
+    } = data;
+    pageRef.current.totalPage = totalPage;
+    pageRef.current.currentPage = page;
+    pageRef.current.totalResult = totalResult;
+  };
+
+  const onFetchCompleted = (data) => {
+    const {
+      userFarms: { collections },
+    } = data;
+    const farmCollections = parseCollections(collections);
+    setFarms([...farms, ...farmCollections]);
+  };
+
   useEffect(() => {
     if (state.type === "FARM_UPDATE" || state.type === "FARM_DELETE") {
-      fetchFarms();
+      refetchFarms();
     }
-  }, [state, fetchFarms]);
+  }, [state, refetchFarms]);
 
-  if (loading || !data || networkStatus === 1) {
+  useEffect(() => {
+    const page = pageRef.current.pageNumber;
+    fetchFarms({
+      variables: {
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: page ? parseInt(page) : 1,
+        },
+      },
+    });
+  }, [fetchFarms]);
+
+  const parseCollections = (collections) => {
+    return collections.map((item) => {
+      let farm = { ...item };
+      farm.url = `${UrlConstant.Farm.url}${farm.id}`;
+      if (farm.pictures && farm.pictures.length > 0) {
+        const picture = farm.pictures[0];
+        if (picture.pictureId > 0) {
+          farm.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
+        }
+      }
+
+      farm.creator = {
+        createdDate: item.createdDate,
+        profileUrl: `/profile/${item.createdByIdentityId}`,
+        name: item.createdBy,
+      };
+
+      if (item.createdByPhotoCode) {
+        farm.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+      }
+
+      return farm;
+    });
+  };
+
+  if ((loading || networkStatus === 1) && farms.length === 0) {
     return (
       <Fragment>
-        {renderFarmEditor()}
+        {currentUser && isLogin ? renderFarmEditor() : null}
         <LoadingBar>Loading...</LoadingBar>
       </Fragment>
     );
-  } else if (error) {
+  }
+  if ((!data || !pageRef.current.totalResult) && farms.length === 0) {
     return (
       <Fragment>
-        {renderFarmEditor()}
+        {currentUser && isLogin ? renderFarmEditor() : null}
+        <NoDataBar>No Data!</NoDataBar>
+      </Fragment>
+    );
+  }
+  if (error) {
+    return (
+      <Fragment>
+        {currentUser && isLogin ? renderFarmEditor() : null}
         <ErrorBar>Error!</ErrorBar>
       </Fragment>
     );
   }
 
-  const { userFarms } = data;
-  const { collections } = userFarms;
-  const farms = collections.map((item) => {
-    let farm = { ...item };
-    farm.url = `${UrlConstant.Farm.url}${farm.id}`;
-    if (farm.pictures && farm.pictures.length > 0) {
-      const picture = farm.pictures[0];
-      if (picture.pictureId > 0) {
-        farm.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
-      }
+  const fetchMoreData = () => {
+    if (pageRef.current.pageNumber === pageRef.current.totalPage) {
+      return;
     }
-
-    farm.creator = {
-      createdDate: item.createdDate,
-      profileUrl: `/profile/${item.createdByIdentityId}`,
-      name: item.createdBy,
-    };
-
-    if (item.createdByPhotoCode) {
-      farm.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
-    }
-
-    return farm;
-  });
-
-  const pageQuery = location.search;
-  const baseUrl = props.userUrl + "/articles";
-  const { totalPage, filter } = userFarms;
-  const { page } = filter;
+    pageRef.current.pageNumber += 1;
+    fetchFarms({
+      variables: {
+        criterias: {
+          userId: pageRef.current.userId,
+          page: pageRef.current.pageNumber,
+        },
+      },
+    });
+  };
 
   return (
     <Fragment>
       {renderFarmEditor()}
-      <div className="row">
-        {farms
-          ? farms.map((item, index) => (
-              <div
-                key={index}
-                className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-              >
-                <FarmItem
-                  key={item.id}
-                  farm={item}
-                  onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-                />
-              </div>
-            ))
-          : null}
-      </div>
-      <Pagination
-        totalPage={totalPage}
-        baseUrl={baseUrl}
-        pageQuery={pageQuery}
-        currentPage={page}
-      />
+      <InfiniteScroll
+        style={{ overflowX: "hidden" }}
+        dataLength={pageRef.current.totalResult}
+        next={fetchMoreData}
+        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
+        loader={<h4>Loading...</h4>}
+      >
+        <div className="row">
+          {farms
+            ? farms.map((item, index) => (
+                <div
+                  key={index}
+                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
+                >
+                  <FarmItem
+                    key={item.id}
+                    farm={item}
+                    onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
+                  />
+                </div>
+              ))
+            : null}
+        </div>
+      </InfiniteScroll>
     </Fragment>
   );
 });
