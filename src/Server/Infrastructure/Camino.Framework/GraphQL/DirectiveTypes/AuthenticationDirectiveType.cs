@@ -26,6 +26,7 @@ namespace Camino.Framework.GraphQL.DirectiveTypes
                 if (string.IsNullOrEmpty(token))
                 {
                     context.Result = new ForbidResult();
+                    return;
                 }
 
                 var jwtHelper = context.Services.GetService<IJwtHelper>();

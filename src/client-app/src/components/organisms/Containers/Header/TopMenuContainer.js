@@ -1,8 +1,13 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
-import { SessionContext } from "../../../store/context/session-context";
-import TopPersonalDropdown from "./TopPersonalDropdown";
+import { RouterLinkButtonPrimary } from "../../../atoms/Buttons/RouterLinkButtons";
+import { SessionContext } from "../../../../store/context/session-context";
+import TopProfileContainer from "./TopProfileContainer";
+import TopCartContainer from "./TopCartContainer";
+
+const Root = styled.div`
+  text-align: right;
+`;
 
 const List = styled.ul`
   list-style: none;
@@ -48,19 +53,32 @@ export default (props) => {
   }
 
   if (currentUser && isLogin) {
-    return <TopPersonalDropdown userInfo={currentUser} />;
+    return (
+      <Root>
+        <TopCartContainer
+          className="top-cart-container me-2"
+          userInfo={currentUser}
+        />
+        <TopProfileContainer
+          className="top-profile-container"
+          userInfo={currentUser}
+        />
+      </Root>
+    );
   }
 
   return (
-    <List className={props.className}>
-      <ListItem className="d-none d-sm-inline-block">
-        <AuthButton to="/auth/signup">Sign Up</AuthButton>
-      </ListItem>
+    <Root>
+      <List className={props.className}>
+        <ListItem className="d-none d-sm-inline-block">
+          <AuthButton to="/auth/signup">Sign Up</AuthButton>
+        </ListItem>
 
-      <Devided />
-      <ListItem>
-        <AuthButton to="/auth/login">Login</AuthButton>
-      </ListItem>
-    </List>
+        <Devided />
+        <ListItem>
+          <AuthButton to="/auth/login">Login</AuthButton>
+        </ListItem>
+      </List>
+    </Root>
   );
 };

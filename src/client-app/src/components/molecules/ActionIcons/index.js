@@ -38,7 +38,7 @@ const Link = styled(AnchorLink)`
 export const FontButtonItem = (props) => {
   const { icon, title, dynamicText } = props;
   return (
-    <Root>
+    <Root className={props.className}>
       <FontLink icon={icon} />
       <Link to="#">
         {dynamicText} {title}

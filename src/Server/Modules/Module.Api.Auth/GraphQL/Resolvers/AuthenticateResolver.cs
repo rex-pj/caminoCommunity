@@ -105,7 +105,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
         public async Task<UserTokenModel> RefreshTokenAsync()
         {
-            var authenticationToken = GetAccessTokenFromCookie();
+            var authenticationToken = GetAccessTokenFromHeader();
             var clientRefreshToken = GetRefreshTokenFromCookie();
             if (string.IsNullOrWhiteSpace(authenticationToken))
             {
@@ -169,9 +169,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaderContants.CookieAuthenticationRefreshToken];
         }
 
-        private string GetAccessTokenFromCookie()
+        private string GetAccessTokenFromHeader()
         {
-            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaderContants.HeaderAuthenticationAccessToken];
+            return _httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HeaderAuthenticationAccessToken];
         }
 
         public async Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)

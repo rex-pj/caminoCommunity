@@ -1,5 +1,5 @@
 import {
-  AUTH_TOKEN,
+  ACCESS_TOKEN,
   USER_LANGUAGE,
   AUTH_REFRESH_TOKEN_EXPIRATION,
   AUTH_IS_REMEMBER,
@@ -15,9 +15,9 @@ export const checkRemember = () => {
 
 export const getUserToken = (isRemember) => {
   if (isRemember) {
-    return storageService.getStorageByKey(AUTH_TOKEN);
+    return storageService.getStorageByKey(ACCESS_TOKEN);
   }
-  return cookieService.getStorageByKey(AUTH_TOKEN, { path: "/" });
+  return cookieService.getStorageByKey(ACCESS_TOKEN, { path: "/" });
 };
 
 export const parseUserInfo = (response) => {
@@ -54,15 +54,16 @@ export const parseUserInfo = (response) => {
 };
 
 export const setLogin = (tokenData, isRember) => {
+  logOut();
   const { authenticationToken, refreshTokenExpiryTime } = tokenData;
   if (isRember) {
-    storageService.setStorage(AUTH_TOKEN, authenticationToken);
+    storageService.setStorage(ACCESS_TOKEN, authenticationToken);
     storageService.setStorage(
       AUTH_REFRESH_TOKEN_EXPIRATION,
       refreshTokenExpiryTime
     );
   } else {
-    cookieService.setStorage(AUTH_TOKEN, authenticationToken, {
+    cookieService.setStorage(ACCESS_TOKEN, authenticationToken, {
       secure: true,
       sameSite: "strict",
       path: "/",
@@ -116,10 +117,10 @@ export const isTokenValid = () => {
 export const logOut = () => {
   const isRemember = checkRemember();
   if (isRemember) {
-    storageService.removeStorage(AUTH_TOKEN);
+    storageService.removeStorage(ACCESS_TOKEN);
     storageService.removeStorage(AUTH_REFRESH_TOKEN_EXPIRATION);
   } else {
-    cookieService.removeStorage(AUTH_TOKEN, { path: "/" });
+    cookieService.removeStorage(ACCESS_TOKEN, { path: "/" });
     cookieService.removeStorage(AUTH_REFRESH_TOKEN_EXPIRATION, {
       path: "/",
     });

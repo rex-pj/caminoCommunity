@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { RouterLinkButtonTransparent } from "../../atoms/Buttons/RouterLinkButtons";
-import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
-import { ImageRound } from "../../atoms/Images";
-import ButtonGroup from "../../atoms/ButtonGroup";
-import DropdownButton from "../../molecules/DropdownButton";
-import NoAvatar from "../../molecules/NoImages/no-avatar";
+import { RouterLinkButtonTransparent } from "../../../atoms/Buttons/RouterLinkButtons";
+import { ButtonPrimary } from "../../../atoms/Buttons/Buttons";
+import { ImageRound } from "../../../atoms/Images";
+import ButtonGroup from "../../../atoms/ButtonGroup";
+import DropdownButton from "../../../molecules/DropdownButton";
+import NoAvatar from "../../../molecules/NoImages/no-avatar";
 
 const Root = styled.div`
-  float: right;
+  display: inline-block;
 `;
 
 const EmptyAvatar = styled(NoAvatar)`
@@ -23,8 +23,6 @@ const EmptyAvatar = styled(NoAvatar)`
 
 const ProfileButton = styled(RouterLinkButtonTransparent)`
   color: ${(p) => p.theme.color.lightText};
-  background-color: ${(p) => p.theme.rgbaColor.darkLight};
-  border: 1px solid ${(p) => p.theme.color.secondaryDivide};
   ${ImageRound} {
     height: 100%;
     margin-right: ${(p) => p.theme.size.exTiny};
@@ -81,7 +79,7 @@ export default function (props) {
   ];
 
   return (
-    <Root>
+    <Root className={props.className}>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
           {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (

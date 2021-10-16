@@ -268,13 +268,11 @@ export default withRouter((props) => {
         </div>
         <HorizontalList className="clearfix">
           <InteractItem>
-            <HorizontalReactBar reactionNumber={product.reactionNumber} />
+            <HorizontalReactBar reactionNumber={100} className="me-2" />
+            <FontButtonItem icon="comments" dynamicText={200} />
           </InteractItem>
           <InteractRightItem>
-            <FontButtonItem
-              icon="comments"
-              dynamicText={product.commentNumber}
-            />
+            <FontButtonItem icon="cart-plus" />
           </InteractRightItem>
         </HorizontalList>
       </PanelBody>

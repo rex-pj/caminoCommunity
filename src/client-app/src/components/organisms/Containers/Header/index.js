@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "./Logo";
 import SearchBar from "../../Search/SearchBar";
-import NavigationMenu from "../../Navigation/NavigationMenu";
+import TopMenuContainer from "./TopMenuContainer";
 
 const NavRoot = styled.nav`
   background-image: ${(p) => p.theme.gradientColor.primary};
@@ -10,10 +10,6 @@ const NavRoot = styled.nav`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
   position: relative;
   z-index: 100;
-`;
-
-const NavMenu = styled(NavigationMenu)`
-  float: right;
 `;
 
 export default (props) => {
@@ -29,9 +25,7 @@ export default (props) => {
             <SearchBar className="ms-1 ms-sm-0" />
           </div>
           <div className="col">
-            <div className="clearfix">
-              <NavMenu />
-            </div>
+            <TopMenuContainer />
           </div>
         </div>
       </div>

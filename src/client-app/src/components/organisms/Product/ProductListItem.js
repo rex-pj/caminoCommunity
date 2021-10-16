@@ -89,6 +89,11 @@ const InteractiveItem = styled.li`
   }
 `;
 
+const InteractRightItem = styled(InteractiveItem)`
+  text-align: right;
+  float: right;
+`;
+
 export default withRouter(function (props) {
   const { product, onOpenDeleteConfirmationModal, location } = props;
   const { creator, createdByIdentityId } = product;
@@ -252,15 +257,19 @@ export default withRouter(function (props) {
         <InteractiveToolbar>
           <HorizontalList>
             <InteractiveItem>
-              <HorizontalReactBar reactionNumber={product.reactionNumber} />
-            </InteractiveItem>
-            <InteractiveItem>
+              <HorizontalReactBar
+                reactionNumber={product.reactionNumber}
+                className="me-2"
+              />
               <FontButtonItem
                 icon="comments"
                 dynamicText={product.commentNumber}
                 title="Discussions"
               />
             </InteractiveItem>
+            <InteractRightItem>
+              <FontButtonItem icon="cart-plus" />
+            </InteractRightItem>
           </HorizontalList>
         </InteractiveToolbar>
       </Panel>
