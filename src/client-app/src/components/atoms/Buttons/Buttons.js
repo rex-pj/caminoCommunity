@@ -53,7 +53,7 @@ const ButtonPrimary = styled(ButtonTransparent)`
 const ButtonLight = styled(ButtonTransparent)`
   background-color: ${(p) => p.theme.color.lightBg};
   border-color: ${(p) => p.theme.color.neutralBg};
-  color: ${(p) => p.theme.color.primaryText};
+  color: ${(p) => p.theme.color.darkText};
 
   :active,
   :hover,

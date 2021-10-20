@@ -57,7 +57,7 @@ const AvatarUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${(p) => p.theme.color.primaryText};
+    color: ${(p) => p.theme.color.darkText};
     height: ${(p) => p.theme.size.medium};
     padding: 0 ${(p) => p.theme.size.distance};
     background-color: ${(p) => p.theme.color.lightBg};

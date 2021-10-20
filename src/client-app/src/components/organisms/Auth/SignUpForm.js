@@ -75,7 +75,7 @@ const SubmitButton = styled(ButtonLight)`
 
   :disabled {
     background-color: ${(p) => p.theme.color.neutralBg};
-    color: ${(p) => p.theme.color.primaryText};
+    color: ${(p) => p.theme.color.darkText};
     cursor: auto;
   }
 `;

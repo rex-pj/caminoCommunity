@@ -16,7 +16,7 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
-import { TypographyPrimary } from "../../atoms/Typographies";
+import { TypographyDark } from "../../atoms/Typographies";
 import { withRouter } from "react-router-dom";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
@@ -25,7 +25,7 @@ import { SessionContext } from "../../../store/context/session-context";
 import AttributesDetail from "../../organisms/Product/AttributesDetail";
 
 const Title = styled(PrimaryTitle)`
-  color: ${(p) => p.theme.color.primaryText};
+  color: ${(p) => p.theme.color.darkText};
 `;
 
 const ContentBody = styled.div`
@@ -79,7 +79,7 @@ const RowItem = styled.div`
     margin-bottom: 0;
   }
 
-  ${TypographyPrimary} {
+  ${TypographyDark} {
     font-size: ${(p) => p.theme.fontSize.small};
     display: inline-block;
     margin-bottom: 0;

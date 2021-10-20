@@ -36,7 +36,7 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.primaryText};
+    color: ${(p) => p.theme.color.darkText};
   }
 
   a {

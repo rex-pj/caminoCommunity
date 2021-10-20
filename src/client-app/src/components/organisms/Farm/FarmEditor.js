@@ -37,7 +37,7 @@ const ThumbnailUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${(p) => p.theme.color.primaryText};
+    color: ${(p) => p.theme.color.darkText};
     height: ${(p) => p.theme.size.normal};
     padding: 0 ${(p) => p.theme.size.tiny};
     font-size: ${(p) => p.theme.fontSize.tiny};

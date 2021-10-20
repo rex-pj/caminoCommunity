@@ -2,11 +2,7 @@ import styled from "styled-components";
 
 export const LabelPrimary = styled.label`
   font-size: ${(p) => p.theme.fontSize.normal};
-  color: ${(p) => p.theme.color.secondaryText};
-`;
-
-export const LabelSecondary = styled(LabelPrimary)`
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.darkText};
 `;
 
 export const LabelNormal = styled(LabelPrimary)`

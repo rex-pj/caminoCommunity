@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { LabelSecondary } from "../../atoms/Labels";
+import { LabelPrimary } from "../../atoms/Labels";
 import { SecondaryDarkHeading } from "../../atoms/Heading";
 import { LightTextbox } from "../../atoms/Textboxes";
 import styled from "styled-components";
@@ -138,7 +138,7 @@ export default withRouter((props) => {
       </SecondaryDarkHeading>
       <div className="row">
         <div className="mb-3 col-6 col-md-12">
-          <LabelSecondary>Từ khóa</LabelSecondary>
+          <LabelPrimary>Từ khóa</LabelPrimary>
           <SearchInput
             placeholder="Từ khóa"
             type="text"
@@ -150,7 +150,7 @@ export default withRouter((props) => {
           />
         </div>
         <div className="mb-3 col-6 col-md-12">
-          <LabelSecondary>Được tạo bởi</LabelSecondary>
+          <LabelPrimary>Được tạo bởi</LabelPrimary>
           <AsyncSelect
             className="cate-selection"
             cacheOptions
@@ -165,7 +165,7 @@ export default withRouter((props) => {
       </div>
       <div className="row">
         <div className="mb-3 col-6 col-md-12">
-          <LabelSecondary>Từ</LabelSecondary>
+          <LabelPrimary>Từ</LabelPrimary>
           <Select
             options={timeOptions}
             name="hoursCreatedFrom"
@@ -175,7 +175,7 @@ export default withRouter((props) => {
           />
         </div>
         <div className="mb-3 col-6 col-md-12">
-          <LabelSecondary>Đến</LabelSecondary>
+          <LabelPrimary>Đến</LabelPrimary>
           <Select
             options={timeOptions}
             name="hoursCreatedTo"
@@ -188,7 +188,7 @@ export default withRouter((props) => {
 
       {searchData.feedFilterType ? (
         <div className="mb-3">
-          <LabelSecondary>Hiển thị kết quả cho</LabelSecondary>
+          <LabelPrimary>Hiển thị kết quả cho</LabelPrimary>
           <div>
             {loadFilterTypeLabel(Number(searchData.feedFilterType))}
             <ButtonTransparent>

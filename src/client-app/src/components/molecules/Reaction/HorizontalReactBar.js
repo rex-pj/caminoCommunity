@@ -14,7 +14,7 @@ const ReactButton = styled.span`
   vertical-align: middle;
   cursor: pointer;
   margin-right: ${(p) => p.theme.size.exTiny};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.lightText};
 
   svg,
   path {

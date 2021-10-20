@@ -16,7 +16,7 @@ import { ActionButton } from "../../molecules/ButtonGroups";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 
 const Title = styled(PrimaryTitle)`
-  color: ${(p) => p.theme.color.primaryText};
+  color: ${(p) => p.theme.color.darkText};
 `;
 
 const PostActions = styled.div`

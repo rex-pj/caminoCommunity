@@ -4,34 +4,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnchorLink } from "../../atoms/Links";
 
 const FontLink = styled(FontAwesomeIcon)`
-  color: ${(p) => p.theme.color.neutralText};
   vertical-align: middle;
   cursor: pointer;
   margin-right: ${(p) => p.theme.size.exTiny};
 
   svg,
   path {
-    color: inherit;
+    color: ${(p) => p.theme.color.lightText};
   }
 `;
 
 const Root = styled.div`
   display: inline-block;
+  color: ${(p) => p.theme.color.lightText};
 
+  :hover {
+    color: ${(p) => p.theme.color.neutralText};
+  }
+
+  :hover svg,
   :hover path {
-    color: ${(p) => p.theme.color.secondaryText};
+    color: ${(p) => p.theme.color.neutralText};
   }
 `;
 
 const Link = styled(AnchorLink)`
-  color: ${(p) => p.theme.color.neutralText};
   font-weight: 600;
   font-size: ${(p) => p.theme.fontSize.small};
   vertical-align: middle;
   cursor: pointer;
-
+  color: inherit;
   :hover {
-    color: ${(p) => p.theme.color.secondaryText};
+    color: inherit;
   }
 `;
 

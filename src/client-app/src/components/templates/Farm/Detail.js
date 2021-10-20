@@ -17,7 +17,7 @@ import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationMo
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${(p) => p.theme.size.exTiny};
-  color: ${(p) => p.theme.color.primaryText};
+  color: ${(p) => p.theme.color.darkText};
 `;
 
 const ContentBody = styled.div`
