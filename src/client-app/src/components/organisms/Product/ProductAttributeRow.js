@@ -11,7 +11,7 @@ import ProductAttributeValueRow from "./ProductAttributeValueRow";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
-  background-color: ${(p) => p.theme.color.primaryDivide};
+  background-color: ${(p) => p.theme.color.neutralBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
 
   label {
@@ -20,7 +20,7 @@ const FormRow = styled.div`
 `;
 
 const AttributeValuePanel = styled.div`
-  background-color: ${(p) => p.theme.color.secondaryDivide};
+  background-color: ${(p) => p.theme.color.neutralBg};
   border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
 `;

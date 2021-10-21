@@ -15,16 +15,16 @@ const TextLabel = styled.span`
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.warnText};
     font-weight: 400;
   }
 
   &.success {
-    border: 1px solid ${(p) => p.theme.color.secondaryBg};
+    border: 1px solid ${(p) => p.theme.color.primaryBg};
   }
 
   &.fail {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerText};
   }
 `;
 
@@ -37,11 +37,11 @@ const SelectBox = styled(Select)`
   max-width: 100%;
 
   &.success {
-    border: 1px solid ${(p) => p.theme.color.secondaryBg};
+    border: 1px solid ${(p) => p.theme.color.primaryBg};
   }
 
   &.fail {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerBg};
   }
 `;
 
@@ -118,7 +118,7 @@ export default function (props) {
     }
   }
 
-  function resetStatus(){
+  function resetStatus() {
     setTimeout(() => {
       setStatus("");
     }, 1000);

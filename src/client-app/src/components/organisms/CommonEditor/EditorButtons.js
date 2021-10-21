@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 const BaseButton = styled.span`
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.primaryText};
   padding: 5px 8px;
   border-radius: ${(p) => p.theme.borderRadius.normal};
   border-width: 1px;

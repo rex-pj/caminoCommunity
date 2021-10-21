@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import FarmSuggestionItem from "./FarmSuggestionItem";
 import { VerticalList } from "../../molecules/List";
-import { FifthHeadingSecondary } from "../../atoms/Heading";
+import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { LoadingBar } from "../../molecules/NotificationBars";
 
 const Root = styled.div`
@@ -49,7 +49,7 @@ export default (props) => {
 
   return (
     <div>
-      <FifthHeadingSecondary>Visit other farms</FifthHeadingSecondary>
+      <FifthHeadingNeutralTitle>Visit other farms</FifthHeadingNeutralTitle>
       <Root>
         <List>
           {farms &&

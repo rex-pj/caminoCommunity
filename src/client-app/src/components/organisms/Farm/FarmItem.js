@@ -40,7 +40,7 @@ const ContentTopbar = styled.div`
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -109,7 +109,7 @@ const FollowButton = styled(ButtonIconPrimary)`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-size: ${(p) => p.theme.fontSize.tiny};
 
   span {

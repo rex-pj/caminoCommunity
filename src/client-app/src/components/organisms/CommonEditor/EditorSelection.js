@@ -44,7 +44,7 @@ const Option = styled.li`
   background: ${(p) => p.theme.color.neutralBg};
   padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.tiny};
   border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.primaryText};
   font-weight: 600;
 
   :hover {

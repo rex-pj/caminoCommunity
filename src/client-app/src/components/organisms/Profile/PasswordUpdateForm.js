@@ -18,7 +18,7 @@ const MainPanel = styled(PanelBody)`
 
 const FormGroup = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
-  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
 `;
 
 const Heading = styled(QuaternaryDarkHeading)`

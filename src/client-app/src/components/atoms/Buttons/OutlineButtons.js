@@ -39,8 +39,8 @@ const ButtonOutlinePrimary = styled.button`
 `;
 
 const ButtonOutlineLight = styled(ButtonOutlinePrimary)`
-  border-color: ${(p) => p.theme.color.neutralBg};
-  color: ${(p) => p.theme.color.neutralText};
+  border-color: ${(p) => p.theme.color.secondaryBg};
+  color: ${(p) => p.theme.color.secondaryText};
 
   :active,
   :hover,
@@ -54,18 +54,18 @@ const ButtonOutlineLight = styled(ButtonOutlinePrimary)`
 `;
 
 const ButtonOutlineDanger = styled(ButtonOutlinePrimary)`
-  border-color: ${(p) => p.theme.color.secondaryDangerBg};
-  color: ${(p) => p.theme.color.secondaryDangerText};
+  border-color: ${(p) => p.theme.color.dangerBg};
+  color: ${(p) => p.theme.color.neutralText};
 
   :active,
   :hover,
   :focus-within {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.whiteText};
     background-color: transparent;
   }
 
   :disabled {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.whiteText};
   }
 `;
 

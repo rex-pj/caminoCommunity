@@ -23,7 +23,7 @@ const TextLabel = styled.span`
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.warnText};
     font-weight: 400;
   }
 `;
@@ -125,12 +125,12 @@ export default function (props) {
           autoFocus={true}
           onChange={onChange}
         />{" "}
-        <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
+        <ButtonOutlineLight size="xs" onClick={onClickUpdate}>
           <FontAwesomeIcon icon="check" />
-        </ButtonOutlinePrimary>
-        <ButtonOutlineLight size="xs" onClick={closeTextBox}>
-          <FontAwesomeIcon icon="times" />
         </ButtonOutlineLight>
+        <ButtonOutlinePrimary size="xs" onClick={closeTextBox}>
+          <FontAwesomeIcon icon="times" />
+        </ButtonOutlinePrimary>
       </Wrap>
     );
   }

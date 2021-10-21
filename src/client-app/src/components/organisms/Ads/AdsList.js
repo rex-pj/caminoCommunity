@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import AdsItem from "./AdsItem";
 import { VerticalList } from "../../molecules/List";
-import { FifthHeadingSecondary } from "../../atoms/Heading";
+import { FifthHeadingPrimary } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
@@ -11,14 +11,14 @@ const Root = styled.div`
   border-radius: ${(p) => p.theme.borderRadius.normal};
   padding: ${(p) => p.theme.size.exSmall};
 
-  ${FifthHeadingSecondary} {
+  ${FifthHeadingPrimary} {
     span {
       float: left;
     }
 
     svg {
       float: right;
-      color: ${(p) => p.theme.color.secondaryTitle};
+      color: ${(p) => p.theme.color.primaryBg};
     }
 
     :after {
@@ -44,10 +44,10 @@ export default function (props) {
 
   return (
     <Root>
-      <FifthHeadingSecondary>
+      <FifthHeadingPrimary>
         Suggestions
         <FontAwesomeIcon icon="bullhorn" />
-      </FifthHeadingSecondary>
+      </FifthHeadingPrimary>
       <div>
         <VerticalList>
           {listAds &&

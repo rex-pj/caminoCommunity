@@ -1,28 +1,24 @@
 /** Color rules */
 export const color = {
   primaryBg: "#2E420E",
-  secondaryBg: "#293D09",
-  secondaryText: "#293D09",
-  neutralBg: "#526630",
-  neutralText: "#526630",
-  lightBg: "#9EB378",
-  lightText: "#9EB378",
-  primaryWarnBg: "#C1AB36",
-  primaryWarnText: "#C1AB36",
-  secondaryWarnBg: "#FFCD93",
-  secondaryWarnText: "#FFCD93",
-  primaryDangerBg: "#8D372A",
-  primaryDangerText: "#8D372A",
-  secondaryDangerBg: "#A25723",
-  secondaryDangerText: "#A25723",
+  primaryText: "#2E420E",
+  secondaryBg: "#739E2E",
+  secondaryText: "#739E2E",
+  neutralBg: "#FFFBCE",
+  neutralText: "#FFFBCE",
+  lightBg: "#F8FBF1",
+  lightText: "#F8FBF1",
+  warnBg: "#FFCD93",
+  warnText: "#FFCD93",
+  dangerBg: "#903628",
+  dangerText: "#903628",
   highlight: "#fffe0d",
-  primaryDivide: "#CBE0A3",
-  secondaryDivide: "#E9F6D0",
   whiteBg: "#FFFFFF",
   whiteText: "#FFFFFF",
   darkBg: "#202124",
   darkText: "#202124",
-  secondaryTitle: "#747968",
+  neutralBorder: "#E9F6D0",
+  neutralTitle: "#B5C98D",
   primaryLink: "#2F4858",
 };
 
@@ -39,7 +35,6 @@ export const rgbaColor = {
 export const gradientColor = {
   primary:
     "linear-gradient(to right top, #2e420e, #2d410d, #2b3f0c, #2a3e0a, #293d09);",
-  secondary: "linear-gradient(to bottom, #9eb378 0%, #CBE0A3 100%);",
 };
 
 export const size = {
@@ -69,6 +64,6 @@ export const borderRadius = {
 };
 
 export const shadow = {
-  BoxShadow: `0px 1px 5px 0px rgb(0 0 0 / 9%)`,
+  BoxShadow: `0px 1px 3px 0px rgb(0 0 0 / 9%)`,
   TextShadow: `0 0 3px rgba(0,0,0, 0.8)`,
 };

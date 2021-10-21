@@ -10,21 +10,21 @@ const FontLink = styled(FontAwesomeIcon)`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.lightText};
+    color: ${(p) => p.theme.color.primaryText};
   }
 `;
 
 const Root = styled.div`
   display: inline-block;
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.primaryText};
 
   :hover {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 
   :hover svg,
   :hover path {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 `;
 

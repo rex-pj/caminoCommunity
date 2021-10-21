@@ -25,13 +25,13 @@ const Scroll = styled.div`
   z-index: 900;
 
   > ${PanelHeading} {
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
     font-weight: 600;
     position: relative;
   }
 
   ${PanelFooter} {
-    border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-top: 1px solid ${(p) => p.theme.color.neutralBg};
     text-align: right;
 
     button {

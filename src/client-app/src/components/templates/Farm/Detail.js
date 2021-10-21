@@ -32,7 +32,7 @@ const InteractiveItem = styled.li`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-size: ${(p) => p.theme.fontSize.tiny};
   margin-bottom: ${(p) => p.theme.size.distance};
   position: relative;
@@ -40,26 +40,29 @@ const TopBarInfo = styled.div`
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
     border-bottom: 0;
   }
 
-  span {
-    color: inherit;
-    vertical-align: middle;
-  }
+  .infor-bar {
+    color: ${(p) => p.theme.color.secondaryText};
+    span {
+      color: inherit;
+      vertical-align: middle;
+    }
 
-  svg {
-    margin-right: ${(p) => p.theme.size.exTiny};
-    color: inherit;
-    vertical-align: middle;
-  }
+    svg {
+      margin-right: ${(p) => p.theme.size.exTiny};
+      color: inherit;
+      vertical-align: middle;
+    }
 
-  path {
-    color: inherit;
+    path {
+      color: inherit;
+    }
   }
 `;
 
@@ -75,7 +78,7 @@ const PostActions = styled.div`
 
 const BreadCrumbNav = styled(Breadcrumb)`
   border: 0;
-  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   border-radius: 0;
   margin-bottom: 0;
   li {
@@ -106,7 +109,7 @@ const DropdownList = styled(Dropdown)`
   padding: ${(p) => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -183,8 +186,10 @@ export default withRouter((props) => {
             <div className="row">
               <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
                 <Title>{farm.name}</Title>
-                <FontAwesomeIcon icon="map-marker-alt" />
-                <span>{farm.address}</span>
+                <div className="infor-bar">
+                  <FontAwesomeIcon icon="map-marker-alt" />
+                  <span>{farm.address}</span>
+                </div>
               </div>
               <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
                 <PostActions ref={currentRef}>

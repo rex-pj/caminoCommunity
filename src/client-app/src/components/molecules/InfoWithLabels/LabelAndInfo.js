@@ -4,23 +4,21 @@ import styled from "styled-components";
 const ChildItem = styled.div`
   font-size: ${(p) => p.theme.fontSize.small};
   color: ${(p) => p.theme.color.darkText};
-  margin-bottom: ${(p) => p.theme.size.tiny};
-  padding-bottom: ${(p) => p.theme.size.tiny};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
+  padding-bottom: ${(p) => p.theme.size.exSmall};
   min-height: ${(p) => p.theme.size.normal};
-  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
 
   label {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
+    font-weight: 600;
   }
 
   div {
-    font-weight: 600;
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
   p {
     font-size: ${(p) => p.theme.fontSize.small};
-    font-weight: 600;
     display: block;
     margin-bottom: 0;
     color: ${(p) => p.theme.color.primaryLink};

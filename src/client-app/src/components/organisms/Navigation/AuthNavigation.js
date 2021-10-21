@@ -6,7 +6,7 @@ import { HorizontalList } from "../../molecules/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  background-color: ${(p) => p.theme.color.primaryBg};
+  background-color: ${(p) => p.theme.color.secondaryBg};
   position: relative;
 `;
 
@@ -22,7 +22,7 @@ const NavButton = styled(RouterLinkButtonPrimary)`
   background-color: transparent;
 
   :hover {
-    color: ${(p) => p.theme.color.lighText};
+    color: ${(p) => p.theme.color.lightText};
     background-color: transparent;
   }
 `;
@@ -31,7 +31,7 @@ const ListItem = styled.li`
   display: inline-block;
 
   &.actived ${NavButton} {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
     color: ${(p) => p.theme.color.whiteText};
     font-weight: 600;
   }
@@ -42,8 +42,10 @@ const ListItem = styled.li`
 `;
 
 export default withRouter(function (props) {
-  const { match, className } = props;
-  const { path } = match;
+  const {
+    match: { path },
+    className,
+  } = props;
   return (
     <Root>
       <HorizontalList className={className}>

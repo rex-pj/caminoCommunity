@@ -23,7 +23,7 @@ const TextLabel = styled.div`
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.warnText};
     font-weight: 400;
   }
 `;
@@ -140,12 +140,12 @@ export default (props) => {
         )}
         {!props.enterByKey ? (
           <Fragment>
-            <ButtonOutlinePrimary size="xs" onClick={onClickUpdate}>
+            <ButtonOutlineLight size="xs" onClick={onClickUpdate}>
               <FontAwesomeIcon icon="check" />
-            </ButtonOutlinePrimary>
-            <ButtonOutlineLight size="xs" onClick={cancelEdit}>
-              <FontAwesomeIcon icon="times" />
             </ButtonOutlineLight>
+            <ButtonOutlinePrimary size="xs" onClick={cancelEdit}>
+              <FontAwesomeIcon icon="times" />
+            </ButtonOutlinePrimary>
           </Fragment>
         ) : null}
       </Wrap>

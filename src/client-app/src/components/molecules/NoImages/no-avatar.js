@@ -6,10 +6,10 @@ const Wrap = styled.span`
   display: block;
   padding: 0;
   text-align: center;
-  background-color: ${(p) => p.theme.color.lightBg};
+  background-color: ${(p) => p.theme.color.neutralBg};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   font-size: ${(p) => p.theme.fontSize.giant};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   position: relative;
 
   svg {

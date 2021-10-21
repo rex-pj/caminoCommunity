@@ -22,7 +22,7 @@ const EmptyAvatar = styled(NoAvatar)`
 `;
 
 const ProfileButton = styled(RouterLinkButtonTransparent)`
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.neutralText};
   ${ImageRound} {
     height: 100%;
     margin-right: ${(p) => p.theme.size.exTiny};
@@ -42,13 +42,14 @@ const PorfileButtonGroup = styled(ButtonGroup)`
     vertical-align: middle;
 
     :hover {
-      color: ${(p) => p.theme.color.lightText};
+      color: ${(p) => p.theme.color.neutralText};
     }
   }
 
   .profile-dropdown {
     ${ButtonPrimary} {
       border-left: 0;
+      color: ${(p) => p.theme.color.neutralText};
     }
 
     button {

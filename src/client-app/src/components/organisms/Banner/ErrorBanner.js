@@ -52,7 +52,7 @@ const Instruction = styled.div`
   svg,
   path {
     font-size: ${(p) => p.theme.fontSize.giant};
-    color: ${(p) => p.theme.color.primaryWarnText};
+    color: ${(p) => p.theme.color.neutralText};
   }
 
   p {

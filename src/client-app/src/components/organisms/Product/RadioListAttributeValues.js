@@ -1,6 +1,6 @@
 import React from "react";
 import { VerticalList } from "../../molecules/List";
-import { LabelPrimary } from "../../atoms/Labels";
+import { LabelSecondary } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
 export default (props) => {
@@ -20,10 +20,10 @@ export default (props) => {
               value={av.id}
               className="me-1"
             ></input>
-            <LabelPrimary htmlFor={`rdbAttributeValue-${av.id}`}>
+            <LabelSecondary htmlFor={`rdbAttributeValue-${av.id}`}>
               {av.name} [{adjustPrice(av, price)}
               {" vnđ"}]
-            </LabelPrimary>
+            </LabelSecondary>
           </li>
         );
       })}

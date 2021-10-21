@@ -6,14 +6,15 @@ import styled from "styled-components";
 const EditorTabs = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
   .tabs-bar button {
+    border-radius: 0;
     background-color: transparent;
     font-weight: normal;
     border-color: transparent;
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
+    border-bottom: 3px solid transparent;
   }
   .tabs-bar button.actived {
-    background-color: ${(p) => p.theme.color.primaryBg};
-    color: ${(p) => p.theme.color.lightText};
+    color: ${(p) => p.theme.color.primaryText};
   }
 `;
 
@@ -31,7 +32,7 @@ export default function (props) {
           >
             <span>
               <FontAwesomeIcon
-                icon="newspaper"
+                icon="list-alt"
                 className="me-1"
               ></FontAwesomeIcon>
               Create Post
@@ -44,7 +45,7 @@ export default function (props) {
           >
             <span>
               <FontAwesomeIcon
-                icon="warehouse"
+                icon="tractor"
                 className="me-1"
               ></FontAwesomeIcon>
               Create Farm
@@ -56,10 +57,7 @@ export default function (props) {
             className={`me-1${editorMode === "PRODUCT" ? " actived" : ""}`}
           >
             <span>
-              <FontAwesomeIcon
-                icon="apple-alt"
-                className="me-1"
-              ></FontAwesomeIcon>
+              <FontAwesomeIcon icon="carrot" className="me-1"></FontAwesomeIcon>
               Create Product
             </span>
           </ButtonPrimary>

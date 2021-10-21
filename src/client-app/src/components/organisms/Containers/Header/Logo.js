@@ -25,12 +25,12 @@ const TitleLink = styled(AnchorLink)`
 
 const LogoTitle = styled.h2`
   display: inline-block;
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-family: "Poppins", sans-serif;
   font-size: 1.8rem;
   margin: 1px 0;
   height: ${(p) => p.theme.size.normal};
-  background: ${(p) => p.theme.gradientColor.secondary};
+  background: ${(p) => p.theme.color.secondaryBg};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 600;

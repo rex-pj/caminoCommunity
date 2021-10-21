@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const ButtonTransparent = styled.button`
+export const ButtonTransparent = styled.button`
   color: ${(p) => p.theme.color.darkText};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   padding: ${(p) =>
@@ -34,23 +34,40 @@ const ButtonTransparent = styled.button`
   }
 `;
 
-const ButtonPrimary = styled(ButtonTransparent)`
+export const ButtonPrimary = styled(ButtonTransparent)`
   background-color: ${(p) => p.theme.color.primaryBg};
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.neutralText};
+  border-color: ${(p) => p.theme.color.primaryBg};
+
+  :active,
+  :hover,
+  :focus-within {
+    background-color: ${(p) => p.theme.color.primaryBg};
+  }
+
+  :disabled {
+    background-color: ${(p) => p.theme.color.primaryBg};
+  }
+`;
+
+export const ButtonSecondary = styled(ButtonTransparent)`
+  background-color: ${(p) => p.theme.color.secondaryBg};
+  color: ${(p) => p.theme.color.neutralText};
   border-color: ${(p) => p.theme.color.secondaryBg};
 
   :active,
   :hover,
   :focus-within {
     background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.lightText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.darkText};
   }
 `;
 
-const ButtonLight = styled(ButtonTransparent)`
+export const ButtonLight = styled(ButtonTransparent)`
   background-color: ${(p) => p.theme.color.lightBg};
   border-color: ${(p) => p.theme.color.neutralBg};
   color: ${(p) => p.theme.color.darkText};
@@ -66,32 +83,22 @@ const ButtonLight = styled(ButtonTransparent)`
   }
 `;
 
-const ButtonAlert = styled(ButtonTransparent)`
-  border-color: ${(p) => p.theme.color.primaryWarnText};
-  background-color: ${(p) => p.theme.color.secondaryWarnBg};
-  color: ${(p) => p.theme.color.primaryWarnText};
+export const ButtonAlert = styled(ButtonTransparent)`
+  border-color: ${(p) => p.theme.color.warnBg};
+  background-color: ${(p) => p.theme.color.warnBg};
+  color: ${(p) => p.theme.color.neutralText};
 
   :active,
   :hover,
   :focus-within {
-    background-color: ${(p) => p.theme.color.primaryWarnBg};
-    color: ${(p) => p.theme.color.secondaryWarnText};
+    color: ${(p) => p.theme.color.whiteText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.primaryWarnBg};
-    color: ${(p) => p.theme.color.secondaryWarnText};
+    color: ${(p) => p.theme.color.whiteText};
   }
 `;
 
-const ButtonCircleLight = styled(ButtonLight)`
+export const ButtonCircleLight = styled(ButtonLight)`
   border-radius: 100%;
 `;
-
-export {
-  ButtonPrimary,
-  ButtonLight,
-  ButtonCircleLight,
-  ButtonTransparent,
-  ButtonAlert,
-};

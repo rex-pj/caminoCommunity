@@ -39,16 +39,16 @@ const ButtonPrimary = styled(ButtonTransparent)`
   :active,
   :hover,
   :focus-within {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
   }
 `;
 
 const ButtonSecondary = styled(ButtonTransparent)`
-  background-color: ${(p) => p.theme.color.secondaryBg};
+  background-color: ${(p) => p.theme.color.primaryBg};
   color: ${(p) => p.theme.color.whiteText};
 
   :active,

@@ -8,7 +8,7 @@ const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
   .cate-selection {
     > div {
-      border: 1px solid ${(p) => p.theme.color.primaryDivide};
+      border: 1px solid ${(p) => p.theme.color.primaryBg};
     }
   }
 

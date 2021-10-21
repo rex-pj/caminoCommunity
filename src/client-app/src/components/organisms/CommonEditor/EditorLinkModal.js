@@ -25,7 +25,7 @@ const Body = styled.div`
 const Footer = styled.div`
   min-height: 20px;
   text-align: right;
-  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-top: 1px solid ${(p) => p.theme.color.neutralBg};
   padding: ${(p) => p.theme.size.exTiny} ${(p) => p.theme.size.distance};
 
   button {

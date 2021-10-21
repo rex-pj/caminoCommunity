@@ -21,7 +21,7 @@ export default styled(Dropdown)`
     text-align: left;
 
     :hover {
-      background-color: ${(p) => p.theme.color.lightBg};
+      background-color: ${(p) => p.theme.color.neutralBg};
     }
 
     :last-child {

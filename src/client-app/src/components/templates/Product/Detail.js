@@ -40,9 +40,9 @@ const InteractiveItem = styled.li`
 `;
 
 const TopBarInfo = styled.div`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-size: ${(p) => p.theme.fontSize.tiny};
-  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   padding-bottom: ${(p) => p.theme.size.tiny};
   margin-bottom: ${(p) => p.theme.size.distance};
   position: relative;
@@ -50,7 +50,7 @@ const TopBarInfo = styled.div`
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -60,7 +60,7 @@ const TopBarInfo = styled.div`
 
 const PostActions = styled.div`
   text-align: right;
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
 
   button {
     vertical-align: middle;
@@ -75,7 +75,7 @@ const RowItem = styled.div`
     display: inline-block;
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.small};
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
     margin-bottom: 0;
   }
 
@@ -97,13 +97,13 @@ const FarmInfo = styled.div`
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${(p) => p.theme.color.secondaryText};
+    color: ${(p) => p.theme.color.primaryText};
   }
 
   svg {
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    color: ${(p) => p.theme.color.secondaryText};
+    color: ${(p) => p.theme.color.primaryText};
     vertical-align: middle;
   }
 
@@ -123,7 +123,7 @@ const DropdownList = styled(Dropdown)`
   padding: ${(p) => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {

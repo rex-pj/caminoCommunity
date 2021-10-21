@@ -14,9 +14,19 @@ const TypographyDark = styled.p`
   font-size: ${(p) => p.theme.fontSize.small};
 `;
 
-const TypographyTitle = styled.p`
-  color: ${(p) => p.theme.color.secondaryTitle};
+const TypographyPrimary = styled.p`
+  color: ${(p) => p.theme.color.primaryText};
   font-size: ${(p) => p.theme.fontSize.small};
 `;
 
-export { TypographySecondary, TypographyDark, TypographyTitle };
+const TypographyTitle = styled.p`
+  color: ${(p) => p.theme.color.secondaryText};
+  font-size: ${(p) => p.theme.fontSize.small};
+`;
+
+export {
+  TypographySecondary,
+  TypographyDark,
+  TypographyTitle,
+  TypographyPrimary,
+};

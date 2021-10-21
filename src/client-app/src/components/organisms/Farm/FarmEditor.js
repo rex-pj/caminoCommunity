@@ -2,7 +2,7 @@ import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
-import { PrimaryTextbox } from "../../atoms/Textboxes";
+import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
@@ -16,7 +16,7 @@ import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 
-  ${PrimaryTextbox} {
+  ${SecondaryTextbox} {
     max-width: 100%;
     width: 100%;
   }
@@ -25,7 +25,7 @@ const FormRow = styled.div`
     z-index: 10;
 
     > div {
-      border: 1px solid ${(p) => p.theme.color.primaryDivide};
+      border: 1px solid ${(p) => p.theme.color.secondaryBg};
     }
   }
 `;
@@ -37,18 +37,18 @@ const ThumbnailUpload = styled(ImageUpload)`
   vertical-align: middle;
 
   > span {
-    color: ${(p) => p.theme.color.darkText};
+    color: ${(p) => p.theme.color.primaryText};
     height: ${(p) => p.theme.size.normal};
     padding: 0 ${(p) => p.theme.size.tiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
     background-color: ${(p) => p.theme.color.lightBg};
     border-radius: ${(p) => p.theme.borderRadius.normal};
-    border: 1px solid ${(p) => p.theme.color.neutralBg};
+    border: 1px solid ${(p) => p.theme.color.secondaryBg};
     cursor: pointer;
     font-weight: 600;
 
     :hover {
-      background-color: ${(p) => p.theme.color.neutralBg};
+      background-color: ${(p) => p.theme.color.secondaryBg};
     }
 
     svg {
@@ -252,7 +252,7 @@ export default withRouter((props) => {
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
         <FormRow className="row">
           <div className="col-6 col-lg-6 pr-lg-1">
-            <PrimaryTextbox
+            <SecondaryTextbox
               name="name"
               value={name.value}
               autoComplete="off"
@@ -276,7 +276,7 @@ export default withRouter((props) => {
         </FormRow>
         <FormRow className="row">
           <div className="col-9 col-lg-10 pr-lg-1">
-            <PrimaryTextbox
+            <SecondaryTextbox
               name="address"
               value={address.value ? address.value : ""}
               autoComplete="off"

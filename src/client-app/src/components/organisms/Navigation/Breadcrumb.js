@@ -12,7 +12,7 @@ const Root = styled.ol`
 const ListItem = styled.li`
   display: inline-block;
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.primaryText};
   padding: 0 0 ${(p) => p.theme.size.tiny} 0;
   min-width: ${(p) => p.theme.size.distance};
   position: relative;

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import CommunitySuggestionItem from "./CommunitySuggestionItem";
 import { VerticalList } from "../../molecules/List";
-import { FifthHeadingSecondary } from "../../atoms/Heading";
+import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { UrlConstant } from "../../../utils/Constants";
 
 const Root = styled.div`
@@ -33,9 +33,9 @@ export default () => {
 
   return (
     <div>
-      <FifthHeadingSecondary>
+      <FifthHeadingNeutralTitle>
         Join The Farm Communities To Connect Better!
-      </FifthHeadingSecondary>
+      </FifthHeadingNeutralTitle>
       <Root>
         <List>
           {communities &&

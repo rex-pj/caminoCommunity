@@ -1,6 +1,6 @@
 import React from "react";
 import { VerticalList } from "../../molecules/List";
-import { BadgeOutlinePrimary } from "../../atoms/Badges";
+import { BadgeOutlineSecondary } from "../../atoms/Badges";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
 export default (props) => {
@@ -13,10 +13,10 @@ export default (props) => {
       {attributeRelationValues.map((av, cIndex) => {
         return (
           <li className="mb-1" key={cIndex}>
-            <BadgeOutlinePrimary size="xs">
+            <BadgeOutlineSecondary size="xs">
               {av.name} [{adjustPrice(av, price)}
               {" vnđ"}]
-            </BadgeOutlinePrimary>
+            </BadgeOutlineSecondary>
           </li>
         );
       })}

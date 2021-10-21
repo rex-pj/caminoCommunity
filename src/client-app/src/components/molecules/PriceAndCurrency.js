@@ -7,7 +7,7 @@ const Root = styled.p`
 `;
 
 const PriceNumber = styled.span`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-weight: 600;
   font-size: ${(p) => p.theme.fontSize.medium};
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -15,7 +15,7 @@ const PriceNumber = styled.span`
 `;
 
 const CurrencyText = styled.span`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-size: 14px;
   vertical-align: super;
 `;

@@ -15,7 +15,7 @@ const PhotoUpload = styled(ImageUpload)`
   max-width: 235px;
 
   > span {
-    color: ${(p) => p.theme.color.secondaryText};
+    color: ${(p) => p.theme.color.primaryText};
     height: ${(p) => p.theme.size.medium};
     padding: 0 ${(p) => p.theme.size.tiny};
     background-color: ${(p) => p.theme.color.lightBg};

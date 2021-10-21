@@ -15,32 +15,32 @@ const TextLabel = styled.span`
   }
 
   &.empty {
-    color: ${(p) => p.theme.color.primaryDangerText};
+    color: ${(p) => p.theme.color.warnText};
     font-weight: 400;
   }
 
   &.success {
-    border: 1px solid ${(p) => p.theme.color.secondaryBg};
+    border: 1px solid ${(p) => p.theme.color.primaryBg};
   }
 
   &.fail {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerText};
   }
 `;
 
 const DateTimePicker = styled(DateSelector)`
   select {
     border: 0;
-    border-bottom: 1px dashed ${(p) => p.theme.color.secondaryBg};
+    border-bottom: 1px dashed ${(p) => p.theme.color.primaryBg};
     cursor: pointer;
   }
 
   &.success select {
-    border-bottom: 2px solid ${(p) => p.theme.color.secondaryBg};
+    border-bottom: 2px solid ${(p) => p.theme.color.primaryBg};
   }
 
   &.fail select {
-    border-bottom: 2px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border-bottom: 2px solid ${(p) => p.theme.color.dangerBg};
   }
 `;
 

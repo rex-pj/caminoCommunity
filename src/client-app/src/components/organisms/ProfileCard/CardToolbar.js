@@ -22,7 +22,7 @@ const ListBar = styled(HorizontalList)`
   ${MenubarItem} {
     width: ${(p) => `${p.percent}%`};
     text-align: center;
-    border-left: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-left: 1px solid ${(p) => p.theme.color.neutralBg};
     color: ${(p) => p.theme.color.darkText};
   }
 

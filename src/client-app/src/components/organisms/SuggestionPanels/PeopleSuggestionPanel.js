@@ -9,7 +9,7 @@ import { AnchorLink } from "../../atoms/Links";
 
 const ListItem = styled.li`
   padding: ${(p) => p.theme.size.distance};
-  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-top: 1px solid ${(p) => p.theme.color.neutralBg};
 
   &.first-item {
     border-top: 0;

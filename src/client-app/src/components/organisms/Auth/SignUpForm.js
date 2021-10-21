@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
-import { SelectionSecondary } from "../../../components/atoms/Selections";
+import { SelectionPrimary } from "../../../components/atoms/Selections";
 import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
-import { ButtonLight } from "../../../components/atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
 import DateSelector from "../../../components/organisms/DateSelector";
@@ -20,30 +20,31 @@ const Textbox = styled(SecondaryTextbox)`
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.darkText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
     background-color: ${(p) => p.theme.color.neutralBg};
-    color: ${(p) => p.theme.color.whiteText};
+    color: ${(p) => p.theme.color.darkText};
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerBg};
   }
 `;
 
-const Selection = styled(SelectionSecondary)`
+const Selection = styled(SelectionPrimary)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.secondaryBg};
-  background-color: ${(p) => p.theme.color.neutralBg};
+  border: 1px solid ${(p) => p.theme.color.primaryBg};
+  background-color: ${(p) => p.theme.color.lightBg};
   width: 100%;
   color: ${(p) => p.theme.color.darkText};
   padding: 0 ${(p) => p.theme.size.tiny};
   font-size: ${(p) => p.theme.fontSize.small};
 
   :focus {
+    background-color: ${(p) => p.theme.color.neutralBg};
     background-color: ${(p) => p.theme.color.moreDark};
   }
 `;
@@ -56,26 +57,22 @@ const Label = styled(LabelNormal)`
   margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
   font-size: ${(p) => p.theme.fontSize.small};
-  font-weight: 600;
 `;
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
-const SubmitButton = styled(ButtonLight)`
+const SubmitButton = styled(ButtonSecondary)`
   font-size: ${(p) => p.theme.fontSize.small};
-  cursor: pointer;
   border: 1px solid ${(p) => p.theme.color.primaryBg};
 
   :hover {
-    background-color: ${(p) => p.theme.color.lightBg};
     color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.neutralBg};
-    color: ${(p) => p.theme.color.darkText};
+    color: ${(p) => p.theme.color.primaryText};
     cursor: auto;
   }
 `;
@@ -83,15 +80,15 @@ const SubmitButton = styled(ButtonLight)`
 const BirthDateSelector = styled(DateSelector)`
   select {
     border-radius: ${(p) => p.theme.size.normal};
-    border: 1px solid ${(p) => p.theme.color.secondaryBg};
-    background-color: ${(p) => p.theme.color.neutralBg};
+    border: 1px solid ${(p) => p.theme.color.primaryBg};
+    background-color: ${(p) => p.theme.color.lightBg};
     color: ${(p) => p.theme.color.darkText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
   &.invalid select {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
-    color: ${(p) => p.theme.color.secondaryDangerText};
+    border: 1px solid ${(p) => p.theme.color.dangerBg};
+    color: ${(p) => p.theme.color.dangerText};
   }
 `;
 

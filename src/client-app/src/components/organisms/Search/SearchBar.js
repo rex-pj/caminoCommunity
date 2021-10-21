@@ -52,12 +52,12 @@ const DropdownItem = styled.li`
 const SearchForm = styled.div`
   position: relative;
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.rgbaColor.light};
-  background-color: ${(p) => p.theme.rgbaColor.darkLight};
+  border: 0;
+  background-color: ${(p) => p.theme.rgbaColor.dark};
   height: ${(p) => p.theme.size.normal};
   margin: 1px 0;
   :focus-within {
-    background-color: ${(p) => p.theme.rgbaColor.dark};
+    background-color: ${(p) => p.theme.rgbaColor.darker};
   }
 `;
 
@@ -87,7 +87,7 @@ const SearchInput = styled(PrimaryTextbox)`
   width: 300px;
   height: calc(${(p) => p.theme.size.normal} - 2px);
   float: left;
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.neutralText};
   max-width: calc(100% - ${(p) => p.theme.size.normal});
 
   ::placeholder {

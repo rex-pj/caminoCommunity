@@ -37,7 +37,7 @@ const Description = styled.p`
 `;
 
 const InteractiveToolbar = styled.div`
-  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-top: 1px solid ${(p) => p.theme.color.neutralBorder};
   padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 

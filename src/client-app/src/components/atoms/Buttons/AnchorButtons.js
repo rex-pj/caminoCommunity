@@ -31,12 +31,12 @@ const ButtonPrimary = styled(ButtonTransparent)`
   :active,
   :hover,
   :focus-within {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
     outline: none;
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
   }
 `;
 

@@ -4,7 +4,7 @@ export const PrimaryTextbox = styled.input.attrs((p) => ({
   type: p.type === "password" ? "password" : p.type,
 }))`
   height: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.primaryDivide};
+  border: 1px solid ${(p) => p.theme.color.primaryBg};
   padding: 6px 5px;
   border-radius: ${(p) => p.theme.borderRadius.normal};
   font-size: ${(p) => p.theme.fontSize.normal};

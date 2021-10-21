@@ -22,8 +22,6 @@ const InfoList = styled(VerticalList)`
   margin-bottom: ${(p) => p.theme.size.distance};
 `;
 
-const ParentItem = styled.div``;
-
 const ChildItem = styled.li`
   font-size: ${(p) => p.theme.fontSize.small};
   color: ${(p) => p.theme.color.darkText};
@@ -63,7 +61,7 @@ export default function (props) {
   return (
     <Root>
       <PanelBody>
-        <ParentItem>
+        <div>
           {authorInfo.description ? (
             <Fragment>
               <InfoList>
@@ -116,7 +114,7 @@ export default function (props) {
               })}
             </InfoList>
           ) : null}
-        </ParentItem>
+        </div>
       </PanelBody>
     </Root>
   );

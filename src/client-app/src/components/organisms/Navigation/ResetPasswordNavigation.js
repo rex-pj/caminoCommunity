@@ -31,7 +31,7 @@ const ListItem = styled.li`
   display: inline-block;
 
   &.actived ${NavButton} {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
   }
 
   &.actived span {

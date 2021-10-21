@@ -9,7 +9,7 @@ const Root = styled.div`
 `;
 
 const ShoppingCartButton = styled(RouterLinkButtonTransparent)`
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.neutralText};
 `;
 
 const ShoppingCartButtonGroup = styled(ButtonGroup)`
@@ -23,7 +23,7 @@ const ShoppingCartButtonGroup = styled(ButtonGroup)`
     position: relative;
 
     :hover {
-      color: ${(p) => p.theme.color.lightText};
+      color: ${(p) => p.theme.color.neutralText};
     }
 
     .badge {
@@ -37,9 +37,9 @@ const ShoppingCartButtonGroup = styled(ButtonGroup)`
       left: 18px;
       text-align: center;
       font-weight: 600;
-      background: #dc3545;
+      background: ${(p) => p.theme.color.dangerBg};
       border: 0;
-      color: ${(p) => p.theme.color.whiteText};
+      color: ${(p) => p.theme.color.neutralText};
       border-radius: ${(p) => p.theme.borderRadius.medium};
     }
   }

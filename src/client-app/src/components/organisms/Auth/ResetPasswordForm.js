@@ -11,7 +11,7 @@ import resetPasswordModel from "../../../models/resetPasswordModel";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.secondaryBg};
+  border: 1px solid ${(p) => p.theme.color.primaryBg};
   background-color: ${(p) => p.theme.rgbaColor.darkLight};
   width: 100%;
   color: ${(p) => p.theme.color.darkText};
@@ -27,7 +27,7 @@ const Textbox = styled(SecondaryTextbox)`
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerBg};
   }
 `;
 
@@ -49,14 +49,14 @@ const FormRow = styled.div`
 const SubmitButton = styled(ButtonPrimary)`
   font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
-  border: 1px solid ${(p) => p.theme.color.secondaryBg};
+  border: 1px solid ${(p) => p.theme.color.primaryBg};
 
   :hover {
     color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
     color: ${(p) => p.theme.color.neutralText};
     cursor: auto;
   }

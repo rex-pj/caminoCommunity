@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../molecules/List";
-import { FifthHeadingSecondary } from "../../atoms/Heading";
+import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { LoadingBar } from "../../molecules/NotificationBars";
 
 const Root = styled.div`
@@ -38,7 +38,9 @@ export default (props) => {
 
   return (
     <div>
-      <FifthHeadingSecondary>Connect To Other Farmers</FifthHeadingSecondary>
+      <FifthHeadingNeutralTitle>
+        Connect To Other Farmers
+      </FifthHeadingNeutralTitle>
       <Root>
         <VerticalList>
           {connections &&

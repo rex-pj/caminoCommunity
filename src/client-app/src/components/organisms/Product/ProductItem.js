@@ -39,7 +39,7 @@ const ContentTopbar = styled.div`
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -100,18 +100,18 @@ const FarmInfo = styled(RowItem)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: ${(p) => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.tiny};
 
   a {
     vertical-align: middle;
     font-weight: 600;
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
   }
 
   svg {
     margin-right: ${(p) => p.theme.size.exTiny};
     font-size: ${(p) => p.theme.fontSize.tiny};
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
     vertical-align: middle;
   }
 

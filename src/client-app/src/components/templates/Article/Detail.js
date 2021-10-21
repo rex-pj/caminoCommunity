@@ -28,12 +28,12 @@ const PostActions = styled.div`
 
 const ContentTopBar = styled.div`
   font-size: ${(p) => p.theme.fontSize.tiny};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.secondaryText};
 
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -81,7 +81,7 @@ const DropdownList = styled(Dropdown)`
   padding: ${(p) => p.theme.size.exTiny} 0;
 
   ${ModuleMenuListItem} {
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {

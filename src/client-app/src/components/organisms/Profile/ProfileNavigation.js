@@ -14,19 +14,19 @@ const ListItem = styled.li`
   margin: 0 ${(p) => p.theme.size.distance};
 
   a.actived {
-    color: ${(p) => p.theme.color.darkText};
+    color: ${(p) => p.theme.color.primaryText};
     text-decoration: none;
     font-weight: 600;
-    border-bottom: 3px solid ${(p) => p.theme.color.primaryBg};
+    border-bottom: 3px solid ${(p) => p.theme.color.secondaryBg};
   }
 
   :hover a {
-    color: ${(p) => p.theme.color.darkText};
+    color: ${(p) => p.theme.color.secondaryText};
     text-decoration: none;
   }
 
   a {
-    color: ${(p) => p.theme.color.secondaryTitle};
+    color: ${(p) => p.theme.color.primaryText};
     font-weight: 500;
     font-size: ${(p) => p.theme.fontSize.small};
     border: 0;
@@ -55,7 +55,7 @@ const UserDropdown = styled(DropdownButton)`
   > button:focus {
     background-color: transparent;
     border: 0;
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
   }
 `;
 

@@ -11,6 +11,10 @@ export const Selection = styled.select`
   }
 `;
 
-export const SelectionSecondary = styled(Selection)`
+export const SelectionPrimary = styled(Selection)`
   border: 1px solid ${(p) => p.theme.color.primaryBg};
+`;
+
+export const SelectionSecondary = styled(Selection)`
+  border: 1px solid ${(p) => p.theme.color.secondaryBg};
 `;

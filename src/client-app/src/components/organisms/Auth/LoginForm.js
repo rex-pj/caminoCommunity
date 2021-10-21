@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { LabelNormal } from "../../atoms/Labels";
-import { ButtonLight } from "../../atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import AuthNavigation from "../Navigation/AuthNavigation";
 import AuthBanner from "../Banner/AuthBanner";
 import loginModel from "../../../models/loginModel";
@@ -19,17 +19,17 @@ const Textbox = styled(SecondaryTextbox)`
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.darkText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
     background-color: ${(p) => p.theme.color.neutralBg};
-    color: ${(p) => p.theme.color.whiteText};
+    color: ${(p) => p.theme.color.darkText};
   }
 
   &.invalid {
-    border: 1px solid ${(p) => p.theme.color.secondaryDangerBg};
+    border: 1px solid ${(p) => p.theme.color.dangerBg};
   }
 `;
 
@@ -41,25 +41,22 @@ const Label = styled(LabelNormal)`
   margin-left: ${(p) => p.theme.size.tiny};
   margin-bottom: 0;
   font-size: ${(p) => p.theme.fontSize.small};
-  font-weight: 600;
 `;
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
-const SubmitButton = styled(ButtonLight)`
+const SubmitButton = styled(ButtonSecondary)`
   font-size: ${(p) => p.theme.fontSize.small};
   border: 1px solid ${(p) => p.theme.color.primaryBg};
 
   :hover {
-    background-color: ${(p) => p.theme.color.lightBg};
     color: ${(p) => p.theme.color.neutralText};
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.neutralBg};
-    color: ${(p) => p.theme.color.darkText};
+    color: ${(p) => p.theme.color.primaryText};
     cursor: auto;
   }
 `;

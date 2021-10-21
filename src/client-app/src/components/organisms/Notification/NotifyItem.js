@@ -20,7 +20,7 @@ const LinkTo = styled.a`
 const Title = styled.div`
   padding-right: ${(p) => p.theme.size.exTiny};
   margin-bottom: ${(p) => p.theme.size.exTiny};
-  color: ${(p) => p.theme.color.secondaryText};
+  color: ${(p) => p.theme.color.primaryText};
 `;
 
 const Description = styled.p`
@@ -42,16 +42,16 @@ const Root = styled.div`
   margin-top: ${(p) => p.theme.size.exTiny};
 
   &.error ${LinkTo} {
-    background-color: ${(p) => p.theme.color.secondaryWarnBg};
-    border-color: ${(p) => p.theme.color.primaryWarnBg};
+    background-color: ${(p) => p.theme.color.warnBg};
+    border-color: ${(p) => p.theme.color.warnBg};
   }
 
   &.error ${Title} {
-    color: ${(p) => p.theme.color.primaryWarnText};
+    color: ${(p) => p.theme.color.lightText};
   }
 
   &.error ${ClearButton} {
-    color: ${(p) => p.theme.color.primaryWarnBg};
+    color: ${(p) => p.theme.color.neutralText};
   }
 `;
 

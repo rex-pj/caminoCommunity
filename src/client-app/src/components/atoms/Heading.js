@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const SecondaryHeading = styled.h2`
   font-size: ${(p) => p.theme.fontSize.normal};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.primaryText};
   line-height: 1;
 
   svg,
@@ -24,7 +24,7 @@ export const SecondaryDarkHeading = styled.h2`
 
 export const TertiaryHeading = styled.h3`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.primaryText};
   line-height: 1;
 
   svg,
@@ -55,10 +55,11 @@ export const QuaternaryDarkHeading = styled.h4`
   }
 `;
 
-export const FifthHeadingSecondary = styled.h5`
+export const FifthHeadingNeutralTitle = styled.h5`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.secondaryTitle};
+  color: ${(p) => p.theme.color.neutralTitle};
   line-height: 1;
+  font-weight: 600;
 
   svg,
   path {
@@ -68,7 +69,7 @@ export const FifthHeadingSecondary = styled.h5`
 
 export const FifthHeadingPrimary = styled.h5`
   font-size: ${(p) => p.theme.fontSize.small};
-  color: ${(p) => p.theme.color.darkText};
+  color: ${(p) => p.theme.color.primaryText};
   line-height: 1;
 
   svg,

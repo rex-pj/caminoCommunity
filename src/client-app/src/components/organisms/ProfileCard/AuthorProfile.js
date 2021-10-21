@@ -42,14 +42,19 @@ const CreatorName = styled(AnchorLink)`
   display: inline-block;
   margin-bottom: 5px;
   margin-top: 1px;
-  color: ${(p) => p.theme.color.darkText};
+  color: ${(p) => p.theme.color.primaryText};
 `;
 
 const MoreInfo = styled.p`
   font-size: ${(p) => p.theme.fontSize.tiny};
-  color: ${(p) => p.theme.color.lightText};
+  color: ${(p) => p.theme.color.secondaryText};
   font-weight: 400;
   margin-bottom: 0;
+
+  span {
+    color: inherit;
+    vertical-align: middle;
+  }
 `;
 
 export default (props) => {

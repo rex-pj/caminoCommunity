@@ -13,7 +13,7 @@ const Root = styled(PanelDefault)`
 const Card = styled(UserCoverCard)`
   box-shadow: none;
   border-radius: 0;
-  border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
 `;
 
 export default function (props) {

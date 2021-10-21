@@ -19,12 +19,12 @@ const EditorButton = styled(DefaultButton)`
   border: 0;
   margin-right: 4px;
   :hover {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
     color: ${(p) => p.theme.color.whiteText};
   }
 
   &.actived {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
     color: ${(p) => p.theme.color.whiteText};
   }
 `;
@@ -44,7 +44,7 @@ const SelectHeading = styled(EditorSelection)`
   border: 0;
 
   :hover {
-    background-color: ${(p) => p.theme.color.secondaryBg};
+    background-color: ${(p) => p.theme.color.primaryBg};
   }
 `;
 

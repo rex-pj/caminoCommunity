@@ -39,7 +39,7 @@ const ContentTopbar = styled.div`
   ${ModuleMenuListItem} {
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
   }
 
   ${ModuleMenuListItem}:last-child {
@@ -68,7 +68,7 @@ const InteractiveItem = styled.li`
 `;
 
 const InteractiveToolbar = styled.div`
-  border-top: 1px solid ${(p) => p.theme.color.secondaryDivide};
+  border-top: 1px solid ${(p) => p.theme.color.neutralBorder};
   padding: ${(p) => p.theme.size.exSmall} ${(p) => p.theme.size.distance};
 `;
 
@@ -86,7 +86,7 @@ export default withRouter((props) => {
       creator.info = (
         <Fragment>
           <FontAwesomeIcon icon="calendar-alt" />
-          {datePeriod}
+          <span>{datePeriod}</span>
         </Fragment>
       );
     }

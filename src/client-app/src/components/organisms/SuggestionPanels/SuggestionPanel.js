@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
-import { FifthHeadingSecondary } from "../../atoms/Heading";
-import { TypographyTitle } from "../../atoms/Typographies";
+import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
+import { TypographyPrimary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 import Overlay from "../../atoms/Overlay";
 
@@ -60,7 +60,7 @@ const ActionButton = styled(ButtonPrimary)`
   }
 `;
 
-const Description = styled(TypographyTitle)`
+const Description = styled(TypographyPrimary)`
   margin-bottom: 0;
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
@@ -89,9 +89,9 @@ export default (props) => {
         <Overlay />
       </Cover>
       <Body>
-        <FifthHeadingSecondary>
+        <FifthHeadingNeutralTitle>
           <AnchorLink to={data.url}>{data.name}</AnchorLink>
-        </FifthHeadingSecondary>
+        </FifthHeadingNeutralTitle>
         <Description
           dangerouslySetInnerHTML={{ __html: data.description }}
         ></Description>

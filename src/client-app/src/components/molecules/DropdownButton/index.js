@@ -31,8 +31,11 @@ const DropdownList = styled(Dropdown)`
 
   ${ModuleMenuListItem} {
     margin-bottom: 0;
-    border-bottom: 1px solid ${(p) => p.theme.color.secondaryDivide};
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
 
+    a:hover {
+      background-color: ${(p) => p.theme.color.neutralBg};
+    }
     :last-child {
       border-bottom: 0;
     }
