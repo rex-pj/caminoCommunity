@@ -1,20 +1,18 @@
-using Microsoft.AspNetCore.Hosting;
+using Camino.ApiHost.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
-namespace Camino.ApiHost
-{
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+// Configure services
+builder.Services.ConfigureApiHostServices(builder.Configuration);
+
+// Configure application
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
 }
+
+app.ConfigureAppBuilder(app.Environment);
+app.Run();

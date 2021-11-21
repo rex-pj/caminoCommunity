@@ -45,7 +45,7 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
         {
             services.AddSingleton<IModularManager, ModularManager>();
 
-            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.FullName;
+            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.Parent.FullName;
             var modulesPath = $"{rootPath}{configuration[_modularPath]}";
             var prefix = configuration[_modularPrefix];
 

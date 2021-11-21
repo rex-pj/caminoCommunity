@@ -75,7 +75,7 @@ const MoreSearchResultsFooter = styled.div`
   > a > strong,
   > a svg,
   > a path {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 `;
 
