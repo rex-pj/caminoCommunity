@@ -10,11 +10,12 @@ const EditorTabs = styled.div`
     background-color: transparent;
     font-weight: normal;
     border-color: transparent;
-    color: ${(p) => p.theme.color.secondaryText};
-    border-bottom: 3px solid transparent;
+    color: ${(p) => p.theme.color.primaryText};
   }
   .tabs-bar button.actived {
-    color: ${(p) => p.theme.color.primaryText};
+    color: ${(p) => p.theme.color.neutralText};
+    background-color: ${(p) => p.theme.color.secondaryText};
+    border-radius: ${(p) => p.theme.borderRadius.normal};
   }
 `;
 

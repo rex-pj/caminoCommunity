@@ -85,11 +85,23 @@ const PanelHeader = styled(PanelHeading)`
 
 const InteractItem = styled(InteractiveItem)`
   margin-right: 0;
+  vertical-align: middle;
 `;
 
 const InteractRightItem = styled(InteractiveItem)`
   text-align: right;
   float: right;
+
+  .add-to-cart {
+    border-radius: ${(p) => p.theme.borderRadius.normal};
+    padding: ${(p) => p.theme.size.exTiny};
+    margin-top: -${(p) => p.theme.size.exTiny};
+  }
+
+  .add-to-cart:hover {
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.neutralText};
+  }
 `;
 
 const RowItem = styled.div`
@@ -268,11 +280,11 @@ export default withRouter((props) => {
         </div>
         <HorizontalList className="clearfix">
           <InteractItem>
-            <HorizontalReactBar reactionNumber={100} className="me-2" />
+            <HorizontalReactBar reactionNumber={100} className="me-3" />
             <FontButtonItem icon="comments" dynamicText={200} />
           </InteractItem>
           <InteractRightItem>
-            <FontButtonItem icon="cart-plus" />
+            <FontButtonItem className="add-to-cart" icon="shopping-bag" />
           </InteractRightItem>
         </HorizontalList>
       </PanelBody>

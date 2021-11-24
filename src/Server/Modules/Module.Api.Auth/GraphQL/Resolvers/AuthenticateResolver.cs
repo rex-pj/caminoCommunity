@@ -154,13 +154,19 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
         private void AddRefreshTokenToCookie(string refreshToken)
         {
+            var isSecure = true;
+            var sameSite = SameSiteMode.Lax;
+            #if DEBUG
+            isSecure = false;
+            sameSite = SameSiteMode.None;
+            #endif
             _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeaderContants.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
+                SameSite = sameSite,
                 Expires = DateTime.UtcNow.AddDays(_jwtConfigOptions.RefreshTokenHourExpires),
                 IsEssential = true,
-                Secure = true
+                Secure = isSecure
             });
         }
 

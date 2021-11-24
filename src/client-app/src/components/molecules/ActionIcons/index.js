@@ -3,20 +3,12 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnchorLink } from "../../atoms/Links";
 
-const FontLink = styled(FontAwesomeIcon)`
-  vertical-align: middle;
-  cursor: pointer;
-  margin-right: ${(p) => p.theme.size.exTiny};
-
-  svg,
-  path {
-    color: ${(p) => p.theme.color.primaryText};
-  }
-`;
-
 const Root = styled.div`
   display: inline-block;
   color: ${(p) => p.theme.color.primaryText};
+  text-align: center;
+  min-width: ${(p) => p.theme.size.normal};
+  cursor: pointer;
 
   :hover {
     color: ${(p) => p.theme.color.secondaryText};
@@ -24,15 +16,24 @@ const Root = styled.div`
 
   :hover svg,
   :hover path {
-    color: ${(p) => p.theme.color.secondaryText};
+    color: inherit;
+  }
+`;
+
+const FontLink = styled(FontAwesomeIcon)`
+  vertical-align: middle;
+  margin-right: ${(p) => (p.hasText ? p.theme.size.exTiny : 0)};
+
+  svg,
+  path {
+    color: ${(p) => p.theme.color.primaryText};
   }
 `;
 
 const Link = styled(AnchorLink)`
   font-weight: 600;
-  font-size: ${(p) => p.theme.fontSize.small};
+  font-size: ${(p) => p.theme.fontSize.tiny};
   vertical-align: middle;
-  cursor: pointer;
   color: inherit;
   :hover {
     color: inherit;
@@ -41,12 +42,15 @@ const Link = styled(AnchorLink)`
 
 export const FontButtonItem = (props) => {
   const { icon, title, dynamicText } = props;
+  const hasText = !!dynamicText || !!title;
   return (
     <Root className={props.className}>
-      <FontLink icon={icon} />
-      <Link to="#">
-        {dynamicText} {title}
-      </Link>
+      <FontLink icon={icon} hasText={hasText} />
+      {hasText ? (
+        <Link to="#">
+          {dynamicText} {title}
+        </Link>
+      ) : null}
     </Root>
   );
 };

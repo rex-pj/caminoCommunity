@@ -60,14 +60,23 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                     ValidAudience = jwtConfigOptions.Audience
                 };
             })
-            .AddCookie(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            });
-
+#if !DEBUG
+        .AddCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+#else
+        .AddCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        });
+#endif
             services.AddGraphQLServer()
                 .AddAuthorization()
                 .AddHttpRequestInterceptor<GraphQlRequestInterceptor>()
@@ -85,7 +94,8 @@ namespace Camino.ApiHost.Infrastructure.Extensions
                 options.AddPolicy(appSettings.MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins(appSettings.AllowOrigins)
+                    builder
+                        .WithOrigins(appSettings.AllowOrigins)
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();

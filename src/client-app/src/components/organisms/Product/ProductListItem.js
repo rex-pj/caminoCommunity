@@ -92,6 +92,17 @@ const InteractiveItem = styled.li`
 const InteractRightItem = styled(InteractiveItem)`
   text-align: right;
   float: right;
+
+  .add-to-cart {
+    border-radius: ${(p) => p.theme.borderRadius.normal};
+    padding: ${(p) => p.theme.size.exTiny};
+    margin-top: -${(p) => p.theme.size.exTiny};
+  }
+
+  .add-to-cart:hover {
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    color: ${(p) => p.theme.color.neutralText};
+  }
 `;
 
 export default withRouter(function (props) {
@@ -259,7 +270,7 @@ export default withRouter(function (props) {
             <InteractiveItem>
               <HorizontalReactBar
                 reactionNumber={product.reactionNumber}
-                className="me-2"
+                className="me-3"
               />
               <FontButtonItem
                 icon="comments"
@@ -268,7 +279,11 @@ export default withRouter(function (props) {
               />
             </InteractiveItem>
             <InteractRightItem>
-              <FontButtonItem icon="cart-plus" />
+              <FontButtonItem
+                className="add-to-cart"
+                icon="shopping-bag"
+                title="Thêm vô giỏ hàng"
+              />
             </InteractRightItem>
           </HorizontalList>
         </InteractiveToolbar>

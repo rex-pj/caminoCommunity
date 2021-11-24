@@ -9,7 +9,7 @@ const Root = styled.div`
 `;
 
 const ShoppingCartButton = styled(RouterLinkButtonTransparent)`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.neutralTitle};
 `;
 
 const ShoppingCartButtonGroup = styled(ButtonGroup)`
@@ -17,7 +17,7 @@ const ShoppingCartButtonGroup = styled(ButtonGroup)`
     font-size: ${(p) => p.theme.fontSize.tiny};
     padding: 6px ${(p) => p.theme.size.exTiny};
     margin: 1px 0;
-    font-weight: normal;
+    font-weight: 600;
     height: ${(p) => p.theme.size.normal};
     vertical-align: middle;
     position: relative;
@@ -29,23 +29,21 @@ const ShoppingCartButtonGroup = styled(ButtonGroup)`
     .badge {
       font-size: calc(${(p) => p.theme.fontSize.tiny} - 4px);
       position: absolute;
-      padding: 0;
-      width: ${(p) => p.theme.size.small};
-      height: ${(p) => p.theme.size.small};
-      line-height: ${(p) => p.theme.size.small};
-      top: -2px;
-      left: 18px;
+      padding: 1px;
+      width: 18px;
+      height: 18px;
+      line-height: 15px;
+      top: 0px;
+      left: 15px;
       text-align: center;
-      font-weight: 600;
       background: ${(p) => p.theme.color.dangerBg};
-      border: 0;
       color: ${(p) => p.theme.color.neutralText};
       border-radius: ${(p) => p.theme.borderRadius.medium};
     }
   }
 
   .cart-icon {
-    font-size: ${(p) => p.theme.fontSize.large};
+    font-size: ${(p) => p.theme.fontSize.medium};
     vertical-align: middle;
   }
 `;
@@ -65,7 +63,7 @@ export default function (props) {
       <ShoppingCartButtonGroup>
         <ShoppingCartButton to={`/profile/${userIdentityId}`}>
           <span className="badge">10+</span>
-          <FontAwesomeIcon className="me-3 cart-icon" icon="shopping-cart" />
+          <FontAwesomeIcon className="me-3 cart-icon" icon="shopping-bag" />
           <CartLabel className="d-none d-sm-none d-md-none d-lg-inline">
             Giỏ hàng
           </CartLabel>

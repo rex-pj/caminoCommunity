@@ -68,6 +68,9 @@ export default withRouter((props) => {
   }, [fetchFeeds]);
 
   const setPageInfo = (data) => {
+    if (!data) {
+      return;
+    }
     const {
       feeds: {
         totalPage,
@@ -81,6 +84,9 @@ export default withRouter((props) => {
   };
 
   const onFetchCompleted = (data) => {
+    if (!data) {
+      return;
+    }
     const {
       feeds: { collections },
     } = data;

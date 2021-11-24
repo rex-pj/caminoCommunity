@@ -28,7 +28,7 @@ const ChildItem = styled.li`
   }
 
   ${OtherInfo} {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 
   svg {
@@ -37,7 +37,7 @@ const ChildItem = styled.li`
 
   svg,
   path {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.secondaryText};
   }
 
   a {
