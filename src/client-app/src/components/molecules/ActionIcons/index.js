@@ -22,7 +22,7 @@ const Root = styled.div`
 
 const FontLink = styled(FontAwesomeIcon)`
   vertical-align: middle;
-  margin-right: ${(p) => (p.hasText ? p.theme.size.exTiny : 0)};
+  margin-right: ${(p) => (p.hastext !== "false" ? p.theme.size.exTiny : 0)};
 
   svg,
   path {
@@ -45,7 +45,7 @@ export const FontButtonItem = (props) => {
   const hasText = !!dynamicText || !!title;
   return (
     <Root className={props.className}>
-      <FontLink icon={icon} hasText={hasText} />
+      <FontLink icon={icon} hastext={hasText.toString()} />
       {hasText ? (
         <Link to="#">
           {dynamicText} {title}

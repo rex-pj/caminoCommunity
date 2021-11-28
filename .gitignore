@@ -92,3 +92,5 @@ src/Server/Modules/Module.Web.NavigationManagement/bin/
 src/Server/Modules/Module.Web.NavigationManagement/obj/
 src/Server/Modules/Module.Api.Navigation/bin/
 src/Server/Modules/Module.Api.Navigation/obj/
+src/Server/Modules/Module.Api.Order/bin/
+src/Server/Modules/Module.Api.Order/obj/

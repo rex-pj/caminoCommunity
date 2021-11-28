@@ -7,6 +7,12 @@ import {
 
 export default [
   {
+    path: ["/", "/page/:pageNumber", "/feeds", "/feeds/page/:pageNumber"],
+    exact: true,
+    page: "feeds",
+    layout: FrameLayout,
+  },
+  {
     path: ["/articles", "/articles/page/:pageNumber"],
     exact: true,
     page: "articles",
@@ -40,6 +46,12 @@ export default [
     path: "/products/update/:id",
     exact: true,
     page: "products/update",
+    layout: FrameLayout,
+  },
+  {
+    path: "/shopping-cart",
+    exact: true,
+    page: "shopping-cart/index",
     layout: FrameLayout,
   },
   {
@@ -105,12 +117,6 @@ export default [
     exact: true,
     page: "user/profile",
     layout: ProfileLayout,
-  },
-  {
-    path: ["/", "/page/:pageNumber", "/feeds", "/feeds/page/:pageNumber"],
-    exact: true,
-    page: "feeds",
-    layout: FrameLayout,
   },
   {
     path: ["/search", "/search/:keyword"],

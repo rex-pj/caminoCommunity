@@ -10,8 +10,8 @@ export const color = {
   lightText: "#F8FBF1",
   warnBg: "#FFCD93",
   warnText: "#FFCD93",
-  dangerBg: "#903628",
-  dangerText: "#903628",
+  dangerBg: "#933325",
+  dangerText: "#933325",
   highlight: "#fffe0d",
   whiteBg: "#FFFFFF",
   whiteText: "#FFFFFF",
@@ -35,6 +35,7 @@ export const rgbaColor = {
 export const gradientColor = {
   primary:
     "linear-gradient(to right top, #2e420e, #2d410d, #2b3f0c, #2a3e0a, #293d09);",
+  light: "linear-gradient(to bottom, #FFFBCE 0%, #B5C98D 100%);",
 };
 
 export const size = {

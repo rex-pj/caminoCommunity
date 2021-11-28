@@ -55,13 +55,10 @@ const CartLabel = styled.span`
 `;
 
 export default function (props) {
-  const { userInfo } = props;
-  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
-
   return (
     <Root className={props.className}>
       <ShoppingCartButtonGroup>
-        <ShoppingCartButton to={`/profile/${userIdentityId}`}>
+        <ShoppingCartButton to={`/shopping-cart`}>
           <span className="badge">10+</span>
           <FontAwesomeIcon className="me-3 cart-icon" icon="shopping-bag" />
           <CartLabel className="d-none d-sm-none d-md-none d-lg-inline">
