@@ -57,7 +57,7 @@ namespace Camino.Infrastructure.Repositories.Setup
             // Insert Shortcuts
             foreach (var shortcut in setupRequest.Shortcuts)
             {
-                await _caminoDataConnection.InsertAsync(new Shortcut()
+                await _caminoDataConnection.InsertAsync(new Shortcut
                 {
                     Name = shortcut.Name,
                     Description = shortcut.Description,

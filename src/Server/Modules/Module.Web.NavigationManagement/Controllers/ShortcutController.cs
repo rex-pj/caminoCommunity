@@ -57,7 +57,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 Icon = x.Icon,
                 TypeId = (ShortcutType)x.TypeId,
                 Url = x.Url,
-                Order = x.Order,
+                DisplayOrder = x.DisplayOrder,
                 StatusId = (ShortcutStatus)x.StatusId,
             });
             var shortcutPage = new PageListModel<ShortcutModel>(shortcuts)
@@ -104,7 +104,7 @@ namespace Module.Web.NavigationManagement.Controllers
                     TypeId = (ShortcutType)shortcut.TypeId,
                     Url = shortcut.Url,
                     Id = shortcut.Id,
-                    Order = shortcut.Order,
+                    DisplayOrder = shortcut.DisplayOrder,
                     StatusId = (ShortcutStatus)shortcut.StatusId
                 };
                 return View(model);
@@ -133,7 +133,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 Icon = model.Icon,
                 TypeId = (int)model.TypeId,
                 Url = model.Url,
-                Order = model.Order,
+                Order = model.DisplayOrder,
                 UpdatedById = LoggedUserId,
                 CreatedById = LoggedUserId
             };
@@ -164,7 +164,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 TypeId = (ShortcutType)shortcut.TypeId,
                 Url = shortcut.Url,
                 Id = shortcut.Id,
-                Order = shortcut.Order,
+                DisplayOrder = shortcut.DisplayOrder,
                 StatusId = (ShortcutStatus)shortcut.StatusId
             };
             return View(model);
@@ -182,7 +182,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 TypeId = (int)model.TypeId,
                 Url = model.Url,
                 Id = model.Id,
-                Order = model.Order,
+                Order = model.DisplayOrder,
                 UpdatedById = LoggedUserId
             };
             if (shortcut.Id <= 0)

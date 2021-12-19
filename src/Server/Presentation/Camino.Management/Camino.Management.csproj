@@ -7,8 +7,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="App_Data\" />
-	</ItemGroup>
 </Project>

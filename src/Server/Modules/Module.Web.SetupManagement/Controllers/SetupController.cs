@@ -166,7 +166,7 @@ namespace Module.Web.SetupManagement.Controllers
                 _setupProvider.SetDataHasBeenSeeded();
                 return RedirectToAction(nameof(Succeed));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _setupProvider.DeleteSetupSettings();
                 return View();

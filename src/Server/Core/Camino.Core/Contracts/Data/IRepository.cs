@@ -108,6 +108,14 @@ namespace Camino.Core.Contracts.Data
         /// </summary>
         /// <param name="entity">Entity</param>
         Task<long> AddWithInt64EntityAsync(TEntity entity);
+        
+        /// <summary>
+        /// Add with int64 entities
+        /// </summary>
+        /// <param name="entities">Entity entries</param>
+        /// <param name="publishEvent">Whether to publish event notification</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        Task AddWithInt64EntityAsync(IList<TEntity> entities);
 
         /// <summary>
         /// Update entity

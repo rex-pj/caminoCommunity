@@ -49,6 +49,7 @@ export default withRouter(function (props) {
       setPageInfo(data);
       onFetchCompleted(data);
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const [createFarm] = useMutation(farmMutations.CREATE_FARM, {

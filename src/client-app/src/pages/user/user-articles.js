@@ -54,6 +54,7 @@ export default withRouter(function (props) {
       setPageInfo(data);
       onFetchCompleted(data);
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const [createArticle] = useMutation(articleMutations.CREATE_ARTICLE, {

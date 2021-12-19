@@ -10,7 +10,7 @@ namespace Camino.Core.Domain.Navigations
         public string Url { get; set; }
         public string Icon { get; set; }
         public int TypeId { get; set; }
-        public int Order { get; set; }
+        public int DisplayOrder { get; set; }
         public int StatusId { get; set; }
         public long CreatedById { get; set; }
         public DateTimeOffset CreatedDate { get; set; }

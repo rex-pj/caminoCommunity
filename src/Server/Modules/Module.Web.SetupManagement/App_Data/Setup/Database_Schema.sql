@@ -582,6 +582,61 @@ ALTER TABLE dbo.ProductCategoryRelation
 ADD CONSTRAINT PK_ProductCategoryRelation
 PRIMARY KEY (Id);
 
+-- ORDER --
+CREATE TABLE [dbo].[Order](
+	[Id] [BIGINT] IDENTITY(1,1) NOT NULL,
+	[CustomOrderNumber] [NVARCHAR](max) NOT NULL,
+	[BillingAddress] [INT] NOT NULL,
+	[CustomerId] [INT] NOT NULL,
+	[PickupAddress] [INT] NULL,
+	[ShippingAddress] [INT] NULL,
+	[OrderGuid] [UNIQUEIDENTIFIER] NOT NULL,
+	[StoreId] [INT] NOT NULL,
+	[IsPickupInStore] [BIT] NOT NULL,
+	[OrderStatusId] [INT] NOT NULL,
+	[ShippingStatusId] [INT] NOT NULL,
+	[PaymentStatusId] [INT] NOT NULL,
+	[OrderDiscount] [DECIMAL](18, 4) NOT NULL,
+	[OrderTotal] [DECIMAL](18, 4) NOT NULL,
+	[RefundedAmount] [DECIMAL](18, 4) NOT NULL,
+	[CustomerIp] [NVARCHAR](max) NULL,
+	[PaidDateUtc] [datetime2](7) NULL,
+	[ShippingMethod] [NVARCHAR](max) NULL,
+	[IsDeleted] [BIT] NOT NULL,
+	[CreatedOnUtc] [datetime2](7) NOT NULL,
+)
+
+GO
+ALTER TABLE [dbo].[Order]
+ADD CONSTRAINT PK_Order
+PRIMARY KEY (Id);
+
+GO
+CREATE TABLE [dbo].[OrderItem](
+	[Id] [BIGINT] IDENTITY(1,1) NOT NULL,
+	[OrderId] [BIGINT] NOT NULL,
+	[ProductId] [BIGINT] NOT NULL,
+	[OrderItemGuid] [UNIQUEIDENTIFIER] NOT NULL,
+	[Quantity] [INT] NOT NULL,
+	[OriginalProductCost] [DECIMAL](18, 4) NOT NULL,
+	[ItemWeight] [DECIMAL](18, 4) NULL
+);
+
+GO
+ALTER TABLE [dbo].[OrderItem]
+ADD CONSTRAINT PK_OrderItem
+PRIMARY KEY (Id);
+
+GO
+ALTER TABLE [dbo].[OrderItem]
+ADD CONSTRAINT FK_OrderItem_Order
+FOREIGN KEY (OrderId) REFERENCES [dbo].[Order](Id);
+
+GO
+ALTER TABLE [dbo].[OrderItem]
+ADD CONSTRAINT FK_OrderItem_Product
+FOREIGN KEY (ProductId) REFERENCES [dbo].[Product](Id);
+
 -- PRODUCT ATTRIBUTE --
 CREATE TABLE [dbo].[ProductAttribute]
 (
@@ -961,7 +1016,8 @@ CREATE TABLE [dbo].[Shortcut]
 	CreatedDate DATETIME2 NOT NULL,
 	UpdatedDate DATETIME2 NOT NULL,
 	UpdatedById BIGINT NOT NULL,
-	CreatedById BIGINT NOT NULL
+	CreatedById BIGINT NOT NULL,
+	[DisplayOrder] INT NULL
 )
 
 GO

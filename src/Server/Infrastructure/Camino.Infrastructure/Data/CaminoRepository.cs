@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Camino.Infrastructure.Data
 {
@@ -200,6 +201,27 @@ namespace Camino.Infrastructure.Data
             }
 
             return await _dataConnection.InsertWithInt64IdentityAsync(entity);
+        }
+
+        /// <summary>
+        /// Add with int64 entities
+        /// </summary>
+        /// <param name="entities">Entity entries</param>
+        /// <param name="publishEvent">Whether to publish event notification</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        public virtual async Task AddWithInt64EntityAsync(IList<TEntity> entities)
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await _dataConnection.BulkInsertEntitiesAsync(entities);
+                transaction.Complete();
+            }
+
         }
 
         /// <summary>

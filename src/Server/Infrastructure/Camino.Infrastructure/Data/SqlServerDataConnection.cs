@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using LinqToDB.Mapping;
 using System.Data.SqlClient;
 using LinqToDB.Configuration;
+using System.Collections.Generic;
+using LinqToDB.Tools;
 
 namespace Camino.Infrastructure.Data
 {
@@ -42,6 +44,18 @@ namespace Camino.Infrastructure.Data
         {
             return new SqlConnectionStringBuilder(ConnectionString);
         }
+
+        /// <summary>
+        /// Performs bulk insert operation for entity colllection.
+        /// </summary>
+        /// <param name="entities">Entities for insert operation</param>
+        /// <typeparam name="TEntity">Entity type</typeparam>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        public virtual async Task BulkInsertEntitiesAsync<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        {
+            await this.BulkCopyAsync(new BulkCopyOptions(), entities.RetrieveIdentity(this));
+        }
+
 
         /// <summary>
         /// Update entity by Property Name
@@ -102,7 +116,7 @@ namespace Camino.Infrastructure.Data
         public virtual void SetEntityValueByName<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class
         {
             var propertyInfo = GetPropertyInfoByName(entity, value, propertyName, isIgnoreCase);
-            if(propertyInfo == null)
+            if (propertyInfo == null)
             {
                 throw new ArgumentNullException(nameof(propertyInfo));
             }

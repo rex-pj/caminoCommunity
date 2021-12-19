@@ -42,7 +42,7 @@ const ListItem = styled.li`
 
 const Slash = styled.span`
   margin: 0 ${(p) => p.theme.size.exSmall};
-  color: ${(p) => p.theme.color.neutralBg};
+  color: ${(p) => p.theme.color.secondaryText};
 `;
 
 export default (props) => {

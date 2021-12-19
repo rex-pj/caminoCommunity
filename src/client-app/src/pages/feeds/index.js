@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
+import { withRouter } from "react-router-dom";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
@@ -10,7 +11,7 @@ import {
   farmMutations,
   productMutations,
 } from "../../graphql/fetching/mutations";
-import { withRouter } from "react-router-dom";
+
 import {
   ErrorBar,
   LoadingBar,
@@ -20,7 +21,7 @@ import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default withRouter((props) => {
+export default withRouter(function (props) {
   const {
     match: {
       params: { pageNumber },
@@ -47,6 +48,7 @@ export default withRouter((props) => {
         setPageInfo(data);
         onFetchCompleted(data);
       },
+      fetchPolicy: "cache-and-network",
     }
   );
 

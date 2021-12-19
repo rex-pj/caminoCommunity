@@ -70,6 +70,7 @@ export default withRouter(function (props) {
       setPageInfo(data);
       onFetchCompleted(data);
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const convertImagefile = async (file) => {

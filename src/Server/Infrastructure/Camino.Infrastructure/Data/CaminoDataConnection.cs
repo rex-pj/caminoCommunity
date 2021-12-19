@@ -31,6 +31,8 @@ namespace Camino.Infrastructure.Data
                 .ApplyMappingBuilder<ProductPictureMap>()
                 .ApplyMappingBuilder<ProductCategoryRelationMap>()
                 .ApplyMappingBuilder<ProductPriceMap>()
+                .ApplyMappingBuilder<OrderMap>()
+                .ApplyMappingBuilder<OrderItemMap>()
                 .ApplyMappingBuilder<FarmProductMap>()
                 .ApplyMappingBuilder<ProductAttributeMap>()
                 .ApplyMappingBuilder<ProductAttributeRelationMap>()

@@ -34,7 +34,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                     Icon = x.Icon,
                     TypeId = x.TypeId,
                     Url = x.Url,
-                    Order = x.Order,
+                    DisplayOrder = x.DisplayOrder,
                     StatusId = x.StatusId,
                     CreatedDate = x.CreatedDate,
                     CreatedById = x.CreatedById,
@@ -56,7 +56,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                    Icon = x.Icon,
                    TypeId = x.TypeId,
                    Url = x.Url,
-                   Order = x.Order,
+                   DisplayOrder = x.DisplayOrder,
                    StatusId = x.StatusId,
                    CreatedDate = x.CreatedDate,
                    CreatedById = x.CreatedById,
@@ -86,7 +86,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Icon = x.Icon,
                 TypeId = x.TypeId,
                 Url = x.Url,
-                Order = x.Order,
+                DisplayOrder = x.DisplayOrder,
                 StatusId = x.StatusId,
                 CreatedDate = x.CreatedDate,
                 CreatedById = x.CreatedById,
@@ -107,7 +107,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
             var filteredNumber = query.Select(x => x.Id).Count();
 
             var categories = await query
-                .OrderBy(x => x.Order)
+                .OrderBy(x => x.DisplayOrder)
                 .Skip(filter.PageSize * (filter.Page - 1))
                                          .Take(filter.PageSize).ToListAsync();
 
@@ -129,7 +129,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 Icon = request.Icon,
                 TypeId = request.TypeId,
                 Url = request.Url,
-                Order = request.Order,
+                DisplayOrder = request.Order,
                 CreatedById = request.CreatedById,
                 CreatedDate = DateTimeOffset.UtcNow,
                 UpdatedById = request.UpdatedById,
@@ -149,7 +149,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 .Set(x => x.Icon, request.Icon)
                 .Set(x => x.TypeId, request.TypeId)
                 .Set(x => x.Url, request.Url)
-                .Set(x => x.Order, request.Order)
+                .Set(x => x.DisplayOrder, request.Order)
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
