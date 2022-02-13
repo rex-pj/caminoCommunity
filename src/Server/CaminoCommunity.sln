@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31919.166
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Article", "Modules\Module.Api.Article\Module.Api.Article.csproj", "{07451B52-2E44-4C62-975D-8DE4721E043F}"
 EndProject
@@ -61,7 +61,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Camino.Infrastructure", "In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Navigation", "Modules\Module.Api.Navigation\Module.Api.Navigation.csproj", "{DBA515A4-A9BA-49A0-A399-DF978EE8B722}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Api.Order", "Modules\Module.Api.Order\Module.Api.Order.csproj", "{3E823D21-2784-4C00-8665-AD2258172C68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Api.Order", "Modules\Module.Api.Order\Module.Api.Order.csproj", "{3E823D21-2784-4C00-8665-AD2258172C68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camino.Infrastructure.Linq2Db", "Infrastructure\Camino.Infrastructure.Linq2Db\Camino.Infrastructure.Linq2Db.csproj", "{0EF2AB2F-93AF-4B75-A430-89483ED32B06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -385,6 +387,18 @@ Global
 		{3E823D21-2784-4C00-8665-AD2258172C68}.Release|x64.Build.0 = Release|Any CPU
 		{3E823D21-2784-4C00-8665-AD2258172C68}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E823D21-2784-4C00-8665-AD2258172C68}.Release|x86.Build.0 = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|x64.Build.0 = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Debug|x86.Build.0 = Debug|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|x64.ActiveCfg = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|x64.Build.0 = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|x86.ActiveCfg = Release|Any CPU
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -416,6 +430,7 @@ Global
 		{A342EC96-53F3-4D63-BEE1-F7F56AAEF1E0} = {09CBF2F7-97DA-461D-8444-010D705FAB94}
 		{DBA515A4-A9BA-49A0-A399-DF978EE8B722} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
 		{3E823D21-2784-4C00-8665-AD2258172C68} = {62EA80CC-F9B7-4FA5-B137-B88152423276}
+		{0EF2AB2F-93AF-4B75-A430-89483ED32B06} = {09CBF2F7-97DA-461D-8444-010D705FAB94}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25AC110A-ABFF-4027-9235-AB85654B8FE8}

@@ -94,3 +94,5 @@ src/Server/Modules/Module.Api.Navigation/bin/
 src/Server/Modules/Module.Api.Navigation/obj/
 src/Server/Modules/Module.Api.Order/bin/
 src/Server/Modules/Module.Api.Order/obj/
+src/Server/Infrastructure/Camino.Infrastructure.Linq2Db/bin/
+src/Server/Infrastructure/Camino.Infrastructure.Linq2Db/obj/

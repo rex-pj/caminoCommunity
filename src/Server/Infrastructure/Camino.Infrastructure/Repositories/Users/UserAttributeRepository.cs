@@ -8,7 +8,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Identifiers;
 using LinqToDB;
 using Camino.Shared.Requests.Identifiers;
-using Camino.Infrastructure.Data;
+using Camino.Infrastructure.Linq2Db;
 using LinqToDB.Tools;
 
 namespace Camino.Infrastructure.Repositories.Users

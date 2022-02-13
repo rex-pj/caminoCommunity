@@ -9,6 +9,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	</ItemGroup>
 </Project>

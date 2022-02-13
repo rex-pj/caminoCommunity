@@ -1,6 +1,6 @@
 ﻿using Camino.Core.Contracts.Repositories.Setup;
 using Camino.Core.Util;
-using Camino.Infrastructure.Data;
+using Camino.Infrastructure.Linq2Db;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 

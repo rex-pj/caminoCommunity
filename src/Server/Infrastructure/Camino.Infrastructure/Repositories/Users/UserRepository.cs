@@ -14,7 +14,7 @@ using Camino.Shared.Requests.UpdateItems;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
-using Camino.Infrastructure.Data;
+using Camino.Infrastructure.Linq2Db;
 using LinqToDB.Tools;
 using Camino.Core.Utils;
 

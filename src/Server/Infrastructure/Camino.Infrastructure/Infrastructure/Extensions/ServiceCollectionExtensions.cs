@@ -1,13 +1,8 @@
-﻿using Camino.Core.Contracts.Data;
-using Camino.Infrastructure.Data;
-using Camino.Infrastructure.Strategies.Validations;
-using LinqToDB.AspNet;
-using LinqToDB.Configuration;
-using Microsoft.Extensions.Configuration;
+﻿using Camino.Infrastructure.Strategies.Validations;
 using Microsoft.Extensions.DependencyInjection;
-using LinqToDB;
 using Camino.Infrastructure.Providers;
 using Camino.Core.Contracts.Providers;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Infrastructure.Extensions
 {
@@ -27,7 +22,7 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped<ValidationStrategyContext>();
-            services.AddRepositoryServices();
+            services.AddLinq2DbInfrastructureServices();
             services.AddProviders();
             services.AddScopedServices(_dependencyProjectNames, _dependencyInterfaceNamespaces);
         }
@@ -36,28 +31,6 @@ namespace Camino.Infrastructure.Infrastructure.Extensions
         {
             services.AddSingleton<IFileProvider, FileProvider>()
                 .AddScoped<IEmailProvider, EmailProvider>();
-        }
-
-        public static void AddRepositoryServices(this IServiceCollection services)
-        {
-            services.AddDataAccessServices();
-            services.AddScoped(typeof(IRepository<>), typeof(CaminoRepository<>));
-        }
-
-        public static void AddDataAccessServices(this IServiceCollection services)
-        {
-            services.AddDbConnectionServices<CaminoDataConnection>("CaminoEntities");
-        }
-
-        public static void AddDbConnectionServices<TContext>(this IServiceCollection services, string connectionKey) where TContext : IDataContext
-        {
-            var configuration = services.BuildServiceProvider()
-                .GetRequiredService<IConfiguration>();
-
-            services.AddLinqToDbContext<TContext>((provider, options) =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString(connectionKey));
-            });
         }
     }
 }

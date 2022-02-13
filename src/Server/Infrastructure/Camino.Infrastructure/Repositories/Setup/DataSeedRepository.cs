@@ -6,8 +6,8 @@ using Camino.Core.Contracts.Repositories.Setup;
 using Camino.Core.Domain.Identifiers;
 using Camino.Core.Domain.Media;
 using Camino.Shared.Requests.Setup;
-using Camino.Infrastructure.Data;
 using Camino.Core.Domain.Navigations;
+using Camino.Infrastructure.Linq2Db;
 
 namespace Camino.Infrastructure.Repositories.Setup
 {

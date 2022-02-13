@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="linq2db.AspNet" Version="4.0.0-preview.5" />
     <PackageReference Include="MailKit" Version="3.1.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
@@ -13,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Camino.Core\Camino.Core.csproj" />
+    <ProjectReference Include="..\Camino.Infrastructure.Linq2Db\Camino.Infrastructure.Linq2Db.csproj" />
   </ItemGroup>
 
 </Project>
