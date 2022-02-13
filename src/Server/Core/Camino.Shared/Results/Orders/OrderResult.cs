@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace Camino.Shared.Requests.Orders
+namespace Camino.Shared.Results.Orders
 {
-    public class CreateOrderRequest
+    public class OrderResult
     {
+        public long Id { get; set; }
         public string CustomOrderNumber { get; set; }
         public string BillingAddress { get; set; }
         public long CustomerId { get; set; }
         public string PickupAddress { get; set; }
         public string ShippingAddress { get; set; }
-        public Guid OrderGuid { get; set; }
         public int StoreId { get; set; }
         public bool IsPickupInStore { get; set; }
         public int OrderStatusId { get; set; }
@@ -21,6 +21,6 @@ namespace Camino.Shared.Requests.Orders
         public DateTimeOffset? PaidDateUtc { get; set; }
         public string ShippingMethod { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTimeOffset CreatedDateUtc { get; set; }
+        public DateTimeOffset CreatedOnUtc { get; set; }
     }
 }

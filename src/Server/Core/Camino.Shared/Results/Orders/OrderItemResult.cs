@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Camino.Core.Domain.Orders
+namespace Camino.Shared.Results.Orders
 {
-    public class OrderItem
+    public class OrderItemResult
     {
         public long Id { get; set; }
         public long OrderId { get; set; }
@@ -11,6 +11,5 @@ namespace Camino.Core.Domain.Orders
         public int Quantity { get; set; }
         public decimal OriginalProductCost { get; set; }
         public decimal ItemWeight { get; set; }
-        public virtual Order Order { get; set; }
     }
 }

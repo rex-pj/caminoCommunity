@@ -4,6 +4,7 @@ namespace Camino.Shared.Requests.Orders
 {
     public class CreateOrderItemRequest
     {
+        public long CustomerId { get; set; }
         public long OrderId { get; set; }
         public long ProductId { get; set; }
         public Guid OrderItemGuid { get; set; }
