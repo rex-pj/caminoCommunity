@@ -12,10 +12,11 @@ using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
 using System;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Farms
 {
-    public class FarmService : IFarmService
+    public class FarmService : IFarmService, IScopedDependency
     {
         private readonly IFarmRepository _farmRepository;
         private readonly IFarmPictureRepository _farmPictureRepository;

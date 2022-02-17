@@ -4,10 +4,11 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Services.Authorization;
 using Camino.Shared.Results.Authorization;
 using Camino.Core.Contracts.Repositories.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Authorization
 {
-    public class UserAuthorizationPolicyService : IUserAuthorizationPolicyService
+    public class UserAuthorizationPolicyService : IUserAuthorizationPolicyService, IScopedDependency
     {
         private readonly IUserAuthorizationPolicyRepository _userAuthorizationPolicyRepository;
 

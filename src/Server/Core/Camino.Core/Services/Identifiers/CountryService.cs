@@ -6,10 +6,11 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Services.Identities;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Identities;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Identifiers
 {
-    public class CountryService : ICountryService
+    public class CountryService : ICountryService, IScopedDependency
     {
         private readonly ICountryRepository _countryRepository;
 

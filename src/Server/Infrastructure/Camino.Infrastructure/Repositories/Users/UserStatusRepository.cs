@@ -10,13 +10,14 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
-    public class UserStatusRepository : IUserStatusRepository
+    public class UserStatusRepository : IUserStatusRepository, IScopedDependency
     {
-        private readonly IRepository<Status> _statusRepository;
-        public UserStatusRepository(IRepository<Status> statusRepository)
+        private readonly IEntityRepository<Status> _statusRepository;
+        public UserStatusRepository(IEntityRepository<Status> statusRepository)
         {
             _statusRepository = statusRepository;
         }
@@ -112,7 +113,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 Name = request.Name
             };
 
-            var id = await _statusRepository.AddWithInt32EntityAsync(country);
+            var id = await _statusRepository.AddAsync<int>(country);
             return id;
         }
 

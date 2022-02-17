@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Module.Api.Order.Infrastructure.Extensions;
+using Module.Api.Order.Extensions.DependencyInjection;
+using Module.Api.Order.Middlewares;
 
 namespace Module.Api.Order
 {

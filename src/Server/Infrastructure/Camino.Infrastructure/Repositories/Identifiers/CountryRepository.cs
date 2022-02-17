@@ -10,14 +10,15 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Repositories.Identities;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Identifiers
 {
-    public class CountryRepository : ICountryRepository
+    public class CountryRepository : ICountryRepository, IScopedDependency
     {
-        private readonly IRepository<Country> _countryRepository;
+        private readonly IEntityRepository<Country> _countryRepository;
 
-        public CountryRepository(IRepository<Country> countryRepository)
+        public CountryRepository(IEntityRepository<Country> countryRepository)
         {
             _countryRepository = countryRepository;
         }
@@ -123,7 +124,7 @@ namespace Camino.Infrastructure.Repositories.Identifiers
                 Name = request.Name
             };
 
-            var id = await _countryRepository.AddWithInt32EntityAsync(country);
+            var id = await _countryRepository.AddAsync<int>(country);
             return id;
         }
 

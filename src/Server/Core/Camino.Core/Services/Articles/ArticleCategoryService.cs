@@ -10,10 +10,11 @@ using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
 using Camino.Core.Exceptions;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Articles
 {
-    public class ArticleCategoryService : IArticleCategoryService
+    public class ArticleCategoryService : IArticleCategoryService, IScopedDependency
     {
         private readonly IArticleCategoryRepository _articleCategoryRepository;
         private readonly IUserRepository _userRepository;

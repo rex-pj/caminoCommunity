@@ -9,10 +9,11 @@ using System.Linq;
 using System;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Articles
 {
-    public class OrderService : IOrderService
+    public class OrderService : IOrderService, IScopedDependency
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;

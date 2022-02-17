@@ -3,10 +3,11 @@ using Camino.Shared.Results.Media;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Repositories.Media;
 using Camino.Shared.Requests.Filters;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Media
 {
-    public class PictureService : IPictureService
+    public class PictureService : IPictureService, IScopedDependency
     {
         private readonly IPictureRepository _pictureRepository;
 

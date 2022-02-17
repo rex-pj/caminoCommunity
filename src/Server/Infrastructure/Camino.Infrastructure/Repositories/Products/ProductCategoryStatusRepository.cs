@@ -5,10 +5,11 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Products;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class ProductCategoryStatusRepository : IProductCategoryStatusRepository
+    public class ProductCategoryStatusRepository : IProductCategoryStatusRepository, IScopedDependency
     {
         public ProductCategoryStatusRepository()
         {

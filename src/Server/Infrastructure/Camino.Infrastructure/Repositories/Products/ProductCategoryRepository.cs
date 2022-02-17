@@ -14,14 +14,15 @@ using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class ProductCategoryRepository : IProductCategoryRepository
+    public class ProductCategoryRepository : IProductCategoryRepository, IScopedDependency
     {
-        private readonly IRepository<ProductCategory> _productCategoryRepository;
+        private readonly IEntityRepository<ProductCategory> _productCategoryRepository;
 
-        public ProductCategoryRepository(IRepository<ProductCategory> productCategoryRepository)
+        public ProductCategoryRepository(IEntityRepository<ProductCategory> productCategoryRepository)
         {
             _productCategoryRepository = productCategoryRepository;
         }
@@ -270,7 +271,7 @@ namespace Camino.Infrastructure.Repositories.Products
                 StatusId = ProductCategoryStatus.Actived.GetCode()
             };
 
-            var id = await _productCategoryRepository.AddWithInt32EntityAsync(newCategory);
+            var id = await _productCategoryRepository.AddAsync<int>(newCategory);
             return id;
         }
 

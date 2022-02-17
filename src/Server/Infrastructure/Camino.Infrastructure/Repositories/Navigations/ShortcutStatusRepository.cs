@@ -5,10 +5,11 @@ using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Navigations;
 using Camino.Shared.Enums;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Navigations
 {
-    public class ShortcutStatusRepository : IShortcutStatusRepository
+    public class ShortcutStatusRepository : IShortcutStatusRepository, IScopedDependency
     {
         public ShortcutStatusRepository()
         {

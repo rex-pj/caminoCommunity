@@ -15,22 +15,23 @@ using Camino.Core.Contracts.Repositories.Products;
 using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Farms
 {
-    public class FarmRepository : IFarmRepository
+    public class FarmRepository : IFarmRepository, IScopedDependency
     {
-        private readonly IRepository<Farm> _farmRepository;
-        private readonly IRepository<FarmType> _farmTypeRepository;
-        private readonly IRepository<FarmProduct> _farmProductRepository;
-        private readonly IRepository<Product> _productRepository;
-        private readonly IRepository<ProductPrice> _productPriceRepository;
-        private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
+        private readonly IEntityRepository<Farm> _farmRepository;
+        private readonly IEntityRepository<FarmType> _farmTypeRepository;
+        private readonly IEntityRepository<FarmProduct> _farmProductRepository;
+        private readonly IEntityRepository<Product> _productRepository;
+        private readonly IEntityRepository<ProductPrice> _productPriceRepository;
+        private readonly IEntityRepository<ProductCategoryRelation> _productCategoryRelationRepository;
         private readonly IProductPictureRepository _productPictureRepository;
 
-        public FarmRepository(IRepository<Farm> farmRepository, IRepository<FarmType> farmTypeRepository,
-            IRepository<FarmProduct> farmProductRepository, IRepository<Product> productRepository,
-            IRepository<ProductPrice> productPriceRepository, IRepository<ProductCategoryRelation> productCategoryRelationRepository,
+        public FarmRepository(IEntityRepository<Farm> farmRepository, IEntityRepository<FarmType> farmTypeRepository,
+            IEntityRepository<FarmProduct> farmProductRepository, IEntityRepository<Product> productRepository,
+            IEntityRepository<ProductPrice> productPriceRepository, IEntityRepository<ProductCategoryRelation> productCategoryRelationRepository,
             IProductPictureRepository productPictureRepository)
         {
             _farmRepository = farmRepository;
@@ -287,7 +288,7 @@ namespace Camino.Infrastructure.Repositories.Farms
                 StatusId = FarmStatus.Pending.GetCode()
             };
 
-            return await _farmRepository.AddWithInt64EntityAsync(newFarm);
+            return await _farmRepository.AddAsync<long>(newFarm);
         }
 
         public async Task<bool> UpdateAsync(FarmModifyRequest request)

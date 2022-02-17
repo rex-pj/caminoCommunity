@@ -10,14 +10,15 @@ using System;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.Repositories.Navigations;
 using Camino.Shared.Enums;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Navigations
 {
-    public class ShortcutRepository : IShortcutRepository
+    public class ShortcutRepository : IShortcutRepository, IScopedDependency
     {
-        private readonly IRepository<Shortcut> _shortcutRepository;
+        private readonly IEntityRepository<Shortcut> _shortcutRepository;
 
-        public ShortcutRepository(IRepository<Shortcut> shortcutRepository)
+        public ShortcutRepository(IEntityRepository<Shortcut> shortcutRepository)
         {
             _shortcutRepository = shortcutRepository;
         }
@@ -137,7 +138,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
                 StatusId = ShortcutStatus.Actived.GetCode(),
             };
 
-            var id = await _shortcutRepository.AddWithInt32EntityAsync(newCategory);
+            var id = await _shortcutRepository.AddAsync<int>(newCategory);
             return id;
         }
 

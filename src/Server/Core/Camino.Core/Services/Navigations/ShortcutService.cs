@@ -1,4 +1,5 @@
-﻿using Camino.Core.Contracts.Repositories.Navigations;
+﻿using Camino.Core.Contracts.DependencyInjection;
+using Camino.Core.Contracts.Repositories.Navigations;
 using Camino.Core.Contracts.Services.Navigations;
 using Camino.Shared.General;
 using Camino.Shared.Requests.Filters;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Camino.Core.Services.Navigations
 {
-    public class ShortcutService : IShortcutService
+    public class ShortcutService : IShortcutService, IScopedDependency
     {
         private readonly IShortcutRepository _shortcutRepository;
         private readonly IShortcutTypeRepository _shortcutTypeRepository;

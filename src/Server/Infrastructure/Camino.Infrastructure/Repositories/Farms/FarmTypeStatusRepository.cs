@@ -5,10 +5,11 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Farms;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class FarmTypeStatusRepository : IFarmTypeStatusRepository
+    public class FarmTypeStatusRepository : IFarmTypeStatusRepository, IScopedDependency
     {
         public FarmTypeStatusRepository()
         {

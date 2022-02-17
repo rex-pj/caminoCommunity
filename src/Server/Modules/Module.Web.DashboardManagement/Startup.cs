@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.DashboardManagement.Infrastructure.Extensions;
+using Module.Web.DashboardManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.DashboardManagement.Middlewares;
 
 namespace Module.Web.ProductManagement
 {

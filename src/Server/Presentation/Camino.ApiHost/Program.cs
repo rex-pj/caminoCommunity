@@ -1,4 +1,5 @@
-using Camino.ApiHost.Infrastructure.Extensions;
+using Camino.ApiHost.Extensions.DependencyInjection;
+using Camino.ApiHost.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 

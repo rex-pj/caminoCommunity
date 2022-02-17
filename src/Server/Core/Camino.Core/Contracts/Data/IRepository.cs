@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Camino.Core.Contracts.Data
 {
@@ -27,45 +26,11 @@ namespace Camino.Core.Contracts.Data
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
-        /// Get entities async
-        /// </summary>
-        /// <returns></returns>
-        Task<IList<TEntity>> GetAsync();
-
-        /// <summary>
-        /// Get entities by filter async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter);
-
-        /// <summary>
-        /// Get first or default
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        TEntity FirstOrDefault();
-
-        /// <summary>
         /// Get first or default by filter
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter);
-
-        /// <summary>
-        /// Get first or default async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        Task<TEntity> FirstOrDefaultAsync();
-
-        /// <summary>
-        /// Get first or default by filter async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
         /// Add entity
@@ -76,46 +41,14 @@ namespace Camino.Core.Contracts.Data
         /// <summary>
         /// Add entities
         /// </summary>
+        /// <param name="entity">Entity</param>
+        TResult Add<TResult>(TEntity entity);
+
+        /// <summary>
+        /// Add entities
+        /// </summary>
         /// <param name="entities">Entities</param>
         void Add(IEnumerable<TEntity> entities);
-
-        /// <summary>
-        /// Add with int32 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        int AddWithInt32Entity(TEntity entity);
-
-        /// <summary>
-        /// Add with int32 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        Task<int> AddWithInt32EntityAsync(TEntity entity);
-
-        /// <summary>
-        /// Add entity async
-        /// </summary>
-        /// <param name="entities">entity</param>
-        Task<object> AddAsync(TEntity entity);
-
-        /// <summary>
-        /// Add with int64 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        long AddWithInt64Entity(TEntity entity);
-
-        /// <summary>
-        /// Add with int64 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        Task<long> AddWithInt64EntityAsync(TEntity entity);
-        
-        /// <summary>
-        /// Add with int64 entities
-        /// </summary>
-        /// <param name="entities">Entity entries</param>
-        /// <param name="publishEvent">Whether to publish event notification</param>
-        /// <returns>A task that represents the asynchronous operation</returns>
-        Task AddWithInt64EntityAsync(IList<TEntity> entities);
 
         /// <summary>
         /// Update entity
@@ -130,19 +63,6 @@ namespace Camino.Core.Contracts.Data
         void Update(IEnumerable<TEntity> entities);
 
         /// <summary>
-        /// Update entity async
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        Task UpdateAsync(TEntity entity);
-
-        /// <summary>
-        /// Update entities async
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        Task UpdateAsync(IEnumerable<TEntity> entities);
-
-        /// <summary>
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>
@@ -153,17 +73,5 @@ namespace Camino.Core.Contracts.Data
         /// </summary>
         /// <param name="entities">Entities</param>
         void Delete(IQueryable<TEntity> entities);
-
-        /// <summary>
-        /// Delete entity async
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        Task DeleteAsync(TEntity entity);
-
-        /// <summary>
-        /// Delete entities async
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        Task DeleteAsync(IQueryable<TEntity> entities);
     }
 }

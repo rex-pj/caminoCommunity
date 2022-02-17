@@ -8,10 +8,11 @@ using Camino.Core.Domain.Media;
 using Camino.Shared.Requests.Filters;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Media
 {
-    public class PictureRepository : IPictureRepository
+    public class PictureRepository : IPictureRepository, IScopedDependency
     {
         private readonly IRepository<Picture> _pictureRepository;
         private readonly int _pictureDeletedStatus;

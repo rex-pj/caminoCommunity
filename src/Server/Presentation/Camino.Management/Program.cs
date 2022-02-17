@@ -1,8 +1,9 @@
-using Camino.Framework.Infrastructure.Extensions;
+using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Framework.Infrastructure.Middlewares;
 using Camino.Framework.Infrastructure.ModelBinders;
-using Camino.Infrastructure.Infrastructure.Extensions;
-using Camino.Management.Infrastructure.Extensions;
+using Camino.Infrastructure.Extensions.DependencyInjection;
+using Camino.Management.Extensions.DependencyInjection;
+using Camino.Management.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

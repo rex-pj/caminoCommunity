@@ -5,10 +5,11 @@ using Camino.Core.Contracts.Repositories.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
-    public class ArticleStatusRepository : IArticleStatusRepository
+    public class ArticleStatusRepository : IArticleStatusRepository, IScopedDependency
     {
         public ArticleStatusRepository()
         {

@@ -7,10 +7,11 @@ using Camino.Core.Contracts.Services.Authentication;
 using Camino.Core.Contracts.Repositories.Authentication;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authentication;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Authentication
 {
-    public partial class AuthenticationService : IAuthenticationService
+    public partial class AuthenticationService : IAuthenticationService, IScopedDependency
     {
         #region Fields/Properties
         private readonly IAuthenticationRepository _authenticationRepository;

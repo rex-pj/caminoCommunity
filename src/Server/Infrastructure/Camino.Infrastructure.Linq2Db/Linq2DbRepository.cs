@@ -8,11 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Camino.Infrastructure.Linq2Db
 {
-    public class Linq2DbRepository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Linq2DbRepository<TEntity> : IEntityRepository<TEntity>, IRepository<TEntity>, IAsyncRepository<TEntity>, IDisposable where TEntity : class
     {
         #region Fields
 
@@ -90,16 +89,6 @@ namespace Camino.Infrastructure.Linq2Db
         }
 
         /// <summary>
-        /// Get first or default
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public TEntity FirstOrDefault()
-        {
-            return Entities.FirstOrDefault();
-        }
-
-        /// <summary>
         /// Get first or default by filter
         /// </summary>
         /// <param name="filter"></param>
@@ -110,16 +99,6 @@ namespace Camino.Infrastructure.Linq2Db
         }
 
         /// <summary>
-        /// Get first or default async
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public async Task<TEntity> FirstOrDefaultAsync()
-        {
-            return await Entities.FirstOrDefaultAsync();
-        }
-
-        /// <summary>
         /// Get first or default by filter async
         /// </summary>
         /// <param name="filter"></param>
@@ -127,6 +106,16 @@ namespace Camino.Infrastructure.Linq2Db
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
         {
             return await Entities.FirstOrDefaultAsync(filter);
+        }
+
+        /// <summary>
+        /// Add entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual TResult Add<TResult>(TEntity entity)
+        {
+            var id = Add(entity);
+            return _dataConnection.MappingSchema.ChangeTypeTo<TResult>(id);
         }
 
         /// <summary>
@@ -165,6 +154,16 @@ namespace Camino.Infrastructure.Linq2Db
         /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
+        public virtual async Task<TResult> AddAsync<TResult>(TEntity entity)
+        {
+            var id = await AddAsync(entity);
+            return _dataConnection.MappingSchema.ChangeTypeTo<TResult>(id);
+        }
+
+        /// <summary>
+        /// Add entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
         public virtual async Task<object> AddAsync(TEntity entity)
         {
             if (entity == null)
@@ -176,80 +175,21 @@ namespace Camino.Infrastructure.Linq2Db
         }
 
         /// <summary>
-        /// Add with int64 entity
+        /// Add entities
         /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual long AddWithInt64Entity(TEntity entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            return _dataConnection.InsertWithInt64Identity(entity);
-        }
-
-        /// <summary>
-        /// Add with int64 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async Task<long> AddWithInt64EntityAsync(TEntity entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            return await _dataConnection.InsertWithInt64IdentityAsync(entity);
-        }
-
-        /// <summary>
-        /// Add with int64 entities
-        /// </summary>
-        /// <param name="entities">Entity entries</param>
-        /// <param name="publishEvent">Whether to publish event notification</param>
-        /// <returns>A task that represents the asynchronous operation</returns>
-        public virtual async Task AddWithInt64EntityAsync(IList<TEntity> entities)
+        /// <param name="entities">Entities</param>
+        public virtual async Task AddAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null)
             {
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (var transaction = _dataConnection.BeginTransaction())
             {
-                await _dataConnection.BulkInsertEntitiesAsync(entities);
-                transaction.Complete();
+                await _dataConnection.BulkCopyAsync(new BulkCopyOptions(), entities.RetrieveIdentity(_dataConnection));
+                await transaction.CommitAsync();
             }
-
-        }
-
-        /// <summary>
-        /// Add with int32 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual int AddWithInt32Entity(TEntity entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            return _dataConnection.InsertWithInt32Identity(entity);
-        }
-
-        /// <summary>
-        /// Add with int32 entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async Task<int> AddWithInt32EntityAsync(TEntity entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            return await _dataConnection.InsertWithInt32IdentityAsync(entity);
         }
 
         /// <summary>

@@ -5,10 +5,11 @@ using Camino.Core.Contracts.Services.Authorization;
 using Camino.Shared.Results.Authorization;
 using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Shared.Requests.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Authorization
 {
-    public class AuthorizationPolicyService : IAuthorizationPolicyService
+    public class AuthorizationPolicyService : IAuthorizationPolicyService, IScopedDependency
     {
         private readonly IAuthorizationPolicyRepository _authorizationPolicyRepository;
 

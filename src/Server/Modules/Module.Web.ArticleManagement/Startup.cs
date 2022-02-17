@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.ArticleManagement.Infrastructure.Extensions;
+using Module.Web.ArticleManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.ArticleManagement.Middlewares;
 
 namespace Module.Web.ArticleManagement
 {

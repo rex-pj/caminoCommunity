@@ -1,4 +1,5 @@
 ﻿using Camino.Core.Contracts.Data;
+using Camino.Core.Contracts.DependencyInjection;
 using Camino.Core.Contracts.Repositories.Orders;
 using Camino.Core.Domain.Orders;
 using Camino.Core.Utils;
@@ -13,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.Repositories.Orders
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository, IScopedDependency
     {
-        private readonly IRepository<Order> _orderRepository;
-        private readonly IRepository<OrderItem> _orderItemRepository;
+        private readonly IEntityRepository<Order> _orderRepository;
+        private readonly IEntityRepository<OrderItem> _orderItemRepository;
         private readonly int _orderNewStatus;
 
-        public OrderRepository(IRepository<Order> orderRepository, IRepository<OrderItem> orderItemRepository)
+        public OrderRepository(IEntityRepository<Order> orderRepository, IEntityRepository<OrderItem> orderItemRepository)
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
@@ -76,7 +77,7 @@ namespace Camino.Infrastructure.Repositories.Orders
 
         public async Task<long> CreateOrderAsync(CreateOrderRequest request)
         {
-            var orderId = await _orderRepository.AddWithInt64EntityAsync(new Order
+            var orderId = await _orderRepository.AddAsync<long>(new Order
             {
                 BillingAddress = request.BillingAddress,
                 CreatedDateUtc = request.CreatedDateUtc,
@@ -102,7 +103,7 @@ namespace Camino.Infrastructure.Repositories.Orders
 
         public async Task<long> CreateOrderItemAsync(CreateOrderItemRequest request)
         {
-            return await _orderItemRepository.AddWithInt64EntityAsync(new OrderItem
+            return await _orderItemRepository.AddAsync<long>(new OrderItem
             {
                 ItemWeight = request.ItemWeight,
                 OrderId = request.OrderId,

@@ -14,17 +14,18 @@ using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
-    public class ArticlePictureRepository : IArticlePictureRepository
+    public class ArticlePictureRepository : IArticlePictureRepository, IScopedDependency
     {
-        private readonly IRepository<ArticlePicture> _articlePictureRepository;
-        private readonly IRepository<Picture> _pictureRepository;
-        private readonly IRepository<Article> _articleRepository;
+        private readonly IEntityRepository<ArticlePicture> _articlePictureRepository;
+        private readonly IEntityRepository<Picture> _pictureRepository;
+        private readonly IEntityRepository<Article> _articleRepository;
 
-        public ArticlePictureRepository(IRepository<ArticlePicture> articlePictureRepository, IRepository<Picture> pictureRepository,
-            IRepository<Article> articleRepository)
+        public ArticlePictureRepository(IEntityRepository<ArticlePicture> articlePictureRepository, IEntityRepository<Picture> pictureRepository,
+            IEntityRepository<Article> articleRepository)
         {
             _articlePictureRepository = articlePictureRepository;
             _pictureRepository = pictureRepository;
@@ -144,7 +145,7 @@ namespace Camino.Infrastructure.Repositories.Articles
         {
             var base64Data = ImageUtil.EncodeJavascriptBase64(request.Picture.Base64Data);
             var pictureData = Convert.FromBase64String(base64Data);
-            var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture
+            var pictureId = await _pictureRepository.AddAsync<long>(new Picture
             {
                 CreatedById = request.UpdatedById,
                 CreatedDate = request.CreatedDate,
@@ -156,7 +157,7 @@ namespace Camino.Infrastructure.Repositories.Articles
                 StatusId = PictureStatus.Pending.GetCode()
             });
 
-            var id = await _articlePictureRepository.AddWithInt64EntityAsync(new ArticlePicture()
+            var id = await _articlePictureRepository.AddAsync<long>(new ArticlePicture()
             {
                 ArticleId = request.ArticleId,
                 PictureId = pictureId,
@@ -191,7 +192,7 @@ namespace Camino.Infrastructure.Repositories.Articles
             {
                 var base64Data = ImageUtil.EncodeJavascriptBase64(request.Picture.Base64Data);
                 var pictureData = Convert.FromBase64String(base64Data);
-                var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                var pictureId = await _pictureRepository.AddAsync<long>(new Picture()
                 {
                     CreatedById = request.UpdatedById,
                     CreatedDate = request.CreatedDate,
@@ -202,7 +203,7 @@ namespace Camino.Infrastructure.Repositories.Articles
                     BinaryData = pictureData
                 });
 
-                _articlePictureRepository.Add(new ArticlePicture()
+                await _articlePictureRepository.AddAsync(new ArticlePicture()
                 {
                     ArticleId = request.ArticleId,
                     PictureId = pictureId,

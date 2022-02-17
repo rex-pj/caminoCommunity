@@ -12,15 +12,16 @@ using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
-    public class ArticleCategoryRepository : IArticleCategoryRepository
+    public class ArticleCategoryRepository : IArticleCategoryRepository, IScopedDependency
     {
-        private readonly IRepository<ArticleCategory> _articleCategoryRepository;
+        private readonly IEntityRepository<ArticleCategory> _articleCategoryRepository;
         private readonly int _inactivedStatus;
 
-        public ArticleCategoryRepository(IRepository<ArticleCategory> articleCategoryRepository)
+        public ArticleCategoryRepository(IEntityRepository<ArticleCategory> articleCategoryRepository)
         {
             _inactivedStatus = ArticleCategoryStatus.Inactived.GetCode();
             _articleCategoryRepository = articleCategoryRepository;
@@ -264,8 +265,8 @@ namespace Camino.Infrastructure.Repositories.Articles
                 StatusId = ArticleCategoryStatus.Actived.GetCode()
             };
 
-            var id = await _articleCategoryRepository.AddWithInt32EntityAsync(newCategory);
-            return id;
+            var id = await _articleCategoryRepository.AddAsync(newCategory);
+            return (int)id;
         }
 
         public async Task<bool> UpdateAsync(ArticleCategoryModifyRequest category)

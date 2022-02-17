@@ -6,10 +6,11 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
-    public class RoleAuthorizationPolicyRepository : IRoleAuthorizationPolicyRepository
+    public class RoleAuthorizationPolicyRepository : IRoleAuthorizationPolicyRepository, IScopedDependency
     {
         private readonly IRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;

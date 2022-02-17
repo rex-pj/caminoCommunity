@@ -9,10 +9,11 @@ using Camino.Core.Contracts.Repositories.Products;
 using Camino.Shared.General;
 using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Products
 {
-    public class ProductAttributeService : IProductAttributeService
+    public class ProductAttributeService : IProductAttributeService, IScopedDependency
     {
         private readonly IProductAttributeRepository _productAttributeRepository;
         private readonly IProductAttributeStatusRepository _productAttributeStatusRepository;

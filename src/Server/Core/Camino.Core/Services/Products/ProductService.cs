@@ -12,10 +12,11 @@ using Camino.Shared.Results.Media;
 using Camino.Shared.Enums;
 using System;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Products
 {
-    public class ProductService : IProductService
+    public class ProductService : IProductService, IScopedDependency
     {
         private readonly IProductRepository _productRepository;
         private readonly IProductPictureRepository _productPictureRepository;

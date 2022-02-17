@@ -8,10 +8,11 @@ using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
-    public class UserRoleRepository : IUserRoleRepository
+    public class UserRoleRepository : IUserRoleRepository, IScopedDependency
     {
         private readonly IRepository<UserRole> _userRoleRepository;
 

@@ -14,18 +14,19 @@ using Camino.Shared.General;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class ProductAttributeRepository : IProductAttributeRepository
+    public class ProductAttributeRepository : IProductAttributeRepository, IScopedDependency
     {
-        private readonly IRepository<ProductAttribute> _productAttributeRepository;
-        private readonly IRepository<ProductAttributeRelation> _productAttributeRelationRepository;
-        private readonly IRepository<ProductAttributeRelationValue> _productAttributeRelationValueRepository;
+        private readonly IEntityRepository<ProductAttribute> _productAttributeRepository;
+        private readonly IEntityRepository<ProductAttributeRelation> _productAttributeRelationRepository;
+        private readonly IEntityRepository<ProductAttributeRelationValue> _productAttributeRelationValueRepository;
 
-        public ProductAttributeRepository(IRepository<ProductAttribute> productAttributeRepository,
-            IRepository<ProductAttributeRelation> productAttributeRelationRepository,
-            IRepository<ProductAttributeRelationValue> productAttributeRelationValueRepository)
+        public ProductAttributeRepository(IEntityRepository<ProductAttribute> productAttributeRepository,
+            IEntityRepository<ProductAttributeRelation> productAttributeRelationRepository,
+            IEntityRepository<ProductAttributeRelationValue> productAttributeRelationValueRepository)
         {
             _productAttributeRepository = productAttributeRepository;
             _productAttributeRelationRepository = productAttributeRelationRepository;
@@ -164,7 +165,7 @@ namespace Camino.Infrastructure.Repositories.Products
                 CreatedDate = DateTime.UtcNow,
             };
 
-            var id = await _productAttributeRepository.AddWithInt32EntityAsync(newProductAttribute);
+            var id = await _productAttributeRepository.AddAsync<int>(newProductAttribute);
             return id;
         }
 
@@ -248,7 +249,7 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task CreateAttributeRelationAsync(ProductAttributeRelationRequest request)
         {
-            var productAttributeRelationId = await _productAttributeRelationRepository.AddWithInt32EntityAsync(new ProductAttributeRelation
+            var productAttributeRelationId = await _productAttributeRelationRepository.AddAsync<int>(new ProductAttributeRelation
             {
                 AttributeControlTypeId = request.ControlTypeId,
                 DisplayOrder = request.DisplayOrder,
@@ -394,7 +395,7 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task CreateAttributeRelationValueAsync(long productAttributeRelationId, ProductAttributeRelationValueRequest attributeValue)
         {
 
-            await _productAttributeRelationValueRepository.AddWithInt32EntityAsync(new ProductAttributeRelationValue
+            await _productAttributeRelationValueRepository.AddAsync<int>(new ProductAttributeRelationValue
             {
                 Name = attributeValue.Name,
                 ProductAttributeRelationId = productAttributeRelationId,

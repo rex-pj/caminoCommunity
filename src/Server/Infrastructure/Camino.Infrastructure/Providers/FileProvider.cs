@@ -1,10 +1,11 @@
-﻿using Camino.Core.Contracts.Providers;
+﻿using Camino.Core.Contracts.DependencyInjection;
+using Camino.Core.Contracts.Providers;
 using System.IO;
 using System.Text;
 
 namespace Camino.Infrastructure.Providers
 {
-    public class FileProvider : IFileProvider
+    public class FileProvider : IFileProvider, IScopedDependency
     {
         public void WriteText(string path, string contents, Encoding encoding)
         {

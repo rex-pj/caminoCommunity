@@ -9,22 +9,23 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Results.Authorization;
 using Camino.Infrastructure.Strategies.Validations;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authentication
 {
-    public partial class AuthenticationRepository : IAuthenticationRepository
+    public partial class AuthenticationRepository : IAuthenticationRepository, IScopedDependency
     {
         #region Fields/Properties
-        private readonly IRepository<User> _userRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IEntityRepository<User> _userRepository;
+        private readonly IEntityRepository<UserRole> _userRoleRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
 
         #endregion
 
         #region Ctor
-        public AuthenticationRepository(IRepository<User> userRepository,
+        public AuthenticationRepository(IEntityRepository<User> userRepository,
             ValidationStrategyContext validationStrategyContext,
-            IRepository<UserRole> userRoleRepository)
+            IEntityRepository<UserRole> userRoleRepository)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;

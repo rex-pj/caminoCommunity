@@ -15,10 +15,11 @@ using Camino.Core.Utils;
 using Camino.Core.Domain.Identifiers;
 using System.Collections.Generic;
 using Camino.Shared.Results.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Feeds
 {
-    public class FeedRepository : IFeedRepository
+    public class FeedRepository : IFeedRepository, IScopedDependency
     {
         private readonly IRepository<Article> _articleRepository;
         private readonly IRepository<Product> _productRepository;

@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.AuthorizationManagement.Infrastructure.Extensions;
+using Module.Web.AuthorizationManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.AuthorizationManagement.Middlewares;
 
 namespace Module.Web.AuthorizationManagement
 {

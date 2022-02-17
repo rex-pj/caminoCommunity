@@ -11,15 +11,16 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
-    public class RoleRepository : IRoleRepository
+    public class RoleRepository : IRoleRepository, IScopedDependency
     {
-        private readonly IRepository<Role> _roleRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IEntityRepository<Role> _roleRepository;
+        private readonly IEntityRepository<User> _userRepository;
 
-        public RoleRepository(IRepository<Role> roleRepository, IRepository<User> userRepository)
+        public RoleRepository(IEntityRepository<Role> roleRepository, IEntityRepository<User> userRepository)
         {
             _roleRepository = roleRepository;
             _userRepository = userRepository;
@@ -44,7 +45,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
                 Description = request.Description
             };
 
-            role.Id = await _roleRepository.AddWithInt64EntityAsync(role);
+            role.Id = await _roleRepository.AddAsync<long>(role);
             return role.Id;
         }
 

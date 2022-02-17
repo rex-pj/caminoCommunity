@@ -14,10 +14,11 @@ using Camino.Core.Contracts.Repositories.Farms;
 using System.Collections.Generic;
 using Camino.Shared.Results.Media;
 using Camino.Shared.Results.Identifiers;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Feeds
 {
-    public class FeedService : IFeedService
+    public class FeedService : IFeedService, IScopedDependency
     {
         private readonly IFeedRepository _feedRepository;
         private readonly IUserRepository _userRepository;

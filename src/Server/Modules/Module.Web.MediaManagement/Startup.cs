@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.UploadManagement.Infrastructure.Extensions;
+using Module.Web.UploadManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.UploadManagement.Middlewares;
 
 namespace Module.Web.UploadManagement
 {

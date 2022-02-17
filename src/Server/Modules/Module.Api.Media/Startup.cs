@@ -1,9 +1,10 @@
-﻿using Module.Api.Media.Infrastructure.Extensions;
+﻿using Module.Api.Media.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Infrastructure.Modularity;
+using Module.Api.Media.Middlewares;
 
 namespace Module.Api.Media
 {

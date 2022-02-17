@@ -6,10 +6,11 @@ using Camino.Core.Contracts.Services.Authorization;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
 using Camino.Core.Contracts.Repositories.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Authorization
 {
-    public class RoleService : IRoleService
+    public class RoleService : IRoleService, IScopedDependency
     {
         private readonly IRoleRepository _roleRepository;
 

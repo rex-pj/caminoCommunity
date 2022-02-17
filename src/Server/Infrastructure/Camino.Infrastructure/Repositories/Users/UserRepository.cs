@@ -17,14 +17,15 @@ using Camino.Infrastructure.Strategies.Validations;
 using Camino.Infrastructure.Linq2Db;
 using LinqToDB.Tools;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
-    public partial class UserRepository : IUserRepository
+    public partial class UserRepository : IUserRepository, IScopedDependency
     {
         #region Fields/Properties
-        private readonly IRepository<UserInfo> _userInfoRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IEntityRepository<UserInfo> _userInfoRepository;
+        private readonly IEntityRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
         private readonly CaminoDataConnection _dataConnection;
         private int _userDeletedStatus;
@@ -32,8 +33,8 @@ namespace Camino.Infrastructure.Repositories.Users
         #endregion
 
         #region Ctor
-        public UserRepository(IRepository<User> userRepository, ValidationStrategyContext validationStrategyContext,
-            IRepository<UserInfo> userInfoRepository, CaminoDataConnection dataConnection)
+        public UserRepository(IEntityRepository<User> userRepository, ValidationStrategyContext validationStrategyContext,
+            IEntityRepository<UserInfo> userInfoRepository, CaminoDataConnection dataConnection)
         {
             _dataConnection = dataConnection;
             _userRepository = userRepository;
@@ -56,7 +57,7 @@ namespace Camino.Infrastructure.Repositories.Users
             {
                 try
                 {
-                    var userId = await _userRepository.AddWithInt64EntityAsync(new User
+                    var userId = await _userRepository.AddAsync<long>(new User
                     {
                         CreatedById = request.CreatedById,
                         CreatedDate = DateTime.UtcNow,
@@ -74,7 +75,7 @@ namespace Camino.Infrastructure.Repositories.Users
                     });
                     if (userId > 0)
                     {
-                        await _userInfoRepository.AddWithInt64EntityAsync(new UserInfo
+                        await _userInfoRepository.AddAsync(new UserInfo
                         {
                             BirthDate = request.BirthDate,
                             Description = request.Description,

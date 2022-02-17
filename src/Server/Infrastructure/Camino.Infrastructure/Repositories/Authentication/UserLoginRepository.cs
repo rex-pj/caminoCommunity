@@ -7,10 +7,11 @@ using Camino.Core.Contracts.Repositories.Authentication;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Results.Authentication;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authentication
 {
-    public class UserLoginRepository : IUserLoginRepository
+    public class UserLoginRepository : IUserLoginRepository, IScopedDependency
     {
         private readonly IRepository<UserLogin> _userLoginRepository;
 

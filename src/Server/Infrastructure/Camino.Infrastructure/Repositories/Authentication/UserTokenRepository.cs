@@ -6,10 +6,11 @@ using Camino.Core.Contracts.Repositories.Authentication;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authentication;
 using Camino.Shared.Requests.Authentication;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authentication
 {
-    public class UserTokenRepository : IUserTokenRepository
+    public class UserTokenRepository : IUserTokenRepository, IScopedDependency
     {
         private readonly IRepository<UserToken> _userTokenRepository;
 

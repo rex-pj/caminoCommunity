@@ -5,10 +5,11 @@ using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Results.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Users;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Users
 {
-    public class UserAttributeService : IUserAttributeService
+    public class UserAttributeService : IUserAttributeService, IScopedDependency
     {
         private readonly IUserAttributeRepository _userAttributeRepository;
 

@@ -6,10 +6,11 @@ using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Users;
 using System;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Users
 {
-    public class UserPhotoService : IUserPhotoService
+    public class UserPhotoService : IUserPhotoService, IScopedDependency
     {
         private readonly IUserPhotoRepository _userPhotoRepository;
         public UserPhotoService(IUserPhotoRepository userPhotoRepository)

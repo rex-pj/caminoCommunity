@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.FarmManagement.Infrastructure.Extensions;
+using Module.Web.FarmManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.FarmManagement.Middlewares;
 
 namespace Module.Web.FarmManagement
 {

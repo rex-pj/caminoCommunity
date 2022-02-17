@@ -14,17 +14,18 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class ProductPictureRepository : IProductPictureRepository
+    public class ProductPictureRepository : IProductPictureRepository, IScopedDependency
     {
-        private readonly IRepository<ProductPicture> _productPictureRepository;
-        private readonly IRepository<Picture> _pictureRepository;
-        private readonly IRepository<Product> _productRepository;
+        private readonly IEntityRepository<ProductPicture> _productPictureRepository;
+        private readonly IEntityRepository<Picture> _pictureRepository;
+        private readonly IEntityRepository<Product> _productRepository;
 
-        public ProductPictureRepository(IRepository<ProductPicture> productPictureRepository,
-            IRepository<Picture> pictureRepository, IRepository<Product> productRepository)
+        public ProductPictureRepository(IEntityRepository<ProductPicture> productPictureRepository,
+            IEntityRepository<Picture> pictureRepository, IEntityRepository<Product> productRepository)
         {
             _productPictureRepository = productPictureRepository;
             _pictureRepository = pictureRepository;
@@ -142,7 +143,7 @@ namespace Camino.Infrastructure.Repositories.Products
             {
                 var binaryPicture = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
                 var pictureData = Convert.FromBase64String(binaryPicture);
-                var pictureId = await _pictureRepository.AddWithInt64EntityAsync(new Picture()
+                var pictureId = await _pictureRepository.AddAsync<long>(new Picture()
                 {
                     CreatedById = request.UpdatedById,
                     CreatedDate = request.CreatedDate,
@@ -196,7 +197,7 @@ namespace Camino.Infrastructure.Repositories.Products
                 {
                     var base64Data = ImageUtil.EncodeJavascriptBase64(picture.Base64Data);
                     var pictureData = Convert.FromBase64String(base64Data);
-                    var pictureId = _pictureRepository.AddWithInt64Entity(new Picture()
+                    var pictureId = await _pictureRepository.AddAsync<long>(new Picture()
                     {
                         CreatedById = request.UpdatedById,
                         CreatedDate = request.CreatedDate,

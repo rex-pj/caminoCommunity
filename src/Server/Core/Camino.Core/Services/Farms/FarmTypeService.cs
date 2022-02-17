@@ -10,10 +10,11 @@ using Camino.Core.Contracts.Repositories.Users;
 using System.Linq;
 using Camino.Core.Exceptions;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Farms
 {
-    public class FarmTypeService : IFarmTypeService
+    public class FarmTypeService : IFarmTypeService, IScopedDependency
     {
         private readonly IFarmTypeRepository _farmTypeRepository;
         private readonly IUserRepository _userRepository;

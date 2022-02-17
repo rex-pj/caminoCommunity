@@ -12,15 +12,16 @@ using Camino.Core.Domain.Articles;
 using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
-    public class ArticleRepository : IArticleRepository
+    public class ArticleRepository : IArticleRepository, IScopedDependency
     {
-        private readonly IRepository<Article> _articleRepository;
-        private readonly IRepository<ArticleCategory> _articleCategoryRepository;
+        private readonly IEntityRepository<Article> _articleRepository;
+        private readonly IEntityRepository<ArticleCategory> _articleCategoryRepository;
 
-        public ArticleRepository(IRepository<Article> articleRepository, IRepository<ArticleCategory> articleCategoryRepository)
+        public ArticleRepository(IEntityRepository<Article> articleRepository, IEntityRepository<ArticleCategory> articleCategoryRepository)
         {
             _articleRepository = articleRepository;
             _articleCategoryRepository = articleCategoryRepository;
@@ -199,7 +200,7 @@ namespace Camino.Infrastructure.Repositories.Articles
                 StatusId = ArticleStatus.Pending.GetCode()
             };
 
-            return await _articleRepository.AddWithInt32EntityAsync(newArticle);
+            return await _articleRepository.AddAsync<int>(newArticle);
         }
 
         public async Task<bool> UpdateAsync(ArticleModifyRequest request)

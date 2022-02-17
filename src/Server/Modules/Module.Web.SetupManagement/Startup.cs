@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.SetupManagement.Infrastructure.Extensions;
+using Module.Web.SetupManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.SetupManagement.Middlewares;
 
 namespace Module.Web.SetupManagement
 {

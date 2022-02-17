@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Module.Web.CommunityManagement.Infrastructure.Extensions;
+using Module.Web.CommunityManagement.Extensions.DependencyInjection;
 using Camino.Infrastructure.Modularity;
+using Module.Web.CommunityManagement.Middlewares;
 
 namespace Module.Web.CommunityManagement
 {

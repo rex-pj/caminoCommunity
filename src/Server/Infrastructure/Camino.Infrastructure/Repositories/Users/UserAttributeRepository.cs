@@ -10,15 +10,16 @@ using LinqToDB;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Linq2Db;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
-    public class UserAttributeRepository : IUserAttributeRepository
+    public class UserAttributeRepository : IUserAttributeRepository, IScopedDependency
     {
-        private readonly IRepository<UserAttribute> _userAttributeRepository;
+        private readonly IEntityRepository<UserAttribute> _userAttributeRepository;
         private readonly CaminoDataConnection _dataConnection;
 
-        public UserAttributeRepository(IRepository<UserAttribute> userAttributeRepository, CaminoDataConnection dataConnection)
+        public UserAttributeRepository(IEntityRepository<UserAttribute> userAttributeRepository, CaminoDataConnection dataConnection)
         {
             _userAttributeRepository = userAttributeRepository;
             _dataConnection = dataConnection;

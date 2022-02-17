@@ -6,10 +6,11 @@ using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Services.Users;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Users;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Users
 {
-    public class UserStatusService : IUserStatusService
+    public class UserStatusService : IUserStatusService, IScopedDependency
     {
         private readonly IUserStatusRepository _statusRepository;
         public UserStatusService(IUserStatusRepository statusRepository)

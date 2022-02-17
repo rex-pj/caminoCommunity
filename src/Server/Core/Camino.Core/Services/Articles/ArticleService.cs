@@ -13,10 +13,11 @@ using Camino.Shared.Results.Media;
 using System;
 using Camino.Shared.Enums;
 using Camino.Shared.General;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Articles
 {
-    public class ArticleService : IArticleService
+    public class ArticleService : IArticleService, IScopedDependency
     {
         private readonly IArticleRepository _articleRepository;
         private readonly IArticlePictureRepository _articlePictureRepository;

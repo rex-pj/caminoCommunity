@@ -12,14 +12,15 @@ using Camino.Core.Domain.Farms;
 using Camino.Shared.Requests.Farms;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Farms
 {
-    public class FarmTypeRepository : IFarmTypeRepository
+    public class FarmTypeRepository : IFarmTypeRepository, IScopedDependency
     {
-        private readonly IRepository<FarmType> _farmTypeRepository;
+        private readonly IEntityRepository<FarmType> _farmTypeRepository;
 
-        public FarmTypeRepository(IRepository<FarmType> farmTypeRepository)
+        public FarmTypeRepository(IEntityRepository<FarmType> farmTypeRepository)
         {
             _farmTypeRepository = farmTypeRepository;
         }
@@ -166,7 +167,7 @@ namespace Camino.Infrastructure.Repositories.Farms
             newFarmType.UpdatedDate = DateTimeOffset.UtcNow;
             newFarmType.CreatedDate = DateTimeOffset.UtcNow;
 
-            var id = await _farmTypeRepository.AddWithInt32EntityAsync(newFarmType);
+            var id = await _farmTypeRepository.AddAsync<int>(newFarmType);
             return id;
         }
 

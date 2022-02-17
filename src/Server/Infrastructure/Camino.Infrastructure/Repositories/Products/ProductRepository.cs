@@ -14,22 +14,23 @@ using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : IProductRepository, IScopedDependency
     {
-        private readonly IRepository<Product> _productRepository;
-        private readonly IRepository<FarmProduct> _farmProductRepository;
-        private readonly IRepository<Farm> _farmRepository;
-        private readonly IRepository<ProductPrice> _productPriceRepository;
-        private readonly IRepository<ProductCategoryRelation> _productCategoryRelationRepository;
-        private readonly IRepository<ProductCategory> _productCategoryRepository;
+        private readonly IEntityRepository<Product> _productRepository;
+        private readonly IEntityRepository<FarmProduct> _farmProductRepository;
+        private readonly IEntityRepository<Farm> _farmRepository;
+        private readonly IEntityRepository<ProductPrice> _productPriceRepository;
+        private readonly IEntityRepository<ProductCategoryRelation> _productCategoryRelationRepository;
+        private readonly IEntityRepository<ProductCategory> _productCategoryRepository;
 
-        public ProductRepository(IRepository<Product> productRepository,
-            IRepository<ProductCategoryRelation> productCategoryRelationRepository,
-            IRepository<ProductPrice> productPriceRepository, IRepository<FarmProduct> farmProductRepository,
-            IRepository<Farm> farmRepository, IRepository<ProductCategory> productCategoryRepository)
+        public ProductRepository(IEntityRepository<Product> productRepository,
+            IEntityRepository<ProductCategoryRelation> productCategoryRelationRepository,
+            IEntityRepository<ProductPrice> productPriceRepository, IEntityRepository<FarmProduct> farmProductRepository,
+            IEntityRepository<Farm> farmRepository, IEntityRepository<ProductCategory> productCategoryRepository)
         {
             _productRepository = productRepository;
             _productCategoryRelationRepository = productCategoryRelationRepository;
@@ -347,7 +348,7 @@ namespace Camino.Infrastructure.Repositories.Products
                 StatusId = ProductStatus.Pending.GetCode()
             };
 
-            var id = await _productRepository.AddWithInt64EntityAsync(newProduct);
+            var id = await _productRepository.AddAsync<long>(newProduct);
             if (id > 0)
             {
                 foreach (var category in request.Categories)

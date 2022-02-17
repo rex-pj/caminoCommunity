@@ -8,10 +8,11 @@ using Camino.Shared.Requests.UpdateItems;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.Repositories.Users;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Services.Users
 {
-    public partial class UserService : IUserService
+    public class UserService : IUserService, IScopedDependency
     {
         #region Fields/Properties
         private readonly IUserRepository _userRepository;

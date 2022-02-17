@@ -9,10 +9,11 @@ using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
-    public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository
+    public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository, IScopedDependency
     {
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
@@ -117,7 +118,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
                 UpdatedDate = DateTime.UtcNow
             };
 
-            var id = _authorizationPolicyRepository.AddWithInt64Entity(newPolicy);
+            var id = _authorizationPolicyRepository.Add<long>(newPolicy);
             return id;
         }
 

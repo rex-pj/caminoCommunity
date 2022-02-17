@@ -14,16 +14,17 @@ using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
 using LinqToDB;
 using LinqToDB.Tools;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
-    public class UserPhotoRepository : IUserPhotoRepository
+    public class UserPhotoRepository : IUserPhotoRepository, IScopedDependency
     {
-        private readonly IRepository<UserPhoto> _userPhotoRepository;
-        private readonly IRepository<UserInfo> _userInfoRepository;
+        private readonly IEntityRepository<UserPhoto> _userPhotoRepository;
+        private readonly IEntityRepository<UserInfo> _userInfoRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        public UserPhotoRepository(ValidationStrategyContext validationStrategyContext, IRepository<UserPhoto> userPhotoRepository,
-            IRepository<UserInfo> userInfoRepository)
+        public UserPhotoRepository(ValidationStrategyContext validationStrategyContext, IEntityRepository<UserPhoto> userPhotoRepository,
+            IEntityRepository<UserInfo> userInfoRepository)
         {
             _userPhotoRepository = userPhotoRepository;
             _userInfoRepository = userInfoRepository;

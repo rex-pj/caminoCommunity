@@ -8,10 +8,11 @@ using Camino.Core.Contracts.Repositories.Authentication;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authentication
 {
-    public class UserClaimRepository : IUserClaimRepository
+    public class UserClaimRepository : IUserClaimRepository, IScopedDependency
     {
         private readonly IRepository<UserClaim> _userClaimRepository;
 

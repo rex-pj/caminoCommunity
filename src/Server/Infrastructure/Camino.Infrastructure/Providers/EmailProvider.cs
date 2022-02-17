@@ -1,4 +1,5 @@
-﻿using Camino.Core.Contracts.Providers;
+﻿using Camino.Core.Contracts.DependencyInjection;
+using Camino.Core.Contracts.Providers;
 using Camino.Shared.Configurations;
 using Camino.Shared.Enums;
 using Camino.Shared.Requests.Providers;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.Providers
 {
-    public class EmailProvider : IEmailProvider
+    public class EmailProvider : IEmailProvider, IScopedDependency
     {
         private readonly EmailSenderSettings _emailSenderSettings;
         public EmailProvider(IOptions<EmailSenderSettings> emailSenderSettings)

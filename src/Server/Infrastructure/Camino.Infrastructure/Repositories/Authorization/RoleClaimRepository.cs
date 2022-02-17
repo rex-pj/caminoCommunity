@@ -7,10 +7,11 @@ using Camino.Core.Contracts.Repositories.Authorization;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Authorization;
 using Camino.Shared.Results.Authorization;
+using Camino.Core.Contracts.DependencyInjection;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
-    public class RoleClaimRepository : IRoleClaimRepository
+    public class RoleClaimRepository : IRoleClaimRepository, IScopedDependency
     {
         private readonly IRepository<RoleClaim> _roleClaimRepository;
 

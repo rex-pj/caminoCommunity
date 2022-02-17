@@ -1,11 +1,12 @@
-﻿using Camino.Core.Contracts.Repositories.Setup;
+﻿using Camino.Core.Contracts.DependencyInjection;
+using Camino.Core.Contracts.Repositories.Setup;
 using Camino.Core.Contracts.Services.Setup;
 using Camino.Shared.Requests.Setup;
 using System.Threading.Tasks;
 
 namespace Camino.Services.Setup
 {
-    public class DataSeedService : IDataSeedService
+    public class DataSeedService : IDataSeedService, IScopedDependency
     {
         private readonly IDbCreationRepository _dbCreationRepository;
         private readonly IDataSeedRepository _dataSeedRepository;
