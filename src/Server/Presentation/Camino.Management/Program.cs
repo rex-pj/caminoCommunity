@@ -1,25 +1,13 @@
-using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Framework.Infrastructure.Middlewares;
-using Camino.Framework.Infrastructure.ModelBinders;
-using Camino.Infrastructure.Extensions.DependencyInjection;
 using Camino.Management.Extensions.DependencyInjection;
 using Camino.Management.Middlewares;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure services
-builder.Services.ConfigureManagementServices(builder.Configuration)
-    .AddControllersWithViews(options =>
-    {
-        options.ModelBinderProviders.Insert(0, new ApplicationModelBinderProvider());
-    })
-    .AddNewtonsoftJson()
-    .AddModular();
-
-builder.Services.AddAutoMappingModular();
+builder.Services.ConfigureManagementServices(builder.Configuration);
 
 // Configure application
 var app = builder.Build();

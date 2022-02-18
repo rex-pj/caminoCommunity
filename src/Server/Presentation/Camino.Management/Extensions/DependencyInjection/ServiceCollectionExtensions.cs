@@ -4,6 +4,7 @@ using Camino.IdentityManager.Contracts.Core;
 using Camino.Shared.Configurations;
 using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Infrastructure.Extensions.DependencyInjection;
+using Camino.Framework.Infrastructure.ModelBinders;
 
 namespace Camino.Management.Extensions.DependencyInjection
 {
@@ -17,6 +18,16 @@ namespace Camino.Management.Extensions.DependencyInjection
             services.AddDataProtection();
 
             services.AddSingleton<SetupSettings>();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new ApplicationModelBinderProvider());
+            })
+            .AddNewtonsoftJson()
+            .AddModularManager()
+            .AddModules(configuration);
+
+            services.AddAutoMappingModular();
 
             return services;
         }

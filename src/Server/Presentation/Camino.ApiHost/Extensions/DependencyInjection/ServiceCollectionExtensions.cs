@@ -27,7 +27,8 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
 
             services.AddControllers()
                 .AddNewtonsoftJson()
-                .AddModular();
+                .AddModularManager()
+                .AddModules(configuration);
             services.AddAutoMappingModular();
 
             return services;

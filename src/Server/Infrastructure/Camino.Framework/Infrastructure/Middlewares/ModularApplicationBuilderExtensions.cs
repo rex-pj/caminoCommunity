@@ -3,6 +3,7 @@ using Camino.Shared.Modularity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Camino.Framework.Infrastructure.Middlewares
         public static IApplicationBuilder UseModular(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             var serviceProvider = app.ApplicationServices;
-            var modules = serviceProvider.GetService(typeof(IList<ModuleInfo>)) as IList<ModuleInfo>;
+            var modules = serviceProvider.GetService<IList<ModuleInfo>>();
             var moduleStartupInterfaceType = typeof(IModuleStartup);
             foreach (var module in modules)
             {
