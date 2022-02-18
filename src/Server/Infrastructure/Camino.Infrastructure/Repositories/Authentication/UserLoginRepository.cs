@@ -13,9 +13,9 @@ namespace Camino.Infrastructure.Repositories.Authentication
 {
     public class UserLoginRepository : IUserLoginRepository, IScopedDependency
     {
-        private readonly IRepository<UserLogin> _userLoginRepository;
+        private readonly IEntityRepository<UserLogin> _userLoginRepository;
 
-        public UserLoginRepository(IRepository<UserLogin> userTokenRepository)
+        public UserLoginRepository(IEntityRepository<UserLogin> userTokenRepository)
         {
             _userLoginRepository = userTokenRepository;
         }
@@ -91,11 +91,10 @@ namespace Camino.Infrastructure.Repositories.Authentication
 
         public async Task RemoveAsync(UserLoginRequest userLoginRequest)
         {
-            await _userLoginRepository.Get(x => x.LoginProvider == userLoginRequest.LoginProvider
+            await _userLoginRepository.DeleteAsync(x => x.LoginProvider == userLoginRequest.LoginProvider
                     && x.ProviderKey == userLoginRequest.ProviderKey
                     && x.ProviderDisplayName == userLoginRequest.ProviderDisplayName
-                    && x.UserId == userLoginRequest.UserId)
-                .DeleteAsync();
+                    && x.UserId == userLoginRequest.UserId);
         }
     }
 }

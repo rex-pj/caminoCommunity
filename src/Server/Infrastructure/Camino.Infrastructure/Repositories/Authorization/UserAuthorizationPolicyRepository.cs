@@ -75,9 +75,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
                 return false;
             }
 
-            var exist = _userAuthorizationPolicyRepository.Get(x => x.UserId == userId && x.AuthorizationPolicyId == authorizationPolicyId);
-
-            _userAuthorizationPolicyRepository.Delete(exist);
+            _userAuthorizationPolicyRepository.Delete(x => x.UserId == userId && x.AuthorizationPolicyId == authorizationPolicyId);
             return true;
         }
 

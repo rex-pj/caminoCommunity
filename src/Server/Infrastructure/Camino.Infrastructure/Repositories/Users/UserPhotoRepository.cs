@@ -196,7 +196,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 Url = x.Url,
                 TypeId = x.TypeId,
                 UserId = x.UserId
-            }).Where(x => x.UserId.In(userIds) && x.TypeId.Equals(photoType)).ToListAsync();
+            }).Where(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType)).ToListAsync();
         }
 
         public async Task<string> GetCodeByUserIdAsync(long userId, UserPictureType typeId)
@@ -211,7 +211,7 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<IList<UserPhotoResult>> GetUserPhotosByUserIdsAsync(IEnumerable<long> userIds, UserPictureType typeId)
         {
             var photoType = (byte)typeId;
-            var userPhotoCodes = await _userPhotoRepository.Get(x => x.UserId.In(userIds) && x.TypeId.Equals(photoType))
+            var userPhotoCodes = await _userPhotoRepository.Get(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType))
                 .Select(x => new UserPhotoResult
                 {
                     Code = x.Code,

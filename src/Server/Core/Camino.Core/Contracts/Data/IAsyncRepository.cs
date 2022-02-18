@@ -63,12 +63,19 @@ namespace Camino.Core.Contracts.Data
         /// Delete entity async
         /// </summary>
         /// <param name="entity">Entity</param>
-        Task DeleteAsync(TEntity entity);
+        Task<int> DeleteAsync(TEntity entity);
 
         /// <summary>
         /// Delete entities async
         /// </summary>
         /// <param name="entity">Entity</param>
-        Task DeleteAsync(IQueryable<TEntity> entities);
+        Task<int> DeleteAsync(IQueryable<TEntity> entities);
+
+        /// <summary>
+        /// Delete entities by filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>Number of deleted records.</returns>
+        Task<int> DeleteAsync(Expression<Func<TEntity, bool>> filter);
     }
 }

@@ -126,7 +126,7 @@ namespace Camino.Infrastructure.Repositories.Articles
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
             var articlePictureTypeId = articlePictureType.HasValue ? articlePictureType.Value.GetCode() : 0;
-            var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => x.ArticleId.In(articleIds))
+            var articlePictures = await (from articlePic in _articlePictureRepository.Get(x => articleIds.Contains(x.ArticleId))
                                          join picture in _pictureRepository.Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
                                             || (x.StatusId != deletedStatus && x.StatusId != inactivedStatus))
@@ -181,10 +181,9 @@ namespace Camino.Infrastructure.Repositories.Articles
                 if (articlePictures.Any())
                 {
                     var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
-                    await articlePictures.DeleteAsync();
+                    await _articlePictureRepository.DeleteAsync(articlePictures);
 
-                    await _pictureRepository.Get(x => x.Id.In(pictureIds))
-                        .DeleteAsync();
+                    await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
                 }
             }
 
@@ -218,10 +217,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         {
             var articlePictures = _articlePictureRepository.Get(x => x.ArticleId == articleId);
             var pictureIds = articlePictures.Select(x => x.PictureId).ToList();
-            await articlePictures.DeleteAsync();
+            await _articlePictureRepository.DeleteAsync(articlePictures);
 
-            await _pictureRepository.Get(x => x.Id.In(pictureIds))
-                .DeleteAsync();
+            await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
 
             return true;
         }

@@ -124,7 +124,7 @@ namespace Camino.Infrastructure.Repositories.Farms
 
             if (filter.CurrentIds != null && filter.CurrentIds.Any())
             {
-                query = query.Where(x => x.Id.NotIn(filter.CurrentIds));
+                query = query.Where(x => !filter.CurrentIds.Contains(x.Id));
             }
 
             filter.Keyword = filter.Keyword.ToLower();
@@ -313,8 +313,7 @@ namespace Camino.Infrastructure.Repositories.Farms
             await DeleteProductByFarmIdAsync(id);
 
             // Delete farm
-            await _farmRepository.Get(x => x.Id == id)
-                .DeleteAsync();
+            await _farmRepository.DeleteAsync(x => x.Id == id);
 
             return true;
         }
@@ -331,17 +330,14 @@ namespace Camino.Infrastructure.Repositories.Farms
 
             await _productPictureRepository.DeleteByProductIdsAsync(productIds);
 
-            await farmProducts.DeleteAsync();
+            await _farmProductRepository.DeleteAsync(farmProducts);
 
-            await _productPriceRepository.Get(x => x.ProductId.In(productIds))
-                .DeleteAsync();
+            await _productPriceRepository.DeleteAsync(x => productIds.Contains(x.ProductId));
 
             await _productCategoryRelationRepository
-                .Get(x => x.ProductId.In(productIds))
-                .DeleteAsync();
+                .DeleteAsync(x => productIds.Contains(x.ProductId));
 
-            await _productRepository.Get(x => x.Id.In(productIds))
-                .DeleteAsync();
+            await _productRepository.DeleteAsync(x => productIds.Contains(x.Id));
         }
 
         public async Task<bool> SoftDeleteAsync(FarmModifyRequest request)
@@ -374,7 +370,7 @@ namespace Camino.Infrastructure.Repositories.Farms
             };
             await _productPictureRepository.UpdateStatusByProductIdsAsync(productIds, request.UpdatedById, pictureStatus);
 
-            await _productRepository.Get(x => x.Id.In(productIds))
+            await _productRepository.Get(x => productIds.Contains(x.Id))
                 .Set(x => x.StatusId, productStatus.GetCode())
                 .Set(x => x.UpdatedById, request.UpdatedById)
                 .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)

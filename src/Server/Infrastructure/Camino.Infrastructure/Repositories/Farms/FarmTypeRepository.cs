@@ -207,7 +207,7 @@ namespace Camino.Infrastructure.Repositories.Farms
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var deletedNumbers = await _farmTypeRepository.Get(x => x.Id == id).DeleteAsync();
+            var deletedNumbers = await _farmTypeRepository.DeleteAsync(x => x.Id == id);
             return deletedNumbers > 0;
         }
     }

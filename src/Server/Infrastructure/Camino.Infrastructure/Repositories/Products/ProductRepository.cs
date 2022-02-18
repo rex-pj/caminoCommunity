@@ -282,7 +282,7 @@ namespace Camino.Infrastructure.Repositories.Products
             var farmIds = exist.Farms.Select(x => x.FarmId);
             var categoryIds = exist.Categories.Select(x => x.Id);
 
-            var farmQuery = from farm in _farmRepository.Get(x => x.Id.In(farmIds))
+            var farmQuery = from farm in _farmRepository.Get(x => farmIds.Contains(x.Id))
                             join farmProduct in _farmProductRepository.Table
                             on farm.Id equals farmProduct.FarmId
                             select new
@@ -306,7 +306,7 @@ namespace Camino.Infrastructure.Repositories.Products
                                         from price in prices.DefaultIfEmpty()
 
                                         where pr.CreatedById == exist.CreatedById
-                                        || categoryRelation.ProductCategoryId.In(categoryIds)
+                                        || categoryIds.Contains(categoryRelation.ProductCategoryId)
                                         || pr.UpdatedById == exist.UpdatedById
                                         select new ProductResult
                                         {
@@ -396,15 +396,14 @@ namespace Camino.Infrastructure.Repositories.Products
             // Update Category
             var categoryIds = request.Categories.Select(x => x.Id);
             await _productCategoryRelationRepository
-                        .Get(x => x.ProductId == request.Id && x.ProductCategoryId.NotIn(categoryIds))
-                        .DeleteAsync();
+                        .DeleteAsync(x => x.ProductId == request.Id && !categoryIds.Contains(x.ProductCategoryId));
 
             var linkedCategoryIds = _productCategoryRelationRepository
-                .Get(x => x.ProductId == request.Id && x.ProductCategoryId.In(categoryIds))
+                .Get(x => x.ProductId == request.Id && categoryIds.Contains(x.ProductCategoryId))
                 .Select(x => x.ProductCategoryId)
                 .ToList();
 
-            var unlinkedCategories = request.Categories.Where(x => x.Id.NotIn(linkedCategoryIds));
+            var unlinkedCategories = request.Categories.Where(x => !linkedCategoryIds.Contains(x.Id));
             if (unlinkedCategories != null && unlinkedCategories.Any())
             {
                 foreach (var category in unlinkedCategories)
@@ -420,15 +419,14 @@ namespace Camino.Infrastructure.Repositories.Products
             // Update Farm
             var farmIds = request.Farms.Select(x => x.FarmId);
             await _farmProductRepository
-                        .Get(x => x.ProductId == request.Id && x.FarmId.NotIn(farmIds))
-                        .DeleteAsync();
+                        .DeleteAsync(x => x.ProductId == request.Id && !farmIds.Contains(x.FarmId));
 
             var linkedFarmIds = _farmProductRepository
-                .Get(x => x.ProductId == request.Id && x.FarmId.In(farmIds))
+                .Get(x => x.ProductId == request.Id && farmIds.Contains(x.FarmId))
                 .Select(x => x.FarmId)
                 .ToList();
 
-            var unlinkedFarms = request.Farms.Where(x => x.FarmId.NotIn(linkedFarmIds));
+            var unlinkedFarms = request.Farms.Where(x => !linkedFarmIds.Contains(x.FarmId));
             if (unlinkedFarms != null && unlinkedFarms.Any())
             {
                 foreach (var farm in unlinkedFarms)
@@ -489,17 +487,13 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task<bool> DeleteAsync(long id)
         {
-            await _farmProductRepository.Get(x => x.ProductId == id)
-                .DeleteAsync();
+            await _farmProductRepository.DeleteAsync(x => x.ProductId == id);
 
-            await _productPriceRepository.Get(x => x.ProductId == id)
-                .DeleteAsync();
+            await _productPriceRepository.DeleteAsync(x => x.ProductId == id);
 
-            await _productCategoryRelationRepository.Get(x => x.ProductId == id)
-                .DeleteAsync();
+            await _productCategoryRelationRepository.DeleteAsync(x => x.ProductId == id);
 
-            await _productRepository.Get(x => x.Id == id)
-                .DeleteAsync();
+            await _productRepository.DeleteAsync(x => x.Id == id);
 
             return true;
         }

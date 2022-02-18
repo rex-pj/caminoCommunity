@@ -51,9 +51,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
 
         public async Task<bool> DeleteAsync(long id)
         {
-            var role = _roleRepository.FirstOrDefault(x => x.Id == id);
-            await _roleRepository.DeleteAsync(role);
-
+            await _roleRepository.DeleteAsync(x => x.Id == id);
             return true;
         }
 
@@ -92,7 +90,7 @@ namespace Camino.Infrastructure.Repositories.Authorization
             var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
             var hasCurrentRoleIds = currentRoleIds != null && currentRoleIds.Any();
             var data = _roleRepository.Get(x => string.IsNullOrEmpty(keyword) || x.Name.ToLower().Contains(keyword))
-                .Where(x => !hasCurrentRoleIds || x.Id.NotIn(currentRoleIds));
+                .Where(x => !hasCurrentRoleIds || !currentRoleIds.Contains(x.Id));
 
             if (filter.PageSize > 0)
             {

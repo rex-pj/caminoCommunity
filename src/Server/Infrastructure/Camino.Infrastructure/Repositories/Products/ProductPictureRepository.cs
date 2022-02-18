@@ -121,7 +121,7 @@ namespace Camino.Infrastructure.Repositories.Products
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
             var productPictureTypeId = productPictureType.GetCode();
-            var productPictures = await (from productPic in _productPictureRepository.Get(x => x.ProductId.In(productIds) && x.PictureTypeId == productPictureTypeId)
+            var productPictures = await (from productPic in _productPictureRepository.Get(x => productIds.Contains(x.ProductId) && x.PictureTypeId == productPictureTypeId)
                                          join picture in _pictureRepository
                                          .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
@@ -172,14 +172,14 @@ namespace Camino.Infrastructure.Repositories.Products
         {
             var pictureIds = request.Pictures.Select(x => x.Id);
             var deleteProductPictures = _productPictureRepository
-                        .Get(x => x.ProductId == request.ProductId && x.PictureId.NotIn(pictureIds));
+                        .Get(x => x.ProductId == request.ProductId && !pictureIds.Contains(x.PictureId));
 
             // Delete old images
             var deletePictureIds = deleteProductPictures.Select(x => x.PictureId).ToList();
             if (deletePictureIds.Any())
             {
-                await deleteProductPictures.DeleteAsync();
-                await _pictureRepository.Get(x => x.Id.In(deletePictureIds)).DeleteAsync();
+                await _productPictureRepository.DeleteAsync(deleteProductPictures);
+                await _pictureRepository.DeleteAsync(x => deletePictureIds.Contains(x.Id));
             }
 
             var pictureTypeId = (int)ProductPictureType.Thumbnail;
@@ -234,10 +234,9 @@ namespace Camino.Infrastructure.Repositories.Products
         {
             var productPictures = _productPictureRepository.Get(x => x.ProductId == id);
             var pictureIds = productPictures.Select(x => x.PictureId).ToList();
-            await productPictures.DeleteAsync();
+            await _productPictureRepository.DeleteAsync(productPictures);
 
-            await _pictureRepository.Get(x => x.Id.In(pictureIds))
-                .DeleteAsync();
+            await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
 
             return true;
         }
@@ -258,19 +257,18 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task<bool> DeleteByProductIdsAsync(IEnumerable<long> ids)
         {
-            var productPictures = _productPictureRepository.Get(x => x.ProductId.In(ids));
+            var productPictures = _productPictureRepository.Get(x => ids.Contains(x.ProductId));
             var pictureIds = productPictures.Select(x => x.PictureId).ToList();
-            await productPictures.DeleteAsync();
+            await _productPictureRepository.DeleteAsync(productPictures);
 
-            await _pictureRepository.Get(x => x.Id.In(pictureIds))
-                .DeleteAsync();
+            await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
 
             return true;
         }
 
         public async Task<bool> UpdateStatusByProductIdsAsync(IEnumerable<long> ids, long updatedById, PictureStatus status)
         {
-            await (from productPicture in _productPictureRepository.Get(x => x.ProductId.In(ids))
+            await (from productPicture in _productPictureRepository.Get(x => ids.Contains(x.ProductId))
                    join picture in _pictureRepository.Table
                           on productPicture.PictureId equals picture.Id
                    select picture)

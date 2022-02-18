@@ -122,7 +122,7 @@ namespace Camino.Infrastructure.Repositories.Farms
             var deletedStatus = PictureStatus.Deleted.GetCode();
             var inactivedStatus = PictureStatus.Inactived.GetCode();
             var farmPictureTypeId = farmPictureType.GetCode();
-            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => x.FarmId.In(farmIds) && x.PictureTypeId == farmPictureTypeId)
+            var farmPictures = await (from farmPic in _farmPictureRepository.Get(x => farmIds.Contains(x.FarmId) && x.PictureTypeId == farmPictureTypeId)
                                       join picture in _pictureRepository
                                       .Get(x => (x.StatusId == deletedStatus && filter.CanGetDeleted)
                                             || (x.StatusId == inactivedStatus && filter.CanGetInactived)
@@ -173,15 +173,13 @@ namespace Camino.Infrastructure.Repositories.Farms
         {
             var pictureIds = request.Pictures.Select(x => x.Id);
             var deleteFarmPictures = _farmPictureRepository
-                        .Get(x => x.FarmId == request.FarmId && x.PictureId.NotIn(pictureIds));
+                        .Get(x => x.FarmId == request.FarmId && !pictureIds.Contains(x.PictureId));
 
             var deletePictureIds = deleteFarmPictures.Select(x => x.PictureId).ToList();
             if (deletePictureIds.Any())
             {
-                await deleteFarmPictures.DeleteAsync();
-
-                await _pictureRepository.Get(x => x.Id.In(deletePictureIds))
-                    .DeleteAsync();
+                await _farmPictureRepository.DeleteAsync(deleteFarmPictures);
+                await _pictureRepository.DeleteAsync(x => deletePictureIds.Contains(x.Id));
             }
 
             var pictureTypeId = (int)FarmPictureType.Thumbnail;
@@ -235,10 +233,9 @@ namespace Camino.Infrastructure.Repositories.Farms
         {
             var farmPictures = _farmPictureRepository.Get(x => x.FarmId == farmId);
             var pictureIds = farmPictures.Select(x => x.PictureId).ToList();
-            await farmPictures.DeleteAsync();
+            await _farmPictureRepository.DeleteAsync(farmPictures);
 
-            await _pictureRepository.Get(x => x.Id.In(pictureIds))
-                .DeleteAsync();
+            await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
 
             return true;
         }

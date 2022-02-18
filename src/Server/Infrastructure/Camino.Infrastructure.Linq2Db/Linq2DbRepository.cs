@@ -258,56 +258,77 @@ namespace Camino.Infrastructure.Linq2Db
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual void Delete(TEntity entity)
+        public virtual int Delete(TEntity entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dataConnection.Delete(entity);
+            return _dataConnection.Delete(entity);
         }
 
         /// <summary>
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual void Delete(IQueryable<TEntity> entities)
+        public virtual int Delete(IQueryable<TEntity> entities)
         {
             if (entities == null)
             {
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            entities.Delete();
+            return entities.Delete();
+        }
+
+        /// <summary>
+        /// Delete entities by filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>Number of deleted records.</returns>
+        public virtual int Delete(Expression<Func<TEntity, bool>> filter)
+        {
+            return Get(filter).Delete();
         }
 
         /// <summary>
         /// Delete entity async
         /// </summary>
         /// <param name="entity">Entity</param>
-        public async Task DeleteAsync(TEntity entity)
+        public async Task<int> DeleteAsync(TEntity entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            await _dataConnection.DeleteAsync(entity);
+            return await _dataConnection.DeleteAsync(entity);
         }
 
         /// <summary>
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual async Task DeleteAsync(IQueryable<TEntity> entities)
+        public virtual async Task<int> DeleteAsync(IQueryable<TEntity> entities)
         {
             if (entities == null)
             {
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            await entities.DeleteAsync();
+            return await entities.DeleteAsync();
+        }
+
+
+        /// <summary>
+        /// Delete entities by filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>Number of deleted records.</returns>
+        public virtual async Task<int> DeleteAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await Get(filter).DeleteAsync();
         }
         #endregion
 

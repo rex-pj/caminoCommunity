@@ -102,9 +102,7 @@ namespace Camino.Infrastructure.Repositories.Users
 
         public async Task<bool> DeleteAsync(long id)
         {
-            await _userRepository.Get(x => x.Id == id)
-                .DeleteAsync();
-
+            await _userRepository.DeleteAsync(x => x.Id == id);
             return true;
         }
 
@@ -325,7 +323,7 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<IList<UserResult>> GetNameByIdsAsync(IEnumerable<long> ids)
         {
             var existUsers = await _userRepository
-                .Get(x => x.Id.In(ids))
+                .Get(x => ids.Contains(x.Id))
                 .Select(x => new UserResult()
                 {
                     DisplayName = x.DisplayName,
@@ -392,7 +390,7 @@ namespace Camino.Infrastructure.Repositories.Users
 
             if (currentUserIds != null && currentUserIds.Any())
             {
-                userQuery = userQuery.Where(x => x.Id.NotIn(currentUserIds));
+                userQuery = userQuery.Where(x => !currentUserIds.Contains(x.Id));
             }
 
             if (filter.PageSize > 0)

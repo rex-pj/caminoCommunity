@@ -182,7 +182,7 @@ namespace Camino.Infrastructure.Repositories.Navigations
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var deletedNumbers = await _shortcutRepository.Get(x => x.Id == id).DeleteAsync();
+            var deletedNumbers = await _shortcutRepository.DeleteAsync(x => x.Id == id);
             return deletedNumbers > 0;
         }
     }

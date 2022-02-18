@@ -66,12 +66,20 @@ namespace Camino.Core.Contracts.Data
         /// Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void Delete(TEntity entity);
+        int Delete(TEntity entity);
 
         /// <summary>
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        void Delete(IQueryable<TEntity> entities);
+        /// <returns>Number of deleted records.</returns>
+        int Delete(IQueryable<TEntity> entities);
+
+        /// <summary>
+        /// Delete entities by filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        int Delete(Expression<Func<TEntity, bool>> filter);
     }
 }

@@ -189,8 +189,8 @@ namespace Camino.Infrastructure.Repositories.Products
             var queryChildrens = _productCategoryRepository.Get(x => x.ParentId.HasValue);
             if (currentIds != null && currentIds.Any())
             {
-                queryParents = queryParents.Where(x => x.Id.NotIn(currentIds));
-                queryChildrens = queryChildrens.Where(x => x.Id.NotIn(currentIds));
+                queryParents = queryParents.Where(x => !currentIds.Contains(x.Id));
+                queryChildrens = queryChildrens.Where(x => !currentIds.Contains(x.Id));
             }
 
             var query = from parent in queryParents
@@ -312,7 +312,7 @@ namespace Camino.Infrastructure.Repositories.Products
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var deletedNumbers = await _productCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            var deletedNumbers = await _productCategoryRepository.DeleteAsync(x => x.Id == id);
             return deletedNumbers > 0;
         }
     }

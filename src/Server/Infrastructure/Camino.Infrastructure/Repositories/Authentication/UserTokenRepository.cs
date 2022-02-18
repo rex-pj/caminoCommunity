@@ -12,9 +12,9 @@ namespace Camino.Infrastructure.Repositories.Authentication
 {
     public class UserTokenRepository : IUserTokenRepository, IScopedDependency
     {
-        private readonly IRepository<UserToken> _userTokenRepository;
+        private readonly IEntityRepository<UserToken> _userTokenRepository;
 
-        public UserTokenRepository(IRepository<UserToken> userTokenRepository)
+        public UserTokenRepository(IEntityRepository<UserToken> userTokenRepository)
         {
             _userTokenRepository = userTokenRepository;
         }
@@ -67,16 +67,14 @@ namespace Camino.Infrastructure.Repositories.Authentication
 
         public async Task RemoveAsync(UserTokenRequest request)
         {
-            await _userTokenRepository.Get(x => x.LoginProvider == request.LoginProvider
-                && x.Value == request.Value && x.Name == request.Name && x.UserId == request.UserId)
-                .DeleteAsync();
+            await _userTokenRepository.DeleteAsync(x => x.LoginProvider == request.LoginProvider
+                && x.Value == request.Value && x.Name == request.Name && x.UserId == request.UserId);
         }
 
         public async Task RemoveByValueAsync(UserTokenRequest request)
         {
-            await _userTokenRepository.Get(x => x.Value == request.Value
-                && x.UserId == request.UserId)
-                .DeleteAsync();
+            await _userTokenRepository.DeleteAsync(x => x.Value == request.Value
+                && x.UserId == request.UserId);
         }
     }
 }

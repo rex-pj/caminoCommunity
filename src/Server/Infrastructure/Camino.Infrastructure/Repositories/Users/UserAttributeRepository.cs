@@ -98,7 +98,7 @@ namespace Camino.Infrastructure.Repositories.Users
             var keys = userAttributes.Select(x => x.Key);
 
             var exists = _userAttributeRepository
-                .Get(x => x.UserId.In(userIds) && x.Key.In(keys))
+                .Get(x => userIds.Contains(x.UserId) && keys.Contains(x.Key))
                 .ToList();
 
             if (exists == null || !exists.Any())

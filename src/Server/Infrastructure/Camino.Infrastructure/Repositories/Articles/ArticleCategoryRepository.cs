@@ -306,7 +306,7 @@ namespace Camino.Infrastructure.Repositories.Articles
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var deletedNumbers = await _articleCategoryRepository.Get(x => x.Id == id).DeleteAsync();
+            var deletedNumbers = await _articleCategoryRepository.DeleteAsync(x => x.Id == id);
             return deletedNumbers > 0;
         }
     }
