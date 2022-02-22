@@ -17,12 +17,12 @@ namespace Camino.Infrastructure.Repositories.Users
     public class UserAttributeRepository : IUserAttributeRepository, IScopedDependency
     {
         private readonly IEntityRepository<UserAttribute> _userAttributeRepository;
-        private readonly CaminoDataConnection _dataConnection;
+        private readonly IDatabaseContext _databaseContext;
 
-        public UserAttributeRepository(IEntityRepository<UserAttribute> userAttributeRepository, CaminoDataConnection dataConnection)
+        public UserAttributeRepository(IEntityRepository<UserAttribute> userAttributeRepository, IDatabaseContext databaseContext)
         {
             _userAttributeRepository = userAttributeRepository;
-            _dataConnection = dataConnection;
+            _databaseContext = databaseContext;
         }
 
         public async Task<UserAttributeResult> GetAsync(long userId, string key)
@@ -106,7 +106,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 return Create(userAttributes);
             }
 
-            using (var transaction = _dataConnection.BeginTransaction())
+            using (var transaction = _databaseContext.BeginTransaction())
             {
                 var attributeResults = new List<UserAttribute>();
                 foreach (var item in userAttributes)

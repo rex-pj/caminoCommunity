@@ -15,6 +15,7 @@ using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
@@ -444,7 +445,7 @@ namespace Camino.Infrastructure.Repositories.Products
 
             // Unlink all price
             var totalPriceUpdated = await _productPriceRepository.Get(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price)
-                .Set(x => x.IsCurrent, false)
+                .SetEntry(x => x.IsCurrent, false)
                 .UpdateAsync();
 
             if (totalPriceUpdated > 0)
@@ -501,9 +502,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> SoftDeleteAsync(ProductModifyRequest request)
         {
             await _productRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductStatus.Deleted)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductStatus.Deleted)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -512,9 +513,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> DeactiveAsync(ProductModifyRequest request)
         {
             await _productRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -523,9 +524,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> ActiveAsync(ProductModifyRequest request)
         {
             await _productRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

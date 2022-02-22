@@ -11,6 +11,7 @@ using Camino.Core.Utils;
 using Camino.Core.Contracts.Repositories.Navigations;
 using Camino.Shared.Enums;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Navigations
 {
@@ -145,14 +146,14 @@ namespace Camino.Infrastructure.Repositories.Navigations
         public async Task<bool> UpdateAsync(ShortcutModifyRequest request)
         {
             var exist = await _shortcutRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.Description, request.Description)
-                .Set(x => x.Name, request.Name)
-                .Set(x => x.Icon, request.Icon)
-                .Set(x => x.TypeId, request.TypeId)
-                .Set(x => x.Url, request.Url)
-                .Set(x => x.DisplayOrder, request.Order)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.Description, request.Description)
+                .SetEntry(x => x.Name, request.Name)
+                .SetEntry(x => x.Icon, request.Icon)
+                .SetEntry(x => x.TypeId, request.TypeId)
+                .SetEntry(x => x.Url, request.Url)
+                .SetEntry(x => x.DisplayOrder, request.Order)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -161,9 +162,9 @@ namespace Camino.Infrastructure.Repositories.Navigations
         public async Task<bool> DeactivateAsync(ShortcutModifyRequest request)
         {
             await _shortcutRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -172,9 +173,9 @@ namespace Camino.Infrastructure.Repositories.Navigations
         public async Task<bool> ActiveAsync(ShortcutModifyRequest request)
         {
             await _shortcutRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductCategoryStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

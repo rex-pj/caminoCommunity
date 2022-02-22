@@ -11,6 +11,7 @@ using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
@@ -120,8 +121,8 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> UpdateAsync(UserStatusModifyRequest request)
         {
             await _statusRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.Description, request.Description)
-                .Set(x => x.Name, request.Name)
+                .SetEntry(x => x.Description, request.Description)
+                .SetEntry(x => x.Name, request.Name)
                 .UpdateAsync();
 
             return true;

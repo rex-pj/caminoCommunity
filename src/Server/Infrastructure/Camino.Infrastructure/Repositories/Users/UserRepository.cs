@@ -14,10 +14,9 @@ using Camino.Shared.Requests.UpdateItems;
 using Camino.Shared.Requests.Authentication;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Infrastructure.Strategies.Validations;
-using Camino.Infrastructure.Linq2Db;
-using LinqToDB.Tools;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Users
 {
@@ -27,16 +26,16 @@ namespace Camino.Infrastructure.Repositories.Users
         private readonly IEntityRepository<UserInfo> _userInfoRepository;
         private readonly IEntityRepository<User> _userRepository;
         private readonly ValidationStrategyContext _validationStrategyContext;
-        private readonly CaminoDataConnection _dataConnection;
+        private readonly IDatabaseContext _databaseContext;
         private int _userDeletedStatus;
         private int _userInactivedStatus;
         #endregion
 
         #region Ctor
         public UserRepository(IEntityRepository<User> userRepository, ValidationStrategyContext validationStrategyContext,
-            IEntityRepository<UserInfo> userInfoRepository, CaminoDataConnection dataConnection)
+            IEntityRepository<UserInfo> userInfoRepository, IDatabaseContext databaseContext)
         {
-            _dataConnection = dataConnection;
+            _databaseContext = databaseContext;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
             _validationStrategyContext = validationStrategyContext;
@@ -53,7 +52,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 throw new ArgumentNullException(nameof(request));
             }
 
-            using (var transaction = _dataConnection.BeginTransaction())
+            using (var transaction = _databaseContext.BeginTransaction())
             {
                 try
                 {
@@ -73,6 +72,7 @@ namespace Camino.Infrastructure.Repositories.Users
                         DisplayName = request.DisplayName,
                         IsEmailConfirmed = true
                     });
+
                     if (userId > 0)
                     {
                         await _userInfoRepository.AddAsync(new UserInfo
@@ -109,9 +109,9 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> SoftDeleteAsync(UserModifyRequest request)
         {
             var updatedRecords = (await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, UserStatus.Deleted.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, UserStatus.Deleted.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync());
 
             return updatedRecords > 0;
@@ -120,9 +120,9 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> DeactivateAsync(UserModifyRequest request)
         {
             await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, UserStatus.Inactived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, UserStatus.Inactived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -131,9 +131,9 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> ActiveAsync(UserModifyRequest request)
         {
             await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, UserStatus.Actived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -142,10 +142,10 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> ConfirmAsync(UserModifyRequest request)
         {
             await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.IsEmailConfirmed, true)
-                .Set(x => x.StatusId, UserStatus.Actived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.IsEmailConfirmed, true)
+                .SetEntry(x => x.StatusId, UserStatus.Actived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -183,7 +183,7 @@ namespace Camino.Infrastructure.Repositories.Users
                 userInfo.User.UpdatedById = userInfo.Id;
             }
 
-            await _dataConnection.UpdateByNameAsync(userInfo, request.Value, request.PropertyName, true);
+            await _databaseContext.UpdateByNameAsync(userInfo, request.Value, request.PropertyName, true);
 
             return request;
         }
@@ -201,11 +201,11 @@ namespace Camino.Infrastructure.Repositories.Users
             }
 
             await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.UpdatedById, request.Id)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .Set(x => x.Lastname, request.Lastname)
-                .Set(x => x.Firstname, request.Firstname)
-                .Set(x => x.DisplayName, request.DisplayName)
+                .SetEntry(x => x.UpdatedById, request.Id)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.Lastname, request.Lastname)
+                .SetEntry(x => x.Firstname, request.Firstname)
+                .SetEntry(x => x.DisplayName, request.DisplayName)
                 .UpdateAsync();
 
             return request;
@@ -214,13 +214,13 @@ namespace Camino.Infrastructure.Repositories.Users
         public async Task<bool> UpdateAsync(UserModifyRequest request)
         {
             var exist = await _userRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.UpdatedById, request.Id)
-                .Set(x => x.UpdatedDate, DateTime.UtcNow)
-                .Set(x => x.Lastname, request.Lastname)
-                .Set(x => x.Firstname, request.Firstname)
-                .Set(x => x.DisplayName, request.DisplayName)
-                .Set(x => x.IsEmailConfirmed, request.IsEmailConfirmed)
-                .Set(x => x.PasswordHash, request.PasswordHash)
+                .SetEntry(x => x.UpdatedById, request.Id)
+                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
+                .SetEntry(x => x.Lastname, request.Lastname)
+                .SetEntry(x => x.Firstname, request.Firstname)
+                .SetEntry(x => x.DisplayName, request.DisplayName)
+                .SetEntry(x => x.IsEmailConfirmed, request.IsEmailConfirmed)
+                .SetEntry(x => x.PasswordHash, request.PasswordHash)
                 .UpdateAsync();
 
             return true;

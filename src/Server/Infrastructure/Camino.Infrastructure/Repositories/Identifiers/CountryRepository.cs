@@ -11,6 +11,7 @@ using Camino.Core.Contracts.Repositories.Identities;
 using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Requests.Identifiers;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Identifiers
 {
@@ -131,8 +132,8 @@ namespace Camino.Infrastructure.Repositories.Identifiers
         public async Task<bool> UpdateAsync(CountryModifyRequest request)
         {
             await _countryRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.Code, request.Code)
-                .Set(x => x.Name, request.Name)
+                .SetEntry(x => x.Code, request.Code)
+                .SetEntry(x => x.Name, request.Name)
                 .UpdateAsync();
 
             return true;

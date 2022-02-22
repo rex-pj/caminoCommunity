@@ -15,6 +15,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Requests.Farms;
 using LinqToDB.Tools;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Farms
 {
@@ -246,9 +247,9 @@ namespace Camino.Infrastructure.Repositories.Farms
                    join picture in _pictureRepository.Table
                    on farmPicture.PictureId equals picture.Id
                    select picture)
-                .Set(x => x.StatusId, pictureStatus.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, pictureStatus.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

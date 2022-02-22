@@ -15,6 +15,7 @@ using Camino.Core.Utils;
 using Camino.Shared.Requests.Products;
 using LinqToDB.Tools;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
@@ -247,9 +248,9 @@ namespace Camino.Infrastructure.Repositories.Products
                    join picture in _pictureRepository.Table
                    on productPicture.PictureId equals picture.Id
                    select picture)
-                    .Set(x => x.StatusId, pictureStatus.GetCode())
-                    .Set(x => x.UpdatedById, request.UpdatedById)
-                    .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                    .SetEntry(x => x.StatusId, pictureStatus.GetCode())
+                    .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                    .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                     .UpdateAsync();
 
             return true;
@@ -272,9 +273,9 @@ namespace Camino.Infrastructure.Repositories.Products
                    join picture in _pictureRepository.Table
                           on productPicture.PictureId equals picture.Id
                    select picture)
-                    .Set(x => x.StatusId, status.GetCode())
-                    .Set(x => x.UpdatedById, updatedById)
-                    .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                    .SetEntry(x => x.StatusId, status.GetCode())
+                    .SetEntry(x => x.UpdatedById, updatedById)
+                    .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                     .UpdateAsync();
 
             return true;

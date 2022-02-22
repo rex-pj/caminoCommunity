@@ -10,6 +10,7 @@ using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Authorization
 {
@@ -125,10 +126,10 @@ namespace Camino.Infrastructure.Repositories.Authorization
         public async Task<bool> UpdateAsync(AuthorizationPolicyRequest request)
         {
             await _authorizationPolicyRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.Description, request.Description)
-                .Set(x => x.Name, request.Name)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTime.UtcNow)
+                .SetEntry(x => x.Description, request.Description)
+                .SetEntry(x => x.Name, request.Name)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
                 .UpdateAsync();
 
             return true;

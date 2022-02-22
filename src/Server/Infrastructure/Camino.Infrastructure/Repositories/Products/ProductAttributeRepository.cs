@@ -15,6 +15,7 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using LinqToDB.Tools;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
@@ -172,9 +173,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> UpdateAsync(ProductAttributeModifyRequest category)
         {
             await _productAttributeRepository.Get(x => x.Id == category.Id)
-                .Set(x => x.Description, category.Description)
-                .Set(x => x.UpdatedById, category.UpdatedById)
-                .Set(x => x.Name, category.Name)
+                .SetEntry(x => x.Description, category.Description)
+                .SetEntry(x => x.UpdatedById, category.UpdatedById)
+                .SetEntry(x => x.Name, category.Name)
                 .UpdateAsync();
 
             return true;
@@ -183,9 +184,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> DeactivateAsync(ProductAttributeModifyRequest request)
         {
             await _productAttributeRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -194,9 +195,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> ActiveAsync(ProductAttributeModifyRequest request)
         {
             await _productAttributeRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -278,11 +279,11 @@ namespace Camino.Infrastructure.Repositories.Products
 
             var attributeRelationUpdated = await (_productAttributeRelationRepository
                 .Get(x => x.Id == request.Id)
-                .Set(x => x.IsRequired, request.IsRequired)
-                .Set(x => x.ProductAttributeId, request.ProductAttributeId)
-                .Set(x => x.TextPrompt, request.TextPrompt)
-                .Set(x => x.DisplayOrder, request.DisplayOrder)
-                .Set(x => x.AttributeControlTypeId, request.ControlTypeId)
+                .SetEntry(x => x.IsRequired, request.IsRequired)
+                .SetEntry(x => x.ProductAttributeId, request.ProductAttributeId)
+                .SetEntry(x => x.TextPrompt, request.TextPrompt)
+                .SetEntry(x => x.DisplayOrder, request.DisplayOrder)
+                .SetEntry(x => x.AttributeControlTypeId, request.ControlTypeId)
                 .UpdateAsync());
 
             if (attributeRelationUpdated == 0)
@@ -307,11 +308,11 @@ namespace Camino.Infrastructure.Repositories.Products
                 {
                     var attributeValueUpdated = await (_productAttributeRelationValueRepository
                         .Get(x => x.Id == attributeValue.Id)
-                        .Set(x => x.PriceAdjustment, attributeValue.PriceAdjustment)
-                        .Set(x => x.PricePercentageAdjustment, attributeValue.PricePercentageAdjustment)
-                        .Set(x => x.Name, attributeValue.Name)
-                        .Set(x => x.Quantity, attributeValue.Quantity)
-                        .Set(x => x.DisplayOrder, attributeValue.DisplayOrder)
+                        .SetEntry(x => x.PriceAdjustment, attributeValue.PriceAdjustment)
+                        .SetEntry(x => x.PricePercentageAdjustment, attributeValue.PricePercentageAdjustment)
+                        .SetEntry(x => x.Name, attributeValue.Name)
+                        .SetEntry(x => x.Quantity, attributeValue.Quantity)
+                        .SetEntry(x => x.DisplayOrder, attributeValue.DisplayOrder)
                         .UpdateAsync());
                 }
             }

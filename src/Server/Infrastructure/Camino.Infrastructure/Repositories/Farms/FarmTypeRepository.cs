@@ -13,6 +13,7 @@ using Camino.Shared.Requests.Farms;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Farms
 {
@@ -174,10 +175,10 @@ namespace Camino.Infrastructure.Repositories.Farms
         public async Task<bool> UpdateAsync(FarmTypeModifyRequest farmType)
         {
             var exist = await _farmTypeRepository.Get(x => x.Id == farmType.Id)
-                .Set(x => x.Description, farmType.Description)
-                .Set(x => x.Name, farmType.Name)
-                .Set(x => x.UpdatedById, farmType.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTime.UtcNow)
+                .SetEntry(x => x.Description, farmType.Description)
+                .SetEntry(x => x.Name, farmType.Name)
+                .SetEntry(x => x.UpdatedById, farmType.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -186,9 +187,9 @@ namespace Camino.Infrastructure.Repositories.Farms
         public async Task<bool> DeactivateAsync(FarmTypeModifyRequest request)
         {
             await _farmTypeRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)FarmTypeStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)FarmTypeStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -197,9 +198,9 @@ namespace Camino.Infrastructure.Repositories.Farms
         public async Task<bool> ActiveAsync(FarmTypeModifyRequest request)
         {
             await _farmTypeRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)FarmTypeStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)FarmTypeStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

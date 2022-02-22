@@ -13,6 +13,7 @@ using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
@@ -278,9 +279,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, ArticleStatus.Deleted.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, ArticleStatus.Deleted.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -289,9 +290,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, ArticleStatus.Inactived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, ArticleStatus.Inactived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -300,9 +301,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> ActiveAsync(ArticleModifyRequest request)
         {
             await _articleRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, ArticleStatus.Actived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, ArticleStatus.Actived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

@@ -13,6 +13,7 @@ using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
@@ -272,11 +273,11 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> UpdateAsync(ArticleCategoryModifyRequest category)
         {
             var exist = await _articleCategoryRepository.Get(x => x.Id == category.Id)
-                .Set(x => x.Description, category.Description)
-                .Set(x => x.Name, category.Name)
-                .Set(x => x.ParentId, category.ParentId)
-                .Set(x => x.UpdatedById, category.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTime.UtcNow)
+                .SetEntry(x => x.Description, category.Description)
+                .SetEntry(x => x.Name, category.Name)
+                .SetEntry(x => x.ParentId, category.ParentId)
+                .SetEntry(x => x.UpdatedById, category.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -285,9 +286,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request)
         {
             await _articleCategoryRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -296,9 +297,9 @@ namespace Camino.Infrastructure.Repositories.Articles
         public async Task<bool> ActiveAsync(ArticleCategoryModifyRequest request)
         {
             await _articleCategoryRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

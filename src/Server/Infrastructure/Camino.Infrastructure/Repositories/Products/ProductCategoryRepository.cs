@@ -15,6 +15,7 @@ using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Products
 {
@@ -278,11 +279,11 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> UpdateAsync(ProductCategoryRequest category)
         {
             await _productCategoryRepository.Get(x => x.Id == category.Id)
-                .Set(x => x.Description, category.Description)
-                .Set(x => x.Name, category.Name)
-                .Set(x => x.ParentId, category.ParentId)
-                .Set(x => x.UpdatedById, category.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.Description, category.Description)
+                .SetEntry(x => x.Name, category.Name)
+                .SetEntry(x => x.ParentId, category.ParentId)
+                .SetEntry(x => x.UpdatedById, category.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -291,9 +292,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> DeactivateAsync(ProductCategoryRequest request)
         {
             await _productCategoryRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -302,9 +303,9 @@ namespace Camino.Infrastructure.Repositories.Products
         public async Task<bool> ActiveAsync(ProductCategoryRequest request)
         {
             await _productCategoryRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)ProductCategoryStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

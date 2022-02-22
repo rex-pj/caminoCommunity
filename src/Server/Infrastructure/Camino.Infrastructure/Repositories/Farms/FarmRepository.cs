@@ -16,6 +16,7 @@ using LinqToDB.Tools;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Farms
 {
@@ -347,9 +348,9 @@ namespace Camino.Infrastructure.Repositories.Farms
 
             // Delete farm
             await _farmRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)FarmStatus.Deleted)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)FarmStatus.Deleted)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -371,9 +372,9 @@ namespace Camino.Infrastructure.Repositories.Farms
             await _productPictureRepository.UpdateStatusByProductIdsAsync(productIds, request.UpdatedById, pictureStatus);
 
             await _productRepository.Get(x => productIds.Contains(x.Id))
-                .Set(x => x.StatusId, productStatus.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, productStatus.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
         }
 
@@ -382,9 +383,9 @@ namespace Camino.Infrastructure.Repositories.Farms
             await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Inactived);
 
             await _farmRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, FarmStatus.Inactived.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, FarmStatus.Inactived.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
@@ -393,9 +394,9 @@ namespace Camino.Infrastructure.Repositories.Farms
         public async Task<bool> ActiveAsync(FarmModifyRequest request)
         {
             await _farmRepository.Get(x => x.Id == request.Id)
-                .Set(x => x.StatusId, (int)FarmStatus.Actived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, (int)FarmStatus.Actived)
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;

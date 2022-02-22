@@ -13,8 +13,8 @@ using System.Collections.Generic;
 using Camino.Shared.Requests.Articles;
 using Camino.Shared.Enums;
 using Camino.Core.Utils;
-using LinqToDB.Tools;
 using Camino.Core.Contracts.DependencyInjection;
+using Camino.Infrastructure.Linq2Db.Extensions;
 
 namespace Camino.Infrastructure.Repositories.Articles
 {
@@ -230,9 +230,9 @@ namespace Camino.Infrastructure.Repositories.Articles
                    join picture in _pictureRepository.Table
                    on articlePicture.PictureId equals picture.Id
                    select picture)
-                .Set(x => x.StatusId, pictureStatus.GetCode())
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
+                .SetEntry(x => x.StatusId, pictureStatus.GetCode())
+                .SetEntry(x => x.UpdatedById, request.UpdatedById)
+                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
                 .UpdateAsync();
 
             return true;
