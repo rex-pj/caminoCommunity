@@ -1,6 +1,4 @@
-﻿using Camino.Infrastructure.Strategies.Validations;
-using Microsoft.Extensions.DependencyInjection;
-using Camino.Infrastructure.Linq2Db.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Camino.Infrastructure.Extensions.DependencyInjection
 {
@@ -14,8 +12,6 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
 
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<ValidationStrategyContext>();
-            services.AddLinq2DbInfrastructureServices();
             services.AddDependencyServices(_dependencyProjectNames);
         }
     }

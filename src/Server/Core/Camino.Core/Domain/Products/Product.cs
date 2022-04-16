@@ -14,8 +14,9 @@ namespace Camino.Core.Domain.Products
         public DateTimeOffset UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public int StatusId { get; set; }
-        public virtual ICollection<ProductCategoryRelation> ProductCategories { get; set; }
-        public virtual ICollection<ProductPicture> ProductPictures { get; set; }
-        public virtual ICollection<FarmProduct> ProductFarms { get; set; }
+        public virtual ICollection<ProductCategoryRelation> ProductCategoryRelations { get; set; }
+        public virtual ICollection<ProductPicture> ProductPictureRelations { get; set; }
+        public virtual ICollection<ProductPrice> ProductPriceRelations { get; set; }
+        public virtual ICollection<FarmProduct> ProductFarmRelations { get; set; }
     }
 }

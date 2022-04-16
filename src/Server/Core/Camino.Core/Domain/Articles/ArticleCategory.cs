@@ -25,5 +25,6 @@ namespace Camino.Core.Domain.Articles
         public virtual ArticleCategory ParentCategory { get; set; }
 
         public virtual ICollection<ArticleCategory> ChildCategories { get; set; }
+        public virtual ICollection<Article> Articles { get; set; }
     }
 }

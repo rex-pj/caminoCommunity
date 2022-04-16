@@ -26,25 +26,19 @@ namespace Camino.Core.Contracts.Data
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter);
+        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
         /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        Task<TResult> AddAsync<TResult>(TEntity entity);
-
-        /// <summary>
-        /// Add entity async
-        /// </summary>
-        /// <param name="entities">entity</param>
-        Task<object> AddAsync(TEntity entity);
+        Task InsertAsync(TEntity entity);
 
         /// <summary>
         /// Add entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        Task AddAsync(IEnumerable<TEntity> entities);
+        Task InsertAsync(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Update entity async

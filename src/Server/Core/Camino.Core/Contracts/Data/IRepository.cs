@@ -30,25 +30,19 @@ namespace Camino.Core.Contracts.Data
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter);
+        TEntity Find(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
         /// Add entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        object Add(TEntity entity);
-
-        /// <summary>
-        /// Add entities
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        TResult Add<TResult>(TEntity entity);
+        void Insert(TEntity entity);
 
         /// <summary>
         /// Add entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        void Add(IEnumerable<TEntity> entities);
+        void Insert(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// Update entity

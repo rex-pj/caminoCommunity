@@ -16,9 +16,9 @@ namespace Camino.Services.Setup
             _dataSeedRepository = dataSeedRepository;
         }
 
-        public async Task CreateDatabaseAsync(string sql)
+        public async Task CreateDatabaseAsync()
         {
-            await _dbCreationRepository.CreateDatabaseAsync(sql);
+            await _dbCreationRepository.CreateDatabaseAsync();
         }
 
         public async Task SeedDataAsync(SetupRequest setupRequest)

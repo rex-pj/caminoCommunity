@@ -5,7 +5,7 @@ namespace Camino.Core.Contracts.Services.Setup
 {
     public interface IDataSeedService
     {
-        Task CreateDatabaseAsync(string sql);
+        Task CreateDatabaseAsync();
         Task SeedDataAsync(SetupRequest setupRequest);
     }
 }

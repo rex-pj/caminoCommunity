@@ -2,16 +2,16 @@
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using Module.Api.Media.Models;
 using Camino.Framework.Models;
-using Camino.Core.Contracts.IdentityManager;
 using Camino.Shared.General;
-using Camino.Infrastructure.Strategies.Validations;
+using Camino.Core.Contracts.Validations;
+using Camino.Core.Validations;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class ImageResolver : BaseResolver, IImageResolver
     {
-        private readonly ValidationStrategyContext _validationStrategyContext;
-        public ImageResolver(ValidationStrategyContext validationStrategyContext)
+        private readonly IValidationStrategyContext _validationStrategyContext;
+        public ImageResolver(IValidationStrategyContext validationStrategyContext)
             : base()
         {
             _validationStrategyContext = validationStrategyContext;

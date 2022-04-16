@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Camino.Core\Camino.Core.csproj" />
-    <ProjectReference Include="..\Camino.Infrastructure.Linq2Db\Camino.Infrastructure.Linq2Db.csproj" />
   </ItemGroup>
 
 </Project>

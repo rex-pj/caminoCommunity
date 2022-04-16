@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Enums;
+using Camino.Shared.Enums;
 
 namespace Module.Api.Navigation.GraphQL.Resolvers
 {

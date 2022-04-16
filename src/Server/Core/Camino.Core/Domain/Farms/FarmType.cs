@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Camino.Core.Domain.Farms
 {
@@ -18,5 +19,6 @@ namespace Camino.Core.Domain.Farms
 
         public long CreatedById { get; set; }
         public int StatusId { get; set; }
+        public virtual ICollection<Farm> Farms { get; set; }
     }
 }

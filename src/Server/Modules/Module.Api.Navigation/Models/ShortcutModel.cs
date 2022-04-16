@@ -1,4 +1,4 @@
-﻿using Camino.Infrastructure.Commons.Enums;
+﻿using Camino.Shared.Enums;
 
 namespace Module.Api.Navigation.Models
 {

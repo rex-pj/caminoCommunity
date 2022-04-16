@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.Linq2Db
 {
-    public class Linq2DbDatabaseContext : IDatabaseContext, IDisposable, IScopedDependency
+    public class Linq2DbDatabaseContext : IDataContextTransaction, IDisposable, IScopedDependency
     {
         private readonly CaminoDataConnection _dataConnection;
         public Linq2DbDatabaseContext(CaminoDataConnection dataConnection)

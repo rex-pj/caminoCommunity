@@ -1,0 +1,17 @@
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.csproj.AssemblyReference.cache
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.AssemblyInfoInputs.cache
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.AssemblyInfo.cs
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.csproj.CoreCompileInputs.cache
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.deps.json
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\ref\Camino.Infrastructure.EntityFrameworkCore.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.pdb
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Core.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Shared.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Core.pdb
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\bin\Debug\net6.0\Camino.Shared.pdb
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.csproj.CopyComplete
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\ref\Camino.Infrastructure.EntityFrameworkCore.dll
+D:\GitSpace\caminoCommunity\src\Server\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\obj\Debug\net6.0\Camino.Infrastructure.EntityFrameworkCore.pdb

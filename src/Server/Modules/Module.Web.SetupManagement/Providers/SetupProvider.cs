@@ -85,7 +85,6 @@ namespace Module.Web.SetupManagement.Providers
                 var installSettings = new SetupSettings()
                 {
                     IsInitialized = true,
-                    CreateDatabaseScriptFilePath = SetupSettingsConst.CreateDatabaseSchemaPath,
                     SeedDataJsonFilePath = SetupSettingsConst.PrepareDataPath
                 };
 

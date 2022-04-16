@@ -17,6 +17,5 @@ namespace Camino.Core.Domain.Articles
         public int StatusId { get; set; }
 
         public virtual ArticleCategory ArticleCategory { get; set; }
-        public virtual ICollection<ArticlePicture> ArticlePictures { get; set; }
     }
 }

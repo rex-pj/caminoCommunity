@@ -1,11 +1,8 @@
 ﻿using LinqToDB.Data;
 using System;
-using System.Threading.Tasks;
 using LinqToDB.Mapping;
 using System.Data.SqlClient;
 using LinqToDB.Configuration;
-using System.Collections.Generic;
-using LinqToDB.Tools;
 
 namespace Camino.Infrastructure.Linq2Db
 {

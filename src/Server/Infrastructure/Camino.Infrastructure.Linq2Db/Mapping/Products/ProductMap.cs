@@ -14,11 +14,11 @@ namespace Camino.Infrastructure.Linq2Db.Mapping.Products
                 .HasSchemaName(TableSchemaConst.Dbo)
                 .HasIdentity(x => x.Id)
                 .HasPrimaryKey(x => x.Id)
-                .Association(x => x.ProductCategories,
+                .Association(x => x.ProductCategoryRelations,
                     (product, productCategory) => product.Id == productCategory.ProductId)
-                .Association(x => x.ProductPictures, 
+                .Association(x => x.ProductPictureRelations, 
                     (product, articlePicture) => product.Id == articlePicture.ProductId)
-                .Association(x => x.ProductFarms,
+                .Association(x => x.ProductFarmRelations,
                     (product, farmProduct) => product.Id == farmProduct.ProductId);
         }
     }

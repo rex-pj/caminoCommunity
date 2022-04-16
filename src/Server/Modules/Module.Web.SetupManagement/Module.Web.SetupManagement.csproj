@@ -12,10 +12,4 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="App_Data\Setup\Database_Schema.sql">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
 </Project>

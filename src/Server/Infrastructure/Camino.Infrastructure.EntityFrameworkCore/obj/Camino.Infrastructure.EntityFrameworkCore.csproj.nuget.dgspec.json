@@ -1,0 +1,233 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\GitSpace\\caminoCommunity\\src\\Server\\Infrastructure\\Camino.Infrastructure.EntityFrameworkCore\\Camino.Infrastructure.EntityFrameworkCore.csproj": {}
+  },
+  "projects": {
+    "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\Camino.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\Camino.Core.csproj",
+        "projectName": "Camino.Core",
+        "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\Camino.Core.csproj",
+        "packagesPath": "C:\\Users\\trung.letranhuu.PYCO\\.nuget\\packages\\",
+        "outputPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\trung.letranhuu.PYCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\WorkSpace\\HaloGlobal\\Integration\\Ascent\\nuget": {},
+          "D:\\WorkSpace\\HaloGlobal\\Workflow\\nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj": {
+                "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.Runtime.InteropServices.WindowsRuntime": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj",
+        "projectName": "Camino.Shared",
+        "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj",
+        "packagesPath": "C:\\Users\\trung.letranhuu.PYCO\\.nuget\\packages\\",
+        "outputPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\trung.letranhuu.PYCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\WorkSpace\\HaloGlobal\\Integration\\Ascent\\nuget": {},
+          "D:\\WorkSpace\\HaloGlobal\\Workflow\\nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.Extensions.FileProviders.Abstractions": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitSpace\\caminoCommunity\\src\\Server\\Infrastructure\\Camino.Infrastructure.EntityFrameworkCore\\Camino.Infrastructure.EntityFrameworkCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Infrastructure\\Camino.Infrastructure.EntityFrameworkCore\\Camino.Infrastructure.EntityFrameworkCore.csproj",
+        "projectName": "Camino.Infrastructure.EntityFrameworkCore",
+        "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Infrastructure\\Camino.Infrastructure.EntityFrameworkCore\\Camino.Infrastructure.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\trung.letranhuu.PYCO\\.nuget\\packages\\",
+        "outputPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Infrastructure\\Camino.Infrastructure.EntityFrameworkCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\trung.letranhuu.PYCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\WorkSpace\\HaloGlobal\\Integration\\Ascent\\nuget": {},
+          "D:\\WorkSpace\\HaloGlobal\\Workflow\\nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\Camino.Core.csproj": {
+                "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Core\\Camino.Core.csproj"
+              },
+              "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj": {
+                "projectPath": "D:\\GitSpace\\caminoCommunity\\src\\Server\\Core\\Camino.Shared\\Camino.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Proxies": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

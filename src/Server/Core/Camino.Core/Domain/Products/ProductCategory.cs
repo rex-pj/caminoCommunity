@@ -25,5 +25,6 @@ namespace Camino.Core.Domain.Products
         public virtual ProductCategory ParentCategory { get; set; }
 
         public virtual ICollection<ProductCategory> ChildCategories { get; set; }
+        public virtual ICollection<ProductCategoryRelation> ProductCategoryRelations { get; set; }
     }
 }

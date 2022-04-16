@@ -149,7 +149,7 @@ namespace Camino.Services.Articles
         #endregion
 
         #region CRUD
-        public async Task<int> CreateAsync(ArticleModifyRequest article)
+        public async Task<long> CreateAsync(ArticleModifyRequest article)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             article.CreatedDate = modifiedDate;

@@ -5,6 +5,6 @@ namespace Camino.Core.Contracts.Repositories.Setup
     public interface IDbCreationRepository
     {
         bool IsDatabaseExist();
-        Task CreateDatabaseAsync(string sql);
+        Task CreateDatabaseAsync();
     }
 }

@@ -80,8 +80,7 @@ namespace Module.Web.SetupManagement.Controllers
             try
             {
                 // Create database schema
-                var contentDbScript = _setupProvider.LoadFileText(settings.CreateDatabaseScriptFilePath);
-                await _dataSeedService.CreateDatabaseAsync(contentDbScript);
+                await _dataSeedService.CreateDatabaseAsync();
 
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction(nameof(SeedData));
