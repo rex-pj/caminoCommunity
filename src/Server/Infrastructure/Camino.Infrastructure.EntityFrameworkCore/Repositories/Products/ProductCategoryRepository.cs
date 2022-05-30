@@ -14,7 +14,6 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 {
@@ -32,23 +31,23 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         public async Task<ProductCategoryResult> FindAsync(int id)
         {
             var category = await (from child in _productCategoryRepository.Table
-                            join parent in _productCategoryRepository.Table
-                            on child.ParentId equals parent.Id into categories
-                            from cate in categories.DefaultIfEmpty()
-                            where child.Id == id
-                            select new ProductCategoryResult
-                            {
-                                Description = child.Description,
-                                CreatedDate = child.CreatedDate,
-                                CreatedById = child.CreatedById,
-                                Id = child.Id,
-                                Name = child.Name,
-                                ParentId = child.ParentId,
-                                UpdatedById = child.UpdatedById,
-                                UpdatedDate = child.UpdatedDate,
-                                StatusId = child.StatusId,
-                                ParentCategoryName = cate != null ? cate.Name : null
-                            }).FirstOrDefaultAsync();
+                                  join parent in _productCategoryRepository.Table
+                                  on child.ParentId equals parent.Id into categories
+                                  from cate in categories.DefaultIfEmpty()
+                                  where child.Id == id
+                                  select new ProductCategoryResult
+                                  {
+                                      Description = child.Description,
+                                      CreatedDate = child.CreatedDate,
+                                      CreatedById = child.CreatedById,
+                                      Id = child.Id,
+                                      Name = child.Name,
+                                      ParentId = child.ParentId,
+                                      UpdatedById = child.UpdatedById,
+                                      UpdatedDate = child.UpdatedDate,
+                                      StatusId = child.StatusId,
+                                      ParentCategoryName = cate != null ? cate.Name : null
+                                  }).FirstOrDefaultAsync();
             return category;
         }
 
@@ -280,37 +279,33 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> UpdateAsync(ProductCategoryRequest category)
         {
-            await _productCategoryRepository.Get(x => x.Id == category.Id)
-                .SetEntry(x => x.Description, category.Description)
-                .SetEntry(x => x.Name, category.Name)
-                .SetEntry(x => x.ParentId, category.ParentId)
-                .SetEntry(x => x.UpdatedById, category.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
-
-            return true;
+            var existing = await _productCategoryRepository.FindAsync(x => x.Id == category.Id);
+            existing.Description = category.Description;
+            existing.Name = category.Name;
+            existing.ParentId = category.ParentId;
+            existing.UpdatedById = category.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(ProductCategoryRequest request)
         {
-            await _productCategoryRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productCategoryRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductCategoryStatus.Inactived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ProductCategoryRequest request)
         {
-            await _productCategoryRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productCategoryRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductCategoryStatus.Actived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)

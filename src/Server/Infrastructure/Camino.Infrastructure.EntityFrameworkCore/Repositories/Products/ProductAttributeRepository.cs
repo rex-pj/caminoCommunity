@@ -174,36 +174,32 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> UpdateAsync(ProductAttributeModifyRequest category)
         {
-            await _productAttributeRepository.Get(x => x.Id == category.Id)
-                .SetEntry(x => x.Description, category.Description)
-                .SetEntry(x => x.UpdatedById, category.UpdatedById)
-                .SetEntry(x => x.Name, category.Name)
-                .UpdateAsync();
+            var existing = await _productAttributeRepository.FindAsync(x => x.Id == category.Id);
+            existing.Description = category.Description;
+            existing.UpdatedById = category.UpdatedById;
+            existing.Name = category.Name;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(ProductAttributeModifyRequest request)
         {
-            await _productAttributeRepository.Get(x => x.Id == request.Id)
-                .BatchUpdate()
-                .Set(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
-                .Set(x => x.UpdatedById, request.UpdatedById)
-                .Set(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productAttributeRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductAttributeStatus.Inactived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ProductAttributeModifyRequest request)
         {
-            await _productAttributeRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productAttributeRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductAttributeStatus.Actived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -284,13 +280,12 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
                 await _productAttributeRelationRepository.DeleteAsync(x => x.Id == request.Id);
             }
 
-            var productAttributeRelation = _productAttributeRelationRepository.Get(x => x.Id == request.Id)
-                .BatchUpdate()
-                .Set(x => x.IsRequired, request.IsRequired)
-                .Set(x => x.ProductAttributeId, request.ProductAttributeId)
-                .Set(x => x.TextPrompt, request.TextPrompt)
-                .Set(x => x.DisplayOrder, request.DisplayOrder)
-                .Set(x => x.AttributeControlTypeId, request.ControlTypeId);
+            var existingRelation = await _productAttributeRelationRepository.FindAsync(x => x.Id == request.Id);
+            existingRelation.IsRequired = request.IsRequired;
+            existingRelation.ProductAttributeId = request.ProductAttributeId;
+            existingRelation.TextPrompt = request.TextPrompt;
+            existingRelation.DisplayOrder = request.DisplayOrder;
+            existingRelation.AttributeControlTypeId = request.ControlTypeId;
 
             var attributeRelationValueIds = request.AttributeRelationValues.Where(x => x.Id != 0).Select(x => x.Id);
             await _productAttributeRelationValueRepository
@@ -307,14 +302,13 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
                 }
                 else
                 {
-                    _productAttributeRelationValueRepository
-                        .Get(x => x.Id == attributeValue.Id)
-                        .BatchUpdate()
-                        .Set(x => x.PriceAdjustment, attributeValue.PriceAdjustment)
-                        .Set(x => x.PricePercentageAdjustment, attributeValue.PricePercentageAdjustment)
-                        .Set(x => x.Name, attributeValue.Name)
-                        .Set(x => x.Quantity, attributeValue.Quantity)
-                        .Set(x => x.DisplayOrder, attributeValue.DisplayOrder);
+                    var existingRelationValue = await _productAttributeRelationValueRepository
+                        .FindAsync(x => x.Id == attributeValue.Id);
+                    existingRelationValue.PriceAdjustment = attributeValue.PriceAdjustment;
+                    existingRelationValue.PricePercentageAdjustment = attributeValue.PricePercentageAdjustment;
+                    existingRelationValue.Name = attributeValue.Name;
+                    existingRelationValue.Quantity = attributeValue.Quantity;
+                    existingRelationValue.DisplayOrder = attributeValue.DisplayOrder;
                 }
             }
 
@@ -379,17 +373,17 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         public async Task<ProductAttributeRelationValueResult> GetAttributeRelationValueByIdAsync(long id)
         {
             var productAttributeValue = await (from atv in _productAttributeRelationValueRepository.Table
-                                          where atv.Id == id
-                                          select new ProductAttributeRelationValueResult
-                                          {
-                                              DisplayOrder = atv.DisplayOrder,
-                                              Id = atv.Id,
-                                              Name = atv.Name,
-                                              PriceAdjustment = atv.PriceAdjustment,
-                                              PricePercentageAdjustment = atv.PricePercentageAdjustment,
-                                              ProductAttributeRelationId = atv.ProductAttributeRelationId,
-                                              Quantity = atv.Quantity
-                                          }).FirstOrDefaultAsync();
+                                               where atv.Id == id
+                                               select new ProductAttributeRelationValueResult
+                                               {
+                                                   DisplayOrder = atv.DisplayOrder,
+                                                   Id = atv.Id,
+                                                   Name = atv.Name,
+                                                   PriceAdjustment = atv.PriceAdjustment,
+                                                   PricePercentageAdjustment = atv.PricePercentageAdjustment,
+                                                   ProductAttributeRelationId = atv.ProductAttributeRelationId,
+                                                   Quantity = atv.Quantity
+                                               }).FirstOrDefaultAsync();
 
             return productAttributeValue;
         }

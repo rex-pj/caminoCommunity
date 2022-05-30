@@ -111,47 +111,43 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
         public async Task<bool> SoftDeleteAsync(UserModifyRequest request)
         {
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, UserStatus.Deleted.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = UserStatus.Deleted.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(UserModifyRequest request)
         {
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, UserStatus.Inactived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = UserStatus.Inactived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(UserModifyRequest request)
         {
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, UserStatus.Actived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = UserStatus.Actived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ConfirmAsync(UserModifyRequest request)
         {
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.IsEmailConfirmed, true)
-                .SetEntry(x => x.StatusId, UserStatus.Actived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = UserStatus.Actived.GetCode();
+            existing.IsEmailConfirmed = true;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<PartialUpdateRequest> PartialUpdateAsync(PartialUpdateRequest request)
@@ -203,32 +199,29 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
                 }
             }
 
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.UpdatedById, request.Id)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .SetEntry(x => x.Lastname, request.Lastname)
-                .SetEntry(x => x.Firstname, request.Firstname)
-                .SetEntry(x => x.DisplayName, request.DisplayName)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.UpdatedById = request.Id;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
+            existing.Lastname = request.Lastname;
+            existing.Firstname = request.Firstname;
+            existing.DisplayName = request.DisplayName;
 
+            await _dbContext.SaveChangesAsync();
             return request;
         }
 
         public async Task<bool> UpdateAsync(UserModifyRequest request)
         {
-            await _userRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.UpdatedById, request.Id)
-                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
-                .SetEntry(x => x.Lastname, request.Lastname)
-                .SetEntry(x => x.Firstname, request.Firstname)
-                .SetEntry(x => x.DisplayName, request.DisplayName)
-                .SetEntry(x => x.IsEmailConfirmed, request.IsEmailConfirmed)
-                .SetEntry(x => x.PasswordHash, request.PasswordHash)
-                .UpdateAsync();
+            var existing = await _userRepository.FindAsync(x => x.Id == request.Id);
+            existing.UpdatedById = request.Id;
+            existing.UpdatedDate = DateTime.UtcNow;
+            existing.Lastname = request.Lastname;
+            existing.Firstname = request.Firstname;
+            existing.DisplayName = request.DisplayName;
+            existing.IsEmailConfirmed = request.IsEmailConfirmed;
+            existing.PasswordHash = request.PasswordHash;
 
-            await _dbContext.SaveChangesAsync();
-
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
         #endregion
 

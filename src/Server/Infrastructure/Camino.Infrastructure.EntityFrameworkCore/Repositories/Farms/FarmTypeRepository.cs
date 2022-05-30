@@ -13,7 +13,6 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 {
@@ -177,34 +176,31 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 
         public async Task<bool> UpdateAsync(FarmTypeModifyRequest farmType)
         {
-            await _farmTypeRepository.Get(x => x.Id == farmType.Id)
-                .SetEntry(x => x.Description, farmType.Description)
-                .SetEntry(x => x.Name, farmType.Name)
-                .SetEntry(x => x.UpdatedById, farmType.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmTypeRepository.FindAsync(x => x.Id == farmType.Id);
+            existing.Description = farmType.Description;
+            existing.Name = farmType.Name;
+            existing.UpdatedById = farmType.UpdatedById;
+            existing.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(FarmTypeModifyRequest request)
         {
-            await _farmTypeRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)FarmTypeStatus.Inactived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmTypeRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)FarmTypeStatus.Inactived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(FarmTypeModifyRequest request)
         {
-            await _farmTypeRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)FarmTypeStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmTypeRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)FarmTypeStatus.Actived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
             return true;
         }

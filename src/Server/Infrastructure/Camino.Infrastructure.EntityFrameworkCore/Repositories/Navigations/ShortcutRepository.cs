@@ -148,40 +148,36 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Navigations
 
         public async Task<bool> UpdateAsync(ShortcutModifyRequest request)
         {
-            await _shortcutRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.Description, request.Description)
-                .SetEntry(x => x.Name, request.Name)
-                .SetEntry(x => x.Icon, request.Icon)
-                .SetEntry(x => x.TypeId, request.TypeId)
-                .SetEntry(x => x.Url, request.Url)
-                .SetEntry(x => x.DisplayOrder, request.Order)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _shortcutRepository.FindAsync(x => x.Id == request.Id);
+            existing.Description = request.Description;
+            existing.Name = request.Name;
+            existing.Icon = request.Icon;
+            existing.TypeId = request.TypeId;
+            existing.Url = request.Url;
+            existing.DisplayOrder = request.Order;
+            existing.UpdatedById = request.UpdatedById;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(ShortcutModifyRequest request)
         {
-            await _shortcutRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Inactived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _shortcutRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductCategoryStatus.Inactived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ShortcutModifyRequest request)
         {
-            await _shortcutRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductCategoryStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _shortcutRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductCategoryStatus.Actived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)

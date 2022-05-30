@@ -256,16 +256,19 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> UpdateStatusByProductIdAsync(ProductPicturesModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from productPicture in _productPictureRepository.Get(x => x.ProductId == request.ProductId)
-                   join picture in _pictureRepository.Table
-                   on productPicture.PictureId equals picture.Id
-                   select picture)
-                    .SetEntry(x => x.StatusId, pictureStatus.GetCode())
-                    .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                    .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                    .UpdateAsync();
+            var existingPictures = (from productPicture in _productPictureRepository.Get(x => x.ProductId == request.ProductId)
+                                          join picture in _pictureRepository.Table
+                                          on productPicture.PictureId equals picture.Id
+                                          select picture);
 
-            return true;
+            foreach(var picture in existingPictures)
+            {
+                picture.StatusId = pictureStatus.GetCode();
+                picture.UpdatedById = request.UpdatedById;
+                picture.UpdatedDate = DateTimeOffset.UtcNow;
+            }
+
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeleteByProductIdsAsync(IEnumerable<long> ids)
@@ -281,16 +284,20 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> UpdateStatusByProductIdsAsync(IEnumerable<long> ids, long updatedById, PictureStatus status)
         {
-            await (from productPicture in _productPictureRepository.Get(x => ids.Contains(x.ProductId))
-                   join picture in _pictureRepository.Table
-                          on productPicture.PictureId equals picture.Id
-                   select picture)
-                    .SetEntry(x => x.StatusId, status.GetCode())
-                    .SetEntry(x => x.UpdatedById, updatedById)
-                    .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                    .UpdateAsync();
+            var existingPictures = (from productPicture in _productPictureRepository.Get(x => ids.Contains(x.ProductId))
+                                    join picture in _pictureRepository.Table
+                                           on productPicture.PictureId equals picture.Id
+                                    select picture);
 
-            return true;
+            foreach (var picture in existingPictures)
+            {
+                picture.StatusId = status.GetCode();
+                picture.UpdatedById = updatedById;
+                picture.UpdatedDate = DateTimeOffset.UtcNow;
+            }
+
+            await _pictureRepository.UpdateAsync(existingPictures);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

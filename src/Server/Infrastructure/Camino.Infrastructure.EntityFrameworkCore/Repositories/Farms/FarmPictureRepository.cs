@@ -251,16 +251,20 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 
         public async Task<bool> UpdateStatusByFarmIdAsync(FarmPicturesModifyRequest request, PictureStatus pictureStatus)
         {
-            await (from farmPicture in _farmPictureRepository.Get(x => x.FarmId == request.FarmId)
-                   join picture in _pictureRepository.Table
-                   on farmPicture.PictureId equals picture.Id
-                   select picture)
-                .SetEntry(x => x.StatusId, pictureStatus.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existingPictures = (from farmPicture in _farmPictureRepository.Get(x => x.FarmId == request.FarmId)
+                                          join picture in _pictureRepository.Table
+                                          on farmPicture.PictureId equals picture.Id
+                                          select picture);
 
-            return true;
+            foreach (var picture in existingPictures)
+            {
+                picture.StatusId = pictureStatus.GetCode();
+                picture.UpdatedById = request.UpdatedById;
+                picture.UpdatedDate = DateTimeOffset.UtcNow;
+            }
+
+            await _pictureRepository.UpdateAsync(existingPictures);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

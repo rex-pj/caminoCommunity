@@ -13,7 +13,6 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 {
@@ -275,44 +274,40 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 
         public async Task<bool> UpdateAsync(ArticleCategoryModifyRequest category)
         {
-            await _articleCategoryRepository.Get(x => x.Id == category.Id)
-                .SetEntry(x => x.Description, category.Description)
-                .SetEntry(x => x.Name, category.Name)
-                .SetEntry(x => x.ParentId, category.ParentId)
-                .SetEntry(x => x.UpdatedById, category.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
-                .UpdateAsync();
+            var existingCategory = await _articleCategoryRepository.FindAsync(x => x.Id == category.Id);
+            existingCategory.Description = category.Description;
+            existingCategory.Name = category.Name;
+            existingCategory.ParentId = category.ParentId;
+            existingCategory.UpdatedById = category.UpdatedById;
+            existingCategory.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(ArticleCategoryModifyRequest request)
         {
-            await _articleCategoryRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Inactived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existingCategory = await _articleCategoryRepository.FindAsync(x => x.Id == request.Id);
+            existingCategory.StatusId = (int)ArticleCategoryStatus.Inactived;
+            existingCategory.UpdatedById = request.UpdatedById;
+            existingCategory.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ArticleCategoryModifyRequest request)
         {
-            await _articleCategoryRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ArticleCategoryStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existingCategory = await _articleCategoryRepository.FindAsync(x => x.Id == request.Id);
+            existingCategory.StatusId = (int)ArticleCategoryStatus.Inactived;
+            existingCategory.UpdatedById = request.UpdatedById;
+            existingCategory.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var deletedNumbers = await _articleCategoryRepository.DeleteAsync(x => x.Id == id);
-            await _dbContext.SaveChangesAsync();
-            return deletedNumbers > 0;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

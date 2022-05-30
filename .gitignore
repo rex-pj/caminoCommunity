@@ -96,3 +96,5 @@ src/Server/Modules/Module.Api.Order/bin/
 src/Server/Modules/Module.Api.Order/obj/
 src/Server/Infrastructure/Camino.Infrastructure.Linq2Db/bin/
 src/Server/Infrastructure/Camino.Infrastructure.Linq2Db/obj/
+src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore/bin/
+src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore/obj/

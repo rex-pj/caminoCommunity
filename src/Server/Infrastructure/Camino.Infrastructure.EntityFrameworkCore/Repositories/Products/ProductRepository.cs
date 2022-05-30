@@ -452,9 +452,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
             }
 
             // Unlink all price
-            await _productPriceRepository.Get(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price)
-                .SetEntry(x => x.IsCurrent, false)
-                .UpdateAsync();
+            var existingPrices = await _productPriceRepository.GetAsync(x => x.ProductId == request.Id && x.IsCurrent && x.Price != request.Price);
+            foreach (var price in existingPrices)
+            {
+                price.IsCurrent = false;
+            }
 
             await _productPriceRepository.InsertAsync(new ProductPrice()
             {
@@ -464,10 +466,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
                 IsCurrent = true
             });
 
-            await _productRepository.UpdateAsync(product);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<IList<ProductResult>> GetProductByCategoryIdAsync(IdRequestFilter<int> categoryIdFilter)
@@ -507,35 +506,32 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> SoftDeleteAsync(ProductModifyRequest request)
         {
-            await _productRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductStatus.Deleted)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductStatus.Deleted;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactiveAsync(ProductModifyRequest request)
         {
-            await _productRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductStatus.Inactived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductStatus.Inactived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ProductModifyRequest request)
         {
-            await _productRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)ProductStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _productRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = (int)ProductStatus.Actived;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

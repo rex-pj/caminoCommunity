@@ -211,7 +211,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
                 };
                 await _pictureRepository.InsertAsync(newPicture);
                 await _dbContext.SaveChangesAsync();
-                
+
                 await _articlePictureRepository.InsertAsync(new ArticlePicture
                 {
                     ArticleId = request.ArticleId,
@@ -232,23 +232,25 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
             await _articlePictureRepository.DeleteAsync(articlePictures);
 
             await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> UpdateStatusByArticleIdAsync(ArticlePictureModifyRequest request, PictureStatus pictureStatus)
         {
-            (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == request.ArticleId)
-                   join picture in _pictureRepository.Table
-                   on articlePicture.PictureId equals picture.Id
-                   select picture)
-                .SetEntry(x => x.StatusId, pictureStatus.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow);
-            
-            await _dbContext.SaveChangesAsync();
+            var existingPictures = (from articlePicture in _articlePictureRepository.Get(x => x.ArticleId == request.ArticleId)
+                                    join picture in _pictureRepository.Table
+                                    on articlePicture.PictureId equals picture.Id
+                                    select picture).ToList();
+           
+            foreach (var picture in existingPictures)
+            {
+                picture.StatusId = pictureStatus.GetCode();
+                picture.UpdatedById = request.UpdatedById;
+                picture.UpdatedDate = DateTimeOffset.UtcNow;
+            }
 
-            return true;
+            await _pictureRepository.UpdateAsync(existingPictures);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

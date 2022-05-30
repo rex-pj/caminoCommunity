@@ -124,12 +124,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
         public async Task<bool> UpdateAsync(UserStatusModifyRequest request)
         {
-            await _statusRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.Description, request.Description)
-                .SetEntry(x => x.Name, request.Name)
-                .UpdateAsync();
+            var existing = await _statusRepository.FindAsync(x => x.Id == request.Id);
+            existing.Description = request.Description;
+            existing.Name = request.Name;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

@@ -10,16 +10,15 @@ using Camino.Shared.Results.Authorization;
 using Camino.Shared.Requests.Authorization;
 using Camino.Core.Contracts.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
 {
     public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository, IScopedDependency
     {
-        private readonly IRepository<AuthorizationPolicy> _authorizationPolicyRepository;
+        private readonly IEntityRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IAppDbContext _appDbContext;
-        public AuthorizationPolicyRepository(IRepository<AuthorizationPolicy> authorizationPolicyRepository,
+        public AuthorizationPolicyRepository(IEntityRepository<AuthorizationPolicy> authorizationPolicyRepository,
             IRepository<User> userRepository, IAppDbContext appDbContext)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
@@ -128,14 +127,14 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
 
         public async Task<bool> UpdateAsync(AuthorizationPolicyRequest request)
         {
-            await _authorizationPolicyRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.Description, request.Description)
-                .SetEntry(x => x.Name, request.Name)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTime.UtcNow)
-                .UpdateAsync();
+            var existing = await _authorizationPolicyRepository.FindAsync(x => x.Id == request.Id);
 
-            return true;
+            existing.Description = request.Description;
+            existing.Name = request.Name;
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTime.UtcNow;
+
+            return (await _appDbContext.SaveChangesAsync()) > 0;
         }
 
     }

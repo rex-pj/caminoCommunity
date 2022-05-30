@@ -134,12 +134,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
 
         public async Task<bool> UpdateAsync(CountryModifyRequest request)
         {
-            await _countryRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.Code, request.Code)
-                .SetEntry(x => x.Name, request.Name)
-                .UpdateAsync();
+            var existing = await _countryRepository.FindAsync(x => x.Id == request.Id);
+            existing.Code = request.Code;
+            existing.Name = request.Name;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

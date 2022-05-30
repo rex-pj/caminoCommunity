@@ -13,7 +13,6 @@ using Camino.Shared.Enums;
 using Camino.Core.Utils;
 using Camino.Core.Contracts.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 {
@@ -23,7 +22,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
         private readonly IEntityRepository<ArticleCategory> _articleCategoryRepository;
         private readonly IAppDbContext _dbContext;
 
-        public ArticleRepository(IEntityRepository<Article> articleRepository, 
+        public ArticleRepository(IEntityRepository<Article> articleRepository,
             IEntityRepository<ArticleCategory> articleCategoryRepository,
             IAppDbContext dbContext)
         {
@@ -221,8 +220,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
             exist.Content = request.Content;
 
             await _articleRepository.UpdateAsync(exist);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<IList<ArticleResult>> GetRelevantsAsync(long id, ArticleFilter filter)
@@ -281,41 +279,37 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
         public async Task<bool> DeleteAsync(long id)
         {
             await _articleRepository.DeleteAsync(x => x.Id == id);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> SoftDeleteAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, ArticleStatus.Deleted.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _articleRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = ArticleStatus.Deleted.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> DeactivateAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, ArticleStatus.Inactived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _articleRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = ArticleStatus.Inactived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(ArticleModifyRequest request)
         {
-            await _articleRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, ArticleStatus.Actived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _articleRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = ArticleStatus.Actived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTime.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

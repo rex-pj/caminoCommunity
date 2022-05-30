@@ -351,13 +351,12 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
             await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Deleted);
 
             // Delete farm
-            await _farmRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)FarmStatus.Deleted)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = FarmStatus.Deleted.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         private async Task UpdateProductStatusByFarmIdAsync(FarmModifyRequest request, ProductStatus productStatus)
@@ -375,35 +374,37 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
             };
             await _productPictureRepository.UpdateStatusByProductIdsAsync(productIds, request.UpdatedById, pictureStatus);
 
-            await _productRepository.Get(x => productIds.Contains(x.Id))
-                .SetEntry(x => x.StatusId, productStatus.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existingProducts = await _productRepository.GetAsync(x => productIds.Contains(x.Id));
+            foreach (var product in existingProducts)
+            {
+                product.StatusId = productStatus.GetCode();
+                product.UpdatedById = request.UpdatedById;
+                product.UpdatedDate = DateTimeOffset.UtcNow;
+            }
+            await _productRepository.UpdateAsync(existingProducts);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeactivateAsync(FarmModifyRequest request)
         {
             await UpdateProductStatusByFarmIdAsync(request, ProductStatus.Inactived);
 
-            await _farmRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, FarmStatus.Inactived.GetCode())
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmRepository.FindAsync(x => x.Id == request.Id);
+                existing.StatusId = FarmStatus.Inactived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
         public async Task<bool> ActiveAsync(FarmModifyRequest request)
         {
-            await _farmRepository.Get(x => x.Id == request.Id)
-                .SetEntry(x => x.StatusId, (int)FarmStatus.Actived)
-                .SetEntry(x => x.UpdatedById, request.UpdatedById)
-                .SetEntry(x => x.UpdatedDate, DateTimeOffset.UtcNow)
-                .UpdateAsync();
+            var existing = await _farmRepository.FindAsync(x => x.Id == request.Id);
+            existing.StatusId = FarmStatus.Actived.GetCode();
+            existing.UpdatedById = request.UpdatedById;
+            existing.UpdatedDate = DateTimeOffset.UtcNow;
 
-            return true;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }
