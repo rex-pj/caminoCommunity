@@ -8,7 +8,7 @@ namespace Module.Web.ArticleManagement.Models
     {
         public long ArticleId { get; set; }
         public string ArticleName { get; set; }
-        public ArticlePictureType ArticlePictureType { get; set; }
+        public ArticlePictureTypes ArticlePictureType { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

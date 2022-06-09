@@ -1,25 +1,24 @@
-﻿using Camino.Core.Contracts.Services.Articles;
-using Camino.Shared.Results.Articles;
-using Module.Api.Article.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Shared.General;
 using Module.Api.Article.Models;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Application.Contracts.AppServices.Articles;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Articles.Dtos;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleCategoryResolver : IArticleCategoryResolver
     {
-        private readonly IArticleCategoryService _articleCategoryService;
+        private readonly IArticleCategoryAppService _articleCategoryAppService;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ArticleCategoryResolver(IArticleCategoryService articleCategoryService, IOptions<PagerOptions> pagerOptions)
+        public ArticleCategoryResolver(IArticleCategoryAppService articleCategoryAppService, IOptions<PagerOptions> pagerOptions)
         {
-            _articleCategoryService = articleCategoryService;
+            _articleCategoryAppService = articleCategoryAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -39,14 +38,14 @@ namespace Module.Api.Article.GraphQL.Resolvers
             IList<ArticleCategoryResult> categories;
             if (criterias.IsParentOnly.HasValue && criterias.IsParentOnly.GetValueOrDefault())
             {
-                categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
+                categories = _articleCategoryAppService.SearchParents(new IdRequestFilter<int?>
                 {
                     Id = criterias.CurrentId
                 }, filter);
             }
             else
             {
-                categories = _articleCategoryService.Search(new IdRequestFilter<int?>
+                categories = _articleCategoryAppService.Search(new IdRequestFilter<int?>
                 {
                     Id = criterias.CurrentId
                 }, filter);

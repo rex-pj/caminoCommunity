@@ -8,7 +8,7 @@ namespace Module.Web.ProductManagement.Models
     {
         public long ProductId { get; set; }
         public string ProductName { get; set; }
-        public ProductPictureType ProductPictureType { get; set; }
+        public ProductPictureTypes ProductPictureType { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

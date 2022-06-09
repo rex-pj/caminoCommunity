@@ -1,7 +1,5 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Framework.Attributes;
+﻿using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,37 +8,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Products;
-using Camino.Shared.Results.Products;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Products;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductCategoryController : BaseAuthController
     {
-        private readonly IProductCategoryService _productCategoryService;
+        private readonly IProductCategoryAppService _productCategoryAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ProductCategoryController(IProductCategoryService productCategoryService,
+        public ProductCategoryController(IProductCategoryAppService productCategoryAppService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _productCategoryService = productCategoryService;
+            _productCategoryAppService = productCategoryAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
-        [LoadResultAuthorizations("ProductCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
+        [LoadResultAuthorizations("ProductCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductCategoryFilterModel filter)
         {
-            var categoryPageList = await _productCategoryService.GetAsync(new ProductCategoryFilter
+            var categoryPageList = await _productCategoryAppService.GetAsync(new ProductCategoryFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -61,7 +60,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedBy = x.UpdatedBy,
                 UpdatedDate = x.UpdatedDate,
                 Name = x.Name,
-                StatusId = (ProductCategoryStatus)x.StatusId
+                StatusId = (ProductCategoryStatuses)x.StatusId
             });
 
             var categoryPage = new PageListModel<ProductCategoryModel>(categories)
@@ -79,8 +78,8 @@ namespace Module.Web.ProductManagement.Controllers
             return View(categoryPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
-        [LoadResultAuthorizations("ProductCategory", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
+        [LoadResultAuthorizations("ProductCategory", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -90,7 +89,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var category = await _productCategoryService.FindAsync(id);
+                var category = await _productCategoryAppService.FindAsync(id);
                 if (category == null)
                 {
                     return RedirectToNotFoundPage();
@@ -109,7 +108,7 @@ namespace Module.Web.ProductManagement.Controllers
                     ParentCategoryName = category.ParentCategoryName,
                     UpdatedBy = category.UpdatedBy,
                     UpdatedDate = category.UpdatedDate,
-                    StatusId = (ProductCategoryStatus)category.StatusId
+                    StatusId = (ProductCategoryStatuses)category.StatusId
                 };
                 return View(model);
             }
@@ -119,7 +118,7 @@ namespace Module.Web.ProductManagement.Controllers
             }
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateProductCategory)]
         public IActionResult Create()
         {
             var model = new ProductCategoryModel();
@@ -127,10 +126,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateProductCategory)]
         public async Task<IActionResult> Create(ProductCategoryModel model)
         {
-            var exist = _productCategoryService.FindByName(model.Name);
+            var exist = await _productCategoryAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -145,14 +144,14 @@ namespace Module.Web.ProductManagement.Controllers
                 CreatedById = LoggedUserId
             };
 
-            var id = await _productCategoryService.CreateAsync(category);
+            var id = await _productCategoryAppService.CreateAsync(category);
             return RedirectToAction(nameof(Detail), new { id });
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductCategory)]
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _productCategoryService.FindAsync(id);
+            var category = await _productCategoryAppService.FindAsync(id);
             var model = new ProductCategoryModel()
             {
                 Id = category.Id,
@@ -166,13 +165,13 @@ namespace Module.Web.ProductManagement.Controllers
                 ParentCategoryName = category.ParentCategoryName,
                 UpdatedBy = category.UpdatedBy,
                 UpdatedDate = category.UpdatedDate,
-                StatusId = (ProductCategoryStatus)category.StatusId
+                StatusId = (ProductCategoryStatuses)category.StatusId
             };
             return View(model);
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductCategory)]
         public async Task<IActionResult> Update(ProductCategoryModel model)
         {
             if (model.Id <= 0)
@@ -180,7 +179,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _productCategoryService.FindAsync(model.Id);
+            var exist = await _productCategoryAppService.FindAsync(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -195,12 +194,12 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedById = LoggedUserId
             };
 
-            await _productCategoryService.UpdateAsync(category);
+            await _productCategoryAppService.UpdateAsync(category);
             return RedirectToAction(nameof(Detail), new { id = category.Id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductCategory)]
         public async Task<IActionResult> Deactivate(ProductCategoryIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -208,7 +207,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productCategoryService.DeactivateAsync(new ProductCategoryRequest
+            var isInactived = await _productCategoryAppService.DeactivateAsync(new ProductCategoryRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -228,7 +227,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductCategory)]
         public async Task<IActionResult> Active(ProductCategoryIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -236,7 +235,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productCategoryService.ActiveAsync(new ProductCategoryRequest
+            var isActived = await _productCategoryAppService.ActiveAsync(new ProductCategoryRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -256,7 +255,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanDeleteProductCategory)]
         public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
@@ -264,7 +263,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productCategoryService.DeleteAsync(id);
+            var isActived = await _productCategoryAppService.DeleteAsync(id);
 
             if (!isActived)
             {
@@ -275,7 +274,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
         public async Task<IActionResult> Search(string q, string currentId = null, bool isParentOnly = false)
         {
             int[] currentIds = null;
@@ -293,11 +292,11 @@ namespace Module.Web.ProductManagement.Controllers
             };
             if (isParentOnly)
             {
-                categories = await _productCategoryService.SearchParentsAsync(filter, currentIds);
+                categories = await _productCategoryAppService.SearchParentsAsync(filter, currentIds);
             }
             else
             {
-                categories = await _productCategoryService.SearchAsync(filter, currentIds);
+                categories = await _productCategoryAppService.SearchAsync(filter, currentIds);
             }
 
             if (categories == null || !categories.Any())
@@ -316,10 +315,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
         public IActionResult SearchStatus(string q, int? currentId = null)
         {
-            var statuses = _productCategoryService.SearchStatus(new IdRequestFilter<int?>
+            var statuses = _productCategoryAppService.SearchStatus(new IdRequestFilter<int?>
             {
                 Id = currentId
             }, q);

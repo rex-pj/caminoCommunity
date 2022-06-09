@@ -9,7 +9,7 @@ namespace Module.Api.Navigation.Models
         public string Description { get; set; }
         public string Url { get; set; }
         public string Icon { get; set; }
-        public ShortcutType TypeId { get; set; }
+        public ShortcutTypes TypeId { get; set; }
         public int Order { get; set; }
     }
 }

@@ -1,22 +1,22 @@
 ﻿using Camino.Framework.Models;
-using Camino.Core.Domain.Identities;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Enums;
 
 namespace Camino.Framework.Attributes
 {
     public class LoadResultAuthorizationsAttribute : ResultFilterAttribute
     {
-        private PolicyMethod[] _policyMethods;
+        private PolicyMethods[] _policyMethods;
         private readonly string _moduleName;
 
-        public LoadResultAuthorizationsAttribute(string moduleName, params PolicyMethod[] policyMethods)
+        public LoadResultAuthorizationsAttribute(string moduleName, params PolicyMethods[] policyMethods)
         {
             _moduleName = moduleName;
             _policyMethods = policyMethods;
@@ -47,7 +47,7 @@ namespace Camino.Framework.Attributes
             var httpContext = context.HttpContext;
             if (_moduleName != null && !_policyMethods.Any())
             {
-                _policyMethods = Enum.GetValues(typeof(PolicyMethod)).Cast<PolicyMethod>().ToArray();
+                _policyMethods = Enum.GetValues(typeof(PolicyMethods)).Cast<PolicyMethods>().ToArray();
             }
 
             var policies = _policyMethods.Select(x => $"{x}{_moduleName}").ToArray();

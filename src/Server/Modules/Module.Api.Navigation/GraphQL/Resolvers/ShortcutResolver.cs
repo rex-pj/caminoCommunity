@@ -1,27 +1,27 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Shared.Requests.Filters;
 using System;
 using System.Threading.Tasks;
 using Module.Api.Navigation.GraphQL.Resolvers.Contracts;
-using Camino.Core.Contracts.Services.Navigations;
 using Module.Api.Navigation.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Application.Contracts.AppServices.Navigations;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts.AppServices.Navigations.Dtos;
 using Camino.Shared.Enums;
 
 namespace Module.Api.Navigation.GraphQL.Resolvers
 {
     public class ShortcutResolver : BaseResolver, IShortcutResolver
     {
-        private readonly IShortcutService _shortcutService;
+        private readonly IShortcutAppService _shortcutAppService;
         private readonly PagerOptions _pagerOptions;
 
-        public ShortcutResolver(IShortcutService shortcutService, IOptions<PagerOptions> pagerOptions)
+        public ShortcutResolver(IShortcutAppService shortcutAppService, IOptions<PagerOptions> pagerOptions)
             : base()
         {
-            _shortcutService = shortcutService;
+            _shortcutAppService = shortcutAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -34,7 +34,7 @@ namespace Module.Api.Navigation.GraphQL.Resolvers
 
             try
             {
-                var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter()
+                var shortcutPageList = await _shortcutAppService.GetAsync(new ShortcutFilter()
                 {
                     Page = criterias.Page,
                     PageSize = _pagerOptions.PageSize,
@@ -47,7 +47,7 @@ namespace Module.Api.Navigation.GraphQL.Resolvers
                     Name = x.Name,
                     Icon = x.Icon,
                     Id = x.Id,
-                    TypeId = (ShortcutType)x.TypeId,
+                    TypeId = (ShortcutTypes)x.TypeId,
                     Url = x.Url
                 }).ToList();
 

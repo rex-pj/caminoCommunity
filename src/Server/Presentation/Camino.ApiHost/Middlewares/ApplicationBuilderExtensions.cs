@@ -1,5 +1,5 @@
 ﻿using Camino.Framework.Infrastructure.Middlewares;
-using Camino.Shared.Configurations;
+using Camino.Shared.Configuration.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

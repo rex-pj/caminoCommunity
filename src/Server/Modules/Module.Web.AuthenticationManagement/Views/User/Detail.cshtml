@@ -52,20 +52,20 @@
         <span class="form-control" readonly>
             @if (Model.BirthDate.HasValue)
             {
-                Model.BirthDate.Value.ToString(DateTimeFormatConst.DateFormat);
+                Model.BirthDate.Value.ToString(DateTimeFormats.DateFormat);
             }
         </span>
     </div>
     <div class="mb-3">
         <label>Joined date</label>
         <span class="form-control" readonly>
-            @Model.CreatedDate.ToString(DateTimeFormatConst.DateFormat)
+            @Model.CreatedDate.ToString(DateTimeFormats.DateFormat)
         </span>
     </div>
     <div class="mb-3">
         <label>Updated date</label>
         <span class="form-control" readonly>
-            @Model.UpdatedDate.ToString(DateTimeFormatConst.DateFormat)
+            @Model.UpdatedDate.ToString(DateTimeFormats.DateFormat)
         </span>
     </div>
     <div class="mb-3">
@@ -110,7 +110,7 @@
                     </button>
                 }
 
-                @if (Model.StatusId == UserStatus.Pending)
+                @if (Model.StatusId == UserStatuses.Pending)
                 {
                     <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                             title="Activate this user"
@@ -120,7 +120,7 @@
                     </button>
                 }
 
-                @if (Model.StatusId != UserStatus.Inactived && Model.StatusId != UserStatus.Deleted)
+                @if (Model.StatusId != UserStatuses.Inactived && Model.StatusId != UserStatuses.Deleted)
                 {
                     <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                             class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this user">
@@ -128,7 +128,7 @@
                         <span class="ms-1">Block</span>
                     </button>
                 }
-                else if (Model.StatusId == UserStatus.Inactived)
+                else if (Model.StatusId == UserStatuses.Inactived)
                 {
                     <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                             class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this user">
@@ -137,7 +137,7 @@
                     </button>
                 }
 
-                @if (Model.StatusId == UserStatus.Deleted)
+                @if (Model.StatusId == UserStatuses.Deleted)
                 {
                     <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
                             class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this user">

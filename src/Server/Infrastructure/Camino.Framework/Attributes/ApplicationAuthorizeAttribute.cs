@@ -1,11 +1,11 @@
-﻿using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.Services.Authentication;
+﻿using Camino.Application.Contracts.AppServices.Authentication;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
 
 namespace Camino.Framework.Attributes
 {
@@ -56,7 +56,7 @@ namespace Camino.Framework.Attributes
 
                 var requestServices = httpContext.RequestServices;
                 var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
-                var authenticationService = requestServices.GetRequiredService<IAuthenticationService>();
+                var authenticationService = requestServices.GetRequiredService<IAuthenticationAppService>();
                 var user = await userManager.GetUserAsync(httpContext.User);
 
                 // Authorize by authorization policies in current user or in current user's roles

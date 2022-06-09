@@ -1,10 +1,6 @@
-﻿using Camino.Core.Contracts.Data;
+﻿using Camino.Core.Domains;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
@@ -35,9 +31,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore
 
         #region Ctor
 
-        public EfRepository(IDbContextFactory<CaminoDbContext> serviceScopeFactory)
+        public EfRepository(CaminoDbContext dbContext)
         {
-            _dbContext = serviceScopeFactory.CreateDbContext();
+            _dbContext = dbContext;
         }
         #endregion
 
@@ -67,12 +63,36 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         }
 
         /// <summary>
+        /// Filter the entities and select by selector
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="filter"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public IQueryable<TResult> Get<TResult>(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, TResult>> selector)
+        {
+            return DbSet.Where(filter).Select(selector);
+        }
+
+        /// <summary>
         /// Get entities async
         /// </summary>
         /// <returns></returns>
         public async Task<IList<TEntity>> GetAsync()
         {
             return await DbSet.ToListAsync();
+        }
+
+        /// <summary>
+        /// Filter the entities and select by selector
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="filter"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public async Task<IList<TResult>> GetAsync<TResult>(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, TResult>> selector)
+        {
+            return await DbSet.Where(filter).Select(selector).ToListAsync();
         }
 
         /// <summary>
@@ -241,7 +261,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual int Delete(IQueryable<TEntity> entities)
+        public virtual int Delete(IEnumerable<TEntity> entities)
         {
             if (entities == null)
             {
@@ -283,7 +303,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         /// Delete entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public virtual async Task<int> DeleteAsync(IQueryable<TEntity> entities)
+        public virtual async Task<int> DeleteAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null)
             {

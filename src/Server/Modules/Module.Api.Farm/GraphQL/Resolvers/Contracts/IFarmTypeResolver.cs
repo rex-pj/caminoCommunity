@@ -1,5 +1,5 @@
-﻿using Camino.Framework.Models;
-using Camino.Shared.General;
+﻿using Camino.Application.Contracts;
+using Camino.Framework.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,5 +1,5 @@
 ﻿using Camino.Core.Contracts.Providers;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Shared.Constants;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace Module.Web.SetupManagement.Middlewares
             if (!installProvider.HasDatabaseSetup())
             {
                 //redirect
-                var installUrl = SetupSettingsConst.StartSetupUrl;
+                var installUrl = SetupDataSettings.StartSetupUrl;
                 if (!currentUrl.StartsWith(installUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     context.Response.Redirect(installUrl);
@@ -41,7 +41,7 @@ namespace Module.Web.SetupManagement.Middlewares
             if (!installProvider.HasDataSeeded())
             {
                 //redirect
-                var seedDataUrl = SetupSettingsConst.SeedDataUrl;
+                var seedDataUrl = SetupDataSettings.SeedDataUrl;
                 if (!currentUrl.StartsWith(seedDataUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     context.Response.Redirect(seedDataUrl);

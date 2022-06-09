@@ -1,4 +1,4 @@
-﻿using Camino.Shared.General;
+﻿using Camino.Application.Contracts;
 using Module.Api.Article.Models;
 using System.Collections.Generic;
 

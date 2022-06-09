@@ -30,7 +30,7 @@ namespace Module.Web.ProductManagement.Models
         public string CreatedBy { get; set; }
         public int? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
-        public ProductCategoryStatus StatusId { get; set; }
+        public ProductCategoryStatuses StatusId { get; set; }
         public IEnumerable<SelectListItem> SelectCategories { get; set; }
     }
 }

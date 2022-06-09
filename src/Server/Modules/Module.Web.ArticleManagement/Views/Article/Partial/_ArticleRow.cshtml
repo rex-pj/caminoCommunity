@@ -35,7 +35,7 @@
         <partial name="Partial/_StatusBadge" />
     </td>
     <td>
-        @if (Model.StatusId == ArticleStatus.Pending)
+        @if (Model.StatusId == ArticleStatuses.Pending)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     title="Activate this article"
@@ -44,14 +44,14 @@
             </button>
         }
 
-        @if (Model.StatusId != ArticleStatus.Inactived && Model.StatusId != ArticleStatus.Deleted)
+        @if (Model.StatusId != ArticleStatuses.Inactived && Model.StatusId != ArticleStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                     class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this article">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == ArticleStatus.Inactived)
+        else if (Model.StatusId == ArticleStatuses.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this article">
@@ -59,7 +59,7 @@
             </button>
         }
 
-        @if (Model.StatusId == ArticleStatus.Deleted)
+        @if (Model.StatusId == ArticleStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
                     class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this article">

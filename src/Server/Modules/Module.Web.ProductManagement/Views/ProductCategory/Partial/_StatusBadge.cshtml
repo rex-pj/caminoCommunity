@@ -1,9 +1,9 @@
 ﻿@model ProductCategoryModel
-@if (Model.StatusId == ProductCategoryStatus.Actived)
+@if (Model.StatusId == ProductCategoryStatuses.Actived)
 {
     <span class="badge rounded-pill bg-success">@Model.StatusId</span>
 }
-else if (Model.StatusId == ProductCategoryStatus.Inactived)
+else if (Model.StatusId == ProductCategoryStatuses.Inactived)
 {
     <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
 }

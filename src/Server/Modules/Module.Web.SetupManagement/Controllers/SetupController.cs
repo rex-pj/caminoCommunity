@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Enums;
-using Camino.Shared.Requests.Setup;
 using Camino.Core.Contracts.Providers;
-using Camino.Core.Contracts.Services.Setup;
-using Camino.Shared.Requests.Identifiers;
+using Camino.Application.Contracts.AppServices.Setup;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Enums;
+using Camino.Application.Contracts.AppServices.Setup.Dtos;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
 
 namespace Module.Web.SetupManagement.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly IDataSeedService _dataSeedService;
+        private readonly IDataSeedAppService _dataSeedAppService;
         private readonly ISetupProvider _setupProvider;
         private readonly IUserSecurityStampStore<ApplicationUser> _userSecurityStampStore;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
@@ -26,14 +26,14 @@ namespace Module.Web.SetupManagement.Controllers
         public SetupController(ISetupProvider setupProvider,
             IUserSecurityStampStore<ApplicationUser> userSecurityStampStore,
             IPasswordHasher<ApplicationUser> passwordHasher, IUserManager<ApplicationUser> userManager,
-            IDataSeedService dataSeedService, ILoginManager<ApplicationUser> loginManager)
+            IDataSeedAppService dataSeedAppService, ILoginManager<ApplicationUser> loginManager)
         {
             _setupProvider = setupProvider;
             _userSecurityStampStore = userSecurityStampStore;
             _passwordHasher = passwordHasher;
             _userManager = userManager;
             _loginManager = loginManager;
-            _dataSeedService = dataSeedService;
+            _dataSeedAppService = dataSeedAppService;
         }
 
         [HttpGet]
@@ -80,7 +80,7 @@ namespace Module.Web.SetupManagement.Controllers
             try
             {
                 // Create database schema
-                await _dataSeedService.CreateDatabaseAsync();
+                await _dataSeedAppService.CreateDatabaseAsync();
 
                 _setupProvider.SetDatabaseHasBeenSetup();
                 return RedirectToAction(nameof(SeedData));
@@ -135,7 +135,7 @@ namespace Module.Web.SetupManagement.Controllers
                     Email = model.AdminEmail,
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
-                    StatusId = (byte)UserStatus.Actived,
+                    StatusId = (byte)UserStatuses.Actived,
                     UserName = model.AdminEmail,
                 };
 
@@ -160,7 +160,7 @@ namespace Module.Web.SetupManagement.Controllers
                 };
 
                 // Initialize database
-                await _dataSeedService.SeedDataAsync(setupRequest);
+                await _dataSeedAppService.SeedDataAsync(setupRequest);
 
                 _setupProvider.SetDataHasBeenSeeded();
                 return RedirectToAction(nameof(Succeed));

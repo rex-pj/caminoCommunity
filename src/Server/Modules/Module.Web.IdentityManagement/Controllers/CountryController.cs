@@ -1,8 +1,6 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,31 +9,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Shared.Requests.Identifiers;
-using Camino.Core.Contracts.Services.Identities;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Identifiers;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Identifiers.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Web.IdentityManagement.Controllers
 {
     public class CountryController : BaseAuthController
     {
-        private readonly ICountryService _countryService;
+        private readonly ICountryAppService _countryAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryService countryService,
+        public CountryController(IHttpContextAccessor httpContextAccessor, ICountryAppService countryAppService,
             IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions) : base(httpContextAccessor)
         {
-            _countryService = countryService;
+            _countryAppService = countryAppService;
             _httpHelper = httpHelper;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
-        [LoadResultAuthorizations("Country", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadCountry)]
+        [LoadResultAuthorizations("Country", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(CountryFilterModel filter)
         {
             var filterRequest = new CountryFilter()
@@ -45,7 +45,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 Keyword = filter.Search
             };
 
-            var countryPageList = await _countryService.GetAsync(filterRequest);
+            var countryPageList = await _countryAppService.GetAsync(filterRequest);
             var countries = countryPageList.Collections.Select(x => new CountryModel()
             {
                 Code = x.Code,
@@ -68,8 +68,8 @@ namespace Module.Web.IdentityManagement.Controllers
             return View(countryPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
-        [LoadResultAuthorizations("Country", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadCountry)]
+        [LoadResultAuthorizations("Country", PolicyMethods.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)
@@ -79,7 +79,7 @@ namespace Module.Web.IdentityManagement.Controllers
 
             try
             {
-                var country = _countryService.Find(id);
+                var country = _countryAppService.Find(id);
                 if (country == null)
                 {
                     return RedirectToNotFoundPage();
@@ -99,17 +99,17 @@ namespace Module.Web.IdentityManagement.Controllers
             }
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateCountry)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateCountry)]
         public IActionResult Create()
         {
             var model = new CountryModel();
             return View(model);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateCountry)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateCountry)]
         public IActionResult Update(int id)
         {
-            var country = _countryService.Find(id);
+            var country = _countryAppService.Find(id);
             var model = new CountryModel()
             {
                 Id = country.Id,
@@ -121,7 +121,7 @@ namespace Module.Web.IdentityManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateCountry)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateCountry)]
         public async Task<IActionResult> Create(CountryModel model)
         {
             var country = new CountryModifyRequest()
@@ -131,19 +131,19 @@ namespace Module.Web.IdentityManagement.Controllers
                 Code = model.Code
             };
 
-            var exist = _countryService.FindByName(model.Name);
+            var exist = _countryAppService.FindByName(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var id = await _countryService.CreateAsync(country);
+            var id = await _countryAppService.CreateAsync(country);
 
             return RedirectToAction(nameof(Detail), new { id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateCountry)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateCountry)]
         public IActionResult Update(CountryModel model)
         {
             if (model.Id <= 0)
@@ -151,7 +151,7 @@ namespace Module.Web.IdentityManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _countryService.Find(model.Id);
+            var exist = _countryAppService.Find(model.Id);
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -164,15 +164,15 @@ namespace Module.Web.IdentityManagement.Controllers
                 Code = model.Code
             };
 
-            _countryService.UpdateAsync(country);
+            _countryAppService.UpdateAsync(country);
             return RedirectToAction(nameof(Detail), new { id = country.Id });
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadCountry)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadCountry)]
         public IActionResult Search(string q)
         {
-            var countries = _countryService.Search(new BaseFilter { 
+            var countries = _countryAppService.Search(new BaseFilter { 
                 Page = _defaultPageSelection,
                 Keyword = q,
                 PageSize = _pagerOptions.PageSize

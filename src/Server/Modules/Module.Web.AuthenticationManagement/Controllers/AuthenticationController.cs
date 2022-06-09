@@ -3,8 +3,8 @@ using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.IdentityManager;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {

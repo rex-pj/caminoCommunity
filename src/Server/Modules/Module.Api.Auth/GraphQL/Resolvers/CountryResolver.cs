@@ -1,22 +1,22 @@
 ﻿using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Core.Contracts.Services.Identities;
-using Camino.Shared.General;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Identifiers;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class CountryResolver : ICountryResolver
     {
-        private readonly ICountryService _countryService;
-        public CountryResolver(ICountryService countryService)
+        private readonly ICountryAppService _countryAppService;
+        public CountryResolver(ICountryAppService countryAppService)
         {
-            _countryService = countryService;
+            _countryAppService = countryAppService;
         }
 
         public IEnumerable<SelectOption> GetSelections()
         {
-            var countries = _countryService.Get();
+            var countries = _countryAppService.Get();
             if (countries == null || !countries.Any())
             {
                 return new List<SelectOption>();

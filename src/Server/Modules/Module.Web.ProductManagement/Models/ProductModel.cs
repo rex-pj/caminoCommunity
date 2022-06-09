@@ -31,7 +31,7 @@ namespace Module.Web.ProductManagement.Models
         public long PictureId { get; set; }
         public decimal Price { get; set; }
         public IEnumerable<PictureResultModel> Pictures { get; set; }
-        public ProductStatus StatusId { get; set; }
+        public ProductStatuses StatusId { get; set; }
         public IEnumerable<ProductAttributeRelationModel> ProductAttributes { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Camino.Framework.Models
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
         public bool IsSucceed { get; set; }
-        public AccessMode AccessMode { get; set; }
+        public AccessModes AccessMode { get; set; }
 
         public UserTokenModel()
         {

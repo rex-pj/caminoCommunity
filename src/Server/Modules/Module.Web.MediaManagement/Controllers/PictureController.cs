@@ -1,13 +1,13 @@
-﻿using Camino.Framework.Attributes;
+﻿using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Media;
+using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Core.Contracts.Services.Media;
+using Camino.Infrastructure.Files.Contracts;
+using Camino.Shared.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.FileStore;
-using Camino.Shared.Requests.Filters;
-using Camino.Infrastructure.Commons.Constants;
 
 namespace Module.Web.UploadManagement.Controllers
 {
@@ -16,20 +16,20 @@ namespace Module.Web.UploadManagement.Controllers
     {
         private readonly IMediaFileStore _mediaFileStore;
         private readonly IFileStore _fileStore;
-        private readonly IPictureService _pictureService;
+        private readonly IPictureAppService _pictureappService;
 
         public PictureController(IHttpContextAccessor httpContextAccessor,
-            IMediaFileStore mediaFileStore, IFileStore fileStore, IPictureService pictureService)
+            IMediaFileStore mediaFileStore, IFileStore fileStore, IPictureAppService pictureAppService)
             : base(httpContextAccessor)
         {
             _mediaFileStore = mediaFileStore;
-            _pictureService = pictureService;
+            _pictureappService = pictureAppService;
             _fileStore = fileStore;
         }
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreatePicture)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreatePicture)]
         public async Task<IActionResult> ConverToBase64(IFormFile file)
         {
             try
@@ -59,7 +59,7 @@ namespace Module.Web.UploadManagement.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreatePicture)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreatePicture)]
         public async Task<IActionResult> TemporaryUpload(string path, IFormFile file)
         {
             if (path == null)
@@ -101,11 +101,11 @@ namespace Module.Web.UploadManagement.Controllers
 
         [HttpGet]
         [IgnoreAntiforgeryToken]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadPicture)]
         [Route("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var exist = await _pictureService.FindAsync(new IdRequestFilter<long>
+            var exist = await _pictureappService.FindAsync(new IdRequestFilter<long>
             {
                 Id = id,
                 CanGetDeleted = true,

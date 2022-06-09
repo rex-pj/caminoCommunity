@@ -1,18 +1,17 @@
-﻿using Camino.Core.Constants;
-using Camino.Core.Contracts.Helpers;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Core.Contracts.Providers;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Exceptions;
-using Camino.Framework.GraphQL.Resolvers;
+﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Contracts.Core;
-using Camino.Infrastructure.Commons.Constants;
-using Camino.Infrastructure.Resources;
-using Camino.Shared.Configurations;
+using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.Emails.Contracts;
+using Camino.Infrastructure.Emails.Contracts.Dtos;
+using Camino.Infrastructure.Emails.Templates;
+using Camino.Infrastructure.Identity.Constants;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Commons;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
 using Camino.Shared.Enums;
-using Camino.Shared.General;
-using Camino.Shared.Requests.Providers;
+using Camino.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
@@ -91,8 +90,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             user.UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
             var accessToken = _jwtHelper.GenerateJwtToken(user);
 
-            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
+            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
+            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
 
             AddRefreshTokenToCookie(refreshToken);
             return new UserTokenModel(true)
@@ -118,7 +117,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
 
             var claimsIdentity = await _jwtHelper.GetPrincipalFromExpiredTokenAsync(authenticationToken);
-            var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeaderContants.UserIdentityClaimKey).Value;
+            var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeades.UserIdentityClaimKey).Value;
             if (string.IsNullOrEmpty(userIdentityId))
             {
                 return new UserTokenModel();
@@ -140,8 +139,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var accessToken = _jwtHelper.GenerateJwtToken(user);
 
             await _userManager.RemoveAuthenticationTokenByValueAsync(user.Id, clientRefreshToken);
-            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
+            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
+            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
 
             AddRefreshTokenToCookie(refreshToken);
             return new UserTokenModel(true)
@@ -160,7 +159,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             isSecure = false;
             sameSite = SameSiteMode.None;
             #endif
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeaderContants.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeades.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 SameSite = sameSite,
@@ -172,12 +171,12 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
         private string GetRefreshTokenFromCookie()
         {
-            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaderContants.CookieAuthenticationRefreshToken];
+            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeades.CookieAuthenticationRefreshToken];
         }
 
         private string GetAccessTokenFromHeader()
         {
-            return _httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HeaderAuthenticationAccessToken];
+            return _httpContextAccessor.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
         }
 
         public async Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)
@@ -191,7 +190,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
 
             var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
+            var result = await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.RESET_PASSWORD_PURPOSE, resetPasswordToken);
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(x => new CommonError
@@ -226,7 +225,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
                 Subject = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_SUBJECT, _appSettings.ApplicationName),
-            }, EmailTextFormat.Html);
+            }, EmailTextFormats.Html);
         }
 
         public async Task<UserTokenModel> UpdatePasswordAsync(ClaimsPrincipal claimsPrincipal, UserPasswordUpdateModel criterias)
@@ -270,7 +269,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
                 return CommonResult.Failed(errors);
             }
-            await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNameConst.CAMINO_API_AUTH, criterias.Key);
+            await _userManager.RemoveAuthenticationTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, criterias.Key);
 
             return CommonResult.Success();
         }

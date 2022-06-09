@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.Core.Contracts.Helpers;
-using Camino.Infrastructure.Commons.Constants;
-using Camino.Core.Exceptions;
 using System;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Constants;
+using Camino.Shared.Exceptions;
 
 namespace Camino.Framework.GraphQL
 {
@@ -16,7 +16,7 @@ namespace Camino.Framework.GraphQL
         public override async ValueTask OnCreateAsync(HttpContext context, IRequestExecutor requestExecutor,
             IQueryRequestBuilder requestBuilder, CancellationToken cancellationToken)
         {
-            var token = context.Request.Headers[HttpHeaderContants.HeaderAuthenticationAccessToken];
+            var token = context.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
             if (string.IsNullOrEmpty(token))
             {
                 return;

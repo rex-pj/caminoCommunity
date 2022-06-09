@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.IdentityManager.Contracts.Core;
-using Camino.Shared.Configurations;
 using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Infrastructure.Extensions.DependencyInjection;
 using Camino.Framework.Infrastructure.ModelBinders;
+using Camino.Shared.Configuration.Options;
+using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
+using Camino.Infrastructure.EntityFrameworkCore;
+using Camino.Core.Domains;
 
 namespace Camino.Management.Extensions.DependencyInjection
 {
@@ -15,6 +18,7 @@ namespace Camino.Management.Extensions.DependencyInjection
             services.AddApplicationServices(configuration);
             services.AddAuthentication(IdentitySettings.APP_SESSION_SCHEMA).AddCookie(IdentitySettings.APP_SESSION_SCHEMA);
             services.AddInfrastructureServices();
+            services.AddDataAccessServices<CaminoDbContext>();
             services.AddDataProtection();
 
             services.AddSingleton<SetupSettings>();

@@ -1,6 +1,6 @@
 ﻿using Camino.Shared.Enums;
 using System.Collections.Generic;
-using Camino.Shared.General;
+using Camino.Shared.Commons;
 
 namespace Camino.Framework.Models
 {
@@ -20,7 +20,7 @@ namespace Camino.Framework.Models
 
     public class CommonResult<TResult>
     {
-        public AccessMode AccessMode { get; set; }
+        public AccessModes AccessMode { get; set; }
         public bool IsSucceed { get; set; }
         public List<CommonError> Errors { get; set; }
         public TResult Result { get; set; }
@@ -39,7 +39,7 @@ namespace Camino.Framework.Models
 
         public static CommonResult Success(TResult result, bool canEdit)
         {
-            var accessMode = canEdit ? AccessMode.CanEdit : AccessMode.ReadOnly;
+            var accessMode = canEdit ? AccessModes.CanEdit : AccessModes.ReadOnly;
             var updateResult = Success(result);
             updateResult.AccessMode = accessMode;
             return updateResult;

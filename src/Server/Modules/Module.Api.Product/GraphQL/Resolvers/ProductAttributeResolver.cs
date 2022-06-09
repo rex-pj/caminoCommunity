@@ -1,25 +1,25 @@
-﻿using Camino.Core.Contracts.Services.Products;
-using Module.Api.Product.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Shared.General;
-using Camino.Shared.Requests.Filters;
 using Module.Api.Product.Models;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductAttributeResolver : IProductAttributeResolver
     {
-        private readonly IProductAttributeService _productAttributeService;
+        private readonly IProductAttributeAppService _productAttributeAppService;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ProductAttributeResolver(IProductAttributeService productAttributeService, IOptions<PagerOptions> pagerOptions)
+        public ProductAttributeResolver(IProductAttributeAppService productAttributeAppService, IOptions<PagerOptions> pagerOptions)
         {
-            _productAttributeService = productAttributeService;
+            _productAttributeAppService = productAttributeAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -30,7 +30,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 criterias = new AttributeSelectFilterModel();
             }
 
-            var attributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
+            var attributes = await _productAttributeAppService.SearchAsync(new ProductAttributeFilter
             {
                 ExcludedIds = criterias.ExcludedIds,
                 Keyword = criterias.Query,
@@ -59,7 +59,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 ControlTypeId = filter.CurrentId.GetValueOrDefault(),
                 Keyword = filter.Query
             };
-            return _productAttributeService.GetAttributeControlTypes(serviceFilter);
+            return _productAttributeAppService.GetAttributeControlTypes(serviceFilter);
         }
     }
 }

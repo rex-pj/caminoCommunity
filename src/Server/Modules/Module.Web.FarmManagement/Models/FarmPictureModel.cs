@@ -8,7 +8,7 @@ namespace Module.Web.FarmManagement.Models
     {
         public long FarmId { get; set; }
         public string FarmName { get; set; }
-        public FarmPictureType FarmPictureType { get; set; }
+        public FarmPictureTypes FarmPictureType { get; set; }
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }

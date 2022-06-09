@@ -11,9 +11,9 @@ namespace Module.Web.NavigationManagement.Models
         public string Description { get; set; }
         public string Url { get; set; }
         public string Icon { get; set; }
-        public ShortcutType TypeId { get; set; }
+        public ShortcutTypes TypeId { get; set; }
         public int DisplayOrder { get; set; }
-        public ShortcutStatus StatusId { get; set; }
+        public ShortcutStatuses StatusId { get; set; }
         public long CreatedById { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public long UpdatedById { get; set; }

@@ -9,6 +9,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Application\Camino.Application.Contracts\Camino.Application.Contracts.csproj" />
 	  <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Emails\Camino.Infrastructure.Emails.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,26 +1,24 @@
 ﻿using Module.Api.Media.Models;
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
-using Camino.Shared.Enums;
 using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
 using System;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Users;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Requests.Identifiers;
 using System.Security.Claims;
+using Camino.Application.Contracts.AppServices.Users;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Shared.Enums;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {
     public class UserPhotoResolver : BaseResolver, IUserPhotoResolver
     {
-        private readonly IUserPhotoService _userPhotoService;
+        private readonly IUserPhotoAppService _userPhotoAppService;
 
-        public UserPhotoResolver(IUserPhotoService userPhotoService)
+        public UserPhotoResolver(IUserPhotoAppService userPhotoAppService)
             : base()
         {
-            _userPhotoService = userPhotoService;
+            _userPhotoAppService = userPhotoAppService;
         }
 
         public async Task<CommonResult> UpdateAvatarAsync(ClaimsPrincipal claimsPrincipal, UserPhotoUpdateModel criterias)
@@ -33,14 +31,14 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 var currentUserId = GetCurrentUserId(claimsPrincipal);
-                var result = await _userPhotoService.UpdateUserPhotoAsync(new UserPhotoUpdateRequest
+                var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
                     PhotoUrl = criterias.PhotoUrl,
                     FileName = criterias.FileName,
                     Width = criterias.Width,
                     Height = criterias.Height,
                     Scale = criterias.Scale,
-                    UserPhotoTypeId = (int)UserPictureType.Avatar,
+                    UserPhotoTypeId = (int)UserPictureTypes.Avatar,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis
                 }, currentUserId);
@@ -63,7 +61,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 var currentUserId = GetCurrentUserId(claimsPrincipal);
-                var result = await _userPhotoService.UpdateUserPhotoAsync(new UserPhotoUpdateRequest
+                var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
                     PhotoUrl = criterias.PhotoUrl,
                     FileName = criterias.FileName,
@@ -72,7 +70,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                     Scale = criterias.Scale,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
-                    UserPhotoTypeId = (int)UserPictureType.Cover
+                    UserPhotoTypeId = (int)UserPictureTypes.Cover
                 }, currentUserId);
 
                 return CommonResult.Success(result);
@@ -93,7 +91,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 var currentUserId = GetCurrentUserId(claimsPrincipal);
-                await _userPhotoService.DeleteUserPhotoAsync(currentUserId, UserPictureType.Avatar);
+                await _userPhotoAppService.DeleteByUserIdAsync(currentUserId, UserPictureTypes.Avatar);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)
@@ -112,7 +110,7 @@ namespace Module.Api.Media.GraphQL.Resolvers
                 }
 
                 var currentUserId = GetCurrentUserId(claimsPrincipal);
-                await _userPhotoService.DeleteUserPhotoAsync(currentUserId, UserPictureType.Cover);
+                await _userPhotoAppService.DeleteByUserIdAsync(currentUserId, UserPictureTypes.Cover);
                 return CommonResult.Success(new UserPhotoUpdateRequest());
             }
             catch (Exception)

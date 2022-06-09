@@ -31,7 +31,7 @@
             </button>
         }
 
-        @if (Model.StatusId == UserStatus.Pending)
+        @if (Model.StatusId == UserStatuses.Pending)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     title="Activate this user"
@@ -40,14 +40,14 @@
             </button>
         }
 
-        @if (Model.StatusId != UserStatus.Inactived && Model.StatusId != UserStatus.Deleted)
+        @if (Model.StatusId != UserStatuses.Inactived && Model.StatusId != UserStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                     class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this user">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == UserStatus.Inactived)
+        else if (Model.StatusId == UserStatuses.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this user">
@@ -55,7 +55,7 @@
             </button>
         }
 
-        @if (Model.StatusId == UserStatus.Deleted)
+        @if (Model.StatusId == UserStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
                     class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this user">

@@ -1,5 +1,4 @@
-﻿using Camino.Shared.Configurations;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -10,6 +9,11 @@ using Camino.Framework.GraphQL;
 using Microsoft.AspNetCore.Http;
 using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Infrastructure.Extensions.DependencyInjection;
+using Camino.Shared.Configuration.Options;
+using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
+using Camino.Infrastructure.EntityFrameworkCore;
+using Camino.Core.Domains;
 
 namespace Camino.ApiHost.Extensions.DependencyInjection
 {
@@ -24,6 +28,7 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
                 .ConfigureCorsServices(services.BuildServiceProvider());
 
             services.AddInfrastructureServices();
+            services.AddDataAccessServices<CaminoDbContext>();
 
             services.AddControllers()
                 .AddNewtonsoftJson()

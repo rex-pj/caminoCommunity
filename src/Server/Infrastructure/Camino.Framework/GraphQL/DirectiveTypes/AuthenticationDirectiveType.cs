@@ -1,13 +1,13 @@
-﻿using Camino.Core.Contracts.Helpers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Camino.Infrastructure.Commons.Constants;
 using System;
-using Camino.Core.Exceptions;
 using System.Net;
 using HotChocolate;
+using Camino.Shared.Constants;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Exceptions;
 
 namespace Camino.Framework.GraphQL.DirectiveTypes
 {
@@ -22,7 +22,7 @@ namespace Camino.Framework.GraphQL.DirectiveTypes
             descriptor.Use(next => async context =>
             {
                 var httpContextAccessor = context.Services.GetService<IHttpContextAccessor>();
-                var token = httpContextAccessor.HttpContext.Request.Headers[HttpHeaderContants.HeaderAuthenticationAccessToken];
+                var token = httpContextAccessor.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
                 if (string.IsNullOrEmpty(token))
                 {
                     context.Result = new ForbidResult();

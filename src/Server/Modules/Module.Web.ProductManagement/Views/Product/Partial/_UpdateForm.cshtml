@@ -130,7 +130,7 @@
             <div class="col-auto">
                 @if (Model.Id > 0)
                 {
-                    @if (Model.StatusId == ProductStatus.Pending)
+                    @if (Model.StatusId == ProductStatuses.Pending)
                     {
                         <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                                 title="Activate this product"
@@ -140,7 +140,7 @@
                         </button>
                     }
 
-                    @if (Model.StatusId != ProductStatus.Inactived && Model.StatusId != ProductStatus.Deleted)
+                    @if (Model.StatusId != ProductStatuses.Inactived && Model.StatusId != ProductStatuses.Deleted)
                     {
                         <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                                 class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this product">
@@ -148,7 +148,7 @@
                             <span class="ms-1">Block</span>
                         </button>
                     }
-                    else if (Model.StatusId == ProductStatus.Inactived)
+                    else if (Model.StatusId == ProductStatuses.Inactived)
                     {
                         <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                                 class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this product">
@@ -157,7 +157,7 @@
                         </button>
                     }
 
-                    @if (Model.StatusId == ProductStatus.Deleted)
+                    @if (Model.StatusId == ProductStatuses.Deleted)
                     {
                         <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
                                 class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this product">

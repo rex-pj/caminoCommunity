@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Camino.Framework.Infrastructure.AutoMap;
+using Camino.Infrastructure.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Shared.Modularity;
 
 namespace Camino.Framework.Extensions.DependencyInjection
 {

@@ -1,5 +1,4 @@
-﻿using Camino.Core.Utils;
-using Camino.Framework.Controllers;
+﻿using Camino.Framework.Controllers;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,40 +7,41 @@ using Camino.Framework.Models;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Camino.Framework.Attributes;
-using Camino.Core.Domain.Identities;
-using Camino.Shared.Requests.Filters;
-using Camino.Core.Contracts.Helpers;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Core.Contracts.Services.Authorization;
-using Camino.Shared.Requests.Authorization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Authorization;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Authorization.Dtos;
+using Camino.Application.Contracts.Utils;
+using Camino.Shared.Utils;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class AuthorizationPolicyController : BaseAuthController
     {
-        private readonly IAuthorizationPolicyService _authorizationPolicyService;
+        private readonly IAuthorizationPolicyAppService _authorizationPolicyAppService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
 
-        public AuthorizationPolicyController(IAuthorizationPolicyService authorizationPolicyService, IHttpContextAccessor httpContextAccessor,
+        public AuthorizationPolicyController(IAuthorizationPolicyAppService authorizationPolicyAppService, IHttpContextAccessor httpContextAccessor,
             IUserManager<ApplicationUser> userManager, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _userManager = userManager;
             _httpHelper = httpHelper;
-            _authorizationPolicyService = authorizationPolicyService;
+            _authorizationPolicyAppService = authorizationPolicyAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
-        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadAuthorizationPolicy)]
+        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
             var filterRequest = new AuthorizationPolicyFilter
@@ -50,7 +50,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 PageSize = _pagerOptions.PageSize,
                 Keyword = filter.Search
             };
-            var policiesPageList = _authorizationPolicyService.Get(filterRequest);
+            var policiesPageList = await _authorizationPolicyAppService.GetAsync(filterRequest);
 
             var policyModels = policiesPageList.Collections.Select(x => new AuthorizationPolicyModel
             {
@@ -64,8 +64,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 Id = x.Id,
                 Name = x.Name
             }).ToList();
-            var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadUserAuthorizationPolicy);
-            var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicyConst.CanReadRoleAuthorizationPolicy);
+            var canViewUserAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicies.CanReadUserAuthorizationPolicy);
+            var canViewRoleAuthorizationPolicy = await _userManager.HasPolicyAsync(User, AuthorizePolicies.CanReadRoleAuthorizationPolicy);
             policyModels.ForEach(x =>
             {
                 x.CanViewRoleAuthorizationPolicy = canViewRoleAuthorizationPolicy;
@@ -87,9 +87,9 @@ namespace Module.Web.AuthorizationManagement.Controllers
             return View(policiesPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadAuthorizationPolicy)]
-        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethod.CanUpdate)]
-        public IActionResult Detail(short id)
+        [ApplicationAuthorize(AuthorizePolicies.CanReadAuthorizationPolicy)]
+        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethods.CanUpdate)]
+        public async Task<IActionResult> Detail(short id)
         {
             if (id <= 0)
             {
@@ -98,7 +98,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
             try
             {
-                var policy = _authorizationPolicyService.Find(id);
+                var policy = await _authorizationPolicyAppService.FindAsync(id);
                 if (policy == null)
                 {
                     return RedirectToNotFoundPage();
@@ -125,12 +125,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateAuthorizationPolicy)]
         public IActionResult Create()
         {
             var model = new AuthorizationPolicyModel()
             {
-                SelectPermissionMethods = EnumUtil.ToSelectOptions<PolicyMethod>().Select(x => new SelectListItem
+                SelectPermissionMethods = SelectOptionUtils.ToSelectOptions<PolicyMethods>().Select(x => new SelectListItem
                 {
                     Text = x.Text,
                     Value = x.Id
@@ -141,10 +141,10 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
-        public IActionResult Update(short id)
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateAuthorizationPolicy)]
+        public async Task<IActionResult> Update(short id)
         {
-            var policy = _authorizationPolicyService.Find(id);
+            var policy = await _authorizationPolicyAppService.FindAsync(id);
             var model = new AuthorizationPolicyModel
             {
                 CreatedById = policy.CreatedById,
@@ -158,8 +158,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 Name = policy.Name
             };
 
-            var permissionMethod = EnumUtil.FilterEnumByName<PolicyMethod>(model.Name);
-            model.SelectPermissionMethods = EnumUtil.ToSelectOptions(permissionMethod).Select(x => new SelectListItem
+            var permissionMethod = EnumUtil.FilterEnumByName<PolicyMethods>(model.Name);
+            model.SelectPermissionMethods = SelectOptionUtils.ToSelectOptions(permissionMethod).Select(x => new SelectListItem
             {
                 Selected = x.IsSelected,
                 Value = x.Id,
@@ -173,7 +173,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateAuthorizationPolicy)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateAuthorizationPolicy)]
         public async Task<IActionResult> Create(AuthorizationPolicyModel model)
         {
             if (model.Id > 0)
@@ -181,7 +181,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _authorizationPolicyService.FindByNameAsync(model.Name);
+            var exist = await _authorizationPolicyAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -189,7 +189,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
             if (model.PermissionMethod > 0)
             {
-                var permissionMethod = (PolicyMethod)model.PermissionMethod;
+                var permissionMethod = (PolicyMethods)model.PermissionMethod;
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
@@ -205,12 +205,12 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 Name = model.Name
             };
 
-            var newId = _authorizationPolicyService.Create(policy);
+            var newId = await _authorizationPolicyAppService.CreateAsync(policy);
             return RedirectToAction(nameof(Detail), new { id = newId });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateAuthorizationPolicy)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateAuthorizationPolicy)]
         public async Task<IActionResult> Update(AuthorizationPolicyModel model)
         {
             if (model.Id <= 0)
@@ -220,11 +220,11 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
             if (model.PermissionMethod > 0)
             {
-                var permissionMethod = (PolicyMethod)model.PermissionMethod;
+                var permissionMethod = (PolicyMethods)model.PermissionMethod;
                 model.Name = $"{permissionMethod}{model.Name}";
             }
 
-            var exist = await _authorizationPolicyService.FindByNameAsync(model.Name);
+            var exist = await _authorizationPolicyAppService.FindByNameAsync(model.Name);
             if (exist == null)
             {
                 return RedirectToErrorPage();
@@ -242,7 +242,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
                 Name = model.Name
             };
             policy.UpdatedById = LoggedUserId;
-            await _authorizationPolicyService.UpdateAsync(policy);
+            await _authorizationPolicyAppService.UpdateAsync(policy);
 
             return RedirectToAction(nameof(Detail), new { id = model.Id });
         }

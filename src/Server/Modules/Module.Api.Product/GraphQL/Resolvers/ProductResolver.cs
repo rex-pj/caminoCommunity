@@ -1,39 +1,38 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.Services.Products;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Results.Products;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Module.Api.Product.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Requests.Products;
-using Camino.Shared.Requests.Media;
-using Camino.Core.Exceptions;
-using Camino.Shared.Enums;
-using Camino.Core.Utils;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Media.Dtos;
+using Camino.Shared.Exceptions;
+using Camino.Shared.Enums;
+using Camino.Application.Contracts.Utils;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductResolver : BaseResolver, IProductResolver
     {
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly IProductService _productService;
+        private readonly IProductAppService _productAppService;
         private readonly PagerOptions _pagerOptions;
 
-        public ProductResolver(IUserManager<ApplicationUser> userManager, IProductService productService,
+        public ProductResolver(IUserManager<ApplicationUser> userManager, IProductAppService productAppService,
             IOptions<PagerOptions> pagerOptions)
             : base()
         {
             _userManager = userManager;
-            _productService = productService;
+            _productAppService = productAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -65,7 +64,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await _productService.GetAsync(filterRequest);
+                var productPageList = await _productAppService.GetAsync(filterRequest);
                 var products = await MapProductsResultToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -100,7 +99,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productPageList = await _productService.GetAsync(filterRequest);
+                var productPageList = await _productAppService.GetAsync(filterRequest);
                 var products = await MapProductsResultToModelAsync(productPageList.Collections);
 
                 var productPage = new ProductPageListModel(products)
@@ -139,7 +138,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var relevantProducts = await _productService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
+                var relevantProducts = await _productAppService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
                 var products = await MapProductsResultToModelAsync(relevantProducts);
 
                 return products;
@@ -195,7 +194,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
             try
             {
-                var productResult = await _productService.FindDetailAsync(new IdRequestFilter<long>
+                var productResult = await _productAppService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = criterias.Id,
                     CanGetInactived = true
@@ -256,7 +255,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 })
             };
 
-            var id = await _productService.CreateAsync(product);
+            var id = await _productAppService.CreateAsync(product);
             return new ProductIdResultModel
             {
                 Id = id
@@ -265,7 +264,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
 
         public async Task<ProductIdResultModel> UpdateProductAsync(ClaimsPrincipal claimsPrincipal, UpdateProductModel criterias)
         {
-            var exist = await _productService.FindAsync(new IdRequestFilter<long>
+            var exist = await _productAppService.FindAsync(new IdRequestFilter<long>
             {
                 Id = criterias.Id,
                 CanGetInactived = true
@@ -323,7 +322,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 })
             };
 
-            await _productService.UpdateAsync(product);
+            await _productAppService.UpdateAsync(product);
             return new ProductIdResultModel
             {
                 Id = product.Id
@@ -339,7 +338,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
-                var exist = await _productService.FindAsync(new IdRequestFilter<long>
+                var exist = await _productAppService.FindAsync(new IdRequestFilter<long>
                 {
                     Id = criterias.Id,
                     CanGetInactived = true
@@ -356,11 +355,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                return await _productService.SoftDeleteAsync(new ProductModifyRequest
-                {
-                    UpdatedById = currentUserId,
-                    Id = criterias.Id
-                });
+                return await _productAppService.SoftDeleteAsync(criterias.Id, currentUserId);
             }
             catch (Exception)
             {
@@ -403,7 +398,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                     IsRequired = x.IsRequired,
                     TextPrompt = x.TextPrompt,
                     Name = x.AttributeName,
-                    ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
+                    ControlTypeName = ((ProductAttributeControlTypes)x.AttributeControlTypeId).GetEnumDescription(),
                     AttributeRelationValues = x.AttributeRelationValues.Select(c => new AttributeRelationValueResultModel
                     {
                         Id = c.Id,

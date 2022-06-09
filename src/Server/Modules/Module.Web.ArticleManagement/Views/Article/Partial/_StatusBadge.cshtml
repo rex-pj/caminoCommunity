@@ -1,21 +1,21 @@
 ﻿@model ArticleModel
-@if (Model.StatusId == ArticleStatus.Pending)
+@if (Model.StatusId == ArticleStatuses.Pending)
 {
     <span class="badge rounded-pill bg-info">@Model.StatusId</span>
 }
-else if (Model.StatusId == ArticleStatus.Actived)
+else if (Model.StatusId == ArticleStatuses.Actived)
 {
     <span class="badge rounded-pill bg-success">@Model.StatusId</span>
 }
-else if (Model.StatusId == ArticleStatus.Inactived)
+else if (Model.StatusId == ArticleStatuses.Inactived)
 {
     <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
 }
-else if (Model.StatusId == ArticleStatus.Reported)
+else if (Model.StatusId == ArticleStatuses.Reported)
 {
     <span class="badge rounded-pill bg-warning">@Model.StatusId</span>
 }
-else if (Model.StatusId == ArticleStatus.Deleted)
+else if (Model.StatusId == ArticleStatuses.Deleted)
 {
     <span class="badge rounded-pill bg-danger">@Model.StatusId</span>
 }

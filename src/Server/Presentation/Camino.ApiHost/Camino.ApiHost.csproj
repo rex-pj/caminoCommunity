@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+    <ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
   </ItemGroup>
 
 

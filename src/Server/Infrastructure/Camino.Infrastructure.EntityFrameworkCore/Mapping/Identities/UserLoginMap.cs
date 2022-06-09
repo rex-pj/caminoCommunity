@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Camino.Core.Domain.Identifiers;
 using Camino.Shared.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Camino.Core.Domains.Authentication;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
 {
@@ -9,7 +9,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
     {
         public void Configure(EntityTypeBuilder<UserLogin> builder)
         {
-            builder.ToTable(nameof(UserLogin), TableSchemaConst.Auth);
+            builder.ToTable(nameof(UserLogin), TableSchemas.Auth);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 

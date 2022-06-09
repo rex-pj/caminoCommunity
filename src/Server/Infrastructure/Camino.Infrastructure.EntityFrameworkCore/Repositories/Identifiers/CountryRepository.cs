@@ -1,17 +1,10 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Shared.Results.Identifiers;
-using Camino.Core.Contracts.Data;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Shared.Results.PageList;
 using Camino.Core.Contracts.Repositories.Identities;
-using Camino.Core.Domain.Identifiers;
-using Camino.Shared.Requests.Identifiers;
-using Camino.Core.Contracts.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions;
+using Camino.Core.Domains.Identifiers;
+using Camino.Core.Domains;
+using Camino.Core.DependencyInjection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
 {
@@ -26,113 +19,31 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
             _dbContext = dbContext;
         }
 
-        public List<CountryResult> Get()
+        public List<Country> Get()
         {
-            return _countryRepository.Get()
-                .Select(x => new CountryResult()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Code = x.Code
-                })
-                .ToList();
+            return _countryRepository.Get().ToList();
         }
 
-        public async Task<BasePageList<CountryResult>> GetAsync(CountryFilter filter)
+        public Country Find(int id)
         {
-            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
-            var query = _countryRepository.Table
-                .Select(x => new CountryResult()
-                {
-                    Code = x.Code,
-                    Id = x.Id,
-                    Name = x.Name
-                });
-
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                query = query.Where(x => x.Code.ToLower().Contains(keyword) || x.Name.ToLower().Contains(keyword));
-            }
-
-            var filteredNumber = query.Select(x => x.Id).Count();
-
-            var countries = await query.OrderBy(x => x.Code).Skip(filter.PageSize * (filter.Page - 1))
-                                         .Take(filter.PageSize)
-                                         .ToListAsync();
-
-            var result = new BasePageList<CountryResult>(countries)
-            {
-                TotalResult = filteredNumber,
-                TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
-            };
-            return result;
-        }
-
-        public IList<CountryResult> Search(BaseFilter filter)
-        {
-            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
-            var data = _countryRepository.Get(x => string.IsNullOrEmpty(keyword) || x.Name.ToLower().Contains(keyword)
-                || x.Code.ToLower().Contains(keyword));
-
-            if (filter.PageSize > 0)
-            {
-                data = data.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
-            }
-
-            var countries = data
-                .Select(x => new CountryResult()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Code = x.Code
-                })
-                .ToList();
-
-            return countries;
-        }
-
-        public CountryResult Find(int id)
-        {
-            var country = _countryRepository.Get(x => x.Id == id)
-                .Select(x => new CountryResult()
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name
-                })
-                .FirstOrDefault();
-
+            var country = _countryRepository.Get(x => x.Id == id).FirstOrDefault();
             return country;
         }
 
-        public CountryResult FindByName(string name)
+        public Country FindByName(string name)
         {
-            var country = _countryRepository.Get(x => x.Name == name)
-                .Select(x => new CountryResult()
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name
-                })
-                .FirstOrDefault();
-
+            var country = _countryRepository.Get(x => x.Name == name).FirstOrDefault();
             return country;
         }
 
-        public async Task<int> CreateAsync(CountryModifyRequest request)
+        public async Task<int> CreateAsync(Country country)
         {
-            var country = new Country()
-            {
-                Code = request.Code,
-                Name = request.Name
-            };
-
             await _countryRepository.InsertAsync(country);
             await _dbContext.SaveChangesAsync();
             return country.Id;
         }
 
-        public async Task<bool> UpdateAsync(CountryModifyRequest request)
+        public async Task<bool> UpdateAsync(Country request)
         {
             var existing = await _countryRepository.FindAsync(x => x.Id == request.Id);
             existing.Code = request.Code;

@@ -1,8 +1,6 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,35 +9,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Products;
-using Camino.Shared.Requests.Products;
 using Microsoft.Extensions.Options;
-using Camino.Shared.Configurations;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
+using Camino.Application.Contracts;
+using Camino.Core.Domains.Products.DomainServices;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductAttributeController : BaseAuthController
     {
-        private readonly IProductAttributeService _productAttributeService;
+        private readonly IProductAttributeAppService _productAttributeAppService;
+        private readonly IProductAttributeDomainService _productAttributeDomainService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ProductAttributeController(IProductAttributeService productAttributeService,
+        public ProductAttributeController(IProductAttributeAppService productAttributeAppService,
+            IProductAttributeDomainService productAttributeDomainService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _productAttributeService = productAttributeService;
+            _productAttributeAppService = productAttributeAppService;
+            _productAttributeDomainService = productAttributeDomainService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
-        [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
+        [LoadResultAuthorizations("ProductAttribute", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductAttributeFilterModel filter)
         {
-            var productAttributePageList = await _productAttributeService.GetAsync(new ProductAttributeFilter
+            var productAttributePageList = await _productAttributeAppService.GetAsync(new ProductAttributeFilter
             {
                 Page = filter.Page,
                 PageSize = _pagerOptions.PageSize,
@@ -56,7 +60,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedById = x.UpdatedById,
                 CreatedDate = x.CreatedDate,
                 UpdatedDate = x.UpdatedDate,
-                StatusId = (ProductAttributeStatus)x.StatusId,
+                StatusId = (ProductAttributeStatuses)x.StatusId,
                 UpdatedBy = x.UpdatedBy,
                 CreatedBy = x.CreatedBy
             });
@@ -76,8 +80,8 @@ namespace Module.Web.ProductManagement.Controllers
             return View(productAttributePage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
-        [LoadResultAuthorizations("ProductAttribute", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
+        [LoadResultAuthorizations("ProductAttribute", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -87,7 +91,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var productAttribute = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+                var productAttribute = await _productAttributeAppService.FindAsync(new IdRequestFilter<int>
                 {
                     Id = id,
                     CanGetInactived = true
@@ -102,7 +106,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Id = productAttribute.Id,
                     Description = productAttribute.Description,
                     Name = productAttribute.Name,
-                    StatusId = (ProductAttributeStatus)productAttribute.StatusId
+                    StatusId = (ProductAttributeStatuses)productAttribute.StatusId
                 };
                 return View(model);
             }
@@ -112,7 +116,7 @@ namespace Module.Web.ProductManagement.Controllers
             }
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateProductAttribute)]
         public IActionResult Create()
         {
             var model = new ProductAttributeModel();
@@ -120,7 +124,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateProductAttribute)]
         public async Task<IActionResult> Create(ProductAttributeModel model)
         {
             var productAttribute = new ProductAttributeModifyRequest()
@@ -131,21 +135,21 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedById = LoggedUserId
             };
 
-            var exist = await _productAttributeService.FindByNameAsync(model.Name);
+            var exist = await _productAttributeAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var id = await _productAttributeService.CreateAsync(productAttribute);
+            var id = await _productAttributeAppService.CreateAsync(productAttribute);
 
             return RedirectToAction(nameof(Detail), new { id });
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductAttribute)]
         public async Task<IActionResult> Update(int id)
         {
-            var exist = await _productAttributeService.FindAsync(new IdRequestFilter<int>
+            var exist = await _productAttributeAppService.FindAsync(new IdRequestFilter<int>
             {
                 Id = id,
                 CanGetInactived = true
@@ -155,13 +159,13 @@ namespace Module.Web.ProductManagement.Controllers
                 Id = exist.Id,
                 Description = exist.Description,
                 Name = exist.Name,
-                StatusId = (ProductAttributeStatus)exist.StatusId
+                StatusId = (ProductAttributeStatuses)exist.StatusId
             };
             return View(model);
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductAttribute)]
         public async Task<IActionResult> Update(ProductAttributeModel model)
         {
             var productAttribute = new ProductAttributeModifyRequest()
@@ -177,7 +181,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = _productAttributeService.FindAsync(new IdRequestFilter<int>
+            var exist = _productAttributeAppService.FindAsync(new IdRequestFilter<int>
             {
                 Id = model.Id,
                 CanGetInactived = true
@@ -187,12 +191,12 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            await _productAttributeService.UpdateAsync(productAttribute);
+            await _productAttributeAppService.UpdateAsync(productAttribute);
             return RedirectToAction(nameof(Detail), new { id = productAttribute.Id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductAttribute)]
         public async Task<IActionResult> Deactivate(ProductAttributeIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -200,7 +204,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productAttributeService.DeactivateAsync(new ProductAttributeModifyRequest
+            var isInactived = await _productAttributeAppService.DeactivateAsync(new ProductAttributeModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -220,7 +224,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProductAttribute)]
         public async Task<IActionResult> Active(ProductAttributeIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -228,7 +232,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productAttributeService.ActiveAsync(new ProductAttributeModifyRequest
+            var isActived = await _productAttributeAppService.ActiveAsync(new ProductAttributeModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -248,7 +252,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanDeleteProductAttribute)]
         public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
@@ -256,7 +260,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productAttributeService.DeleteAsync(id);
+            var isActived = await _productAttributeDomainService.DeleteAsync(id);
 
             if (!isActived)
             {
@@ -267,7 +271,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public async Task<IActionResult> Search(string q, int? currentId = null, string excluded = null)
         {
             var excludedIds = new List<int>();
@@ -276,7 +280,7 @@ namespace Module.Web.ProductManagement.Controllers
                 excludedIds = excluded.Split(',').Select(int.Parse).ToList();
             }
 
-            var productAttributes = await _productAttributeService.SearchAsync(new ProductAttributeFilter
+            var productAttributes = await _productAttributeAppService.SearchAsync(new ProductAttributeFilter
             {
                 Keyword = q,
                 Id = currentId,
@@ -301,11 +305,11 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public IActionResult SearchControlTypes(string q, int? currentId = null)
         {
             var controlTypeId = currentId.HasValue ? currentId.Value : 0;
-            var productAttributes = _productAttributeService.GetAttributeControlTypes(new ProductAttributeControlTypeFilter
+            var productAttributes = _productAttributeAppService.GetAttributeControlTypes(new ProductAttributeControlTypeFilter
             {
                 Keyword = q,
                 ControlTypeId = controlTypeId
@@ -326,10 +330,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public IActionResult SearchStatus(string q, int? currentId = null)
         {
-            var statuses = _productAttributeService.SearchStatus(new IdRequestFilter<int?>
+            var statuses = _productAttributeAppService.SearchStatus(new IdRequestFilter<int?>
             {
                 Id = currentId
             }, q);

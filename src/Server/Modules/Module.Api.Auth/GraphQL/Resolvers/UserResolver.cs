@@ -1,51 +1,49 @@
 ﻿using Camino.Framework.Models;
 using Camino.Framework.GraphQL.Resolvers;
-using Camino.Shared.Enums;
 using System;
 using System.Threading.Tasks;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
 using System.Linq;
 using Microsoft.Extensions.Options;
-using Camino.Core.Domain.Identities;
-using Camino.Shared.Configurations;
-using Camino.Core.Contracts.Services.Users;
-using Camino.Shared.Requests.Filters;
 using System.Collections.Generic;
-using Camino.Shared.Results.Media;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Requests.Authentication;
-using Camino.Shared.General;
-using Camino.Shared.Requests.UpdateItems;
-using Camino.Shared.Results.Identifiers;
-using Camino.Shared.Requests.Providers;
-using Camino.Core.Contracts.Providers;
-using Camino.Infrastructure.Resources;
 using System.Security.Claims;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Application.Contracts.AppServices.Users;
+using Camino.Infrastructure.Emails.Contracts;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Shared.Enums;
+using Camino.Application.Contracts.AppServices.Media.Dtos;
+using Camino.Application.Contracts;
+using Camino.Shared.Commons;
+using Camino.Infrastructure.Emails.Contracts.Dtos;
+using Camino.Infrastructure.Emails.Templates;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
     public class UserResolver : BaseResolver, IUserResolver
     {
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly IUserService _userService;
-        private readonly IUserPhotoService _userPhotoService;
+        private readonly IUserAppService _userAppService;
+        private readonly IUserPhotoAppService _userPhotoAppService;
         private readonly IEmailProvider _emailSender;
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly PagerOptions _pagerOptions;
 
         public UserResolver(IUserManager<ApplicationUser> userManager, IEmailProvider emailSender,
-            IUserService userService, IOptions<AppSettings> appSettings,
-            IUserPhotoService userPhotoService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
+            IUserAppService userAppService, IOptions<AppSettings> appSettings,
+            IUserPhotoAppService userPhotoAppService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
             : base()
         {
             _userManager = userManager;
-            _userService = userService;
+            _userAppService = userAppService;
             _appSettings = appSettings.Value;
             _registerConfirmationSettings = registerConfirmationSettings.Value;
             _emailSender = emailSender;
-            _userPhotoService = userPhotoService;
+            _userPhotoAppService = userPhotoAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -71,9 +69,9 @@ namespace Module.Api.Auth.GraphQL.Resolvers
 
             try
             {
-                var userPageList = await _userService.GetAsync(filterRequest);
+                var userPageList = await _userAppService.GetAsync(filterRequest);
                 var userIds = userPageList.Collections.Select(x => x.Id);
-                var userPhotos = await _userPhotoService.GetUserPhotoByUserIdsAsync(userIds, UserPictureType.Avatar);
+                var userPhotos = await _userPhotoAppService.GetListByUserIdsAsync(userIds, UserPictureTypes.Avatar);
                 var users = await MapUsersResultToModelAsync(userPageList.Collections, userPhotos);
 
                 var userPage = new UserPageListModel(users)
@@ -104,7 +102,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 exclusiveUserIds.Add(await _userManager.DecryptUserIdAsync(criterias.ExclusiveUserIdentityId));
             }
 
-            var data = await _userService.SearchAsync(new UserFilter
+            var data = await _userAppService.SearchAsync(new UserFilter
             {
                 Page = criterias.Page,
                 PageSize = _pagerOptions.PageSize,
@@ -130,7 +128,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var user = await _userService.FindFullByIdAsync(new IdRequestFilter<long>
+            var user = await _userAppService.FindFullByIdAsync(new IdRequestFilter<long>
             {
                 Id = userId,
                 CanGetInactived = currentUserId == userId
@@ -210,7 +208,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                var updatedItem = await _userService.PartialUpdateAsync(new PartialUpdateRequest
+                var updatedItem = await _userAppService.PartialUpdateAsync(new PartialUpdateRequest
                 {
                     Key = userId,
                     PropertyName = criterias.PropertyName,
@@ -298,7 +296,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
                 GenderId = (byte)criterias.GenderId,
-                StatusId = (byte)UserStatus.Pending,
+                StatusId = (byte)UserStatuses.Pending,
                 UserName = criterias.Email,
             };
 
@@ -342,7 +340,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 ToEmail = user.Email,
                 ToName = user.DisplayName,
                 Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appSettings.ApplicationName),
-            }, EmailTextFormat.Html);
+            }, EmailTextFormats.Html);
         }
 
         public async Task<CommonResult> ActiveAsync(ActiveUserModel criterias)

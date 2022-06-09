@@ -1,10 +1,10 @@
-﻿using Camino.Core.Contracts.IdentityManager;
-using Camino.Core.Contracts.Services.Feeds;
-using Camino.Core.Domain.Identities;
+﻿using Camino.Application.Contracts.AppServices.Feeds;
+using Camino.Application.Contracts.AppServices.Feeds.Dtos;
 using Camino.Framework.GraphQL.Resolvers;
-using Camino.Shared.Configurations;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Configuration.Options;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Filters;
 using Microsoft.Extensions.Options;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
@@ -16,16 +16,16 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 {
     public class SearchResolver : BaseResolver, ISearchResolver
     {
-        private readonly IFeedService _feedService;
+        private readonly IFeedAppService _feedAppService;
         private readonly IFeedModelService _feedModelService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly PagerOptions _pagerOptions;
 
-        public SearchResolver(IFeedService feedService, IFeedModelService feedModelService,
+        public SearchResolver(IFeedAppService feedAppService, IFeedModelService feedModelService,
               IUserManager<ApplicationUser> userManager, IOptions<PagerOptions> pagerOptions)
             : base()
         {
-            _feedService = feedService;
+            _feedAppService = feedAppService;
             _feedModelService = feedModelService;
             _userManager = userManager;
             _pagerOptions = pagerOptions.Value;
@@ -38,7 +38,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 criterias = new FeedFilterModel();
             }
 
-            var groupOfSearch = await _feedService.LiveSearchInGroupAsync(new FeedFilter()
+            var groupOfSearch = await _feedAppService.LiveSearchInGroupAsync(new FeedFilter()
             {
                 Page = criterias.Page,
                 PageSize = _pagerOptions.LiveSearchPageSize,
@@ -76,7 +76,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 Page = criterias.Page,
                 PageSize = _pagerOptions.AdvancedSearchPageSize,
                 Keyword = criterias.Search,
-                FilterType = criterias.FilterType.HasValue ? (FeedFilterType)criterias.FilterType : null,
+                FilterType = criterias.FilterType.HasValue ? (FeedFilterTypes)criterias.FilterType : null,
                 CreatedDateFrom = createdDateFrom,
                 CreatedDateTo = createdDateTo
             };
@@ -86,7 +86,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 filter.CreatedById = await _userManager.DecryptUserIdAsync(criterias.UserIdentityId);
             }
 
-            var groupOfSearch = await _feedService.SearchInGroupAsync(filter);
+            var groupOfSearch = await _feedAppService.GetInGroupAsync(filter);
             var searchResult = new AdvancedSearchResultModel
             {
                 Articles = await _feedModelService.MapFeedsResultToModelAsync(groupOfSearch.Articles),

@@ -1,13 +1,9 @@
-﻿using Camino.Core.Contracts.Data;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Repositories.Authentication;
-using Camino.Core.Domain.Identifiers;
-using Camino.Shared.Requests.Authentication;
-using Camino.Shared.Results.Authentication;
-using Camino.Core.Contracts.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Camino.Core.Domains.Authentication.Repositories;
+using Camino.Core.Domains;
+using Camino.Core.Domains.Authentication;
+using Camino.Core.DependencyInjection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authentication
 {
@@ -22,83 +18,42 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authentication
             _dbContext = dbContext;
         }
 
-        public async Task<UserLoginResult> FindAsync(long userId, string loginProvider, string providerKey)
+        public async Task<UserLogin> FindAsync(long userId, string loginProvider, string providerKey)
         {
-            var userLogins = _userLoginRepository
-                .Get(x => x.UserId == userId && x.LoginProvider == loginProvider && x.ProviderKey == providerKey)
-                .Select(x => new UserLoginResult()
-                {
-                    Id = x.Id,
-                    LoginProvider = x.LoginProvider,
-                    ProviderDisplayName = x.ProviderDisplayName,
-                    ProviderKey = x.ProviderKey,
-                    UserId = x.UserId
-                });
-
-            var userLogin = await userLogins.FirstOrDefaultAsync();
-            if (userLogin == null)
-            {
-                return new UserLoginResult();
-            }
+            var userLogin = await _userLoginRepository
+                .FindAsync(x => x.UserId == userId && x.LoginProvider == loginProvider && x.ProviderKey == providerKey);
 
             return userLogin;
         }
 
-        public async Task<UserLoginResult> FindAsync(string loginProvider, string providerKey)
+        public async Task<UserLogin> FindAsync(string loginProvider, string providerKey)
         {
-            var userLogins = _userLoginRepository.Get(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey)
-                .Select(x => new UserLoginResult()
-                {
-                    Id = x.Id,
-                    LoginProvider = x.LoginProvider,
-                    ProviderDisplayName = x.ProviderDisplayName,
-                    ProviderKey = x.ProviderKey,
-                    UserId = x.UserId
-                });
-
-            var userLogin = await userLogins.FirstOrDefaultAsync();
-            if (userLogin == null)
-            {
-                return new UserLoginResult();
-            }
+            var userLogin = await _userLoginRepository
+                .FindAsync(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey);
 
             return userLogin;
         }
 
-        public async Task<IList<UserLoginResult>> GetByUserIdAsync(long userId)
+        public async Task<IList<UserLogin>> GetByUserIdAsync(long userId)
         {
-            var userLogins = await _userLoginRepository.Get(x => x.UserId == userId)
-                .Select(x => new UserLoginResult()
-                {
-                    Id = x.Id,
-                    LoginProvider = x.LoginProvider,
-                    ProviderDisplayName = x.ProviderDisplayName,
-                    ProviderKey = x.ProviderKey,
-                    UserId = x.UserId
-                }).ToListAsync();
+            var userLogins = await _userLoginRepository.GetAsync(x => x.UserId == userId);
             return userLogins;
         }
 
-        public void Create(UserLoginRequest userLoginRequest)
+        public async Task<long> CreateAsync(UserLogin userLogin)
         {
-            var userLogin = new UserLogin()
-            {
-                LoginProvider = userLoginRequest.LoginProvider,
-                ProviderDisplayName = userLoginRequest.ProviderDisplayName,
-                ProviderKey = userLoginRequest.ProviderKey,
-                UserId = userLoginRequest.UserId
-            };
             _userLoginRepository.Insert(userLogin);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
+            return userLogin.Id;
         }
 
-        public async Task RemoveAsync(UserLoginRequest userLoginRequest)
+        public async Task<bool> RemoveAsync(string loginProvider, string providerKey, string providerDisplayName, long userId)
         {
-            await _userLoginRepository.DeleteAsync(x => x.LoginProvider == userLoginRequest.LoginProvider
-                    && x.ProviderKey == userLoginRequest.ProviderKey
-                    && x.ProviderDisplayName == userLoginRequest.ProviderDisplayName
-                    && x.UserId == userLoginRequest.UserId);
-            await _dbContext.SaveChangesAsync();
+            await _userLoginRepository.DeleteAsync(x => x.LoginProvider == loginProvider
+                    && x.ProviderKey == providerKey
+                    && x.ProviderDisplayName == providerDisplayName
+                    && x.UserId == userId);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

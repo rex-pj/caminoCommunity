@@ -1,4 +1,4 @@
-﻿using Camino.Core.Domain.Farms;
+﻿using Camino.Core.Domains.Farms;
 using Camino.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -9,7 +9,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Farms
     {
         public void Configure(EntityTypeBuilder<FarmPicture> builder)
         {
-            builder.ToTable(nameof(FarmPicture), TableSchemaConst.Dbo)
+            builder.ToTable(nameof(FarmPicture), TableSchemas.Dbo)
                 .HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
         }

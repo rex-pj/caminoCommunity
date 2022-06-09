@@ -11,6 +11,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
+	  <ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

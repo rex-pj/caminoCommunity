@@ -1,14 +1,10 @@
 ﻿using Camino.Core.Contracts.Modularity;
-using Camino.Shared.Modularity;
+using Camino.Infrastructure.Modularity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Camino.Framework.Infrastructure.Middlewares
 {
@@ -28,7 +24,7 @@ namespace Camino.Framework.Infrastructure.Middlewares
                     moduleInitializer.Configure(app, env);
                 }
 
-                var wwwrootDir = new DirectoryInfo(Path.Combine(module.Path, "wwwroot"));
+                var wwwrootDir = new DirectoryInfo(System.IO.Path.Combine(module.Path, "wwwroot"));
                 if (wwwrootDir.Exists)
                 {
                     app.UseStaticFiles(new StaticFileOptions()

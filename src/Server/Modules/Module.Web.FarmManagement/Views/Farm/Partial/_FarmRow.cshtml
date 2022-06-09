@@ -35,7 +35,7 @@
         <partial name="Partial/_StatusBadge" />
     </td>
     <td>
-        @if (Model.StatusId == FarmStatus.Pending)
+        @if (Model.StatusId == FarmStatuses.Pending)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     title="Activate this farm"
@@ -44,14 +44,14 @@
             </button>
         }
 
-        @if (Model.StatusId != FarmStatus.Inactived && Model.StatusId != FarmStatus.Deleted)
+        @if (Model.StatusId != FarmStatuses.Inactived && Model.StatusId != FarmStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                     class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == FarmStatus.Inactived)
+        else if (Model.StatusId == FarmStatuses.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm">
@@ -59,7 +59,7 @@
             </button>
         }
 
-        @if (Model.StatusId == FarmStatus.Deleted)
+        @if (Model.StatusId == FarmStatuses.Deleted)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#restoreModal"
                     class="btn btn-sm btn-outline-info mb-2 common-tooltip" title="Restore this farm">

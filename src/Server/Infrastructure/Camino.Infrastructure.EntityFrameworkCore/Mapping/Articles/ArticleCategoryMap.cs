@@ -1,4 +1,4 @@
-﻿using Camino.Core.Domain.Articles;
+﻿using Camino.Core.Domains.Articles;
 using Camino.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,7 +10,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Articles
         public void Configure(EntityTypeBuilder<ArticleCategory> builder)
         {
             builder
-                .ToTable(nameof(ArticleCategory), TableSchemaConst.Dbo)
+                .ToTable(nameof(ArticleCategory), TableSchemas.Dbo)
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();

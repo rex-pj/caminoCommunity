@@ -1,12 +1,14 @@
-﻿using Camino.Framework.Helpers;
-using Camino.Shared.Configurations;
-using Camino.IdentityManager.Contracts.Core;
-using Camino.Core.Domain.Identities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.Core.Contracts.Helpers;
 using Camino.IdentityManager.Extensions.DependencyInjection;
+using Camino.IdentityManager.Contracts.Options;
+using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Infrastructure.Identity;
+using Camino.Infrastructure.Http;
+using Camino.Infrastructure.Identity.Interfaces;
 
 namespace Camino.Framework.Extensions.DependencyInjection
 {

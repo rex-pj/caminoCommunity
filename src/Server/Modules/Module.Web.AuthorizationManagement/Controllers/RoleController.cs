@@ -7,44 +7,44 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Constants;
 using Camino.Framework.Attributes;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Filters;
-using Camino.Core.Contracts.Helpers;
-using Camino.Core.Contracts.Services.Authorization;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Authorization;
+using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Authorization.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Web.AuthorizationManagement.Controllers
 {
     public class RoleController : BaseAuthController
     {
-        private readonly IRoleService _roleService;
+        private readonly IRoleAppService _roleAppService;
         private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public RoleController(IRoleService roleService, IHttpContextAccessor httpContextAccessor,
+        public RoleController(IRoleAppService roleAppService, IHttpContextAccessor httpContextAccessor,
             IApplicationRoleManager<ApplicationRole> roleManager, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _roleService = roleService;
+            _roleAppService = roleAppService;
             _roleManager = roleManager;
             _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
-        [LoadResultAuthorizations("Role", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
+        [LoadResultAuthorizations("Role", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(RoleFilterModel filter)
         {
-            var rolePageList = await _roleService.GetAsync(new RoleFilter
+            var rolePageList = await _roleAppService.GetAsync(new RoleFilter
             {
                 Page = filter.Page,
                 PageSize = _pagerOptions.PageSize,
@@ -80,10 +80,10 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
         public IActionResult Search(string q, List<long> currentRoleIds)
         {
-            var roles = _roleService.Search(new BaseFilter
+            var roles = _roleAppService.Search(new BaseFilter
             {
                 Keyword = q,
                 PageSize = _pagerOptions.PageSize,
@@ -106,8 +106,8 @@ namespace Module.Web.AuthorizationManagement.Controllers
             return Json(userModels);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
-        [LoadResultAuthorizations("Role", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
+        [LoadResultAuthorizations("Role", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(byte id)
         {
             if (id <= 0)
@@ -144,7 +144,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadRole)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
         public IActionResult Create()
         {
             var model = new RoleModel();
@@ -153,15 +153,15 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticle)]
-        public IActionResult Create(RoleModel model)
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateArticle)]
+        public async Task<IActionResult> Create(RoleModel model)
         {
             if (model.Id > 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = _roleService.FindByName(model.Name);
+            var exist = await _roleAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -183,7 +183,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateRole)]
         public async Task<IActionResult> Update(long id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -204,15 +204,15 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateRole)]
-        public IActionResult Update(RoleModel model)
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateRole)]
+        public async Task<IActionResult> Update(RoleModel model)
         {
             if (model.Id <= 0)
             {
                 return RedirectToErrorPage();
             }
 
-            var exist = _roleService.FindByName(model.Name);
+            var exist = await _roleAppService.FindByNameAsync(model.Name);
             if (exist == null)
             {
                 return RedirectToErrorPage();

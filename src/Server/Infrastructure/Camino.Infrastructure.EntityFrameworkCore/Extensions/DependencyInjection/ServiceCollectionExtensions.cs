@@ -1,5 +1,4 @@
-﻿using Camino.Core.Contracts.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,16 +6,12 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjecti
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddDataAccessServices<TContextService, TContextImplementation>(this IServiceCollection services) where TContextService : class where TContextImplementation : DbContext, TContextService
+        public static void AddDataAccessServices<TContext>(this IServiceCollection services) where TContext : DbContext
         {
-            services.AddDbContextPool<TContextService, TContextImplementation>(optionsBuilder =>
+            services.AddDbContextPool<TContext>(optionsBuilder =>
             {
                 optionsBuilder.UseSqlServerWithLazyLoading(services, "CaminoEntities");
             });
-
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
-            services.AddScoped(typeof(IEntityRepository<>), typeof(EfRepository<>));
         }
 
         public static void UseSqlServerWithLazyLoading(this DbContextOptionsBuilder optionsBuilder, IServiceCollection services, string connectionKey)

@@ -1,11 +1,12 @@
-﻿using Camino.Shared.Configurations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Text;
 using Camino.Core.Contracts.Providers;
 using System.IO;
 using System.Reflection;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Shared.Constants;
+using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.Files.Contracts;
 
 namespace Module.Web.SetupManagement.Providers
 {
@@ -43,7 +44,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void SetDatabaseHasBeenSetup(string filePath = null)
         {
-            filePath ??= SetupSettingsConst.SetupConfigurationPath;
+            filePath ??= SetupDataSettings.SetupConfigurationPath;
 
             try
             {
@@ -59,7 +60,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void SetDataHasBeenSeeded(string filePath = null)
         {
-            filePath ??= SetupSettingsConst.SetupConfigurationPath;
+            filePath ??= SetupDataSettings.SetupConfigurationPath;
 
             try
             {
@@ -79,13 +80,13 @@ namespace Module.Web.SetupManagement.Providers
                 return _setupSettings;
             }
 
-            setupSettingsFilePath ??= SetupSettingsConst.SetupConfigurationPath;
+            setupSettingsFilePath ??= SetupDataSettings.SetupConfigurationPath;
             if (!_fileProvider.FileExists(setupSettingsFilePath))
             {
                 var installSettings = new SetupSettings()
                 {
                     IsInitialized = true,
-                    SeedDataJsonFilePath = SetupSettingsConst.PrepareDataPath
+                    SeedDataJsonFilePath = SetupDataSettings.PrepareDataPath
                 };
 
                 SaveSettings(installSettings, setupSettingsFilePath);
@@ -107,7 +108,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void DeleteSetupSettings(string setupSettingsFilePath = null)
         {
-            setupSettingsFilePath ??= SetupSettingsConst.SetupConfigurationPath;
+            setupSettingsFilePath ??= SetupDataSettings.SetupConfigurationPath;
             _fileProvider.DeleteFile(setupSettingsFilePath);
         }
 

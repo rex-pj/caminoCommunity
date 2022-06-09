@@ -1,37 +1,35 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.Services.Farms;
-using Camino.Shared.Results.Farms;
-using Camino.Shared.Requests.Filters;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using Module.Api.Farm.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.General;
-using Camino.Shared.Requests.Farms;
-using Camino.Shared.Requests.Media;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Camino.Application.Contracts.AppServices.Farms;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Farms.Dtos;
+using Camino.Application.Contracts.AppServices.Media.Dtos;
 
 namespace Module.Api.Farm.GraphQL.Resolvers
 {
     public class FarmResolver : BaseResolver, IFarmResolver
     {
-        private readonly IFarmService _farmService;
+        private readonly IFarmAppService _farmAppService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public FarmResolver(IFarmService farmService, IUserManager<ApplicationUser> userManager,
+        public FarmResolver(IFarmAppService farmAppService, IUserManager<ApplicationUser> userManager,
             IOptions<PagerOptions> pagerOptions)
             : base()
         {
-            _farmService = farmService;
+            _farmAppService = farmAppService;
             _userManager = userManager;
             _pagerOptions = pagerOptions.Value;
         }
@@ -51,7 +49,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 Keyword = criterias.Query
             };
 
-            var farms = await _farmService.SelectAsync(filter, _defaultPageSelection, _pagerOptions.PageSize);
+            var farms = await _farmAppService.SelectAsync(filter, _defaultPageSelection, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return new List<SelectOption>();
@@ -86,7 +84,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 }),
             };
 
-            var id = await _farmService.CreateAsync(farm);
+            var id = await _farmAppService.CreateAsync(farm);
             return new FarmIdResultModel
             {
                 Id = id
@@ -95,7 +93,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
         public async Task<FarmIdResultModel> UpdateFarmAsync(ClaimsPrincipal claimsPrincipal, UpdateFarmModel criterias)
         {
-            var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+            var exist = await _farmAppService.FindAsync(new IdRequestFilter<long>
             {
                 Id = criterias.Id,
                 CanGetInactived = true
@@ -134,7 +132,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 });
             }
 
-            await _farmService.UpdateAsync(farm);
+            await _farmAppService.UpdateAsync(farm);
             return new FarmIdResultModel
             {
                 Id = farm.Id
@@ -169,7 +167,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmPageList = await _farmService.GetAsync(filterRequest);
+                var farmPageList = await _farmAppService.GetAsync(filterRequest);
                 var farms = await MapFarmsResultToModelAsync(farmPageList.Collections);
 
                 var farmPage = new FarmPageListModel(farms)
@@ -208,7 +206,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmPageList = await _farmService.GetAsync(filterRequest);
+                var farmPageList = await _farmAppService.GetAsync(filterRequest);
                 var farms = await MapFarmsResultToModelAsync(farmPageList.Collections);
 
                 var farmPage = new FarmPageListModel(farms)
@@ -240,7 +238,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
 
             try
             {
-                var farmResult = await _farmService.FindDetailAsync(new IdRequestFilter<long>
+                var farmResult = await _farmAppService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = criterias.Id,
                     CanGetInactived = true
@@ -269,7 +267,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
-                var exist = await _farmService.FindAsync(new IdRequestFilter<long>
+                var exist = await _farmAppService.FindAsync(new IdRequestFilter<long>
                 {
                     Id = criterias.Id,
                     CanGetInactived = true
@@ -286,7 +284,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                return await _farmService.SoftDeleteAsync(new FarmModifyRequest
+                return await _farmAppService.SoftDeleteAsync(new FarmModifyRequest
                 {
                     UpdatedById = currentUserId,
                     Id = criterias.Id

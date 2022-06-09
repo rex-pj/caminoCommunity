@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Camino.Shared.Results.Identifiers;
-using Camino.Core.Domain.Identities;
-using Camino.Shared.Results.Authorization;
-using Camino.Shared.Requests.Identifiers;
-using Camino.Shared.Requests.Authorization;
+using Camino.Application.Contracts.AppServices.Authorization.Dtos;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Infrastructure.Identity.Core;
 
 namespace Camino.Framework.Infrastructure.AutoMap
 {

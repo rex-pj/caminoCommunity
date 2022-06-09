@@ -1,32 +1,32 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Contracts.Services.Feeds;
-using Camino.Shared.Requests.Filters;
 using Module.Api.Feed.GraphQL.Resolvers.Contracts;
 using Module.Api.Feed.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
 using Module.Api.Feed.Services.Interfaces;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Camino.Application.Contracts.AppServices.Feeds;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts.AppServices.Feeds.Dtos;
 
 namespace Module.Api.Feed.GraphQL.Resolvers
 {
     public class FeedResolver : BaseResolver, IFeedResolver
     {
-        private readonly IFeedService _feedService;
+        private readonly IFeedAppService _feedAppService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IFeedModelService _feedModelService;
         private readonly PagerOptions _pagerOptions;
 
-        public FeedResolver(IFeedService feedService, IUserManager<ApplicationUser> userManager,
+        public FeedResolver(IFeedAppService feedAppService, IUserManager<ApplicationUser> userManager,
             IFeedModelService feedModelService, IOptions<PagerOptions> pagerOptions)
             : base()
         {
-            _feedService = feedService;
+            _feedAppService = feedAppService;
             _userManager = userManager;
             _feedModelService = feedModelService;
             _pagerOptions = pagerOptions.Value;
@@ -60,7 +60,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
             try
             {
-                var feedPageList = await _feedService.GetAsync(filterRequest);
+                var feedPageList = await _feedAppService.GetAsync(filterRequest);
                 var feeds = await _feedModelService.MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)
@@ -94,7 +94,7 @@ namespace Module.Api.Feed.GraphQL.Resolvers
 
             try
             {
-                var feedPageList = await _feedService.GetAsync(filterRequest);
+                var feedPageList = await _feedAppService.GetAsync(filterRequest);
                 var feeds = await _feedModelService.MapFeedsResultToModelAsync(feedPageList.Collections);
 
                 var feedPage = new FeedPageListModel(feeds)

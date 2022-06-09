@@ -30,14 +30,14 @@
         <partial name="Partial/_StatusBadge" />
     </td>
     <td>
-        @if (Model.StatusId == ProductCategoryStatus.Actived)
+        @if (Model.StatusId == ProductCategoryStatuses.Actived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                     class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this category">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == ProductCategoryStatus.Inactived)
+        else if (Model.StatusId == ProductCategoryStatuses.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this category">

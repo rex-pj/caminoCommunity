@@ -30,14 +30,14 @@
         <partial name="Partial/_StatusBadge" />
     </td>
     <td>
-        @if (Model.StatusId == FarmTypeStatus.Actived)
+        @if (Model.StatusId == FarmTypeStatuses.Actived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#deactivateModal"
                     class="btn btn-sm btn-outline-dark mb-2 common-tooltip" title="Block this farm type">
                 <i class="fa fa-lock"></i>
             </button>
         }
-        else if (Model.StatusId == FarmTypeStatus.Inactived)
+        else if (Model.StatusId == FarmTypeStatuses.Inactived)
         {
             <button type="button" data-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#activateModal"
                     class="btn btn-sm btn-outline-success mb-2 common-tooltip" title="Re-activate this farm type">

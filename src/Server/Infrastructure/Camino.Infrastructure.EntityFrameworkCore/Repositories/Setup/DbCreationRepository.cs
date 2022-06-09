@@ -1,5 +1,5 @@
-﻿using Camino.Core.Contracts.DependencyInjection;
-using Camino.Core.Contracts.Repositories.Setup;
+﻿using Camino.Core.Contracts.Repositories.Setup;
+using Camino.Core.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Threading.Tasks;
@@ -8,8 +8,8 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Setup
 {
     public class DbCreationRepository : IDbCreationRepository, IScopedDependency
     {
-        private readonly CaminoDbContext _dbContext;
-        public DbCreationRepository(CaminoDbContext dbContext)
+        private readonly IAppDbContext _dbContext;
+        public DbCreationRepository(IAppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

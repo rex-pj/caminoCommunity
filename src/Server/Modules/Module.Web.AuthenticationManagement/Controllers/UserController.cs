@@ -1,5 +1,4 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Framework.Controllers;
+﻿using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Http;
@@ -9,36 +8,37 @@ using System.Linq;
 using Camino.Framework.Attributes;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Helpers;
-using Camino.Core.Contracts.Services.Users;
-using Camino.Shared.Requests.Identifiers;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Users;
+using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {
     public class UserController : BaseAuthController
     {
-        private readonly IUserService _userService;
+        private readonly IUserAppService _userAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,
+        public UserController(IUserAppService userAppService, IHttpContextAccessor httpContextAccessor,
             IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _userService = userService;
+            _userAppService = userAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
-        [LoadResultAuthorizations("User", PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadUser)]
+        [LoadResultAuthorizations("User", PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
-            var userPageList = await _userService.GetAsync(new UserFilter
+            var userPageList = await _userAppService.GetAsync(new UserFilter
             {
                 Address = filter.Address,
                 BirthDateFrom = filter.BirthDateFrom,
@@ -62,7 +62,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
             {
                 Address = x.Address,
                 UpdatedById = x.UpdatedById,
-                StatusId = (UserStatus)x.StatusId,
+                StatusId = (UserStatuses)x.StatusId,
                 BirthDate = x.BirthDate,
                 CreatedById = x.CreatedById,
                 CreatedDate = x.CreatedDate,
@@ -96,10 +96,10 @@ namespace Module.Web.AuthenticationManagement.Controllers
             return View(userPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadUser)]
         public async Task<IActionResult> Detail(long id)
         {
-            var userResult = await _userService.FindFullByIdAsync(new IdRequestFilter<long>
+            var userResult = await _userAppService.FindFullByIdAsync(new IdRequestFilter<long>
             {
                 Id = id,
                 CanGetDeleted = true,
@@ -109,7 +109,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
             {
                 Address = userResult.Address,
                 UpdatedById = userResult.UpdatedById,
-                StatusId = (UserStatus)userResult.StatusId,
+                StatusId = (UserStatuses)userResult.StatusId,
                 StatusLabel = userResult.StatusLabel,
                 BirthDate = userResult.BirthDate,
                 CreatedById = userResult.CreatedById,
@@ -134,10 +134,10 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadUser)]
         public async Task<IActionResult> Search(string q, List<long> currentUserIds)
         {
-            var users = await _userService.SearchAsync(new UserFilter
+            var users = await _userAppService.SearchAsync(new UserFilter
             {
                 Keyword = q,
                 PageSize = _pagerOptions.PageSize,
@@ -161,7 +161,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateUser)]
         public async Task<IActionResult> TemporaryDelete(UserIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -169,11 +169,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _userService.SoftDeleteAsync(new UserModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isDeleted = await _userAppService.SoftDeleteAsync(request.Id, LoggedUserId);
 
             if (!isDeleted)
             {
@@ -189,7 +185,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateUser)]
         public async Task<IActionResult> Deactivate(UserIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -197,11 +193,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _userService.DeactivateAsync(new UserModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isInactived = await _userAppService.DeactivateAsync(request.Id, LoggedUserId);
 
             if (!isInactived)
             {
@@ -217,7 +209,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateUser)]
         public async Task<IActionResult> Active(UserIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -225,11 +217,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _userService.ActiveAsync(new UserModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isActived = await _userAppService.ActiveAsync(request.Id, LoggedUserId);
 
             if (!isActived)
             {
@@ -245,7 +233,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateUser)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateUser)]
         public async Task<IActionResult> Confirm(UserIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -253,11 +241,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isConfirmed = await _userService.ConfirmAsync(new UserModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isConfirmed = await _userAppService.ConfirmAsync(request.Id, LoggedUserId);
 
             if (!isConfirmed)
             {

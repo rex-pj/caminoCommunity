@@ -1,6 +1,6 @@
 ﻿using Camino.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
-using Camino.Core.Domain.Media;
+using Camino.Core.Domains.Media;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Media
@@ -9,7 +9,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Media
     {
         public void Configure(EntityTypeBuilder<UserPhotoType> builder)
         {
-            builder.ToTable(nameof(UserPhotoType), TableSchemaConst.Dbo);
+            builder.ToTable(nameof(UserPhotoType), TableSchemas.Dbo);
             builder.HasKey(x => x.Id);
             builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
 

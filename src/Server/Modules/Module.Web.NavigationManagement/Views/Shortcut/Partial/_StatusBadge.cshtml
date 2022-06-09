@@ -1,9 +1,9 @@
 ﻿@model ShortcutModel
-@if (Model.StatusId == ShortcutStatus.Actived)
+@if (Model.StatusId == ShortcutStatuses.Actived)
 {
     <span class="badge rounded-pill bg-success">@Model.StatusId</span>
 }
-else if (Model.StatusId == ShortcutStatus.Inactived)
+else if (Model.StatusId == ShortcutStatuses.Inactived)
 {
     <span class="badge rounded-pill bg-secondary">@Model.StatusId</span>
 }

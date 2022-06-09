@@ -1,26 +1,25 @@
-﻿using Camino.Core.Contracts.Services.Products;
-using Camino.Shared.Results.Products;
-using Module.Api.Product.GraphQL.Resolvers.Contracts;
+﻿using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Shared.General;
 using Module.Api.Product.Models;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
 
 namespace Module.Api.Product.GraphQL.Resolvers
 {
     public class ProductCategoryResolver : IProductCategoryResolver
     {
-        private readonly IProductCategoryService _productCategoryService;
+        private readonly IProductCategoryAppService _productCategoryAppService;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ProductCategoryResolver(IProductCategoryService productCategoryService, IOptions<PagerOptions> pagerOptions)
+        public ProductCategoryResolver(IProductCategoryAppService productCategoryAppService, IOptions<PagerOptions> pagerOptions)
         {
-            _productCategoryService = productCategoryService;
+            _productCategoryAppService = productCategoryAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
@@ -40,11 +39,11 @@ namespace Module.Api.Product.GraphQL.Resolvers
             };
             if (criterias.IsParentOnly.HasValue && criterias.IsParentOnly.GetValueOrDefault())
             {
-                categories = await _productCategoryService.SearchParentsAsync(filter, criterias.CurrentIds);
+                categories = await _productCategoryAppService.SearchParentsAsync(filter, criterias.CurrentIds);
             }
             else
             {
-                categories = await _productCategoryService.SearchAsync(filter, criterias.CurrentIds);
+                categories = await _productCategoryAppService.SearchAsync(filter, criterias.CurrentIds);
             }
 
             if (categories == null || !categories.Any())

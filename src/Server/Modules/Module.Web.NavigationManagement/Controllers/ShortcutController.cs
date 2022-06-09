@@ -1,13 +1,13 @@
-﻿using Camino.Core.Contracts.Helpers;
-using Camino.Core.Contracts.Services.Navigations;
+﻿using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Navigations;
+using Camino.Application.Contracts.AppServices.Navigations.Dtos;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
-using Camino.Infrastructure.Commons.Constants;
-using Camino.Shared.Configurations;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Results.Navigations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,25 +21,25 @@ namespace Module.Web.NavigationManagement.Controllers
 {
     public class ShortcutController : BaseAuthController
     {
-        private readonly IShortcutService _shortcutService;
+        private readonly IShortcutAppService _shortcutAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ShortcutController(IShortcutService shortcutService,
+        public ShortcutController(IShortcutAppService shortcutAppService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _shortcutService = shortcutService;
+            _shortcutAppService = shortcutAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadShortcut)]
-        [LoadResultAuthorizations("Shortcut", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadShortcut)]
+        [LoadResultAuthorizations("Shortcut", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ShortcutFilterModel filter)
         {
-            var shortcutPageList = await _shortcutService.GetAsync(new ShortcutFilter
+            var shortcutPageList = await _shortcutAppService.GetAsync(new ShortcutFilter
             {
                 Page = filter.Page,
                 PageSize = _pagerOptions.PageSize,
@@ -54,10 +54,10 @@ namespace Module.Web.NavigationManagement.Controllers
                 Id = x.Id,
                 Name = x.Name,
                 Icon = x.Icon,
-                TypeId = (ShortcutType)x.TypeId,
+                TypeId = (ShortcutTypes)x.TypeId,
                 Url = x.Url,
                 DisplayOrder = x.DisplayOrder,
-                StatusId = (ShortcutStatus)x.StatusId,
+                StatusId = (ShortcutStatuses)x.StatusId,
             });
             var shortcutPage = new PageListModel<ShortcutModel>(shortcuts)
             {
@@ -74,8 +74,8 @@ namespace Module.Web.NavigationManagement.Controllers
             return View(shortcutPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadShortcut)]
-        [LoadResultAuthorizations("Shortcut", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadShortcut)]
+        [LoadResultAuthorizations("Shortcut", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -85,7 +85,7 @@ namespace Module.Web.NavigationManagement.Controllers
 
             try
             {
-                var shortcut = await _shortcutService.FindAsync(new IdRequestFilter<int>
+                var shortcut = await _shortcutAppService.FindAsync(new IdRequestFilter<int>
                 {
                     Id = id,
                     CanGetInactived = true
@@ -100,11 +100,11 @@ namespace Module.Web.NavigationManagement.Controllers
                     Description = shortcut.Description,
                     Name = shortcut.Name,
                     Icon = shortcut.Icon,
-                    TypeId = (ShortcutType)shortcut.TypeId,
+                    TypeId = (ShortcutTypes)shortcut.TypeId,
                     Url = shortcut.Url,
                     Id = shortcut.Id,
                     DisplayOrder = shortcut.DisplayOrder,
-                    StatusId = (ShortcutStatus)shortcut.StatusId
+                    StatusId = (ShortcutStatuses)shortcut.StatusId
                 };
                 return View(model);
             }
@@ -114,7 +114,7 @@ namespace Module.Web.NavigationManagement.Controllers
             }
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateShortcut)]
         public IActionResult Create()
         {
             var model = new ShortcutModel();
@@ -122,7 +122,7 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateShortcut)]
         public async Task<IActionResult> Create(ShortcutModel model)
         {
             var shortcut = new ShortcutModifyRequest
@@ -136,21 +136,21 @@ namespace Module.Web.NavigationManagement.Controllers
                 UpdatedById = LoggedUserId,
                 CreatedById = LoggedUserId
             };
-            var exist = await _shortcutService.FindByNameAsync(model.Name);
+            var exist = await _shortcutAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
             }
 
-            var id = await _shortcutService.CreateAsync(shortcut);
+            var id = await _shortcutAppService.CreateAsync(shortcut);
 
             return RedirectToAction(nameof(Detail), new { id });
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateShortcut)]
         public async Task<IActionResult> Update(int id)
         {
-            var shortcut = await _shortcutService.FindAsync(new IdRequestFilter<int>
+            var shortcut = await _shortcutAppService.FindAsync(new IdRequestFilter<int>
             {
                 Id = id,
                 CanGetInactived = true
@@ -160,17 +160,17 @@ namespace Module.Web.NavigationManagement.Controllers
                 Description = shortcut.Description,
                 Name = shortcut.Name,
                 Icon = shortcut.Icon,
-                TypeId = (ShortcutType)shortcut.TypeId,
+                TypeId = (ShortcutTypes)shortcut.TypeId,
                 Url = shortcut.Url,
                 Id = shortcut.Id,
                 DisplayOrder = shortcut.DisplayOrder,
-                StatusId = (ShortcutStatus)shortcut.StatusId
+                StatusId = (ShortcutStatuses)shortcut.StatusId
             };
             return View(model);
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateShortcut)]
         public async Task<IActionResult> Update(ShortcutModel model)
         {
             var shortcut = new ShortcutModifyRequest
@@ -189,7 +189,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _shortcutService.FindAsync(new IdRequestFilter<int>
+            var exist = await _shortcutAppService.FindAsync(new IdRequestFilter<int>
             {
                 Id = model.Id,
                 CanGetInactived = true
@@ -199,12 +199,12 @@ namespace Module.Web.NavigationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            await _shortcutService.UpdateAsync(shortcut);
+            await _shortcutAppService.UpdateAsync(shortcut);
             return RedirectToAction(nameof(Detail), new { id = shortcut.Id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateShortcut)]
         public async Task<IActionResult> Deactivate(ShortcutIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -212,11 +212,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _shortcutService.DeactivateAsync(new ShortcutModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isInactived = await _shortcutAppService.DeactivateAsync(request.Id, LoggedUserId);
 
             if (!isInactived)
             {
@@ -232,7 +228,7 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateShortcut)]
         public async Task<IActionResult> Active(ShortcutIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -240,11 +236,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _shortcutService.ActiveAsync(new ShortcutModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isActived = await _shortcutAppService.ActiveAsync(request.Id, LoggedUserId);
 
             if (!isActived)
             {
@@ -260,7 +252,7 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteShortcut)]
+        [ApplicationAuthorize(AuthorizePolicies.CanDeleteShortcut)]
         public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
@@ -268,7 +260,7 @@ namespace Module.Web.NavigationManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _shortcutService.DeleteAsync(id);
+            var isActived = await _shortcutAppService.DeleteAsync(id);
 
             if (!isActived)
             {
@@ -279,10 +271,10 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadShortcutType)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadShortcutType)]
         public IActionResult SearchTypes(string q, int? currentId = null)
         {
-            var shortcuts = _shortcutService.GetShortcutTypes(new ShortcutTypeFilter
+            var shortcuts = _shortcutAppService.GetShortcutTypes(new ShortcutTypeFilter
             {
                 Id = currentId,
                 Keyword = q,
@@ -306,10 +298,10 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public IActionResult SearchStatus(string q, int? currentId = null)
         {
-            var statuses = _shortcutService.SearchStatus(new IdRequestFilter<int?>
+            var statuses = _shortcutAppService.SearchStatus(new IdRequestFilter<int?>
             {
                 Id = currentId
             }, q);

@@ -1,10 +1,10 @@
 ﻿using Module.Api.Auth.Models;
 using Camino.Framework.Models;
 using System.Threading.Tasks;
-using Camino.Shared.Requests.Authentication;
 using System.Collections.Generic;
-using Camino.Shared.General;
 using System.Security.Claims;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
 
 namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {

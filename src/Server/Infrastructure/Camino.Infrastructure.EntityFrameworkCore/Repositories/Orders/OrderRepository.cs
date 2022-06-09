@@ -1,16 +1,14 @@
-﻿using Camino.Core.Contracts.Data;
-using Camino.Core.Contracts.DependencyInjection;
-using Camino.Core.Contracts.Repositories.Orders;
-using Camino.Core.Domain.Orders;
-using Camino.Core.Utils;
+﻿using Camino.Core.Contracts.Repositories.Orders;
+using Camino.Core.Domains.Orders;
 using Camino.Shared.Enums;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Requests.Orders;
-using Camino.Shared.Results.Orders;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
+using Camino.Core.Domains;
+using Camino.Shared.Utils;
+using Camino.Core.DependencyInjection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Orders
 {
@@ -26,97 +24,27 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Orders
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
-            _orderNewStatus = OrderStatus.New.GetCode();
+            _orderNewStatus = OrderStatuses.New.GetCode();
             _dbContext = dbContext;
         }
         
-        public async Task<IList<OrderResult>> GetOrderByCustomerIdAsync(long customerId, IdRequestFilter<long> filter)
+        public async Task<IList<Order>> GetOrderByCustomerIdAsync(long customerId)
         {
-            var newStatusId = OrderStatus.New.GetCode();
+            var newStatusId = _orderNewStatus;
             return await _orderRepository.Table
-                .Where(x => x.CustomerId == customerId)
-                .Where(x => (x.IsDeleted && filter.CanGetDeleted)
-                            || (x.OrderStatusId != _orderNewStatus && filter.CanGetInactived)
-                            || (x.OrderStatusId == _orderNewStatus))
-                .Select(x => new OrderResult
-                {
-                    Id = x.Id,
-                    IsPickupInStore = x.IsPickupInStore,
-                    IsDeleted = x.IsDeleted,
-                    CustomOrderNumber = x.CustomOrderNumber,
-                    CustomerIp = x.CustomerIp,
-                    CustomerId = x.CustomerId,
-                    BillingAddress = x.BillingAddress,
-                    CreatedOnUtc = x.CreatedDateUtc,
-                    OrderDiscount = x.OrderDiscount,
-                    OrderStatusId = x.OrderStatusId,
-                    OrderTotal = x.OrderTotal,
-                    PaidDateUtc = x.PaidDateUtc,
-                    PaymentStatusId = x.PaymentStatusId,
-                    PickupAddress = x.PickupAddress,
-                    ShippingAddress = x.ShippingAddress,
-                    ShippingMethod = x.ShippingMethod,
-                    ShippingStatusId = x.ShippingStatusId,
-                    StoreId = x.StoreId
-                }).ToListAsync();
+                .Where(x => x.CustomerId == customerId).ToListAsync();
         }
 
-        public async Task<IList<OrderItemResult>> GetOrderItemByOrderIdAsync(long orderId)
+        public async Task<long> CreateOrderAsync(Order order)
         {
-            var newStatusId = OrderStatus.New.GetCode();
-            return await _orderItemRepository.Table
-                .Where(x => x.OrderId == orderId)
-                .Select(x => new OrderItemResult
-                {
-                    Id = x.Id,
-                    ItemWeight = x.ItemWeight,
-                    OrderId = x.OrderId,
-                    OrderItemGuid = x.OrderItemGuid,
-                    OriginalProductCost = x.OriginalProductCost,
-                    ProductId = x.ProductId,
-                    Quantity = x.Quantity
-                }).ToListAsync();
-        }
-
-        public async Task<long> CreateOrderAsync(CreateOrderRequest request)
-        {
-            var newOrder = new Order
-            {
-                BillingAddress = request.BillingAddress,
-                CreatedDateUtc = request.CreatedDateUtc,
-                CustomerId = request.CustomerId,
-                CustomerIp = request.CustomerIp,
-                CustomOrderNumber = request.CustomOrderNumber,
-                IsDeleted = request.IsDeleted,
-                IsPickupInStore = request.IsPickupInStore,
-                OrderDiscount = request.OrderDiscount,
-                OrderStatusId = request.OrderStatusId,
-                OrderTotal = request.OrderTotal,
-                PaidDateUtc = request.PaidDateUtc,
-                PaymentStatusId = request.PaymentStatusId,
-                PickupAddress = request.PickupAddress,
-                ShippingAddress = request.ShippingAddress,
-                ShippingMethod = request.ShippingMethod,
-                StoreId = request.StoreId,
-                ShippingStatusId = request.ShippingStatusId
-            };
-
-            await _orderRepository.InsertAsync(newOrder);
+            order.CreatedDateUtc = DateTimeOffset.UtcNow;
+            await _orderRepository.InsertAsync(order);
             await _dbContext.SaveChangesAsync();
-            return newOrder.Id;
+            return order.Id;
         }
 
-        public async Task<long> CreateOrderItemAsync(CreateOrderItemRequest request)
+        public async Task<long> CreateOrderItemAsync(OrderItem orderItem)
         {
-            var orderItem = new OrderItem
-            {
-                ItemWeight = request.ItemWeight,
-                OrderId = request.OrderId,
-                OrderItemGuid = request.OrderItemGuid,
-                OriginalProductCost = request.OriginalProductCost,
-                ProductId = request.ProductId,
-                Quantity = request.Quantity
-            };
             await _orderItemRepository.InsertAsync(orderItem);
             await _dbContext.SaveChangesAsync();
             return orderItem.Id;

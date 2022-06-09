@@ -1,8 +1,8 @@
-﻿using Camino.Core.Contracts.IdentityManager;
-using Camino.Core.Domain.Identities;
-using Camino.Core.Utils;
+﻿using Camino.Application.Contracts.AppServices.Feeds.Dtos;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Enums;
-using Camino.Shared.Results.Feed;
+using Camino.Shared.Utils;
 using Module.Api.Feed.Models;
 using Module.Api.Feed.Services.Interfaces;
 using System.Collections.Generic;
@@ -44,7 +44,7 @@ namespace Module.Api.Feed.Services
                     feed.Description = $"{feed.Description.Substring(0, 150)}...";
                 }
 
-                if (feed.FeedType == FeedType.User.GetCode())
+                if (feed.FeedType == FeedTypes.User.GetCode())
                 {
                     feed.Id = await _userManager.EncryptUserIdAsync(long.Parse(feed.Id));
                 }

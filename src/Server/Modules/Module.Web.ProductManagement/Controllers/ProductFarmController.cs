@@ -1,5 +1,4 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Framework.Attributes;
+﻿using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
@@ -7,27 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Farms;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Farms;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductFarmController : BaseAuthController
     {
-        private readonly IFarmService _farmService;
+        private readonly IFarmAppService _farmAppService;
         private readonly PagerOptions _pagerOptions;
 
-        public ProductFarmController(IFarmService farmService, IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
+        public ProductFarmController(IFarmAppService farmAppService, IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
-            _farmService = farmService;
+            _farmAppService = farmAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadFarm)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadFarm)]
         public async Task<IActionResult> Search(string q, string currentId = null)
         {
             long[] currentIds = null;
@@ -41,7 +41,7 @@ namespace Module.Web.ProductManagement.Controllers
                 CurrentIds = currentIds,
                 Keyword = q
             };
-            var farms = await _farmService.SelectAsync(filter, 1, _pagerOptions.PageSize);
+            var farms = await _farmAppService.SelectAsync(filter, 1, _pagerOptions.PageSize);
             if (farms == null || !farms.Any())
             {
                 return Json(new List<Select2ItemModel>());

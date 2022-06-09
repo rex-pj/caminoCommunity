@@ -1,36 +1,36 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.Core.Domain.Identities;
-using Camino.Shared.Results.Articles;
-using Camino.Shared.Requests.Filters;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.IdentityManager;
-using Camino.Shared.Requests.Media;
-using Camino.Shared.Requests.Articles;
-using Camino.Core.Contracts.Services.Articles;
-using Camino.Core.Exceptions;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Camino.Application.Contracts.AppServices.Articles;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Shared.Configuration.Options;
+using Camino.Application.Contracts.AppServices.Articles.Dtos;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.AppServices.Media.Dtos;
+using Camino.Shared.Exceptions;
+using Camino.Application.Contracts.AppServices.Articles.Dtos.Dtos;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {
     public class ArticleResolver : BaseResolver, IArticleResolver
     {
-        private readonly IArticleService _articleService;
+        private readonly IArticleAppService _articleAppService;
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly PagerOptions _pagerOptions;
 
-        public ArticleResolver(IArticleService articleService, IUserManager<ApplicationUser> userManager,
+        public ArticleResolver(IArticleAppService articleAppService, IUserManager<ApplicationUser> userManager,
             IOptions<PagerOptions> pagerOptions)
             : base()
         {
-            _articleService = articleService;
+            _articleAppService = articleAppService;
             _userManager = userManager;
             _pagerOptions = pagerOptions.Value;
         }
@@ -63,7 +63,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articlePageList = await _articleService.GetAsync(filterRequest);
+                var articlePageList = await _articleAppService.GetAsync(filterRequest);
                 var articles = await MapArticlesResultToModelAsync(articlePageList.Collections);
 
                 var articlePage = new ArticlePageListModel(articles)
@@ -97,7 +97,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var articlePageList = await _articleService.GetAsync(filterRequest);
+                var articlePageList = await _articleAppService.GetAsync(filterRequest);
                 var articles = await MapArticlesResultToModelAsync(articlePageList.Collections);
 
                 var articlePage = new ArticlePageListModel(articles)
@@ -127,7 +127,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 return new ArticleModel();
             }
 
-            var articleResult = await _articleService.FindDetailAsync(new IdRequestFilter<long>
+            var articleResult = await _articleAppService.FindDetailAsync(new IdRequestFilter<long>
             {
                 Id = criterias.Id,
                 CanGetInactived = true
@@ -164,7 +164,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
             try
             {
-                var relevantArticles = await _articleService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
+                var relevantArticles = await _articleAppService.GetRelevantsAsync(criterias.Id.GetValueOrDefault(), filterRequest);
                 var products = await MapArticlesResultToModelAsync(relevantArticles);
 
                 return products;
@@ -197,7 +197,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 };
             }
 
-            var id = await _articleService.CreateAsync(article);
+            var id = await _articleAppService.CreateAsync(article);
             return new ArticleIdResultModel
             {
                 Id = id
@@ -206,7 +206,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
 
         public async Task<ArticleIdResultModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, UpdateArticleModel criterias)
         {
-            var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+            var exist = await _articleAppService.FindAsync(new IdRequestFilter<long>
             {
                 Id = criterias.Id,
                 CanGetInactived = true
@@ -244,7 +244,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 };
             }
 
-            await _articleService.UpdateAsync(article);
+            await _articleAppService.UpdateAsync(article);
             return new ArticleIdResultModel
             {
                 Id = article.Id
@@ -260,7 +260,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     throw new ArgumentNullException(nameof(criterias.Id));
                 }
 
-                var exist = await _articleService.FindAsync(new IdRequestFilter<long>
+                var exist = await _articleAppService.FindAsync(new IdRequestFilter<long>
                 {
                     Id = criterias.Id,
                     CanGetInactived = true
@@ -277,7 +277,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                     throw new UnauthorizedAccessException();
                 }
 
-                return await _articleService.SoftDeleteAsync(new ArticleModifyRequest
+                return await _articleAppService.SoftDeleteAsync(new ArticleModifyRequest
                 {
                     Id = criterias.Id,
                     UpdatedById = currentUserId,

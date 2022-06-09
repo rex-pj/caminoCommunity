@@ -1,18 +1,9 @@
-﻿using Camino.Core.Contracts.Data;
-using Camino.Shared.Requests.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using Camino.Shared.Results.PageList;
-using Camino.Shared.Results.Farms;
-using Camino.Core.Contracts.Repositories.Farms;
-using Camino.Core.Domain.Farms;
-using Camino.Shared.Requests.Farms;
-using Camino.Shared.Enums;
-using Camino.Core.Utils;
-using Camino.Core.Contracts.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Camino.Core.Domains.Farms.Repositories;
+using Camino.Core.Domains.Farms;
+using Camino.Core.DependencyInjection;
+using Camino.Core.Domains;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 {
@@ -27,189 +18,38 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
             _dbContext = dbContext;
         }
 
-        public async Task<FarmTypeResult> FindAsync(long id)
+        public async Task<FarmType> FindAsync(long id)
         {
-            var exist = await (from farmType in _farmTypeRepository.Table
-                         where farmType.Id == id
-                         select new FarmTypeResult
-                         {
-                             Description = farmType.Description,
-                             CreatedDate = farmType.CreatedDate,
-                             CreatedById = farmType.CreatedById,
-                             Id = farmType.Id,
-                             Name = farmType.Name,
-                             UpdatedById = farmType.UpdatedById,
-                             UpdatedDate = farmType.UpdatedDate,
-                             StatusId = farmType.StatusId
-                         }).FirstOrDefaultAsync();
-
+            var exist = await _farmTypeRepository.FindAsync(x => x.Id == id);
             return exist;
         }
 
-        public FarmTypeResult FindByName(string name)
+        public async Task<FarmType> FindByNameAsync(string name)
         {
-            var farmType = _farmTypeRepository.Get(x => x.Name == name)
-                .Select(x => new FarmTypeResult()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    StatusId = x.StatusId
-                })
-                .FirstOrDefault();
-
+            var farmType = await _farmTypeRepository.FindAsync(x => x.Name == name);
             return farmType;
         }
 
-        public async Task<BasePageList<FarmTypeResult>> GetAsync(FarmTypeFilter filter)
+        public async Task<int> CreateAsync(FarmType farmType)
         {
-            var search = filter.Keyword != null ? filter.Keyword.ToLower() : "";
-            var farmTypeQuery = _farmTypeRepository.Table;
-            if (!string.IsNullOrEmpty(search))
-            {
-                farmTypeQuery = farmTypeQuery.Where(user => user.Name.ToLower().Contains(search)
-                         || user.Description.ToLower().Contains(search));
-            }
-
-            if (filter.StatusId.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.StatusId == filter.StatusId);
-            }
-
-            if (filter.CreatedById.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.CreatedById == filter.CreatedById);
-            }
-
-            if (filter.UpdatedById.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.UpdatedById == filter.UpdatedById);
-            }
-
-            // Filter by register date/ created date
-            if (filter.CreatedDateFrom.HasValue && filter.CreatedDateTo.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= filter.CreatedDateTo);
-            }
-            else if (filter.CreatedDateTo.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.CreatedDate <= filter.CreatedDateTo);
-            }
-            else if (filter.CreatedDateFrom.HasValue)
-            {
-                farmTypeQuery = farmTypeQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
-            }
-
-            var query = farmTypeQuery.Select(a => new FarmTypeResult
-            {
-                CreatedById = a.CreatedById,
-                CreatedDate = a.CreatedDate,
-                Description = a.Description,
-                Id = a.Id,
-                Name = a.Name,
-                UpdatedById = a.UpdatedById,
-                UpdatedDate = a.UpdatedDate,
-                StatusId = a.StatusId
-            });
-
-            var filteredNumber = query.Select(x => x.Id).Count();
-
-            var farmTypes = await query.Skip(filter.PageSize * (filter.Page - 1))
-                                         .Take(filter.PageSize).ToListAsync();
-
-            var result = new BasePageList<FarmTypeResult>(farmTypes)
-            {
-                TotalResult = filteredNumber,
-                TotalPage = (int)Math.Ceiling((double)filteredNumber / filter.PageSize)
-            };
-            return result;
-        }
-
-        public async Task<IList<FarmTypeResult>> SearchAsync(BaseFilter filter)
-        {
-            var keyword = filter.Keyword != null ? filter.Keyword.ToLower() : "";
-            var query = _farmTypeRepository.Table
-                .Select(c => new FarmTypeResult
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description
-                });
-
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                query = query.Where(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
-            }
-
-            if (filter.PageSize > 0)
-            {
-                query = query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize);
-            }
-
-            var farmTypes = await query
-                .Select(x => new FarmTypeResult()
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                })
-                .ToListAsync();
-
-            return farmTypes;
-        }
-
-        public async Task<int> CreateAsync(FarmTypeModifyRequest farmType)
-        {
-            var newFarmType = new FarmType()
-            {
-                Name = farmType.Name,
-                Description = farmType.Description,
-                CreatedById = farmType.CreatedById,
-                UpdatedById = farmType.UpdatedById,
-                StatusId = FarmTypeStatus.Actived.GetCode()
-            };
-            newFarmType.UpdatedDate = DateTimeOffset.UtcNow;
-            newFarmType.CreatedDate = DateTimeOffset.UtcNow;
-
-            await _farmTypeRepository.InsertAsync(newFarmType);
+            var modifiedDate = DateTimeOffset.UtcNow;
+            farmType.CreatedDate = modifiedDate;
+            farmType.UpdatedDate = modifiedDate;
+            await _farmTypeRepository.InsertAsync(farmType);
             await _dbContext.SaveChangesAsync();
-            return newFarmType.Id;
+            return farmType.Id;
         }
 
-        public async Task<bool> UpdateAsync(FarmTypeModifyRequest farmType)
+        public async Task<bool> UpdateAsync(FarmType farmType)
         {
-            var existing = await _farmTypeRepository.FindAsync(x => x.Id == farmType.Id);
-            existing.Description = farmType.Description;
-            existing.Name = farmType.Name;
-            existing.UpdatedById = farmType.UpdatedById;
-            existing.UpdatedDate = DateTime.UtcNow;
-
+            farmType.UpdatedDate = DateTimeOffset.UtcNow;
             return (await _dbContext.SaveChangesAsync()) > 0;
-        }
-
-        public async Task<bool> DeactivateAsync(FarmTypeModifyRequest request)
-        {
-            var existing = await _farmTypeRepository.FindAsync(x => x.Id == request.Id);
-            existing.StatusId = (int)FarmTypeStatus.Inactived;
-            existing.UpdatedById = request.UpdatedById;
-            existing.UpdatedDate = DateTimeOffset.UtcNow;
-
-            return (await _dbContext.SaveChangesAsync()) > 0;
-        }
-
-        public async Task<bool> ActiveAsync(FarmTypeModifyRequest request)
-        {
-            var existing = await _farmTypeRepository.FindAsync(x => x.Id == request.Id);
-            existing.StatusId = (int)FarmTypeStatus.Actived;
-            existing.UpdatedById = request.UpdatedById;
-            existing.UpdatedDate = DateTimeOffset.UtcNow;
-
-            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var deletedNumbers = await _farmTypeRepository.DeleteAsync(x => x.Id == id);
-            await _dbContext.SaveChangesAsync();
-            return deletedNumbers > 0;
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

@@ -2,9 +2,9 @@
 using Module.Api.Media.GraphQL.Resolvers.Contracts;
 using Module.Api.Media.Models;
 using Camino.Framework.Models;
-using Camino.Shared.General;
-using Camino.Core.Contracts.Validations;
-using Camino.Core.Validations;
+using Camino.Core.Validators;
+using Camino.Application.Validators;
+using Camino.Shared.Commons;
 
 namespace Module.Api.Media.GraphQL.Resolvers
 {

@@ -37,7 +37,7 @@ namespace Module.Web.ProductManagement.Models
         public decimal Price { get; set; }
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public IFormFile File { get; set; }
-        public ProductStatus StatusId { get; set; }
+        public ProductStatuses StatusId { get; set; }
         public IEnumerable<ProductAttributeRelationModel> ProductAttributes { get; set; }
     }
 }

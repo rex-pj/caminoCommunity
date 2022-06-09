@@ -1,46 +1,50 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
-using Camino.Core.Contracts.Helpers;
 using Camino.Framework.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.ProductManagement.Models;
 using System;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Products;
 using System.Linq;
-using Camino.Shared.Requests.Products;
-using Camino.Shared.Requests.Media;
-using Camino.Core.Utils;
 using System.Collections.Generic;
-using Camino.Shared.Configurations;
 using Microsoft.Extensions.Options;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Products.Dtos;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.Utils;
+using Camino.Application.Contracts.AppServices.Media.Dtos;
 
 namespace Module.Web.ProductManagement.Controllers
 {
     public class ProductController : BaseAuthController
     {
-        private readonly IProductService _productService;
+        private readonly IProductAppService _productAppService;
+        private readonly IProductAttributeAppService _productAttributeAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
 
-        public ProductController(IProductService productService, IHttpHelper httpHelper,
-            IHttpContextAccessor httpContextAccessor, IOptions<PagerOptions> pagerOptions)
+        public ProductController(IProductAppService productAppService,
+            IProductAttributeAppService productAttributeAppService,
+            IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions,
+            IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _productService = productService;
+            _productAppService = productAppService;
+            _productAttributeAppService = productAttributeAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
-        [LoadResultAuthorizations("Product", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProduct)]
+        [LoadResultAuthorizations("Product", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductFilterModel filter)
         {
-            var productPageList = await _productService.GetAsync(new ProductFilter
+            var productPageList = await _productAppService.GetAsync(new ProductFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -65,7 +69,7 @@ namespace Module.Web.ProductManagement.Controllers
                 UpdatedDate = x.UpdatedDate,
                 Id = x.Id,
                 Name = x.Name,
-                StatusId = (ProductStatus)x.StatusId,
+                StatusId = (ProductStatuses)x.StatusId,
                 PictureId = x.Pictures.Any() ? x.Pictures.FirstOrDefault().Id : 0
             });
 
@@ -84,8 +88,8 @@ namespace Module.Web.ProductManagement.Controllers
             return View(productPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
-        [LoadResultAuthorizations("Product", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProduct)]
+        [LoadResultAuthorizations("Product", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -95,7 +99,7 @@ namespace Module.Web.ProductManagement.Controllers
 
             try
             {
-                var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
+                var product = await _productAppService.FindDetailAsync(new IdRequestFilter<long>
                 {
                     Id = id,
                     CanGetDeleted = true,
@@ -118,7 +122,7 @@ namespace Module.Web.ProductManagement.Controllers
                     Description = product.Description,
                     Name = product.Name,
                     Price = product.Price,
-                    StatusId = (ProductStatus)product.StatusId,
+                    StatusId = (ProductStatuses)product.StatusId,
                     Pictures = product.Pictures.Select(y => new PictureResultModel()
                     {
                         PictureId = y.Id
@@ -142,7 +146,7 @@ namespace Module.Web.ProductManagement.Controllers
                         IsRequired = x.IsRequired,
                         TextPrompt = x.TextPrompt,
                         Name = x.AttributeName,
-                        ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
+                        ControlTypeName = ((ProductAttributeControlTypes)x.AttributeControlTypeId).GetEnumDescription(),
                         AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueModel
                         {
                             Id = c.Id,
@@ -163,10 +167,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public async Task<IActionResult> Update(int id)
         {
-            var product = await _productService.FindDetailAsync(new IdRequestFilter<long>
+            var product = await _productAppService.FindDetailAsync(new IdRequestFilter<long>
             {
                 Id = id,
                 CanGetDeleted = true,
@@ -190,7 +194,7 @@ namespace Module.Web.ProductManagement.Controllers
                 Description = product.Description,
                 Name = product.Name,
                 Price = product.Price,
-                StatusId = (ProductStatus)product.StatusId,
+                StatusId = (ProductStatuses)product.StatusId,
                 Pictures = product.Pictures.Select(y => new PictureRequestModel()
                 {
                     PictureId = y.Id
@@ -214,7 +218,7 @@ namespace Module.Web.ProductManagement.Controllers
                     IsRequired = x.IsRequired,
                     TextPrompt = x.TextPrompt,
                     Name = x.AttributeName,
-                    ControlTypeName = ((ProductAttributeControlType)x.AttributeControlTypeId).GetEnumDescription(),
+                    ControlTypeName = ((ProductAttributeControlTypes)x.AttributeControlTypeId).GetEnumDescription(),
                     AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueModel
                     {
                         Id = c.Id,
@@ -233,7 +237,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public async Task<IActionResult> Update(UpdateProductModel model)
         {
             if (!ModelState.IsValid)
@@ -281,7 +285,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _productService.FindAsync(new IdRequestFilter<long>
+            var exist = await _productAppService.FindAsync(new IdRequestFilter<long>
             {
                 Id = model.Id,
                 CanGetDeleted = true,
@@ -304,12 +308,12 @@ namespace Module.Web.ProductManagement.Controllers
             }
 
             product.UpdatedById = LoggedUserId;
-            await _productService.UpdateAsync(product);
+            await _productAppService.UpdateAsync(product);
             return RedirectToAction(nameof(Detail), new { id = product.Id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanDeleteProduct)]
         public async Task<IActionResult> Delete(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -317,7 +321,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _productService.DeleteAsync(request.Id);
+            var isDeleted = await _productAppService.DeleteAsync(request.Id);
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -327,7 +331,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public async Task<IActionResult> TemporaryDelete(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -335,11 +339,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isDeleted = await _productService.SoftDeleteAsync(new ProductModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isDeleted = await _productAppService.SoftDeleteAsync(request.Id, LoggedUserId);
             if (!isDeleted)
             {
                 return RedirectToErrorPage();
@@ -354,7 +354,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public async Task<IActionResult> Deactivate(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -362,11 +362,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _productService.DeactiveAsync(new ProductModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isInactived = await _productAppService.DeactiveAsync(request.Id, LoggedUserId);
 
             if (!isInactived)
             {
@@ -382,7 +378,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public async Task<IActionResult> Active(ProductIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -390,11 +386,7 @@ namespace Module.Web.ProductManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _productService.ActiveAsync(new ProductModifyRequest
-            {
-                Id = request.Id,
-                UpdatedById = LoggedUserId
-            });
+            var isActived = await _productAppService.ActiveAsync(request.Id, LoggedUserId);
 
             if (!isActived)
             {
@@ -409,8 +401,8 @@ namespace Module.Web.ProductManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadPicture)]
-        [LoadResultAuthorizations("Picture", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadPicture)]
+        [LoadResultAuthorizations("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Pictures(ProductPictureFilterModel filter)
         {
             var filterRequest = new ProductPictureFilter()
@@ -424,7 +416,7 @@ namespace Module.Web.ProductManagement.Controllers
                 MimeType = filter.MimeType
             };
 
-            var productPicturePageList = await _productService.GetPicturesAsync(filterRequest);
+            var productPicturePageList = await _productAppService.GetPicturesAsync(filterRequest);
             var productPictures = productPicturePageList.Collections.Select(x => new ProductPictureModel
             {
                 ProductName = x.ProductName,
@@ -434,7 +426,7 @@ namespace Module.Web.ProductManagement.Controllers
                 PictureCreatedBy = x.PictureCreatedBy,
                 PictureCreatedById = x.PictureCreatedById,
                 PictureCreatedDate = x.PictureCreatedDate,
-                ProductPictureType = (ProductPictureType)x.ProductPictureTypeId,
+                ProductPictureType = (ProductPictureTypes)x.ProductPictureTypeId,
                 ContentType = x.ContentType
             });
 
@@ -454,10 +446,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProduct)]
         public IActionResult SearchStatus(string q, int? currentId = null)
         {
-            var statuses = _productService.SearchStatus(new IdRequestFilter<int?>
+            var statuses = _productAppService.SearchStatus(new IdRequestFilter<int?>
             {
                 Id = currentId
             }, q);
@@ -478,10 +470,10 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public async Task<IActionResult> GetAttributeRelation(long id)
         {
-            var attribute = await _productService.GetAttributeRelationByIdAsync(id);
+            var attribute = await _productAttributeAppService.GetAttributeRelationByIdAsync(id);
             if (attribute == null)
             {
                 return NotFound();
@@ -492,7 +484,7 @@ namespace Module.Web.ProductManagement.Controllers
                 AttributeId = attribute.AttributeId,
                 Id = attribute.Id,
                 ControlTypeId = attribute.AttributeControlTypeId,
-                ControlTypeName = ((ProductAttributeControlType)attribute.AttributeControlTypeId).GetEnumDescription(),
+                ControlTypeName = ((ProductAttributeControlTypes)attribute.AttributeControlTypeId).GetEnumDescription(),
                 DisplayOrder = attribute.DisplayOrder,
                 IsRequired = attribute.IsRequired,
                 Name = attribute.AttributeName,
@@ -501,17 +493,17 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public IActionResult AddAttributeRelation(ProductAttributeRelationModel request)
         {
             return PartialView("Partial/_ProductAttributeUpdate", request);
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadProductAttribute)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
         public async Task<IActionResult> GetAttributeRelationValue(long id)
         {
-            var attributeValue = await _productService.GetAttributeRelationValueByIdAsync(id);
+            var attributeValue = await _productAttributeAppService.GetAttributeRelationValueByIdAsync(id);
             if (attributeValue == null)
             {
                 return NotFound();
@@ -529,7 +521,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateProduct)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateProduct)]
         public IActionResult AddAttributeValue(ProductAttributeRelationValueModel request)
         {
             return PartialView("Partial/_ProductAttributeValueUpdate", request);

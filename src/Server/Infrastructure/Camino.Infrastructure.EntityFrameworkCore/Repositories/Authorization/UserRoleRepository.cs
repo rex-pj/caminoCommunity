@@ -1,93 +1,53 @@
-﻿using Camino.Core.Contracts.Data;
-using Camino.Shared.Results.Identifiers;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Repositories.Authorization;
-using Camino.Core.Domain.Identifiers;
-using Camino.Shared.Results.Authorization;
-using Camino.Shared.Requests.Authorization;
-using Camino.Core.Contracts.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Camino.Core.Domains;
+using Camino.Core.Domains.Authorization;
+using Camino.Core.Domains.Authorization.Repositories;
+using Camino.Core.DependencyInjection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
 {
     public class UserRoleRepository : IUserRoleRepository, IScopedDependency
     {
-        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IEntityRepository<UserRole> _userRoleEntityRepository;
         private readonly IAppDbContext _dbContext;
 
-        public UserRoleRepository(IRepository<UserRole> userRoleRepository, IAppDbContext dbContext)
+        public UserRoleRepository(IEntityRepository<UserRole> userRoleEntityRepository, IAppDbContext dbContext)
         {
-            _userRoleRepository = userRoleRepository;
+            _userRoleEntityRepository = userRoleEntityRepository;
             _dbContext = dbContext;
         }
 
-        public async Task<IList<UserRoleResult>> GetUserRolesAsync(long userId)
+        public async Task<IList<UserRole>> GetListAsync(long userId)
         {
-            var userRoles = await _userRoleRepository.Get(x => x.UserId == userId)
-                .Select(x => new UserRoleResult()
-                {
-                    RoleId = x.RoleId,
-                    RoleName = x.Role.Name,
-                    UserId = x.UserId
-                }).ToListAsync();
-
+            var userRoles = await _userRoleEntityRepository.GetAsync(x => x.UserId == userId);
             return userRoles;
         }
 
-        public async Task<UserRoleResult> FindUserRoleAsync(long userId, long roleId)
+        public async Task<UserRole> FindAsync(long userId, long roleId)
         {
-            var userRole = await _userRoleRepository.Get(x => x.UserId == userId && x.RoleId == roleId)
-                .Select(x => new UserRoleResult
-                {
-                    RoleId = x.RoleId,
-                    UserId = x.UserId,
-                    RoleName = x.Role.Name
-                })
-                .FirstOrDefaultAsync();
-
+            var userRole = await _userRoleEntityRepository.FindAsync(x => x.UserId == userId && x.RoleId == roleId);
             return userRole;
         }
 
-        public async Task<IList<UserResult>> GetUsersInRoleAsync(long roleId)
+        public async Task<bool> CreateAsync(UserRole userRole)
         {
-            var existUserRoles = await _userRoleRepository.Get(x => x.RoleId == roleId)
-                .Select(x => new UserResult()
-                {
-                    Id = x.UserId,
-                    DisplayName = x.User.DisplayName,
-                    Lastname = x.User.Lastname,
-                    Firstname = x.User.Firstname,
-                    UserName = x.User.UserName,
-                    Email = x.User.Email,
-                    IsEmailConfirmed = x.User.IsEmailConfirmed,
-                    StatusId = x.User.StatusId
-                }).ToListAsync();
-
-            return existUserRoles;
+            userRole.GrantedDate = DateTime.UtcNow;
+            _userRoleEntityRepository.Insert(userRole);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
-        public void Create(UserRoleRequest request)
+        public async Task<bool> RemoveAsync(long roleId, long userId)
         {
-            var userRole = new UserRole
+            var existing = await FindAsync(roleId, userId);
+            if (existing == null)
             {
-                RoleId = request.RoleId,
-                UserId = request.UserId
-            };
-            _userRoleRepository.Insert(userRole);
-            _dbContext.SaveChanges();
-        }
+                return false;
+            }
 
-        public void Remove(UserRoleRequest request)
-        {
-            var userRole = new UserRole
-            {
-                RoleId = request.RoleId,
-                UserId = request.UserId
-            };
-            _userRoleRepository.Delete(userRole);
-            _dbContext.SaveChanges();
+            await _userRoleEntityRepository.DeleteAsync(existing);
+            return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }
 }

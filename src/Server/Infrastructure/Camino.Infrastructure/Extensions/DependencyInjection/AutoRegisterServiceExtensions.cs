@@ -1,8 +1,5 @@
-﻿using Camino.Core.Contracts.DependencyInjection;
+﻿using Camino.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Camino.Infrastructure.Extensions.DependencyInjection
@@ -12,6 +9,7 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
         private static readonly Type _transientDependencyType = typeof(ITransientDependency).GetTypeInfo();
         private static readonly Type _scopedDependencyType = typeof(IScopedDependency).GetTypeInfo();
         private static readonly Type _singletonDependencyType = typeof(ISingletonDependency).GetTypeInfo();
+
         public static void AddDependencyServices(this IServiceCollection services, string[] projectNames)
         {
             var assemblies = GetProjectsAssemblies(projectNames);
@@ -67,12 +65,19 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
             return interfaceTypes;
         }
 
-        private static IEnumerable<Assembly> GetProjectsAssemblies(string[] projectNames)
+        private static IList<Assembly> GetProjectsAssemblies(string[] projectNames)
         {
-            var entryAssembly = Assembly.GetExecutingAssembly();
-            var referencedAssemblies = entryAssembly.GetReferencedAssemblies().Select(Assembly.Load);
-            var assemblies = new List<Assembly> { entryAssembly }.Concat(referencedAssemblies)
-                .Where(x => projectNames.Contains(x.GetName().Name));
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var referencedAssemblies = executingAssembly.GetReferencedAssemblies().Select(Assembly.Load);
+            var assemblies = new List<Assembly> { executingAssembly }.Concat(referencedAssemblies)
+                .Where(x => projectNames.Any(p => x.FullName.Contains(p))).ToList();
+
+            var missingAssemblies = projectNames.Where(x => !assemblies.Any(a => a.FullName.Contains(x)));
+            if (missingAssemblies.Any())
+            {
+                var additionalAssemblies = missingAssemblies.Select(x => Assembly.Load(x));
+                assemblies.AddRange(additionalAssemblies);
+            }
 
             return assemblies;
         }

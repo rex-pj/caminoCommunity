@@ -1,5 +1,4 @@
-﻿using Camino.Shared.Requests.Filters;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Framework.Models;
@@ -10,37 +9,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Core.Contracts.Services.Articles;
-using Camino.Shared.Results.Articles;
-using Camino.Shared.Requests.Articles;
-using Camino.Core.Contracts.Helpers;
 using Microsoft.Extensions.Options;
-using Camino.Shared.Configurations;
-using Camino.Infrastructure.Commons.Constants;
+using Camino.Application.Contracts.AppServices.Articles;
+using Camino.Infrastructure.Http.Interfaces;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.Constants;
+using Camino.Application.Contracts.AppServices.Articles.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Web.ArticleManagement.Controllers
 {
     public class ArticleCategoryController : BaseAuthController
     {
-        private readonly IArticleCategoryService _articleCategoryService;
+        private readonly IArticleCategoryAppService _articleCategoryAppService;
         private readonly IHttpHelper _httpHelper;
         private readonly PagerOptions _pagerOptions;
         private const int _defaultPageSelection = 1;
 
-        public ArticleCategoryController(IArticleCategoryService articleCategoryService,
+        public ArticleCategoryController(IArticleCategoryAppService articleCategoryAppService,
             IHttpContextAccessor httpContextAccessor, IHttpHelper httpHelper, IOptions<PagerOptions> pagerOptions)
             : base(httpContextAccessor)
         {
             _httpHelper = httpHelper;
-            _articleCategoryService = articleCategoryService;
+            _articleCategoryAppService = articleCategoryAppService;
             _pagerOptions = pagerOptions.Value;
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
-        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanCreate, PolicyMethod.CanUpdate, PolicyMethod.CanDelete)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
-            var categoryPageList = await _articleCategoryService.GetAsync(new ArticleCategoryFilter
+            var categoryPageList = await _articleCategoryAppService.GetAsync(new ArticleCategoryFilter
             {
                 CreatedById = filter.CreatedById,
                 CreatedDateFrom = filter.CreatedDateFrom,
@@ -64,7 +63,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdateById = x.UpdatedById,
                 UpdatedDate = x.UpdatedDate,
                 UpdatedBy = x.UpdatedBy,
-                StatusId = (ArticleCategoryStatus)x.StatusId
+                StatusId = (ArticleCategoryStatuses)x.StatusId
             });
             var categoryPage = new PageListModel<ArticleCategoryModel>(categories)
             {
@@ -81,8 +80,8 @@ namespace Module.Web.ArticleManagement.Controllers
             return View(categoryPage);
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
-        [LoadResultAuthorizations("ArticleCategory", PolicyMethod.CanUpdate)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
+        [LoadResultAuthorizations("ArticleCategory", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -92,7 +91,7 @@ namespace Module.Web.ArticleManagement.Controllers
 
             try
             {
-                var category = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+                var category = await _articleCategoryAppService.FindAsync(new IdRequestFilter<int>
                 {
                     CanGetInactived = true,
                     Id = id
@@ -115,7 +114,7 @@ namespace Module.Web.ArticleManagement.Controllers
                     CreatedBy = category.CreatedBy,
                     UpdatedBy = category.UpdatedBy,
                     ParentCategoryName = category.ParentCategoryName,
-                    StatusId = (ArticleCategoryStatus)category.StatusId
+                    StatusId = (ArticleCategoryStatuses)category.StatusId
                 };
                 return View(model);
             }
@@ -125,7 +124,7 @@ namespace Module.Web.ArticleManagement.Controllers
             }
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateArticleCategory)]
         public IActionResult Create()
         {
             var model = new ArticleCategoryModel();
@@ -133,7 +132,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanCreateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanCreateArticleCategory)]
         public async Task<IActionResult> Create(ArticleCategoryModel model)
         {
             var category = new ArticleCategoryModifyRequest
@@ -144,7 +143,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 UpdatedById = LoggedUserId,
                 CreatedById = LoggedUserId
             };
-            var exist = await _articleCategoryService.FindByNameAsync(model.Name);
+            var exist = await _articleCategoryAppService.FindByNameAsync(model.Name);
             if (exist != null)
             {
                 return RedirectToErrorPage();
@@ -152,15 +151,15 @@ namespace Module.Web.ArticleManagement.Controllers
 
             category.UpdatedById = LoggedUserId;
             category.CreatedById = LoggedUserId;
-            var id = await _articleCategoryService.CreateAsync(category);
+            var id = await _articleCategoryAppService.CreateAsync(category);
 
             return RedirectToAction(nameof(Detail), new { id });
         }
 
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateArticleCategory)]
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+            var category = await _articleCategoryAppService.FindAsync(new IdRequestFilter<int>
             {
                 CanGetInactived = true,
                 Id = id
@@ -176,13 +175,13 @@ namespace Module.Web.ArticleManagement.Controllers
                 CreatedById = category.CreatedById,
                 CreatedDate = category.CreatedDate,
                 ParentCategoryName = category.ParentCategoryName,
-                StatusId = (ArticleCategoryStatus)category.StatusId
+                StatusId = (ArticleCategoryStatuses)category.StatusId
             };
             return View(model);
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateArticleCategory)]
         public async Task<IActionResult> Update(ArticleCategoryModel model)
         {
             if (model.Id <= 0)
@@ -190,7 +189,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var exist = await _articleCategoryService.FindAsync(new IdRequestFilter<int>
+            var exist = await _articleCategoryAppService.FindAsync(new IdRequestFilter<int>
             {
                 CanGetInactived = true,
                 Id = model.Id
@@ -209,12 +208,12 @@ namespace Module.Web.ArticleManagement.Controllers
                 Id = model.Id
             };
 
-            await _articleCategoryService.UpdateAsync(category);
+            await _articleCategoryAppService.UpdateAsync(category);
             return RedirectToAction(nameof(Detail), new { id = category.Id });
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateArticleCategory)]
         public async Task<IActionResult> Deactivate(ArticleCategoryIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -222,7 +221,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isInactived = await _articleCategoryService.DeactivateAsync(new ArticleCategoryModifyRequest
+            var isInactived = await _articleCategoryAppService.DeactivateAsync(new ArticleCategoryModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -242,7 +241,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanUpdateArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanUpdateArticleCategory)]
         public async Task<IActionResult> Active(ArticleCategoryIdRequestModel request)
         {
             if (!ModelState.IsValid)
@@ -250,7 +249,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _articleCategoryService.ActiveAsync(new ArticleCategoryModifyRequest
+            var isActived = await _articleCategoryAppService.ActiveAsync(new ArticleCategoryModifyRequest
             {
                 Id = request.Id,
                 UpdatedById = LoggedUserId
@@ -270,7 +269,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpPost]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanDeleteArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanDeleteArticleCategory)]
         public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
@@ -278,7 +277,7 @@ namespace Module.Web.ArticleManagement.Controllers
                 return RedirectToErrorPage();
             }
 
-            var isActived = await _articleCategoryService.DeleteAsync(id);
+            var isActived = await _articleCategoryAppService.DeleteAsync(id);
 
             if (!isActived)
             {
@@ -289,7 +288,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
         public IActionResult Search(string q, int? currentId = null, bool isParentOnly = false)
         {
             var filter = new BaseFilter
@@ -301,7 +300,7 @@ namespace Module.Web.ArticleManagement.Controllers
             IList<ArticleCategoryResult> categories;
             if (isParentOnly)
             {
-                categories = _articleCategoryService.SearchParents(new IdRequestFilter<int?>
+                categories = _articleCategoryAppService.SearchParents(new IdRequestFilter<int?>
                 {
                     CanGetInactived = true,
                     Id = currentId
@@ -309,7 +308,7 @@ namespace Module.Web.ArticleManagement.Controllers
             }
             else
             {
-                categories = _articleCategoryService.Search(new IdRequestFilter<int?>
+                categories = _articleCategoryAppService.Search(new IdRequestFilter<int?>
                 {
                     CanGetInactived = true,
                     Id = currentId
@@ -332,10 +331,10 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [HttpGet]
-        [ApplicationAuthorize(AuthorizePolicyConst.CanReadArticleCategory)]
+        [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
         public IActionResult SearchStatus(string q, int? currentId = null)
         {
-            var statuses = _articleCategoryService.SearchStatus(new IdRequestFilter<int?>
+            var statuses = _articleCategoryAppService.SearchStatus(new IdRequestFilter<int?>
             {
                 Id = currentId
             }, q);

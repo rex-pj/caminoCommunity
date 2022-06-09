@@ -1,4 +1,4 @@
-﻿using Camino.Core.Constants;
+﻿using Camino.Shared.Constants;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Globalization;
@@ -32,7 +32,7 @@ namespace Camino.Framework.Infrastructure.ModelBinders
                 return Task.CompletedTask;
             }
 
-            if (!DateTimeOffset.TryParseExact(value, DateTimeFormatConst.ParseableFormats, 
+            if (!DateTimeOffset.TryParseExact(value, DateTimeFormats.ParseableFormats, 
                 CultureInfo.InvariantCulture.DateTimeFormat,
                 DateTimeStyles.AllowWhiteSpaces, 
                 out var dateTime))

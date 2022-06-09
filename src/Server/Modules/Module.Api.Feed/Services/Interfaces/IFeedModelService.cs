@@ -1,4 +1,4 @@
-﻿using Camino.Shared.Results.Feed;
+﻿using Camino.Application.Contracts.AppServices.Feeds.Dtos;
 using Module.Api.Feed.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

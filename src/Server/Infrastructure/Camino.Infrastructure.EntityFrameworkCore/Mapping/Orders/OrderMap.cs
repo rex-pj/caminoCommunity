@@ -1,4 +1,4 @@
-﻿using Camino.Core.Domain.Orders;
+﻿using Camino.Core.Domains.Orders;
 using Camino.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,7 +10,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Products
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder
-                .ToTable(nameof(Order), TableSchemaConst.Dbo)
+                .ToTable(nameof(Order), TableSchemas.Dbo)
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();

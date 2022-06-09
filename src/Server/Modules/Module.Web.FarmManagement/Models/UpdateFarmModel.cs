@@ -33,6 +33,6 @@ namespace Module.Web.FarmManagement.Models
         public string FarmTypeName { get; set; }
         public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public IFormFile File { get; set; }
-        public FarmStatus StatusId { get; set; }
+        public FarmStatuses StatusId { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="3.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Camino.Core\Camino.Core.csproj" />
+		<ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+		<ProjectReference Include="..\..\Shared\Camino.Shared\Camino.Shared.csproj" />
+	</ItemGroup>
+</Project>

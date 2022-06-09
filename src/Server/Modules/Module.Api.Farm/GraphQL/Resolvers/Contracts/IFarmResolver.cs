@@ -1,8 +1,8 @@
 ﻿using Module.Api.Farm.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Camino.Shared.General;
 using System.Security.Claims;
+using Camino.Application.Contracts;
 
 namespace Module.Api.Farm.GraphQL.Resolvers.Contracts
 {

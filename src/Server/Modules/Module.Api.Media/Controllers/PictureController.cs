@@ -1,30 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Camino.Shared.Enums;
-using Camino.Core.Contracts.Services.Users;
-using Camino.Core.Contracts.Services.Media;
-using Camino.Shared.Requests.Filters;
 using Camino.Framework.Controllers;
+using Camino.Application.Contracts.AppServices.Users;
+using Camino.Application.Contracts.AppServices.Media;
+using Camino.Shared.Enums;
+using Camino.Application.Contracts;
 
 namespace Module.Api.Media.Controllers
 {
     [Route("pictures")]
     public class PictureController : BaseController
     {
-        private readonly IUserPhotoService _userPhotoService;
-        private readonly IPictureService _pictureService;
+        private readonly IUserPhotoAppService _userPhotoAppService;
+        private readonly IPictureAppService _pictureAppService;
 
-        public PictureController(IUserPhotoService userPhotoService, IPictureService pictureService)
+        public PictureController(IUserPhotoAppService userPhotoAppService, IPictureAppService pictureAppService)
         {
-            _userPhotoService = userPhotoService;
-            _pictureService = pictureService;
+            _userPhotoAppService = userPhotoAppService;
+            _pictureAppService = pictureAppService;
         }
 
         [HttpGet]
         [Route("avatars/{code}")]
         public async Task<IActionResult> GetAvatar(string code)
         {
-            var avatar = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPictureType.Avatar);
+            var avatar = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Avatar);
             return File(avatar.BinaryData, "image/jpeg");
         }
 
@@ -32,7 +32,7 @@ namespace Module.Api.Media.Controllers
         [Route("covers/{code}")]
         public async Task<IActionResult> GetCover(string code)
         {
-            var cover = await _userPhotoService.GetUserPhotoByCodeAsync(code, UserPictureType.Cover);
+            var cover = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Cover);
             return File(cover.BinaryData, "image/jpeg");
         }
 
@@ -41,7 +41,7 @@ namespace Module.Api.Media.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var exist = await _pictureService.FindAsync(new IdRequestFilter<long>
+            var exist = await _pictureAppService.FindAsync(new IdRequestFilter<long>
             {
                 Id = id,
                 CanGetInactived = true

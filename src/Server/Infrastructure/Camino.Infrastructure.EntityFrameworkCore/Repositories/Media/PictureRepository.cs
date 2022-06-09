@@ -1,50 +1,42 @@
-﻿using Camino.Core.Contracts.Data;
-using Camino.Core.Contracts.Repositories.Media;
-using Camino.Shared.Results.Media;
-using System.Linq;
+﻿using Camino.Core.Contracts.Repositories.Media;
 using System.Threading.Tasks;
-using Camino.Core.Domain.Media;
-using Camino.Shared.Requests.Filters;
-using Camino.Shared.Enums;
-using Camino.Core.Contracts.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Camino.Core.Domains.Media;
+using Camino.Core.Domains;
+using Camino.Core.DependencyInjection;
+using System;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Media
 {
     public class PictureRepository : IPictureRepository, IScopedDependency
     {
-        private readonly IRepository<Picture> _pictureRepository;
-        private readonly int _pictureDeletedStatus;
-        private readonly int _pictureInactivedStatus;
+        private readonly IEntityRepository<Picture> _pictureRepository;
+        private readonly IAppDbContext _dbContext;
 
-        public PictureRepository(IRepository<Picture> pictureRepository)
+        public PictureRepository(IEntityRepository<Picture> pictureRepository, IAppDbContext dbContext)
         {
             _pictureRepository = pictureRepository;
-            _pictureDeletedStatus = (int)PictureStatus.Deleted;
-            _pictureInactivedStatus = (int)PictureStatus.Inactived;
+            _dbContext = dbContext;
         }
 
-        public async Task<PictureResult> FindAsync(IdRequestFilter<long> filter)
+        public async Task<Picture> FindAsync(long id)
         {
             using (_pictureRepository)
             {
                 var picture = await _pictureRepository
-                .Get(x => x.Id == filter.Id)
-                .Where(x => (x.StatusId == _pictureDeletedStatus && filter.CanGetDeleted)
-                    || (x.StatusId == _pictureInactivedStatus && filter.CanGetInactived)
-                    || (x.StatusId != _pictureDeletedStatus && x.StatusId != _pictureInactivedStatus))
-                .Select(pic => new PictureResult
-                {
-                    Id = pic.Id,
-                    FileName = pic.FileName,
-                    BinaryData = pic.BinaryData,
-                    ContentType = pic.MimeType,
-                    CreatedById = pic.CreatedById,
-                    UpdatedById = pic.UpdatedById
-                }).FirstOrDefaultAsync();
-
+                .FindAsync(x => x.Id == id);
                 return picture;
             }
+        }
+
+        public async Task<long> CreateAsync(Picture picture)
+        {
+            var modifiedDate = DateTimeOffset.UtcNow;
+            picture.CreatedDate = modifiedDate;
+            picture.UpdatedDate = modifiedDate;
+            await _pictureRepository.InsertAsync(picture);
+            await _dbContext.SaveChangesAsync();
+
+            return picture.Id;
         }
     }
 }

@@ -5,17 +5,21 @@ using Camino.Infrastructure.EntityFrameworkCore.Mapping.Media;
 using Camino.Infrastructure.EntityFrameworkCore.Mapping.Products;
 using Camino.Infrastructure.EntityFrameworkCore.Mapping.Navigations;
 using Microsoft.EntityFrameworkCore;
-using Camino.Core.Domain.Identifiers;
-using Camino.Core.Domain.Navigations;
-using Camino.Core.Domain.Products;
-using Camino.Core.Domain.Orders;
-using Camino.Core.Domain.Farms;
-using Camino.Core.Domain.Media;
-using Camino.Core.Domain.Articles;
+using Camino.Core.Domains.Identifiers;
+using Camino.Core.Domains.Navigations;
+using Camino.Core.Domains.Products;
+using Camino.Core.Domains.Orders;
+using Camino.Core.Domains.Farms;
+using Camino.Core.Domains.Media;
+using Camino.Core.Domains.Articles;
+using Camino.Core.Domains.Authorization;
+using Camino.Core.Domains.Users;
+using Camino.Core.Domains.Authentication;
+using Camino.Core.Domains;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
-    public class CaminoDbContext : EfDbContext, IAppDbContext
+    public class CaminoDbContext : EfDbContext, IAppDbContext, IDbContext
     {
         #region Dbset
         public DbSet<UserPhoto> UserPhotos { get; set; }

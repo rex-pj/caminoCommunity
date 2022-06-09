@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
@@ -57,16 +54,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
             }
 
             return sql;
-        }
-
-        /// <summary>
-        /// Update entity by Property Name
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual void UpdateByName<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class
-        {
-            SetEntityValueByName(entity, value, propertyName, isIgnoreCase);
-            Set<TEntity>().Update(entity);
         }
 
         /// <summary>

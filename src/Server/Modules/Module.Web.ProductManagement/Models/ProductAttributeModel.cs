@@ -23,6 +23,6 @@ namespace Module.Web.ProductManagement.Models
         public long UpdatedById { get; set; }
         public string UpdatedBy { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
-        public ProductAttributeStatus StatusId { get; set; }
+        public ProductAttributeStatuses StatusId { get; set; }
     }
 }

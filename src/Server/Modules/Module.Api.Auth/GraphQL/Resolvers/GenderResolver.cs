@@ -1,8 +1,8 @@
 ﻿using Module.Api.Auth.GraphQL.Resolvers.Contracts;
-using Camino.Shared.Enums;
 using System.Collections.Generic;
-using Camino.Core.Utils;
-using Camino.Shared.General;
+using Camino.Application.Contracts;
+using Camino.Application.Contracts.Utils;
+using Camino.Shared.Enums;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -10,7 +10,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
     {
         public IEnumerable<SelectOption> GetSelections()
         {
-            return EnumUtil.ToSelectOptions<GenderType>();
+            return SelectOptionUtils.ToSelectOptions<GenderTypes>();
         }
     }
 }

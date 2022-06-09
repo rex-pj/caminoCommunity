@@ -30,7 +30,7 @@ namespace Module.Web.ArticleManagement.Models
         public long CreatedById { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
-        public ArticleStatus StatusId { get; set; }
+        public ArticleStatuses StatusId { get; set; }
         public IFormFile File { get; set; }
     }
 }

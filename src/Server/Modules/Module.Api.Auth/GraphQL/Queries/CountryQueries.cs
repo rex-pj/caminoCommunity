@@ -1,5 +1,5 @@
-﻿using Camino.Framework.GraphQL.Queries;
-using Camino.Shared.General;
+﻿using Camino.Application.Contracts;
+using Camino.Framework.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;

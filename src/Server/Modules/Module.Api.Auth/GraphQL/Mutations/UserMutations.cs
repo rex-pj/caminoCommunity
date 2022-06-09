@@ -6,10 +6,10 @@ using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;
 using Module.Api.Auth.Models;
 using System.Threading.Tasks;
-using Camino.Shared.Requests.Authentication;
 using System.Collections.Generic;
-using Camino.Shared.General;
 using System.Security.Claims;
+using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Application.Contracts;
 
 namespace Module.Api.Auth.GraphQL.Mutations
 {
