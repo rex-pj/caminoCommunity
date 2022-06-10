@@ -24,7 +24,6 @@ namespace Camino.Application.AppServices.Users
         private readonly IValidationStrategyContext _validationStrategyContext;
         private readonly IUserRepository _userRepository;
         private readonly IEntityRepository<User> _userEntityRepository;
-        private readonly IEntityRepository<UserInfo> _userInfoEntityRepository;
         private readonly IUserDomainService _userDomainService;
         private readonly int _userDeletedStatus;
         private readonly int _userInactivedStatus;
@@ -34,12 +33,10 @@ namespace Camino.Application.AppServices.Users
         public UserAppService(IUserRepository userRepository,
             IValidationStrategyContext validationStrategyContext,
             IEntityRepository<User> userEntityRepository,
-            IUserDomainService userDomainService,
-            IEntityRepository<UserInfo> userInfoEntityRepository)
+            IUserDomainService userDomainService)
         {
             _userRepository = userRepository;
             _userEntityRepository = userEntityRepository;
-            _userInfoEntityRepository = userInfoEntityRepository;
             _userDomainService = userDomainService;
             _validationStrategyContext = validationStrategyContext;
             _userDeletedStatus = UserStatuses.Deleted.GetCode();
@@ -70,12 +67,9 @@ namespace Camino.Application.AppServices.Users
                 UserName = request.UserName,
                 DisplayName = request.DisplayName,
                 IsEmailConfirmed = true,
-                UserInfo = new UserInfo
-                {
-                    BirthDate = request.BirthDate,
-                    Description = request.Description,
-                    GenderId = request.GenderId
-                }
+                BirthDate = request.BirthDate,
+                Description = request.Description,
+                GenderId = request.GenderId
             };
 
             return await _userRepository.CreateAsync(newUser);
@@ -113,27 +107,65 @@ namespace Camino.Application.AppServices.Users
                 throw new ArgumentException(nameof(request.Key));
             }
 
-            var key = (long)request.Key;
-            var userInfo = _userInfoEntityRepository.Find(x => x.Id == key);
-            if (userInfo == null)
+            var user = await _userEntityRepository.FindAsync(x => x.Id == (long)request.Key);
+            if (user == null)
             {
-                throw new ArgumentException(nameof(userInfo));
+                throw new ArgumentException(nameof(user));
             }
 
-            _validationStrategyContext.SetStrategy(new UserInfoItemUpdationValidationStratergy(_validationStrategyContext));
-            bool canUpdate = _validationStrategyContext.Validate(request);
-            if (!canUpdate)
+            switch (request.PropertyName)
             {
-                throw new ArgumentException(request.PropertyName);
+                case nameof(User.Address):
+                    user.Address = request.Value?.ToString();
+                    break;
+                case nameof(User.PhoneNumber):
+                    _validationStrategyContext.SetStrategy(new PhoneValidationStrategy());
+                    bool isValid = (request.Value == null || string.IsNullOrEmpty(request.Value.ToString())) || _validationStrategyContext.Validate(request.Value);
+                    if (!isValid)
+                    {
+                        user.PhoneNumber = request.Value?.ToString();
+                    }
+                    break;
+                case nameof(User.Description):
+                    user.Description = request.Value?.ToString();
+                    break;
+                case nameof(User.BirthDate):
+                    if (DateTimeOffset.TryParse(request.Value.ToString(), out var birthDate))
+                    {
+                        user.BirthDate = birthDate;
+                    }
+                    else if (request.Value == null)
+                    {
+                        user.BirthDate = null;
+                    }
+
+                    break;
+                case nameof(User.GenderId):
+                    if (byte.TryParse(request.Value.ToString(), out var genderId))
+                    {
+                        user.GenderId = genderId;
+                    }
+                    else if (request.Value == null)
+                    {
+                        user.GenderId = null;
+                    }
+                    break;
+                case nameof(User.CountryId):
+                    if (byte.TryParse(request.Value.ToString(), out var countryId))
+                    {
+                        user.CountryId = countryId;
+                    }
+                    else if (request.Value == null)
+                    {
+                        user.CountryId = null;
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException($"Not support {request.PropertyName}");
             }
 
-            if (userInfo.User != null)
-            {
-                userInfo.User.UpdatedDate = DateTime.UtcNow;
-                userInfo.User.UpdatedById = userInfo.Id;
-            }
-
-            await _userRepository.PartialUpdateAsync(userInfo, request.PropertyName, request.Value);
+            user.UpdatedById = user.Id;
+            await _userRepository.UpdateAsync(user);
             return request;
         }
 
@@ -293,62 +325,60 @@ namespace Camino.Application.AppServices.Users
                 userQuery = userQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
-            // Filter in UserInfo
-            var userInfoQuery = _userInfoEntityRepository.Table;
             if (filter.GenderId.HasValue)
             {
-                userInfoQuery = userInfoQuery.Where(x => x.GenderId == filter.GenderId);
+                userQuery = userQuery.Where(x => x.GenderId == filter.GenderId);
             }
 
             if (filter.CountryId.HasValue)
             {
-                userInfoQuery = userInfoQuery.Where(x => x.CountryId == filter.CountryId);
+                userQuery = userQuery.Where(x => x.CountryId == filter.CountryId);
             }
 
             if (!string.IsNullOrEmpty(filter.PhoneNumber))
             {
-                userInfoQuery = userInfoQuery.Where(x => x.PhoneNumber.Contains(filter.PhoneNumber));
+                userQuery = userQuery.Where(x => x.PhoneNumber.Contains(filter.PhoneNumber));
             }
 
             if (!string.IsNullOrEmpty(filter.Address))
             {
-                userInfoQuery = userInfoQuery.Where(x => x.Address.Contains(filter.Address));
+                userQuery = userQuery.Where(x => x.Address.Contains(filter.Address));
             }
 
             // Filter by birthdate
             if (filter.BirthDateFrom.HasValue && filter.BirthDateTo.HasValue)
             {
-                userInfoQuery = userInfoQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= filter.BirthDateTo);
+                userQuery = userQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= filter.BirthDateTo);
             }
             else if (filter.BirthDateTo.HasValue)
             {
-                userInfoQuery = userInfoQuery.Where(x => x.BirthDate <= filter.BirthDateTo);
+                userQuery = userQuery.Where(x => x.BirthDate <= filter.BirthDateTo);
             }
             else if (filter.BirthDateFrom.HasValue)
             {
-                userInfoQuery = userInfoQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= DateTime.UtcNow);
+                userQuery = userQuery.Where(x => x.BirthDate >= filter.BirthDateFrom && x.BirthDate <= DateTime.UtcNow);
             }
 
             var query = (from user in userQuery
-                         join userInfo in userInfoQuery
+                         join userInfo in userQuery
                          on user.Id equals userInfo.Id
                          select new UserFullResult()
                          {
                              Id = user.Id,
                              Email = user.Email,
-                             Address = user.UserInfo.Address,
+                             Address = user.Address,
                              Lastname = user.Lastname,
                              Firstname = user.Firstname,
                              DisplayName = user.DisplayName,
                              CreatedDate = user.CreatedDate,
                              UpdatedDate = user.UpdatedDate,
-                             BirthDate = user.UserInfo.BirthDate,
+                             BirthDate = user.BirthDate,
                              IsEmailConfirmed = user.IsEmailConfirmed,
-                             PhoneNumber = user.UserInfo.PhoneNumber,
-                             GenderLabel = user.UserInfo.Gender.Name,
+                             PhoneNumber = user.PhoneNumber,
+                             GenderLabel = user.Gender.Name,
                              StatusLabel = user.Status.Name,
                              StatusId = user.StatusId,
-                             CountryName = user.UserInfo.Country.Name
+                             CountryName = user.Country.Name
                          });
 
             var filteredNumber = query.Select(x => x.Id).Count();
@@ -383,11 +413,11 @@ namespace Camino.Application.AppServices.Users
                 SecurityStamp = entity.SecurityStamp,
                 Id = entity.Id,
                 IsEmailConfirmed = entity.IsEmailConfirmed,
-                GenderId = entity.UserInfo.GenderId,
-                Address = entity.UserInfo.Address,
-                BirthDate = entity.UserInfo.BirthDate,
-                CountryId = entity.UserInfo.CountryId,
-                PhoneNumber = entity.UserInfo.PhoneNumber,
+                GenderId = entity.GenderId,
+                Address = entity.Address,
+                BirthDate = entity.BirthDate,
+                CountryId = entity.CountryId,
+                PhoneNumber = entity.PhoneNumber,
             };
         }
 
@@ -401,19 +431,19 @@ namespace Camino.Application.AppServices.Users
                 Lastname = entity.Lastname,
                 UserName = entity.UserName,
                 Email = entity.Email,
-                PhoneNumber = entity.UserInfo.PhoneNumber,
-                Description = entity.UserInfo.Description,
-                Address = entity.UserInfo.Address,
-                BirthDate = entity.UserInfo.BirthDate,
-                GenderId = entity.UserInfo.GenderId,
-                GenderLabel = entity.UserInfo.Gender.Name,
+                PhoneNumber = entity.PhoneNumber,
+                Description = entity.Description,
+                Address = entity.Address,
+                BirthDate = entity.BirthDate,
+                GenderId = entity.GenderId,
+                GenderLabel = entity.Gender.Name,
                 StatusId = entity.StatusId,
                 StatusLabel = entity.Status.Name,
                 Id = entity.Id,
                 UpdatedDate = entity.UpdatedDate,
-                CountryId = entity.UserInfo.CountryId,
-                CountryCode = entity.UserInfo.Country.Code,
-                CountryName = entity.UserInfo.Country.Name,
+                CountryId = entity.CountryId,
+                CountryCode = entity.Country.Code,
+                CountryName = entity.Country.Name,
                 IsEmailConfirmed = entity.IsEmailConfirmed
             };
         }

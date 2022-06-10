@@ -1,5 +1,6 @@
 ﻿using Camino.Core.Domains.Authentication;
 using Camino.Core.Domains.Authorization;
+using Camino.Core.Domains.Identifiers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -49,9 +50,21 @@ namespace Camino.Core.Domains.Users
         [Required]
         public string SecurityStamp { get; set; }
         public bool IsEmailConfirmed { get; set; }
+
+        // Additional information
+        [Phone]
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public string Description { get; set; }
+
+        [Required]
+        public DateTimeOffset? BirthDate { get; set; }
+        public byte? GenderId { get; set; }
+        public short? CountryId { get; set; }
+        public virtual Gender Gender { get; set; }
+        public virtual Country Country { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual User UpdatedBy { get; set; }
-        public virtual UserInfo UserInfo { get; set; }
         public virtual Status Status { get; set; }
 
         public virtual ICollection<User> CreatedUsers { get; set; }

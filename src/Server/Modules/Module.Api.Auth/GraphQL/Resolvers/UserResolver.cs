@@ -28,12 +28,12 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IUserAppService _userAppService;
         private readonly IUserPhotoAppService _userPhotoAppService;
-        private readonly IEmailProvider _emailSender;
+        private readonly IEmailClient _emailClient;
         private readonly AppSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly PagerOptions _pagerOptions;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, IEmailProvider emailSender,
+        public UserResolver(IUserManager<ApplicationUser> userManager, IEmailClient emailClient,
             IUserAppService userAppService, IOptions<AppSettings> appSettings,
             IUserPhotoAppService userPhotoAppService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
             : base()
@@ -42,7 +42,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _userAppService = userAppService;
             _appSettings = appSettings.Value;
             _registerConfirmationSettings = registerConfirmationSettings.Value;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
             _userPhotoAppService = userPhotoAppService;
             _pagerOptions = pagerOptions.Value;
         }
@@ -332,7 +332,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
         {
             var activeUserUrl = $"{_registerConfirmationSettings.Url}/{user.Email}/{confirmationToken}";
-            await _emailSender.SendEmailAsync(new MailMessageRequest()
+            await _emailClient.SendEmailAsync(new MailMessageRequest()
             {
                 Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appSettings.ApplicationName, activeUserUrl),
                 FromEmail = _registerConfirmationSettings.FromEmail,

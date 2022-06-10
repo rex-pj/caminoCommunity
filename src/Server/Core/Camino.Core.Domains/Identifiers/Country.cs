@@ -7,7 +7,7 @@ namespace Camino.Core.Domains.Identifiers
     {
         public Country()
         {
-            this.UserInfos = new HashSet<UserInfo>();
+            this.Users = new HashSet<User>();
         }
 
         public short Id { get; set; }
@@ -15,6 +15,6 @@ namespace Camino.Core.Domains.Identifiers
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
-        public virtual ICollection<UserInfo> UserInfos { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

@@ -11,7 +11,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     public partial class UserRepository : IUserRepository, IScopedDependency
     {
         #region Fields/Properties
-        private readonly IEntityRepository<UserInfo> _userInfoRepository;
         private readonly IEntityRepository<User> _userRepository;
         private readonly IAppDbContext _dbContext;
         private readonly int _userDeletedStatus;
@@ -19,12 +18,10 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         #endregion
 
         #region Ctor
-        public UserRepository(IEntityRepository<User> userRepository,
-            IEntityRepository<UserInfo> userInfoRepository, IAppDbContext dbContext)
+        public UserRepository(IEntityRepository<User> userRepository, IAppDbContext dbContext)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
-            _userInfoRepository = userInfoRepository;
             _userDeletedStatus = UserStatuses.Deleted.GetCode();
             _userInactivedStatus = UserStatuses.Inactived.GetCode();
         }
@@ -33,37 +30,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         #region CRUD
         public async Task<long> CreateAsync(User user)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
-                try
-                {
-                    await _userRepository.InsertAsync(user);
-
-                    if (user.Id > 0)
-                    {
-                        await _userInfoRepository.InsertAsync(new UserInfo
-                        {
-                            BirthDate = user.UserInfo.BirthDate,
-                            Description = user.UserInfo.Description,
-                            GenderId = user.UserInfo.GenderId,
-                            Id = user.Id
-                        });
-                        transaction.Commit();
-
-                        return user.Id;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                    }
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                }
-            }
-
-            return -1;
+            await _userRepository.InsertAsync(user);
+            await _dbContext.SaveChangesAsync();
+            return user.Id;
         }
 
         public async Task<bool> DeleteAsync(long id)
@@ -80,17 +49,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             existing.UpdatedDate = DateTimeOffset.UtcNow;
 
             return (await _dbContext.SaveChangesAsync()) > 0;
-        }
-
-        public async Task<bool> PartialUpdateAsync(UserInfo userInfo, string fieldName, object value)
-        {
-            if (fieldName == null)
-            {
-                throw new ArgumentException(fieldName);
-            }
-
-            await _dbContext.UpdateByNameAsync(userInfo, value, fieldName, true);
-            return true;
         }
 
         public async Task<bool> UpdateAsync(User user)

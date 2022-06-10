@@ -373,11 +373,11 @@ namespace Camino.Application.AppServices.Feeds
                              {
                                  CreatedById = user.CreatedById,
                                  CreatedDate = user.CreatedDate,
-                                 Description = user.UserInfo.Description,
+                                 Description = user.Description,
                                  Id = user.Id.ToString(),
                                  Name = user.Lastname + " " + user.Firstname,
                                  FeedType = FeedTypes.User,
-                                 Address = user.UserInfo.Address,
+                                 Address = user.Address,
                              });
 
             var countingTasks = new List<Task<CountingTask>>();

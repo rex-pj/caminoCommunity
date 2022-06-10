@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.Common;
-using System.Reflection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
@@ -54,64 +53,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
             }
 
             return sql;
-        }
-
-        /// <summary>
-        /// Update entity by Property Name
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async Task UpdateByNameAsync<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class
-        {
-            SetEntityValueByName(entity, value, propertyName, isIgnoreCase);
-            await Task.FromResult(Set<TEntity>().Update(entity));
-        }
-
-        /// <summary>
-        /// Validate property by name
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        private void ValidatePropertyByName<TEntity>(TEntity entity, object value, string propertyName) where TEntity : class
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
-        }
-
-        /// <summary>
-        /// Set entity value by name
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        private PropertyInfo GetPropertyInfoByName<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class
-        {
-            ValidatePropertyByName(entity, value, propertyName);
-            if (isIgnoreCase)
-            {
-                return entity.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            }
-
-            return entity.GetType().GetProperty(propertyName);
-        }
-
-        /// <summary>
-        /// Set entity value by name
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        private void SetEntityValueByName<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class
-        {
-            var propertyInfo = GetPropertyInfoByName(entity, value, propertyName, isIgnoreCase);
-            if (propertyInfo == null)
-            {
-                throw new ArgumentNullException(nameof(propertyInfo));
-            }
-
-            var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-            propertyInfo.SetValue(entity, Convert.ChangeType(value, propertyType), null);
         }
     }
 }

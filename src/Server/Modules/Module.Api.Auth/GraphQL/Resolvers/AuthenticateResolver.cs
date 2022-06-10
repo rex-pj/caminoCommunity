@@ -27,7 +27,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
     {
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly ILoginManager<ApplicationUser> _loginManager;
-        private readonly IEmailProvider _emailSender;
+        private readonly IEmailClient _emailClient;
         private readonly AppSettings _appSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
         private readonly JwtConfigOptions _jwtConfigOptions;
@@ -35,7 +35,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthenticateResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager,
-            IEmailProvider emailSender, IOptions<AppSettings> appSettings,
+            IEmailClient emailClient, IOptions<AppSettings> appSettings,
             IOptions<ResetPasswordSettings> resetPasswordSettings, IJwtHelper jwtHelper, IOptions<JwtConfigOptions> jwtConfigOptions,
             IHttpContextAccessor httpContextAccessor)
             : base()
@@ -44,7 +44,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             _loginManager = loginManager;
             _appSettings = appSettings.Value;
             _resetPasswordSettings = resetPasswordSettings.Value;
-            _emailSender = emailSender;
+            _emailClient = emailClient;
             _jwtHelper = jwtHelper;
             _jwtConfigOptions = jwtConfigOptions.Value;
             _httpContextAccessor = httpContextAccessor;
@@ -217,7 +217,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private async Task SendPasswordChangeAsync(ForgotPasswordModel criterias, ApplicationUser user, string token)
         {
             var activeUserUrl = $"{_resetPasswordSettings.Url}/{criterias.Email}/{token}";
-            await _emailSender.SendEmailAsync(new MailMessageRequest()
+            await _emailClient.SendEmailAsync(new MailMessageRequest()
             {
                 Body = string.Format(MailTemplateResources.USER_CHANGE_PASWORD_CONFIRMATION_BODY, user.DisplayName, _appSettings.ApplicationName, activeUserUrl),
                 FromEmail = _resetPasswordSettings.FromEmail,

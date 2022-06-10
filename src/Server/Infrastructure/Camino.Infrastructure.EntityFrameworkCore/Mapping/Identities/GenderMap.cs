@@ -15,7 +15,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasMany(x => x.UserInfos)
+            builder.HasMany(x => x.Users)
                 .WithOne(x => x.Gender)
                 .HasForeignKey(x => x.GenderId)
                 .OnDelete(DeleteBehavior.NoAction);

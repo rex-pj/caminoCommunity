@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Camino.Core.Domains
+﻿namespace Camino.Core.Domains
 {
     public interface IDbContext
     {
@@ -40,8 +36,6 @@ namespace Camino.Core.Domains
         /// <typeparam name="TEntity">Entity type</typeparam>
         /// <param name="entity">Entity</param>
         void Detach<TEntity>(TEntity entity) where TEntity : class;
-
-        Task UpdateByNameAsync<TEntity>(TEntity entity, object value, string propertyName, bool isIgnoreCase = false) where TEntity : class;
         #endregion
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Camino.Core.Domains.Users;
 using Camino.Shared.Enums;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Camino.Core.Contracts.Repositories.Users
 {
@@ -14,7 +12,6 @@ namespace Camino.Core.Contracts.Repositories.Users
         Task<IList<User>> GetByIdsAsync(IEnumerable<long> ids);
         Task<bool> UpdateStatusAsync(long id, long updatedById, UserStatuses status);
         Task<User> FindByIdAsync(long id);
-        Task<bool> PartialUpdateAsync(UserInfo userInfo, string fieldName, object value);
         Task<bool> UpdateAsync(User user);
     }
 }

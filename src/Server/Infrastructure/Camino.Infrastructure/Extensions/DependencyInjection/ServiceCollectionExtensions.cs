@@ -16,9 +16,6 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
 
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IAppDbContext, CaminoDbContext>();
-            services.AddScoped<IDbContext, CaminoDbContext>();
-
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped(typeof(IEntityRepository<>), typeof(EfRepository<>));

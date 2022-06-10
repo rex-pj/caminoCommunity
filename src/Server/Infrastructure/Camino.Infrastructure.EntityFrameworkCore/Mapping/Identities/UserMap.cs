@@ -16,12 +16,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder
-                .HasOne(x => x.UserInfo)
-                .WithOne(x => x.User)
-                .HasForeignKey<UserInfo>(x => x.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder
                 .HasOne(x => x.CreatedBy)
                 .WithMany(x => x.CreatedUsers)
                 .HasForeignKey(x => x.CreatedById)
@@ -72,6 +66,16 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
                .HasMany(x => x.GrantedRoleAuthorizationPolicies)
                .WithOne(x => x.GrantedBy)
                .HasForeignKey(x => x.GrantedBy);
+
+            builder
+               .HasOne(c => c.Gender)
+               .WithMany(x => x.Users)
+               .HasForeignKey(c => c.GenderId);
+
+            builder
+               .HasOne(c => c.Country)
+               .WithMany(x => x.Users)
+               .HasForeignKey(c => c.CountryId);
         }
     }
 }

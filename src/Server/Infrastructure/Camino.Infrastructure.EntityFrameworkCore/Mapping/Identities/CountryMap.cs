@@ -15,7 +15,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasMany(x => x.UserInfos)
+            builder.HasMany(x => x.Users)
                 .WithOne(x => x.Country)
                 .HasForeignKey(x => x.CountryId);
         }

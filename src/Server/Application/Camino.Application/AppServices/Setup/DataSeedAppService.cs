@@ -138,7 +138,10 @@ namespace Camino.Application.AppServices.Setup
                 StatusId = activedStatusId,
                 UserName = userRequest.UserName,
                 DisplayName = userRequest.DisplayName,
-                IsEmailConfirmed = true
+                IsEmailConfirmed = true,
+                BirthDate = userRequest.BirthDate,
+                Description = userRequest.Description,
+                GenderId = userRequest.GenderId,
             };
 
             await _dbContext.Users.AddAsync(user);
@@ -146,14 +149,6 @@ namespace Camino.Application.AppServices.Setup
             var userId = user.Id;
             if (userId > 0)
             {
-                await _dbContext.UserInfos.AddAsync(new UserInfo
-                {
-                    BirthDate = userRequest.BirthDate,
-                    Description = userRequest.Description,
-                    GenderId = userRequest.GenderId,
-                    Id = userId
-                });
-
                 // Insert roles
                 long adminRoleId = 0;
                 foreach (var role in setupRequest.Roles)

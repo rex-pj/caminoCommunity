@@ -7,15 +7,13 @@ using Camino.Infrastructure.Emails.Contracts;
 using Camino.Infrastructure.Emails.Contracts.Dtos;
 using Camino.Core.DependencyInjection;
 using Camino.Shared.Configuration.Options;
-using System.Threading.Tasks;
-using System;
 
 namespace Camino.Infrastructure.Providers
 {
-    public class EmailProvider : IEmailProvider, IScopedDependency
+    public class SmtpEmailClient : IEmailClient, IScopedDependency
     {
         private readonly EmailSenderSettings _emailSenderSettings;
-        public EmailProvider(IOptions<EmailSenderSettings> emailSenderSettings)
+        public SmtpEmailClient(IOptions<EmailSenderSettings> emailSenderSettings)
         {
             _emailSenderSettings = emailSenderSettings.Value;
         }

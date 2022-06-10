@@ -4,11 +4,11 @@
     {
         public Gender()
         {
-            UserInfos = new HashSet<UserInfo>();
+            Users = new HashSet<User>();
         }
 
         public byte Id { get; set; }
         public string Name { get; set; }
-        public virtual ICollection<UserInfo> UserInfos { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

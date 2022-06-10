@@ -43,7 +43,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         public DbSet<ProductAttributeRelation> ProductAttributeRelations { get; set; }
         public DbSet<ProductAttributeRelationValue> ProductAttributeRelationValues { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<AuthorizationPolicy> AuthorizationPolicies { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Gender> Genders { get; set; }
@@ -89,7 +88,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
                 .ApplyConfiguration(new ProductAttributeRelationMap())
                 .ApplyConfiguration(new ProductAttributeRelationValueMap())
                 .ApplyConfiguration(new UserMap())
-                .ApplyConfiguration(new UserInfoMap())
                 .ApplyConfiguration(new AuthorizationPolicyMap())
                 .ApplyConfiguration(new CountryMap())
                 .ApplyConfiguration(new GenderMap())
