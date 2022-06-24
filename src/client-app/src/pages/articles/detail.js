@@ -9,7 +9,7 @@ import {
 } from "../../graphql/fetching/queries";
 import { articleMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
-import { withRouter } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
 import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
@@ -25,10 +25,10 @@ const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default withRouter(function (props) {
-  const { match, location } = props;
-  const { params } = match;
-  const { id } = params;
+export default (function (props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [state, dispatch] = useStore(true);
   const { loading, data, error, refetch } = useQuery(
     articleQueries.GET_ARTICLE,
@@ -115,12 +115,12 @@ export default withRouter(function (props) {
         dispatch("ARTICLE_DELETE", {
           id: id,
         });
-        props.history.push({
+        navigate({
           pathname: location.state.from,
         });
         return;
       }
-      props.history.push({
+      navigate({
         pathname: `/`,
       });
     });

@@ -13,6 +13,8 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
+            builder.Property(x => x.ConcurrencyStamp).IsRequired(false);
+
             builder
                .HasMany(c => c.UserRoles)
                .WithOne(x => x.Role)

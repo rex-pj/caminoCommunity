@@ -1,5 +1,5 @@
-import { fromPromise } from "apollo-link";
-import { onError } from "apollo-link-error";
+import { fromPromise } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { getNewTokens } from "./tokenHandler";
 import { setLogin, getAuthenticationToken } from "../../services/authService";
 

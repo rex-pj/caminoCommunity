@@ -1,6 +1,6 @@
 import React, { Fragment, useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PrimaryTitle } from "../../atoms/Titles";
 import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
@@ -130,7 +130,9 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default withRouter((props) => {
+export default (props) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { farm, breadcrumbs, onOpenDeleteConfirmationModal } = props;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
@@ -145,10 +147,10 @@ export default withRouter((props) => {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/farms/update/${farm.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };
@@ -262,4 +264,4 @@ export default withRouter((props) => {
       </PanelDefault>
     </Fragment>
   );
-});
+};

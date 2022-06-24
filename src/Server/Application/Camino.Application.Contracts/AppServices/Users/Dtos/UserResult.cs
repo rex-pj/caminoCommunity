@@ -11,8 +11,8 @@ namespace Camino.Application.Contracts.AppServices.Users.Dtos
         public DateTimeOffset? BirthDate { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
-        public long CreatedById { get; set; }
-        public long UpdatedById { get; set; }
+        public long? CreatedById { get; set; }
+        public long? UpdatedById { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }
         public int StatusId { get; set; }

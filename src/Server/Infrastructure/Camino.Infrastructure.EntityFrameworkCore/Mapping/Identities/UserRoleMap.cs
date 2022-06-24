@@ -16,6 +16,10 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
                 x.RoleId
             });
 
+            builder.Property(x => x.GrantedById).IsRequired();
+            builder.Property(x => x.IsGranted).IsRequired();
+            builder.Property(x => x.GrantedDate).IsRequired();
+
             builder
                 .HasOne(c => c.User)
                 .WithMany(x => x.UserRoles)

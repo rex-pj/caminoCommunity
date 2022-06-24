@@ -29,7 +29,7 @@ namespace Camino.Application.AppServices.Products
         }
 
         #region get
-        public async Task<ProductCategoryResult> FindAsync(int id)
+        public async Task<ProductCategoryResult> FindAsync(long id)
         {
             var existing = await _productCategoryRepository.FindAsync(id);
             if (existing == null)
@@ -160,7 +160,7 @@ namespace Camino.Application.AppServices.Products
             }
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, int[] currentIds)
+        public async Task<IList<ProductCategoryResult>> SearchParentsAsync(BaseFilter filter, long[] currentIds)
         {
             var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var query = _productCategoryEntityRepository.Get(x => !x.ParentId.HasValue)
@@ -199,7 +199,7 @@ namespace Camino.Application.AppServices.Products
             return categories;
         }
 
-        public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, int[] currentIds)
+        public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, long[] currentIds)
         {
             var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
             var queryParents = _productCategoryEntityRepository.Get(x => !x.ParentId.HasValue);
@@ -277,7 +277,7 @@ namespace Camino.Application.AppServices.Products
         #endregion
 
         #region CRUD
-        public async Task<int> CreateAsync(ProductCategoryRequest request)
+        public async Task<long> CreateAsync(ProductCategoryRequest request)
         {
             var newCategory = new ProductCategory()
             {
@@ -317,7 +317,7 @@ namespace Camino.Application.AppServices.Products
             return await _productCategoryRepository.UpdateAsync(existing);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(long id)
         {
             var hasProducts = await _productCategoryRepository.HasProductsAsync(id);
             if (hasProducts)

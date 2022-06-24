@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { feedqueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ErrorBar,
   LoadingBar,
@@ -24,10 +24,10 @@ const Wrapper = styled.div`
   }
 `;
 
-export default withRouter((props) => {
-  const { match, location, history } = props;
-  const { params } = match;
-  const { keyword } = params;
+export default (props) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { keyword } = useParams();
   const timeOptions = [
     { value: 1, label: "Một tiếng trước" },
     { value: 24, label: "24 tiếng trước" },
@@ -85,7 +85,7 @@ export default withRouter((props) => {
     if (query) {
       pathName += `?${query}`;
     }
-    history.push(pathName);
+    navigate(pathName);
   };
 
   const { advancedSearch } = data;
@@ -119,4 +119,4 @@ export default withRouter((props) => {
       </div>
     </Wrapper>
   );
-});
+};

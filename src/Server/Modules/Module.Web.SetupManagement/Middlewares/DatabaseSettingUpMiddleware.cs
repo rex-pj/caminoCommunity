@@ -28,7 +28,7 @@ namespace Module.Web.SetupManagement.Middlewares
             if (!installProvider.HasDatabaseSetup())
             {
                 //redirect
-                var installUrl = SetupDataSettings.StartSetupUrl;
+                var installUrl = SetupConfigs.StartSetupUrl;
                 if (!currentUrl.StartsWith(installUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     context.Response.Redirect(installUrl);
@@ -41,7 +41,7 @@ namespace Module.Web.SetupManagement.Middlewares
             if (!installProvider.HasDataSeeded())
             {
                 //redirect
-                var seedDataUrl = SetupDataSettings.SeedDataUrl;
+                var seedDataUrl = SetupConfigs.SeedDataUrl;
                 if (!currentUrl.StartsWith(seedDataUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     context.Response.Redirect(seedDataUrl);

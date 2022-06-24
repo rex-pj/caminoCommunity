@@ -5,14 +5,10 @@ using Camino.Application.Contracts.AppServices.Users;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Validators;
 using Camino.Application.Validators;
-using Camino.Infrastructure.Images.Exceptions;
-using Camino.Infrastructure.Images.Utils;
 using Camino.Core.Domains.Media;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+using Camino.Shared.Exceptions;
+using Camino.Shared.Utils;
 
 namespace Camino.Application.AppServices.Users
 {

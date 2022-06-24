@@ -5,7 +5,6 @@ using Camino.Core.Contracts.Providers;
 using System.IO;
 using System.Reflection;
 using Camino.Shared.Constants;
-using Camino.Shared.Configuration.Options;
 using Camino.Infrastructure.Files.Contracts;
 
 namespace Module.Web.SetupManagement.Providers
@@ -44,7 +43,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void SetDatabaseHasBeenSetup(string filePath = null)
         {
-            filePath ??= SetupDataSettings.SetupConfigurationPath;
+            filePath ??= SetupConfigs.SetupConfigurationPath;
 
             try
             {
@@ -60,7 +59,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void SetDataHasBeenSeeded(string filePath = null)
         {
-            filePath ??= SetupDataSettings.SetupConfigurationPath;
+            filePath ??= SetupConfigs.SetupConfigurationPath;
 
             try
             {
@@ -80,13 +79,13 @@ namespace Module.Web.SetupManagement.Providers
                 return _setupSettings;
             }
 
-            setupSettingsFilePath ??= SetupDataSettings.SetupConfigurationPath;
+            setupSettingsFilePath ??= SetupConfigs.SetupConfigurationPath;
             if (!_fileProvider.FileExists(setupSettingsFilePath))
             {
                 var installSettings = new SetupSettings()
                 {
                     IsInitialized = true,
-                    SeedDataJsonFilePath = SetupDataSettings.PrepareDataPath
+                    SeedDataJsonFilePath = SetupConfigs.PrepareDataPath
                 };
 
                 SaveSettings(installSettings, setupSettingsFilePath);
@@ -108,7 +107,7 @@ namespace Module.Web.SetupManagement.Providers
 
         public void DeleteSetupSettings(string setupSettingsFilePath = null)
         {
-            setupSettingsFilePath ??= SetupDataSettings.SetupConfigurationPath;
+            setupSettingsFilePath ??= SetupConfigs.SetupConfigurationPath;
             _fileProvider.DeleteFile(setupSettingsFilePath);
         }
 

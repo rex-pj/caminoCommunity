@@ -5,7 +5,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation, useLazyQuery } from "@apollo/client";
@@ -29,7 +29,7 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default withRouter((props) => {
+export default (props) => {
   const {
     pageNumber,
     match: {
@@ -366,4 +366,4 @@ export default withRouter((props) => {
       </InfiniteScroll>
     </Fragment>
   );
-});
+};

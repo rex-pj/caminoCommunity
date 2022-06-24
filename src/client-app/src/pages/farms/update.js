@@ -6,7 +6,7 @@ import {
 } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import authClient from "../../graphql/client/authClient";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
@@ -18,10 +18,10 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
-export default withRouter(function (props) {
-  const { match } = props;
-  const { params } = match;
-  const { id } = params;
+export default (function (props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const dispatch = useStore(false)[1];
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [updateFarm] = useMutation(farmMutations.UPDATE_FARM, {
@@ -88,19 +88,19 @@ export default withRouter(function (props) {
       return new Promise((resolve) => {
         const { data } = response;
         const { updateFarm: farm } = data;
-        if (props.location.state && props.location.state.from) {
-          const referrefUri = props.location.state.from;
+        if (location.state && location.state.from) {
+          const referrefUri = location.state.from;
           const farmUpdateUrl = `/farms/update/${farm.id}`;
           if (referrefUri !== farmUpdateUrl) {
             raiseFarmUpdatedNotify(farm);
-            props.history.push(referrefUri);
+            navigate(referrefUri);
             resolve({ farm });
             return;
           }
         }
 
         raiseFarmUpdatedNotify(farm);
-        props.history.push(`/farms/${farm.id}`);
+        navigate(`/farms/${farm.id}`);
         resolve({ farm });
       });
     });

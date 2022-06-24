@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../graphql/client";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 
-export default withRouter((props) => {
+export default (props) => {
+  const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const [signup] = useMutation(userMutations.SIGNUP, {
@@ -38,7 +39,7 @@ export default withRouter((props) => {
               "Có lỗi xảy ra trong quá trình đăng ký"
             );
           } else {
-            props.history.push("/auth/login");
+            navigate("/auth/login");
           }
         })
         .catch((error) => {
@@ -58,4 +59,4 @@ export default withRouter((props) => {
       isFormEnabled={isFormEnabled}
     />
   );
-});
+};

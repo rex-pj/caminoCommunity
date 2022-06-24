@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import { withRouter } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { articleQueries } from "../../graphql/fetching/queries";
@@ -26,13 +26,9 @@ import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default withRouter(function (props) {
-  const {
-    match: {
-      params: { userId },
-    },
-    pageNumber,
-  } = props;
+export default (function (props) {
+  const { userId } = useParams();
+  const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
 

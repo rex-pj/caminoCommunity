@@ -1,7 +1,7 @@
 ﻿using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Core.Validators;
-using Camino.Infrastructure.Images.Exceptions;
-using Camino.Infrastructure.Images.Utils;
+using Camino.Shared.Exceptions;
+using Camino.Shared.Utils;
 
 namespace Camino.Application.Validators
 {

@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { withRouter } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
@@ -74,7 +73,7 @@ const Footer = styled.div`
   }
 `;
 
-export default withRouter((props) => {
+export default (props) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -319,4 +318,4 @@ export default withRouter((props) => {
       </form>
     </Fragment>
   );
-});
+};

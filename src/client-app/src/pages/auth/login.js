@@ -3,13 +3,14 @@ import LoginForm from "../../components/organisms/Auth/LoginForm";
 import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../graphql/client";
 import { userMutations } from "../../graphql/fetching/mutations";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../../store/context/session-context";
 import { setLogin } from "../../services/authService";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 
-export default withRouter((props) => {
+export default (props) => {
+  const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const { lang, relogin } = useContext(SessionContext);
@@ -57,7 +58,7 @@ export default withRouter((props) => {
             setLogin(login, isRemember);
 
             await relogin();
-            props.history.push("/");
+            navigate("/");
           }
         })
         .catch((error) => {
@@ -77,4 +78,4 @@ export default withRouter((props) => {
       isFormEnabled={isFormEnabled}
     />
   );
-});
+};

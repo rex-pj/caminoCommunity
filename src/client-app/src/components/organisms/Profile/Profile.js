@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Switch, withRouter, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 import { Fragment } from "react";
 
@@ -12,7 +12,7 @@ const AsyncPage = loadable(
 
 const ProfileInfo = loadable(() => import("./ProfileInfo"));
 
-export default withRouter((props) => {
+export default (props) => {
   const { userId, baseUrl, pages, userInfo, pageNumber } = props;
   const { canEdit } = userInfo;
 
@@ -25,7 +25,7 @@ export default withRouter((props) => {
     <Fragment>
       <div className="row">
         <div className="col col-12 col-sm-12 col-md-12 col-lg-9 or-last order-lg-first">
-          <Switch>
+          <Routes>
             {pages
               ? pages.map((route) => {
                   var paths = route.path.map((path) => {
@@ -57,7 +57,7 @@ export default withRouter((props) => {
               exact={true}
               component={() => <div>NOT FOUND</div>}
             />
-          </Switch>
+          </Routes>
         </div>
         <div className="col col-12 col-sm-12 col-md-12 col-lg-3 order-first order-lg-last mb-3">
           <ProfileInfo userInfo={userInfo} />
@@ -65,4 +65,4 @@ export default withRouter((props) => {
       </div>
     </Fragment>
   );
-});
+};

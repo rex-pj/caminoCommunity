@@ -10,7 +10,6 @@ using Camino.Core.Domains.Articles.DomainServices;
 using Camino.Core.Domains.Articles.Repositories;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Media;
-using Camino.Infrastructure.Images.Utils;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;

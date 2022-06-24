@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ListItemCollapseCover from "../../molecules/Thumbnails/ListItemCollapseCover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -90,8 +90,10 @@ const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default withRouter((props) => {
-  const { article, onOpenDeleteConfirmationModal, location } = props;
+export default (props) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { article, onOpenDeleteConfirmationModal } = props;
   const { createdByIdentityId } = article;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   var { currentUser, isLogin } = useContext(SessionContext);
@@ -109,10 +111,10 @@ export default withRouter((props) => {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/articles/update/${article.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };
@@ -229,4 +231,4 @@ export default withRouter((props) => {
       </Panel>
     </div>
   );
-});
+};

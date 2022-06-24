@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Camino.Infrastructure.Providers
 {
-    public class FileProvider : IFileProvider, IScopedDependency
+    public class FileProvider : IFileProvider
     {
         public void WriteText(string path, string contents, Encoding encoding)
         {

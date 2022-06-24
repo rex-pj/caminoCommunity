@@ -9,7 +9,6 @@ using Camino.Core.Domains;
 using Microsoft.EntityFrameworkCore;
 using Camino.Core.Domains.Products;
 using Camino.Core.Domains.Products.DomainServices;
-using Camino.Infrastructure.EntityFrameworkCore;
 using Camino.Application.Contracts.AppServices.Farms;
 using Camino.Application.Contracts.AppServices.Farms.Dtos;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
@@ -31,7 +30,7 @@ namespace Camino.Application.AppServices.Farms
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly int _deletedStatus = FarmStatuses.Deleted.GetCode();
         private readonly int _inactivedStatus = FarmStatuses.Inactived.GetCode();
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
         public FarmAppService(IFarmRepository farmRepository,
             IFarmPictureAppService farmPictureAppService, IUserRepository userRepository,
@@ -42,7 +41,7 @@ namespace Camino.Application.AppServices.Farms
             IEntityRepository<ProductCategoryRelation> productCategoryRelationEntityRepository,
             IProductPictureDomainService productPictureDomainService,
             IUserPhotoRepository userPhotoRepository,
-            IAppDbContext dbContext)
+            IDbContext dbContext)
         {
             _farmRepository = farmRepository;
             _farmPictureAppService = farmPictureAppService;

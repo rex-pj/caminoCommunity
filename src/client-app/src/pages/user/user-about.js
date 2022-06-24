@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
@@ -9,7 +9,7 @@ import {
   LoadingBar,
 } from "../../components/molecules/NotificationBars";
 
-export default withRouter((props) => {
+export default (props) => {
   const { userId } = props;
 
   const [partialUserUpdate] = useMutation(userMutations.PARTIAL_USER_UPDATE);
@@ -64,4 +64,4 @@ export default withRouter((props) => {
       canEdit={canEdit}
     />
   );
-});
+};

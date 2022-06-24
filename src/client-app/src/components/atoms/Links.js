@@ -1,14 +1,13 @@
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
-const AnchorLink = withRouter(({ ...props }) => {
-  const { match, children, target, to } = props;
-  const { className } = props;
-  const { path } = match;
-  const currentPath = path
-    ? path.split(":")
-      ? path.split(":")[0]
-      : path
+const AnchorLink = ({ ...props }) => {
+  const { children, target, to, className } = props;
+  const { pathname } = useMatch();
+  const currentPath = pathname
+    ? pathname.split(":")
+      ? pathname.split(":")[0]
+      : pathname
     : null;
 
   let toNormalized = "";
@@ -33,6 +32,6 @@ const AnchorLink = withRouter(({ ...props }) => {
       {children}
     </Link>
   );
-});
+};
 
 export { AnchorLink };

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ErrorBar,
   LoadingBar,
@@ -22,10 +22,10 @@ import { fileToBase64 } from "../../utils/Helper";
 import articleCreationModel from "../../models/articleCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
-export default withRouter(function (props) {
-  const { match } = props;
-  const { params } = match;
-  const { id } = params;
+export default (function (props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const dispatch = useStore(false)[1];
   const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [updateArticle] = useMutation(articleMutations.UPDATE_ARTICLE, {
@@ -132,19 +132,19 @@ export default withRouter(function (props) {
       return new Promise((resolve) => {
         const { data } = response;
         const { updateArticle: article } = data;
-        if (props.location.state && props.location.state.from) {
-          const referrefUri = props.location.state.from;
+        if (location.state && location.state.from) {
+          const referrefUri = location.state.from;
           const articleUpdateUrl = `/articles/update/${article.id}`;
           if (referrefUri !== articleUpdateUrl) {
             raiseArticleUpdatedNotify(article);
-            props.history.push(referrefUri);
+            navigate(referrefUri);
             resolve({ article });
             return;
           }
         }
 
         raiseArticleUpdatedNotify(article);
-        props.history.push(`/articles/${article.id}`);
+        navigate(`/articles/${article.id}`);
         resolve({ article });
       });
     });

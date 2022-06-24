@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import PasswordUpdateForm from "../../components/organisms/Profile/PasswordUpdateForm";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import ConfirmToRedirectModal from "../../components/organisms/Modals/ConfirmToRedirectModal";
 
-export default withRouter((props) => {
+export default (props) => {
+  const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const [updateUserPassword] = useMutation(userMutations.UPDATE_USER_PASSWORD);
@@ -32,7 +33,7 @@ export default withRouter((props) => {
   };
 
   const onSucceed = () => {
-    props.history.push("/auth/logout");
+    navigate("/auth/logout");
   };
 
   const showNotification = (title, message, type) => {
@@ -94,4 +95,4 @@ export default withRouter((props) => {
       showValidationError={props.showValidationError}
     />
   );
-});
+};

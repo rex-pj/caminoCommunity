@@ -1,4 +1,4 @@
-﻿namespace Camino.Shared.Configuration.Options
+﻿namespace Module.Web.SetupManagement
 {
     public class SetupSettings
     {

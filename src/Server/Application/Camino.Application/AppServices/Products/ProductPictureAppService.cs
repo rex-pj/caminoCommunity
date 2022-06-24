@@ -9,8 +9,6 @@ using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Media;
 using Camino.Core.Domains.Products;
 using Camino.Core.Domains.Products.DomainServices;
-using Camino.Infrastructure.EntityFrameworkCore;
-using Camino.Infrastructure.Images.Utils;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -25,11 +23,11 @@ namespace Camino.Application.AppServices.Products
         private readonly IEntityRepository<Product> _productRepository;
         private readonly IProductPictureDomainService _productPictureDomainService;
         private readonly IPictureRepository _pictureRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly int _deletedStatus = PictureStatuses.Deleted.GetCode();
         private readonly int _inactivedStatus = PictureStatuses.Inactived.GetCode();
 
-        public ProductPictureAppService(IAppDbContext dbContext,
+        public ProductPictureAppService(IDbContext dbContext,
             IPictureRepository pictureRepository,
             IEntityRepository<ProductPicture> productPictureEntityRepository,
             IProductPictureRepository productPictureRepository,

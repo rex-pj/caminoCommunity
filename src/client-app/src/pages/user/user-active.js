@@ -1,13 +1,13 @@
 import React from "react";
 import UserActive from "../../components/organisms/Profile/UserActive";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { unauthClient } from "../../graphql/client";
 
-export default withRouter((props) => {
-  const { match } = props;
-  const { params } = match;
+export default (props) => {
+  const navigate = useNavigate();
+  const params = useParams();
   const { email } = params;
   let { key } = params;
   if (!key && params[0]) {
@@ -38,13 +38,13 @@ export default withRouter((props) => {
   }
 
   if (error) {
-    history.push("/error");
+    navigate("/error");
   }
 
   if (data) {
     const { active } = data;
     if (active && !!active.isSucceed) {
-      history.push("/auth/login");
+      navigate("/auth/login");
     }
   }
 
@@ -57,4 +57,4 @@ export default withRouter((props) => {
       actionText="Vào trang chủ"
     />
   );
-});
+};

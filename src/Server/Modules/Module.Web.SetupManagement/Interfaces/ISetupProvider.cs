@@ -1,4 +1,4 @@
-﻿using Camino.Shared.Configuration.Options;
+﻿using Module.Web.SetupManagement;
 
 namespace Camino.Core.Contracts.Providers
 {

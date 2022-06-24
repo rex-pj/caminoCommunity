@@ -92,7 +92,7 @@ const BirthDateSelector = styled(DateSelector)`
   }
 `;
 
-export default (props) => {
+const SignUpForm = (props) => {
   let formData = signupModel;
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -261,3 +261,5 @@ export default (props) => {
     </form>
   );
 };
+
+export default SignUpForm;

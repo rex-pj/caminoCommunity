@@ -9,7 +9,6 @@ using Camino.Application.Validators;
 using Camino.Core.Domains;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains.Authorization;
-using Camino.Infrastructure.EntityFrameworkCore;
 using Camino.Core.Domains.Authentication;
 
 namespace Camino.Application.AppServices.Authentication
@@ -24,7 +23,7 @@ namespace Camino.Application.AppServices.Authentication
         private readonly IEntityRepository<UserClaim> _userClaimEntityRepository;
         private readonly IEntityRepository<UserRole> _userRoleEntityRepository;
         private readonly IValidationStrategyContext _validationStrategyContext;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         #endregion
 
         #region Ctor
@@ -35,7 +34,7 @@ namespace Camino.Application.AppServices.Authentication
             IUserLoginRepository userLoginRepository,
              IValidationStrategyContext validationStrategyContext,
             IUserTokenRepository userTokenRepository,
-            IAppDbContext dbContext)
+            IDbContext dbContext)
         {
             _userEntityRepository = userEntityRepository;
             _userClaimEntityRepository = userClaimEntityRepository;

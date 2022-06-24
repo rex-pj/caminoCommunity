@@ -8,6 +8,7 @@ namespace Module.Web.SetupManagement.Extensions.DependencyInjection
     {
         public static IServiceCollection ConfigureFileServices(this IServiceCollection services)
         {
+            services.AddSingleton<SetupSettings>();
             services.AddScoped<ISetupProvider, SetupProvider>();
             return services;
         }

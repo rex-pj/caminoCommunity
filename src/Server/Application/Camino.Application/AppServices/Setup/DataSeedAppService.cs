@@ -7,19 +7,52 @@ using Camino.Core.Domains.Identifiers;
 using Camino.Core.Domains.Media;
 using Camino.Core.Domains.Navigations;
 using Camino.Core.Domains.Users;
-using Camino.Infrastructure.EntityFrameworkCore;
 using Camino.Shared.Enums;
+using Camino.Core.Domains;
+using System.Transactions;
 
 namespace Camino.Application.AppServices.Setup
 {
     public class DataSeedAppService : IDataSeedAppService, IScopedDependency
     {
         private readonly IDbCreationRepository _dbCreationRepository;
-        private readonly CaminoDbContext _dbContext;
-        public DataSeedAppService(IDbCreationRepository dbCreationRepository, 
-            CaminoDbContext dbContext)
+        private readonly IEntityRepository<User> _userRepository;
+        private readonly IEntityRepository<Status> _userStatusRepository;
+        private readonly IEntityRepository<UserPhotoType> _userPhotoTypeRepository;
+        private readonly IEntityRepository<Shortcut> _shortcutRepository;
+        private readonly IEntityRepository<Gender> _genderRepository;
+        private readonly IEntityRepository<Country> _countryRepository;
+        private readonly IEntityRepository<Role> _roleRepository;
+        private readonly IEntityRepository<UserRole> _userRoleRepository;
+        private readonly IEntityRepository<AuthorizationPolicy> _authorizationPolicyRepository;
+        private readonly IEntityRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
+        private readonly IEntityRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
+        private readonly IDbContext _dbContext;
+        public DataSeedAppService(IDbCreationRepository dbCreationRepository,
+            IDbContext dbContext, IEntityRepository<User> userRepository,
+            IEntityRepository<Status> userStatusRepository,
+            IEntityRepository<UserPhotoType> userPhotoTypeRepository,
+            IEntityRepository<Shortcut> shortcutRepository,
+            IEntityRepository<Gender> genderRepository,
+            IEntityRepository<Country> countryRepository,
+            IEntityRepository<Role> roleRepository,
+            IEntityRepository<UserRole> userRoleRepository,
+            IEntityRepository<AuthorizationPolicy> authorizationPolicyRepository,
+            IEntityRepository<RoleAuthorizationPolicy> roleAuthorizationPolicyRepository,
+            IEntityRepository<UserAuthorizationPolicy> userAuthorizationPolicyRepository)
         {
             _dbCreationRepository = dbCreationRepository;
+            _userRepository = userRepository;
+            _userStatusRepository = userStatusRepository;
+            _userPhotoTypeRepository = userPhotoTypeRepository;
+            _shortcutRepository = shortcutRepository;
+            _genderRepository = genderRepository;
+            _countryRepository = countryRepository;
+            _roleRepository = roleRepository;
+            _userRoleRepository = userRoleRepository;
+            _authorizationPolicyRepository = authorizationPolicyRepository;
+            _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
+            _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
             _dbContext = dbContext;
         }
 
@@ -30,23 +63,21 @@ namespace Camino.Application.AppServices.Setup
 
         public async Task SeedDataAsync(SetupRequest setupRequest)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
-                var isSucceed = await SeedIdentityDataAsync(setupRequest);
-                if (isSucceed)
+                try
                 {
-                    await SeedContentDataAsync(setupRequest);
-                    await _dbContext.Database.CommitTransactionAsync();
+                    var isSucceed = await SeedIdentityDataAsync(setupRequest);
+                    if (isSucceed)
+                    {
+                        await SeedContentDataAsync(setupRequest);
+                        scope.Complete();
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    await _dbContext.Database.RollbackTransactionAsync();
+                    throw;
                 }
-            }
-            catch (Exception)
-            {
-                await _dbContext.Database.RollbackTransactionAsync();
-                throw;
             }
         }
 
@@ -55,7 +86,7 @@ namespace Camino.Application.AppServices.Setup
             // Insert User Photo Types
             foreach (var userPhotoType in setupRequest.UserPhotoTypes)
             {
-                await _dbContext.UserPhotoTypes.AddAsync(new UserPhotoType()
+                await _userPhotoTypeRepository.InsertAsync(new UserPhotoType()
                 {
                     Name = userPhotoType.Name,
                     Description = userPhotoType.Description
@@ -65,7 +96,7 @@ namespace Camino.Application.AppServices.Setup
             // Insert Shortcuts
             foreach (var shortcut in setupRequest.Shortcuts)
             {
-                await _dbContext.Shortcuts.AddAsync(new Shortcut
+                await _shortcutRepository.InsertAsync(new Shortcut
                 {
                     Name = shortcut.Name,
                     Description = shortcut.Description,
@@ -78,6 +109,7 @@ namespace Camino.Application.AppServices.Setup
 
         private async Task<bool> SeedIdentityDataAsync(SetupRequest setupRequest)
         {
+            var modifiedDate = DateTime.UtcNow;
             // Insert user statuses
             int activedStatusId = 0;
             foreach (var statusRequest in setupRequest.Statuses)
@@ -90,13 +122,13 @@ namespace Camino.Application.AppServices.Setup
 
                 if (status.Name == UserStatuses.Actived.ToString())
                 {
-                    await _dbContext.Statuses.AddAsync(status);
+                    await _userStatusRepository.InsertAsync(status);
                     await _dbContext.SaveChangesAsync();
                     activedStatusId = status.Id;
                 }
                 else
                 {
-                    await _dbContext.Statuses.AddAsync(status);
+                    await _userStatusRepository.InsertAsync(status);
                 }
             }
 
@@ -108,7 +140,7 @@ namespace Camino.Application.AppServices.Setup
             // Insert genders
             foreach (var gender in setupRequest.Genders)
             {
-                await _dbContext.Genders.AddAsync(new Gender()
+                await _genderRepository.InsertAsync(new Gender()
                 {
                     Name = gender.Name
                 });
@@ -117,7 +149,7 @@ namespace Camino.Application.AppServices.Setup
             // Insert countries
             foreach (var country in setupRequest.Countries)
             {
-                await _dbContext.Countries.AddAsync(new Country()
+                await _countryRepository.InsertAsync(new Country()
                 {
                     Name = country.Name,
                     Code = country.Code
@@ -128,8 +160,8 @@ namespace Camino.Application.AppServices.Setup
             var userRequest = setupRequest.InitualUser;
             var user = new User
             {
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
+                CreatedDate = modifiedDate,
+                UpdatedDate = modifiedDate,
                 Email = userRequest.Email,
                 Firstname = userRequest.Firstname,
                 Lastname = userRequest.Lastname,
@@ -142,11 +174,14 @@ namespace Camino.Application.AppServices.Setup
                 BirthDate = userRequest.BirthDate,
                 Description = userRequest.Description,
                 GenderId = userRequest.GenderId,
+                CountryId = userRequest.CountryId,
+                Address = userRequest.Address
             };
 
-            await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
+            _userRepository.Insert(user);
+            _dbContext.SaveChanges();
             var userId = user.Id;
+            user.CreatedById = userId;
             if (userId > 0)
             {
                 // Insert roles
@@ -159,19 +194,19 @@ namespace Camino.Application.AppServices.Setup
                         Description = role.Description,
                         CreatedById = userId,
                         UpdatedById = userId,
-                        CreatedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow
+                        CreatedDate = modifiedDate,
+                        UpdatedDate = modifiedDate
                     };
 
                     if (role.Name == "Admin")
                     {
-                        await _dbContext.Roles.AddAsync(newRole);
+                        await _roleRepository.InsertAsync(newRole);
                         await _dbContext.SaveChangesAsync();
                         adminRoleId = newRole.Id;
                     }
                     else
                     {
-                        await _dbContext.Roles.AddAsync(newRole);
+                        await _roleRepository.InsertAsync(newRole);
                     }
                 }
 
@@ -182,12 +217,12 @@ namespace Camino.Application.AppServices.Setup
                     {
                         UserId = userId,
                         GrantedById = userId,
-                        GrantedDate = DateTime.UtcNow,
+                        GrantedDate = modifiedDate,
                         IsGranted = true,
                         RoleId = adminRoleId
                     };
 
-                    await _dbContext.UserRoles.AddAsync(adminUserRole);
+                    await _userRoleRepository.InsertAsync(adminUserRole);
                 }
 
                 // Insert authorization policies
@@ -198,27 +233,27 @@ namespace Camino.Application.AppServices.Setup
                         Name = authorizationPolicy.Name,
                         Description = authorizationPolicy.Description,
                         CreatedById = userId,
-                        CreatedDate = DateTime.UtcNow,
+                        CreatedDate = modifiedDate,
                         UpdatedById = userId,
-                        UpdatedDate = DateTime.UtcNow
+                        UpdatedDate = modifiedDate
                     };
-                    await _dbContext.AuthorizationPolicies.AddAsync(newAuthorizationPolicy);
+                    await _authorizationPolicyRepository.InsertAsync(newAuthorizationPolicy);
                     await _dbContext.SaveChangesAsync();
                     var authorizationPolicyId = newAuthorizationPolicy.Id;
 
-                    await _dbContext.RoleAuthorizationPolicies.AddAsync(new RoleAuthorizationPolicy()
+                    await _roleAuthorizationPolicyRepository.InsertAsync(new RoleAuthorizationPolicy()
                     {
                         GrantedById = userId,
-                        GrantedDate = DateTime.UtcNow,
+                        GrantedDate = modifiedDate,
                         IsGranted = true,
                         RoleId = adminRoleId,
                         AuthorizationPolicyId = authorizationPolicyId
                     });
 
-                    await _dbContext.UserAuthorizationPolicies.AddAsync(new UserAuthorizationPolicy()
+                    await _userAuthorizationPolicyRepository.InsertAsync(new UserAuthorizationPolicy()
                     {
                         GrantedById = userId,
-                        GrantedDate = DateTime.UtcNow,
+                        GrantedDate = modifiedDate,
                         IsGranted = true,
                         UserId = userId,
                         AuthorizationPolicyId = authorizationPolicyId

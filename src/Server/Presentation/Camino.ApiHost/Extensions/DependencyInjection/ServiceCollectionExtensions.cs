@@ -13,7 +13,6 @@ using Camino.Shared.Configuration.Options;
 using Camino.IdentityManager.Contracts.Options;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
-using Camino.Core.Domains;
 
 namespace Camino.ApiHost.Extensions.DependencyInjection
 {

@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PanelDefault } from "../../molecules/Panels";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
@@ -102,7 +102,9 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default withRouter(function (props) {
+export default (function (props) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { article, onOpenDeleteConfirmationModal } = props;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef();
@@ -117,10 +119,10 @@ export default withRouter(function (props) {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/articles/update/${article.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };

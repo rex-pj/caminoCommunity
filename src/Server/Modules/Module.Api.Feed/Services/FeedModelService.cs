@@ -24,7 +24,7 @@ namespace Module.Api.Feed.Services
             var feeds = feedResults.Select(x => new FeedModel()
             {
                 Address = x.Address,
-                CreatedById = x.CreatedById,
+                CreatedById = x.CreatedById ?? 0,
                 CreatedByName = x.CreatedByName,
                 CreatedDate = x.CreatedDate,
                 Description = x.Description,

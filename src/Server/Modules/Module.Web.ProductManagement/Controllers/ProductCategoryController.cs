@@ -277,10 +277,10 @@ namespace Module.Web.ProductManagement.Controllers
         [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
         public async Task<IActionResult> Search(string q, string currentId = null, bool isParentOnly = false)
         {
-            int[] currentIds = null;
+            long[] currentIds = null;
             if (!string.IsNullOrEmpty(currentId))
             {
-                currentIds = currentId.Split(',').Select(x => int.Parse(x)).ToArray();
+                currentIds = currentId.Split(',').Select(x => long.Parse(x)).ToArray();
             }
 
             IList<ProductCategoryResult> categories;

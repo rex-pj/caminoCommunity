@@ -30,7 +30,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
             return farmType;
         }
 
-        public async Task<int> CreateAsync(FarmType farmType)
+        public async Task<long> CreateAsync(FarmType farmType)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             farmType.CreatedDate = modifiedDate;

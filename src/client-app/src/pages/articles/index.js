@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
 import Article from "../../components/templates/Article";
 import { UrlConstant } from "../../utils/Constants";
-import { withRouter } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { articleQueries } from "../../graphql/fetching/queries";
 import { articleMutations } from "../../graphql/fetching/mutations";
@@ -16,12 +16,8 @@ import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default withRouter(function (props) {
-  const {
-    match: {
-      params: { pageNumber },
-    },
-  } = props;
+export default (function (props) {
+  const { pageNumber } = useParams();
   const [state, dispatch] = useStore(false);
   const [articles, setArticles] = useState([]);
   const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });

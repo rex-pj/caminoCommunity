@@ -1,10 +1,10 @@
 import React from "react";
-import { NavLink, withRouter } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
-export default withRouter((props) => {
-  const { location, children, userId, baseUrl } = props;
+export default (props) => {
+  const { children, userId, baseUrl } = props;
   let { pageNav } = props;
-  let { pathname } = location;
+  let { pathname } = useLocation();
   pathname = pathname ? pathname.replace(/\/$/, "") : pathname;
 
   pageNav = pageNav ? `/${pageNav}` : "";
@@ -22,4 +22,4 @@ export default withRouter((props) => {
       {children}
     </NavLink>
   );
-});
+};

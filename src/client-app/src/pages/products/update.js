@@ -12,7 +12,7 @@ import {
   productMutations,
   farmMutations,
 } from "../../graphql/fetching/mutations";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import {
@@ -23,10 +23,10 @@ import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 
-export default withRouter(function (props) {
-  const { match } = props;
-  const { params } = match;
-  const { id } = params;
+export default (function (props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const dispatch = useStore(false)[1];
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
   const [productCategories] = useMutation(
@@ -102,19 +102,19 @@ export default withRouter(function (props) {
         return new Promise((resolve) => {
           const { data } = response;
           const { updateProduct: product } = data;
-          if (props.location.state && props.location.state.from) {
-            const referrefUri = props.location.state.from;
+          if (location.state && location.state.from) {
+            const referrefUri = location.state.from;
             const productUpdateUrl = `/products/update/${product.id}`;
             if (referrefUri !== productUpdateUrl) {
               raiseProductUpdatedNotify(product);
-              props.history.push(referrefUri);
+              navigate(referrefUri);
               resolve({ product });
               return;
             }
           }
 
           raiseProductUpdatedNotify(product);
-          props.history.push(`/products/${product.id}`);
+          navigate(`/products/${product.id}`);
           resolve({ product });
         });
       });

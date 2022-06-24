@@ -1,9 +1,7 @@
 import React from "react";
-import { Router, Switch } from "react-router-dom";
-import appRoutes from "./routes/appRoutes";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import loadable from "@loadable/component";
 import { ApolloProvider } from "@apollo/client";
 import { authClient } from "./graphql/client";
 import configureModalStore from "./store/hook-store/modal-store";
@@ -14,12 +12,37 @@ import { useQuery } from "@apollo/client";
 import { userQueries } from "./graphql/fetching/queries";
 import { SessionContext } from "./store/context/session-context";
 import { parseUserInfo, isTokenValid } from "./services/authService";
-import { createBrowserHistory } from "history";
-const AsyncPage = loadable((props) => import(`${props.page}`), {
-  cacheKey: (props) => props.page,
-});
-
-const history = createBrowserHistory();
+import { ThemeProvider } from "styled-components";
+import * as theme from "./utils/Theme";
+const FeedsPage = React.lazy(() => import("./pages/feeds"));
+const ArticlesPage = React.lazy(() => import("./pages/articles"));
+const ArticleDetailPage = React.lazy(() => import("./pages/articles/detail"));
+const ArticleUpdatePage = React.lazy(() => import("./pages/articles/update"));
+const ProductsPage = React.lazy(() => import("./pages/products"));
+const ProductDetailPage = React.lazy(() => import("./pages/products/detail"));
+const ProductUpdatePage = React.lazy(() => import("./pages/products/update"));
+const FarmsPage = React.lazy(() => import("./pages/farms"));
+const FarmDetailPage = React.lazy(() => import("./pages/farms/detail"));
+const FarmUpdatePage = React.lazy(() => import("./pages/farms/update"));
+const ShoppingCartPage = React.lazy(() => import("./pages/shopping-cart"));
+const CommunitiesPage = React.lazy(() => import("./pages/communities"));
+const CommunityDetailPage = React.lazy(() =>
+  import("./pages/communities/detail")
+);
+const ForgotPasswordPage = React.lazy(() =>
+  import("./pages/auth/forgot-password")
+);
+const LoginPage = React.lazy(() => import("./pages/auth/login"));
+const SignupPage = React.lazy(() => import("./pages/auth/signup"));
+const LogoutPage = React.lazy(() => import("./pages/auth/logout"));
+const ProfilePage = React.lazy(() => import("./pages/user/profile"));
+const SearchPage = React.lazy(() => import("./pages/feeds/search"));
+const UserActivePage = React.lazy(() => import("./pages/user/user-active"));
+const ResetPasswordPage = React.lazy(() =>
+  import("./pages/user/reset-password")
+);
+const ErrorPage = React.lazy(() => import("./pages/error/index"));
+const NotFoundPage = React.lazy(() => import("./pages/error/not-found"));
 
 configureModalStore();
 configureAvatarStore();
@@ -70,21 +93,112 @@ export default () => {
       <SessionContext.Provider
         value={{ ...parseLoggedUser(), relogin, isLoading: loading }}
       >
-        <Router history={history}>
-          <Switch>
-            {appRoutes.map((route) => {
-              var { layout: ComponentLayout, exact, path, page } = route;
-              return (
-                <ComponentLayout
-                  key={route.page}
-                  exact={exact}
-                  path={path}
-                  component={() => <AsyncPage page={`./pages/${page}`} />}
-                />
-              );
-            })}
-          </Switch>
-        </Router>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<FeedsPage />}></Route>
+              <Route path="/page/:pageNumber" element={<FeedsPage />}></Route>
+              <Route path="/feeds" element={<FeedsPage />}></Route>
+              <Route
+                path="/feeds/page/:pageNumber"
+                element={<FeedsPage />}
+              ></Route>
+              <Route path="/articles" element={<ArticlesPage />}></Route>
+              <Route
+                path="/articles/page/:pageNumber"
+                element={<ArticlesPage />}
+              ></Route>
+              <Route
+                path="/articles/:id"
+                element={<ArticleDetailPage />}
+              ></Route>
+              <Route
+                path="/articles/update/:id"
+                element={<ArticleUpdatePage />}
+              ></Route>
+              <Route path="/products" element={<ProductsPage />}></Route>
+              <Route
+                path="/products/page/:pageNumber"
+                element={<ProductsPage />}
+              ></Route>
+              <Route
+                path="/products/:id"
+                element={<ProductDetailPage />}
+              ></Route>
+              <Route
+                path="/products/update/:id"
+                element={<ProductUpdatePage />}
+              ></Route>
+              <Route
+                path="/shopping-cart"
+                element={<ShoppingCartPage />}
+              ></Route>
+              <Route path="/farms" element={<FarmsPage />}></Route>
+              <Route
+                path="/farms/page/:pageNumber"
+                element={<FarmsPage />}
+              ></Route>
+              <Route path="/farms/:id" element={<FarmDetailPage />}></Route>
+              <Route
+                path="/farms/update/:id"
+                element={<FarmUpdatePage />}
+              ></Route>
+              <Route path="/communities" element={<CommunitiesPage />}></Route>
+              <Route
+                path="/communities/page/:pageNumber"
+                element={<CommunitiesPage />}
+              ></Route>
+              <Route
+                path="/communities/:id"
+                element={<CommunityDetailPage />}
+              ></Route>
+              <Route
+                path="/auth/forgot-password"
+                element={<ForgotPasswordPage />}
+              ></Route>
+              <Route path="/auth/login" element={<LoginPage />}></Route>
+              <Route path="/auth/signup" element={<SignupPage />}></Route>
+              <Route path="/auth/logout" element={<LogoutPage />}></Route>
+              <Route path="/profile/:userId" element={<ProfilePage />}></Route>
+              <Route
+                path="/profile/:userId/:pageName"
+                element={<ProfilePage />}
+              ></Route>
+              <Route
+                path="/profile/:userId/:pageName/page/:pageNumber"
+                element={<ProfilePage />}
+              ></Route>
+              <Route path="/search" element={<SearchPage />}></Route>
+              <Route path="/search/:keyword" element={<SearchPage />}></Route>
+              <Route
+                path="/user/active/:email/:key"
+                element={<UserActivePage />}
+              ></Route>
+              <Route
+                path="/user/active/:email/:key+"
+                element={<UserActivePage />}
+              ></Route>
+              <Route
+                path="/user/active/:email/*"
+                element={<UserActivePage />}
+              ></Route>
+              <Route
+                path="/user/reset-password/:email/:key"
+                element={<ResetPasswordPage />}
+              ></Route>
+              <Route
+                path="/user/reset-password/:email/:key+"
+                element={<ResetPasswordPage />}
+              ></Route>
+              <Route
+                path="/user/reset-password/:email/*"
+                element={<ResetPasswordPage />}
+              ></Route>
+              <Route path="/error" element={<ErrorPage />}></Route>
+              <Route path="*" element={<NotFoundPage />}></Route>
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
       </SessionContext.Provider>
     </ApolloProvider>
   );

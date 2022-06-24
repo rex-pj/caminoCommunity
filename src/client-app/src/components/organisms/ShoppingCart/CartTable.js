@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { TableResponsive, Table } from "../../atoms/Tables.js";
 import styled from "styled-components";
 import { Image } from "../../atoms/Images";
@@ -19,7 +18,7 @@ const CartTable = styled(PanelDefault)`
   }
 `;
 
-export default withRouter(function (props) {
+export default (function (props) {
   return (
     <CartTable>
       <PanelBody>

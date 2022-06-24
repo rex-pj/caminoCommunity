@@ -11,7 +11,7 @@ import { HorizontalList } from "../../molecules/List";
 import { FontButtonItem } from "../../molecules/ActionIcons";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Panel = styled(PanelDefault)`
   position: relative;
@@ -91,8 +91,9 @@ const TopBarInfo = styled.span`
   }
 `;
 
-export default withRouter((props) => {
-  const { farm, location } = props;
+export default (props) => {
+  const location = useLocation();
+  const { farm } = props;
   const loadCreatedInfo = () => {
     const { creator } = farm;
     if (creator) {
@@ -177,4 +178,4 @@ export default withRouter((props) => {
       </InteractiveToolbar>
     </Panel>
   );
-});
+};

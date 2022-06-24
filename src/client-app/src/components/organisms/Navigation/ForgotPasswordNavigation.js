@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useMatch } from "react-router-dom";
 import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { HorizontalList } from "../../molecules/List";
@@ -39,16 +39,18 @@ const ListItem = styled.li`
   }
 `;
 
-export default withRouter(function (props) {
-  const { match, className } = props;
-  const { path } = match;
+export default (function (props) {
+  const { className } = props;
+  const { pathname } = useMatch();
   return (
     <Root>
       <HorizontalList className={className}>
-        <ListItem className={path === "/auth/login" ? "actived" : ""}>
+        <ListItem className={pathname === "/auth/login" ? "actived" : ""}>
           <NavButton to="/auth/login">Login</NavButton>
         </ListItem>
-        <ListItem className={path === "/auth/forgot-password" ? "actived" : ""}>
+        <ListItem
+          className={pathname === "/auth/forgot-password" ? "actived" : ""}
+        >
           <NavButton to="/auth/forgot-password">Forgot Password</NavButton>
         </ListItem>
         <ListItem>

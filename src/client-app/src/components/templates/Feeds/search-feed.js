@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryDarkHeading } from "../../atoms/Heading";
 import SearchBlock from "./search-blocks";
 import { FeedType } from "../../../utils/Enums";
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { UrlConstant } from "../../../utils/Constants";
 import { getParameters, generateQueryParameters } from "../../../utils/Helper";
 
-export default withRouter((props) => {
-  const { advancedSearchResult, baseUrl, location, keyword } = props;
+export default (props) => {
+  const { advancedSearchResult, baseUrl, keyword } = props;
+  const location = useLocation();
   const mapSearchResults = (collections) => {
     return collections.map((item) => {
       let feed = { ...item };
@@ -125,4 +126,4 @@ export default withRouter((props) => {
       ) : null}
     </Fragment>
   );
-});
+};

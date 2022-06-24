@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { HorizontalList } from "../../molecules/List";
@@ -53,7 +52,7 @@ const ListItem = styled.li`
   }
 `;
 
-export default withRouter(function (props) {
+export default (function (props) {
   const { className } = props;
   return (
     <Root>

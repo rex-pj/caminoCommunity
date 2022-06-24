@@ -1,11 +1,10 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Table } from "../../atoms/Tables.js";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { PanelDefault, PanelBody, PanelFooter } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default withRouter(function (props) {
+export default (function () {
   return (
     <PanelDefault className="mt-3">
       <PanelBody>

@@ -5,7 +5,7 @@ namespace Camino.Core.Domains.Products
 {
     public class ProductCategory
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 
@@ -19,7 +19,7 @@ namespace Camino.Core.Domains.Products
 
         public long CreatedById { get; set; }
 
-        public int? ParentId { get; set; }
+        public long? ParentId { get; set; }
         public int StatusId { get; set; }
 
         public virtual ProductCategory ParentCategory { get; set; }

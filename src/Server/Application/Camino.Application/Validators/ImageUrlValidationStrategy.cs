@@ -1,5 +1,5 @@
 ﻿using Camino.Core.Validators;
-using Camino.Infrastructure.Images.Utils;
+using Camino.Shared.Utils;
 
 namespace Camino.Application.Validators
 {

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { ButtonPrimary, ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
-import { withRouter } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -18,7 +18,7 @@ const Footer = styled.div`
   text-align: right;
 `;
 
-export default withRouter((props) => {
+export default (props) => {
   const {
     match,
     selectUsers,
@@ -28,8 +28,7 @@ export default withRouter((props) => {
     feedTypeDictonaries,
     timeOptions,
   } = props;
-  const { params } = match;
-  const { keyword } = params;
+  const { keyword } = useParams();
 
   const [searchData, setSearchData] = useState({
     keyword: keyword,
@@ -208,4 +207,4 @@ export default withRouter((props) => {
       </Footer>
     </Fragment>
   );
-});
+};

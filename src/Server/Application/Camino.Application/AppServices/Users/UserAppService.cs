@@ -113,12 +113,12 @@ namespace Camino.Application.AppServices.Users
                 throw new ArgumentException(nameof(user));
             }
 
-            switch (request.PropertyName)
+            switch (true)
             {
-                case nameof(User.Address):
+                case bool b when nameof(User.Address).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     user.Address = request.Value?.ToString();
                     break;
-                case nameof(User.PhoneNumber):
+                case bool b when nameof(User.PhoneNumber).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     _validationStrategyContext.SetStrategy(new PhoneValidationStrategy());
                     bool isValid = (request.Value == null || string.IsNullOrEmpty(request.Value.ToString())) || _validationStrategyContext.Validate(request.Value);
                     if (!isValid)
@@ -126,10 +126,10 @@ namespace Camino.Application.AppServices.Users
                         user.PhoneNumber = request.Value?.ToString();
                     }
                     break;
-                case nameof(User.Description):
+                case bool b when nameof(User.Description).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     user.Description = request.Value?.ToString();
                     break;
-                case nameof(User.BirthDate):
+                case bool b when nameof(User.BirthDate).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     if (DateTimeOffset.TryParse(request.Value.ToString(), out var birthDate))
                     {
                         user.BirthDate = birthDate;
@@ -140,7 +140,7 @@ namespace Camino.Application.AppServices.Users
                     }
 
                     break;
-                case nameof(User.GenderId):
+                case bool b when nameof(User.GenderId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     if (byte.TryParse(request.Value.ToString(), out var genderId))
                     {
                         user.GenderId = genderId;
@@ -150,7 +150,7 @@ namespace Camino.Application.AppServices.Users
                         user.GenderId = null;
                     }
                     break;
-                case nameof(User.CountryId):
+                case bool b when nameof(User.CountryId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
                     if (byte.TryParse(request.Value.ToString(), out var countryId))
                     {
                         user.CountryId = countryId;

@@ -14,7 +14,7 @@ namespace Module.Web.ProductManagement.Models
             SelectCategories = new List<SelectListItem>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]
@@ -28,7 +28,7 @@ namespace Module.Web.ProductManagement.Models
         public DateTimeOffset CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
-        public int? ParentId { get; set; }
+        public long? ParentId { get; set; }
         public string ParentCategoryName { get; set; }
         public ProductCategoryStatuses StatusId { get; set; }
         public IEnumerable<SelectListItem> SelectCategories { get; set; }

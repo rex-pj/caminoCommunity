@@ -8,8 +8,6 @@ using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Farms;
 using Camino.Core.Domains.Farms.Repositories;
 using Camino.Core.Domains.Media;
-using Camino.Infrastructure.EntityFrameworkCore;
-using Camino.Infrastructure.Images.Utils;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +21,7 @@ namespace Camino.Application.AppServices.Farms
         private readonly IEntityRepository<Picture> _pictureEntityRepository;
         private readonly IEntityRepository<Farm> _farmEntityRepository;
         private readonly IPictureRepository _pictureRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly int _deletedStatus = PictureStatuses.Deleted.GetCode();
         private readonly int _inactivedStatus = PictureStatuses.Inactived.GetCode();
 
@@ -32,7 +30,7 @@ namespace Camino.Application.AppServices.Farms
            IEntityRepository<Farm> farmEntityRepository,
            IPictureRepository pictureRepository,
            IFarmPictureRepository farmPictureRepository,
-           IAppDbContext dbContext)
+           IDbContext dbContext)
         {
             _farmPictureEntityRepository = farmPictureEntityRepository;
             _pictureEntityRepository = pictureEntityRepository;

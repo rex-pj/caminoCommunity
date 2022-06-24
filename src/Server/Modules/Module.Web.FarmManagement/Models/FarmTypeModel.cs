@@ -14,7 +14,7 @@ namespace Module.Web.FarmManagement.Models
             SelectFarmTypes = new List<SelectListItem>();
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]

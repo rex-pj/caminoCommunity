@@ -3,6 +3,6 @@
     public interface IProductCategoryDomainService
     {
         Task<bool> DeleteAsync(int id);
-        Task<bool> UpdateProductCategoryRelationsAsync(long productId, IList<int> categoryIds, bool needSaveChanges = false);
+        Task<bool> UpdateProductCategoryRelationsAsync(long productId, IList<long> categoryIds, bool needSaveChanges = false);
     }
 }

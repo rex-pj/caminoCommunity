@@ -14,6 +14,24 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Address).IsRequired(false);
+            builder.Property(x => x.BirthDate).IsRequired(false);
+            builder.Property(x => x.Description).IsRequired(false);
+            builder.Property(x => x.GenderId).IsRequired(false);
+            builder.Property(x => x.CountryId).IsRequired(false);
+            builder.Property(x => x.PhoneNumber).IsRequired(false);
+            builder.Property(x => x.CreatedById).IsRequired(false);
+            builder.Property(x => x.UpdatedById).IsRequired(false);
+
+            builder.Property(x => x.Email).IsRequired();
+            builder.Property(x => x.UserName).IsRequired();
+            builder.Property(x => x.Lastname).IsRequired();
+            builder.Property(x => x.Firstname).IsRequired();
+            builder.Property(x => x.DisplayName).IsRequired();
+            builder.Property(x => x.PasswordHash).IsRequired();
+            builder.Property(x => x.CreatedDate).IsRequired();
+            builder.Property(x => x.UpdatedDate).IsRequired();
+            builder.Property(x => x.SecurityStamp).IsRequired();
 
             builder
                 .HasOne(x => x.CreatedBy)
@@ -65,7 +83,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
             builder
                .HasMany(x => x.GrantedRoleAuthorizationPolicies)
                .WithOne(x => x.GrantedBy)
-               .HasForeignKey(x => x.GrantedBy);
+               .HasForeignKey(x => x.GrantedById);
 
             builder
                .HasOne(c => c.Gender)

@@ -4,11 +4,10 @@ import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../graphql/client";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { getError } from "../../utils/Helper";
-import { withRouter } from "react-router-dom";
 import { SessionContext } from "../../store/context/session-context";
 import { useStore } from "../../store/hook-store";
 
-export default withRouter((props) => {
+export default (props) => {
   const dispatch = useStore(false)[1];
   const { lang } = useContext(SessionContext);
   const [forgotPassword] = useMutation(userMutations.FORGOT_PASSWORD, {
@@ -73,4 +72,4 @@ export default withRouter((props) => {
       showValidationError={showValidationError}
     />
   );
-});
+};

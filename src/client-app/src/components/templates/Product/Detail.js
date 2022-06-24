@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import { PriceLabel } from "../../molecules/PriceAndCurrency";
 import { TypographyDark } from "../../atoms/Typographies";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
@@ -144,7 +144,9 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default withRouter(function (props) {
+export default (function (props) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { product, onOpenDeleteConfirmationModal } = props;
   const { currentUser, isLogin } = useContext(SessionContext);
   const { createdByIdentityId } = product;
@@ -163,10 +165,10 @@ export default withRouter(function (props) {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/products/update/${product.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
-import { withRouter } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Feeds from "../../components/templates/Feeds";
 import { FeedType } from "../../utils/Enums";
 import { UrlConstant } from "../../utils/Constants";
@@ -21,12 +21,8 @@ import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default withRouter(function (props) {
-  const {
-    match: {
-      params: { pageNumber },
-    },
-  } = props;
+export default (function (props) {
+  const { pageNumber } = useParams();
   const [state, dispatch] = useStore(true);
   const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });
   const [feeds, setFeeds] = useState([]);

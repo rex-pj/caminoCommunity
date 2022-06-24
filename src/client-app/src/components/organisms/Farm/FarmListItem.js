@@ -21,7 +21,7 @@ import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ContentItemDropdown from "../../molecules/DropdownButton/ContentItemDropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { SessionContext } from "../../../store/context/session-context";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DeleteConfirmationModal from "../Modals/DeleteConfirmationModal";
 
 const Panel = styled(PanelDefault)`
@@ -140,8 +140,10 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default withRouter((props) => {
-  const { farm, onOpenDeleteConfirmationModal, location } = props;
+export default (props) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { farm, onOpenDeleteConfirmationModal } = props;
   const { createdByIdentityId } = farm;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -159,10 +161,10 @@ export default withRouter((props) => {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/farms/update/${farm.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };
@@ -293,4 +295,4 @@ export default withRouter((props) => {
       </Panel>
     </div>
   );
-});
+};

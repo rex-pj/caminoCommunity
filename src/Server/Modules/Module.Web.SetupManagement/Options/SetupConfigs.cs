@@ -1,6 +1,6 @@
-﻿namespace Camino.Shared.Constants
+﻿namespace Module.Web.SetupManagement
 {
-    public static class SetupDataSettings
+    public static class SetupConfigs
     {
         public const string StartSetupUrl = "/Setup/StartSetup";
         public const string SeedDataUrl = "/Setup/SeedData";

@@ -12,7 +12,7 @@ import { UrlConstant } from "../../../utils/Constants";
 import { AnchorLink } from "../../atoms/Links";
 import { ImageRound } from "../../atoms/Images";
 import NoImage from "../../molecules/NoImages/no-image";
-import { withRouter } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const DropdownPanel = styled.div`
   position: absolute;
@@ -147,13 +147,10 @@ const EmptyImage = styled(NoImage)`
   margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
-export default withRouter((props) => {
-  const {
-    match: {
-      params: { keyword: searchText },
-    },
-    history,
-  } = props;
+export default (props) => {
+  const navigate = useNavigate();
+  const { keyword: searchText } = useParams();
+
   const [fetchResults] = useLazyQuery(feedqueries.LIVE_SEARCH, {
     onCompleted: (response) => onSearchCompleted(response),
     onError: (error) => onSearchError(error),
@@ -241,7 +238,7 @@ export default withRouter((props) => {
   };
 
   const onRedirectToSearch = () => {
-    history.push(`/search/${searchData.keyword}`);
+    navigate(`/search/${searchData.keyword}`);
   };
 
   const onFetchResults = async (value) => {
@@ -329,4 +326,4 @@ export default withRouter((props) => {
       ) : null}
     </SearchForm>
   );
-});
+};

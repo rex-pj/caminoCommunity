@@ -3,46 +3,46 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.5.9",
-    "@babel/polyfill": "^7.12.1",
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/react-fontawesome": "^0.1.16",
+    "@apollo/client": "^3.6.8",
+    "@babel/runtime": "^7.18.3",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.1.18",
     "@graphql-codegen/fragment-matcher": "^3.2.1",
-    "@loadable/component": "^5.15.0",
-    "@types/react": "^16.14.21",
+    "@loadable/component": "^5.15.2",
+    "@types/react": "^18.0.14",
     "apollo-link-context": "^1.0.20",
-    "core-js": "^3.19.3",
-    "cross-fetch": "^3.1.4",
-    "date-fns": "^1.30.1",
-    "dotenv": "^7.0.0",
+    "core-js": "^3.23.2",
+    "cross-fetch": "^3.1.5",
+    "date-fns": "^2.28.0",
+    "dotenv": "^16.0.1",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
     "draft-js-import-html": "^1.4.1",
     "draftjs-utils": "^0.10.2",
-    "express": "^4.17.1",
-    "graphql": "^16.3.0",
+    "express": "^4.18.1",
+    "graphql": "^16.5.0",
     "jwt-decode": "^3.1.2",
     "pushstate-server": "^3.1.0",
-    "query-string": "^6.14.1",
-    "rc-slider": "^8.7.1",
-    "react": "^17.0.2",
-    "react-avatar-editor": "^11.1.0",
+    "query-string": "^7.1.1",
+    "rc-slider": "^10.0.0",
+    "react": "^18.2.0",
+    "react-avatar-editor": "^13.0.0",
     "react-cookie": "^4.1.1",
-    "react-dom": "^17.0.2",
-    "react-dropzone": "^10.2.2",
-    "react-helmet": "^5.2.1",
-    "react-image-file-resizer": "^0.2.4",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.1",
+    "react-helmet": "^6.1.0",
+    "react-image-file-resizer": "^0.4.8",
     "react-infinite-scroll-component": "^6.1.0",
-    "react-router-dom": "^5.3.0",
-    "react-scripts": "^3.4.4",
-    "react-select": "^3.2.0",
-    "react-snap": "^1.23.0",
-    "styled-components": "^4.4.1",
-    "surge": "^0.21.7"
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "^5.0.1",
+    "react-select": "^5.3.1",
+    "styled-components": "^5.3.5",
+    "surge": "^0.23.1",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.cert/cert.pem&&set SSL_KEY_FILE=./.cert/key.pem&&react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "publish": "npm run build",
     "test": "react-scripts test",
@@ -50,17 +50,26 @@
     "postbuild": "react-snap"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
-    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-env": "^7.18.2",
     "@loadable/babel-plugin": "^5.13.2",
-    "@loadable/webpack-plugin": "^5.15.1"
+    "@loadable/webpack-plugin": "^5.15.2"
   }
 }

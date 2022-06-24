@@ -1,7 +1,6 @@
-﻿using System;
-using Camino.Shared.Constants;
+﻿using Camino.Shared.Constants;
 
-namespace Camino.Infrastructure.Images.Exceptions
+namespace Camino.Shared.Exceptions
 {
     public class PhotoSizeInvalidException : Exception
     {

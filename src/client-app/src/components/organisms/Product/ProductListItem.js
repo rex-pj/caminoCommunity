@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { ActionButton } from "../../molecules/ButtonGroups";
@@ -105,8 +105,10 @@ const InteractRightItem = styled(InteractiveItem)`
   }
 `;
 
-export default withRouter(function (props) {
-  const { product, onOpenDeleteConfirmationModal, location } = props;
+export default (function (props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { product, onOpenDeleteConfirmationModal } = props;
   const { creator, createdByIdentityId } = product;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -124,10 +126,10 @@ export default withRouter(function (props) {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/products/update/${product.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };

@@ -5,7 +5,7 @@ namespace Camino.Application.Contracts.AppServices.Farms
     public interface IFarmTypeAppService
     {
         Task<bool> ActiveAsync(FarmTypeModifyRequest farmType);
-        Task<int> CreateAsync(FarmTypeModifyRequest farmType);
+        Task<long> CreateAsync(FarmTypeModifyRequest farmType);
         Task<bool> DeactivateAsync(FarmTypeModifyRequest farmType);
         Task<bool> DeleteAsync(int id);
         Task<FarmTypeResult> FindAsync(long id);

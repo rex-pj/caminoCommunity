@@ -27,7 +27,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
             _dbContext = dbContext;
         }
 
-        public async Task<ProductCategory> FindAsync(int id)
+        public async Task<ProductCategory> FindAsync(long id)
         {
             var category = await _productCategoryRepository.Table.Include(x => x.ParentCategory)
                 .Where(x => x.Id == id).FirstOrDefaultAsync();
@@ -41,7 +41,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
             return category;
         }
 
-        public async Task<int> CreateAsync(ProductCategory category)
+        public async Task<long> CreateAsync(ProductCategory category)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             category.CreatedDate = modifiedDate;
@@ -58,7 +58,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 
-        public async Task<bool> HasProductsAsync(int categoryId)
+        public async Task<bool> HasProductsAsync(long categoryId)
         {
             return await (from relation in _productCategoryRelationRepository.Get(x => x.ProductCategoryId == categoryId)
                           join product in _productRepository.Table
@@ -67,7 +67,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
                 .AnyAsync();
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(long id)
         {
             var deletedNumbers = await _productCategoryRepository.DeleteAsync(x => x.Id == id);
             await _dbContext.SaveChangesAsync();

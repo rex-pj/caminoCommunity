@@ -1,22 +1,32 @@
 import React from "react";
-import { hydrate, render } from "react-dom";
-import { loadableReady } from "@loadable/component";
+import { createRoot, hydrateRoot } from "react-dom/client";
+import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import App from "./App";
-require("dotenv").config();
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;
 
 const rootElement = document.getElementById("root");
 if (rootElement.hasChildNodes()) {
-  loadableReady(() => {
-    hydrate(<App />, rootElement);
-  });
+  const root = hydrateRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 } else {
-  render(<App />, rootElement);
+  const root = createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 }
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-// serviceWorker.register();
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

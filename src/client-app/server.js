@@ -1,11 +1,17 @@
-const express = require("express");
-const path = require("path");
-const app = express();
+import express from "express";
+import ReactDOMServer from "react-dom/server";
+import { StaticRouter } from "react-router-dom/server";
+import App from "./App";
 
-app.use(express.static(path.join(__dirname, "build")));
+let app = express();
 
-app.get("/", function(req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+app.get("*", (req, res) => {
+  let html = ReactDOMServer.renderToString(
+    <StaticRouter location={req.url}>
+      <App />
+    </StaticRouter>
+  );
+  res.send("<!DOCTYPE html>" + html);
 });
 
 app.listen(9000);

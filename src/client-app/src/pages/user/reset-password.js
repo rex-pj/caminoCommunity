@@ -1,14 +1,14 @@
 import React from "react";
 import ResetPasswordForm from "../../components/organisms/Auth/ResetPasswordForm";
-import { withRouter } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import { unauthClient } from "../../graphql/client";
 
-export default withRouter((props) => {
-  const { match, history } = props;
-  const { params } = match;
+export default (props) => {
+  const navigate = useNavigate();
+  const params = useParams();
   const { email } = params;
   let { key } = params;
   if (!key && params[0]) {
@@ -59,7 +59,7 @@ export default withRouter((props) => {
           notifyError(rs.errors, "vn");
         } else {
           notifyInfo();
-          history.push("/auth/login");
+          navigate("/auth/login");
         }
       })
       .catch(() => {
@@ -76,4 +76,4 @@ export default withRouter((props) => {
       showValidationError={showValidationError}
     />
   );
-});
+};

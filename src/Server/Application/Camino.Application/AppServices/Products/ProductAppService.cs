@@ -10,7 +10,6 @@ using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Farms;
 using Camino.Core.Domains.Products;
 using Camino.Core.Domains.Products.DomainServices;
-using Camino.Infrastructure.EntityFrameworkCore;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +34,7 @@ namespace Camino.Application.AppServices.Products
         private readonly IEntityRepository<ProductCategory> _productCategoryEntityRepository;
         private readonly IEntityRepository<ProductPrice> _productPriceEntityRepository;
         private readonly IEntityRepository<ProductCategoryRelation> _productCategoryRelationEntityRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly int _deletedStatus = ProductStatuses.Deleted.GetCode();
         private readonly int _inactivedStatus = ProductStatuses.Inactived.GetCode();
         private readonly int _activedStatus = ProductStatuses.Actived.GetCode();
@@ -43,7 +42,7 @@ namespace Camino.Application.AppServices.Products
         private readonly int _farmDeletedStatus = FarmStatuses.Deleted.GetCode();
         private readonly int _farmInactivedStatus = FarmStatuses.Inactived.GetCode();
 
-        public ProductAppService(IAppDbContext dbContext, 
+        public ProductAppService(IDbContext dbContext, 
             IProductRepository productRepository,
             IUserRepository userRepository, IUserPhotoRepository userPhotoRepository,
             IProductAttributeDomainService productAttributeDomainService,

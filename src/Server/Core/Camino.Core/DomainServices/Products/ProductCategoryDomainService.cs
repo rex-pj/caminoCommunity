@@ -26,7 +26,7 @@ namespace Camino.Core.DomainServices.Products
             _productCategoryRepository = productCategoryRepository;
         }
 
-        public async Task<bool> UpdateProductCategoryRelationsAsync(long productId, IList<int> categoryIds, bool needSaveChanges = false)
+        public async Task<bool> UpdateProductCategoryRelationsAsync(long productId, IList<long> categoryIds, bool needSaveChanges = false)
         {
             var modifiedDate = DateTimeOffset.UtcNow;
             // Update Category

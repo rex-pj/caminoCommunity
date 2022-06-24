@@ -3,11 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Infrastructure.Extensions.DependencyInjection;
 using Camino.Framework.Infrastructure.ModelBinders;
-using Camino.Shared.Configuration.Options;
 using Camino.IdentityManager.Contracts.Options;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
-using Camino.Core.Domains;
 
 namespace Camino.Management.Extensions.DependencyInjection
 {
@@ -20,9 +18,6 @@ namespace Camino.Management.Extensions.DependencyInjection
             services.AddInfrastructureServices();
             services.AddDataAccessServices<CaminoDbContext>();
             services.AddDataProtection();
-
-            services.AddSingleton<SetupSettings>();
-
             services.AddControllersWithViews(options =>
             {
                 options.ModelBinderProviders.Insert(0, new ApplicationModelBinderProvider());

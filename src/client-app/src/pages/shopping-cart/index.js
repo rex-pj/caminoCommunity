@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { PrimaryTitle } from "../../components/atoms/Titles";
 import styled from "styled-components";
 import { LightTextbox } from "../../components/atoms/Textboxes";
@@ -36,7 +35,7 @@ const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.darkText};
 `;
 
-export default withRouter(function (props) {
+export default (function (props) {
   return (
     <Wrapper className="container">
       <Title className="mb-3">Giỏ hàng</Title>

@@ -9,7 +9,6 @@ import AuthBanner from "../Banner/AuthBanner";
 import forgotPasswordModel from "../../../models/forgotPasswordModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PrimaryNotice } from "../../atoms/Notices/AlertNotice";
-import { withRouter } from "react-router-dom";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -63,7 +62,7 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 `;
 
-export default withRouter((props) => {
+export default (props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   const [isFormEnabled, setFormEnabled] = useState(false);
@@ -179,4 +178,4 @@ export default withRouter((props) => {
       </div>
     </form>
   );
-});
+};

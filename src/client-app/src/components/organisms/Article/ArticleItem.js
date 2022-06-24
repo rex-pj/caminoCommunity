@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -79,8 +79,10 @@ const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default withRouter((props) => {
-  const { article, onOpenDeleteConfirmationModal, location } = props;
+export default (props) => {
+  const { article, onOpenDeleteConfirmationModal } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
   const { creator, createdByIdentityId } = article;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -98,10 +100,10 @@ export default withRouter((props) => {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/articles/update/${article.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };
@@ -217,4 +219,4 @@ export default withRouter((props) => {
       </PanelBody>
     </Panel>
   );
-});
+};

@@ -44,10 +44,10 @@ namespace Camino.Application.AppServices.Feeds
             IProductPictureAppService productPictureAppService,
             IArticlePictureAppService articlePictureAppService,
             IFarmPictureAppService farmPictureAppService,
-            IEntityRepository<Article> articleEntityRepository, 
+            IEntityRepository<Article> articleEntityRepository,
             IEntityRepository<Product> productEntityRepository,
-            IEntityRepository<Farm> farmEntityRepository, 
-            IEntityRepository<User> userEntityRepository, 
+            IEntityRepository<Farm> farmEntityRepository,
+            IEntityRepository<User> userEntityRepository,
             IEntityRepository<ProductPrice> productPriceEntityRepository)
         {
             _userRepository = userRepository;
@@ -210,7 +210,7 @@ namespace Camino.Application.AppServices.Feeds
             var userPictures = await _userPhotoRepository.GetListByUserIdsAsync(userIds, UserPictureTypes.Avatar);
 
             // Get created by user's photos
-            var createdByIds = feeds.Select(x => x.CreatedById);
+            var createdByIds = feeds.Where(x => x.CreatedById.HasValue).Select(x => x.CreatedById.Value);
             var createdByUserPictures = await _userPhotoRepository.GetListByUserIdsAsync(createdByIds, UserPictureTypes.Avatar);
 
             var createdByUsers = await _userRepository.GetByIdsAsync(createdByIds);
@@ -497,7 +497,10 @@ namespace Camino.Application.AppServices.Feeds
         {
             var createdByIds = feedInGroup.Articles.Select(x => x.CreatedById)
                 .Concat(feedInGroup.Products.Select(x => x.CreatedById))
-                .Concat(feedInGroup.Farms.Select(x => x.CreatedById)).Distinct();
+                .Concat(feedInGroup.Farms.Select(x => x.CreatedById))
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .Distinct();
             var createdByPictures = await _userPhotoRepository.GetListByUserIdsAsync(createdByIds, UserPictureTypes.Avatar);
             var createdByUsers = await _userRepository.GetByIdsAsync(createdByIds);
             await SetPicturesForSearchResultAsync(feedInGroup, createdByUsers, createdByPictures);
@@ -574,7 +577,7 @@ namespace Camino.Application.AppServices.Feeds
             }
         }
 
-        private void SetFeedCreatedByName(FeedResult feed,IEnumerable<User> createdByUsers = null)
+        private void SetFeedCreatedByName(FeedResult feed, IEnumerable<User> createdByUsers = null)
         {
             if (createdByUsers == null || !createdByUsers.Any())
             {
@@ -590,7 +593,7 @@ namespace Camino.Application.AppServices.Feeds
 
         private void SetFeedCreatedPicture(FeedResult feed, IList<UserPhoto> createdByPictures = null)
         {
-            if(createdByPictures== null || !createdByPictures.Any())
+            if (createdByPictures == null || !createdByPictures.Any())
             {
                 return;
             }

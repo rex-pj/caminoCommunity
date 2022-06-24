@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Profile from "../../components/organisms/Profile/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
@@ -78,7 +78,7 @@ const ConnectButton = styled(ButtonIconPrimary)`
   z-index: 3;
 `;
 
-export default withRouter((props) => {
+export default (props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
   const _baseUrl = "/profile";
   const { relogin, isLogin, currentUser } = useContext(SessionContext);
@@ -226,4 +226,4 @@ export default withRouter((props) => {
       />
     </Fragment>
   );
-});
+};

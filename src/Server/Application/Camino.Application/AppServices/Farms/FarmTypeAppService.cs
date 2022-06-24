@@ -188,7 +188,7 @@ namespace Camino.Application.AppServices.Farms
         #endregion
 
         #region CRUD
-        public async Task<int> CreateAsync(FarmTypeModifyRequest farmType)
+        public async Task<long> CreateAsync(FarmTypeModifyRequest farmType)
         {
             var newFarmType = new FarmType()
             {

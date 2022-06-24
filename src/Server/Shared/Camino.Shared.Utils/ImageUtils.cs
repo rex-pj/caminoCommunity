@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Camino.Infrastructure.Images.Utils
+namespace Camino.Shared.Utils
 {
     public static class ImageUtils
     {

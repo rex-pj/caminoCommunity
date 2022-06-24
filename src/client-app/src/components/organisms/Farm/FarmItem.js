@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -128,8 +128,10 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default withRouter((props) => {
-  const { farm, onOpenDeleteConfirmationModal, location } = props;
+export default (props) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { farm, onOpenDeleteConfirmationModal } = props;
   const { creator, createdByIdentityId } = farm;
   var { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
@@ -147,10 +149,10 @@ export default withRouter((props) => {
   };
 
   const onEditMode = async () => {
-    props.history.push({
+    navigate({
       pathname: `/farms/update/${farm.id}`,
       state: {
-        from: props.location.pathname,
+        from: location.pathname,
       },
     });
   };
@@ -270,4 +272,4 @@ export default withRouter((props) => {
       </PanelBody>
     </Panel>
   );
-});
+};

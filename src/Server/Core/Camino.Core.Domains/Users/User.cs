@@ -1,8 +1,6 @@
 ﻿using Camino.Core.Domains.Authentication;
 using Camino.Core.Domains.Authorization;
 using Camino.Core.Domains.Identifiers;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Camino.Core.Domains.Users
@@ -20,31 +18,21 @@ namespace Camino.Core.Domains.Users
         }
         
         public long Id { get; set; }
-        [Required]
         [MaxLength(255)]
         public string Email { get; set; }
-        [Required]
         [MaxLength(255)]
         public string UserName { get; set; }
-        [Required]
         [MaxLength(255)]
         public string Lastname { get; set; }
-        [Required]
         [MaxLength(255)]
         public string Firstname { get; set; }
-        [Required]
         [MaxLength(255)]
         public string DisplayName { get; set; }
-        [Required]
         public string PasswordHash { get; set; }
-        [Required]
         public DateTimeOffset CreatedDate { get; set; }
-        [Required]
         public DateTimeOffset UpdatedDate { get; set; }
-        [Required]
-        public long CreatedById { get; set; }
-        [Required]
-        public long UpdatedById { get; set; }
+        public long? CreatedById { get; set; }
+        public long? UpdatedById { get; set; }
         [Required]
         public int StatusId { get; set; }
         [Required]
@@ -54,10 +42,10 @@ namespace Camino.Core.Domains.Users
         // Additional information
         [Phone]
         public string PhoneNumber { get; set; }
+
         public string Address { get; set; }
         public string Description { get; set; }
 
-        [Required]
         public DateTimeOffset? BirthDate { get; set; }
         public byte? GenderId { get; set; }
         public short? CountryId { get; set; }

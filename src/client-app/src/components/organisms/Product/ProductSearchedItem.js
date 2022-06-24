@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
-import { withRouter } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
@@ -76,8 +76,9 @@ const InteractiveItem = styled.li`
   }
 `;
 
-export default withRouter(function (props) {
-  const { product, location } = props;
+export default (function (props) {
+  const location = useLocation();
+  const { product } = props;
   const { creator } = product;
 
   const loadCreatedInfo = () => {
