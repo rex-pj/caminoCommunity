@@ -12,6 +12,7 @@ import { getParameters, generateQueryParameters } from "../../utils/Helper";
 import SearchFeed from "../../components/templates/Feeds/search-feed";
 import SearchForm from "../../components/templates/Feeds/search-form";
 import { authClient } from "../../graphql/client";
+import { FrameLayout } from "../../components/templates/Layout";
 
 const Wrapper = styled.div`
   > .row {
@@ -91,32 +92,34 @@ export default (props) => {
   const { advancedSearch } = data;
   const baseUrl = `/search/`;
   return (
-    <Wrapper className="container-lg container-fluid px-lg-5 mt-3">
-      <div className="row px-lg-3">
-        <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
-          <SearchForm
-            timeOptions={timeOptions}
-            feedTypeDictonaries={feedTypeDictonaries}
-            advancedSearchResult={advancedSearch}
-            selectUsers={selectUsers}
-            baseUrl={baseUrl}
-            searchParams={{
-              hoursCreatedFrom,
-              hoursCreatedTo,
-              userIdentityId,
-              feedFilterType,
-            }}
-            onSearch={onSearch}
-          ></SearchForm>
+    <FrameLayout>
+      <Wrapper className="container-lg container-fluid px-lg-5 mt-3">
+        <div className="row px-lg-3">
+          <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
+            <SearchForm
+              timeOptions={timeOptions}
+              feedTypeDictonaries={feedTypeDictonaries}
+              advancedSearchResult={advancedSearch}
+              selectUsers={selectUsers}
+              baseUrl={baseUrl}
+              searchParams={{
+                hoursCreatedFrom,
+                hoursCreatedTo,
+                userIdentityId,
+                feedFilterType,
+              }}
+              onSearch={onSearch}
+            ></SearchForm>
+          </div>
+          <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
+            <SearchFeed
+              keyword={keyword}
+              advancedSearchResult={advancedSearch}
+              baseUrl={baseUrl}
+            ></SearchFeed>
+          </div>
         </div>
-        <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
-          <SearchFeed
-            keyword={keyword}
-            advancedSearchResult={advancedSearch}
-            baseUrl={baseUrl}
-          ></SearchFeed>
-        </div>
-      </div>
-    </Wrapper>
+      </Wrapper>
+    </FrameLayout>
   );
 };

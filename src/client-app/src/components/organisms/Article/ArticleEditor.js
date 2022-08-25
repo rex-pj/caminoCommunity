@@ -73,7 +73,7 @@ const Footer = styled.div`
   }
 `;
 
-export default (props) => {
+const ArticleEditor = (props) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -319,3 +319,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default ArticleEditor;

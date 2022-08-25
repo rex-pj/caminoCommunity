@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
-export default (props) => {
+const ProfileNavLink = (props) => {
   const { children, userId, baseUrl } = props;
   let { pageNav } = props;
   let { pathname } = useLocation();
@@ -23,3 +23,5 @@ export default (props) => {
     </NavLink>
   );
 };
+
+export default ProfileNavLink;

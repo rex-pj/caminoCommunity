@@ -5,6 +5,7 @@ import { unauthClient } from "../../graphql/client";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
+import { AuthLayout } from "../../components/templates/Layout";
 
 export default (props) => {
   const navigate = useNavigate();
@@ -53,10 +54,12 @@ export default (props) => {
   };
 
   return (
-    <SignUpForm
-      signUp={(data) => signUp(data)}
-      showValidationError={showError}
-      isFormEnabled={isFormEnabled}
-    />
+    <AuthLayout>
+      <SignUpForm
+        signUp={(data) => signUp(data)}
+        showValidationError={showError}
+        isFormEnabled={isFormEnabled}
+      />
+    </AuthLayout>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { AdsSuggestionPanel } from "../SuggestionPanels";
 
-export default (props) => {
+const AdsItem = (props) => {
   const { className, index } = props;
   let { ads } = props;
 
@@ -10,3 +10,5 @@ export default (props) => {
   };
   return <AdsSuggestionPanel data={ads} className={className} index={index} />;
 };
+
+export default AdsItem;

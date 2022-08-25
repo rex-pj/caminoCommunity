@@ -52,7 +52,7 @@ configureContentChangeStore();
 // Font Awesome
 library.add(fas);
 
-export default () => {
+const App = () => {
   const { loading, data, refetch, error } = useQuery(
     userQueries.GET_LOGGED_USER,
     {
@@ -203,3 +203,5 @@ export default () => {
     </ApolloProvider>
   );
 };
+
+export default App;

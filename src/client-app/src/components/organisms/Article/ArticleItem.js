@@ -79,7 +79,7 @@ const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default (props) => {
+const ArticleItem = (props) => {
   const { article, onOpenDeleteConfirmationModal } = props;
   const navigate = useNavigate();
   const location = useLocation();
@@ -220,3 +220,5 @@ export default (props) => {
     </Panel>
   );
 };
+
+export default ArticleItem;

@@ -14,15 +14,12 @@ const Wrapper = styled.div`
 `;
 
 // The layout for User profile page
-export default ({ component: Component, ...rest }) => {
+export default ({ children }) => {
   return (
-    <FrameLayout
-      {...rest}
-      component={(matchProps) => (
-        <Wrapper className="container container-md container-sm container-lg px-lg-5 px-md-2 px-sm-1">
-          <Component {...matchProps} />
-        </Wrapper>
-      )}
-    />
+    <FrameLayout>
+      <Wrapper className="container container-md container-sm container-lg px-lg-5 px-md-2 px-sm-1">
+        {children}
+      </Wrapper>
+    </FrameLayout>
   );
 };

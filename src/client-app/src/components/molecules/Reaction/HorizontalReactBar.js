@@ -1,7 +1,7 @@
 import React from "react";
 import { FontButtonItem } from "../ActionIcons";
 
-export default (props) => {
+const HorizontalReactBar = (props) => {
   const { reactionNumber } = props;
   return (
     <FontButtonItem
@@ -11,3 +11,5 @@ export default (props) => {
     />
   );
 };
+
+export default HorizontalReactBar;

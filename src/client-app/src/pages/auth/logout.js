@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { logOut } from "../../services/authService";
 import LogoutPanel from "../../components/organisms/Auth/LogoutPanel";
 import { SessionContext } from "../../store/context/session-context";
+import { PromptLayout } from "../../components/templates/Layout";
 
 export default () => {
   const navigate = useNavigate();
@@ -22,5 +23,9 @@ export default () => {
     };
   });
 
-  return <LogoutPanel />;
+  return (
+    <PromptLayout>
+      <LogoutPanel />
+    </PromptLayout>
+  );
 };

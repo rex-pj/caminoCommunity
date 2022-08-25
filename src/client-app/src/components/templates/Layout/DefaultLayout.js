@@ -12,7 +12,7 @@ import {
 import { SessionContext } from "../../../store/context/session-context";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
 import { navigationQueries } from "../../../graphql/fetching/queries";
-import { FrameLayout } from "./";
+import FrameLayout from "./FrameLayout";
 
 const ToggleSidebar = loadable(() =>
   import("../../organisms/Containers/ToggleSidebar")

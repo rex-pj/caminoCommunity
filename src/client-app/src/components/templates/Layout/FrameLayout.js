@@ -6,7 +6,7 @@ import PageLoading from "../../molecules/Loading/PageLoading";
 
 // The layout with header
 export default ({ ...props }) => {
-  const { component: Component } = props;
+  const { children } = props;
   const { isLoading } = useContext(SessionContext);
 
   if (!!isLoading) {
@@ -14,14 +14,11 @@ export default ({ ...props }) => {
   }
 
   return (
-    <MasterLayout
-      {...props}
-      component={(matchProps) => (
-        <Fragment>
-          <Header />
-          <Component {...matchProps} />
-        </Fragment>
-      )}
-    />
+    <MasterLayout>
+      <Fragment>
+        <Header />
+        {children}
+      </Fragment>
+    </MasterLayout>
   );
 };

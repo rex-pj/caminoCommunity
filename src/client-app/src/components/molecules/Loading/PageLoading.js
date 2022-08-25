@@ -9,7 +9,7 @@ const LoadingBlock = styled(LoadingBar)`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default (...rest) => {
+const PageLoading = (...rest) => {
   const onSearching = (value) => {};
 
   return (
@@ -26,3 +26,5 @@ export default (...rest) => {
     />
   );
 };
+
+export default PageLoading;

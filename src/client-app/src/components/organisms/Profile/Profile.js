@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
-import { Fragment } from "react";
+import { ProfileLayout } from "../../templates/Layout";
 
 const AsyncPage = loadable(
   (props) => import(`${"../../../pages/user/"}${props.page}`),
@@ -22,7 +22,7 @@ export default (props) => {
   };
 
   return (
-    <Fragment>
+    <ProfileLayout>
       <div className="row">
         <div className="col col-12 col-sm-12 col-md-12 col-lg-9 or-last order-lg-first">
           <Routes>
@@ -63,6 +63,6 @@ export default (props) => {
           <ProfileInfo userInfo={userInfo} />
         </div>
       </div>
-    </Fragment>
+    </ProfileLayout>
   );
 };

@@ -29,19 +29,14 @@ const Wrap = styled.div`
   }
 `;
 
-export default ({ component: Component, ...rest }) => {
+export default ({ children }) => {
   return (
-    <MasterLayout
-      {...rest}
-      component={(matchProps) => (
-        <Root>
-          <Container>
-            <Wrap>
-              <Component {...matchProps} />
-            </Wrap>
-          </Container>
-        </Root>
-      )}
-    />
+    <MasterLayout>
+      <Root>
+        <Container>
+          <Wrap>{children}</Wrap>
+        </Container>
+      </Root>
+    </MasterLayout>
   );
 };

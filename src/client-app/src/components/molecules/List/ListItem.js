@@ -5,7 +5,7 @@ const Item = styled.li`
   line-height: 1;
 `;
 
-export default (props) => {
+const ListItem = (props) => {
   const activeClass = props.isActived ? "actived" : null;
   const firstClass = props.index === 0 ? "first" : null;
   let className = props.className;
@@ -17,3 +17,5 @@ export default (props) => {
   }
   return <Item className={className}>{props.children}</Item>;
 };
+
+export default ListItem;

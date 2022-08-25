@@ -2,7 +2,7 @@ import React from "react";
 import NoImage from "../../molecules/NoImages/no-image";
 import { Image } from "../../atoms/Images";
 
-export default (props) => {
+const ImageThumb = (props) => {
   const { src } = props;
   const className = props.className ? props.className : "";
   if (!src) {
@@ -11,3 +11,5 @@ export default (props) => {
 
   return <Image className="thumbnail-img" {...props}></Image>;
 };
+
+export default ImageThumb;

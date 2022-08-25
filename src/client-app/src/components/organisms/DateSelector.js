@@ -10,7 +10,7 @@ const Root = styled.div`
   }
 `;
 
-export default (props) => {
+const DateSelector = (props) => {
   let { yearFrom, yearTo } = props;
   const { className, name, value } = props;
   yearFrom = yearFrom ? yearFrom : 1900;
@@ -127,3 +127,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default DateSelector;

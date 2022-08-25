@@ -13,7 +13,7 @@ const Button = styled(ButtonTransparent)`
   height: ${(p) => p.theme.size.small};
 `;
 
-export default (props) => {
+const ActionButton = (props) => {
   const { onClick } = props;
   return (
     <ButtonGroups className={props.className}>
@@ -21,3 +21,5 @@ export default (props) => {
     </ButtonGroups>
   );
 };
+
+export default ActionButton;

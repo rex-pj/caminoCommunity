@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import ConfirmationBanner from "../Banner/ConfirmationBanner";
+import { PromptLayout } from "../../templates/Layout";
 
 const Root = styled.div`
   background: url(${`${process.env.PUBLIC_URL}/images/activeuser-bg.jpg`})
@@ -13,17 +14,19 @@ const Root = styled.div`
   min-height: 500px;
 `;
 
-export default function(props) {
+export default function (props) {
   const { icon, title, instruction, actionUrl, actionText } = props;
   return (
-    <Root>
-      <ConfirmationBanner
-        title={title}
-        icon={icon}
-        instruction={instruction}
-        actionUrl={actionUrl}
-        actionText={actionText}
-      ></ConfirmationBanner>
-    </Root>
+    <PromptLayout>
+      <Root>
+        <ConfirmationBanner
+          title={title}
+          icon={icon}
+          instruction={instruction}
+          actionUrl={actionUrl}
+          actionText={actionText}
+        ></ConfirmationBanner>
+      </Root>
+    </PromptLayout>
   );
 }

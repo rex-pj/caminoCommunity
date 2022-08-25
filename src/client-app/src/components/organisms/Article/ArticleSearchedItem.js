@@ -76,7 +76,7 @@ const PanelHeader = styled(PanelHeading)`
   padding-bottom: 0;
 `;
 
-export default (props) => {
+const ArticleSearchItem = (props) => {
   const location = useLocation();
   const { article } = props;
 
@@ -155,3 +155,5 @@ export default (props) => {
     </Panel>
   );
 };
+
+export default ArticleSearchItem;

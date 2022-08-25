@@ -12,6 +12,7 @@ import { useWindowSize } from "../../../store/hook-store/window-size-store";
 import { navigationQueries } from "../../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import Shortcut from "../../organisms/Shortcut";
+import FrameLayout from "./FrameLayout";
 
 const Interesting = loadable(() => import("../../organisms/Interesting"));
 const ToggleSidebar = loadable(() =>
@@ -90,70 +91,72 @@ export default (props) => {
 
   const { isLeftShown, isCenterShown, isRightShown, isInit } = sidebarState;
   return (
-    <Wrapper className="container-fluid px-lg-5">
-      <ToggleSidebar
-        className="mb-4 d-lg-none"
-        showRightSidebar={showRightSidebar}
-        showLeftSidebar={showLeftSidebar}
-        resetSidebars={showCentral}
-        isLeftShown={isLeftShown}
-        isRightShown={isRightShown}
-      />
-      <div className="row px-lg-3">
-        {isLeftShown || isInit ? (
-          <div
-            className={`col col-12 col-sm-12 col-md-12 col-lg-2 ${
-              isLeftShown && !isInit ? "" : "d-none"
-            } d-lg-block`}
-          >
-            <Column>
-              <PageColumnPanel>
-                <CommunityInfo info={info} />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <Shortcut loading={shortcutLoading} data={shortcutData} />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <Interesting />
-              </PageColumnPanel>
-            </Column>
-          </div>
-        ) : null}
-        {isCenterShown ? (
-          <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-            {children}
-          </div>
-        ) : null}
+    <FrameLayout>
+      <Wrapper className="container-fluid px-lg-5">
+        <ToggleSidebar
+          className="mb-4 d-lg-none"
+          showRightSidebar={showRightSidebar}
+          showLeftSidebar={showLeftSidebar}
+          resetSidebars={showCentral}
+          isLeftShown={isLeftShown}
+          isRightShown={isRightShown}
+        />
+        <div className="row px-lg-3">
+          {isLeftShown || isInit ? (
+            <div
+              className={`col col-12 col-sm-12 col-md-12 col-lg-2 ${
+                isLeftShown && !isInit ? "" : "d-none"
+              } d-lg-block`}
+            >
+              <Column>
+                <PageColumnPanel>
+                  <CommunityInfo info={info} />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <Shortcut loading={shortcutLoading} data={shortcutData} />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <Interesting />
+                </PageColumnPanel>
+              </Column>
+            </div>
+          ) : null}
+          {isCenterShown ? (
+            <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
+              {children}
+            </div>
+          ) : null}
 
-        {isRightShown || isInit ? (
-          <div
-            className={`col col-12 col-sm-12 col-md-12 col-lg-3 ${
-              isRightShown && !isInit ? "" : "d-none"
-            } d-lg-block`}
-          >
-            <Column>
-              <PageColumnPanel>
-                <FarmSuggestions />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <CommunitySuggestions />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <ConnectionSuggestions />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-            </Column>
-          </div>
-        ) : null}
-      </div>
-    </Wrapper>
+          {isRightShown || isInit ? (
+            <div
+              className={`col col-12 col-sm-12 col-md-12 col-lg-3 ${
+                isRightShown && !isInit ? "" : "d-none"
+              } d-lg-block`}
+            >
+              <Column>
+                <PageColumnPanel>
+                  <FarmSuggestions />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <AdsList />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <CommunitySuggestions />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <AdsList />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <ConnectionSuggestions />
+                </PageColumnPanel>
+                <PageColumnPanel>
+                  <AdsList />
+                </PageColumnPanel>
+              </Column>
+            </div>
+          ) : null}
+        </div>
+      </Wrapper>
+    </FrameLayout>
   );
 };

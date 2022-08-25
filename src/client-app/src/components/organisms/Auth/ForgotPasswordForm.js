@@ -62,7 +62,7 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 `;
 
-export default (props) => {
+const ForgotPasswordFrom = (props) => {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   const [isFormEnabled, setFormEnabled] = useState(false);
@@ -179,3 +179,5 @@ export default (props) => {
     </form>
   );
 };
+
+export default ForgotPasswordFrom;

@@ -5,8 +5,9 @@ import { useMutation } from "@apollo/client";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import { unauthClient } from "../../graphql/client";
+import { PromptLayout } from "../../components/templates/Layout";
 
-export default (props) => {
+const ResetPassword = (props) => {
   const navigate = useNavigate();
   const params = useParams();
   const { email } = params;
@@ -70,10 +71,14 @@ export default (props) => {
   const model = { email, key };
 
   return (
-    <ResetPasswordForm
-      resetPassword={onResetPassword}
-      args={model}
-      showValidationError={showValidationError}
-    />
+    <PromptLayout>
+      <ResetPasswordForm
+        resetPassword={onResetPassword}
+        args={model}
+        showValidationError={showValidationError}
+      />
+    </PromptLayout>
   );
 };
+
+export default ResetPassword;

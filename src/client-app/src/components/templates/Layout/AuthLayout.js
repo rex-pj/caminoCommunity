@@ -32,29 +32,26 @@ const Wrap = styled.div`
 `;
 
 // The layout for login, signup or forgot password
-export default ({ component: Component, ...rest }) => {
+export default ({ children }) => {
   return (
-    <MasterLayout
-      {...rest}
-      component={(matchProps) => (
-        <Root>
-          <Container>
-            <Wrap>
-              {isTokenValid() ? (
-                <AuthBanner
-                  icon="exclamation-triangle"
-                  title="You are logged in"
-                  instruction="Please back to the homepage to follow other farms"
-                  actionUrl="/"
-                  actionText="Go to homepage"
-                />
-              ) : (
-                <Component {...matchProps} />
-              )}
-            </Wrap>
-          </Container>
-        </Root>
-      )}
-    />
+    <MasterLayout>
+      <Root>
+        <Container>
+          <Wrap>
+            {isTokenValid() ? (
+              <AuthBanner
+                icon="exclamation-triangle"
+                title="You are logged in"
+                instruction="Please back to the homepage to follow other farms"
+                actionUrl="/"
+                actionText="Go to homepage"
+              />
+            ) : (
+              { children }
+            )}
+          </Wrap>
+        </Container>
+      </Root>
+    </MasterLayout>
   );
 };

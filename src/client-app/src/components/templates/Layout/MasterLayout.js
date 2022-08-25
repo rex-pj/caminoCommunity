@@ -4,10 +4,10 @@ import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
 /// the layout with popup and notifications
-export default ({ component: Component, ...props }) => {
+export default ({ children }) => {
   return (
     <Fragment>
-      <Component {...props} />
+      {children}
       <Notifications />
       <Modal />
     </Fragment>

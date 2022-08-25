@@ -8,6 +8,7 @@ import { SessionContext } from "../../store/context/session-context";
 import { setLogin } from "../../services/authService";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
+import { AuthLayout } from "../../components/templates/Layout";
 
 export default (props) => {
   const navigate = useNavigate();
@@ -72,10 +73,12 @@ export default (props) => {
   };
 
   return (
-    <LoginForm
-      onlogin={onLogin}
-      showValidationError={showError}
-      isFormEnabled={isFormEnabled}
-    />
+    <AuthLayout>
+      <LoginForm
+        onlogin={onLogin}
+        showValidationError={showError}
+        isFormEnabled={isFormEnabled}
+      />
+    </AuthLayout>
   );
 };

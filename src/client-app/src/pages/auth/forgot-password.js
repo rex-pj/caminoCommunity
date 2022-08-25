@@ -6,6 +6,7 @@ import { userMutations } from "../../graphql/fetching/mutations";
 import { getError } from "../../utils/Helper";
 import { SessionContext } from "../../store/context/session-context";
 import { useStore } from "../../store/hook-store";
+import { AuthLayout } from "../../components/templates/Layout";
 
 export default (props) => {
   const dispatch = useStore(false)[1];
@@ -67,9 +68,11 @@ export default (props) => {
   };
 
   return (
-    <ForgotPasswordForm
-      onForgotPassword={(data) => onForgotPassword(data, forgotPassword)}
-      showValidationError={showValidationError}
-    />
+    <AuthLayout>
+      <ForgotPasswordForm
+        onForgotPassword={(data) => onForgotPassword(data, forgotPassword)}
+        showValidationError={showValidationError}
+      />
+    </AuthLayout>
   );
 };
