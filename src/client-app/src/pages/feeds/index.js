@@ -12,11 +12,6 @@ import {
   productMutations,
 } from "../../graphql/fetching/mutations";
 
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -121,16 +116,6 @@ export default (function (props) {
     });
   };
 
-  if (loading && feeds.length === 0) {
-    return <LoadingBar>Loading</LoadingBar>;
-  }
-  if ((!data || !pageRef.current.totalResult) && feeds.length === 0) {
-    return <NoDataBar>No data</NoDataBar>;
-  }
-  if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const onOpenDeleteConfirmation = (e, onDelete) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
@@ -193,9 +178,13 @@ export default (function (props) {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout
+      isLoading={!!loading}
+      hasData={(!data || !pageRef.current.totalResult) && feeds.length === 0}
+      hasError={!!error}
+    >
       <InfiniteScroll
-        dataLength={pageRef.current.totalResult}
+        dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
         loader={<h4>Loading...</h4>}

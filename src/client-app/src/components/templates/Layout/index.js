@@ -1,14 +1,14 @@
 import DefaultLayout from "./DefaultLayout";
 import DetailLayout from "./DetailLayout";
 import CommunityLayout from "./CommunityLayout";
-import FrameLayout from "./FrameLayout";
+import BodyLayout from "./BodyLayout";
 import AuthLayout from "./AuthLayout";
 import ProfileLayout from "./ProfileLayout";
 import MasterLayout from "./MasterLayout";
 import PromptLayout from "./PromptLayout";
 
 export {
-  FrameLayout,
+  BodyLayout,
   DefaultLayout,
   DetailLayout,
   CommunityLayout,

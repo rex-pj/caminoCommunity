@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import loadable from "@loadable/component";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
@@ -12,17 +11,20 @@ import {
 import { SessionContext } from "../../../store/context/session-context";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
 import { navigationQueries } from "../../../graphql/fetching/queries";
-import FrameLayout from "./FrameLayout";
+import BodyLayout from "./BodyLayout";
+import { Header } from "../../organisms/Containers";
+import Notifications from "../../organisms/Notification/Notifications";
+import Modal from "../../organisms/Modals/Modal";
 
-const ToggleSidebar = loadable(() =>
+const ToggleSidebar = React.lazy(() =>
   import("../../organisms/Containers/ToggleSidebar")
 );
-const Shortcut = loadable(() => import("../../organisms/Shortcut"));
-const Interesting = loadable(() => import("../../organisms/Interesting"));
-const LoggedInCard = loadable(() =>
+const Shortcut = React.lazy(() => import("../../organisms/Shortcut"));
+const Interesting = React.lazy(() => import("../../organisms/Interesting"));
+const LoggedInCard = React.lazy(() =>
   import("../../organisms/ProfileCard/LoggedInCard")
 );
-const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
+const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
@@ -32,8 +34,8 @@ const Wrapper = styled.div`
 `;
 
 // The layout default like home, products, articles or farms index page
-export default (props) => {
-  const { children } = props;
+const DefaultLayout = (props) => {
+  const { children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
   const [sidebarState, setSidebarState] = useState({
     isLeftShown: false,
@@ -116,7 +118,8 @@ export default (props) => {
 
   const { isLeftShown, isCenterShown, isRightShown, isInit } = sidebarState;
   return (
-    <FrameLayout>
+    <>
+      <Header />
       <Wrapper className="container-fluid px-lg-5 mt-md-3 mt-lg-5">
         <ToggleSidebar
           className="mb-4 d-lg-none"
@@ -147,7 +150,13 @@ export default (props) => {
 
           {isCenterShown ? (
             <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-              {children}
+              <BodyLayout
+                isLoading={isLoading}
+                hasData={hasData}
+                hasError={hasError}
+              >
+                {children}
+              </BodyLayout>
             </div>
           ) : null}
 
@@ -185,6 +194,10 @@ export default (props) => {
           ) : null}
         </div>
       </Wrapper>
-    </FrameLayout>
+      <Notifications />
+      <Modal />
+    </>
   );
 };
+
+export default DefaultLayout;

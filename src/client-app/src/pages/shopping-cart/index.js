@@ -6,7 +6,7 @@ import { PanelFooter } from "../../components/molecules/Panels";
 import {} from "@fortawesome/react-fontawesome";
 import CartTable from "../../components/organisms/ShoppingCart/CartTable";
 import CartSummary from "../../components/organisms/ShoppingCart/CartSummary";
-import { FrameLayout } from "../../components/templates/Layout";
+import { BodyLayout } from "../../components/templates/Layout";
 
 const Wrapper = styled.div`
   ${LightTextbox} {
@@ -38,7 +38,7 @@ const Title = styled(PrimaryTitle)`
 
 export default (function (props) {
   return (
-    <FrameLayout>
+    <BodyLayout>
       <Wrapper className="container">
         <Title className="mb-3">Giỏ hàng</Title>
         <CartTable />
@@ -49,6 +49,6 @@ export default (function (props) {
           <div className="col-sm-12 col-md-6"></div>
         </div>
       </Wrapper>
-    </FrameLayout>
+    </BodyLayout>
   );
 });

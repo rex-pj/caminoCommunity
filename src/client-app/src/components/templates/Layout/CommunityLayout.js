@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import loadable from "@loadable/component";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
 import CommunityInfo from "../Community/CommunityInfo";
@@ -12,13 +11,16 @@ import { useWindowSize } from "../../../store/hook-store/window-size-store";
 import { navigationQueries } from "../../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import Shortcut from "../../organisms/Shortcut";
-import FrameLayout from "./FrameLayout";
+import BodyLayout from "./BodyLayout";
+import { Header } from "../../organisms/Containers";
+import Notifications from "../../organisms/Notification/Notifications";
+import Modal from "../../organisms/Modals/Modal";
 
-const Interesting = loadable(() => import("../../organisms/Interesting"));
-const ToggleSidebar = loadable(() =>
+const Interesting = React.lazy(() => import("../../organisms/Interesting"));
+const ToggleSidebar = React.lazy(() =>
   import("../../organisms/Containers/ToggleSidebar")
 );
-const AdsList = loadable(() => import("../../organisms/Ads/AdsList"));
+const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
@@ -36,8 +38,8 @@ const Column = styled.div`
 `;
 
 // The layout of Communitys
-export default (props) => {
-  const { info, children } = props;
+const CommunityLayout = (props) => {
+  const { info, children, isLoading, hasData, hasError } = props;
   const [sidebarState, setSidebarState] = useState({
     isLeftShown: false,
     isRightShown: false,
@@ -91,7 +93,8 @@ export default (props) => {
 
   const { isLeftShown, isCenterShown, isRightShown, isInit } = sidebarState;
   return (
-    <FrameLayout>
+    <>
+      <Header />
       <Wrapper className="container-fluid px-lg-5">
         <ToggleSidebar
           className="mb-4 d-lg-none"
@@ -123,7 +126,13 @@ export default (props) => {
           ) : null}
           {isCenterShown ? (
             <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-              {children}
+              <BodyLayout
+                isLoading={isLoading}
+                hasData={hasData}
+                hasError={hasError}
+              >
+                {children}
+              </BodyLayout>
             </div>
           ) : null}
 
@@ -157,6 +166,10 @@ export default (props) => {
           ) : null}
         </div>
       </Wrapper>
-    </FrameLayout>
+      <Notifications />
+      <Modal />
+    </>
   );
 };
+
+export default CommunityLayout;

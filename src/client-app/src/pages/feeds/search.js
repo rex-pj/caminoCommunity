@@ -12,7 +12,7 @@ import { getParameters, generateQueryParameters } from "../../utils/Helper";
 import SearchFeed from "../../components/templates/Feeds/search-feed";
 import SearchForm from "../../components/templates/Feeds/search-form";
 import { authClient } from "../../graphql/client";
-import { FrameLayout } from "../../components/templates/Layout";
+import { BodyLayout } from "../../components/templates/Layout";
 
 const Wrapper = styled.div`
   > .row {
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default (props) => {
+const Search = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { keyword } = useParams();
@@ -92,7 +92,7 @@ export default (props) => {
   const { advancedSearch } = data;
   const baseUrl = `/search/`;
   return (
-    <FrameLayout>
+    <BodyLayout>
       <Wrapper className="container-lg container-fluid px-lg-5 mt-3">
         <div className="row px-lg-3">
           <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
@@ -120,6 +120,8 @@ export default (props) => {
           </div>
         </div>
       </Wrapper>
-    </FrameLayout>
+    </BodyLayout>
   );
 };
+
+export default Search;

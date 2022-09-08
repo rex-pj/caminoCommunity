@@ -15,10 +15,6 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
 import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
@@ -142,12 +138,6 @@ export default (function (props) {
     }
   }, [refetch, called, loading]);
 
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const { product } = data;
 
   const currentProduct = JSON.parse(JSON.stringify(productCreationModel));
@@ -200,7 +190,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} />
       <ProductEditor
         currentProduct={currentProduct}

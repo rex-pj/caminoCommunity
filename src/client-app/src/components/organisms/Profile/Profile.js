@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import loadable from "@loadable/component";
 import { ProfileLayout } from "../../templates/Layout";
 
-const AsyncPage = loadable(
-  (props) => import(`${"../../../pages/user/"}${props.page}`),
-  {
-    cacheKey: (props) => props.page,
-  }
+const AsyncPage = React.lazy((props) =>
+  import(`${"../../../pages/user/"}${props.page}`)
 );
 
-const ProfileInfo = loadable(() => import("./ProfileInfo"));
+const ProfileInfo = React.lazy(() => import("./ProfileInfo"));
 
 export default (props) => {
   const { userId, baseUrl, pages, userInfo, pageNumber } = props;

@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import { PanelDefault } from "../../molecules/Panels";
 import { SessionContext } from "../../../store/context/session-context";
-const UserCoverCard = loadable(() => import("./UserCoverCard"));
+const UserCoverCard = React.lazy(() => import("./UserCoverCard"));
 
 const Root = styled(PanelDefault)`
   position: relative;

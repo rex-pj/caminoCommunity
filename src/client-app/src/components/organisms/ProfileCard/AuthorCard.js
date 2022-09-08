@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import loadable from "@loadable/component";
 import { faUserCheck, faComments } from "@fortawesome/free-solid-svg-icons";
 import ProfileCardInfo from "./ProfileCardInfo";
 import { PanelDefault } from "../../molecules/Panels";
-const UserCoverCard = loadable(() => import("./UserCoverCard"));
+const UserCoverCard = React.lazy(() => import("./UserCoverCard"));
 
 const Root = styled(PanelDefault)`
   position: relative;
@@ -16,7 +15,7 @@ const Card = styled(UserCoverCard)`
   border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
 `;
 
-export default function (props) {
+const AuthorCard = (props) => {
   const { author } = props;
   const menuList = [
     {
@@ -37,4 +36,6 @@ export default function (props) {
       <ProfileCardInfo author={author} />
     </Root>
   );
-}
+};
+
+export default AuthorCard;

@@ -70,7 +70,7 @@ const ForgotPasswordRow = styled(FormRow)`
   text-align: center;
 `;
 
-export default (props) => {
+const LoginForm = (props) => {
   const [, updateState] = useState();
   const [isRemember, setRemember] = useState(false);
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -199,3 +199,5 @@ export default (props) => {
     </form>
   );
 };
+
+export default LoginForm;

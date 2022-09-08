@@ -10,7 +10,7 @@ import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 import { AuthLayout } from "../../components/templates/Layout";
 
-export default (props) => {
+const Login = (props) => {
   const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
@@ -82,3 +82,5 @@ export default (props) => {
     </AuthLayout>
   );
 };
+
+export default Login;

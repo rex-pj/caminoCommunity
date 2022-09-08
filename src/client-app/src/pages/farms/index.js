@@ -6,11 +6,6 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { farmQueries } from "../../graphql/fetching/queries";
 import { farmMutations } from "../../graphql/fetching/mutations";
 import { useParams } from "react-router-dom";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
@@ -99,16 +94,6 @@ export default (function (props) {
     });
   };
 
-  if (loading && farms.length === 0) {
-    return <LoadingBar>Loading</LoadingBar>;
-  }
-  if ((!data || !pageRef.current.totalResult) && farms.length === 0) {
-    return <NoDataBar>No data</NoDataBar>;
-  }
-  if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const onOpenDeleteConfirmation = (e) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
@@ -158,11 +143,15 @@ export default (function (props) {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout
+      isLoading={!!loading}
+      hasData={(!data || !pageRef.current.totalResult) && farms.length === 0}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} className="px-2" />
       <InfiniteScroll
         style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult}
+        dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
         loader={<h4>Loading...</h4>}

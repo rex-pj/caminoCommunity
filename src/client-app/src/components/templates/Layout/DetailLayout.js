@@ -12,10 +12,12 @@ import {
 import { useQuery } from "@apollo/client";
 import { SessionContext } from "../../../store/context/session-context";
 import { useWindowSize } from "../../../store/hook-store/window-size-store";
-import loadable from "@loadable/component";
-import FrameLayout from "./FrameLayout";
+import BodyLayout from "./BodyLayout";
+import { Header } from "../../organisms/Containers";
+import Notifications from "../../organisms/Notification/Notifications";
+import Modal from "../../organisms/Modals/Modal";
 
-const ToggleSidebar = loadable(() =>
+const ToggleSidebar = React.lazy(() =>
   import("../../organisms/Containers/ToggleSidebar")
 );
 const Wrapper = styled.div`
@@ -30,7 +32,8 @@ const Wrapper = styled.div`
 `;
 
 // The layout or article or farm detail page
-export default (props) => {
+const DetailLayout = (props) => {
+  const { author, children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
 
   const [sidebarState, setSidebarState] = useState({
@@ -109,9 +112,9 @@ export default (props) => {
   };
 
   const { isLeftShown, isCenterShown, isRightShown, isInit } = sidebarState;
-  const { author, children } = props;
   return (
-    <FrameLayout>
+    <>
+      <Header />
       <Wrapper className="container-fluid px-lg-5 mt-md-3 mt-lg-5">
         <ToggleSidebar
           className="mb-4 d-lg-none"
@@ -135,7 +138,13 @@ export default (props) => {
           ) : null}
           {isCenterShown ? (
             <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-              {children}
+              <BodyLayout
+                isLoading={isLoading}
+                hasData={hasData}
+                hasError={hasError}
+              >
+                {children}
+              </BodyLayout>
             </div>
           ) : null}
           {isRightShown || isInit ? (
@@ -172,6 +181,10 @@ export default (props) => {
           ) : null}
         </div>
       </Wrapper>
-    </FrameLayout>
+      <Notifications />
+      <Modal />
+    </>
   );
 };
+
+export default DetailLayout;

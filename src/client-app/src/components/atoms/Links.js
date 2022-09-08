@@ -1,9 +1,9 @@
 import React from "react";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const AnchorLink = ({ ...props }) => {
   const { children, target, to, className } = props;
-  const { pathname } = useMatch();
+  const { pathname } = useLocation();
   const currentPath = pathname
     ? pathname.split(":")
       ? pathname.split(":")[0]

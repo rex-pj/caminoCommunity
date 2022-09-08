@@ -10,10 +10,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import { fileToBase64 } from "../../utils/Helper";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
@@ -127,12 +123,6 @@ export default (function (props) {
     }
   }, [refetch, called, loading]);
 
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const { farm } = data;
 
   const currentFarm = JSON.parse(JSON.stringify(farmCreationModel));
@@ -185,7 +175,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} />
       <FarmEditor
         height={350}

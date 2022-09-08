@@ -13,17 +13,16 @@ import { parseUserInfo } from "../../services/userService";
 import UserProfileRoutes from "../../routes/userProfileRoutes";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
-import loadable from "@loadable/component";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { authClient } from "../../graphql/client";
 
-const ProfileAvatar = loadable(() =>
+const ProfileAvatar = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileAvatar")
   ),
-  ProfileCover = loadable(() =>
+  ProfileCover = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileCover")
   ),
-  ProfileNavigation = loadable(() =>
+  ProfileNavigation = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileNavigation")
   );
 

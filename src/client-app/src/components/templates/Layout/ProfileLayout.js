@@ -1,5 +1,5 @@
 import React from "react";
-import FrameLayout from "./FrameLayout";
+import BodyLayout from "./BodyLayout";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -14,12 +14,14 @@ const Wrapper = styled.div`
 `;
 
 // The layout for User profile page
-export default ({ children }) => {
+const ProfileLayout = ({ children }) => {
   return (
-    <FrameLayout>
+    <BodyLayout>
       <Wrapper className="container container-md container-sm container-lg px-lg-5 px-md-2 px-sm-1">
         {children}
       </Wrapper>
-    </FrameLayout>
+    </BodyLayout>
   );
 };
+
+export default ProfileLayout;

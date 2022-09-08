@@ -2,10 +2,6 @@ import React, { useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import authClient from "../../graphql/client/authClient";
 import {
@@ -72,12 +68,6 @@ export default (function (props) {
       refetch();
     }
   }, [refetch, called, loading]);
-
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
 
   const { article: articleResponse } = data;
   let article = { ...articleResponse };
@@ -191,7 +181,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} />
       <ArticleEditor
         height={350}

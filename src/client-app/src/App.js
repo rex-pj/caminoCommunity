@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -14,6 +14,7 @@ import { SessionContext } from "./store/context/session-context";
 import { parseUserInfo, isTokenValid } from "./services/authService";
 import { ThemeProvider } from "styled-components";
 import * as theme from "./utils/Theme";
+import { LoadingBar } from "./components/molecules/NotificationBars";
 const FeedsPage = React.lazy(() => import("./pages/feeds"));
 const ArticlesPage = React.lazy(() => import("./pages/articles"));
 const ArticleDetailPage = React.lazy(() => import("./pages/articles/detail"));
@@ -94,110 +95,137 @@ const App = () => {
         value={{ ...parseLoggedUser(), relogin, isLoading: loading }}
       >
         <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<FeedsPage />}></Route>
-              <Route path="/page/:pageNumber" element={<FeedsPage />}></Route>
-              <Route path="/feeds" element={<FeedsPage />}></Route>
-              <Route
-                path="/feeds/page/:pageNumber"
-                element={<FeedsPage />}
-              ></Route>
-              <Route path="/articles" element={<ArticlesPage />}></Route>
-              <Route
-                path="/articles/page/:pageNumber"
-                element={<ArticlesPage />}
-              ></Route>
-              <Route
-                path="/articles/:id"
-                element={<ArticleDetailPage />}
-              ></Route>
-              <Route
-                path="/articles/update/:id"
-                element={<ArticleUpdatePage />}
-              ></Route>
-              <Route path="/products" element={<ProductsPage />}></Route>
-              <Route
-                path="/products/page/:pageNumber"
-                element={<ProductsPage />}
-              ></Route>
-              <Route
-                path="/products/:id"
-                element={<ProductDetailPage />}
-              ></Route>
-              <Route
-                path="/products/update/:id"
-                element={<ProductUpdatePage />}
-              ></Route>
-              <Route
-                path="/shopping-cart"
-                element={<ShoppingCartPage />}
-              ></Route>
-              <Route path="/farms" element={<FarmsPage />}></Route>
-              <Route
-                path="/farms/page/:pageNumber"
-                element={<FarmsPage />}
-              ></Route>
-              <Route path="/farms/:id" element={<FarmDetailPage />}></Route>
-              <Route
-                path="/farms/update/:id"
-                element={<FarmUpdatePage />}
-              ></Route>
-              <Route path="/communities" element={<CommunitiesPage />}></Route>
-              <Route
-                path="/communities/page/:pageNumber"
-                element={<CommunitiesPage />}
-              ></Route>
-              <Route
-                path="/communities/:id"
-                element={<CommunityDetailPage />}
-              ></Route>
-              <Route
-                path="/auth/forgot-password"
-                element={<ForgotPasswordPage />}
-              ></Route>
-              <Route path="/auth/login" element={<LoginPage />}></Route>
-              <Route path="/auth/signup" element={<SignupPage />}></Route>
-              <Route path="/auth/logout" element={<LogoutPage />}></Route>
-              <Route path="/profile/:userId" element={<ProfilePage />}></Route>
-              <Route
-                path="/profile/:userId/:pageName"
-                element={<ProfilePage />}
-              ></Route>
-              <Route
-                path="/profile/:userId/:pageName/page/:pageNumber"
-                element={<ProfilePage />}
-              ></Route>
-              <Route path="/search" element={<SearchPage />}></Route>
-              <Route path="/search/:keyword" element={<SearchPage />}></Route>
-              <Route
-                path="/user/active/:email/:key"
-                element={<UserActivePage />}
-              ></Route>
-              <Route
-                path="/user/active/:email/:key+"
-                element={<UserActivePage />}
-              ></Route>
-              <Route
-                path="/user/active/:email/*"
-                element={<UserActivePage />}
-              ></Route>
-              <Route
-                path="/user/reset-password/:email/:key"
-                element={<ResetPasswordPage />}
-              ></Route>
-              <Route
-                path="/user/reset-password/:email/:key+"
-                element={<ResetPasswordPage />}
-              ></Route>
-              <Route
-                path="/user/reset-password/:email/*"
-                element={<ResetPasswordPage />}
-              ></Route>
-              <Route path="/error" element={<ErrorPage />}></Route>
-              <Route path="*" element={<NotFoundPage />}></Route>
-            </Routes>
-          </BrowserRouter>
+          <Suspense fallback={<LoadingBar>Loading...</LoadingBar>}>
+            <BrowserRouter>
+              <Routes>
+                {[
+                  "/",
+                  "/page/:pageNumber",
+                  "/feeds",
+                  "/feeds/page/:pageNumber",
+                ].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<FeedsPage />}
+                    ></Route>
+                  );
+                })}
+                {["/articles", "/articles/page/:pageNumber"].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<ArticlesPage />}
+                    ></Route>
+                  );
+                })}
+                <Route
+                  path="/articles/:id"
+                  element={<ArticleDetailPage />}
+                ></Route>
+                <Route
+                  path="/articles/update/:id"
+                  element={<ArticleUpdatePage />}
+                ></Route>
+                {["/products", "/products/page/:pageNumber"].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<ProductsPage />}
+                    ></Route>
+                  );
+                })}
+                <Route
+                  path="/products/:id"
+                  element={<ProductDetailPage />}
+                ></Route>
+                <Route
+                  path="/products/update/:id"
+                  element={<ProductUpdatePage />}
+                ></Route>
+                <Route
+                  path="/shopping-cart"
+                  element={<ShoppingCartPage />}
+                ></Route>
+                {["/farms", "/farms/page/:pageNumber"].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<FarmsPage />}
+                    ></Route>
+                  );
+                })}
+                <Route path="/farms/:id" element={<FarmDetailPage />}></Route>
+                <Route
+                  path="/farms/update/:id"
+                  element={<FarmUpdatePage />}
+                ></Route>
+                <Route
+                  path="/communities"
+                  element={<CommunitiesPage />}
+                ></Route>
+                <Route
+                  path="/communities/page/:pageNumber"
+                  element={<CommunitiesPage />}
+                ></Route>
+                <Route
+                  path="/communities/:id"
+                  element={<CommunityDetailPage />}
+                ></Route>
+                <Route
+                  path="/auth/forgot-password"
+                  element={<ForgotPasswordPage />}
+                ></Route>
+                <Route path="/auth/login" element={<LoginPage />}></Route>
+                <Route path="/auth/signup" element={<SignupPage />}></Route>
+                <Route path="/auth/logout" element={<LogoutPage />}></Route>
+                <Route
+                  path="/profile/:userId"
+                  element={<ProfilePage />}
+                ></Route>
+                <Route
+                  path="/profile/:userId/:pageName"
+                  element={<ProfilePage />}
+                ></Route>
+                <Route
+                  path="/profile/:userId/:pageName/page/:pageNumber"
+                  element={<ProfilePage />}
+                ></Route>
+                <Route path="/search" element={<SearchPage />}></Route>
+                <Route path="/search/:keyword" element={<SearchPage />}></Route>
+                <Route
+                  path="/user/active/:email/:key"
+                  element={<UserActivePage />}
+                ></Route>
+                <Route
+                  path="/user/active/:email/:key+"
+                  element={<UserActivePage />}
+                ></Route>
+                <Route
+                  path="/user/active/:email/*"
+                  element={<UserActivePage />}
+                ></Route>
+                <Route
+                  path="/user/reset-password/:email/:key"
+                  element={<ResetPasswordPage />}
+                ></Route>
+                <Route
+                  path="/user/reset-password/:email/:key+"
+                  element={<ResetPasswordPage />}
+                ></Route>
+                <Route
+                  path="/user/reset-password/:email/*"
+                  element={<ResetPasswordPage />}
+                ></Route>
+                <Route path="/error" element={<ErrorPage />}></Route>
+                <Route path="*" element={<NotFoundPage />}></Route>
+              </Routes>
+            </BrowserRouter>
+          </Suspense>
         </ThemeProvider>
       </SessionContext.Provider>
     </ApolloProvider>

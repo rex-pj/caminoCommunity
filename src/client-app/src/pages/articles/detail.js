@@ -7,16 +7,17 @@ import {
   userQueries,
   farmQueries,
 } from "../../graphql/fetching/queries";
+
+import {
+  ErrorBar,
+  LoadingBar,
+} from "../../components/molecules/NotificationBars";
 import { articleMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
 import ArticleItem from "../../components/organisms/Article/ArticleItem";
 import styled from "styled-components";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
@@ -145,12 +146,6 @@ export default (function (props) {
     }
   }, [state, refetch]);
 
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const { article: articleResponse } = data;
   let article = { ...articleResponse };
 
@@ -249,7 +244,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} />
       <Detail
         article={article}

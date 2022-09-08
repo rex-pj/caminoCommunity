@@ -1,5 +1,5 @@
 import React from "react";
-import { useMatch } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { HorizontalList } from "../../molecules/List";
@@ -42,7 +42,7 @@ const ListItem = styled.li`
 `;
 
 export default (function (props) {
-  const { pathname } = useMatch();
+  const { pathname } = useLocation();
   const { className } = props;
   return (
     <Root>

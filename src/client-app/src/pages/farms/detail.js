@@ -153,12 +153,6 @@ export default (function (props) {
     }
   }, [state, refetch, refetchProducts]);
 
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const { farm: farmData } = data;
   let farm = { ...farmData };
 
@@ -284,7 +278,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Detail
         farm={farm}
         breadcrumbs={breadcrumbs}

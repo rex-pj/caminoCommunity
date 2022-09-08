@@ -96,16 +96,6 @@ export default (function (props) {
     });
   };
 
-  if (loading && articles.length === 0) {
-    return <LoadingBar>Loading</LoadingBar>;
-  }
-  if ((!data || !pageRef.current.totalResult) && articles.length === 0) {
-    return <NoDataBar>No data</NoDataBar>;
-  }
-  if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const breadcrumbs = [
     {
       isActived: true,
@@ -155,11 +145,15 @@ export default (function (props) {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout
+      isLoading={!!loading}
+      hasData={(!data || !pageRef.current.totalResult) && articles.length === 0}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} className="px-2" />
       <InfiniteScroll
         style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult}
+        dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
         loader={<h4>Loading...</h4>}

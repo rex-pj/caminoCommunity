@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { unauthClient } from "../../graphql/client";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";

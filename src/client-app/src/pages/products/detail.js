@@ -146,12 +146,6 @@ export default (function (props) {
     }
   }, [state, refetch]);
 
-  if (loading || !data) {
-    return <LoadingBar>Loading...</LoadingBar>;
-  } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
-  }
-
   const { product: productData } = data;
   let product = { ...productData };
 
@@ -277,7 +271,12 @@ export default (function (props) {
   };
 
   return (
-    <DetailLayout author={getAuthorInfo()}>
+    <DetailLayout
+      author={getAuthorInfo()}
+      isLoading={!!loading}
+      hasData={true}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} />
       <Detail
         product={product}

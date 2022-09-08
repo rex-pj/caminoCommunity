@@ -5,7 +5,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
 import { fileToBase64 } from "../../utils/Helper";
 import { useMutation, useLazyQuery } from "@apollo/client";
@@ -29,15 +29,10 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default (props) => {
-  const {
-    pageNumber,
-    match: {
-      params: { userId },
-    },
-    editorMode,
-    onToggleCreateMode,
-  } = props;
+const UserFeeds = (props) => {
+  const { userId } = useParams();
+  const { pageNumber } = props;
+  const { editorMode, onToggleCreateMode } = props;
   const pageRef = useRef({
     pageNumber: pageNumber ? pageNumber : 1,
     userId: userId,
@@ -343,7 +338,7 @@ export default (props) => {
     <Fragment>
       {currentUser && isLogin ? renderProfileEditorTabs() : null}
       <InfiniteScroll
-        dataLength={pageRef.current.totalResult}
+        dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
         loader={<h4>Loading...</h4>}
@@ -367,3 +362,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default UserFeeds;

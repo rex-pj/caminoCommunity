@@ -274,7 +274,7 @@ export default (function (props) {
       {renderProductEditor()}
       <InfiniteScroll
         style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult}
+        dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
         loader={<h4>Loading...</h4>}
