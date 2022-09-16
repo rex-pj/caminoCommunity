@@ -13,6 +13,7 @@ import { AnchorLink } from "../../atoms/Links";
 import { ImageRound } from "../../atoms/Images";
 import NoImage from "../../molecules/NoImages/no-image";
 import { useParams, useNavigate } from "react-router-dom";
+import { apiConfig } from "../../../config/api-config";
 
 const DropdownPanel = styled.div`
   position: absolute;
@@ -198,9 +199,9 @@ export default (props) => {
       }
 
       if (result.feedType === FeedType.User) {
-        result.pictureUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${result.pictureId}`;
+        result.pictureUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${result.pictureId}`;
       } else {
-        result.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${result.pictureId}`;
+        result.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${result.pictureId}`;
       }
 
       return result;

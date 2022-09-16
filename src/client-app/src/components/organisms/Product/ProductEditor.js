@@ -17,6 +17,7 @@ import { useStore } from "../../../store/hook-store";
 import ProductAttributeEditModal from "./ProductAttributeEditModal";
 import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
+import { apiConfig } from "../../../config/api-config";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -677,7 +678,7 @@ export default (props) => {
           {pictures.value.map((item, index) => {
             let imageSrc = item.base64Data;
             if (!imageSrc && item.pictureId) {
-              imageSrc = `${process.env.REACT_APP_CDN_PHOTO_URL}${item.pictureId}`;
+              imageSrc = `${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`;
             } else if (!imageSrc) {
               imageSrc = null;
             }

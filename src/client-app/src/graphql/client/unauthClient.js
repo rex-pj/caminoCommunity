@@ -1,8 +1,9 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "apollo-link-context";
+import { apiConfig } from "../../config/api-config";
 
 const httpLink = createHttpLink({
-  uri: process.env.REACT_APP_API_URL,
+  uri: apiConfig.camino_graphql,
   credentials: "include",
 });
 

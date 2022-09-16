@@ -7,6 +7,7 @@ import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
 import NoAvatar from "../../molecules/NoImages/no-avatar";
 import NoImage from "../../molecules/NoImages/no-image";
+import { apiConfig } from "../../../config/api-config";
 
 const Root = styled.div`
   position: relative;
@@ -82,7 +83,7 @@ export default function (props) {
     <Root className={className}>
       {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
         <ProfileImage
-          src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.userAvatar.code}`}
+          src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.code}`}
         />
       ) : (
         <EmptyAvatar />
@@ -92,7 +93,7 @@ export default function (props) {
         <CoverWrapper>
           {userInfo && userInfo.userCover && userInfo.userCover.code ? (
             <Thumbnail
-              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userInfo.userCover.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getCover}/${userInfo.userCover.code}`}
             />
           ) : (
             <EmptyCover />

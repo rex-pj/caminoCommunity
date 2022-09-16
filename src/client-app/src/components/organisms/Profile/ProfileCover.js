@@ -14,6 +14,7 @@ import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
 import { userMutations } from "../../../graphql/fetching/mutations";
 import { authClient } from "../../../graphql/client";
+import { apiConfig } from "../../../config/api-config";
 
 const Wrap = styled.div`
     position: relative;
@@ -393,7 +394,7 @@ export default (props) => {
           {userCover && userCover.code ? (
             <Thumbnail
               className="cover-thumbnail"
-              src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userCover.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userCover.code}`}
               alt=""
             />
           ) : (
@@ -431,7 +432,7 @@ export default (props) => {
             {userCover && userCover.code ? (
               <Thumbnail
                 className="cover-thumbnail"
-                src={`${process.env.REACT_APP_CDN_COVER_PHOTO_API_URL}${userCover.code}`}
+                src={`${apiConfig.paths.userPhotos.get.getCover}/${userCover.code}`}
                 alt=""
               />
             ) : (

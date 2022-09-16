@@ -21,6 +21,7 @@ import styled from "styled-components";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
+import { apiConfig } from "../../config/api-config";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -161,7 +162,7 @@ export default (function (props) {
   ];
 
   if (article.picture.pictureId) {
-    article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
+    article.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${article.picture.pictureId}`;
   }
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
@@ -175,7 +176,7 @@ export default (function (props) {
       let articleItem = { ...item };
       articleItem.url = `${UrlConstant.Article.url}${articleItem.id}`;
       if (articleItem.picture.pictureId) {
-        articleItem.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${articleItem.picture.pictureId}`;
+        articleItem.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${articleItem.picture.pictureId}`;
       }
 
       articleItem.creator = {
@@ -185,7 +186,7 @@ export default (function (props) {
       };
 
       if (item.createdByPhotoCode) {
-        articleItem.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        articleItem.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       return articleItem;

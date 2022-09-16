@@ -7,6 +7,7 @@ import { FeedType } from "../../../utils/Enums";
 import { useLocation } from "react-router-dom";
 import { UrlConstant } from "../../../utils/Constants";
 import { getParameters, generateQueryParameters } from "../../../utils/Helper";
+import { apiConfig } from "../../../config/api-config";
 
 export default (props) => {
   const { advancedSearchResult, baseUrl, keyword } = props;
@@ -25,9 +26,9 @@ export default (props) => {
       }
 
       if (feed.pictureId && feed.feedType === FeedType.User) {
-        feed.pictureUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${feed.pictureId}`;
+        feed.pictureUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${feed.pictureId}`;
       } else if (feed.pictureId) {
-        feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+        feed.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${feed.pictureId}`;
       }
 
       feed.creator = {
@@ -37,7 +38,7 @@ export default (props) => {
       };
 
       if (item.createdByPhotoCode) {
-        feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       return feed;

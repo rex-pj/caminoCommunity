@@ -4,6 +4,7 @@ import ConnectionSuggestionItem from "./ConnectionSuggestionItem";
 import { VerticalList } from "../../molecules/List";
 import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { LoadingBar } from "../../molecules/NotificationBars";
+import { apiConfig } from "../../../config/api-config";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
@@ -31,7 +32,7 @@ export default (props) => {
       url: `/profile/${user.userIdentityId}`,
       id: user.userIdentityId,
       imageUrl: user.avatarCode
-        ? `${process.env.REACT_APP_CDN_AVATAR_API_URL}${user.avatarCode}`
+        ? `${apiConfig.paths.userPhotos.get.getAvatar}/${user.avatarCode}`
         : null,
     };
   });

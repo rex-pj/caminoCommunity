@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using HotChocolate.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Net;
-using HotChocolate;
 using Camino.Shared.Constants;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Exceptions;

@@ -11,11 +11,9 @@ namespace Module.Api.Media.Extensions.DependencyInjection
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
             services.AddScoped<IImageResolver, ImageResolver>();
-            services.AddScoped<IUserPhotoResolver, UserPhotoResolver>();
 
             services.AddGraphQLServer()
-                .AddType<ImageMutations>()
-                .AddType<UserPhotoMutations>();
+                .AddType<ImageMutations>();
             return services;
         }
 

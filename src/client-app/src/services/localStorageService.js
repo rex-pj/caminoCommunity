@@ -1,13 +1,13 @@
-function setStorage(key, value) {
+const setStorage = (key, value) => {
   localStorage.setItem(key, value);
-}
+};
 
-function removeStorage(key) {
+const removeStorage = (key) => {
   localStorage.removeItem(key);
-}
+};
 
-function getStorageByKey(key) {
+const getStorageByKey = (key) => {
   return localStorage.getItem(key);
-}
+};
 
 export default { setStorage, removeStorage, getStorageByKey };

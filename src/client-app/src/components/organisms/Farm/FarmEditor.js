@@ -12,6 +12,7 @@ import AsyncSelect from "react-select/async";
 import farmCreationModel from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
+import { apiConfig } from "../../../config/api-config";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -309,7 +310,7 @@ export default (props) => {
                   <div className="col-3" key={index}>
                     <ImageEditBox>
                       <Thumbnail
-                        src={`${process.env.REACT_APP_CDN_PHOTO_URL}${item.pictureId}`}
+                        src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
                       ></Thumbnail>
                       <RemoveImageButton
                         onClick={(e) => onImageRemoved(e, item)}

@@ -25,6 +25,7 @@ import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { apiConfig } from "../../config/api-config";
 
 export default (function (props) {
   const { userId } = useParams();
@@ -190,7 +191,7 @@ export default (function (props) {
       let article = { ...item };
       article.url = `${UrlConstant.Article.url}${article.id}`;
       if (article.picture.pictureId) {
-        article.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${article.picture.pictureId}`;
+        article.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${article.picture.pictureId}`;
       }
 
       article.creator = {
@@ -200,7 +201,7 @@ export default (function (props) {
       };
 
       if (item.createdByPhotoCode) {
-        article.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        article.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       return article;

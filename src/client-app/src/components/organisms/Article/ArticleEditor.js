@@ -11,6 +11,7 @@ import AsyncSelect from "react-select/async";
 import articleCreationModel from "../../../models/articleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
+import { apiConfig } from "../../../config/api-config";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -291,7 +292,7 @@ const ArticleEditor = (props) => {
             <div className="col-3">
               <ImageEditBox>
                 <Thumbnail
-                  src={`${process.env.REACT_APP_CDN_PHOTO_URL}${picture.value.pictureId}`}
+                  src={`${apiConfig.paths.pictures.get.getPicture}/${picture.value.pictureId}`}
                 ></Thumbnail>
                 <RemoveImageButton onClick={onImageRemoved}>
                   <FontAwesomeIcon icon="times"></FontAwesomeIcon>

@@ -1,4 +1,5 @@
 import { getAuthenticationToken } from "../../services/authService";
+import { apiConfig } from "../../config/api-config";
 
 const refreshTokenMutation = (tokens) => {
   return JSON.stringify({
@@ -21,7 +22,7 @@ export const getNewTokens = async () => {
       return;
     }
 
-    fetch(process.env.REACT_APP_API_URL, {
+    fetch(apiConfig.camino_graphql, {
       headers: {
         "content-type": "application/json",
         "x-header-authentication-access-token": authenticationToken,

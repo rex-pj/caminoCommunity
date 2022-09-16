@@ -11,10 +11,10 @@ import {
   farmMutations,
   productMutations,
 } from "../../graphql/fetching/mutations";
-
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { apiConfig } from "../../config/api-config";
 
 export default (function (props) {
   const { pageNumber } = useParams();
@@ -99,7 +99,7 @@ export default (function (props) {
       }
 
       if (feed.pictureId > 0) {
-        feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+        feed.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${feed.pictureId}`;
       }
 
       feed.creator = {
@@ -109,7 +109,7 @@ export default (function (props) {
       };
 
       if (item.createdByPhotoCode) {
-        feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       return feed;

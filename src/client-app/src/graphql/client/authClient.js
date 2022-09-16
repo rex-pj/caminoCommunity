@@ -7,13 +7,14 @@ import {
 import { setContext } from "apollo-link-context";
 import { getAuthenticationToken } from "../../services/authService";
 import errorLink from "./errorLink";
+import { apiConfig } from "../../config/api-config";
 
 const preloadedState = window.__APOLLO_STORE__;
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;
 
 const httpLink = createHttpLink({
-  uri: process.env.REACT_APP_API_URL,
+  uri: apiConfig.camino_graphql,
   credentials: "include",
 });
 

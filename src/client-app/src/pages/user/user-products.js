@@ -26,6 +26,7 @@ import {
 } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { apiConfig } from "../../config/api-config";
 
 export default (function (props) {
   const { userId } = useParams();
@@ -203,7 +204,7 @@ export default (function (props) {
       if (product.pictures && product.pictures.length > 0) {
         const picture = product.pictures[0];
         if (picture.pictureId > 0) {
-          product.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
+          product.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`;
         }
       }
 
@@ -214,7 +215,7 @@ export default (function (props) {
       };
 
       if (item.createdByPhotoCode) {
-        product.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        product.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       if (product.farms) {

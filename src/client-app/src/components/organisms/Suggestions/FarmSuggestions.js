@@ -4,6 +4,7 @@ import FarmSuggestionItem from "./FarmSuggestionItem";
 import { VerticalList } from "../../molecules/List";
 import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { LoadingBar } from "../../molecules/NotificationBars";
+import { apiConfig } from "../../../config/api-config";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
@@ -34,7 +35,7 @@ export default (props) => {
     if (farm.pictures && farm.pictures.length > 0) {
       const picture = farm.pictures[0];
       if (picture.pictureId > 0) {
-        pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${picture.pictureId}`;
+        pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`;
       }
     }
     return {

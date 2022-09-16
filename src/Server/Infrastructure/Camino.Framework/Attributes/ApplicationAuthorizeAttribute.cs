@@ -4,8 +4,6 @@ using Camino.Infrastructure.Identity.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Camino.Framework.Attributes
 {

@@ -6,6 +6,7 @@ import { ImageRound } from "../../../atoms/Images";
 import ButtonGroup from "../../../atoms/ButtonGroup";
 import DropdownButton from "../../../molecules/DropdownButton";
 import NoAvatar from "../../../molecules/NoImages/no-avatar";
+import { apiConfig } from "../../../../config/api-config";
 
 const Root = styled.div`
   display: inline-block;
@@ -85,7 +86,7 @@ export default function (props) {
         <ProfileButton to={`/profile/${userIdentityId}`}>
           {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
             <ImageRound
-              src={`${process.env.REACT_APP_CDN_AVATAR_API_URL}${userInfo.userAvatar.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.code}`}
               alt=""
             />
           ) : (

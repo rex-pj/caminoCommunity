@@ -28,6 +28,7 @@ import {
 } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { apiConfig } from "../../config/api-config";
 
 const UserFeeds = (props) => {
   const { userId } = useParams();
@@ -277,7 +278,7 @@ const UserFeeds = (props) => {
       }
 
       if (feed.pictureId > 0) {
-        feed.pictureUrl = `${process.env.REACT_APP_CDN_PHOTO_URL}${feed.pictureId}`;
+        feed.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${feed.pictureId}`;
       }
 
       feed.creator = {
@@ -287,7 +288,7 @@ const UserFeeds = (props) => {
       };
 
       if (item.createdByPhotoCode) {
-        feed.creator.photoUrl = `${process.env.REACT_APP_CDN_AVATAR_API_URL}${item.createdByPhotoCode}`;
+        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
       }
 
       return feed;
