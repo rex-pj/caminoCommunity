@@ -25,6 +25,10 @@ namespace Module.Api.Media.Controllers
         public async Task<IActionResult> GetAvatar(string code)
         {
             var avatar = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Avatar);
+            if (avatar == null)
+            {
+                return NotFound();
+            }
             return File(avatar.BinaryData, "image/jpeg");
         }
 
@@ -33,6 +37,10 @@ namespace Module.Api.Media.Controllers
         public async Task<IActionResult> GetCover(string code)
         {
             var cover = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Cover);
+            if (cover == null)
+            {
+                return NotFound();
+            }
             return File(cover.BinaryData, "image/jpeg");
         }
 
@@ -49,7 +57,7 @@ namespace Module.Api.Media.Controllers
 
             if (exist == null)
             {
-                return null;
+                return NotFound();
             }
 
             return File(exist.BinaryData, exist.ContentType);

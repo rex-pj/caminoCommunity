@@ -44,12 +44,6 @@ export default (function (props) {
   );
 
   useEffect(() => {
-    if (state.store === "UPDATE" && state.id) {
-      refetch();
-    }
-  }, [state, refetch]);
-
-  useEffect(() => {
     const page = pageRef.current.pageNumber;
     fetchFeeds({
       variables: {
@@ -59,6 +53,12 @@ export default (function (props) {
       },
     });
   }, [fetchFeeds]);
+
+  useEffect(() => {
+    if (state.store === "UPDATE" && state.id) {
+      refetch();
+    }
+  }, [state, refetch]);
 
   const setPageInfo = (data) => {
     if (!data) {

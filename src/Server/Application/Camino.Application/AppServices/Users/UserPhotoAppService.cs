@@ -148,6 +148,11 @@ namespace Camino.Application.AppServices.Users
 
         private UserPhotoResult MapEntityToDto(UserPhoto entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new UserPhotoResult
             {
                 Code = entity.Code,

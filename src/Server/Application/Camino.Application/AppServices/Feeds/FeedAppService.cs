@@ -15,6 +15,8 @@ using Camino.Application.Contracts.AppServices.Articles;
 using Camino.Application.Contracts.AppServices.Products;
 using Camino.Application.Contracts.AppServices.Farms;
 using Camino.Application.Contracts.AppServices.Feeds.Dtos;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Drawing.Printing;
 
 namespace Camino.Application.AppServices.Feeds
 {
@@ -122,20 +124,18 @@ namespace Camino.Application.AppServices.Feeds
             }
 
             var articleFeeds = (from article in articleQuery
-                                select new FeedResult()
+                                select new FeedResult
                                 {
                                     CreatedById = article.CreatedById,
                                     CreatedDate = article.CreatedDate,
-                                    Description = string.IsNullOrEmpty(article.Description) ? article.Content : article.Description,
+                                    Description = article.Description == null || article.Description == "" ? article.Content : article.Description,
                                     Id = article.Id.ToString(),
                                     Name = article.Name,
                                     FeedType = FeedTypes.Article,
+                                    Address = null,
                                 });
 
             var productFeeds = (from product in productQuery
-                                join pr in _productPriceEntityRepository.Get(x => x.IsCurrent)
-                                on product.Id equals pr.ProductId into prices
-                                from price in prices.DefaultIfEmpty()
                                 select new FeedResult
                                 {
                                     CreatedById = product.CreatedById,
@@ -144,11 +144,11 @@ namespace Camino.Application.AppServices.Feeds
                                     Id = product.Id.ToString(),
                                     Name = product.Name,
                                     FeedType = FeedTypes.Product,
-                                    Price = price != null ? price.Price : 0,
+                                    Address = null
                                 });
 
             var farmFeeds = (from farm in farmQuery
-                             select new FeedResult()
+                             select new FeedResult
                              {
                                  CreatedById = farm.CreatedById,
                                  CreatedDate = farm.CreatedDate,
@@ -164,23 +164,9 @@ namespace Camino.Application.AppServices.Feeds
             var farmFilteredCount = await farmFeeds.Select(x => x.Id).CountAsync();
             var filteredNumber = articleFilteredCount + productFilteredCount + farmFilteredCount;
 
-            var articles = await articleFeeds.OrderByDescending(x => x.CreatedDate)
-                .Skip(filter.PageSize * (filter.Page - 1))
-                .Take(filter.PageSize)
-                .ToListAsync();
-            var products = await productFeeds
-                .OrderByDescending(x => x.CreatedDate)
-                .Skip(filter.PageSize * (filter.Page - 1))
-                .Take(filter.PageSize)
-                .ToListAsync();
-            var farms = await farmFeeds.OrderByDescending(x => x.CreatedDate)
-                .Skip(filter.PageSize * (filter.Page - 1))
-                .Take(filter.PageSize)
-                .ToListAsync();
-
-            var feeds = articles
-                .Concat(products)
-                .Concat(farms)
+            var feeds = articleFeeds
+                .Union(productFeeds)
+                .Union(farmFeeds)
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))
                 .Take(filter.PageSize)
@@ -208,6 +194,8 @@ namespace Camino.Application.AppServices.Feeds
             var productIds = feeds.Where(x => x.FeedType == FeedTypes.Product).Select(x => long.Parse(x.Id));
             var productPictures = await _productPictureAppService
                 .GetListByProductIdsAsync(productIds, new IdRequestFilter<long>(), ProductPictureTypes.Thumbnail);
+            // Get product price
+            var productPrices = _productPriceEntityRepository.Get(x => productIds.Contains(x.ProductId) && x.IsCurrent);
 
             // Get farm pictures
             var farmIds = feeds.Where(x => x.FeedType == FeedTypes.Farm).Select(x => long.Parse(x.Id));
@@ -248,6 +236,12 @@ namespace Camino.Application.AppServices.Feeds
                         if (productPicture != null)
                         {
                             feed.PictureId = productPicture.PictureId.ToString();
+                        }
+
+                        var productPrice = productPrices.FirstOrDefault(x => x.ProductId == long.Parse(feed.Id));
+                        if (productPrice != null)
+                        {
+                            feed.Price = productPrice.Price;
                         }
                         break;
                     case FeedTypes.Farm:
@@ -344,10 +338,11 @@ namespace Camino.Application.AppServices.Feeds
                                 {
                                     CreatedById = article.CreatedById,
                                     CreatedDate = article.CreatedDate,
-                                    Description = string.IsNullOrEmpty(article.Description) ? article.Content : article.Description,
+                                    Description = article.Description == null || article.Description == "" ? article.Content : article.Description,
                                     Id = article.Id.ToString(),
                                     Name = article.Name,
                                     FeedType = FeedTypes.Article,
+                                    Address = null
                                 });
 
             var productFeeds = (from product in productQuery
@@ -362,7 +357,7 @@ namespace Camino.Application.AppServices.Feeds
                                     Id = product.Id.ToString(),
                                     Name = product.Name,
                                     FeedType = FeedTypes.Product,
-                                    Price = price != null ? price.Price : 0,
+                                    Address = null
                                 });
 
             var farmFeeds = (from farm in farmQuery
@@ -389,98 +384,116 @@ namespace Camino.Application.AppServices.Feeds
                                  Address = user.Address,
                              });
 
-            var countingTasks = new List<Task<CountingTask>>();
-            countingTasks.Add(Task.Run(async () =>
-            {
-                return new CountingTask
-                {
-                    TaskName = FeedTypes.Article.ToString(),
-                    TotalResult = await articleFeeds.CountAsync()
-                };
-            }));
-            countingTasks.Add(Task.Run(async () =>
-            {
-                return new CountingTask
-                {
-                    TaskName = FeedTypes.Product.ToString(),
-                    TotalResult = await productFeeds.CountAsync()
-                };
-            }));
-            countingTasks.Add(Task.Run(async () =>
-            {
-                return new CountingTask
-                {
-                    TaskName = FeedTypes.Farm.ToString(),
-                    TotalResult = await farmFeeds.CountAsync()
-                };
-            }));
-            countingTasks.Add(Task.Run(async () =>
-            {
-                return new CountingTask
-                {
-                    TaskName = FeedTypes.User.ToString(),
-                    TotalResult = await userFeeds.CountAsync()
-                };
-            }));
+            //var countingTasks = new List<Task<CountingTask>>();
+            //countingTasks.Add(Task.Run(async () =>
+            //{
+            //    return new CountingTask
+            //    {
+            //        TaskName = FeedTypes.Article.ToString(),
+            //        TotalResult = await articleFeeds.CountAsync()
+            //    };
+            //}));
+            //countingTasks.Add(Task.Run(async () =>
+            //{
+            //    return new CountingTask
+            //    {
+            //        TaskName = FeedTypes.Product.ToString(),
+            //        TotalResult = await productFeeds.CountAsync()
+            //    };
+            //}));
+            //countingTasks.Add(Task.Run(async () =>
+            //{
+            //    return new CountingTask
+            //    {
+            //        TaskName = FeedTypes.Farm.ToString(),
+            //        TotalResult = await farmFeeds.CountAsync()
+            //    };
+            //}));
+            //countingTasks.Add(Task.Run(async () =>
+            //{
+            //    return new CountingTask
+            //    {
+            //        TaskName = FeedTypes.User.ToString(),
+            //        TotalResult = await userFeeds.CountAsync()
+            //    };
+            //}));
 
-            await Task.WhenAll(countingTasks);
+            //await Task.WhenAll(countingTasks);
 
-            var totalUser = countingTasks.FirstOrDefault(x => x.Result.TaskName == FeedTypes.User.ToString()).Result.TotalResult;
-            var totalFarm = countingTasks.FirstOrDefault(x => x.Result.TaskName == FeedTypes.Farm.ToString()).Result.TotalResult;
-            var totalArticle = countingTasks.FirstOrDefault(x => x.Result.TaskName == FeedTypes.Article.ToString()).Result.TotalResult;
-            var totalProduct = countingTasks.FirstOrDefault(x => x.Result.TaskName == FeedTypes.Product.ToString()).Result.TotalResult;
+            var totalUser = await userFeeds.CountAsync();
+            var totalFarm = await farmFeeds.CountAsync();
+            var totalArticle = await articleFeeds.CountAsync();
+            var totalProduct = await productFeeds.CountAsync();
 
-            var feedTasks = new List<Task<List<FeedResult>>>();
-            feedTasks.Add(Task.Run(async () =>
-            {
-                int page = filter.Page;
-                int pageSize = filter.PageSize;
-                return await userFeeds
-                  .OrderByDescending(x => x.CreatedDate)
-                  .Skip(pageSize * (page - 1))
-                  .Take(pageSize)
-                  .ToListAsync();
-            }));
+            //var feedTasks = new List<Task<List<FeedResult>>>();
+            //feedTasks.Add(Task.Run(async () =>
+            //{
+            //    int page = filter.Page;
+            //    int pageSize = filter.PageSize;
+            //    return await userFeeds
+            //      .OrderByDescending(x => x.CreatedDate)
+            //      .Skip(pageSize * (page - 1))
+            //      .Take(pageSize)
+            //      .ToListAsync();
+            //}));
 
-            feedTasks.Add(Task.Run(async () =>
-            {
-                int page = filter.Page;
-                int pageSize = filter.PageSize;
-                return await articleFeeds
+            //feedTasks.Add(Task.Run(async () =>
+            //{
+            //    int page = filter.Page;
+            //    int pageSize = filter.PageSize;
+            //    return await articleFeeds
+            //    .OrderByDescending(x => x.CreatedDate)
+            //    .Skip(pageSize * (page - 1))
+            //    .Take(pageSize)
+            //    .ToListAsync();
+            //}));
+
+            //feedTasks.Add(Task.Run(async () =>
+            //{
+            //    int page = filter.Page;
+            //    int pageSize = filter.PageSize;
+            //    return await productFeeds
+            //    .OrderByDescending(x => x.CreatedDate)
+            //    .Skip(pageSize * (page - 1))
+            //    .Take(pageSize)
+            //    .ToListAsync();
+            //}));
+
+            //feedTasks.Add(Task.Run(async () =>
+            //{
+            //    int page = filter.Page;
+            //    int pageSize = filter.PageSize;
+            //    return await farmFeeds
+            //    .OrderByDescending(x => x.CreatedDate)
+            //    .Skip(pageSize * (page - 1))
+            //    .Take(pageSize)
+            //    .ToListAsync();
+            //}));
+
+            //await Task.WhenAll(feedTasks);
+
+            int page = filter.Page;
+            int pageSize = filter.PageSize;
+            var articles = await articleFeeds
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .ToListAsync();
-            }));
-
-            feedTasks.Add(Task.Run(async () =>
-            {
-                int page = filter.Page;
-                int pageSize = filter.PageSize;
-                return await productFeeds
+            var products = await productFeeds
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .ToListAsync();
-            }));
-
-            feedTasks.Add(Task.Run(async () =>
-            {
-                int page = filter.Page;
-                int pageSize = filter.PageSize;
-                return await farmFeeds
+            var farms = await farmFeeds
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .ToListAsync();
-            }));
-
-            await Task.WhenAll(feedTasks);
-
-            var articles = feedTasks.SelectMany(x => x.Result.Where(r => r.FeedType == FeedTypes.Article)).ToList();
-            var products = feedTasks.SelectMany(x => x.Result.Where(r => r.FeedType == FeedTypes.Product)).ToList();
-            var farms = feedTasks.SelectMany(x => x.Result.Where(r => r.FeedType == FeedTypes.Farm)).ToList();
-            var users = feedTasks.SelectMany(x => x.Result.Where(r => r.FeedType == FeedTypes.User)).ToList();
+            var users = await userFeeds
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
+                .ToListAsync();
 
             var result = new GroupOfFeedResult
             {
@@ -545,6 +558,9 @@ namespace Camino.Application.AppServices.Feeds
             var productIds = groupOfSearch.Products.Select(x => long.Parse(x.Id));
             var productPictures = await _productPictureAppService
                 .GetListByProductIdsAsync(productIds, new IdRequestFilter<long>(), ProductPictureTypes.Thumbnail);
+
+            // Get product price
+            var productPrices = _productPriceEntityRepository.Get(x => productIds.Contains(x.ProductId) && x.IsCurrent);
             foreach (var product in groupOfSearch.Products)
             {
                 SetFeedCreatedPicture(product, createdByPictures);
@@ -554,6 +570,12 @@ namespace Camino.Application.AppServices.Feeds
                 if (productPicture != null)
                 {
                     product.PictureId = productPicture.PictureId.ToString();
+                }
+
+                var productPrice = productPrices.FirstOrDefault(x => x.ProductId == long.Parse(product.Id));
+                if (productPrice != null)
+                {
+                    product.Price = productPrice.Price;
                 }
             }
 
