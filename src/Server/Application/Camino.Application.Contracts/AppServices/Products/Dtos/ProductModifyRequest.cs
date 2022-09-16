@@ -18,8 +18,8 @@ namespace Camino.Application.Contracts.AppServices.Products.Dtos
         public long UpdatedById { get; set; }
         public long CreatedById { get; set; }
         public decimal Price { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public IEnumerable<ProductCategoryRequest> Categories { get; set; }
         public IEnumerable<ProductFarmRequest> Farms { get; set; }
         public IEnumerable<PictureRequest> Pictures { get; set; }

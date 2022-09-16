@@ -24,9 +24,9 @@ namespace Module.Web.ArticleManagement.Models
         public string Picture { get; set; }
         public string PictureFileType { get; set; }
         public string PictureFileName { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public long UpdateById { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }

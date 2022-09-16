@@ -251,7 +251,7 @@ namespace Camino.Application.AppServices.Products
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                productQuery = productQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
+                productQuery = productQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
@@ -489,7 +489,7 @@ namespace Camino.Application.AppServices.Products
                 });
             }
 
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             foreach (var farm in request.Farms)
             {
                 _farmProductEntityRepository.Insert(new FarmProduct
@@ -565,7 +565,7 @@ namespace Camino.Application.AppServices.Products
                 return false;
             }
 
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             // Update Category
             var categoryIds = request.Categories.Select(x => x.Id).ToList();
             await _productCategoryDomainService.UpdateProductCategoryRelationsAsync(request.Id, categoryIds);

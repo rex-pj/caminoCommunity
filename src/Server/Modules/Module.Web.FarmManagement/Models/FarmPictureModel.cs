@@ -12,10 +12,10 @@ namespace Module.Web.FarmManagement.Models
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }
-        public DateTimeOffset PictureUpdatedDate { get; set; }
+        public DateTime PictureUpdatedDate { get; set; }
         public long PictureUpdatedById { get; set; }
         public string PictureUpdatedBy { get; set; }
-        public DateTimeOffset PictureCreatedDate { get; set; }
+        public DateTime PictureCreatedDate { get; set; }
         public long PictureCreatedById { get; set; }
         public string PictureCreatedBy { get; set; }
     }

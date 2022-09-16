@@ -4,8 +4,8 @@ namespace Camino.Application.Contracts.AppServices.Feeds.Dtos
 {
     public class FeedFilter : BaseFilter
     {
-        public DateTimeOffset? CreatedDateFrom { get; set; }
-        public DateTimeOffset? CreatedDateTo { get; set; }
+        public DateTime? CreatedDateFrom { get; set; }
+        public DateTime? CreatedDateTo { get; set; }
         public long? CreatedById { get; set; }
         public bool CanGetInactived { get; set; }
         public bool CanGetDeleted { get; set; }

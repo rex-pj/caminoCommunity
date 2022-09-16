@@ -40,7 +40,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Navigations
 
         public async Task<bool> UpdateAsync(Shortcut shortcut)
         {
-            shortcut.UpdatedDate = DateTimeOffset.UtcNow;
+            shortcut.UpdatedDate = DateTime.UtcNow;
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

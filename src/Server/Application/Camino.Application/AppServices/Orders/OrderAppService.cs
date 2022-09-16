@@ -33,7 +33,7 @@ namespace Camino.Application.AppServices.Articles
             if (currentOrders == null || !currentOrders.Any())
             {
                 // create card
-                var modifiedDateUtc = DateTimeOffset.UtcNow;
+                var modifiedDateUtc = DateTime.UtcNow;
                 var orderId = await _orderRepository.CreateOrderAsync(new Order
                 {
                     CreatedDateUtc = modifiedDateUtc,

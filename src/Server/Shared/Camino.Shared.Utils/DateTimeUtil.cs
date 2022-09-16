@@ -8,10 +8,5 @@ namespace Camino.Shared.Utils
         {
             return dateTime.ToString(DateTimeFormats.DateHourMinusFormat);
         }
-
-        public static string ToDateHourMinusFormat(this DateTimeOffset dateTime)
-        {
-            return dateTime.ToString(DateTimeFormats.DateHourMinusFormat);
-        }
     }
 }

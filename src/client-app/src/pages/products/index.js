@@ -6,11 +6,6 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { productQueries } from "../../graphql/fetching/queries";
 import { productMutations } from "../../graphql/fetching/mutations";
 import { useParams } from "react-router-dom";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
@@ -155,8 +150,16 @@ export default (function (props) {
     });
   };
 
+  const checkHasData = () => {
+    return data && pageRef.current.totalResult && products.length >= 0;
+  };
+
   return (
-    <DefaultLayout>
+    <DefaultLayout
+      isLoading={!!loading}
+      hasData={checkHasData()}
+      hasError={!!error}
+    >
       <Breadcrumb list={breadcrumbs} className="px-2" />
       <InfiniteScroll
         style={{ overflowX: "hidden" }}

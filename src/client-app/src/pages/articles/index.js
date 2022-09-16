@@ -6,11 +6,6 @@ import { useParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { articleQueries } from "../../graphql/fetching/queries";
 import { articleMutations } from "../../graphql/fetching/mutations";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
@@ -144,10 +139,14 @@ export default (function (props) {
     });
   };
 
+  const checkHasData = () => {
+    return data && pageRef.current.totalResult && articles.length >= 0;
+  };
+
   return (
     <DefaultLayout
       isLoading={!!loading}
-      hasData={(!data || !pageRef.current.totalResult) && articles.length === 0}
+      hasData={checkHasData()}
       hasError={!!error}
     >
       <Breadcrumb list={breadcrumbs} className="px-2" />

@@ -37,7 +37,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Orders
 
         public async Task<long> CreateOrderAsync(Order order)
         {
-            order.CreatedDateUtc = DateTimeOffset.UtcNow;
+            order.CreatedDateUtc = DateTime.UtcNow;
             await _orderRepository.InsertAsync(order);
             await _dbContext.SaveChangesAsync();
             return order.Id;

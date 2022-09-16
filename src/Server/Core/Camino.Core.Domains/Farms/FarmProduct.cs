@@ -11,7 +11,7 @@ namespace Camino.Core.Domains.Farms
 
         public long ProductId { get; set; }
 
-        public DateTimeOffset LinkedDate { get; set; }
+        public DateTime LinkedDate { get; set; }
 
         public bool IsLinked { get; set; }
 

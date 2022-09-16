@@ -1,13 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Camino.Shared.Enums;
+﻿using Camino.Shared.Enums;
 using Camino.Core.Contracts.Repositories.Users;
 using Camino.Core.Domains.Media;
 using Microsoft.EntityFrameworkCore;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Domains;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 {
@@ -15,9 +12,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     {
         private readonly IEntityRepository<UserPhoto> _userPhotoEntityRepository;
         private readonly IAppDbContext _dbContext;
-        public UserPhotoRepository(IEntityRepository<UserPhoto> userPhotoEntityRepository, IAppDbContext dbContext)
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        public UserPhotoRepository(IEntityRepository<UserPhoto> userPhotoEntityRepository, IAppDbContext dbContext, IServiceScopeFactory serviceScopeFactory)
         {
             _userPhotoEntityRepository = userPhotoEntityRepository;
+            _serviceScopeFactory = serviceScopeFactory;
             _dbContext = dbContext;
         }
 
@@ -41,7 +40,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            var type = (byte)userPhotoType;
+            var type = (int)userPhotoType;
             var userPhoto = _userPhotoEntityRepository
                 .Get(x => x.UserId.Equals(userId) && x.TypeId.Equals(type))
                 .FirstOrDefault();
@@ -57,7 +56,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
         public async Task<UserPhoto> GetByCodeAsync(string code, UserPictureTypes type)
         {
-            var photoType = (byte)type;
+            var photoType = (int)type;
             var userPhotos = await _userPhotoEntityRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
             if (userPhotos == null || !userPhotos.Any())
             {
@@ -69,7 +68,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         
         public async Task<UserPhoto> GetByUserIdAsync(long userId, UserPictureTypes typeId)
         {
-            var photoType = (byte)typeId;
+            var photoType = (int)typeId;
             var userPhoto = (await _userPhotoEntityRepository
                 .GetAsync(x => x.UserId == userId && x.TypeId.Equals(photoType)))?.FirstOrDefault();
 
@@ -78,18 +77,22 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
         public async Task<IEnumerable<UserPhoto>> GetListAsync(long userId)
         {
-            var userPhotos = await _userPhotoEntityRepository.GetAsync(x => x.UserId == userId);
-            if (userPhotos == null || !userPhotos.Any())
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                return new List<UserPhoto>();
-            }
+                var userPhotoRepository = scope.ServiceProvider.GetRequiredService<IEntityRepository<UserPhoto>>();
+                var userPhotos = await userPhotoRepository.GetAsync(x => x.UserId == userId);
+                if (userPhotos == null || !userPhotos.Any())
+                {
+                    return new List<UserPhoto>();
+                }
 
-            return userPhotos;
+                return userPhotos;
+            }               
         }
 
         public async Task<string> GetCodeByUserIdAsync(long userId, UserPictureTypes typeId)
         {
-            var photoType = (byte)typeId;
+            var photoType = (int)typeId;
             var userPhotoCode = await _userPhotoEntityRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType))
                 .Select(x => x.Code).FirstOrDefaultAsync();
 
@@ -98,7 +101,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
         public async Task<IList<UserPhoto>> GetListByUserIdsAsync(IEnumerable<long> userIds, UserPictureTypes typeId)
         {
-            var photoType = (byte)typeId;
+            var photoType = (int)typeId;
             var userPhotos = await _userPhotoEntityRepository.GetAsync(x => userIds.Contains(x.UserId) && x.TypeId.Equals(photoType));
             if (userPhotos == null || !userPhotos.Any())
             {

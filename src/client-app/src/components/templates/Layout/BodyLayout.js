@@ -21,7 +21,7 @@ const BodyLayout = (props) => {
     if (isLoading) {
       return <LoadingBar>Loading</LoadingBar>;
     }
-    if (hasData) {
+    if (!hasData) {
       return <NoDataBar>No data</NoDataBar>;
     }
     if (hasError) {

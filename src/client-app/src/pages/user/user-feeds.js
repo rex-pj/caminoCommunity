@@ -302,7 +302,7 @@ const UserFeeds = (props) => {
       </Fragment>
     );
   }
-  if ((!data || !pageRef.current.totalResult) && feeds.length === 0) {
+  if (!(data && pageRef.current.totalResult && feeds.length >= 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}

@@ -81,7 +81,7 @@ namespace Camino.Core.DomainServices.Products
             {
                 picture.StatusId = pictureStatus.GetCode();
                 picture.UpdatedById = updatedById;
-                picture.UpdatedDate = DateTimeOffset.UtcNow;
+                picture.UpdatedDate = DateTime.UtcNow;
             }
 
             return (await _dbContext.SaveChangesAsync()) > 0;
@@ -98,7 +98,7 @@ namespace Camino.Core.DomainServices.Products
             {
                 picture.StatusId = status.GetCode();
                 picture.UpdatedById = updatedById;
-                picture.UpdatedDate = DateTimeOffset.UtcNow;
+                picture.UpdatedDate = DateTime.UtcNow;
             }
 
             await _pictureRepository.UpdateAsync(existingPictures);

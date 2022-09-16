@@ -142,10 +142,14 @@ export default (function (props) {
     });
   };
 
+  const checkHasData = () => {
+    return data && pageRef.current.totalResult && farms.length >= 0;
+  };
+
   return (
     <DefaultLayout
       isLoading={!!loading}
-      hasData={(!data || !pageRef.current.totalResult) && farms.length === 0}
+      hasData={checkHasData()}
       hasError={!!error}
     >
       <Breadcrumb list={breadcrumbs} className="px-2" />

@@ -9,7 +9,7 @@ namespace Camino.Core.Domains.Authentication
         public string Name { get; set; }
         public long UserId { get; set; }
         public string Value { get; set; }
-        public DateTimeOffset ExpiryTime { get; set; }
+        public DateTime ExpiryTime { get; set; }
         public virtual User User { get; set; }
     }
 }

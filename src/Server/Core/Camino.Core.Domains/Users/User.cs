@@ -29,8 +29,8 @@ namespace Camino.Core.Domains.Users
         [MaxLength(255)]
         public string DisplayName { get; set; }
         public string PasswordHash { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
         [Required]
@@ -46,8 +46,8 @@ namespace Camino.Core.Domains.Users
         public string Address { get; set; }
         public string Description { get; set; }
 
-        public DateTimeOffset? BirthDate { get; set; }
-        public byte? GenderId { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public int? GenderId { get; set; }
         public short? CountryId { get; set; }
         public virtual Gender Gender { get; set; }
         public virtual Country Country { get; set; }

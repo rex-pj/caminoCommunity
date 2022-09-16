@@ -55,7 +55,7 @@ namespace Camino.Core.DomainServices.Articles
             {
                 picture.StatusId = pictureStatus.GetCode();
                 picture.UpdatedById = updatedById;
-                picture.UpdatedDate = DateTimeOffset.UtcNow;
+                picture.UpdatedDate = DateTime.UtcNow;
             }
 
             await _pictureEntityRepository.UpdateAsync(existingPictures);

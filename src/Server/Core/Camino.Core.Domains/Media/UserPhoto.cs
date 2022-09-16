@@ -20,7 +20,7 @@ namespace Camino.Core.Domains.Media
         [Required]
         public long UserId { get; set; }
         [Required]
-        public byte TypeId { get; set; }
+        public int TypeId { get; set; }
         public virtual UserPhotoType UserPhotoType { get; set; }
     }
 }

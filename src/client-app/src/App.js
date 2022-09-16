@@ -184,15 +184,7 @@ const App = () => {
                 <Route path="/auth/signup" element={<SignupPage />}></Route>
                 <Route path="/auth/logout" element={<LogoutPage />}></Route>
                 <Route
-                  path="/profile/:userId"
-                  element={<ProfilePage />}
-                ></Route>
-                <Route
-                  path="/profile/:userId/:pageName"
-                  element={<ProfilePage />}
-                ></Route>
-                <Route
-                  path="/profile/:userId/:pageName/page/:pageNumber"
+                  path="/profile/:userId/*"
                   element={<ProfilePage />}
                 ></Route>
                 <Route path="/search" element={<SearchPage />}></Route>

@@ -130,7 +130,7 @@ namespace Camino.Application.AppServices.Users
                     user.Description = request.Value?.ToString();
                     break;
                 case bool b when nameof(User.BirthDate).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (DateTimeOffset.TryParse(request.Value.ToString(), out var birthDate))
+                    if (DateTime.TryParse(request.Value.ToString(), out var birthDate))
                     {
                         user.BirthDate = birthDate;
                     }
@@ -141,7 +141,7 @@ namespace Camino.Application.AppServices.Users
 
                     break;
                 case bool b when nameof(User.GenderId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (byte.TryParse(request.Value.ToString(), out var genderId))
+                    if (int.TryParse(request.Value.ToString(), out var genderId))
                     {
                         user.GenderId = genderId;
                     }
@@ -151,7 +151,7 @@ namespace Camino.Application.AppServices.Users
                     }
                     break;
                 case bool b when nameof(User.CountryId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (byte.TryParse(request.Value.ToString(), out var countryId))
+                    if (short.TryParse(request.Value.ToString(), out var countryId))
                     {
                         user.CountryId = countryId;
                     }
@@ -397,6 +397,11 @@ namespace Camino.Application.AppServices.Users
 
         private UserResult MapEntityToDto(User entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new UserResult
             {
                 DisplayName = entity.DisplayName,
@@ -423,6 +428,11 @@ namespace Camino.Application.AppServices.Users
 
         private UserFullResult MapEntityToFullDto(User entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new UserFullResult
             {
                 CreatedDate = entity.CreatedDate,
@@ -436,14 +446,14 @@ namespace Camino.Application.AppServices.Users
                 Address = entity.Address,
                 BirthDate = entity.BirthDate,
                 GenderId = entity.GenderId,
-                GenderLabel = entity.Gender.Name,
+                GenderLabel = entity.Gender?.Name,
                 StatusId = entity.StatusId,
                 StatusLabel = entity.Status.Name,
                 Id = entity.Id,
                 UpdatedDate = entity.UpdatedDate,
                 CountryId = entity.CountryId,
-                CountryCode = entity.Country.Code,
-                CountryName = entity.Country.Name,
+                CountryCode = entity.Country?.Code,
+                CountryName = entity.Country?.Name,
                 IsEmailConfirmed = entity.IsEmailConfirmed
             };
         }

@@ -33,7 +33,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 
         public async Task<long> CreateAsync(Article article)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             article.CreatedDate = modifiedDate;
             article.UpdatedDate = modifiedDate;
 
@@ -44,7 +44,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 
         public async Task<bool> UpdateAsync(Article article)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             article.UpdatedDate = modifiedDate;
 
             await _articleRepository.UpdateAsync(article);

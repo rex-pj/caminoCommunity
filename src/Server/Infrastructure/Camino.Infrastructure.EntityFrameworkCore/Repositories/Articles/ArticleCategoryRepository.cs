@@ -68,7 +68,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
 
         public async Task<int> CreateAsync(ArticleCategory category)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             category.CreatedDate = modifiedDate;
             category.UpdatedDate = modifiedDate;
             await _articleCategoryRepository.InsertAsync(category);

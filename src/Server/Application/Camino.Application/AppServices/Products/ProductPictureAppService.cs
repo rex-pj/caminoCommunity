@@ -75,7 +75,7 @@ namespace Camino.Application.AppServices.Products
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                pictureQuery = pictureQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
+                pictureQuery = pictureQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
             var query = from ap in _productPictureEntityRepository.Table
@@ -195,7 +195,7 @@ namespace Camino.Application.AppServices.Products
 
         private async Task<long> CreateAsync(ProductPicturesModifyRequest request, PictureRequest picture, ProductPictureTypes pictureType, bool needSaveChanges = false)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             var binaryPicture = ImageUtils.EncodeJavascriptBase64(picture.Base64Data);
             var pictureData = Convert.FromBase64String(binaryPicture);
             var pictureId = await _pictureRepository.CreateAsync(new Picture

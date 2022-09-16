@@ -215,7 +215,7 @@ export default (function (props) {
       </Fragment>
     );
   }
-  if ((!data || !pageRef.current.totalResult) && articles.length === 0) {
+  if (!(data && pageRef.current.totalResult && articles.length >= 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderArticleEditor() : null}

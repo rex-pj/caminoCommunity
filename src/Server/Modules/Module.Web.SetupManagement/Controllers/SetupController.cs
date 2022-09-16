@@ -135,7 +135,7 @@ namespace Module.Web.SetupManagement.Controllers
                     Email = model.AdminEmail,
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
-                    StatusId = (byte)UserStatuses.Actived,
+                    StatusId = (int)UserStatuses.Actived,
                     UserName = model.AdminEmail,
                 };
 

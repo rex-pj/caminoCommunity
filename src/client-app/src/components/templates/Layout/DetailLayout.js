@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { PageColumnPanel } from "../../molecules/Panels";
@@ -9,17 +9,13 @@ import {
   CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { SessionContext } from "../../../store/context/session-context";
-import { useWindowSize } from "../../../store/hook-store/window-size-store";
 import BodyLayout from "./BodyLayout";
 import { Header } from "../../organisms/Containers";
 import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
-const ToggleSidebar = React.lazy(() =>
-  import("../../organisms/Containers/ToggleSidebar")
-);
 const Wrapper = styled.div`
   > .row {
     margin-left: -12px;
@@ -36,149 +32,82 @@ const DetailLayout = (props) => {
   const { author, children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
 
-  const [sidebarState, setSidebarState] = useState({
-    isLeftShown: true,
-    isCenterShown: true,
-    isRightShown: true,
-    isInit: true,
-  });
+  const [fetchFarms, { loading: suggestFarmloading, data: suggestFarmData }] =
+    useLazyQuery(farmQueries.GET_FARMS);
 
-  const { loading: suggestFarmloading, data: suggestFarmdata } = useQuery(
-    farmQueries.GET_FARMS,
-    {
-      variables: {
-        criterias: {
-          page: 1,
-          pageSize: 3,
-          exclusiveUserIdentityId: currentUser?.userIdentityId,
-        },
-      },
-    }
-  );
-
-  const { loading: suggestUserloading, data: suggestUserData } = useQuery(
-    userQueries.GET_SUGGESSTION_USERS,
-    {
-      variables: {
-        criterias: {
-          page: 1,
-          pageSize: 3,
-          exclusiveUserIdentityId: currentUser?.userIdentityId,
-        },
-      },
-    }
-  );
-
-  const [windowSize, resetWindowSize] = useWindowSize();
+  const [
+    fetchSuggestions,
+    { loading: suggestUserloading, data: suggestUserData },
+  ] = useLazyQuery(userQueries.GET_SUGGESSTION_USERS);
 
   useEffect(() => {
-    if (windowSize.isSizeTypeChanged && !sidebarState.isInit) {
-      setSidebarState({
-        isLeftShown: true,
-        isCenterShown: true,
-        isRightShown: true,
-        isInit: true,
-      });
-
-      resetWindowSize();
-    }
-  }, [setSidebarState, windowSize, resetWindowSize, sidebarState.isInit]);
-
-  const showLeftSidebar = () => {
-    setSidebarState({
-      isInit: false,
-      isLeftShown: true,
-      isCenterShown: false,
-      isRightShown: false,
+    var currentUserId = currentUser?.userIdentityId;
+    fetchFarms({
+      variables: {
+        criterias: {
+          page: 1,
+          pageSize: 3,
+          exclusiveUserIdentityId: currentUserId,
+        },
+      },
     });
-  };
 
-  const showRightSidebar = () => {
-    setSidebarState({
-      isInit: false,
-      isLeftShown: false,
-      isCenterShown: false,
-      isRightShown: true,
+    fetchSuggestions({
+      variables: {
+        criterias: {
+          page: 1,
+          pageSize: 3,
+          exclusiveUserIdentityId: currentUserId,
+        },
+      },
     });
-  };
+  }, [fetchFarms, fetchSuggestions, currentUser?.userIdentityId]);
 
-  const showCentral = () => {
-    setSidebarState({
-      isInit: false,
-      isLeftShown: false,
-      isRightShown: false,
-      isCenterShown: true,
-    });
-  };
-
-  const { isLeftShown, isCenterShown, isRightShown, isInit } = sidebarState;
   return (
     <>
       <Header />
       <Wrapper className="container-fluid px-lg-5 mt-md-3 mt-lg-5">
-        <ToggleSidebar
-          className="mb-4 d-lg-none"
-          showRightSidebar={showRightSidebar}
-          showLeftSidebar={showLeftSidebar}
-          resetSidebars={showCentral}
-          isLeftShown={isLeftShown}
-          isRightShown={isRightShown}
-        />
         <div className="row px-lg-3">
-          {isLeftShown || isInit ? (
-            <div
-              className={`col col-12 col-sm-12 col-md-12 col-lg-2 ${
-                isLeftShown && !isInit ? "" : "d-none"
-              } d-lg-block`}
+          <div className="col col-12 col-sm-12 col-md-12 col-lg-2">
+            <PageColumnPanel>
+              <AuthorCard author={author} />
+            </PageColumnPanel>
+          </div>
+          <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
+            <BodyLayout
+              isLoading={isLoading}
+              hasData={hasData}
+              hasError={hasError}
             >
-              <PageColumnPanel>
-                <AuthorCard author={author} />
-              </PageColumnPanel>
-            </div>
-          ) : null}
-          {isCenterShown ? (
-            <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-              <BodyLayout
-                isLoading={isLoading}
-                hasData={hasData}
-                hasError={hasError}
-              >
-                {children}
-              </BodyLayout>
-            </div>
-          ) : null}
-          {isRightShown || isInit ? (
-            <div
-              className={`col col-12 col-sm-12 col-md-12 col-lg-3 ${
-                isRightShown && !isInit ? "" : "d-none"
-              } d-lg-block`}
-            >
-              <PageColumnPanel>
-                <FarmSuggestions
-                  loading={suggestFarmloading}
-                  data={suggestFarmdata}
-                />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <CommunitySuggestions />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <ConnectionSuggestions
-                  loading={suggestUserloading}
-                  data={suggestUserData}
-                />
-              </PageColumnPanel>
-              <PageColumnPanel>
-                <AdsList />
-              </PageColumnPanel>
-            </div>
-          ) : null}
+              {children}
+            </BodyLayout>
+          </div>
+          <div className="col col-12 col-sm-12 col-md-12 col-lg-3">
+            <PageColumnPanel>
+              <FarmSuggestions
+                loading={suggestFarmloading}
+                data={suggestFarmData}
+              />
+            </PageColumnPanel>
+            <PageColumnPanel>
+              <AdsList />
+            </PageColumnPanel>
+            <PageColumnPanel>
+              <CommunitySuggestions />
+            </PageColumnPanel>
+            <PageColumnPanel>
+              <AdsList />
+            </PageColumnPanel>
+            <PageColumnPanel>
+              <ConnectionSuggestions
+                loading={suggestUserloading}
+                data={suggestUserData}
+              />
+            </PageColumnPanel>
+            <PageColumnPanel>
+              <AdsList />
+            </PageColumnPanel>
+          </div>
         </div>
       </Wrapper>
       <Notifications />

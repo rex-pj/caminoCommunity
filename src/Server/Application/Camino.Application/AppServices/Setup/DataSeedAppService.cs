@@ -9,7 +9,7 @@ using Camino.Core.Domains.Navigations;
 using Camino.Core.Domains.Users;
 using Camino.Shared.Enums;
 using Camino.Core.Domains;
-using System.Transactions;
+using Camino.Infrastructure.EntityFrameworkCore;
 
 namespace Camino.Application.AppServices.Setup
 {
@@ -27,9 +27,10 @@ namespace Camino.Application.AppServices.Setup
         private readonly IEntityRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IEntityRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
         private readonly IEntityRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
-        private readonly IDbContext _dbContext;
+        private readonly IAppDbContext _dbContext;
+        
         public DataSeedAppService(IDbCreationRepository dbCreationRepository,
-            IDbContext dbContext, IEntityRepository<User> userRepository,
+            IAppDbContext dbContext, IEntityRepository<User> userRepository,
             IEntityRepository<Status> userStatusRepository,
             IEntityRepository<UserPhotoType> userPhotoTypeRepository,
             IEntityRepository<Shortcut> shortcutRepository,
@@ -58,26 +59,31 @@ namespace Camino.Application.AppServices.Setup
 
         public async Task CreateDatabaseAsync()
         {
-            await _dbCreationRepository.CreateDatabaseAsync();
+            try
+            {
+                await _dbCreationRepository.CreateDatabaseAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task SeedDataAsync(SetupRequest setupRequest)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            try
             {
-                try
+                var isSucceed = await SeedIdentityDataAsync(setupRequest);
+                if (isSucceed)
                 {
-                    var isSucceed = await SeedIdentityDataAsync(setupRequest);
-                    if (isSucceed)
-                    {
-                        await SeedContentDataAsync(setupRequest);
-                        scope.Complete();
-                    }
+                    await SeedContentDataAsync(setupRequest);
+                    await _dbContext.Database.CommitTransactionAsync();
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
+            }
+            catch (Exception ex)
+            {
+                await _dbContext.Database.RollbackTransactionAsync();
+                throw;
             }
         }
 
@@ -105,10 +111,13 @@ namespace Camino.Application.AppServices.Setup
                     Url = shortcut.Url
                 });
             }
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private async Task<bool> SeedIdentityDataAsync(SetupRequest setupRequest)
         {
+            await _dbContext.Database.BeginTransactionAsync();
             var modifiedDate = DateTime.UtcNow;
             // Insert user statuses
             int activedStatusId = 0;

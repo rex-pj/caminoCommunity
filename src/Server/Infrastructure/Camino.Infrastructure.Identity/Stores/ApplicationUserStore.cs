@@ -483,7 +483,7 @@ namespace Camino.IdentityManager.Contracts.Stores
             {
                 await AddUserTokenAsync(new ApplicationUserToken
                 {
-                    ExpiryTime = DateTimeOffset.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires),
+                    ExpiryTime = DateTime.UtcNow.AddHours(_jwtConfigOptions.RefreshTokenHourExpires),
                     LoginProvider = loginProvider,
                     Name = name,
                     Value = value,

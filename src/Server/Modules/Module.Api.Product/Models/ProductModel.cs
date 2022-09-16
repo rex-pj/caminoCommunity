@@ -19,9 +19,9 @@ namespace Module.Api.Product.Models
         public string Description { get; set; }
         
         public string CreatedByIdentityId { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string CreatedBy { get; set; }
         public string CreatedByPhotoCode { get; set; }

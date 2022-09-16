@@ -177,10 +177,14 @@ export default (function (props) {
     });
   };
 
+  const checkHasData = () => {
+    return !!(data && pageRef.current.totalResult && feeds.length >= 0);
+  };
+
   return (
     <DefaultLayout
       isLoading={!!loading}
-      hasData={(!data || !pageRef.current.totalResult) && feeds.length === 0}
+      hasData={checkHasData()}
       hasError={!!error}
     >
       <InfiniteScroll

@@ -257,6 +257,11 @@ namespace Camino.Application.AppServices.Authentication
 
         private UserTokenResult MapEntityToDto(UserToken userToken)
         {
+            if (userToken == null)
+            {
+                return null;
+            }
+
             return new UserTokenResult
             {
                 Id = userToken.Id,

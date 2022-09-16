@@ -13,6 +13,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Products
                    .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Price).HasPrecision(18, 2);
 
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.ProductPriceRelations)

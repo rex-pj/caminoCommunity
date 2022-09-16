@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Camino.Core.Domains.Orders
+﻿namespace Camino.Core.Domains.Orders
 {
     public class Order
     {
@@ -19,10 +16,10 @@ namespace Camino.Core.Domains.Orders
         public decimal OrderDiscount { get; set; }
         public decimal OrderTotal { get; set; }
         public string CustomerIp { get; set; }
-        public DateTimeOffset? PaidDateUtc { get; set; }
+        public DateTime? PaidDateUtc { get; set; }
         public string ShippingMethod { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTimeOffset CreatedDateUtc { get; set; }
+        public DateTime CreatedDateUtc { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

@@ -120,9 +120,9 @@ namespace Camino.Core.Core.Services.Navigations
                 Url = request.Url,
                 DisplayOrder = request.Order,
                 CreatedById = request.CreatedById,
-                CreatedDate = DateTimeOffset.UtcNow,
+                CreatedDate = DateTime.UtcNow,
                 UpdatedById = request.UpdatedById,
-                UpdatedDate = DateTimeOffset.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
                 StatusId = ShortcutStatuses.Actived.GetCode(),
             };
 

@@ -11,8 +11,8 @@ namespace Camino.Application.Contracts.AppServices.Farms.Dtos
 
         public long CreatedById { get; set; }
         public long UpdatedById { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public long FarmId { get; set; }
 

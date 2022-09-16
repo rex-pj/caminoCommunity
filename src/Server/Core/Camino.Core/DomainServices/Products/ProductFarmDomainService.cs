@@ -24,7 +24,7 @@ namespace Camino.Core.DomainServices.Products
         public async Task<bool> UpdateProductFarmRelationsAsync(long productId, IList<long> farmIds,
             long modifiedById, bool needSaveChanges = false)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             await _farmProductRepository.DeleteAsync(x => x.ProductId == productId && !farmIds.Contains(x.FarmId));
 
             var linkedFarmIds = _farmProductRepository

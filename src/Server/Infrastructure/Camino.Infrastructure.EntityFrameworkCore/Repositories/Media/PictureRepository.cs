@@ -30,7 +30,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Media
 
         public async Task<long> CreateAsync(Picture picture)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             picture.CreatedDate = modifiedDate;
             picture.UpdatedDate = modifiedDate;
             await _pictureRepository.InsertAsync(picture);

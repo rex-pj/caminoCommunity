@@ -56,7 +56,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<long> CreateAsync(Product product)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             product.CreatedDate = modifiedDate;
             product.UpdatedDate = modifiedDate;
             await _productRepository.InsertAsync(product);
@@ -67,7 +67,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 
         public async Task<bool> UpdateAsync(Product product)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             product.UpdatedDate = modifiedDate;
             return (await _dbContext.SaveChangesAsync()) > 0;
         }

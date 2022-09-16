@@ -14,6 +14,8 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Products
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.PriceAdjustment).HasPrecision(18, 2);
+            builder.Property(x => x.PricePercentageAdjustment).HasPrecision(18, 2);
 
             builder.HasOne(x => x.ProductAttributeRelation)
                 .WithMany(x => x.ProductAttributeRelationValues)

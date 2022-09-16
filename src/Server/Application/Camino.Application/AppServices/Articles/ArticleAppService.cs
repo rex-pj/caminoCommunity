@@ -192,7 +192,7 @@ namespace Camino.Application.AppServices.Articles
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
+                articleQuery = articleQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
             var filteredNumber = articleQuery.Select(x => x.Id).Count();
@@ -316,7 +316,7 @@ namespace Camino.Application.AppServices.Articles
             var id = await _articleRepository.CreateAsync(newArticle);
             if (request.Picture != null)
             {
-                var modifiedDate = DateTimeOffset.UtcNow;
+                var modifiedDate = DateTime.UtcNow;
                 await _articlePictureAppService.CreateAsync(new ArticlePictureModifyRequest
                 {
                     ArticleId = id,
@@ -342,7 +342,7 @@ namespace Camino.Application.AppServices.Articles
             var isUpdated = await _articleRepository.UpdateAsync(existing);
             if (isUpdated && request.Picture != null)
             {
-                var modifiedDate = DateTimeOffset.UtcNow;
+                var modifiedDate = DateTime.UtcNow;
                 await _articlePictureAppService.UpdateAsync(new ArticlePictureModifyRequest
                 {
                     ArticleId = request.Id,

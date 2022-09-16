@@ -82,7 +82,7 @@ namespace Camino.Application.AppServices.Users
                     CreatedById = userId,
                     CreatedDate = DateTime.UtcNow,
                     ImageData = newImage,
-                    TypeId = (byte)request.UserPhotoTypeId,
+                    TypeId = request.UserPhotoTypeId,
                     UserId = userId,
                     Name = request.FileName,
                     Code = request.UserPhotoCode,

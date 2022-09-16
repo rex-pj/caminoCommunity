@@ -10,12 +10,12 @@ namespace Module.Web.AuthenticationManagement.Models
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string Description { get; set; }
-        public DateTimeOffset? BirthDate { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
-        public byte? GenderId { get; set; }
+        public int? GenderId { get; set; }
         public short? CountryId { get; set; }
         public UserStatuses StatusId { get; set; }
         public string Lastname { get; set; }

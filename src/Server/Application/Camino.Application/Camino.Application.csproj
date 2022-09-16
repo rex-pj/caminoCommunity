@@ -7,11 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Camino.Core\Camino.Core.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />
 		<ProjectReference Include="..\..\Shared\Camino.Shared.Utils\Camino.Shared.Utils.csproj" />
 		<ProjectReference Include="..\Camino.Application.Contracts\Camino.Application.Contracts.csproj" />
 	</ItemGroup>

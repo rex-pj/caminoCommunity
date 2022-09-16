@@ -159,24 +159,33 @@ namespace Camino.Application.AppServices.Feeds
                                  Address = farm.Address,
                              });
 
-            var feedQuery = articleFeeds
-                .Concat(productFeeds)
-                .Concat(farmFeeds);
+            var articleFilteredCount = await articleFeeds.Select(x => x.Id).CountAsync();
+            var productFilteredCount = await productFeeds.Select(x => x.Id).CountAsync();
+            var farmFilteredCount = await farmFeeds.Select(x => x.Id).CountAsync();
+            var filteredNumber = articleFilteredCount + productFilteredCount + farmFilteredCount;
 
-            var filteredNumber = await feedQuery.CountAsync();
-
-            articleFeeds = articleFeeds.Take(filter.PageSize);
-            productFeeds = productFeeds.Take(filter.PageSize);
-            farmFeeds = farmFeeds.Take(filter.PageSize);
-
-            feedQuery = articleFeeds
-                .Concat(productFeeds)
-                .Concat(farmFeeds)
+            var articles = await articleFeeds.OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize)
+                .ToListAsync();
+            var products = await productFeeds
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))
-                .Take(filter.PageSize);
+                .Take(filter.PageSize)
+                .ToListAsync();
+            var farms = await farmFeeds.OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize)
+                .ToListAsync();
 
-            var feeds = await feedQuery.ToListAsync();
+            var feeds = articles
+                .Concat(products)
+                .Concat(farms)
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip(filter.PageSize * (filter.Page - 1))
+                .Take(filter.PageSize)
+                .ToList();
+
             await PopulateDetailsAsync(feeds);
 
             var result = new BasePageList<FeedResult>(feeds)

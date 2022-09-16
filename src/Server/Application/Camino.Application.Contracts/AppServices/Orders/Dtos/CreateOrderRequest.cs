@@ -18,9 +18,9 @@ namespace Camino.Application.Contracts.AppServices.Orders.Dtos
         public decimal OrderDiscount { get; set; }
         public decimal OrderTotal { get; set; }
         public string CustomerIp { get; set; }
-        public DateTimeOffset? PaidDateUtc { get; set; }
+        public DateTime? PaidDateUtc { get; set; }
         public string ShippingMethod { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTimeOffset CreatedDateUtc { get; set; }
+        public DateTime CreatedDateUtc { get; set; }
     }
 }

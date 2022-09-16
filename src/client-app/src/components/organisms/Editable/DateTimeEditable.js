@@ -63,7 +63,7 @@ export default (props) => {
     const { name, primaryKey } = props;
     const { value: date } = e.target;
     if (date) {
-      const dateTime = format(date, "MM/DD/YYYY");
+      const dateTime = format(new Date(date), "MM/dd/yyyy");
       if (props.onUpdated) {
         props
           .onUpdated({
@@ -129,7 +129,7 @@ export default (props) => {
   } else {
     return (
       <TextLabel className={`disabled`}>
-        {currentDate ? format(currentDate, "MMMM, DD YYYY") : ""}
+        {currentDate ? format(currentDate, "MMMM, dd yyyy") : ""}
       </TextLabel>
     );
   }

@@ -10,7 +10,7 @@ namespace Camino.Core.Domains.Media
             UserPhotos = new HashSet<UserPhoto>();
         }
 
-        public byte Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }

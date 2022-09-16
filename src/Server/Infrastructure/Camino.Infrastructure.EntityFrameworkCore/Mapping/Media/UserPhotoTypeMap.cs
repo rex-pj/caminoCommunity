@@ -11,7 +11,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Media
         {
             builder.ToTable(nameof(UserPhotoType), TableSchemas.Dbo);
             builder.HasKey(x => x.Id);
-            builder.Property<byte>(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder
                .HasMany(c => c.UserPhotos)

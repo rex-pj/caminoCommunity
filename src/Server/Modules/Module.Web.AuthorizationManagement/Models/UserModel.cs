@@ -13,7 +13,7 @@ namespace Module.Web.AuthorizationManagement.Models
         public DateTime UpdatedDate { get; set; }
         public long? CreatedById { get; set; }
         public long? UpdatedById { get; set; }
-        public byte? GenderId { get; set; }
+        public int? GenderId { get; set; }
         public short? CountryId { get; set; }
         public int StatusId { get; set; }
         public string Lastname { get; set; }

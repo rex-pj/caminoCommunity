@@ -68,9 +68,9 @@ namespace Module.Api.Feed.GraphQL.Resolvers
                 criterias = new FeedFilterModel();
             }
 
-            var currentDateTime = DateTimeOffset.UtcNow;
-            DateTimeOffset? createdDateFrom = criterias.HoursCreatedFrom.HasValue ? currentDateTime.AddHours(-criterias.HoursCreatedFrom.Value) : null;
-            DateTimeOffset? createdDateTo = criterias.HoursCreatedTo.HasValue ? currentDateTime.AddHours(-criterias.HoursCreatedTo.Value) : null;
+            var currentDateTime = DateTime.UtcNow;
+            DateTime? createdDateFrom = criterias.HoursCreatedFrom.HasValue ? currentDateTime.AddHours(-criterias.HoursCreatedFrom.Value) : null;
+            DateTime? createdDateTo = criterias.HoursCreatedTo.HasValue ? currentDateTime.AddHours(-criterias.HoursCreatedTo.Value) : null;
             var filter = new FeedFilter
             {
                 Page = criterias.Page,

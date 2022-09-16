@@ -1371,7 +1371,7 @@
       "Name": "Sản phẩm",
       "Description": "Sản phẩm",
       "Url": "/products",
-      "Icon": "apple",
+      "Icon": "box-open",
       "TypeId": 2
     },
     {

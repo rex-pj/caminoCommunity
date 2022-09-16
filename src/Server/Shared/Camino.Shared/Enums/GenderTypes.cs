@@ -1,6 +1,6 @@
 ﻿namespace Camino.Shared.Enums
 {
-    public enum GenderTypes : byte
+    public enum GenderTypes : int
     {
         Male = 1,
         Female = 2,

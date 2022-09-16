@@ -8,7 +8,7 @@
         public long PictureId { get; set; }
         public string PictureName { get; set; }
         public string ContentType { get; set; }
-        public DateTimeOffset PictureCreatedDate { get; set; }
+        public DateTime PictureCreatedDate { get; set; }
         public long PictureCreatedById { get; set; }
         public string PictureCreatedBy { get; set; }
     }

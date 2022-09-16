@@ -10,8 +10,8 @@ namespace Camino.Framework.Infrastructure.ModelBinders
         {
             var dateTimeTypes = new Type[]
             {
-                typeof(DateTimeOffset),
-                typeof(DateTimeOffset?),
+                typeof(DateTime),
+                typeof(DateTime?),
                 typeof(DateTime),
                 typeof(DateTime?)
             };

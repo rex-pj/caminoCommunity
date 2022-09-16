@@ -115,7 +115,7 @@ export default (props) => {
               {userInfo.email}
             </LabelAndInfo>
             <LabelAndInfo label="Joined Date">
-              {format(userInfo.createdDate, "MMMM, DD YYYY")}
+              {format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}
             </LabelAndInfo>
             <LabelAndInfo label="Status">{userInfo.statusLabel}</LabelAndInfo>
           </InfoList>

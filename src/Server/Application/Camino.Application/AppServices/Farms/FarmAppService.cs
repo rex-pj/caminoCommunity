@@ -244,7 +244,7 @@ namespace Camino.Application.AppServices.Farms
             }
             else if (filter.CreatedDateFrom.HasValue)
             {
-                farmQuery = farmQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTimeOffset.UtcNow);
+                farmQuery = farmQuery.Where(x => x.CreatedDate >= filter.CreatedDateFrom && x.CreatedDate <= DateTime.UtcNow);
             }
 
             var filteredNumber = farmQuery.Select(x => x.Id).Count();
@@ -350,7 +350,7 @@ namespace Camino.Application.AppServices.Farms
 
         public async Task<bool> UpdateAsync(FarmModifyRequest request)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             var farm = await _farmRepository.FindAsync(request.Id);
             farm.Description = request.Description;
             farm.Name = request.Name;
@@ -459,7 +459,7 @@ namespace Camino.Application.AppServices.Farms
             {
                 product.StatusId = productStatus.GetCode();
                 product.UpdatedById = request.UpdatedById;
-                product.UpdatedDate = DateTimeOffset.UtcNow;
+                product.UpdatedDate = DateTime.UtcNow;
             }
             await _productEntityRepository.UpdateAsync(existingProducts);
             await _dbContext.SaveChangesAsync();

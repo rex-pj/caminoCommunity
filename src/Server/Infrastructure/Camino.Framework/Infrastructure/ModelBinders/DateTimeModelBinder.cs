@@ -32,7 +32,7 @@ namespace Camino.Framework.Infrastructure.ModelBinders
                 return Task.CompletedTask;
             }
 
-            if (!DateTimeOffset.TryParseExact(value, DateTimeFormats.ParseableFormats, 
+            if (!DateTime.TryParseExact(value, DateTimeFormats.ParseableFormats, 
                 CultureInfo.InvariantCulture.DateTimeFormat,
                 DateTimeStyles.AllowWhiteSpaces, 
                 out var dateTime))

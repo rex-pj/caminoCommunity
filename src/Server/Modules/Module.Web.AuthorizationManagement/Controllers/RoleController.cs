@@ -108,7 +108,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
         [LoadResultAuthorizations("Role", PolicyMethods.CanUpdate)]
-        public async Task<IActionResult> Detail(byte id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
             {

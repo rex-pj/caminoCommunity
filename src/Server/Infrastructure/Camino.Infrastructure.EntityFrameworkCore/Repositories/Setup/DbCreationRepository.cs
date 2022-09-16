@@ -2,7 +2,6 @@
 using Camino.Core.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Threading.Tasks;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Setup
 {
@@ -16,6 +15,12 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Setup
 
         public bool IsDatabaseExist()
         {
+            var canConnect = _dbContext.Database.CanConnect();
+            if (!canConnect)
+            {
+                return false;
+            }
+
             return _dbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
         }
 

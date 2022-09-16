@@ -142,7 +142,7 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" checkbox-group="Gender" type="checkbox"
                                name="GenderId" id="GenderId_Male" value="1"
-                               @(Model.GenderId == (byte)GenderTypes.Male ? "checked" : "")>
+                               @(Model.GenderId == (int)GenderTypes.Male ? "checked" : "")>
                         <label class="form-check-label" for="GenderId_Male">
                             Male
                         </label>
@@ -150,7 +150,7 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" checkbox-group="Gender" type="checkbox"
                                name="GenderId" id="GenderId_Female" value="2"
-                               @(Model.GenderId == (byte)GenderTypes.Female ? "checked" : "")>
+                               @(Model.GenderId == (int)GenderTypes.Female ? "checked" : "")>
                         <label class="form-check-label" for="GenderId_Female">
                             Female
                         </label>

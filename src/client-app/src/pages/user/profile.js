@@ -1,20 +1,16 @@
-import React, { Fragment, useState, useEffect, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
 import Profile from "../../components/organisms/Profile/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
 import { useQuery, useMutation } from "@apollo/client";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import { parseUserInfo } from "../../services/userService";
-import UserProfileRoutes from "../../routes/userProfileRoutes";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { authClient } from "../../graphql/client";
+import { ProfileLayout } from "../../components/templates/Layout";
 
 const ProfileAvatar = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileAvatar")
@@ -77,13 +73,11 @@ const ConnectButton = styled(ButtonIconPrimary)`
   z-index: 3;
 `;
 
-export default (props) => {
+const ProfilePage = (props) => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
   const _baseUrl = "/profile";
   const { relogin, isLogin, currentUser } = useContext(SessionContext);
-  const { match } = props;
-  const { params } = match;
-  const { userId, pageNumber } = params;
+  const { userId, pageNumber } = useParams();
   const [updateAvatar] = useMutation(userMutations.UPDATE_USER_AVATAR, {
     client: authClient,
   });
@@ -107,18 +101,6 @@ export default (props) => {
       refetch();
     }
   }, [state, refetch]);
-
-  if (loading) {
-    return <LoadingBar>Loading</LoadingBar>;
-  }
-
-  if (error) {
-    return <ErrorBar>Error</ErrorBar>;
-  }
-
-  if (!data) {
-    return <ErrorBar>Not Found</ErrorBar>;
-  }
 
   const onToggleEditCoverMode = (e) => {
     setEditCoverMode(e);
@@ -182,7 +164,7 @@ export default (props) => {
   }
 
   return (
-    <Fragment>
+    <ProfileLayout isLoading={!!loading} hasData={true} hasError={!!error}>
       <CoverPageBlock>
         {!isEditCoverMode &&
         isLogin &&
@@ -220,9 +202,10 @@ export default (props) => {
         onToggleEditCoverMode={onToggleEditCoverMode}
         userCoverUpdated={userCoverUpdated}
         showValidationError={showValidationError}
-        pages={UserProfileRoutes}
         userInfo={userInfo}
       />
-    </Fragment>
+    </ProfileLayout>
   );
 };
+
+export default ProfilePage;

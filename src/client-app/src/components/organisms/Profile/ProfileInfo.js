@@ -59,7 +59,7 @@ const UnserInfoChild = (props) => {
   ) : null;
 };
 
-export default function (props) {
+const ProfileInfo = (props) => {
   const { userInfo } = props;
 
   return (
@@ -82,16 +82,20 @@ export default function (props) {
             {userInfo.country}
           </UnserInfoChild>
           <UnserInfoChild className="col col-6 col-md-4 col-lg-12" icon="baby">
-            {format(userInfo.birthDate, "MMMM, DD YYYY")}
+            {userInfo.birthDate
+              ? format(new Date(userInfo.birthDate), "MMMM, dd yyyy")
+              : null}
           </UnserInfoChild>
           <UnserInfoChild
             className="col col-6 col-md-4 col-lg-12"
             icon="calendar-alt"
           >
-            {format(userInfo.createdDate, "MMMM, DD YYYY")}
+            {format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}
           </UnserInfoChild>
         </InfoList>
       ) : null}
     </Root>
   );
-}
+};
+
+export default ProfileInfo;

@@ -98,7 +98,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             {
                 AuthenticationToken = accessToken,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
             };
         }
 
@@ -130,7 +130,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
 
             var serverRefreshToken = await _userManager.GetUserTokenByValueAsync(user, clientRefreshToken, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-            if (serverRefreshToken == null || serverRefreshToken.ExpiryTime <= DateTimeOffset.Now)
+            if (serverRefreshToken == null || serverRefreshToken.ExpiryTime <= DateTime.UtcNow)
             {
                 throw new CaminoAuthenticationException();
             }
@@ -147,7 +147,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             {
                 AuthenticationToken = accessToken,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.Now.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
             };
         }
 

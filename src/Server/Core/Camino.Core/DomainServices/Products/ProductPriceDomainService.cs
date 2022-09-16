@@ -21,7 +21,7 @@ namespace Camino.Core.DomainServices.Products
 
         public async Task<bool> UpdateProductPriceAsync(long productId, decimal price, bool needSaveChanges = false)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             var existingPrices = await _productPriceRepository
                 .GetAsync(x => x.ProductId == productId && x.IsCurrent && x.Price != price);
             foreach (var existingPrice in existingPrices)

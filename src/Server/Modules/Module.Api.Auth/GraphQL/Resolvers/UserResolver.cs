@@ -159,9 +159,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusLabel = user.StatusLabel,
                 UpdatedDate = user.UpdatedDate,
                 CanEdit = userId == currentUserId,
+                UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id)
             };
-
-            userInfo.UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
             return userInfo;
         }
 
@@ -295,8 +294,8 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 Email = criterias.Email,
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
-                GenderId = (byte)criterias.GenderId,
-                StatusId = (byte)UserStatuses.Pending,
+                GenderId = (int)criterias.GenderId,
+                StatusId = (int)UserStatuses.Pending,
                 UserName = criterias.Email,
             };
 

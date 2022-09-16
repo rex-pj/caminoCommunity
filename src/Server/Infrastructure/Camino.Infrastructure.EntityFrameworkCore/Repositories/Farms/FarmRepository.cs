@@ -39,7 +39,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 
         public async Task<long> CreateAsync(Farm farm)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             farm.UpdatedDate = modifiedDate;
             farm.CreatedDate = modifiedDate;
             await _farmRepository.InsertAsync(farm);
@@ -49,7 +49,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
 
         public async Task<bool> UpdateAsync(Farm farm)
         {
-            var updatedDate = DateTimeOffset.UtcNow;
+            var updatedDate = DateTime.UtcNow;
             farm.UpdatedDate = updatedDate;
             await _farmRepository.UpdateAsync(farm);
             await _dbContext.SaveChangesAsync();

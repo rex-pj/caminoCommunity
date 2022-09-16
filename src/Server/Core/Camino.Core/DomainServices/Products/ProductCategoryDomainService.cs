@@ -28,7 +28,7 @@ namespace Camino.Core.DomainServices.Products
 
         public async Task<bool> UpdateProductCategoryRelationsAsync(long productId, IList<long> categoryIds, bool needSaveChanges = false)
         {
-            var modifiedDate = DateTimeOffset.UtcNow;
+            var modifiedDate = DateTime.UtcNow;
             // Update Category
             await _productCategoryRelationRepository
                         .DeleteAsync(x => x.ProductId == productId && !categoryIds.Contains(x.ProductCategoryId));

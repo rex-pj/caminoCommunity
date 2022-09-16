@@ -5,6 +5,9 @@ using Camino.Shared.Utils;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Camino.Core.Domains.Media;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 {
@@ -46,7 +49,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             var existing = await _userRepository.FindAsync(x => x.Id == id);
             existing.StatusId = status.GetCode();
             existing.UpdatedById = updatedById;
-            existing.UpdatedDate = DateTimeOffset.UtcNow;
+            existing.UpdatedDate = DateTime.UtcNow;
 
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
@@ -76,7 +79,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             username = username.ToLower();
 
             var user = await _userRepository
-                .Get(x => x.Email.Equals(username))
+                .Get(x => x.UserName.Equals(username))
                 .FirstOrDefaultAsync();
 
             return user;
@@ -86,6 +89,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id))
+                .OrderByDescending(x => x.CreatedDate)
                 .FirstOrDefaultAsync();
 
             return existUser;
@@ -113,9 +117,10 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         {
             var existUser = await _userRepository
                 .Get(x => x.Id.Equals(id) && (x.StatusId == _userDeletedStatus && canGetDeleted)
-                            || (x.StatusId == _userInactivedStatus && canGetInactived)
-                            || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus))
-                .FirstOrDefaultAsync();
+                        || (x.StatusId == _userInactivedStatus && canGetInactived)
+                        || (x.StatusId != _userDeletedStatus && x.StatusId != _userInactivedStatus))
+            .OrderByDescending(x => x.CreatedDate)
+            .FirstOrDefaultAsync();
 
             return existUser;
         }
