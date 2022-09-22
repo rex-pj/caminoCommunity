@@ -15,4 +15,8 @@
 		<ProjectReference Include="..\..\Core\Camino.Core\Camino.Core.csproj" />
 		<ProjectReference Include="..\..\Shared\Camino.Shared\Camino.Shared.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Helpers\" />
+	</ItemGroup>
 </Project>

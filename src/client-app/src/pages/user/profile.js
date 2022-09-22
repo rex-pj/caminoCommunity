@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { authClient } from "../../graphql/client";
 import { ProfileLayout } from "../../components/templates/Layout";
+import UserPhotoService from "../../services/UserPhotoService";
 
 const ProfileAvatar = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileAvatar")
@@ -78,12 +79,7 @@ const ProfilePage = (props) => {
   const _baseUrl = "/profile";
   const { relogin, isLogin, currentUser } = useContext(SessionContext);
   const { userId, pageNumber } = useParams();
-  const [updateAvatar] = useMutation(userMutations.UPDATE_USER_AVATAR, {
-    client: authClient,
-  });
-  const [deleteAvatar] = useMutation(userMutations.DELETE_USER_AVATAR, {
-    client: authClient,
-  });
+  const _userPhotoService = new UserPhotoService();
   const { loading, error, data, refetch } = useQuery(
     userQueries.GET_USER_INFO,
     {
@@ -132,7 +128,7 @@ const ProfilePage = (props) => {
   };
 
   const onAvatarUpload = async (variables) => {
-    return await updateAvatar({ variables }).then(() => {
+    return await _userPhotoService.updateAvatar(variables).then(() => {
       refetch().then(() => {
         relogin();
       });
@@ -143,8 +139,8 @@ const ProfilePage = (props) => {
     });
   };
 
-  const onAvatarDelete = async (variables) => {
-    return await deleteAvatar({ variables }).then(() => {
+  const onAvatarDelete = async () => {
+    return _userPhotoService.deleteAvatar().then(() => {
       refetch().then(() => {
         relogin();
       });

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace Camino.Framework.Attributes
@@ -15,7 +16,7 @@ namespace Camino.Framework.Attributes
         private readonly bool _ignoreFilter;
         public bool IgnoreFilter => _ignoreFilter;
 
-        public TokenAuthenticationAttribute(bool ignoreFilter = false) : base(typeof(TokenAuthenticationAttribute))
+        public TokenAuthenticationAttribute(bool ignoreFilter = false) : base(typeof(TokenAuthenticationFilter))
         {
             _ignoreFilter = ignoreFilter;
             Arguments = new object[] { ignoreFilter };
@@ -73,7 +74,8 @@ namespace Camino.Framework.Attributes
                     }
 
                     httpContext.User.AddIdentity(claimsIdentity);
-                    var user = await userManager.GetUserAsync(httpContext.User);
+                    var userIdentityId = httpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
+                    var user = await userManager.FindByIdentityIdAsync(userIdentityId);
                     await loginManager.SignInWithClaimsAsync(user, true, new Claim[] { new Claim("amr", "pwd") });
                     return;
                 }

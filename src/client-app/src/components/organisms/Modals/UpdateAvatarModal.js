@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import NoAvatar from "../../molecules/NoImages/no-avatar";
+import { base64toFile } from "../../../utils/Helper";
 
 const Wrap = styled.div`
   margin: auto;
@@ -149,8 +150,10 @@ export default (props) => {
       height: 250,
       scale: 1,
     });
+
     setAvatarData({
       ...avatarData,
+      file: base64toFile(e.preview, e.file.name),
       contentType: e.file.type,
       fileName: e.file.name,
       src: e.preview,
@@ -188,27 +191,19 @@ export default (props) => {
         return;
       }
 
-      const { fileName, contentType } = avatarData;
+      const { fileName, contentType, file } = avatarData;
       const { scale } = cropData;
       const { data, execution } = props;
-      const { canEdit } = data;
       const { onUpload } = execution;
 
-      const variables = {
-        criterias: {
-          photoUrl: src,
-          canEdit: canEdit,
-          xAxis: rect.x,
-          yAxis: rect.y,
-          width: rect.width,
-          height: rect.height,
-          fileName,
-          contentType,
-          scale,
-        },
-      };
-
-      await onUpload(variables).then(async () => {
+      var formData = new FormData();
+      formData.append("xAxis", rect.x);
+      formData.append("yAxis", rect.y);
+      formData.append("width", rect.width);
+      formData.append("fileName", fileName);
+      formData.append("scale", scale);
+      formData.append("file", file);
+      await onUpload(formData).then(async () => {
         props.setDisabled(false);
         props.closeModal();
       });
@@ -224,13 +219,7 @@ export default (props) => {
       return;
     }
 
-    const variables = {
-      criterias: {
-        canEdit: canEdit,
-      },
-    };
-
-    await onDelete(variables).then(() => {
+    await onDelete().then(() => {
       props.setDisabled(false);
       props.closeModal();
     });

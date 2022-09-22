@@ -7,6 +7,14 @@ export const apiConfig = {
         getAvatar: `${process.env.REACT_APP_CAMINO_API}/user-photos/avatars`,
         getCover: `${process.env.REACT_APP_CAMINO_API}/user-photos/covers`,
       },
+      put: {
+        updateAvatar: `${process.env.REACT_APP_CAMINO_API}/user-photos/avatars`,
+        updateCover: `${process.env.REACT_APP_CAMINO_API}/user-photos/covers`,
+      },
+      delete: {
+        deleteAvatar: `${process.env.REACT_APP_CAMINO_API}/user-photos/avatars`,
+        deleteCover: `${process.env.REACT_APP_CAMINO_API}/user-photos/covers`,
+      },
     },
     pictures: {
       get: {

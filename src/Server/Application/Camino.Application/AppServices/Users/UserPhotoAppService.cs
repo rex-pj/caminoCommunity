@@ -60,11 +60,11 @@ namespace Camino.Application.AppServices.Users
 
             if (!canUpdate && request.UserPhotoTypeId == (int)UserPictureTypes.Avatar)
             {
-                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Avatar)}Should larger than 100px X 100px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Avatar)} Should larger than 100px X 100px");
             }
             else if (!canUpdate)
             {
-                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Cover)}Should larger than 1000px X 300px");
+                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Cover)} Should larger than 1000px X 300px");
             }
 
             int maxSize = request.UserPhotoTypeId == (int)UserPictureTypes.Avatar ? 600 : 1000;

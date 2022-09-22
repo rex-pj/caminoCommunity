@@ -2,11 +2,19 @@
 using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
+using Camino.Infrastructure.Identity.Core;
+using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Shared.Constants;
 using Camino.Shared.Enums;
+using Camino.Shared.File;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Module.Api.Media.Models;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -16,9 +24,11 @@ namespace Module.Api.Media.Controllers
     public class UserPhotoController : BaseController
     {
         private readonly IUserPhotoAppService _userPhotoAppService;
-        public UserPhotoController(IUserPhotoAppService userPhotoAppService)
+        private readonly IUserManager<ApplicationUser> _userManager;
+        public UserPhotoController(IUserPhotoAppService userPhotoAppService, IUserManager<ApplicationUser> userManager)
         {
             _userPhotoAppService = userPhotoAppService;
+            _userManager = userManager;
         }
 
         [HttpGet("avatars/{code}")]
@@ -43,22 +53,19 @@ namespace Module.Api.Media.Controllers
             return File(cover.BinaryData, "image/jpeg");
         }
 
-        [HttpPost("avatars")]
+        [HttpPut("avatars")]
         [TokenAuthentication]
-        public async Task<IActionResult> UpdateAvatarAsync(UserPhotoUpdateModel criterias)
+        public async Task<IActionResult> UpdateAvatarAsync([FromForm] UserPhotoUpdateModel criterias)
         {
             try
             {
-                if (!criterias.CanEdit)
-                {
-                    throw new UnauthorizedAccessException();
-                }
+                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
+                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
 
-                var userPrincipalId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long.TryParse(userPrincipalId, out long loggedUserId);
+                var photoUrl = await FileUtils.GetBase64Async(criterias.File);
                 var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
-                    PhotoUrl = criterias.PhotoUrl,
+                    PhotoUrl = photoUrl,
                     FileName = criterias.FileName,
                     Width = criterias.Width,
                     Height = criterias.Height,
@@ -82,13 +89,8 @@ namespace Module.Api.Media.Controllers
         {
             try
             {
-                if (!criterias.CanEdit)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                var userPrincipalId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long.TryParse(userPrincipalId, out long loggedUserId);
+                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
+                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
                 var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
                     PhotoUrl = criterias.PhotoUrl,
@@ -111,17 +113,12 @@ namespace Module.Api.Media.Controllers
 
         [HttpDelete("avatars")]
         [TokenAuthentication]
-        public async Task<IActionResult> DeleteAvatarAsync(PhotoDeleteModel criterias)
+        public async Task<IActionResult> DeleteAvatarAsync()
         {
             try
             {
-                if (!criterias.CanEdit)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                var userPrincipalId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long.TryParse(userPrincipalId, out long loggedUserId);
+                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
+                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
                 await _userPhotoAppService.DeleteByUserIdAsync(loggedUserId, UserPictureTypes.Avatar);
                 return Ok();
             }
@@ -133,15 +130,10 @@ namespace Module.Api.Media.Controllers
 
         [HttpDelete("covers")]
         [TokenAuthentication]
-        public async Task<IActionResult> DeleteCoverAsync(PhotoDeleteModel criterias)
+        public async Task<IActionResult> DeleteCoverAsync()
         {
             try
             {
-                if (!criterias.CanEdit)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
                 var userPrincipalId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 long.TryParse(userPrincipalId, out long loggedUserId);
                 await _userPhotoAppService.DeleteByUserIdAsync(loggedUserId, UserPictureTypes.Cover);

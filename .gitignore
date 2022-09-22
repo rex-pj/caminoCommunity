@@ -86,3 +86,5 @@ src/Server/Shared/Camino.Shared.Utils/bin/
 src/Server/Shared/Camino.Shared.Utils/obj/
 src/Server/Shared/Camino.Shared/bin/
 src/Server/Shared/Camino.Shared/obj/
+src/Server/Shared/Camino.Shared.File/obj/
+src/Server/Shared/Camino.Shared.File/bin/

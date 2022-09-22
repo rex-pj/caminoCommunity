@@ -1,5 +1,4 @@
-﻿using Camino.Core.DependencyInjection;
-using Camino.Infrastructure.Files.Contracts;
+﻿using Camino.Infrastructure.Files.Contracts;
 using System.Text;
 
 namespace Camino.Infrastructure.Providers

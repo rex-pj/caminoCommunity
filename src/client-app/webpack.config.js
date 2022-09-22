@@ -5,6 +5,6 @@ module.exports = {
   plugins: new LoadablePlugin(),
   entry: ["./src/index.js"],
   resolve: {
-    extensions: [".js", ".jsx"]
-  }
+    extensions: [".js", ".jsx"],
+  },
 };

@@ -1,8 +1,5 @@
-﻿using Module.Api.Media.GraphQL.Resolvers;
-using Module.Api.Media.GraphQL.Resolvers.Contracts;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Module.Api.Media.GraphQL.Mutations;
 
 namespace Module.Api.Media.Extensions.DependencyInjection
 {
@@ -10,10 +7,7 @@ namespace Module.Api.Media.Extensions.DependencyInjection
     {
         public static IServiceCollection ConfigureGraphQlServices(this IServiceCollection services)
         {
-            services.AddScoped<IImageResolver, ImageResolver>();
-
-            services.AddGraphQLServer()
-                .AddType<ImageMutations>();
+            services.AddGraphQLServer();
             return services;
         }
 
