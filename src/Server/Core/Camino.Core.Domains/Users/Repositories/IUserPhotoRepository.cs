@@ -9,7 +9,7 @@ namespace Camino.Core.Contracts.Repositories.Users
     {
         Task<long> CreateAsync(UserPhoto userPhoto);
         Task DeleteByUserIdAsync(long userId, UserPictureTypes userPhotoType);
-        Task<UserPhoto> GetByCodeAsync(string code, UserPictureTypes type);
+        Task<UserPhoto> GetByIdAsync(long id, UserPictureTypes type);
         Task<UserPhoto> GetByUserIdAsync(long userId, UserPictureTypes typeId);
         Task<string> GetCodeByUserIdAsync(long userId, UserPictureTypes typeId);
         Task<IEnumerable<UserPhoto>> GetListAsync(long userId);

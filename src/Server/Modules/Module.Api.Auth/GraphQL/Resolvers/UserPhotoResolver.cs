@@ -34,12 +34,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var photo = await GetUserPhotoÁync(userId, UserPictureTypes.Avatar);
+            var photo = await GetUserPhotoAsync(userId, UserPictureTypes.Avatar);
             return new UserAvatarModel
             {
-                Code = photo.Code,
+                Id = photo.Id,
                 TypeId = photo.TypeId.ToString(),
-                Url = photo.Url
             };
         }
 
@@ -52,12 +51,11 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
-            var photo = await GetUserPhotoÁync(userId, UserPictureTypes.Cover);
+            var photo = await GetUserPhotoAsync(userId, UserPictureTypes.Cover);
             return new UserCoverModel
             {
-                Code = photo.Code,
-                TypeId = photo.TypeId.ToString(),
-                Url = photo.Url
+                Id = photo.Id,
+                TypeId = photo.TypeId.ToString()
             };
         }
 
@@ -78,18 +76,17 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             var userPhotos = await _userPhotoAppService.GetUserPhotosAsync(userId);
             return userPhotos.Select(x => new UserPhotoModel
             {
-                Code = x.Code,
                 Id = x.Id,
                 PhotoType = (UserPictureTypes)x.TypeId
             }).ToList();
         }
 
-        private async Task<UserPhotoResult> GetUserPhotoÁync(long userId, UserPictureTypes type)
+        private async Task<UserPhotoResult> GetUserPhotoAsync(long userId, UserPictureTypes type)
         {
             var userPhoto = await _userPhotoAppService.GetByUserIdAsync(userId, type);
             if (userPhoto != null)
             {
-                userPhoto.Url = userPhoto.Code;
+                userPhoto.Id = userPhoto.Id;
             }
 
             return userPhoto;

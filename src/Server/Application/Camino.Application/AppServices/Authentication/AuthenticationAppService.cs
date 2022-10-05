@@ -22,7 +22,7 @@ namespace Camino.Application.AppServices.Authentication
         private readonly IEntityRepository<User> _userEntityRepository;
         private readonly IEntityRepository<UserClaim> _userClaimEntityRepository;
         private readonly IEntityRepository<UserRole> _userRoleEntityRepository;
-        private readonly IValidationStrategyContext _validationStrategyContext;
+        private readonly BaseValidatorContext _validatorContext;
         private readonly IDbContext _dbContext;
         #endregion
 
@@ -32,7 +32,7 @@ namespace Camino.Application.AppServices.Authentication
             IEntityRepository<UserRole> userRoleEntityRepository,
             IUserClaimRepository userClaimRepository,
             IUserLoginRepository userLoginRepository,
-             IValidationStrategyContext validationStrategyContext,
+             BaseValidatorContext validatorContext,
             IUserTokenRepository userTokenRepository,
             IDbContext dbContext)
         {
@@ -42,7 +42,7 @@ namespace Camino.Application.AppServices.Authentication
             _userTokenRepository = userTokenRepository;
             _userLoginRepository = userLoginRepository;
             _userClaimRepository = userClaimRepository;
-            _validationStrategyContext = validationStrategyContext;
+            _validatorContext = validatorContext;
             _dbContext = dbContext;
         }
         #endregion
@@ -51,14 +51,14 @@ namespace Camino.Application.AppServices.Authentication
 
         public async Task<UserResult> UpdatePasswordAsync(UserPasswordUpdateRequest request)
         {
-            _validationStrategyContext.SetStrategy(new UserPasswordUpdateValidationStratergy());
-            bool canUpdate = _validationStrategyContext.Validate(request);
+            _validatorContext.SetValidator(new UserPasswordUpdateValidator());
+            bool canUpdate = _validatorContext.Validate<UserPasswordUpdateRequest, bool>(request);
             if (!canUpdate)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            var errors = _validationStrategyContext.Errors;
+            var errors = _validatorContext.Errors;
             if (errors != null || errors.Any())
             {
                 throw new ArgumentException(errors.FirstOrDefault().Message);

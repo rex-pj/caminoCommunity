@@ -14,11 +14,11 @@ namespace Module.Api.Media.Controllers
     {
         
         private readonly IPictureAppService _pictureAppService;
-        private readonly IValidationStrategyContext _validationStrategyContext;
-        public PictureController(IPictureAppService pictureAppService, IValidationStrategyContext validationStrategyContext)
+        private readonly BaseValidatorContext _validatorContext;
+        public PictureController(IPictureAppService pictureAppService, BaseValidatorContext validatorContext)
         {
             _pictureAppService = pictureAppService;
-            _validationStrategyContext = validationStrategyContext;
+            _validatorContext = validatorContext;
         }
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace Module.Api.Media.Controllers
 
         public IActionResult ValidateUrl(ImageValidationModel criterias)
         {
-            _validationStrategyContext.SetStrategy(new ImageUrlValidationStrategy());
+            _validatorContext.SetValidator(new ImageUrlValidator());
             if (criterias == null)
             {
                 return BadRequest();
@@ -53,11 +53,11 @@ namespace Module.Api.Media.Controllers
                 return BadRequest();
             }
 
-            bool canUpdate = _validationStrategyContext.Validate(criterias.Url);
+            bool canUpdate = _validatorContext.Validate<string, bool>(criterias.Url);
             if (!canUpdate)
             {
-                _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
-                canUpdate = _validationStrategyContext.Validate(criterias.Url);
+                _validatorContext.SetValidator(new Base64ImageValidator());
+                canUpdate = _validatorContext.Validate<string, bool>(criterias.Url);
             }
 
             if (canUpdate)

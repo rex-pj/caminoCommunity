@@ -5,7 +5,7 @@ using Camino.Application.Contracts.AppServices.Authorization;
 using Camino.Application.Contracts.AppServices.Authorization.Dtos;
 using Camino.Application.Contracts.AppServices.Users;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
-using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Security.Claims;
 
-namespace Camino.IdentityManager.Contracts.Stores
+namespace Camino.Infrastructure.Identity.Stores
 {
     public class ApplicationUserStore<TUser> : UserStoreBase<TUser, ApplicationRole, long, ApplicationUserClaim,
         ApplicationUserRole, ApplicationUserLogin, ApplicationUserToken, ApplicationRoleClaim>,

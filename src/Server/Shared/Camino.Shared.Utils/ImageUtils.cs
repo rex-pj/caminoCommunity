@@ -23,7 +23,12 @@ namespace Camino.Shared.Utils
         {
             string base64 = base64String.Substring(base64String.IndexOf(',') + 1);
             byte[] imageBytes = Convert.FromBase64String(base64);
-            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+            return FileDataToImage(imageBytes);
+        }
+
+        public static Image FileDataToImage(byte[] fileDate)
+        {
+            using (var ms = new MemoryStream(fileDate, 0, fileDate.Length))
             {
                 var image = Image.FromStream(ms, true);
                 return image;
@@ -48,14 +53,14 @@ namespace Camino.Shared.Utils
             }
         }
 
-        public static string Crop(string base64String, double x, double y, double width, double height, double scale, int maxSize = 600)
+        public static byte[] Crop(byte[] fileDate, double x, double y, double width, double height, double scale, int maxSize = 600)
         {
-            var image = Base64ToImage(base64String);
+            var image = FileDataToImage(fileDate);
 
             return Crop(image, x, y, width, height, scale, maxSize);
         }
 
-        public static string Crop(Image image, double x, double y, double width, double height, double scale, int maxSize = 600)
+        public static byte[] Crop(Image image, double x, double y, double width, double height, double scale, int maxSize = 600)
         {
             if (image.Width > maxSize && image.Width >= image.Height)
             {
@@ -83,8 +88,11 @@ namespace Camino.Shared.Utils
                     var descRect = new Rectangle(0, 0, newWidth, newHeight);
                     graphic.DrawImage(image, descRect, srcRect, GraphicsUnit.Pixel);
 
-                    var targetImage = ToBase64String(target);
-                    return targetImage;
+                    using (var stream = new MemoryStream())
+                    {
+                        target.Save(stream, ImageFormat.Png);
+                        return stream.ToArray();
+                    }
                 }
             }
         }

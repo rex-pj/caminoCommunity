@@ -1,12 +1,11 @@
-﻿using Camino.IdentityManager.Contracts.Stores;
-using Camino.Infrastructure.Identity;
-using Camino.Infrastructure.Identity.Constants;
+﻿using Camino.Infrastructure.Identity.Constants;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Identity.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Camino.IdentityManager.Extensions.DependencyInjection
+namespace Camino.Infrastructure.Identity.Extensions.DependencyInjection
 {
     public static class ApplicationServiceCollectionExtensions
     {

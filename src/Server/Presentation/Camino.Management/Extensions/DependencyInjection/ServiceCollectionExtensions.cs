@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Camino.Framework.Extensions.DependencyInjection;
 using Camino.Infrastructure.Extensions.DependencyInjection;
 using Camino.Framework.Infrastructure.ModelBinders;
-using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
 

@@ -3,7 +3,6 @@ using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Users.DomainServices;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
-using System.Threading.Tasks;
 
 namespace Camino.Core.DomainServices.Products.Users
 {

@@ -9,14 +9,13 @@ namespace Camino.Core.Domains.Media
         [Required]
         public string Code { get; set; }
         public string Name { get; set; }
-        public string Url { get; set; }
         public string Description { get; set; }
         [Required]
         public DateTime CreatedDate { get; set; }
         [Required]
         public long CreatedById { get; set; }
         [Required]
-        public string ImageData { get; set; }
+        public byte[] FileData { get; set; }
         [Required]
         public long UserId { get; set; }
         [Required]

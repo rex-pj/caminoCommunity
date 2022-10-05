@@ -16,14 +16,14 @@ namespace Camino.Application.AppServices.Users
     {
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IValidationStrategyContext _validationStrategyContext;
+        private readonly BaseValidatorContext _validatorContext;
         public UserPhotoAppService(IUserPhotoRepository userPhotoRepository,
             IUserRepository userRepository,
-            IValidationStrategyContext validationStrategyContext)
+            BaseValidatorContext validatorContext)
         {
             _userPhotoRepository = userPhotoRepository;
             _userRepository = userRepository;
-            _validationStrategyContext = validationStrategyContext;
+            _validatorContext = validatorContext;
         }
 
         public async Task<UserPhotoUpdateRequest> UpdateAsync(UserPhotoUpdateRequest request, long userId)
@@ -39,22 +39,22 @@ namespace Camino.Application.AppServices.Users
                 throw new ArgumentException(nameof(userInfo));
             }
 
-            _validationStrategyContext.SetStrategy(new Base64ImageValidationStrategy());
-            bool canUpdate = _validationStrategyContext.Validate(request.PhotoUrl);
+            _validatorContext.SetValidator(new ImageFileValidator());
+            bool canUpdate = _validatorContext.Validate<byte[], bool>(request.FileData);
             if (!canUpdate)
             {
-                throw new ArgumentException(request.PhotoUrl);
+                throw new ArgumentException(nameof(request.FileData));
             }
 
             switch (request.UserPhotoTypeId)
             {
                 case (int)UserPictureTypes.Avatar:
-                    _validationStrategyContext.SetStrategy(new AvatarValidationStrategy());
-                    canUpdate = _validationStrategyContext.Validate(request);
+                    _validatorContext.SetValidator(new AvatarValidator());
+                    canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
                     break;
                 case (int)UserPictureTypes.Cover:
-                    _validationStrategyContext.SetStrategy(new UserCoverValidationStrategy());
-                    canUpdate = _validationStrategyContext.Validate(request);
+                    _validatorContext.SetValidator(new UserCoverValidator());
+                    canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
                     break;
             }
 
@@ -69,7 +69,7 @@ namespace Camino.Application.AppServices.Users
 
             int maxSize = request.UserPhotoTypeId == (int)UserPictureTypes.Avatar ? 600 : 1000;
             var newImage = ImageUtils
-                .Crop(request.PhotoUrl, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, maxSize);
+                .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, maxSize);
 
             var userPhotoType = (UserPictureTypes)request.UserPhotoTypeId;
             var userPhoto = await _userPhotoRepository
@@ -81,23 +81,20 @@ namespace Camino.Application.AppServices.Users
                 {
                     CreatedById = userId,
                     CreatedDate = DateTime.UtcNow,
-                    ImageData = newImage,
+                    FileData = newImage,
                     TypeId = request.UserPhotoTypeId,
                     UserId = userId,
                     Name = request.FileName,
-                    Code = request.UserPhotoCode,
                 };
                 await _userPhotoRepository.CreateAsync(userPhoto);
             }
             else
             {
-                userPhoto.ImageData = newImage;
+                userPhoto.FileData = newImage;
                 userPhoto.Name = request.FileName;
-                userPhoto.Code = request.UserPhotoCode;
                 await _userPhotoRepository.UpdateAsync(userPhoto);
             }
 
-            request.PhotoUrl = userPhoto.Code;
             return request;
         }
 
@@ -106,9 +103,9 @@ namespace Camino.Application.AppServices.Users
             await _userPhotoRepository.DeleteByUserIdAsync(userId, userPhotoType);
         }
 
-        public async Task<UserPhotoResult> GetByCodeAsync(string code, UserPictureTypes typeId)
+        public async Task<UserPhotoResult> GetByIdAsync(long id, UserPictureTypes typeId)
         {
-            var existing = await _userPhotoRepository.GetByCodeAsync(code, typeId);
+            var existing = await _userPhotoRepository.GetByIdAsync(id, typeId);
             return MapEntityToDto(existing);
         }
 
@@ -127,12 +124,6 @@ namespace Camino.Application.AppServices.Users
         {
             var existing = await _userPhotoRepository.GetByUserIdAsync(userId, typeId);
             return MapEntityToDto(existing);
-        }
-
-        public async Task<string> GetCodeByUserIdAsync(long userId, UserPictureTypes typeId)
-        {
-            var userPhoto = await GetByUserIdAsync(userId, typeId);
-            return userPhoto.Code;
         }
 
         public async Task<IList<UserPhotoResult>> GetListByUserIdsAsync(IEnumerable<long> userIds, UserPictureTypes typeId)
@@ -155,15 +146,12 @@ namespace Camino.Application.AppServices.Users
 
             return new UserPhotoResult
             {
-                Code = entity.Code,
                 Description = entity.Description,
                 Id = entity.Id,
-                ImageData = entity.ImageData,
+                FileData = entity.FileData,
                 Name = entity.Name,
                 TypeId = entity.TypeId,
-                UserId = entity.UserId,
-                Url = entity.Url,
-                BinaryData = Convert.FromBase64String(entity.ImageData)
+                UserId = entity.UserId
             };
         }
     }

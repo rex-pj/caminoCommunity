@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
-using Camino.IdentityManager.Contracts.Options;
+using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Utils;
 

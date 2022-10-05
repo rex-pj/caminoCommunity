@@ -8,7 +8,7 @@ using Camino.Infrastructure.Emails.Contracts.Dtos;
 using Camino.Core.DependencyInjection;
 using Camino.Shared.Configuration.Options;
 
-namespace Camino.Infrastructure.Providers
+namespace Camino.Infrastructure.Emails
 {
     public class SmtpEmailClient : IEmailClient, IScopedDependency
     {

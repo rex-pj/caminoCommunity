@@ -1,6 +1,9 @@
 ﻿using Camino.Core.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Camino.Infrastructure.Extensions.DependencyInjection
 {
@@ -10,21 +13,35 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
         private static readonly Type _scopedDependencyType = typeof(IScopedDependency).GetTypeInfo();
         private static readonly Type _singletonDependencyType = typeof(ISingletonDependency).GetTypeInfo();
 
-        public static void AddDependencyServices(this IServiceCollection services, string[] projectNames)
+        public static void AddProjectDependencies(this IServiceCollection services)
         {
-            var assemblies = GetProjectsAssemblies(projectNames);
+            var serviceProvider = services.BuildServiceProvider();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var assemblies = GetProjectAssemblies(configuration, serviceProvider);
             foreach (var assembly in assemblies)
             {
-                var interfaceTypes = GetAssemblyInterfaceTypes(assembly);
-                if (interfaceTypes == null || !interfaceTypes.Any())
-                {
-                    continue;
-                }
+                services.AddDependenciesFromAssembly(assembly);
+            }
+        }
 
+        public static void AddModuleDependencies(this IServiceCollection services, Assembly currentAssembly)
+        {
+            var assemblies = GetModuleAssemblies(currentAssembly);
+            foreach (var assembly in assemblies)
+            {
+                services.AddDependenciesFromAssembly(assembly);
+            }
+        }
+
+        public static void AddDependenciesFromAssembly(this IServiceCollection services, Assembly assembly)
+        {
+            var interfaceTypes = GetAssemblyInterfaceTypes(assembly);
+            if (interfaceTypes != null && interfaceTypes.Any())
+            {
                 foreach (var interfaceType in interfaceTypes)
                 {
-                    var instanceTypes = GetInstanceTypes(assembly, interfaceType);
-                    if (instanceTypes == null && !instanceTypes.Any())
+                    var instanceTypes = GetInterfaceInstanceTypes(assembly, interfaceType);
+                    if (instanceTypes == null || !instanceTypes.Any())
                     {
                         continue;
                     }
@@ -46,13 +63,51 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
                     }
                 }
             }
+
+            var abstractTypes = GetAssemblyAbstractTypes(assembly);
+            if (abstractTypes != null && abstractTypes.Any())
+            {
+                foreach (var abstractType in abstractTypes)
+                {
+                    var instanceTypes = GetAbstractInstanceTypes(assembly, abstractType);
+                    if (abstractTypes == null || !abstractTypes.Any())
+                    {
+                        continue;
+                    }
+
+                    foreach (var initializerType in instanceTypes)
+                    {
+                        if (_transientDependencyType.IsAssignableFrom(initializerType))
+                        {
+                            services.AddTransient(abstractType, initializerType);
+                        }
+                        else if (_scopedDependencyType.IsAssignableFrom(initializerType))
+                        {
+                            services.AddScoped(abstractType, initializerType);
+                        }
+                        else if (_singletonDependencyType.IsAssignableFrom(initializerType))
+                        {
+                            services.AddSingleton(abstractType, initializerType);
+                        }
+                    }
+                }
+            }
         }
 
-        private static IEnumerable<Type> GetInstanceTypes(Assembly assembly, Type interfaceType)
+        private static IEnumerable<Type> GetInterfaceInstanceTypes(Assembly assembly, Type interfaceType)
         {
             var instanceTypes = assembly.GetTypes()
-                .Where(x => (_transientDependencyType.IsAssignableFrom(x) || _scopedDependencyType.IsAssignableFrom(x) || _singletonDependencyType.IsAssignableFrom(x)) &&
-                interfaceType.IsAssignableFrom(x) && x != interfaceType);
+                .Where(x => _transientDependencyType.IsAssignableFrom(x) || _scopedDependencyType.IsAssignableFrom(x) || _singletonDependencyType.IsAssignableFrom(x))
+                .Where(x => interfaceType.IsAssignableFrom(x) && x != interfaceType);
+
+            return instanceTypes;
+        }
+
+        private static IEnumerable<Type> GetAbstractInstanceTypes(Assembly assembly, Type abstractType)
+        {
+            var instanceTypes = assembly.GetTypes()
+                .Where(x => _transientDependencyType.IsAssignableFrom(x) || _scopedDependencyType.IsAssignableFrom(x) || _singletonDependencyType.IsAssignableFrom(x))
+                .Where(x => abstractType.IsAssignableFrom(x) && x != abstractType);
 
             return instanceTypes;
         }
@@ -65,21 +120,49 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
             return interfaceTypes;
         }
 
-        private static IList<Assembly> GetProjectsAssemblies(string[] projectNames)
+        private static IEnumerable<Type> GetAssemblyAbstractTypes(Assembly assembly)
         {
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            var referencedAssemblies = executingAssembly.GetReferencedAssemblies().Select(Assembly.Load);
-            var assemblies = new List<Assembly> { executingAssembly }.Concat(referencedAssemblies)
-                .Where(x => projectNames.Any(p => x.FullName.Contains(p))).ToList();
+            var abstractTypes = assembly.GetTypes()
+                .Where(x => !x.IsInterface)
+                .Where(x => _transientDependencyType.IsAssignableFrom(x) || _scopedDependencyType.IsAssignableFrom(x) || _singletonDependencyType.IsAssignableFrom(x))
+                .Select(x => x.BaseType)
+                .Where(x => x?.IsAbstract ?? false);
 
-            var missingAssemblies = projectNames.Where(x => !assemblies.Any(a => a.FullName.Contains(x)));
+            return abstractTypes;
+        }
+
+        private static IEnumerable<Assembly> GetProjectAssemblies(IConfiguration configuration, IServiceProvider serviceProvider)
+        {
+            var projectAssemblies = AssemblyLoadContext.Default.Assemblies
+                .Where(x => x.FullName.StartsWith("Camino.", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var dependencieNames = DependencyContext.Default.RuntimeLibraries
+                .Where(x => x.Name.StartsWith("Camino.", StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.Name);
+
+            var missingAssemblies = dependencieNames.Where(x => !projectAssemblies.Any(a => a.GetName().Name.Equals(x)));
             if (missingAssemblies.Any())
             {
                 var additionalAssemblies = missingAssemblies.Select(x => Assembly.Load(x));
-                assemblies.AddRange(additionalAssemblies);
+                projectAssemblies.AddRange(additionalAssemblies);
             }
 
-            return assemblies;
+            return projectAssemblies;
+        }
+
+        private static IEnumerable<Assembly> GetModuleAssemblies(Assembly currentAssembly)
+        {
+            var moduleAssemblies = new List<Assembly> { currentAssembly };
+            var referencedAssemblies = currentAssembly.GetReferencedAssemblies()?
+                .Where(x => x.FullName.StartsWith("Camino.", StringComparison.OrdinalIgnoreCase))?
+                .Select(Assembly.Load);
+
+            if (referencedAssemblies != null && referencedAssemblies.Any())
+            {
+                moduleAssemblies.AddRange(referencedAssemblies);
+            }
+
+            return referencedAssemblies;
         }
     }
 }

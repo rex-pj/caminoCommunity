@@ -6,7 +6,7 @@ using Camino.Infrastructure.Identity.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace Camino.IdentityManager.Contracts.Stores
+namespace Camino.Infrastructure.Identity.Stores
 {
     public class ApplicationRoleStore<TRole> : RoleStoreBase<TRole, long, ApplicationUserRole, ApplicationRoleClaim>, IApplicationRoleStore<TRole>
         where TRole : IdentityRole<long>

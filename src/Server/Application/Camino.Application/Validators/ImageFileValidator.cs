@@ -3,11 +3,9 @@ using Camino.Shared.Utils;
 
 namespace Camino.Application.Validators
 {
-    public class ImageUrlValidationStrategy : IValidationStrategy
+    public class ImageFileValidator : BaseValidator<byte[], bool>
     {
-        public IEnumerable<ValidatorErrorResult> Errors { get; set; }
-
-        public bool IsValid<T>(T value)
+        public bool IsValid(byte[] value)
         {
             try
             {
@@ -16,7 +14,8 @@ namespace Camino.Application.Validators
                     return false;
                 }
 
-                return ImageUtils.IsImageUrl(value.ToString());
+                ImageUtils.FileDataToImage(value);
+                return true;
             }
             catch (Exception e)
             {
@@ -25,7 +24,7 @@ namespace Camino.Application.Validators
             }
         }
 
-        public IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
+        public override IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
         {
             yield return new ValidatorErrorResult() {
                 Message = exception.Message

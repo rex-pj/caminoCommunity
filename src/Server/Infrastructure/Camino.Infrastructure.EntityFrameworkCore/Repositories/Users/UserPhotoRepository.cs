@@ -54,10 +54,10 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<UserPhoto> GetByCodeAsync(string code, UserPictureTypes type)
+        public async Task<UserPhoto> GetByIdAsync(long id, UserPictureTypes type)
         {
             var photoType = (int)type;
-            var userPhotos = await _userPhotoEntityRepository.GetAsync(x => x.Code.Equals(code) && x.TypeId.Equals(photoType));
+            var userPhotos = await _userPhotoEntityRepository.GetAsync(x => x.Id.Equals(id) && x.TypeId.Equals(photoType));
             if (userPhotos == null || !userPhotos.Any())
             {
                 return null;

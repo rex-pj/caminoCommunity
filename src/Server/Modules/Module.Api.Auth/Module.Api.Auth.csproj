@@ -5,6 +5,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\**" />
+	  <EmbeddedResource Remove="Controllers\**" />
+	  <None Remove="Controllers\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.9" />
 	</ItemGroup>
 
@@ -13,9 +19,5 @@
 	  <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
 	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Emails\Camino.Infrastructure.Emails.csproj" />
 	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Controllers\" />
 	</ItemGroup>
 </Project>

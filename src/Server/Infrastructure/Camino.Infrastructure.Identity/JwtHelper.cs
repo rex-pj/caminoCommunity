@@ -1,4 +1,4 @@
-﻿using Camino.IdentityManager.Contracts.Options;
+﻿using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Constants;

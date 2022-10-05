@@ -1,4 +1,4 @@
-﻿namespace Camino.IdentityManager.Contracts.Options
+﻿namespace Camino.Infrastructure.Identity.Options
 {
     public class CrypterSettings
     {

@@ -2,8 +2,7 @@
 {
     public class UserCoverModel
     {
-        public string Code { get; set; }
+        public long Id { get; set; }
         public string TypeId { get; set; }
-        public string Url { get; set; }
     }
 }

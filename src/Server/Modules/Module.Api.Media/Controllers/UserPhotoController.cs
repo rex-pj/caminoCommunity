@@ -31,26 +31,26 @@ namespace Module.Api.Media.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("avatars/{code}")]
-        public async Task<IActionResult> GetAvatar(string code)
+        [HttpGet("avatars/{id}")]
+        public async Task<IActionResult> GetAvatar(long id)
         {
-            var avatar = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Avatar);
+            var avatar = await _userPhotoAppService.GetByIdAsync(id, UserPictureTypes.Avatar);
             if (avatar == null)
             {
                 return NotFound();
             }
-            return File(avatar.BinaryData, "image/jpeg");
+            return File(avatar.FileData, "image/jpeg");
         }
 
-        [HttpGet("covers/{code}")]
-        public async Task<IActionResult> GetCover(string code)
+        [HttpGet("covers/{id}")]
+        public async Task<IActionResult> GetCover(long id)
         {
-            var cover = await _userPhotoAppService.GetByCodeAsync(code, UserPictureTypes.Cover);
+            var cover = await _userPhotoAppService.GetByIdAsync(id, UserPictureTypes.Cover);
             if (cover == null)
             {
                 return NotFound();
             }
-            return File(cover.BinaryData, "image/jpeg");
+            return File(cover.FileData, "image/jpeg");
         }
 
         [HttpPut("avatars")]
@@ -62,20 +62,20 @@ namespace Module.Api.Media.Controllers
                 var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
                 var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
 
-                var photoUrl = await FileUtils.GetBase64Async(criterias.File);
+                var fileData = await FileUtils.GetBytesAsync(criterias.File);
                 var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
-                    PhotoUrl = photoUrl,
                     FileName = criterias.FileName,
                     Width = criterias.Width,
                     Height = criterias.Height,
                     Scale = criterias.Scale,
                     UserPhotoTypeId = (int)UserPictureTypes.Avatar,
                     XAxis = criterias.XAxis,
-                    YAxis = criterias.YAxis
+                    YAxis = criterias.YAxis,
+                    FileData = fileData,
                 }, loggedUserId);
 
-                return Ok();
+                return Ok(result);
             }
             catch (Exception)
             {
@@ -91,19 +91,20 @@ namespace Module.Api.Media.Controllers
             {
                 var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
                 var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
+                var fileData = await FileUtils.GetBytesAsync(criterias.File);
                 var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
-                    PhotoUrl = criterias.PhotoUrl,
                     FileName = criterias.FileName,
                     Width = criterias.Width,
                     Height = criterias.Height,
                     Scale = criterias.Scale,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
-                    UserPhotoTypeId = (int)UserPictureTypes.Cover
+                    UserPhotoTypeId = (int)UserPictureTypes.Cover,
+                    FileData = fileData
                 }, loggedUserId);
 
-                return Ok();
+                return Ok(result);
             }
             catch (Exception)
             {

@@ -3,21 +3,18 @@ using Camino.Shared.Utils;
 
 namespace Camino.Application.Validators
 {
-    public class Base64ImageValidationStrategy : IValidationStrategy
+    public class ImageUrlValidator : BaseValidator<string, bool>
     {
-        public IEnumerable<ValidatorErrorResult> Errors { get; set; }
-
-        public bool IsValid<T>(T value)
+        public bool IsValid(string value)
         {
             try
             {
-                if (value == null)
+                if (string.IsNullOrEmpty(value))
                 {
                     return false;
                 }
 
-                ImageUtils.Base64ToImage(value.ToString());
-                return true;
+                return ImageUtils.IsImageUrl(value.ToString());
             }
             catch (Exception e)
             {
@@ -26,7 +23,7 @@ namespace Camino.Application.Validators
             }
         }
 
-        public IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
+        public override IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
         {
             yield return new ValidatorErrorResult() {
                 Message = exception.Message

@@ -11,17 +11,13 @@ using Camino.Application.Validators;
 using Camino.Core.Domains.Users.DomainServices;
 using Camino.Core.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Camino.Application.AppServices.Users
 {
     public class UserAppService : IUserAppService, IScopedDependency
     {
         #region Fields/Properties
-        private readonly IValidationStrategyContext _validationStrategyContext;
+        private readonly BaseValidatorContext _validatorContext;
         private readonly IUserRepository _userRepository;
         private readonly IEntityRepository<User> _userEntityRepository;
         private readonly IUserDomainService _userDomainService;
@@ -31,14 +27,14 @@ namespace Camino.Application.AppServices.Users
 
         #region Ctor
         public UserAppService(IUserRepository userRepository,
-            IValidationStrategyContext validationStrategyContext,
+            BaseValidatorContext validatorContext,
             IEntityRepository<User> userEntityRepository,
             IUserDomainService userDomainService)
         {
             _userRepository = userRepository;
             _userEntityRepository = userEntityRepository;
             _userDomainService = userDomainService;
-            _validationStrategyContext = validationStrategyContext;
+            _validatorContext = validatorContext;
             _userDeletedStatus = UserStatuses.Deleted.GetCode();
             _userInactivedStatus = UserStatuses.Inactived.GetCode();
         }
@@ -119,8 +115,8 @@ namespace Camino.Application.AppServices.Users
                     user.Address = request.Value?.ToString();
                     break;
                 case bool b when nameof(User.PhoneNumber).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    _validationStrategyContext.SetStrategy(new PhoneValidationStrategy());
-                    bool isValid = (request.Value == null || string.IsNullOrEmpty(request.Value.ToString())) || _validationStrategyContext.Validate(request.Value);
+                    _validatorContext.SetValidator(new PhoneValidator());
+                    bool isValid = request.Value == null || string.IsNullOrEmpty(request.Value.ToString()) || _validatorContext.Validate<object, bool>(request.Value);
                     if (!isValid)
                     {
                         user.PhoneNumber = request.Value?.ToString();
@@ -171,11 +167,11 @@ namespace Camino.Application.AppServices.Users
 
         public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest request)
         {
-            _validationStrategyContext.SetStrategy(new UserProfileUpdateValidationStratergy());
-            bool canUpdate = _validationStrategyContext.Validate(request);
+            _validatorContext.SetValidator(new UserProfileValidator());
+            bool canUpdate = _validatorContext.Validate<UserIdentifierUpdateRequest, bool>(request);
             if (!canUpdate)
             {
-                foreach (var item in _validationStrategyContext.Errors)
+                foreach (var item in _validatorContext.Errors)
                 {
                     throw new ArgumentNullException(item.Message);
                 }

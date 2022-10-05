@@ -2,23 +2,21 @@
 
 namespace Camino.Application.Validators
 {
-    public class PhoneValidationStrategy : IValidationStrategy
+    public class PhoneValidator : BaseValidator<object, bool>
     {
         private const string AdditionalPhoneNumberCharacters = "-.()";
         private const string ExtensionAbbreviationExtDot = "ext.";
         private const string ExtensionAbbreviationExt = "ext";
         private const string ExtensionAbbreviationX = "x";
 
-        public IEnumerable<ValidatorErrorResult> Errors { get; set; }
-
-        public bool IsValid<T>(T value)
+        public bool IsValid(object value)
         {
             if (value == null)
             {
                 return true;
             }
 
-            if (!(value is string valueAsString))
+            if (value is not string valueAsString)
             {
                 Errors = GetErrors(new ArgumentNullException(nameof(valueAsString)));
                 return false;
@@ -117,7 +115,7 @@ namespace Camino.Application.Validators
             return true;
         }
 
-        public IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
+        public override IEnumerable<ValidatorErrorResult> GetErrors(Exception exception)
         {
             yield return new ValidatorErrorResult()
             {

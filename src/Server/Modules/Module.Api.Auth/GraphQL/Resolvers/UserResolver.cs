@@ -276,7 +276,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 if (userPhotos != null && userPhotos.Any())
                 {
                     var userAvatar = userPhotos.FirstOrDefault(x => x.UserId == userResult.Id);
-                    user.AvatarCode = userAvatar.Code;
+                    user.AvatarId = userAvatar.Id;
                 }
 
                 users.Add(user);

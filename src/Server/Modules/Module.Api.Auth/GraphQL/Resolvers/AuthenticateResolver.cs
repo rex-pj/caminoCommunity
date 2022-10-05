@@ -1,12 +1,12 @@
 ﻿using Camino.Framework.GraphQL.Resolvers;
 using Camino.Framework.Models;
-using Camino.IdentityManager.Contracts.Options;
 using Camino.Infrastructure.Emails.Contracts;
 using Camino.Infrastructure.Emails.Contracts.Dtos;
 using Camino.Infrastructure.Emails.Templates;
 using Camino.Infrastructure.Identity.Constants;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
+using Camino.Infrastructure.Identity.Options;
 using Camino.Shared.Commons;
 using Camino.Shared.Configuration.Options;
 using Camino.Shared.Constants;

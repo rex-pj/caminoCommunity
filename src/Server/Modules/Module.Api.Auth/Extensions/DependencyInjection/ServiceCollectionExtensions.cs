@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Module.Api.Auth.GraphQL.Mutations;
 using Module.Api.Auth.GraphQL.Queries;
+using Camino.Infrastructure.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Module.Api.Auth.Extensions.DependencyInjection
 {
@@ -36,6 +38,8 @@ namespace Module.Api.Auth.Extensions.DependencyInjection
             services.Configure<ResetPasswordSettings>(configuration.GetSection(ResetPasswordSettings.Name));
 
             services.ConfigureGraphQlServices();
+
+            services.AddModuleDependencies(Assembly.GetExecutingAssembly());
 
             return services;
         }
