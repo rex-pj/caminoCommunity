@@ -18,7 +18,7 @@ namespace Camino.Application.Validators
 
             if (value is not string valueAsString)
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(valueAsString)));
+                Errors = GetErrors(new ArgumentNullException(nameof(valueAsString))).ToList();
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace Camino.Application.Validators
 
             if (!digitFound)
             {
-                Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(digitFound)}"));
+                Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(digitFound)}")).ToList();
                 return false;
             }
 
@@ -47,7 +47,7 @@ namespace Camino.Application.Validators
                     || char.IsWhiteSpace(c)
                     || AdditionalPhoneNumberCharacters.IndexOf(c) != -1))
                 {
-                    Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(valueAsString)}"));
+                    Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(valueAsString)}")).ToList();
                     return false;
                 }
             }

@@ -6,16 +6,20 @@ using Camino.Application.Contracts;
 using Module.Api.Media.Models;
 using Camino.Application.Validators;
 using Camino.Core.Validators;
+using Microsoft.AspNetCore.Http;
 
 namespace Module.Api.Media.Controllers
 {
     [Route("pictures")]
-    public class PictureController : BaseController
+    public class PictureController : BaseTokenAuthController
     {
-        
+
         private readonly IPictureAppService _pictureAppService;
         private readonly BaseValidatorContext _validatorContext;
-        public PictureController(IPictureAppService pictureAppService, BaseValidatorContext validatorContext)
+        public PictureController(IHttpContextAccessor httpContextAccessor, 
+            IPictureAppService pictureAppService,
+            BaseValidatorContext validatorContext)
+            : base(httpContextAccessor)
         {
             _pictureAppService = pictureAppService;
             _validatorContext = validatorContext;

@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Net;
+﻿using SkiaSharp;
 using System.Text.RegularExpressions;
 
 namespace Camino.Shared.Utils
@@ -10,123 +7,82 @@ namespace Camino.Shared.Utils
     {
         public static bool IsImageUrl(string url)
         {
-            var req = WebRequest.Create(url) as HttpWebRequest;
-            req.Method = "HEAD";
-            using (var response = req.GetResponse())
+            var httpClient = new HttpClient
             {
-                var contentType = response.ContentType.ToLower();
-                return contentType.StartsWith("image/");
-            }
+                BaseAddress = new Uri(url),
+            };
+
+            var response = httpClient.GetAsync(url).Result;
+            var contentType = response.Content.Headers.ContentType.MediaType.ToLower();
+            return contentType.StartsWith("image/");
         }
 
-        public static Image Base64ToImage(string base64String)
+        public static SKImage Base64ToImage(string base64String)
         {
             string base64 = base64String.Substring(base64String.IndexOf(',') + 1);
             byte[] imageBytes = Convert.FromBase64String(base64);
             return FileDataToImage(imageBytes);
         }
 
-        public static Image FileDataToImage(byte[] fileDate)
+        public static SKImage FileDataToImage(byte[] fileData)
         {
-            using (var ms = new MemoryStream(fileDate, 0, fileDate.Length))
+            using var data = SKData.CreateCopy(fileData);
+            var image = SKImage.FromEncodedData(data);
+            return image;
+        }
+
+        public static byte[] Crop(byte[] fileData, double x, double y, double width, double height, double scale, int maxSize = 600)
+        {
+            var resizedImage = Resize(fileData, maxSize);
+
+            var xAxis = (int)(x * resizedImage.Width);
+            var yAxis = (int)(y * resizedImage.Height);
+            var newWidth = (int)(width * resizedImage.Width);
+            var newHeight = (int)(height * resizedImage.Height);
+
+            using (var target = new SKBitmap(newWidth, newHeight))
             {
-                var image = Image.FromStream(ms, true);
-                return image;
+                using (var canvas = new SKCanvas(target))
+                {
+                    var srcRect = new SKRect(xAxis, yAxis, newWidth, newHeight);
+                    var descRect = new SKRect(0, 0, newWidth, newHeight);
+                    canvas.DrawImage(resizedImage, srcRect, descRect);
+
+                    return target.Bytes;
+                }
             }
         }
 
-        public static string ToBase64String(this Bitmap bmp)
+        private static SKImage Resize(byte[] fileData, int maxSize)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                string base64String = string.Empty;
-                bmp.Save(memoryStream, ImageFormat.Jpeg);
-
-                memoryStream.Position = 0;
-                byte[] byteBuffer = memoryStream.ToArray();
-
-                memoryStream.Close();
-
-                base64String = Convert.ToBase64String(byteBuffer);
-
-                return base64String;
-            }
-        }
-
-        public static byte[] Crop(byte[] fileDate, double x, double y, double width, double height, double scale, int maxSize = 600)
-        {
-            var image = FileDataToImage(fileDate);
-
-            return Crop(image, x, y, width, height, scale, maxSize);
-        }
-
-        public static byte[] Crop(Image image, double x, double y, double width, double height, double scale, int maxSize = 600)
-        {
+            var image = FileDataToImage(fileData);
             if (image.Width > maxSize && image.Width >= image.Height)
             {
                 var ratio = maxSize / (float)image.Width;
                 var srcHeight = image.Height * ratio;
-                image = Resize(image, maxSize, (int)srcHeight);
+                return Resize(fileData, maxSize, (int)srcHeight);
             }
             else if (image.Height > maxSize && image.Height > image.Width)
             {
                 var ratio = maxSize / (float)image.Height;
                 var srcWidth = image.Width * ratio;
-                image = Resize(image, (int)srcWidth, maxSize);
+                return Resize(fileData, (int)srcWidth, maxSize);
             }
 
-            var xAxis = (int)(x * image.Width);
-            var yAxis = (int)(y * image.Height);
-            var newWidth = (int)(width * image.Width);
-            var newHeight = (int)(height * image.Height);
-
-            using (var target = new Bitmap(newWidth, newHeight))
-            {
-                using (var graphic = Graphics.FromImage(target))
-                {
-                    var srcRect = new Rectangle(xAxis, yAxis, newWidth, newHeight);
-                    var descRect = new Rectangle(0, 0, newWidth, newHeight);
-                    graphic.DrawImage(image, descRect, srcRect, GraphicsUnit.Pixel);
-
-                    using (var stream = new MemoryStream())
-                    {
-                        target.Save(stream, ImageFormat.Png);
-                        return stream.ToArray();
-                    }
-                }
-            }
+            return image;
         }
 
-        public static Bitmap Resize(string base64String, int width, int height)
+        public static SKImage Resize(byte[] bytes, int width, int height)
         {
-            var image = Base64ToImage(base64String);
+            var quality = SKFilterQuality.Medium;
+            using var ms = new MemoryStream(bytes);
+            using var sourceBitmap = SKBitmap.Decode(ms);
 
-            return Resize(image, width, height);
-        }
+            using var scaledBitmap = sourceBitmap.Resize(new SKImageInfo(width, height), quality);
+            using var scaledImage = SKImage.FromBitmap(scaledBitmap);
+            using var data = scaledImage.Encode();
 
-        public static Bitmap Resize(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
+            return FileDataToImage(data.ToArray());
         }
 
         public static string EncodeJavascriptBase64(string javascriptBase64)

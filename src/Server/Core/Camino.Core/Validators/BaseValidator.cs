@@ -2,7 +2,7 @@
 {
     public abstract class BaseValidator
     {
-        public virtual IEnumerable<ValidatorErrorResult> Errors { get; protected set; }
+        public virtual IList<ValidatorErrorResult> Errors { get; protected set; }
         public abstract IEnumerable<ValidatorErrorResult> GetErrors(Exception exception);
     }
 

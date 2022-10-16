@@ -8,7 +8,6 @@
         public double Height { get; set; }
         public double Scale { get; set; }
         public string FileName { get; set; }
-        public int UserPhotoTypeId { get; set; }
         public byte[] FileData { get; set; }
     }
 }

@@ -9,27 +9,27 @@ namespace Camino.Application.Validators
         {
             if (data == null)
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(data)));
+                Errors = GetErrors(new ArgumentNullException(nameof(data))).ToList();
             }
 
             if (data.Id <= 0)
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(data.Id)));
+                Errors = GetErrors(new ArgumentNullException(nameof(data.Id))).ToList();
             }
 
             if (string.IsNullOrWhiteSpace(data.Lastname))
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(data.Lastname)));
+                Errors = GetErrors(new ArgumentNullException(nameof(data.Lastname))).ToList();
             }
 
             if (string.IsNullOrWhiteSpace(data.Firstname))
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(data.Firstname)));
+                Errors = GetErrors(new ArgumentNullException(nameof(data.Firstname))).ToList();
             }
 
             if (string.IsNullOrWhiteSpace(data.DisplayName))
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(data.DisplayName)));
+                Errors = GetErrors(new ArgumentNullException(nameof(data.DisplayName))).ToList();
             }
 
             return Errors == null || !Errors.Any();

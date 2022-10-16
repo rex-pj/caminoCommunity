@@ -17,17 +17,17 @@ namespace Camino.Application.Validators
         {
             if (value == null)
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(value)));
+                Errors = GetErrors(new ArgumentNullException(nameof(value))).ToList();
             }
 
             if (string.IsNullOrWhiteSpace(value.CurrentPassword))
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(value.CurrentPassword)));
+                Errors = GetErrors(new ArgumentNullException(nameof(value.CurrentPassword))).ToList();
             }
 
             if (string.IsNullOrWhiteSpace(value.NewPassword))
             {
-                Errors = GetErrors(new ArgumentNullException(nameof(value.NewPassword)));
+                Errors = GetErrors(new ArgumentNullException(nameof(value.NewPassword))).ToList();
             }
 
             return Errors == null || !Errors.Any();

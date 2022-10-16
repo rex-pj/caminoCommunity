@@ -1,5 +1,7 @@
 ﻿using Camino.Application.Contracts.AppServices.Users;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Camino.Application.Validators;
+using Camino.Core.Validators;
 using Camino.Framework.Attributes;
 using Camino.Framework.Controllers;
 using Camino.Infrastructure.Identity.Core;
@@ -17,14 +19,21 @@ using System.Threading.Tasks;
 namespace Module.Api.Media.Controllers
 {
     [Route("user-photos")]
-    public class UserPhotoController : BaseController
+    public class UserPhotoController : BaseTokenAuthController
     {
         private readonly IUserPhotoAppService _userPhotoAppService;
         private readonly IUserManager<ApplicationUser> _userManager;
-        public UserPhotoController(IUserPhotoAppService userPhotoAppService, IUserManager<ApplicationUser> userManager)
+        private readonly BaseValidatorContext _validatorContext;
+
+        public UserPhotoController(IUserPhotoAppService userPhotoAppService,
+            IUserManager<ApplicationUser> userManager,
+            BaseValidatorContext validatorContext,
+            IHttpContextAccessor httpContextAccessor)
+            : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;
             _userManager = userManager;
+            _validatorContext = validatorContext;
         }
 
         [HttpGet("avatars/{id}")]
@@ -55,21 +64,24 @@ namespace Module.Api.Media.Controllers
         {
             try
             {
-                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
-                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
-
                 var fileData = await FileUtils.GetBytesAsync(criterias.File);
-                var id = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
+                _validatorContext.SetValidator(new ImageFileValidator());
+                bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                if (!canUpdate)
+                {
+                    return BadRequest(nameof(criterias.File));
+                }
+
+                var id = await _userPhotoAppService.UpdateAvatarAsync(new UserPhotoUpdateRequest
                 {
                     FileName = criterias.FileName,
                     Width = criterias.Width,
                     Height = criterias.Height,
                     Scale = criterias.Scale,
-                    UserPhotoTypeId = (int)UserPictureTypes.Avatar,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
                     FileData = fileData,
-                }, loggedUserId);
+                }, LoggedUserId);
 
                 return Ok(id);
             }
@@ -85,10 +97,15 @@ namespace Module.Api.Media.Controllers
         {
             try
             {
-                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
-                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
                 var fileData = await FileUtils.GetBytesAsync(criterias.File);
-                var id = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
+                _validatorContext.SetValidator(new ImageFileValidator());
+                bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                if (!canUpdate)
+                {
+                    return BadRequest(nameof(criterias.File));
+                }
+
+                var id = await _userPhotoAppService.UpdateCoverAsync(new UserPhotoUpdateRequest
                 {
                     FileName = criterias.FileName,
                     Width = criterias.Width,
@@ -96,9 +113,8 @@ namespace Module.Api.Media.Controllers
                     Scale = criterias.Scale,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
-                    UserPhotoTypeId = (int)UserPictureTypes.Cover,
                     FileData = fileData
-                }, loggedUserId);
+                }, LoggedUserId);
 
                 return Ok(id);
             }

@@ -13,10 +13,6 @@ namespace Camino.Shared.Exceptions
             Code = ErrorMessages.PhotoSizeInvalidException;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the Exception class with a specified error message.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
         public PhotoSizeInvalidException(string message)
             : base(message)
         {
@@ -26,12 +22,11 @@ namespace Camino.Shared.Exceptions
         /// <summary>
         /// Initializes a new instance of the Exception class with a specified error message.
         /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        /// <param name="code">The code of the error.</param>
-        public PhotoSizeInvalidException(string message, string code)
-            : base(message)
+        /// <param name="minWidth">The minimum with of the photo (in pixel)</param>
+        /// <param name="minHeight">The minimum height of the photo (in pixel)</param>
+        public PhotoSizeInvalidException(int minWidth, int minHeight) : base($"Photo should larger than {minWidth}px X {minHeight}px")
         {
-            Code = code;
+            Code = ErrorMessages.PhotoSizeInvalidException;
         }
     }
 }

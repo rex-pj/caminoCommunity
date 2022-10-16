@@ -17,6 +17,9 @@ namespace Camino.Application.AppServices.Users
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly IUserRepository _userRepository;
         private readonly BaseValidatorContext _validatorContext;
+        private const int _avatarMaxSize = 600;
+        private const int _coverMaxSize = 1000;
+
         public UserPhotoAppService(IUserPhotoRepository userPhotoRepository,
             IUserRepository userRepository,
             BaseValidatorContext validatorContext)
@@ -26,55 +29,25 @@ namespace Camino.Application.AppServices.Users
             _validatorContext = validatorContext;
         }
 
-        public async Task<long> UpdateAsync(UserPhotoUpdateRequest request, long userId)
+        public async Task<long> UpdateCoverAsync(UserPhotoUpdateRequest request, long userId)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             var userInfo = await _userRepository.FindByIdAsync(userId);
             if (userInfo == null)
             {
                 throw new ArgumentException(nameof(userInfo));
             }
 
-            _validatorContext.SetValidator(new ImageFileValidator());
-            bool canUpdate = _validatorContext.Validate<byte[], bool>(request.FileData);
+            _validatorContext.SetValidator(new UserCoverValidator());
+            var canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
             if (!canUpdate)
             {
-                throw new ArgumentException(nameof(request.FileData));
+                throw new PhotoSizeInvalidException(_validatorContext.Errors[0].Message);
             }
 
-            switch (request.UserPhotoTypeId)
-            {
-                case (int)UserPictureTypes.Avatar:
-                    _validatorContext.SetValidator(new AvatarValidator());
-                    canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
-                    break;
-                case (int)UserPictureTypes.Cover:
-                    _validatorContext.SetValidator(new UserCoverValidator());
-                    canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
-                    break;
-            }
-
-            if (!canUpdate && request.UserPhotoTypeId == (int)UserPictureTypes.Avatar)
-            {
-                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Avatar)} Should larger than 100px X 100px");
-            }
-            else if (!canUpdate)
-            {
-                throw new PhotoSizeInvalidException($"{nameof(UserPictureTypes.Cover)} Should larger than 1000px X 300px");
-            }
-
-            int maxSize = request.UserPhotoTypeId == (int)UserPictureTypes.Avatar ? 600 : 1000;
             var newImage = ImageUtils
-                .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, maxSize);
+                .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, _coverMaxSize);
 
-            var userPhotoType = (UserPictureTypes)request.UserPhotoTypeId;
-            var userPhoto = await _userPhotoRepository
-                .GetByUserIdAsync(userId, userPhotoType);
-
+            var userPhoto = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Cover);
             if (userPhoto == null)
             {
                 userPhoto = new UserPhoto()
@@ -82,7 +55,49 @@ namespace Camino.Application.AppServices.Users
                     CreatedById = userId,
                     CreatedDate = DateTime.UtcNow,
                     FileData = newImage,
-                    TypeId = request.UserPhotoTypeId,
+                    TypeId = UserPictureTypes.Cover.GetCode(),
+                    UserId = userId,
+                    Name = request.FileName,
+                };
+                await _userPhotoRepository.CreateAsync(userPhoto);
+            }
+            else
+            {
+                userPhoto.FileData = newImage;
+                userPhoto.Name = request.FileName;
+                await _userPhotoRepository.UpdateAsync(userPhoto);
+            }
+
+            return userPhoto.Id;
+        }
+
+        public async Task<long> UpdateAvatarAsync(UserPhotoUpdateRequest request, long userId)
+        {
+            var userInfo = await _userRepository.FindByIdAsync(userId);
+            if (userInfo == null)
+            {
+                throw new ArgumentException(nameof(userInfo));
+            }
+
+            _validatorContext.SetValidator(new AvatarValidator());
+            var canUpdate = _validatorContext.Validate<UserPhotoUpdateRequest, bool>(request);
+            if (!canUpdate)
+            {
+                throw new PhotoSizeInvalidException(_validatorContext.Errors[0].Message);
+            }
+
+            var newImage = ImageUtils
+                .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, _avatarMaxSize);
+
+            var userPhoto = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Avatar);
+            if (userPhoto == null)
+            {
+                userPhoto = new UserPhoto()
+                {
+                    CreatedById = userId,
+                    CreatedDate = DateTime.UtcNow,
+                    FileData = newImage,
+                    TypeId = UserPictureTypes.Avatar.GetCode(),
                     UserId = userId,
                     Name = request.FileName,
                 };

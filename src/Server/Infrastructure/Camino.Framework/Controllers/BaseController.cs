@@ -5,9 +5,7 @@ namespace Camino.Framework.Controllers
     public class BaseController : Controller
     {
         public BaseController()
-        {
-
-        }
+        { }
 
         public IActionResult RedirectToErrorPage()
         {

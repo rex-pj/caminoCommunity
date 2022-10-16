@@ -18,7 +18,7 @@ namespace Camino.Application.Validators
             }
             catch (Exception e)
             {
-                Errors = GetErrors(e);
+                Errors = GetErrors(e).ToList();
                 return false;
             }
         }

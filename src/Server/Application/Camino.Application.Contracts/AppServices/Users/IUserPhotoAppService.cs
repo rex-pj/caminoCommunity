@@ -11,6 +11,7 @@ namespace Camino.Application.Contracts.AppServices.Users
         Task<UserPhotoResult> GetByUserIdAsync(long userId, UserPictureTypes typeId);
         Task<IList<UserPhotoResult>> GetListByUserIdsAsync(IEnumerable<long> userIds, UserPictureTypes typeId);
         Task<IEnumerable<UserPhotoResult>> GetUserPhotosAsync(long userId);
-        Task<long> UpdateAsync(UserPhotoUpdateRequest request, long userId);
+        Task<long> UpdateCoverAsync(UserPhotoUpdateRequest request, long userId);
+        Task<long> UpdateAvatarAsync(UserPhotoUpdateRequest request, long userId);
     }
 }
