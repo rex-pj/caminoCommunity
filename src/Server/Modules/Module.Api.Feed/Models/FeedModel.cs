@@ -14,7 +14,7 @@ namespace Module.Api.Feed.Models
         public string? Address { get; set; }
         public decimal? Price { get; set; }
         public int FeedType { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public string CreatedByIdentityId { get; set; }
     }
 }

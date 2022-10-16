@@ -3,13 +3,11 @@ import { useParams } from "react-router-dom";
 import Profile from "../../components/organisms/Profile/Profile";
 import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useStore } from "../../store/hook-store";
 import { parseUserInfo } from "../../services/userService";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
-import { userMutations } from "../../graphql/fetching/mutations";
-import { authClient } from "../../graphql/client";
 import { ProfileLayout } from "../../components/templates/Layout";
 import UserPhotoService from "../../services/UserPhotoService";
 
@@ -74,7 +72,7 @@ const ConnectButton = styled(ButtonIconPrimary)`
   z-index: 3;
 `;
 
-const ProfilePage = (props) => {
+const ProfilePage = () => {
   const [isEditCoverMode, setEditCoverMode] = useState(false);
   const _baseUrl = "/profile";
   const { relogin, isLogin, currentUser } = useContext(SessionContext);
@@ -110,32 +108,32 @@ const ProfilePage = (props) => {
     });
   };
 
-  const userCoverUpdated = async (action, data) => {
-    if (data && data.canEdit) {
-      return await action({ variables: { criterias: data } })
-        .then(async () => {
-          refetch().then(() => {
-            relogin();
-          });
-        })
-        .catch(() => {
-          showValidationError(
-            "Có lỗi xảy ra",
-            "Có lỗi xảy ra khi cập nhật dữ liệu, bạn vui lòng thử lại"
-          );
+  const userCoverUpdated = async (variables) => {
+    await _userPhotoService
+      .updateCover(variables)
+      .then(() => {
+        refetch().then(() => {
+          relogin();
         });
-    }
+
+        return Promise.resolve({});
+      })
+      .catch(() => {
+        showValidationError(
+          "Có lỗi xảy ra",
+          "Có lỗi xảy ra khi cập nhật dữ liệu, bạn vui lòng thử lại"
+        );
+        return Promise.reject({});
+      });
   };
 
   const onAvatarUpload = async (variables) => {
-    return await _userPhotoService.updateAvatar(variables).then(() => {
+    await _userPhotoService.updateAvatar(variables).then(() => {
       refetch().then(() => {
         relogin();
       });
 
-      return new Promise((resolve) => {
-        resolve({});
-      });
+      return Promise.resolve({});
     });
   };
 
@@ -145,9 +143,7 @@ const ProfilePage = (props) => {
         relogin();
       });
 
-      return new Promise((resolve) => {
-        resolve({});
-      });
+      return Promise.resolve({});
     });
   };
 

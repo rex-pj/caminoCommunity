@@ -9,7 +9,7 @@ namespace Camino.Application.Validators
         private const string ExtensionAbbreviationExt = "ext";
         private const string ExtensionAbbreviationX = "x";
 
-        public bool IsValid(object value)
+        public override bool IsValid(object value)
         {
             if (value == null)
             {

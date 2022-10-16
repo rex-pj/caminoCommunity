@@ -5,9 +5,7 @@ namespace Camino.Application.Validators
 {
     public class UserProfileValidator : BaseValidator<UserIdentifierUpdateRequest, bool>
     {
-        public UserProfileValidator() { }
-
-        public bool IsValid(UserIdentifierUpdateRequest data)
+        public override bool IsValid(UserIdentifierUpdateRequest data)
         {
             if (data == null)
             {

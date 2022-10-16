@@ -309,7 +309,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 CreatedDate = farmResult.CreatedDate,
                 Name = farmResult.Name,
                 Address = farmResult.Address,
-                CreatedByPhotoCode = farmResult.CreatedByPhotoCode,
+                CreatedByPhotoId = farmResult.CreatedByPhotoId,
                 Pictures = farmResult.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id
@@ -334,7 +334,7 @@ namespace Module.Api.Farm.GraphQL.Resolvers
                 CreatedDate = x.CreatedDate,
                 Name = x.Name,
                 Address = x.Address,
-                CreatedByPhotoCode = x.CreatedByPhotoCode,
+                CreatedByPhotoId = x.CreatedByPhotoId,
                 Pictures = x.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id

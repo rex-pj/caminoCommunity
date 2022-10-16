@@ -19,7 +19,7 @@ namespace Module.Api.Farm.Models
         public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string CreatedBy { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public string CreatedByIdentityId { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }

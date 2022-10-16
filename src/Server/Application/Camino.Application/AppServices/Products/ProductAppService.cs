@@ -424,7 +424,7 @@ namespace Camino.Application.AppServices.Products
                 var avatar = userAvatars.FirstOrDefault(x => x.UserId == product.CreatedById);
                 if (avatar != null)
                 {
-                    product.CreatedByPhotoCode = avatar.Code;
+                    product.CreatedByPhotoId = avatar.Id;
                 }
             }
         }

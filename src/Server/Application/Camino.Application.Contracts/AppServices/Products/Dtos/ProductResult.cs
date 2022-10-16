@@ -20,7 +20,7 @@ namespace Camino.Application.Contracts.AppServices.Products.Dtos
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public decimal Price { get; set; }
         public int StatusId { get; set; }
         public IEnumerable<ProductCategoryResult> Categories { get; set; }

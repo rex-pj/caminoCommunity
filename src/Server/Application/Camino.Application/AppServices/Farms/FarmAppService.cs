@@ -313,7 +313,7 @@ namespace Camino.Application.AppServices.Farms
                 var avatar = userAvatars.FirstOrDefault(x => x.UserId == farm.CreatedById);
                 if (avatar != null)
                 {
-                    farm.CreatedByPhotoCode = avatar.Code;
+                    farm.CreatedByPhotoId = avatar.Id;
                 }
             }
         }

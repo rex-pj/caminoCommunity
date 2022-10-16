@@ -74,16 +74,16 @@ const StaticBar = styled.div`
   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
-export default function (props) {
+const UserCoverCard = (props) => {
   const { className, menuList } = props;
   const { userInfo } = props;
   const userIdentityId = userInfo?.userIdentityId;
 
   return (
     <Root className={className}>
-      {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
+      {userInfo && userInfo.userAvatar && userInfo.userAvatar.id ? (
         <ProfileImage
-          src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.code}`}
+          src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.id}`}
         />
       ) : (
         <EmptyAvatar />
@@ -91,9 +91,9 @@ export default function (props) {
 
       <BoxShadowBar>
         <CoverWrapper>
-          {userInfo && userInfo.userCover && userInfo.userCover.code ? (
+          {userInfo && userInfo.userCover && userInfo.userCover.id ? (
             <Thumbnail
-              src={`${apiConfig.paths.userPhotos.get.getCover}/${userInfo.userCover.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getCover}/${userInfo.userCover.id}`}
             />
           ) : (
             <EmptyCover />
@@ -111,4 +111,6 @@ export default function (props) {
       </BoxShadowBar>
     </Root>
   );
-}
+};
+
+export default UserCoverCard;

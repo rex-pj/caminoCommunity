@@ -160,7 +160,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Description = x.Description,
                 Name = x.Name,
                 Price = x.Price,
-                CreatedByPhotoCode = x.CreatedByPhotoCode,
+                CreatedByPhotoId = x.CreatedByPhotoId,
                 Pictures = x.Pictures.Select(y => new PictureResultModel()
                 {
                     PictureId = y.Id
@@ -374,7 +374,7 @@ namespace Module.Api.Product.GraphQL.Resolvers
                 Description = productResult.Description,
                 Name = productResult.Name,
                 Price = productResult.Price,
-                CreatedByPhotoCode = productResult.CreatedByPhotoCode,
+                CreatedByPhotoId = productResult.CreatedByPhotoId,
                 Categories = productResult.Categories.Select(x => new ProductCategoryRelationModel
                 {
                     Id = x.Id,

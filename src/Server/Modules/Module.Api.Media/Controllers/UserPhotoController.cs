@@ -8,13 +8,9 @@ using Camino.Shared.Constants;
 using Camino.Shared.Enums;
 using Camino.Shared.File;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Module.Api.Media.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -63,7 +59,7 @@ namespace Module.Api.Media.Controllers
                 var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
 
                 var fileData = await FileUtils.GetBytesAsync(criterias.File);
-                var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
+                var id = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
                     FileName = criterias.FileName,
                     Width = criterias.Width,
@@ -75,7 +71,7 @@ namespace Module.Api.Media.Controllers
                     FileData = fileData,
                 }, loggedUserId);
 
-                return Ok(result);
+                return Ok(id);
             }
             catch (Exception)
             {
@@ -83,7 +79,7 @@ namespace Module.Api.Media.Controllers
             }
         }
 
-        [HttpPost("covers")]
+        [HttpPut("covers")]
         [TokenAuthentication]
         public async Task<IActionResult> UpdateCoverAsync(UserPhotoUpdateModel criterias)
         {
@@ -92,7 +88,7 @@ namespace Module.Api.Media.Controllers
                 var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
                 var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
                 var fileData = await FileUtils.GetBytesAsync(criterias.File);
-                var result = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
+                var id = await _userPhotoAppService.UpdateAsync(new UserPhotoUpdateRequest
                 {
                     FileName = criterias.FileName,
                     Width = criterias.Width,
@@ -104,7 +100,7 @@ namespace Module.Api.Media.Controllers
                     FileData = fileData
                 }, loggedUserId);
 
-                return Ok(result);
+                return Ok(id);
             }
             catch (Exception)
             {

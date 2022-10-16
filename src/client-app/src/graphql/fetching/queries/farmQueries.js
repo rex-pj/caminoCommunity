@@ -18,7 +18,7 @@ export const GET_USER_FARMS = gql`
         createdDate
         updatedDate
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
         address
         pictures {
           pictureId
@@ -57,7 +57,7 @@ export const GET_FARMS = gql`
         createdDate
         updatedDate
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
         address
         pictures {
           pictureId
@@ -78,7 +78,7 @@ export const GET_FARM = gql`
       updatedDate
       address
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       pictures {
         pictureId
       }
@@ -97,7 +97,7 @@ export const GET_FARM_FOR_UPDATE = gql`
       updatedDate
       address
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       farmTypeName
       farmTypeId
       pictures {

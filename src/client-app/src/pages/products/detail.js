@@ -204,8 +204,8 @@ export default (function (props) {
         name: item.createdBy,
       };
 
-      if (item.createdByPhotoCode) {
-        productItem.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
+      if (item.createdByPhotoId) {
+        productItem.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoId}`;
       }
 
       if (productItem.farms) {

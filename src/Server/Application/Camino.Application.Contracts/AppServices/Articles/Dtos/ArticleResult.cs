@@ -19,7 +19,7 @@ namespace Camino.Application.Contracts.AppServices.Articles.Dtos.Dtos
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
         public string CreatedBy { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }
         public PictureResult Picture { get; set; }

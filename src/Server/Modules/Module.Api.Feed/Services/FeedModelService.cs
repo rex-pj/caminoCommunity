@@ -33,7 +33,7 @@ namespace Module.Api.Feed.Services
                 Name = x.Name,
                 PictureId = x.PictureId,
                 Price = x.Price,
-                CreatedByPhotoCode = x.CreatedByPhotoCode
+                CreatedByPhotoId = x.CreatedByPhotoId
             }).ToList();
 
             foreach (var feed in feeds)

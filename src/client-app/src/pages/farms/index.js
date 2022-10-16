@@ -87,8 +87,8 @@ export default (function (props) {
         name: item.createdBy,
       };
 
-      if (item.createdByPhotoCode) {
-        farm.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
+      if (item.createdByPhotoId) {
+        farm.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoId}`;
       }
 
       return farm;

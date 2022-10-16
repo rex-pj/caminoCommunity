@@ -11,7 +11,7 @@ export const GET_LOGGED_USER = gql`
     }
     userPhotos {
       photoType
-      code
+      id
     }
   }
 `;
@@ -31,7 +31,7 @@ export const GET_USER_INFO = gql`
       phoneNumber
     }
     userPhotos(criterias: $criterias) {
-      code
+      id
       photoType
     }
   }
@@ -50,7 +50,7 @@ export const GET_SUGGESSTION_USERS = gql`
         genderLabel
         lastname
         userIdentityId
-        avatarCode
+        avatarId
       }
     }
   }

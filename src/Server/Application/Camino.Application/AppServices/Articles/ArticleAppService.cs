@@ -293,7 +293,7 @@ namespace Camino.Application.AppServices.Articles
                 var avatar = userAvatars.FirstOrDefault(x => x.UserId == article.CreatedById);
                 if (avatar != null)
                 {
-                    article.CreatedByPhotoCode = avatar.Code;
+                    article.CreatedByPhotoId = avatar.Id;
                 }
             }
         }

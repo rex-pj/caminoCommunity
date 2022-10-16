@@ -107,7 +107,7 @@ const EmptyAvatar = styled(NoAvatar)`
   margin: auto;
 `;
 
-export default (props) => {
+const UpdateAvatarModal = (props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
@@ -191,15 +191,16 @@ export default (props) => {
         return;
       }
 
-      const { fileName, contentType, file } = avatarData;
+      const { fileName, file } = avatarData;
       const { scale } = cropData;
-      const { data, execution } = props;
+      const { execution } = props;
       const { onUpload } = execution;
 
-      var formData = new FormData();
+      let formData = new FormData();
       formData.append("xAxis", rect.x);
       formData.append("yAxis", rect.y);
       formData.append("width", rect.width);
+      formData.append("height", rect.height);
       formData.append("fileName", fileName);
       formData.append("scale", scale);
       formData.append("file", file);
@@ -306,3 +307,5 @@ export default (props) => {
     </Wrap>
   );
 };
+
+export default UpdateAvatarModal;

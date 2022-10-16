@@ -15,7 +15,7 @@ namespace Module.Api.Article.Models
         public DateTime UpdatedDate { get; set; }
         public long UpdatedById { get; set; }
         public string CreatedBy { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public string CreatedByIdentityId { get; set; }
         public int ArticleCategoryId { get; set; }
         public string ArticleCategoryName { get; set; }

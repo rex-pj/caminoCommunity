@@ -19,7 +19,7 @@ export const GET_USER_PRODUCTS = gql`
         updatedDate
         price
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
         pictures {
           pictureId
         }
@@ -51,7 +51,7 @@ export const GET_PRODUCTS = gql`
         updatedDate
         price
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
         pictures {
           pictureId
         }
@@ -75,7 +75,7 @@ export const GET_PRODUCT = gql`
       updatedDate
       price
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       pictures {
         pictureId
       }
@@ -115,7 +115,7 @@ export const GET_PRODUCT_FOR_UPDATE = gql`
       updatedDate
       price
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       categories {
         id
         name
@@ -160,7 +160,7 @@ export const GET_RELEVANT_PRODUCTS = gql`
       updatedDate
       price
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       pictures {
         pictureId
       }

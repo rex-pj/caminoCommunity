@@ -52,7 +52,7 @@ const ProfileImage = styled(ImageRound)`
     border-radius: 7px;
   `;
 
-export default function ({ ...props }) {
+const ProfileAvatar = ({ ...props }) => {
   const { userInfo, canEdit, onUpload, onDelete } = props;
   const { userAvatar } = userInfo;
   const dispatch = useStore(true)[1];
@@ -61,8 +61,8 @@ export default function ({ ...props }) {
     dispatch("OPEN_MODAL", {
       data: {
         imageUrl:
-          userAvatar && userAvatar.code
-            ? `${apiConfig.paths.userPhotos.get.getAvatar}/${userAvatar.code}`
+          userAvatar && userAvatar.id
+            ? `${apiConfig.paths.userPhotos.get.getAvatar}/${userAvatar.id}`
             : null,
         title: "Update Avatar",
         canEdit: userInfo.canEdit,
@@ -81,9 +81,9 @@ export default function ({ ...props }) {
   return (
     <Wrap className={props.className}>
       <AvatarLink href={userInfo.url}>
-        {userAvatar && userAvatar.code ? (
+        {userAvatar && userAvatar.id ? (
           <ProfileImage
-            src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userAvatar.code}`}
+            src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userAvatar.id}`}
           />
         ) : (
           <EmptyAvatar />
@@ -96,4 +96,6 @@ export default function ({ ...props }) {
       ) : null}
     </Wrap>
   );
-}
+};
+
+export default ProfileAvatar;

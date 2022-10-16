@@ -108,8 +108,8 @@ export default (function (props) {
         name: item.createdByName,
       };
 
-      if (item.createdByPhotoCode) {
-        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
+      if (item.createdByPhotoId) {
+        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoId}`;
       }
 
       return feed;

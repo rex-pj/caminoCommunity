@@ -302,7 +302,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                 CreatedDate = articleResult.CreatedDate,
                 Description = articleResult.Description,
                 Name = articleResult.Name,
-                CreatedByPhotoCode = articleResult.CreatedByPhotoCode
+                CreatedByPhotoId = articleResult.CreatedByPhotoId
             };
 
             if (articleResult.Picture != null)
@@ -338,7 +338,7 @@ namespace Module.Api.Article.GraphQL.Resolvers
                         FileName = x.Picture.FileName
                     }
                     : new PictureResultModel(),
-                CreatedByPhotoCode = x.CreatedByPhotoCode
+                CreatedByPhotoId = x.CreatedByPhotoId
             }).ToList();
 
             foreach (var article in articles)

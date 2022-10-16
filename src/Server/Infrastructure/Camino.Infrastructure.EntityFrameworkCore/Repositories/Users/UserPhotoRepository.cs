@@ -90,13 +90,13 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             }               
         }
 
-        public async Task<string> GetCodeByUserIdAsync(long userId, UserPictureTypes typeId)
+        public async Task<long> GetIdByUserIdAsync(long userId, UserPictureTypes typeId)
         {
             var photoType = (int)typeId;
-            var userPhotoCode = await _userPhotoEntityRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType))
-                .Select(x => x.Code).FirstOrDefaultAsync();
+            var userPhotoId = await _userPhotoEntityRepository.Get(x => x.UserId == userId && x.TypeId.Equals(photoType))
+                .Select(x => x.Id).FirstOrDefaultAsync();
 
-            return userPhotoCode;
+            return userPhotoId;
         }
 
         public async Task<IList<UserPhoto>> GetListByUserIdsAsync(IEnumerable<long> userIds, UserPictureTypes typeId)

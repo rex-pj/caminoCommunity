@@ -26,7 +26,7 @@ namespace Camino.Application.AppServices.Users
             _validatorContext = validatorContext;
         }
 
-        public async Task<UserPhotoUpdateRequest> UpdateAsync(UserPhotoUpdateRequest request, long userId)
+        public async Task<long> UpdateAsync(UserPhotoUpdateRequest request, long userId)
         {
             if (request == null)
             {
@@ -95,7 +95,7 @@ namespace Camino.Application.AppServices.Users
                 await _userPhotoRepository.UpdateAsync(userPhoto);
             }
 
-            return request;
+            return userPhoto.Id;
         }
 
         public async Task DeleteByUserIdAsync(long userId, UserPictureTypes userPhotoType)

@@ -5,17 +5,17 @@ namespace Camino.Infrastructure.Validators
 {
     public class ValidatorContext : BaseValidatorContext, IScopedDependency
     {
-        private BaseValidator _validator;
-        public override void SetValidator(BaseValidator validator)
+        public override void SetValidator<TIn, TOut>(BaseValidator<TIn, TOut> validator)
         {
-            _validator = validator;
+            Validator = validator;
         }
 
         public override TOut Validate<TIn, TOut>(TIn value)
         {
-            var result = _validator.IsValid<TIn, TOut>(value);
+            var validator = Validator as BaseValidator<TIn, TOut>;
+            var result = validator.IsValid(value);
 
-            Errors = _validator.Errors;
+            Errors = Validator.Errors;
             return result;
         }
     }

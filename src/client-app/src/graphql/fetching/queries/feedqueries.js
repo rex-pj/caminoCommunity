@@ -21,7 +21,7 @@ export const GET_USER_FEEDS = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
     }
   }
@@ -48,7 +48,7 @@ export const GET_FEEDS = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
     }
   }
@@ -68,7 +68,7 @@ export const ADVANCED_SEARCH = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
       totalArticle
       totalArticlePage
@@ -83,7 +83,7 @@ export const ADVANCED_SEARCH = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
       totalProduct
       totalProductPage
@@ -98,7 +98,7 @@ export const ADVANCED_SEARCH = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
       totalFarm
       totalFarmPage
@@ -113,7 +113,7 @@ export const ADVANCED_SEARCH = gql`
         createdByName
         pictureId
         price
-        createdByPhotoCode
+        createdByPhotoId
       }
       totalUser
       totalUserPage

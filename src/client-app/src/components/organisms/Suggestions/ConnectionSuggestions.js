@@ -12,7 +12,7 @@ const Root = styled.div`
   background-color: ${(p) => p.theme.color.whiteBg};
 `;
 
-export default (props) => {
+const ConnectionSuggestions = (props) => {
   const { loading, data } = props;
   if (loading) {
     return <LoadingBar>Loading</LoadingBar>;
@@ -31,8 +31,8 @@ export default (props) => {
       description: user.description,
       url: `/profile/${user.userIdentityId}`,
       id: user.userIdentityId,
-      imageUrl: user.avatarCode
-        ? `${apiConfig.paths.userPhotos.get.getAvatar}/${user.avatarCode}`
+      imageUrl: user.avatarId
+        ? `${apiConfig.paths.userPhotos.get.getAvatar}/${user.avatarId}`
         : null,
     };
   });
@@ -57,3 +57,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default ConnectionSuggestions;

@@ -5,7 +5,7 @@ namespace Camino.Application.Validators
 {
     public class ImageFileValidator : BaseValidator<byte[], bool>
     {
-        public bool IsValid(byte[] value)
+        public override bool IsValid(byte[] value)
         {
             try
             {

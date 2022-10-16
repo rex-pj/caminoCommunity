@@ -222,7 +222,7 @@ namespace Camino.Application.AppServices.Feeds
                 var createdByUserPicture = createdByUserPictures.FirstOrDefault(x => x.UserId == feed.CreatedById);
                 if (createdByUserPicture != null)
                 {
-                    feed.CreatedByPhotoCode = createdByUserPicture.Code;
+                    feed.CreatedByPhotoId = createdByUserPicture.Id;
                 }
 
                 switch (feed.FeedType)
@@ -524,7 +524,7 @@ namespace Camino.Application.AppServices.Feeds
                 var userPicture = userPictures.FirstOrDefault(x => x.UserId == long.Parse(user.Id));
                 if (userPicture != null)
                 {
-                    user.PictureId = userPicture.Code;
+                    user.PictureId = userPicture.Id.ToString();
                 }
             }
         }
@@ -553,7 +553,7 @@ namespace Camino.Application.AppServices.Feeds
             var createdByUserPicture = createdByPictures.FirstOrDefault(x => x.UserId == feed.CreatedById);
             if (createdByUserPicture != null)
             {
-                feed.CreatedByPhotoCode = createdByUserPicture.Code;
+                feed.CreatedByPhotoId = createdByUserPicture.Id;
             }
         }
     }

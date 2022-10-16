@@ -5,7 +5,7 @@ namespace Camino.Application.Validators
 {
     public class Base64ImageValidator : BaseValidator<string, bool>
     {
-        public bool IsValid(string value)
+        public override bool IsValid(string value)
         {
             try
             {

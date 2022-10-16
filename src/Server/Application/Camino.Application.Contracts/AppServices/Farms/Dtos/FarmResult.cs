@@ -20,7 +20,7 @@ namespace Camino.Application.Contracts.AppServices.Farms.Dtos
         public string CreatedBy { get; set; }
         public long FarmTypeId { get; set; }
         public string FarmTypeName { get; set; }
-        public string CreatedByPhotoCode { get; set; }
+        public long CreatedByPhotoId { get; set; }
         public string Address { get; set; }
         public int StatusId { get; set; }
         public IEnumerable<PictureResult> Pictures { get; set; }

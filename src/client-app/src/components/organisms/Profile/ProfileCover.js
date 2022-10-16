@@ -15,6 +15,7 @@ import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
 import { userMutations } from "../../../graphql/fetching/mutations";
 import { authClient } from "../../../graphql/client";
 import { apiConfig } from "../../../config/api-config";
+import { base64toFile } from "../../../utils/Helper";
 
 const Wrap = styled.div`
     position: relative;
@@ -190,19 +191,18 @@ const Wrap = styled.div`
     right: 0;
   `;
 
-export default (props) => {
+const ProfileCover = (props) => {
   const [isInUpdateMode, setInUpdateMode] = useState(false);
   const [showDeletePopover] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const { isLogin, currentUser } = useContext(SessionContext);
   const [coverState, setCoverState] = useState({
-    contentType: null,
     fileName: null,
     src: null,
   });
 
   const [coverCrop, setCoverCrop] = useState({
-    width: 1044,
+    width: 1224,
     height: 300,
     scale: 1,
   });
@@ -262,6 +262,7 @@ export default (props) => {
       contentType: e.file.type,
       fileName: e.file.name,
       src: e.preview,
+      file: base64toFile(e.preview, e.file.name),
     });
   };
 
@@ -277,17 +278,9 @@ export default (props) => {
     props.showValidationError(title, message);
   };
 
-  const [updateCover] = useMutation(userMutations.UPDATE_USER_COVER, {
-    client: authClient,
-  });
   const onUpdate = async () => {
     const { src } = coverState;
     if (photoEditor && props.onUpdated && src) {
-      const { fileName, contentType } = coverState;
-      const { scale } = coverCrop;
-      const { canEdit } = props;
-      const rect = photoEditor.getCroppingRect();
-
       const validateResult = validateForSubmit();
       if (!validateResult.isSucceed) {
         showValidationError(
@@ -297,20 +290,21 @@ export default (props) => {
         return;
       }
 
-      const variables = {
-        photoUrl: src,
-        xAxis: rect.x,
-        yAxis: rect.y,
-        width: rect.width,
-        height: rect.height,
-        fileName,
-        contentType,
-        scale,
-        canEdit: canEdit,
-      };
+      const rect = photoEditor.getCroppingRect();
+      const { fileName, file } = coverState;
+      const { scale } = coverCrop;
+
+      let formData = new FormData();
+      formData.append("xAxis", rect.x);
+      formData.append("yAxis", rect.y);
+      formData.append("width", rect.width);
+      formData.append("height", rect.height);
+      formData.append("fileName", fileName);
+      formData.append("scale", scale);
+      formData.append("file", file);
 
       await props
-        .onUpdated(updateCover, variables)
+        .onUpdated(formData)
         .then(() => {
           turnOffUpdateMode();
         })
@@ -371,7 +365,7 @@ export default (props) => {
         <UpdateTools>
           <AcceptUpdateButton
             size="sm"
-            onClick={(e) => onUpdate(e)}
+            onClick={onUpdate}
             disabled={isDisabled}
           >
             <FontAwesomeIcon icon="check" />
@@ -391,10 +385,10 @@ export default (props) => {
     <Wrap>
       {!!isInUpdateMode ? (
         <Fragment>
-          {userCover && userCover.code ? (
+          {userCover && userCover.id ? (
             <Thumbnail
               className="cover-thumbnail"
-              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userCover.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userCover.id}`}
               alt=""
             />
           ) : (
@@ -429,10 +423,10 @@ export default (props) => {
           ) : null}
 
           <a href={userInfo.url} className="cover-link">
-            {userCover && userCover.code ? (
+            {userCover && userCover.id ? (
               <Thumbnail
                 className="cover-thumbnail"
-                src={`${apiConfig.paths.userPhotos.get.getCover}/${userCover.code}`}
+                src={`${apiConfig.paths.userPhotos.get.getCover}/${userCover.id}`}
                 alt=""
               />
             ) : (
@@ -445,3 +439,5 @@ export default (props) => {
     </Wrap>
   );
 };
+
+export default ProfileCover;

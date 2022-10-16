@@ -12,6 +12,21 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Media
             builder.ToTable(nameof(UserPhoto), TableSchemas.Dbo);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.Description)
+                .IsRequired(false);
+
+            builder.Property(x => x.Name)
+                .IsRequired();
+            builder.Property(x => x.CreatedDate)
+                .IsRequired();
+            builder.Property(x => x.CreatedById)
+                .IsRequired();
+            builder.Property(x => x.FileData)
+                .IsRequired();
+            builder.Property(x => x.UserId)
+                .IsRequired();
+            builder.Property(x => x.TypeId)
+                .IsRequired();
 
             builder
                .HasOne(c => c.UserPhotoType)

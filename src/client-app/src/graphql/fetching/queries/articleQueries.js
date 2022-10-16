@@ -21,7 +21,7 @@ export const GET_USER_ARTICLES = gql`
           pictureId
         }
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
       }
     }
   }
@@ -48,7 +48,7 @@ export const GET_ARTICLES = gql`
           pictureId
         }
         createdByIdentityId
-        createdByPhotoCode
+        createdByPhotoId
       }
     }
   }
@@ -67,7 +67,7 @@ export const GET_RELEVANT_ARTICLES = gql`
         pictureId
       }
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
     }
   }
 `;
@@ -85,7 +85,7 @@ export const GET_ARTICLE = gql`
         pictureId
       }
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
     }
   }
 `;
@@ -103,7 +103,7 @@ export const GET_ARTICLE_FOR_UPDATE = gql`
         pictureId
       }
       createdByIdentityId
-      createdByPhotoCode
+      createdByPhotoId
       articleCategoryId
       articleCategoryName
     }

@@ -66,7 +66,7 @@ const UserName = styled.span`
   font-size: inherit;
 `;
 
-export default function (props) {
+const TopProfileContainer = (props) => {
   const { userInfo } = props;
   const userIdentityId = userInfo ? userInfo.userIdentityId : null;
   const profileDropdowns = [
@@ -84,9 +84,9 @@ export default function (props) {
     <Root className={props.className}>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
-          {userInfo && userInfo.userAvatar && userInfo.userAvatar.code ? (
+          {userInfo && userInfo.userAvatar && userInfo.userAvatar.id ? (
             <ImageRound
-              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.code}`}
+              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.id}`}
               alt=""
             />
           ) : (
@@ -104,4 +104,6 @@ export default function (props) {
       </PorfileButtonGroup>
     </Root>
   );
-}
+};
+
+export default TopProfileContainer;

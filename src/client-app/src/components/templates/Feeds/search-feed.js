@@ -1,5 +1,4 @@
-import React from "react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryDarkHeading } from "../../atoms/Heading";
 import SearchBlock from "./search-blocks";
@@ -9,7 +8,7 @@ import { UrlConstant } from "../../../utils/Constants";
 import { getParameters, generateQueryParameters } from "../../../utils/Helper";
 import { apiConfig } from "../../../config/api-config";
 
-export default (props) => {
+const SearchFeed = (props) => {
   const { advancedSearchResult, baseUrl, keyword } = props;
   const location = useLocation();
   const mapSearchResults = (collections) => {
@@ -37,8 +36,8 @@ export default (props) => {
         name: item.createdByName,
       };
 
-      if (item.createdByPhotoCode) {
-        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoCode}`;
+      if (item.createdByPhotoId) {
+        feed.creator.photoUrl = `${apiConfig.paths.userPhotos.get.getAvatar}/${item.createdByPhotoId}`;
       }
 
       return feed;
@@ -128,3 +127,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default SearchFeed;

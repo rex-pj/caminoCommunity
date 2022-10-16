@@ -7,7 +7,7 @@ namespace Camino.Application.Validators
 {
     public class AvatarValidator : BaseValidator<UserPhotoUpdateRequest, bool>
     {
-        public bool IsValid(UserPhotoUpdateRequest value)
+        public override bool IsValid(UserPhotoUpdateRequest value)
         {
             if (value.FileData == null || value.FileData.Length == 0)
             {

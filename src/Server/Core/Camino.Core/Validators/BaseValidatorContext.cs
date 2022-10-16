@@ -2,8 +2,9 @@
 {
     public abstract class BaseValidatorContext
     {
-        public IEnumerable<ValidatorErrorResult> Errors { get; protected set; }
-        public abstract void SetValidator(BaseValidator validator);
+        protected BaseValidator Validator { get; set; }
+        public virtual IEnumerable<ValidatorErrorResult> Errors { get; protected set; }
+        public abstract void SetValidator<TIn, TOut>(BaseValidator<TIn, TOut> validator);
         public abstract TOut Validate<TIn, TOut>(TIn value);
     }
 }

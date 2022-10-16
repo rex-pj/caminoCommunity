@@ -13,7 +13,7 @@ namespace Camino.Application.Validators
             };
         }
 
-        public bool IsValid(UserPasswordUpdateRequest value)
+        public override bool IsValid(UserPasswordUpdateRequest value)
         {
             if (value == null)
             {
