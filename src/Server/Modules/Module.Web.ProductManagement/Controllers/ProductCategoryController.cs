@@ -36,7 +36,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
-        [LoadResultAuthorizations("ProductCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("ProductCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductCategoryFilterModel filter)
         {
             var categoryPageList = await _productCategoryAppService.GetAsync(new ProductCategoryFilter
@@ -79,7 +79,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProductCategory)]
-        [LoadResultAuthorizations("ProductCategory", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("ProductCategory", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

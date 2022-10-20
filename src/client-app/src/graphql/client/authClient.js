@@ -5,7 +5,7 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import { getAuthenticationToken } from "../../services/authService";
+import { getAuthenticationToken } from "../../services/AuthLogic";
 import errorLink from "./errorLink";
 import { apiConfig } from "../../config/api-config";
 

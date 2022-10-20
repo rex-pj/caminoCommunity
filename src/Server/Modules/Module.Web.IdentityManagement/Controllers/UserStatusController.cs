@@ -36,7 +36,7 @@ namespace Module.Web.IdentityManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadUserStatus)]
-        [LoadResultAuthorizations("UserStatus", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("UserStatus", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(UserStatusFilterModel filter)
         {
             var filterRequest = new UserStatusFilter()
@@ -98,7 +98,7 @@ namespace Module.Web.IdentityManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadUserStatus)]
-        [LoadResultAuthorizations("UserStatus", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("UserStatus", PolicyMethods.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)

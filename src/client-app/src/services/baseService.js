@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiConfig } from "../config/api-config";
-import { getAuthenticationToken } from "./authService";
+import { getAuthenticationToken } from "./AuthLogic";
 
 export default class BaseService {
   constructor() {

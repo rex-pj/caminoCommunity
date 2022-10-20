@@ -41,7 +41,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
-        [LoadResultAuthorizations("Role", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Role", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(RoleFilterModel filter)
         {
             var rolePageList = await _roleAppService.GetAsync(new RoleFilter
@@ -107,7 +107,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadRole)]
-        [LoadResultAuthorizations("Role", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Role", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

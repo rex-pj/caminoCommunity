@@ -1,23 +1,19 @@
 import React, { useState, useContext } from "react";
 import LoginForm from "../../components/organisms/Auth/LoginForm";
-import { useMutation } from "@apollo/client";
-import { unauthClient } from "../../graphql/client";
-import { userMutations } from "../../graphql/fetching/mutations";
 import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../../store/context/session-context";
-import { setLogin } from "../../services/authService";
+import { setLogin } from "../../services/AuthLogic";
 import { useStore } from "../../store/hook-store";
 import { getError } from "../../utils/Helper";
 import { AuthLayout } from "../../components/templates/Layout";
+import AuthService from "../../services/AuthService";
 
 const Login = (props) => {
   const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
   const { lang, relogin } = useContext(SessionContext);
-  const [login] = useMutation(userMutations.LOGIN, {
-    client: unauthClient,
-  });
+  const authService = new AuthService();
 
   const notifyError = (errors) => {
     if (errors) {
@@ -39,37 +35,31 @@ const Login = (props) => {
     });
   };
 
-  const onLogin = async (data, isRemember) => {
+  const onLogin = async (criterias, isRemember) => {
     setFormEnabled(false);
 
-    if (login) {
-      await login({
-        variables: {
-          criterias: data,
-        },
-      })
-        .then(async (response) => {
-          const { data, errors } = response;
-          const { login } = data;
-
-          if (errors || !login || !login.authenticationToken) {
-            notifyError(errors);
-            setFormEnabled(true);
-          } else {
-            setLogin(login, isRemember);
-
-            await relogin();
-            navigate("/");
-          }
-        })
-        .catch((error) => {
+    await authService
+      .login(criterias)
+      .then(async (response) => {
+        const { data } = response;
+        const { authenticationToken } = data;
+        if (!authenticationToken) {
+          notifyError("An error occurd when login");
           setFormEnabled(true);
-          showError(
-            "An error occurd when login",
-            getError("ErrorOccurredTryRefeshInputAgain", lang)
-          );
-        });
-    }
+        } else {
+          setLogin(data, isRemember);
+
+          await relogin();
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        setFormEnabled(true);
+        showError(
+          "An error occurd when login",
+          getError("ErrorOccurredTryRefeshInputAgain", lang)
+        );
+      });
   };
 
   return (

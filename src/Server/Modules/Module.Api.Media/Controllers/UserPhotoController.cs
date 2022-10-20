@@ -87,7 +87,7 @@ namespace Module.Api.Media.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return RedirectToErrorPage();
             }
         }
 

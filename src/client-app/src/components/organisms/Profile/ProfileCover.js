@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { SessionContext } from "../../../store/context/session-context";
-import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUpload from "../UploadControl/ImageUpload";
 import AvatarEditor from "react-avatar-editor";
@@ -12,8 +11,6 @@ import NoImage from "../../molecules/NoImages/no-image";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import { ButtonTransparent, ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
-import { userMutations } from "../../../graphql/fetching/mutations";
-import { authClient } from "../../../graphql/client";
 import { apiConfig } from "../../../config/api-config";
 import { base64toFile } from "../../../utils/Helper";
 
@@ -312,24 +309,14 @@ const ProfileCover = (props) => {
     }
   };
 
-  const [deleteCover] = useMutation(userMutations.DELETE_USER_COVER, {
-    client: authClient,
-  });
-
   const onDelete = async () => {
-    const { canEdit } = props;
-
-    if (!canEdit) {
+    if (!props.canEdit) {
       return;
     }
 
-    await props
-      .onUpdated(deleteCover, {
-        canEdit: canEdit,
-      })
-      .then(() => {
-        turnOffUpdateMode();
-      });
+    await props.onDeleted().then(() => {
+      turnOffUpdateMode();
+    });
   };
 
   const onLoadSuccess = (e) => {

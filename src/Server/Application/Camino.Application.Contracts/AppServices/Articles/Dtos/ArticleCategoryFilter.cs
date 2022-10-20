@@ -1,4 +1,6 @@
-﻿namespace Camino.Application.Contracts.AppServices.Articles.Dtos
+﻿using System;
+
+namespace Camino.Application.Contracts.AppServices.Articles.Dtos
 {
     public class ArticleCategoryFilter : BaseFilter
     {

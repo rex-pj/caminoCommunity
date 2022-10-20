@@ -36,7 +36,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadFarmType)]
-        [LoadResultAuthorizations("FarmType", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("FarmType", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(FarmTypeFilterModel filter)
         {
             var farmTypePageList = await _farmTypeAppService.GetAsync(new FarmTypeFilter
@@ -80,7 +80,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadFarmType)]
-        [LoadResultAuthorizations("FarmType", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("FarmType", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

@@ -6,6 +6,10 @@ using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Camino.Core.Domains.Users.Repositories;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Users
 {

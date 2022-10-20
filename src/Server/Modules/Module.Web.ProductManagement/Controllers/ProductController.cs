@@ -41,7 +41,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProduct)]
-        [LoadResultAuthorizations("Product", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Product", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductFilterModel filter)
         {
             var productPageList = await _productAppService.GetAsync(new ProductFilter
@@ -89,7 +89,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProduct)]
-        [LoadResultAuthorizations("Product", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Product", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -402,7 +402,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadPicture)]
-        [LoadResultAuthorizations("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Pictures(ProductPictureFilterModel filter)
         {
             var filterRequest = new ProductPictureFilter()

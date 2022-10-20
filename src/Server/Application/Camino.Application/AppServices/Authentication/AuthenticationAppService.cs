@@ -10,6 +10,10 @@ using Camino.Core.Domains;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains.Authorization;
 using Camino.Core.Domains.Authentication;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Camino.Application.AppServices.Authentication
 {

@@ -7,6 +7,9 @@ using Camino.Core.Domains.Authorization;
 using Camino.Core.Domains.Authorization.Repositories;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Users;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace Camino.Application.AppServices.Authorization
 {

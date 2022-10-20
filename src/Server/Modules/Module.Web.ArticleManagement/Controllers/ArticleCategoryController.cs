@@ -36,7 +36,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
-        [LoadResultAuthorizations("ArticleCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("ArticleCategory", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ArticleCategoryFilterModel filter)
         {
             var categoryPageList = await _articleCategoryAppService.GetAsync(new ArticleCategoryFilter
@@ -81,7 +81,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadArticleCategory)]
-        [LoadResultAuthorizations("ArticleCategory", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("ArticleCategory", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

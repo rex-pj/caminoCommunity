@@ -39,11 +39,11 @@ export const generateDate = (data) => {
 };
 
 export const base64toFile = (base64, filename) => {
-  var arr = base64.split(",");
-  var mime = arr[0].match(/:(.*?);/)[1];
-  var byteString = atob(arr[1]);
-  var length = byteString.length;
-  var unitBuffers = new Uint8Array(length);
+  const arr = base64.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const byteString = atob(arr[1]);
+  let length = byteString.length;
+  let unitBuffers = new Uint8Array(length);
 
   while (length--) {
     unitBuffers[length] = byteString.charCodeAt(length);

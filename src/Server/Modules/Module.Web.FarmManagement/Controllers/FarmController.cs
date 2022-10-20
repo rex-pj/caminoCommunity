@@ -36,7 +36,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadFarm)]
-        [LoadResultAuthorizations("Farm", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Farm", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(FarmFilterModel filter)
         {
             var farmPageList = await _farmAppService.GetAsync(new FarmFilter
@@ -82,7 +82,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadFarm)]
-        [LoadResultAuthorizations("Farm", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Farm", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -321,7 +321,7 @@ namespace Module.Web.FarmManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadPicture)]
-        [LoadResultAuthorizations("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Pictures(FarmPictureFilterModel filter)
         {
             var filterRequest = new FarmPictureFilter()

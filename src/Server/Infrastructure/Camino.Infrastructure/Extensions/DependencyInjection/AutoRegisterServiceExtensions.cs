@@ -162,7 +162,7 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
                 moduleAssemblies.AddRange(referencedAssemblies);
             }
 
-            return referencedAssemblies;
+            return moduleAssemblies;
         }
     }
 }

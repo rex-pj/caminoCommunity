@@ -11,6 +11,10 @@ using Camino.Core.Domains;
 using Microsoft.EntityFrameworkCore;
 using Camino.Shared.Utils;
 using Camino.Shared.Exceptions;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Farms
 {

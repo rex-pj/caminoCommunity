@@ -35,7 +35,7 @@ namespace Module.Web.IdentityManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadCountry)]
-        [LoadResultAuthorizations("Country", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Country", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(CountryFilterModel filter)
         {
             var filterRequest = new CountryFilter()
@@ -69,7 +69,7 @@ namespace Module.Web.IdentityManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadCountry)]
-        [LoadResultAuthorizations("Country", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Country", PolicyMethods.CanUpdate)]
         public IActionResult Detail(int id)
         {
             if (id <= 0)

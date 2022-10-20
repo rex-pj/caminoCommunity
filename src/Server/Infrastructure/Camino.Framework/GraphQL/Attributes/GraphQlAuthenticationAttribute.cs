@@ -1,7 +1,5 @@
 ﻿using Camino.Framework.GraphQL.DirectiveTypes;
-using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
-using System;
 using System.Reflection;
 
 namespace Camino.Framework.GraphQL.Attributes

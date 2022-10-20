@@ -15,7 +15,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
         Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(ClaimsPrincipal claimsPrincipal, UserIdentifierUpdateModel criterias);
         Task<UserPageListModel> GetUsersAsync(UserFilterModel criterias);
         Task<IEnumerable<SelectOption>> SelectUsersAsync(UserFilterModel criterias);
-        Task<CommonResult> SignupAsync(SignupModel criterias);
         Task<CommonResult> ActiveAsync(ActiveUserModel criterias);
     }
 }

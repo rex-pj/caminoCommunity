@@ -11,15 +11,12 @@ using System.Security.Claims;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Application.Contracts.AppServices.Users;
-using Camino.Infrastructure.Emails.Contracts;
 using Camino.Shared.Configuration.Options;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Shared.Enums;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
 using Camino.Application.Contracts;
 using Camino.Shared.Commons;
-using Camino.Infrastructure.Emails.Contracts.Dtos;
-using Camino.Infrastructure.Emails.Templates;
 
 namespace Module.Api.Auth.GraphQL.Resolvers
 {
@@ -28,21 +25,16 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IUserManager<ApplicationUser> _userManager;
         private readonly IUserAppService _userAppService;
         private readonly IUserPhotoAppService _userPhotoAppService;
-        private readonly IEmailClient _emailClient;
-        private readonly AppSettings _appSettings;
-        private readonly RegisterConfirmationSettings _registerConfirmationSettings;
         private readonly PagerOptions _pagerOptions;
 
-        public UserResolver(IUserManager<ApplicationUser> userManager, IEmailClient emailClient,
-            IUserAppService userAppService, IOptions<AppSettings> appSettings,
-            IUserPhotoAppService userPhotoAppService, IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
+        public UserResolver(IUserManager<ApplicationUser> userManager,
+            IUserAppService userAppService,
+            IUserPhotoAppService userPhotoAppService,
+            IOptions<PagerOptions> pagerOptions)
             : base()
         {
             _userManager = userManager;
             _userAppService = userAppService;
-            _appSettings = appSettings.Value;
-            _registerConfirmationSettings = registerConfirmationSettings.Value;
-            _emailClient = emailClient;
             _userPhotoAppService = userPhotoAppService;
             _pagerOptions = pagerOptions.Value;
         }
@@ -283,63 +275,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
             }
 
             return users;
-        }
-
-        public async Task<CommonResult> SignupAsync(SignupModel criterias)
-        {
-            var user = new ApplicationUser()
-            {
-                BirthDate = criterias.BirthDate,
-                DisplayName = $"{criterias.Lastname} {criterias.Firstname}",
-                Email = criterias.Email,
-                Firstname = criterias.Firstname,
-                Lastname = criterias.Lastname,
-                GenderId = (int)criterias.GenderId,
-                StatusId = (int)UserStatuses.Pending,
-                UserName = criterias.Email,
-            };
-
-            try
-            {
-                var result = await _userManager.CreateAsync(user, criterias.Password);
-                if (result.Succeeded)
-                {
-                    user = await _userManager.FindByNameAsync(user.UserName);
-                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    await SendActiveEmailAsync(user, confirmationToken);
-                }
-                else
-                {
-                    return CommonResult.Failed(result.Errors.Select(x => new CommonError()
-                    {
-                        Code = x.Code,
-                        Message = x.Description
-                    }));
-                }
-
-                return CommonResult.Success();
-            }
-            catch (Exception ex)
-            {
-                return CommonResult.Failed(new CommonError()
-                {
-                    Message = ex.Message
-                });
-            }
-        }
-
-        private async Task SendActiveEmailAsync(ApplicationUser user, string confirmationToken)
-        {
-            var activeUserUrl = $"{_registerConfirmationSettings.Url}/{user.Email}/{confirmationToken}";
-            await _emailClient.SendEmailAsync(new MailMessageRequest()
-            {
-                Body = string.Format(MailTemplateResources.USER_CONFIRMATION_BODY, user.DisplayName, _appSettings.ApplicationName, activeUserUrl),
-                FromEmail = _registerConfirmationSettings.FromEmail,
-                FromName = _registerConfirmationSettings.FromName,
-                ToEmail = user.Email,
-                ToName = user.DisplayName,
-                Subject = string.Format(MailTemplateResources.USER_CONFIRMATION_SUBJECT, _appSettings.ApplicationName),
-            }, EmailTextFormats.Html);
         }
 
         public async Task<CommonResult> ActiveAsync(ActiveUserModel criterias)

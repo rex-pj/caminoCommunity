@@ -5,7 +5,7 @@ import { SessionContext } from "../../store/context/session-context";
 import { userQueries } from "../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import { useStore } from "../../store/hook-store";
-import { parseUserInfo } from "../../services/userService";
+import { parseUserInfo } from "../../services/UserLogic";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import { ProfileLayout } from "../../components/templates/Layout";
@@ -108,7 +108,7 @@ const ProfilePage = () => {
     });
   };
 
-  const userCoverUpdated = async (variables) => {
+  const onUserCoverUpdated = async (variables) => {
     await _userPhotoService
       .updateCover(variables)
       .then(() => {
@@ -125,6 +125,16 @@ const ProfilePage = () => {
         );
         return Promise.reject({});
       });
+  };
+
+  const onUserCoverDeleted = async () => {
+    return _userPhotoService.deleteCover().then(() => {
+      refetch().then(() => {
+        relogin();
+      });
+
+      return Promise.resolve({});
+    });
   };
 
   const onAvatarUpload = async (variables) => {
@@ -168,7 +178,8 @@ const ProfilePage = () => {
         <ProfileCover
           userInfo={userInfo}
           canEdit={canEdit}
-          onUpdated={userCoverUpdated}
+          onDeleted={onUserCoverDeleted}
+          onUpdated={onUserCoverUpdated}
           onToggleEditMode={onToggleEditCoverMode}
           showValidationError={showValidationError}
         />
@@ -192,7 +203,6 @@ const ProfilePage = () => {
         pageNumber={currentPage}
         baseUrl={_baseUrl}
         onToggleEditCoverMode={onToggleEditCoverMode}
-        userCoverUpdated={userCoverUpdated}
         showValidationError={showValidationError}
         userInfo={userInfo}
       />

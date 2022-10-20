@@ -1,26 +1,18 @@
-export const parseUserInfo = (response) => {
-  if (response) {
-    const { userInfo, userPhotos } = response;
+import { apiConfig } from "../config/api-config";
+import axios from "axios";
+import BaseService from "./BaseService";
 
-    let userAvatar = {};
-    let userCover = {};
-    if (userPhotos && userPhotos.length > 0) {
-      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
-      if (avatar) {
-        userAvatar = avatar;
-      }
-      const cover = userPhotos.find((item) => item.photoType === "COVER");
-      if (cover) {
-        userCover = cover;
-      }
-    }
-    const user = {
-      ...userInfo,
-      userAvatar,
-      userCover,
-    };
-    return user;
-  }
-
-  return {};
+const AuthService = class extends BaseService {
+  register = async (request) => {
+    return axios
+      .post(apiConfig.paths.users.post.postRegister, request)
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 };
+
+export default AuthService;

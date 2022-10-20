@@ -5,6 +5,9 @@ using Camino.Core.DependencyInjection;
 using Camino.Application.Contracts.AppServices.Orders.Dtos;
 using Camino.Core.Domains.Orders;
 using Camino.Shared.Utils;
+using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace Camino.Application.AppServices.Articles
 {

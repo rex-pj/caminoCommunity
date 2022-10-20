@@ -1,5 +1,8 @@
 ﻿using Camino.Core.Validators;
 using Camino.Shared.Utils;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.Validators
 {

@@ -19,11 +19,6 @@ namespace Module.Api.Auth.GraphQL.Mutations
             return await authenticateResolver.UpdatePasswordAsync(claimsPrincipal, criterias);
         }
 
-        public async Task<UserTokenModel> LoginAsync([Service] IAuthenticateResolver authenticateResolver, LoginModel criterias)
-        {
-            return await authenticateResolver.LoginAsync(criterias);
-        }
-
         public async Task<UserTokenModel> RefreshTokenAsync([Service] IAuthenticateResolver authenticateResolver)
         {
             return await authenticateResolver.RefreshTokenAsync();

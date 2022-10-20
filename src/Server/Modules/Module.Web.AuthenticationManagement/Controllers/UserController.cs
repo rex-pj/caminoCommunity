@@ -35,7 +35,7 @@ namespace Module.Web.AuthenticationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadUser)]
-        [LoadResultAuthorizations("User", PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("User", PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(UserFilterModel filter)
         {
             var userPageList = await _userAppService.GetAsync(new UserFilter

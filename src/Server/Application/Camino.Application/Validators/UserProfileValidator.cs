@@ -1,5 +1,8 @@
 ﻿using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Core.Validators;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.Validators
 {

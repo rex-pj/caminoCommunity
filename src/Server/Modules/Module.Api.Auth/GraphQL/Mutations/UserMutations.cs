@@ -28,11 +28,6 @@ namespace Module.Api.Auth.GraphQL.Mutations
             return await userResolver.UpdateIdentifierAsync(claimsPrincipal, criterias);
         }
 
-        public async Task<CommonResult> SignupAsync([Service] IUserResolver userResolver, SignupModel criterias)
-        {
-            return await userResolver.SignupAsync(criterias);
-        }
-
         public async Task<IEnumerable<SelectOption>> SelectUsersAsync([Service] IUserResolver userResolver, UserFilterModel criterias)
         {
             return await userResolver.SelectUsersAsync(criterias);

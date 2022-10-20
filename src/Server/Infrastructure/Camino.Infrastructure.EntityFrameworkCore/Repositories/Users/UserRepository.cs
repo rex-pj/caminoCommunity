@@ -5,9 +5,6 @@ using Camino.Shared.Utils;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using Camino.Core.Domains.Media;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 {
@@ -35,6 +32,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
         {
             await _userRepository.InsertAsync(user);
             await _dbContext.SaveChangesAsync();
+
             return user.Id;
         }
 

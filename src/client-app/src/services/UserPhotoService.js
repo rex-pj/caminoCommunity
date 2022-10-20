@@ -1,8 +1,8 @@
 import { apiConfig } from "../config/api-config";
 import axios from "axios";
-import BaseService from "./baseService";
+import BaseService from "./BaseService";
 
-const userPhotoService = class extends BaseService {
+const UserPhotoService = class extends BaseService {
   updateAvatar = async (request) => {
     return axios
       .put(apiConfig.paths.userPhotos.put.updateAvatar, request, {
@@ -52,4 +52,4 @@ const userPhotoService = class extends BaseService {
   };
 };
 
-export default userPhotoService;
+export default UserPhotoService;

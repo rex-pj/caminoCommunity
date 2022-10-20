@@ -36,7 +36,7 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadShortcut)]
-        [LoadResultAuthorizations("Shortcut", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Shortcut", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ShortcutFilterModel filter)
         {
             var shortcutPageList = await _shortcutAppService.GetAsync(new ShortcutFilter
@@ -75,7 +75,7 @@ namespace Module.Web.NavigationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadShortcut)]
-        [LoadResultAuthorizations("Shortcut", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Shortcut", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

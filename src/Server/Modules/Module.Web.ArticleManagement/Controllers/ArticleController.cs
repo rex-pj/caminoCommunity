@@ -39,7 +39,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadArticle)]
-        [LoadResultAuthorizations("Article", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Article", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ArticleFilterModel filter)
         {
             var articlePageList = await _articleAppService.GetAsync(new ArticleFilter
@@ -89,7 +89,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadArticle)]
-        [LoadResultAuthorizations("Article", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("Article", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -324,7 +324,7 @@ namespace Module.Web.ArticleManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadPicture)]
-        [LoadResultAuthorizations("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("Picture", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Pictures(ArticlePictureFilterModel filter)
         {
             var filterRequest = new ArticlePictureFilter()

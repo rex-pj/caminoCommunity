@@ -31,7 +31,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadRoleAuthorizationPolicy)]
-        [LoadResultAuthorizations("RoleAuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("RoleAuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(RoleAuthorizationPolicyFilterModel filter)
         {
             var filterRequest = new RoleAuthorizationPolicyFilter

@@ -40,7 +40,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
-        [LoadResultAuthorizations("ProductAttribute", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("ProductAttribute", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(ProductAttributeFilterModel filter)
         {
             var productAttributePageList = await _productAttributeAppService.GetAsync(new ProductAttributeFilter
@@ -81,7 +81,7 @@ namespace Module.Web.ProductManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadProductAttribute)]
-        [LoadResultAuthorizations("ProductAttribute", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("ProductAttribute", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

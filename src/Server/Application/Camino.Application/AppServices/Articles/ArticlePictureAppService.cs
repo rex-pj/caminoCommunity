@@ -13,6 +13,10 @@ using Camino.Core.Domains.Media;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace Camino.Application.AppServices.Articles
 {

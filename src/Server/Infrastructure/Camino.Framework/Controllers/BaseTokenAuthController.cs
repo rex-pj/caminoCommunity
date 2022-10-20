@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace Camino.Framework.Controllers
 {
-    [TokenPopulation]
+    [TokenIdentityPopulation]
     public class BaseTokenAuthController : BaseController
     {
         protected long LoggedUserId { get; private set; }

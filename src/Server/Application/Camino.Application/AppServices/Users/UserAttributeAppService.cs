@@ -4,6 +4,10 @@ using Camino.Core.DependencyInjection;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains.Users.DomainServices;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Users
 {

@@ -11,6 +11,10 @@ using Camino.Application.Validators;
 using Camino.Core.Domains.Users.DomainServices;
 using Camino.Core.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Users
 {
@@ -48,12 +52,11 @@ namespace Camino.Application.AppServices.Users
                 throw new ArgumentNullException(nameof(request));
             }
 
+            var modifiedDate = DateTime.UtcNow;
             var newUser = new User
             {
-                CreatedById = request.CreatedById,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedById = request.UpdatedById,
-                UpdatedDate = DateTime.UtcNow,
+                CreatedDate = modifiedDate,
+                UpdatedDate = modifiedDate,
                 Email = request.Email,
                 Firstname = request.Firstname,
                 Lastname = request.Lastname,
@@ -68,7 +71,11 @@ namespace Camino.Application.AppServices.Users
                 GenderId = request.GenderId
             };
 
-            return await _userRepository.CreateAsync(newUser);
+            var id = await _userRepository.CreateAsync(newUser);
+            newUser.CreatedById = id;
+            newUser.UpdatedById = id;
+            await _userRepository.UpdateAsync(newUser);
+            return id;
         }
 
         public async Task<bool> SoftDeleteAsync(long id, long updatedById)

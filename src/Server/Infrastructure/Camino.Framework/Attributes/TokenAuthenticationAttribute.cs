@@ -1,12 +1,10 @@
-﻿using Camino.Infrastructure.Identity.Core;
-using Camino.Infrastructure.Identity.Interfaces;
+﻿using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Constants;
 using Camino.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
 
 namespace Camino.Framework.Attributes
 {
@@ -60,12 +58,6 @@ namespace Camino.Framework.Attributes
                     
                     var claimsIdentity = await jwtHelper.ValidateTokenAsync(token);
                     if (!claimsIdentity.IsAuthenticated)
-                    {
-                        context.Result = new ForbidResult();
-                    }
-
-                    var userIdentityId = httpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
-                    if (string.IsNullOrEmpty(userIdentityId))
                     {
                         context.Result = new ForbidResult();
                     }

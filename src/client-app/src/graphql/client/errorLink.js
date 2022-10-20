@@ -1,7 +1,7 @@
 import { fromPromise } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { getNewTokens } from "./tokenHandler";
-import { setLogin, getAuthenticationToken } from "../../services/authService";
+import { setLogin, getAuthenticationToken } from "../../services/AuthLogic";
 
 let isRefreshing = false;
 let pendingRequests = [];

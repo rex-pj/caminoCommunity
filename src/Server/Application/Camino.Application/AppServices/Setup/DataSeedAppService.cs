@@ -10,6 +10,8 @@ using Camino.Core.Domains.Users;
 using Camino.Shared.Enums;
 using Camino.Core.Domains;
 using Camino.Infrastructure.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System;
 
 namespace Camino.Application.AppServices.Setup
 {
@@ -191,6 +193,7 @@ namespace Camino.Application.AppServices.Setup
             _dbContext.SaveChanges();
             var userId = user.Id;
             user.CreatedById = userId;
+            user.UpdatedById = userId;
             if (userId > 0)
             {
                 // Insert roles

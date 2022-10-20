@@ -11,6 +11,10 @@ using Camino.Core.Domains.Media;
 using Camino.Shared.Enums;
 using Camino.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Farms
 {

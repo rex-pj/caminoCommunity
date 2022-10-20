@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { logOut } from "../../services/authService";
+import { logOut } from "../../services/AuthLogic";
 import LogoutPanel from "../../components/organisms/Auth/LogoutPanel";
 import { SessionContext } from "../../store/context/session-context";
 import { PromptLayout } from "../../components/templates/Layout";
 
-export default () => {
+const Logout = () => {
   const navigate = useNavigate();
   const { relogin } = useContext(SessionContext);
 
@@ -29,3 +29,5 @@ export default () => {
     </PromptLayout>
   );
 };
+
+export default Logout;

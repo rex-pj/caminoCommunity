@@ -1,7 +1,7 @@
 import React from "react";
 import MasterLayout from "./MasterLayout";
 import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
-import { isTokenValid } from "../../../services/authService";
+import { isTokenValid } from "../../../services/AuthLogic";
 import styled from "styled-components";
 
 const Root = styled.div`

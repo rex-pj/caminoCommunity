@@ -11,6 +11,10 @@ using Camino.Core.DependencyInjection;
 using Camino.Application.Contracts.Utils;
 using Microsoft.EntityFrameworkCore;
 using Camino.Shared.Utils;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Articles
 {

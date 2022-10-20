@@ -7,6 +7,8 @@ using Camino.Infrastructure.Emails.Contracts;
 using Camino.Infrastructure.Emails.Contracts.Dtos;
 using Camino.Core.DependencyInjection;
 using Camino.Shared.Configuration.Options;
+using System.Threading.Tasks;
+using System;
 
 namespace Camino.Infrastructure.Emails
 {
@@ -33,19 +35,17 @@ namespace Camino.Infrastructure.Emails
 
             try
             {
-                using (var client = new SmtpClient())
-                {
-                    // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                using var client = new SmtpClient();
+                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                    await client.ConnectAsync(_emailSenderSettings.SmtpServer, _emailSenderSettings.SmtpPort, false);
+                await client.ConnectAsync(_emailSenderSettings.SmtpServer, _emailSenderSettings.SmtpPort, false);
 
-                    // Note: only needed if the SMTP server requires authentication
-                    await client.AuthenticateAsync(_emailSenderSettings.UserName, _emailSenderSettings.Password);
+                // Note: only needed if the SMTP server requires authentication
+                await client.AuthenticateAsync(_emailSenderSettings.UserName, _emailSenderSettings.Password);
 
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
-                }
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
             catch (Exception e)
             {

@@ -15,8 +15,10 @@ using Camino.Application.Contracts.AppServices.Articles;
 using Camino.Application.Contracts.AppServices.Products;
 using Camino.Application.Contracts.AppServices.Farms;
 using Camino.Application.Contracts.AppServices.Feeds.Dtos;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Drawing.Printing;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Feeds
 {

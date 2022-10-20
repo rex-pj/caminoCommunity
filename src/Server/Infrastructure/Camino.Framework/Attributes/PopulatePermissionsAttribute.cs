@@ -5,20 +5,17 @@ using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Camino.Framework.Attributes
 {
-    public class LoadResultAuthorizationsAttribute : ResultFilterAttribute
+    public class PopulatePermissionsAttribute : ResultFilterAttribute
     {
         private PolicyMethods[] _policyMethods;
-        private readonly string _moduleName;
+        private readonly string _featureName;
 
-        public LoadResultAuthorizationsAttribute(string moduleName, params PolicyMethods[] policyMethods)
+        public PopulatePermissionsAttribute(string featureName, params PolicyMethods[] policyMethods)
         {
-            _moduleName = moduleName;
+            _featureName = featureName;
             _policyMethods = policyMethods;
         }
 
@@ -29,28 +26,26 @@ namespace Camino.Framework.Attributes
                 await next();
             }
 
-            var isViewResult = context.Result is ViewResult;
-            var isPartialViewResult = context.Result is PartialViewResult;
-            if (!isViewResult && !isPartialViewResult)
+            var viewResult = context.Result as ViewResult;
+            var partialViewResult = context.Result as PartialViewResult;
+            if (viewResult == null && partialViewResult == null)
             {
                 await next();
             }
 
-            var viewModel = isViewResult ? (context.Result as ViewResult).Model
-                : (context.Result as PartialViewResult).Model;
-
-            if (!(viewModel is BaseModel))
+            var viewModel = viewResult == null ? viewResult?.Model : partialViewResult?.Model;
+            if (viewModel is not BaseModel)
             {
                 await next();
             }
 
             var httpContext = context.HttpContext;
-            if (_moduleName != null && !_policyMethods.Any())
+            if (_featureName != null && !_policyMethods.Any())
             {
                 _policyMethods = Enum.GetValues(typeof(PolicyMethods)).Cast<PolicyMethods>().ToArray();
             }
 
-            var policies = _policyMethods.Select(x => $"{x}{_moduleName}").ToArray();
+            var policies = _policyMethods.Select(x => $"{x}{_featureName}").ToArray();
             var requestServices = httpContext.RequestServices;
             var userManager = requestServices.GetRequiredService<IUserManager<ApplicationUser>>();
             var numberOfPolicies = policies.Length;
@@ -58,10 +53,10 @@ namespace Camino.Framework.Attributes
             for (int i = 0; i < numberOfPolicies; i++)
             {
                 var policyMethod = _policyMethods[i].ToString();
-                var propertyInfo = model.GetType().GetProperty(policyMethod);
+                var propertyInfo = model?.GetType().GetProperty(policyMethod);
 
                 var hasPolicy = await userManager.HasPolicyAsync(httpContext.User, policies[i]);
-                propertyInfo.SetValue(model, hasPolicy, null);
+                propertyInfo?.SetValue(model, hasPolicy, null);
             }
 
             await next();

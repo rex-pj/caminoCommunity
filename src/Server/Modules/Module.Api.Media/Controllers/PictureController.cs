@@ -25,9 +25,8 @@ namespace Module.Api.Media.Controllers
             _validatorContext = validatorContext;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         [IgnoreAntiforgeryToken]
-        [Route("{id}")]
         public async Task<IActionResult> Get(long id)
         {
             var exist = await _pictureAppService.FindAsync(new IdRequestFilter<long>

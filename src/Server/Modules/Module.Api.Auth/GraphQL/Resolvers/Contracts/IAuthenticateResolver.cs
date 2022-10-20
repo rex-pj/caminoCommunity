@@ -7,7 +7,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers.Contracts
 {
     public interface IAuthenticateResolver
     {
-        Task<UserTokenModel> LoginAsync(LoginModel criterias);
         Task<UserTokenModel> RefreshTokenAsync();
         Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias);
         Task<CommonResult> ResetPasswordAsync(ResetPasswordModel criterias);

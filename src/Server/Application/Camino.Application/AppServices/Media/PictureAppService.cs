@@ -5,6 +5,7 @@ using Camino.Application.Contracts;
 using Camino.Shared.Enums;
 using Camino.Application.Contracts.AppServices.Media;
 using Camino.Core.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace Camino.Application.AppServices.Media
 {

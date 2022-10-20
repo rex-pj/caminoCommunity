@@ -13,6 +13,10 @@ using Camino.Application.Contracts.AppServices.Farms;
 using Camino.Application.Contracts.AppServices.Farms.Dtos;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
 using Camino.Application.Contracts.Utils;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Farms
 {

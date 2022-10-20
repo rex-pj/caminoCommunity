@@ -12,16 +12,6 @@ export const SIGNUP = gql`
   }
 `;
 
-export const LOGIN = gql`
-  mutation login($criterias: LoginModelInput!) {
-    login(criterias: $criterias) {
-      authenticationToken
-      refreshToken
-      refreshTokenExpiryTime
-    }
-  }
-`;
-
 export const REFRESH_TOKEN = gql`
   mutation refreshToken {
     refreshToken {
@@ -46,55 +36,6 @@ export const PARTIAL_USER_UPDATE = gql`
   mutation PartialUserUpdate($criterias: PartialUpdateRequestModelInput!) {
     partialUserUpdate(criterias: $criterias) {
       propertyName
-    }
-  }
-`;
-
-export const UPDATE_USER_AVATAR = gql`
-  mutation UpdateAvatar($criterias: UserPhotoUpdateModelInput!) {
-    updateAvatar(criterias: $criterias) {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
-export const DELETE_USER_AVATAR = gql`
-  mutation DeleteAvatar($criterias: PhotoDeleteModelInput!) {
-    deleteAvatar(criterias: $criterias) {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
-export const UPDATE_USER_COVER = gql`
-  mutation UpdateCover($criterias: UserPhotoUpdateModelInput!) {
-    updateCover(criterias: $criterias) {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
-export const DELETE_USER_COVER = gql`
-  mutation DeleteCover($criterias: PhotoDeleteModelInput!) {
-    deleteCover(criterias: $criterias) {
-      isSucceed
-      errors {
-        code
-        message
-      }
-      result
     }
   }
 `;

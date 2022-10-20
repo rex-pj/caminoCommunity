@@ -31,7 +31,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadUserAuthorizationPolicy)]
-        [LoadResultAuthorizations("UserAuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("UserAuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanDelete)]
         public IActionResult Index(UserAuthorizationPolicyFilterModel filter)
         {
             var filterRequest = new UserAuthorizationPolicyFilter

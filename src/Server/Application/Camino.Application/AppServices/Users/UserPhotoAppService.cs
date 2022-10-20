@@ -9,6 +9,10 @@ using Camino.Core.Domains.Media;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
 using Camino.Shared.Exceptions;
 using Camino.Shared.Utils;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Application.AppServices.Users
 {

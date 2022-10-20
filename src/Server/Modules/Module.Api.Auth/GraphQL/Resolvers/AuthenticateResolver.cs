@@ -26,7 +26,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
     public class AuthenticateResolver : BaseResolver, IAuthenticateResolver
     {
         private readonly IUserManager<ApplicationUser> _userManager;
-        private readonly ILoginManager<ApplicationUser> _loginManager;
         private readonly IEmailClient _emailClient;
         private readonly AppSettings _appSettings;
         private readonly ResetPasswordSettings _resetPasswordSettings;
@@ -34,14 +33,13 @@ namespace Module.Api.Auth.GraphQL.Resolvers
         private readonly IJwtHelper _jwtHelper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticateResolver(IUserManager<ApplicationUser> userManager, ILoginManager<ApplicationUser> loginManager,
+        public AuthenticateResolver(IUserManager<ApplicationUser> userManager,
             IEmailClient emailClient, IOptions<AppSettings> appSettings,
             IOptions<ResetPasswordSettings> resetPasswordSettings, IJwtHelper jwtHelper, IOptions<JwtConfigOptions> jwtConfigOptions,
             IHttpContextAccessor httpContextAccessor)
             : base()
         {
             _userManager = userManager;
-            _loginManager = loginManager;
             _appSettings = appSettings.Value;
             _resetPasswordSettings = resetPasswordSettings.Value;
             _emailClient = emailClient;
@@ -75,30 +73,6 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 StatusLabel = currentUser.StatusLabel,
                 UpdatedDate = currentUser.UpdatedDate,
                 UserIdentityId = userIdentityId
-            };
-        }
-
-        public async Task<UserTokenModel> LoginAsync(LoginModel criterias)
-        {
-            var result = await _loginManager.PasswordSignInAsync(criterias.Username, criterias.Password, true, true);
-            if (!result.Succeeded)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var user = await _userManager.FindByNameAsync(criterias.Username);
-            user.UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id);
-            var accessToken = _jwtHelper.GenerateJwtToken(user);
-
-            var refreshToken = await _userManager.GenerateUserTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE);
-            await _userManager.SetAuthenticationTokenAsync(user, ServiceProvidersNames.CAMINO_API_AUTH, IdentitySettings.AUTHENTICATION_REFRESH_TOKEN_PURPOSE, refreshToken);
-
-            AddRefreshTokenToCookie(refreshToken);
-            return new UserTokenModel(true)
-            {
-                AuthenticationToken = accessToken,
-                RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(_jwtConfigOptions.RefreshTokenHourExpires)
             };
         }
 

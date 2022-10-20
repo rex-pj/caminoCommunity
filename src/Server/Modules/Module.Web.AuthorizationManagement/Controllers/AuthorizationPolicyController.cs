@@ -41,7 +41,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
 
         [HttpGet]
         [ApplicationAuthorize(AuthorizePolicies.CanReadAuthorizationPolicy)]
-        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
+        [PopulatePermissions("AuthorizationPolicy", PolicyMethods.CanCreate, PolicyMethods.CanUpdate, PolicyMethods.CanDelete)]
         public async Task<IActionResult> Index(AuthorizationPolicyFilterModel filter)
         {
             var filterRequest = new AuthorizationPolicyFilter
@@ -88,7 +88,7 @@ namespace Module.Web.AuthorizationManagement.Controllers
         }
 
         [ApplicationAuthorize(AuthorizePolicies.CanReadAuthorizationPolicy)]
-        [LoadResultAuthorizations("AuthorizationPolicy", PolicyMethods.CanUpdate)]
+        [PopulatePermissions("AuthorizationPolicy", PolicyMethods.CanUpdate)]
         public async Task<IActionResult> Detail(short id)
         {
             if (id <= 0)

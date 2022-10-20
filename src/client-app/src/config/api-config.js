@@ -21,5 +21,15 @@ export const apiConfig = {
         getPicture: `${process.env.REACT_APP_CAMINO_API}/pictures`,
       },
     },
+    authentications: {
+      post: {
+        postLogin: `${process.env.REACT_APP_CAMINO_API}/authentications/login`,
+      },
+    },
+    users: {
+      post: {
+        postRegister: `${process.env.REACT_APP_CAMINO_API}/users/registration`,
+      },
+    },
   },
 };

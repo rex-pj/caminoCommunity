@@ -1,4 +1,4 @@
-import { getAuthenticationToken } from "../../services/authService";
+import { getAuthenticationToken } from "../../services/AuthLogic";
 import { apiConfig } from "../../config/api-config";
 
 const refreshTokenMutation = (tokens) => {

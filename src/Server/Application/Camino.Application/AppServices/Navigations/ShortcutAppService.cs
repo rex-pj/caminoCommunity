@@ -9,6 +9,10 @@ using Camino.Core.Domains;
 using Microsoft.EntityFrameworkCore;
 using Camino.Shared.Utils;
 using Camino.Application.Contracts.Utils;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Camino.Core.Core.Services.Navigations
 {
