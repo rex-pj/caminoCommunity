@@ -12,17 +12,12 @@ using Camino.Infrastructure.Files.Contracts;
 using Camino.Core.Domains;
 using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.Identity.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
-using Camino.Application.Contracts;
 
 namespace Camino.Infrastructure.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        
-
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));

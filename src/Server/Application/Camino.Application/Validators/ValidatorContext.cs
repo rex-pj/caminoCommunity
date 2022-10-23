@@ -1,7 +1,7 @@
 ﻿using Camino.Core.DependencyInjection;
 using Camino.Core.Validators;
 
-namespace Camino.Infrastructure.Validators
+namespace Camino.Application.Validators
 {
     public class ValidatorContext : BaseValidatorContext, IScopedDependency
     {

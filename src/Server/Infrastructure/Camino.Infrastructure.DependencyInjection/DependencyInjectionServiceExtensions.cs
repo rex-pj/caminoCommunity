@@ -7,7 +7,7 @@ using System.Runtime.Loader;
 
 namespace Camino.Infrastructure.DependencyInjection
 {
-    public static class AutoRegisterServiceExtensions
+    public static class DependencyInjectionServiceExtensions
     {
         private static readonly Type _transientDependencyType = typeof(ITransientDependency).GetTypeInfo();
         private static readonly Type _scopedDependencyType = typeof(IScopedDependency).GetTypeInfo();

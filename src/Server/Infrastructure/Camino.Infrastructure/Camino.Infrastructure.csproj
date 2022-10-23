@@ -22,6 +22,7 @@
 		<ProjectReference Include="..\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.AutoMapper\Camino.Infrastructure.AutoMapper.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.DependencyInjection\Camino.Infrastructure.DependencyInjection.csproj" />
 	</ItemGroup>
 
 </Project>

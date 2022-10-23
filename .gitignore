@@ -94,3 +94,5 @@ src/Server/Infrastructure/Camino.Infrastructure.AutoMapper/bin/
 src/Server/Infrastructure/Camino.Infrastructure.AutoMapper/obj/
 src/Server/Infrastructure/Camino.Infrastructure.GraphQL/bin/
 src/Server/Infrastructure/Camino.Infrastructure.GraphQL/obj/
+src/Server/Infrastructure/Camino.Infrastructure.DependencyInjection/bin/
+src/Server/Infrastructure/Camino.Infrastructure.DependencyInjection/obj/
