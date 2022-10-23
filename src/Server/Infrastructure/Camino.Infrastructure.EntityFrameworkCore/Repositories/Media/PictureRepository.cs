@@ -10,9 +10,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Media
     public class PictureRepository : IPictureRepository, IScopedDependency
     {
         private readonly IEntityRepository<Picture> _pictureRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public PictureRepository(IEntityRepository<Picture> pictureRepository, IAppDbContext dbContext)
+        public PictureRepository(IEntityRepository<Picture> pictureRepository, IDbContext dbContext)
         {
             _pictureRepository = pictureRepository;
             _dbContext = dbContext;

@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

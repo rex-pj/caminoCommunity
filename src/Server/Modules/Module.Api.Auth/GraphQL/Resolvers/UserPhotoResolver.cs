@@ -1,5 +1,5 @@
 ﻿using Module.Api.Auth.Models;
-using Camino.Framework.GraphQL.Resolvers;
+using Camino.Infrastructure.GraphQL.Resolvers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;

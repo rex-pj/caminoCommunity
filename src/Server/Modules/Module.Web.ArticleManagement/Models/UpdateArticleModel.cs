@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.ArticleManagement.Models
 {
-    public class UpdateArticleModel : BaseModel
+    public class UpdateArticleModel : BaseIdentityModel
     {
         public long Id { get; set; }
 

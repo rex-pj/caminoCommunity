@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Infrastructure.Middlewares;
+﻿using Camino.Infrastructure.Modularity.Extensions;
 using Camino.Shared.Configuration.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

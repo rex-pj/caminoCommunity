@@ -1,8 +1,8 @@
-﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Infrastructure.Emails.Contracts;
 using Camino.Infrastructure.Emails.Contracts.Dtos;
 using Camino.Infrastructure.Emails.Templates;
+using Camino.Infrastructure.GraphQL.Resolvers;
 using Camino.Infrastructure.Identity.Constants;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
@@ -90,7 +90,7 @@ namespace Module.Api.Auth.GraphQL.Resolvers
                 throw new CaminoAuthenticationException();
             }
 
-            var claimsIdentity = await _jwtHelper.GetPrincipalFromExpiredTokenAsync(authenticationToken);
+            var claimsIdentity = await _userManager.GetPrincipalFromExpiredTokenAsync(authenticationToken);
             var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeades.UserIdentityClaimKey).Value;
             if (string.IsNullOrEmpty(userIdentityId))
             {

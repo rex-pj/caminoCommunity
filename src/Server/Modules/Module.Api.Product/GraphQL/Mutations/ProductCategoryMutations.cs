@@ -1,6 +1,6 @@
 ﻿using Camino.Application.Contracts;
-using Camino.Framework.GraphQL.Attributes;
-using Camino.Framework.GraphQL.Mutations;
+using Camino.Infrastructure.GraphQL.Attributes;
+using Camino.Infrastructure.GraphQL.Mutations;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;

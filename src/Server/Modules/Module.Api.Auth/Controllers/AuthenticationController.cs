@@ -1,9 +1,9 @@
-﻿using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
+﻿using Camino.Infrastructure.Identity.Attributes;
+using Camino.Infrastructure.AspNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using Camino.Framework.Models;
+using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Infrastructure.Identity.Constants;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Infrastructure.Identity.Options;

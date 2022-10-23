@@ -1,5 +1,5 @@
 ﻿using Camino.Application.Contracts;
-using Camino.Framework.Models;
+using Camino.Infrastructure.AspNetCore.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

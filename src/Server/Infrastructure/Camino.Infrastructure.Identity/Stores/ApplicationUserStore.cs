@@ -37,7 +37,7 @@ namespace Camino.Infrastructure.Identity.Stores
         public override IQueryable<TUser> Users { get; }
 
         public ApplicationUserStore(IdentityErrorDescriber describer, IUserAppService userAppService,
-            IAuthenticationAppService authenticationAppService, 
+            IAuthenticationAppService authenticationAppService,
             IUserRoleAppService userRoleAppService, IRoleAppService roleAppService,
             IAuthorizationPolicyAppService authorizationPolicyAppService,
             IUserAuthorizationPolicyAppService userAuthorizationPolicyAppService, ITextEncryption textCrypter,
@@ -656,6 +656,11 @@ namespace Camino.Infrastructure.Identity.Stores
         protected async Task<ApplicationAuthorizationPolicy> FindPolicyAsync(string policyName, CancellationToken cancellationToken)
         {
             var policyRequest = await _authorizationPolicyAppService.FindByNameAsync(policyName);
+            if (policyRequest == null)
+            {
+                return null;
+            }
+
             var authorizationPolicy = new ApplicationAuthorizationPolicy
             {
                 Description = policyRequest.Description,

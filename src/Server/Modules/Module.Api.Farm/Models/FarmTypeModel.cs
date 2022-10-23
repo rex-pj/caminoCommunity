@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Api.Farm.Models
 {
-    public class FarmTypeModel : BaseModel
+    public class FarmTypeModel : BaseIdentityModel
     {
         public FarmTypeModel()
         {

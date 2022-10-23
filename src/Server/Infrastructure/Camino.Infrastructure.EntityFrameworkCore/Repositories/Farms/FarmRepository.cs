@@ -12,9 +12,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
     {
         private readonly IEntityRepository<Farm> _farmRepository;
         
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public FarmRepository(IEntityRepository<Farm> farmRepository, IAppDbContext dbContext)
+        public FarmRepository(IEntityRepository<Farm> farmRepository, IDbContext dbContext)
         {
             _farmRepository = farmRepository;
             _dbContext = dbContext;

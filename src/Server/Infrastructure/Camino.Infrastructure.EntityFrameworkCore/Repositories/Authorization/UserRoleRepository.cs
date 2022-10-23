@@ -11,9 +11,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
     public class UserRoleRepository : IUserRoleRepository, IScopedDependency
     {
         private readonly IEntityRepository<UserRole> _userRoleEntityRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public UserRoleRepository(IEntityRepository<UserRole> userRoleEntityRepository, IAppDbContext dbContext)
+        public UserRoleRepository(IEntityRepository<UserRole> userRoleEntityRepository, IDbContext dbContext)
         {
             _userRoleEntityRepository = userRoleEntityRepository;
             _dbContext = dbContext;

@@ -14,12 +14,12 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         private readonly IEntityRepository<Product> _productRepository;
         private readonly IEntityRepository<ProductCategory> _productCategoryRepository;
         private readonly IEntityRepository<ProductCategoryRelation> _productCategoryRelationRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
         public ProductCategoryRepository(IEntityRepository<ProductCategory> productCategoryRepository,
             IEntityRepository<Product> productRepository,
             IEntityRepository<ProductCategoryRelation> productCategoryRelationRepository,
-            IAppDbContext dbContext)
+            IDbContext dbContext)
         {
             _productRepository = productRepository;
             _productCategoryRepository = productCategoryRepository;

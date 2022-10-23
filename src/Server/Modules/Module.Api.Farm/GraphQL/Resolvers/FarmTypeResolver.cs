@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using Module.Api.Farm.GraphQL.Resolvers.Contracts;
 using System.Collections.Generic;
 using System.Linq;

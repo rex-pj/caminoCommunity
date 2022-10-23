@@ -1,10 +1,10 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using System;
 
 namespace Module.Web.NavigationManagement.Models
 {
-    public class ShortcutModel : BaseModel
+    public class ShortcutModel : BaseIdentityModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

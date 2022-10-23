@@ -1,6 +1,6 @@
-﻿using Camino.Framework.GraphQL.Attributes;
-using Camino.Framework.GraphQL.Queries;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
+using Camino.Infrastructure.GraphQL.Attributes;
+using Camino.Infrastructure.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Auth.GraphQL.Resolvers.Contracts;

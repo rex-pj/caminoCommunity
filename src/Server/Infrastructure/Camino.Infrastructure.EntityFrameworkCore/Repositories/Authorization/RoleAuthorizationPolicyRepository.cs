@@ -12,11 +12,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
         private readonly IRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyEntityRepository;
         private readonly IRepository<AuthorizationPolicy> _authorizationPolicyEntityRepository;
         private readonly IRepository<Role> _roleEntityRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
         public RoleAuthorizationPolicyRepository(IRepository<RoleAuthorizationPolicy> roleAuthorizationPolicyEntityRepository,
             IRepository<AuthorizationPolicy> authorizationPolicyEntityRepository,
-            IRepository<Role> userEntityRepository, IAppDbContext dbContext)
+            IRepository<Role> userEntityRepository, IDbContext dbContext)
         {
             _roleAuthorizationPolicyEntityRepository = roleAuthorizationPolicyEntityRepository;
             _authorizationPolicyEntityRepository = authorizationPolicyEntityRepository;

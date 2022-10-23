@@ -1,10 +1,10 @@
 ﻿using Camino.Shared.Enums;
-using Camino.Framework.Models;
+using Camino.Infrastructure.Identity.Models;
 using System;
 
 namespace Module.Web.ArticleManagement.Models
 {
-    public class ArticlePictureModel : BaseModel
+    public class ArticlePictureModel : BaseIdentityModel
     {
         public long ArticleId { get; set; }
         public string ArticleName { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Camino.Shared.Enums;
-using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.ProductManagement.Models;
@@ -17,6 +16,7 @@ using Camino.Shared.Constants;
 using Camino.Application.Contracts.AppServices.Products.Dtos;
 using Camino.Application.Contracts;
 using Camino.Core.Domains.Products.DomainServices;
+using Camino.Infrastructure.Identity.Attributes;
 
 namespace Module.Web.ProductManagement.Controllers
 {

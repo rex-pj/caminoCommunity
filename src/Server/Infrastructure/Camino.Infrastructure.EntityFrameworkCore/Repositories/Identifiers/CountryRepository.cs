@@ -1,23 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Camino.Core.Contracts.Repositories.Identities;
+﻿using Camino.Core.Contracts.Repositories.Identities;
 using Camino.Core.Domains.Identifiers;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.Core.Domains.Users;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
 {
     public class CountryRepository : ICountryRepository, IScopedDependency
     {
         private readonly IEntityRepository<Country> _countryRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public CountryRepository(IEntityRepository<Country> countryRepository, IAppDbContext dbContext, 
+        public CountryRepository(IEntityRepository<Country> countryRepository, IDbContext dbContext, 
             IServiceScopeFactory serviceScopeFactory)
         {
             _countryRepository = countryRepository;

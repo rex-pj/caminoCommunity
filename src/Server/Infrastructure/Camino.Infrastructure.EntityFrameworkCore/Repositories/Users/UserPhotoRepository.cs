@@ -11,9 +11,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     public class UserPhotoRepository : IUserPhotoRepository, IScopedDependency
     {
         private readonly IEntityRepository<UserPhoto> _userPhotoEntityRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        public UserPhotoRepository(IEntityRepository<UserPhoto> userPhotoEntityRepository, IAppDbContext dbContext, IServiceScopeFactory serviceScopeFactory)
+        public UserPhotoRepository(IEntityRepository<UserPhoto> userPhotoEntityRepository, IDbContext dbContext, IServiceScopeFactory serviceScopeFactory)
         {
             _userPhotoEntityRepository = userPhotoEntityRepository;
             _serviceScopeFactory = serviceScopeFactory;

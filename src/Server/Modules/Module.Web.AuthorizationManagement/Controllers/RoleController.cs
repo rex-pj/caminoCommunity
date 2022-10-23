@@ -1,5 +1,5 @@
-﻿using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Module.Web.AuthorizationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Camino.Framework.Attributes;
+using Camino.Infrastructure.Identity.Attributes;
 using Camino.Shared.Enums;
 using Microsoft.Extensions.Options;
 using Camino.Application.Contracts.AppServices.Authorization;

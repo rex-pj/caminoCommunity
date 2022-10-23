@@ -12,13 +12,13 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     {
         #region Fields/Properties
         private readonly IEntityRepository<User> _userRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly int _userDeletedStatus;
         private readonly int _userInactivedStatus;
         #endregion
 
         #region Ctor
-        public UserRepository(IEntityRepository<User> userRepository, IAppDbContext dbContext)
+        public UserRepository(IEntityRepository<User> userRepository, IDbContext dbContext)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;

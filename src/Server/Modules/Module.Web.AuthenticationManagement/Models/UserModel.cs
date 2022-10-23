@@ -1,10 +1,10 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using System;
 
 namespace Module.Web.AuthenticationManagement.Models
 {
-    public class UserModel : BaseModel
+    public class UserModel : BaseIdentityModel
     {
         public long Id { get; set; }
         public string PhoneNumber { get; set; }

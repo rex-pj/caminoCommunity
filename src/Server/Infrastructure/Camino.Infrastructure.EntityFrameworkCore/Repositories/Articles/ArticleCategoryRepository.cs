@@ -12,9 +12,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
     public class ArticleCategoryRepository : IArticleCategoryRepository, IScopedDependency
     {
         private readonly IEntityRepository<ArticleCategory> _articleCategoryRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public ArticleCategoryRepository(IEntityRepository<ArticleCategory> articleCategoryRepository, IAppDbContext dbContext)
+        public ArticleCategoryRepository(IEntityRepository<ArticleCategory> articleCategoryRepository, IDbContext dbContext)
         {
             _articleCategoryRepository = articleCategoryRepository;
             _dbContext = dbContext;

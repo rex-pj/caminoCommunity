@@ -1,5 +1,5 @@
-﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.GraphQL.Resolvers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;
 using Module.Api.Product.Models;
 using System;

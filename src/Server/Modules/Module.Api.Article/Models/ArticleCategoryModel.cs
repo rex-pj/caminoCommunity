@@ -1,4 +1,5 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
+using Camino.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Api.Article.Models
 {
-    public class ArticleCategoryModel : BaseModel
+    public class ArticleCategoryModel : BaseIdentityModel
     {
         public ArticleCategoryModel()
         {

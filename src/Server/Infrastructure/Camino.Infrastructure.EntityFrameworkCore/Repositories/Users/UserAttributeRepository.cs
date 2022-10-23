@@ -13,9 +13,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     public class UserAttributeRepository : IUserAttributeRepository, IScopedDependency
     {
         private readonly IEntityRepository<UserAttribute> _userAttributeRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public UserAttributeRepository(IEntityRepository<UserAttribute> userAttributeRepository, IAppDbContext dbContext)
+        public UserAttributeRepository(IEntityRepository<UserAttribute> userAttributeRepository, IDbContext dbContext)
         {
             _userAttributeRepository = userAttributeRepository;
             _dbContext = dbContext;

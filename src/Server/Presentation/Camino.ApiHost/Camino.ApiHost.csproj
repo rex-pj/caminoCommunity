@@ -9,7 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.GraphQL\Camino.Infrastructure.GraphQL.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
   </ItemGroup>
 
 

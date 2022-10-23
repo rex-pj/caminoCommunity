@@ -1,7 +1,4 @@
-﻿using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
-using Camino.Framework.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.FarmManagement.Models;
 using System;
@@ -9,12 +6,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
-using Camino.Application.Contracts.AppServices.Farms;
 using Camino.Infrastructure.Http.Interfaces;
 using Camino.Shared.Configuration.Options;
+using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Application.Contracts.AppServices.Farms;
+using Camino.Infrastructure.Identity.Attributes;
 using Camino.Shared.Constants;
 using Camino.Shared.Enums;
 using Camino.Application.Contracts.AppServices.Farms.Dtos;
+using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Application.Contracts;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
 

@@ -10,9 +10,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
     public class RoleClaimRepository : IRoleClaimRepository, IScopedDependency
     {
         private readonly IEntityRepository<RoleClaim> _roleClaimRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public RoleClaimRepository(IEntityRepository<RoleClaim> roleClaimRepository, IAppDbContext dbContext)
+        public RoleClaimRepository(IEntityRepository<RoleClaim> roleClaimRepository, IDbContext dbContext)
         {
             _roleClaimRepository = roleClaimRepository;
             _dbContext = dbContext;

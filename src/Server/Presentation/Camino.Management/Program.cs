@@ -1,4 +1,4 @@
-using Camino.Framework.Infrastructure.Middlewares;
+using Camino.Infrastructure.Modularity.Extensions;
 using Camino.Management.Extensions.DependencyInjection;
 using Camino.Management.Middlewares;
 using Microsoft.AspNetCore.Builder;

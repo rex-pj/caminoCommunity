@@ -5,10 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+	  <Folder Include="App_Data\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="App_Data\" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
 	</ItemGroup>
 </Project>

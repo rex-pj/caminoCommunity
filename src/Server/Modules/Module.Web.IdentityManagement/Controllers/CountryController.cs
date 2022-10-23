@@ -1,7 +1,6 @@
 ﻿using Camino.Shared.Enums;
-using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Web.IdentityManagement.Models;
@@ -16,6 +15,7 @@ using Camino.Shared.Configuration.Options;
 using Camino.Shared.Constants;
 using Camino.Application.Contracts.AppServices.Identifiers.Dtos;
 using Camino.Application.Contracts;
+using Camino.Infrastructure.Identity.Attributes;
 
 namespace Module.Web.IdentityManagement.Controllers
 {

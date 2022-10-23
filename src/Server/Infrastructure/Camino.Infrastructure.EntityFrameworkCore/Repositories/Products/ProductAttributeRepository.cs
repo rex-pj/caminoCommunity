@@ -12,11 +12,11 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         private readonly IEntityRepository<ProductAttribute> _productAttributeRepository;
         private readonly IEntityRepository<ProductAttributeRelation> _productAttributeRelationRepository;
         private readonly IEntityRepository<ProductAttributeRelationValue> _productAttributeRelationValueRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         public ProductAttributeRepository(IEntityRepository<ProductAttribute> productAttributeRepository,
             IEntityRepository<ProductAttributeRelation> productAttributeRelationRepository,
             IEntityRepository<ProductAttributeRelationValue> productAttributeRelationValueRepository,
-            IAppDbContext dbContext)
+            IDbContext dbContext)
         {
             _productAttributeRepository = productAttributeRepository;
             _productAttributeRelationRepository = productAttributeRelationRepository;

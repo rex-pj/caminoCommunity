@@ -1,4 +1,4 @@
-﻿using Camino.Framework.GraphQL.Resolvers;
+﻿using Camino.Infrastructure.GraphQL.Resolvers;
 using Module.Api.Order.GraphQL.Resolvers.Contracts;
 using System.Threading.Tasks;
 using System;

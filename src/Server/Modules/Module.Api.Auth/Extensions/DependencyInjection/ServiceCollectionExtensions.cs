@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Module.Api.Auth.GraphQL.Mutations;
 using Module.Api.Auth.GraphQL.Queries;
-using Camino.Infrastructure.Extensions.DependencyInjection;
+using Camino.Infrastructure.DependencyInjection;
 using System.Reflection;
 
 namespace Module.Api.Auth.Extensions.DependencyInjection

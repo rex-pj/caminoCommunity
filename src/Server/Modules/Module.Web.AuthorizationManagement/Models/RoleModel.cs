@@ -1,9 +1,9 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using System;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class RoleModel : BaseModel
+    public class RoleModel : BaseIdentityModel
     {
         public long Id { get; set; }
         public string Name { get; set; }

@@ -10,9 +10,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Infrastructure\Camino.Framework\Camino.Framework.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 		<ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
 	</ItemGroup>
 

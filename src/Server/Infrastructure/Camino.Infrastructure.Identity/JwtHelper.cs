@@ -3,7 +3,6 @@ using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Constants;
 using Camino.Shared.Exceptions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,11 +14,9 @@ namespace Camino.Infrastructure.Identity
     public class JwtHelper : IJwtHelper
     {
         private readonly JwtConfigOptions _jwtConfigOptions;
-        private readonly IUserManager<ApplicationUser> _userManager;
-        public JwtHelper(IOptions<JwtConfigOptions> jwtConfigOptions, IUserManager<ApplicationUser> userManager)
+        public JwtHelper(IOptions<JwtConfigOptions> jwtConfigOptions)
         {
             _jwtConfigOptions = jwtConfigOptions.Value;
-            _userManager = userManager;
         }
 
         public string GenerateJwtToken(ApplicationUser user)
@@ -44,43 +41,12 @@ namespace Camino.Infrastructure.Identity
             return jwtTokenHandler.WriteToken(token);
         }
 
-        public async Task<ClaimsIdentity> GetPrincipalFromExpiredTokenAsync(string token)
+        public JwtSecurityToken GetSecurityToken(string token)
         {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
-            var claimsPrincipal = jwtTokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RequireExpirationTime = false,
-                ValidateLifetime = false,
-                ValidIssuer = _jwtConfigOptions.Issuer,
-                ValidAudience = _jwtConfigOptions.Audience
-            }, out SecurityToken securityToken);
-
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-
-            var userIdentityId = claimsPrincipal.Claims.First(x => x.Type == HttpHeades.UserIdentityClaimKey).Value;
-            var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
-            var claimIdentity = new ClaimsIdentity(claimsPrincipal.Claims, JwtBearerDefaults.AuthenticationScheme);
-            claimIdentity.AddClaim(new Claim(HttpHeades.UserIdClaimKey, userId.ToString()));
-
-            return claimIdentity;
-        }
-
-        public async Task<ClaimsIdentity> ValidateTokenAsync(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
-
             try
             {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
                 var claimPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -96,23 +62,12 @@ namespace Camino.Infrastructure.Identity
                 }, out SecurityToken securityToken);
 
                 var jwtSecurityToken = securityToken as JwtSecurityToken;
-                if (securityToken != null && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var jwtToken = securityToken as JwtSecurityToken;
-                    var userIdentityId = jwtToken.Claims.First(x => x.Type == HttpHeades.UserIdentityClaimKey).Value;
-                    var userId = await _userManager.DecryptUserIdAsync(userIdentityId);
-                    var claimIdentity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
-                    claimIdentity.AddClaim(new Claim(HttpHeades.UserIdClaimKey, userId.ToString()));
-
-                    return claimIdentity;
-                }
+                return jwtSecurityToken;
             }
             catch (SecurityTokenExpiredException ex)
             {
                 throw new CaminoAuthenticationException(ex.Message, ErrorMessages.TokenExpiredException);
             }
-
-            return new ClaimsIdentity();
         }
     }
 }

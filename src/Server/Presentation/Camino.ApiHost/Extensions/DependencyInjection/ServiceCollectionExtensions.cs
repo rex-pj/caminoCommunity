@@ -5,14 +5,15 @@ using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Camino.Framework.GraphQL;
 using Microsoft.AspNetCore.Http;
-using Camino.Framework.Extensions.DependencyInjection;
-using Camino.Infrastructure.Extensions.DependencyInjection;
 using Camino.Shared.Configuration.Options;
 using Camino.Infrastructure.Identity.Options;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
+using Camino.Infrastructure.DependencyInjection;
+using Camino.Infrastructure.GraphQL;
+using Camino.Infrastructure.AutoMapper.DependencyInjection;
+using Camino.Infrastructure.Extensions.DependencyInjection;
 
 namespace Camino.ApiHost.Extensions.DependencyInjection
 {
@@ -33,7 +34,7 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
                 .AddNewtonsoftJson()
                 .AddModularManager()
                 .AddModules(configuration);
-            services.AddAutoMappingModular();
+            services.AutoRegisterAutoMapper();
 
             return services;
         }

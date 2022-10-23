@@ -1,5 +1,5 @@
-﻿using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
+﻿using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.Identity.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

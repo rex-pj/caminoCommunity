@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using System.Collections.Generic;
 
 namespace Module.Api.Auth.Models

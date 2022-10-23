@@ -1,17 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const SIGNUP = gql`
-  mutation Signup($criterias: SignupModelInput) {
-    signup(criterias: $criterias) {
-      isSucceed
-      errors {
-        code
-        message
-      }
-    }
-  }
-`;
-
 export const REFRESH_TOKEN = gql`
   mutation refreshToken {
     refreshToken {

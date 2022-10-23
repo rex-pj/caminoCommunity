@@ -1,11 +1,11 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.ProductManagement.Models
 {
-    public class ProductAttributeModel : BaseModel
+    public class ProductAttributeModel : BaseIdentityModel
     {
         public ProductAttributeModel()
         {

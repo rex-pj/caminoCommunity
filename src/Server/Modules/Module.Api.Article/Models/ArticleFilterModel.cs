@@ -1,6 +1,4 @@
-﻿using Camino.Framework.Models;
-using HotChocolate;
-using HotChocolate.Types;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 
 namespace Module.Api.Article.Models
 {

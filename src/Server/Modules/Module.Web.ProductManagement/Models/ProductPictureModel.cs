@@ -1,10 +1,10 @@
 ﻿using Camino.Shared.Enums;
-using Camino.Framework.Models;
+using Camino.Infrastructure.Identity.Models;
 using System;
 
 namespace Module.Web.ProductManagement.Models
 {
-    public class ProductPictureModel : BaseModel
+    public class ProductPictureModel : BaseIdentityModel
     {
         public long ProductId { get; set; }
         public string ProductName { get; set; }

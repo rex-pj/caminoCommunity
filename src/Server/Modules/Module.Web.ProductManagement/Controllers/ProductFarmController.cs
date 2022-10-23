@@ -1,6 +1,6 @@
-﻿using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Attributes;
+using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

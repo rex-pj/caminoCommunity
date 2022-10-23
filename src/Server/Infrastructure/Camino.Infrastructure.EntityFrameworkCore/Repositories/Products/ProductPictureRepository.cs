@@ -11,10 +11,10 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
     public class ProductPictureRepository : IProductPictureRepository, IScopedDependency
     {
         private readonly IEntityRepository<ProductPicture> _productPictureRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
         public ProductPictureRepository(IEntityRepository<ProductPicture> productPictureRepository,
-            IAppDbContext dbContext)
+            IDbContext dbContext)
         {
             _productPictureRepository = productPictureRepository;
             _dbContext = dbContext;

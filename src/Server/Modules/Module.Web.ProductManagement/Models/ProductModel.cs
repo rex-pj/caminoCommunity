@@ -1,11 +1,12 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
+using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace Module.Web.ProductManagement.Models
 {
-    public class ProductModel : BaseModel
+    public class ProductModel : BaseIdentityModel
     {
         public ProductModel()
         {

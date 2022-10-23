@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using Camino.Core.Contracts.Providers;
-using Camino.Application.Contracts.AppServices.Setup;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Enums;
-using Camino.Application.Contracts.AppServices.Setup.Dtos;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
+using Module.Web.SetupManagement.AppServices;
+using Module.Web.SetupManagement.Dtos;
 
 namespace Module.Web.SetupManagement.Controllers
 {

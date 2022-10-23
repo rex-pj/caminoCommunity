@@ -1,11 +1,12 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
+using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace Module.Web.FarmManagement.Models
 {
-    public class FarmModel : BaseModel
+    public class FarmModel : BaseIdentityModel
     {
         public FarmModel()
         {

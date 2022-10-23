@@ -1,7 +1,7 @@
 ﻿using Camino.Application.Contracts;
 using Camino.Application.Contracts.AppServices.Media;
-using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
+using Camino.Infrastructure.Identity.Attributes;
+using Camino.Infrastructure.AspNetCore.Controllers;
 using Camino.Infrastructure.Files.Contracts;
 using Camino.Shared.Constants;
 using Microsoft.AspNetCore.Http;

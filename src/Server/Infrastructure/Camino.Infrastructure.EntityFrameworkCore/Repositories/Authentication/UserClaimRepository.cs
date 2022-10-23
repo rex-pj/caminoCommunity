@@ -10,9 +10,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authentication
     public class UserClaimRepository : IUserClaimRepository, IScopedDependency
     {
         private readonly IEntityRepository<UserClaim> _userClaimRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public UserClaimRepository(IEntityRepository<UserClaim> userClaimRepository, IAppDbContext dbContext)
+        public UserClaimRepository(IEntityRepository<UserClaim> userClaimRepository, IDbContext dbContext)
         {
             _userClaimRepository = userClaimRepository;
             _dbContext = dbContext;

@@ -1,9 +1,8 @@
 ﻿using Camino.Application.Contracts;
 using Camino.Application.Contracts.AppServices.Navigations;
 using Camino.Application.Contracts.AppServices.Navigations.Dtos;
-using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Infrastructure.Http.Interfaces;
 using Camino.Shared.Configuration.Options;
 using Camino.Shared.Constants;
@@ -16,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Camino.Infrastructure.Identity.Attributes;
 
 namespace Module.Web.NavigationManagement.Controllers
 {

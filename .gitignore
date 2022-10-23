@@ -88,3 +88,9 @@ src/Server/Shared/Camino.Shared/bin/
 src/Server/Shared/Camino.Shared/obj/
 src/Server/Shared/Camino.Shared.File/obj/
 src/Server/Shared/Camino.Shared.File/bin/
+src/Server/Infrastructure/Camino.Infrastructure.AspNetCore/bin/
+src/Server/Infrastructure/Camino.Infrastructure.AspNetCore/obj/
+src/Server/Infrastructure/Camino.Infrastructure.AutoMapper/bin/
+src/Server/Infrastructure/Camino.Infrastructure.AutoMapper/obj/
+src/Server/Infrastructure/Camino.Infrastructure.GraphQL/bin/
+src/Server/Infrastructure/Camino.Infrastructure.GraphQL/obj/

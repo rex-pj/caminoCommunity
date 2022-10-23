@@ -10,9 +10,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
     public class UserStatusRepository : IUserStatusRepository, IScopedDependency
     {
         private readonly IEntityRepository<Status> _statusRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public UserStatusRepository(IEntityRepository<Status> statusRepository, IAppDbContext dbContext)
+        public UserStatusRepository(IEntityRepository<Status> statusRepository, IDbContext dbContext)
         {
             _statusRepository = statusRepository;
             _dbContext = dbContext;

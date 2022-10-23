@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="HotChocolate.AspNetCore" Version="12.15.0" />
+		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.15.0" />
+		<PackageReference Include="HotChocolate.Data" Version="12.15.0" />
+		<PackageReference Include="HotChocolate.Types.Scalars" Version="12.15.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Shared\Camino.Shared\Camino.Shared.csproj" />
+	  <ProjectReference Include="..\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,10 +1,10 @@
 ﻿using Camino.Shared.Enums;
-using Camino.Framework.Models;
+using Camino.Infrastructure.Identity.Models;
 using System;
 
 namespace Module.Web.FarmManagement.Models
 {
-    public class FarmPictureModel : BaseModel
+    public class FarmPictureModel : BaseIdentityModel
     {
         public long FarmId { get; set; }
         public string FarmName { get; set; }

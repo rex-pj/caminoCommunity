@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Controllers;
+﻿using Camino.Infrastructure.AspNetCore.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,4 @@
-﻿using Camino.Framework.GraphQL.Queries;
+﻿using Camino.Infrastructure.GraphQL.Queries;
 using HotChocolate;
 using HotChocolate.Types;
 using Module.Api.Product.GraphQL.Resolvers.Contracts;

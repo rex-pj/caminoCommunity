@@ -1,5 +1,4 @@
-﻿using Camino.Framework.GraphQL.Resolvers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.GraphQL.Resolvers;
 using Module.Api.Article.GraphQL.Resolvers.Contracts;
 using Module.Api.Article.Models;
 using System;
@@ -17,6 +16,7 @@ using Camino.Application.Contracts;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
 using Camino.Shared.Exceptions;
 using Camino.Application.Contracts.AppServices.Articles.Dtos.Dtos;
+using Camino.Infrastructure.AspNetCore.Models;
 
 namespace Module.Api.Article.GraphQL.Resolvers
 {

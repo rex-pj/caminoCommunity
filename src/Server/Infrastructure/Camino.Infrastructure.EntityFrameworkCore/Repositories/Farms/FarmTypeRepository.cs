@@ -10,9 +10,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
     public class FarmTypeRepository : IFarmTypeRepository, IScopedDependency
     {
         private readonly IEntityRepository<FarmType> _farmTypeRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public FarmTypeRepository(IEntityRepository<FarmType> farmTypeRepository, IAppDbContext dbContext)
+        public FarmTypeRepository(IEntityRepository<FarmType> farmTypeRepository, IDbContext dbContext)
         {
             _farmTypeRepository = farmTypeRepository;
             _dbContext = dbContext;

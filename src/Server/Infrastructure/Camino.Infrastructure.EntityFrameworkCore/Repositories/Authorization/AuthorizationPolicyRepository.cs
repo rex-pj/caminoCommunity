@@ -8,9 +8,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
     public class AuthorizationPolicyRepository : IAuthorizationPolicyRepository, IScopedDependency
     {
         private readonly IEntityRepository<AuthorizationPolicy> _authorizationPolicyRepository;
-        private readonly IAppDbContext _appDbContext;
+        private readonly IDbContext _appDbContext;
         public AuthorizationPolicyRepository(IEntityRepository<AuthorizationPolicy> authorizationPolicyRepository,
-           IAppDbContext appDbContext)
+           IDbContext appDbContext)
         {
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _appDbContext = appDbContext;

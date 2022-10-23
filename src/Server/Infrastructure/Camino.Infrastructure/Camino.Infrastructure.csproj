@@ -1,19 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>net6.0</TargetFramework>
-	  <ImplicitUsings>enable</ImplicitUsings>
-	  <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Application\Camino.Application\Camino.Application.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Application\Camino.Application\Camino.Application.csproj" />
+		<ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.Files\Camino.Infrastructure.Files.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.AutoMapper\Camino.Infrastructure.AutoMapper.csproj" />
+		<ProjectReference Include="..\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using System;

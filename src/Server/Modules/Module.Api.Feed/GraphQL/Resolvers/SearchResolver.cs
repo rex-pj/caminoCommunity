@@ -1,6 +1,6 @@
 ﻿using Camino.Application.Contracts.AppServices.Feeds;
 using Camino.Application.Contracts.AppServices.Feeds.Dtos;
-using Camino.Framework.GraphQL.Resolvers;
+using Camino.Infrastructure.GraphQL.Resolvers;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Configuration.Options;

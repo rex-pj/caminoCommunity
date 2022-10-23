@@ -51,6 +51,11 @@ namespace Camino.Application.AppServices.Authorization
 
         private AuthorizationPolicyResult MapEntityToDto(AuthorizationPolicy entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new AuthorizationPolicyResult
             {
                 CreatedById = entity.CreatedById,

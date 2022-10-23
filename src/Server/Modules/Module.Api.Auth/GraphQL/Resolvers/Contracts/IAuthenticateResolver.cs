@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Models;
 using Module.Api.Auth.Models;
 using System.Security.Claims;
 using System.Threading.Tasks;

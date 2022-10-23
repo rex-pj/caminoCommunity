@@ -11,9 +11,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
     public class FarmPictureRepository : IFarmPictureRepository, IScopedDependency
     {
         private readonly IEntityRepository<FarmPicture> _farmPictureRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public FarmPictureRepository(IEntityRepository<FarmPicture> farmPictureRepository, IAppDbContext dbContext)
+        public FarmPictureRepository(IEntityRepository<FarmPicture> farmPictureRepository, IDbContext dbContext)
         {
             _farmPictureRepository = farmPictureRepository;
             _dbContext = dbContext;

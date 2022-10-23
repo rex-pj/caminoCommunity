@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Camino.Shared.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.ProductManagement.Models
 {
-    public class ProductCategoryModel : BaseModel
+    public class ProductCategoryModel : BaseIdentityModel
     {
         public ProductCategoryModel()
         {

@@ -33,5 +33,8 @@ namespace Camino.Infrastructure.Identity.Interfaces
         Task<bool> HasPolicyAsync(ClaimsPrincipal user, string policy);
         Task<TUser> FindByIdentityIdAsync(string userIdentityId);
         Task<TUser> FindByIdAsync(long userId);
+
+        Task<ClaimsIdentity> GetPrincipalFromExpiredTokenAsync(string token);
+        Task<ClaimsIdentity> ValidateTokenAsync(string token);
     }
 }

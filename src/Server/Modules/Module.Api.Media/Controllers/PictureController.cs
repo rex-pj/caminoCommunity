@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Camino.Framework.Controllers;
+using Camino.Infrastructure.AspNetCore.Controllers;
 using Camino.Application.Contracts.AppServices.Media;
 using Camino.Application.Contracts;
 using Module.Api.Media.Models;

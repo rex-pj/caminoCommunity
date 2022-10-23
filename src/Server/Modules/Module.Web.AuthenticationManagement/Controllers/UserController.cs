@@ -1,11 +1,10 @@
-﻿using Camino.Framework.Controllers;
-using Camino.Framework.Models;
+﻿using Camino.Infrastructure.AspNetCore.Controllers;
+using Camino.Infrastructure.AspNetCore.Models;
 using Module.Web.AuthenticationManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using Camino.Framework.Attributes;
 using Camino.Shared.Enums;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -15,6 +14,7 @@ using Camino.Infrastructure.Http.Interfaces;
 using Camino.Shared.Constants;
 using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Application.Contracts;
+using Camino.Infrastructure.Identity.Attributes;
 
 namespace Module.Web.AuthenticationManagement.Controllers
 {

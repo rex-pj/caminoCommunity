@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Camino.Framework.Extensions.DependencyInjection;
-using Camino.Infrastructure.Extensions.DependencyInjection;
-using Camino.Framework.Infrastructure.ModelBinders;
 using Camino.Infrastructure.Identity.Options;
+using Camino.Infrastructure.DependencyInjection;
+using Camino.Infrastructure.AspNetCore.ModelBinders;
+using Camino.Infrastructure.Extensions.DependencyInjection;
+using Camino.Infrastructure.AutoMapper.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Camino.Infrastructure.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ namespace Camino.Management.Extensions.DependencyInjection
             .AddModularManager()
             .AddModules(configuration);
 
-            services.AddAutoMappingModular();
+            services.AutoRegisterAutoMapper();
 
             return services;
         }

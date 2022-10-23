@@ -2,8 +2,8 @@
 using Camino.Application.Contracts.AppServices.Users.Dtos;
 using Camino.Application.Validators;
 using Camino.Core.Validators;
-using Camino.Framework.Attributes;
-using Camino.Framework.Controllers;
+using Camino.Infrastructure.Identity.Attributes;
+using Camino.Infrastructure.AspNetCore.Controllers;
 using Camino.Infrastructure.Identity.Core;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Constants;

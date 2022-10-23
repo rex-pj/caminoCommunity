@@ -1,4 +1,4 @@
-﻿using Camino.Framework.Models;
+﻿using Camino.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Module.Web.AuthorizationManagement.Models
 {
-    public class AuthorizationPolicyModel : BaseModel
+    public class AuthorizationPolicyModel : BaseIdentityModel
     {
         public AuthorizationPolicyModel()
         {

@@ -19,7 +19,7 @@ using Camino.Core.Domains;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
-    public class CaminoDbContext : EfDbContext, IAppDbContext, IDbContext
+    public class CaminoDbContext : EfDbContext, /*IDbContext,*/ IDbContext
     {
         #region Dbset
         public DbSet<UserPhoto> UserPhotos { get; set; }

@@ -11,9 +11,9 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Navigations
     public class ShortcutRepository : IShortcutRepository, IScopedDependency
     {
         private readonly IEntityRepository<Shortcut> _shortcutRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly IDbContext _dbContext;
 
-        public ShortcutRepository(IEntityRepository<Shortcut> shortcutRepository, IAppDbContext dbContext)
+        public ShortcutRepository(IEntityRepository<Shortcut> shortcutRepository, IDbContext dbContext)
         {
             _shortcutRepository = shortcutRepository;
             _dbContext = dbContext;
