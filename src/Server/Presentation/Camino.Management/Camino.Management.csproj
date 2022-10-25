@@ -5,11 +5,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Folder Include="App_Data\" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
-	  <ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
+	  <Content Update="App_Data\modules.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 </Project>

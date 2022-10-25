@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\Application\Camino.Application.Contracts\Camino.Application.Contracts.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Files\Camino.Infrastructure.Files.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
+		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+	</ItemGroup>
+
+</Project>

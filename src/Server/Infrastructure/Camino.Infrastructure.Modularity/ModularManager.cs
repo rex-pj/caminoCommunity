@@ -6,17 +6,23 @@ namespace Camino.Infrastructure.Modularity
 {
     public class ModularManager : IModularManager
     {
-        public IList<ModuleInfo> LoadModules(string modulesPath, string prefix = null)
+        public IList<ModuleInfo> LoadModules(string rootPath, ModuleListSettings settings)
         {
-            var moduleRootFolder = new DirectoryInfo(modulesPath);
-            var moduleFolders = moduleRootFolder.GetDirectories();
-            if (prefix != null)
+            if (settings.Modules == null || !settings.Modules.Any())
             {
-                moduleFolders = moduleFolders.Where(x => x.Name.Contains(prefix)).ToArray();
+                return new List<ModuleInfo>();
             }
 
+            var moduleRootDirectory = new DirectoryInfo($"{rootPath}{settings.Path}");
+            var moduleGroupDirectories = moduleRootDirectory.GetDirectories();
+
+            var srcDirectories = moduleGroupDirectories?.SelectMany(x => x.GetDirectories("src"));
+
+            var moduleNames = settings?.Modules.Select(x => x.Name);
+            var moduleDirectories = srcDirectories?.SelectMany(x => x.GetDirectories().Where(d => moduleNames.Contains(d.Name))).ToArray();
+
             var modules = new List<ModuleInfo>();
-            foreach (var moduleFolder in moduleFolders)
+            foreach (var moduleFolder in moduleDirectories)
             {
                 var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.FullName, "bin"));
                 if (!binFolder.Exists)

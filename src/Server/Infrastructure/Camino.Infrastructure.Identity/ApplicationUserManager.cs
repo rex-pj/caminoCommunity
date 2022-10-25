@@ -90,7 +90,7 @@ namespace Camino.Infrastructure.Identity
                 throw new ArgumentNullException(nameof(user));
             }
             var userPolicyStore = GetUserPolicyStore();
-            return await userPolicyStore.HasPolicyAsync(user, NormalizeName(policy), CancellationToken);
+            return await userPolicyStore.HasPolicyAsync(user, policy, CancellationToken);
         }
 
         public async Task<TUser> FindByIdentityIdAsync(string userIdentityId)

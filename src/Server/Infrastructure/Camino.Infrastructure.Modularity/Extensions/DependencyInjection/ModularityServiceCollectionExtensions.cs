@@ -5,13 +5,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Core.Contracts.Modularity;
 using Camino.Infrastructure.Modularity;
+//using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
+using Camino.Infrastructure.Files.Contracts;
+using System.Text;
 
 namespace Camino.Infrastructure.Extensions.DependencyInjection
 {
     public static class ModularCoreServiceCollectionExtensions
     {
-        private const string _modularPath = "Modular:Path";
-        private const string _modularPrefix = "Modular:Prefix";
+        private const string _settingsPath = "Modular:Settings";
 
         public static IMvcBuilder AddModularManager(this IMvcBuilder mvcBuilder)
         {
@@ -44,13 +47,16 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
         private static IList<ModuleInfo> GetModules(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-            var rootPath = Directory.GetParent(webHostEnvironment.ContentRootPath).Parent.Parent.FullName;
-            var modulesPath = $"{rootPath}{configuration[_modularPath]}";
-            var prefix = configuration[_modularPrefix];
+            var fileProvider = serviceProvider.GetRequiredService<IFileProvider>();
+            var projectPath = Directory.GetParent(webHostEnvironment.ContentRootPath);
 
+            var moduleSettingsPath = $"{projectPath.FullName}{configuration[_settingsPath]}";
+            var settingsJson = fileProvider.ReadText(moduleSettingsPath, Encoding.UTF8);
+
+            var settings = JsonConvert.DeserializeObject<ModuleListSettings>(settingsJson);
             var modularManager = serviceProvider.GetRequiredService<IModularManager>();
 
-            var modules = modularManager.LoadModules(modulesPath, prefix);
+            var modules = modularManager.LoadModules(projectPath.Parent.Parent.FullName, settings);
             return modules;
         }
 

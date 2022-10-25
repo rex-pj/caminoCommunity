@@ -1,0 +1,49 @@
+﻿{
+  "path": "\\Modules",
+  "modules": [
+    {
+      "name": "Module.Article.WebAdmin",
+      "path": "Article\\src\\Module.Article.WebAdmin"
+    },
+    {
+      "name": "Module.Community.WebAdmin",
+      "path": "Community\\src\\Module.Community.WebAdmin"
+    },
+    {
+      "name": "Module.Dashboard.WebAdmin",
+      "path": "Dashboard\\src\\Module.Dashboard.WebAdmin"
+    },
+    {
+      "name": "Module.Farm.WebAdmin",
+      "path": "Farm\\src\\Module.Farm.WebAdmin"
+    },
+    {
+      "name": "Module.Authentication.WebAdmin",
+      "path": "Identity\\src\\Module.Authentication.WebAdmin"
+    },
+    {
+      "name": "Module.Authorization.WebAdmin",
+      "path": "Identity\\src\\Module.Authorization.WebAdmin"
+    },
+    {
+      "name": "Module.Identity.WebAdmin",
+      "path": "Identity\\src\\Module.Identity.WebAdmin"
+    },
+    {
+      "name": "Module.Media.WebAdmin",
+      "path": "Media\\src\\Module.Media.WebAdmin"
+    },
+    {
+      "name": "Module.Navigation.WebAdmin",
+      "path": "Navigation\\src\\Module.Navigation.WebAdmin"
+    },
+    {
+      "name": "Module.Product.WebAdmin",
+      "path": "Product\\src\\Module.Product.WebAdmin"
+    },
+    {
+      "name": "Module.Setup.WebAdmin",
+      "path": "Setup\\src\\Module.Setup.WebAdmin"
+    }
+  ]
+}
