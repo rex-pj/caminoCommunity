@@ -15,11 +15,23 @@ namespace Camino.Infrastructure.Modularity
 
             var moduleRootDirectory = new DirectoryInfo($"{rootPath}{settings.Path}");
             var moduleGroupDirectories = moduleRootDirectory.GetDirectories();
+            if (moduleGroupDirectories == null || !moduleGroupDirectories.Any())
+            {
+                return new List<ModuleInfo>();
+            }
 
             var srcDirectories = moduleGroupDirectories?.SelectMany(x => x.GetDirectories("src"));
+            if (srcDirectories == null || !srcDirectories.Any())
+            {
+                return new List<ModuleInfo>();
+            }
 
-            var moduleNames = settings?.Modules.Select(x => x.Name);
+            var moduleNames = settings.Modules.Select(x => x.Name);
             var moduleDirectories = srcDirectories?.SelectMany(x => x.GetDirectories().Where(d => moduleNames.Contains(d.Name))).ToArray();
+            if (moduleDirectories == null || !moduleDirectories.Any())
+            {
+                return new List<ModuleInfo>();
+            }
 
             var modules = new List<ModuleInfo>();
             foreach (var moduleFolder in moduleDirectories)
@@ -31,14 +43,14 @@ namespace Camino.Infrastructure.Modularity
                 }
 
                 var dllFiles = binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories);
-                foreach (var file in dllFiles)
+                foreach (var dllFile in dllFiles)
                 {
                     if (modules.Any(x => x.Path == moduleFolder.FullName))
                     {
                         continue;
                     }
 
-                    var module = GetModuleByFile(file, moduleFolder, binFolder);
+                    var module = GetModuleByFile(dllFile, moduleFolder);
                     if (module != null)
                     {
                         modules.Add(module);
@@ -49,10 +61,10 @@ namespace Camino.Infrastructure.Modularity
             return modules;
         }
 
-        private ModuleInfo GetModuleByFile(FileSystemInfo fileSystemInfo, DirectoryInfo moduleFolder, DirectoryInfo binFolder)
+        private ModuleInfo GetModuleByFile(FileSystemInfo fileSystemInfo, DirectoryInfo moduleFolder)
         {
             var assembly = GetModuleAssembly(fileSystemInfo);
-            if (assembly == null)
+            if (assembly == null || string.IsNullOrEmpty(assembly.FullName))
             {
                 throw new FileLoadException($"No assembly of {fileSystemInfo.FullName} has been found!", fileSystemInfo.FullName);
             }
