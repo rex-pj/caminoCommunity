@@ -18,7 +18,6 @@
 		<ProjectReference Include="..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.Files\Camino.Infrastructure.Files.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
-		<ProjectReference Include="..\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.AutoMapper\Camino.Infrastructure.AutoMapper.csproj" />
 		<ProjectReference Include="..\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />

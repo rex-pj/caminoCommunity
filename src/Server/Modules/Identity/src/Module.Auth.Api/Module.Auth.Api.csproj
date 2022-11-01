@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\..\Application\Camino.Application.Contracts\Camino.Application.Contracts.csproj" />
+	  <ProjectReference Include="..\..\..\..\Core\Camino.Core\Camino.Core.csproj" />
 	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
 	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Emails\Camino.Infrastructure.Emails.csproj" />
 	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.GraphQL\Camino.Infrastructure.GraphQL.csproj" />

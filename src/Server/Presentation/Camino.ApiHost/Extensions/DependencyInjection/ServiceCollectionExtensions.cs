@@ -83,8 +83,9 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
             options.Cookie.SecurePolicy = CookieSecurePolicy.None;
         });
 #endif
+            services.AddAuthorization();
+
             services.AddGraphQLServer()
-                .AddAuthorization()
                 .AddHttpRequestInterceptor<GraphQlRequestInterceptor>()
                 .AddQueryType(x => x.Name("Query"))
                 .AddMutationType(x => x.Name("Mutation"));
