@@ -3,7 +3,6 @@ using Camino.Infrastructure.AspNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using Camino.Infrastructure.AspNetCore.Models;
 using Camino.Infrastructure.Identity.Constants;
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Infrastructure.Identity.Options;
@@ -42,6 +41,11 @@ namespace Module.Auth.Api.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
                 var result = await _loginManager.PasswordSignInAsync(criterias.Username, criterias.Password, true, true);
                 if (!result.Succeeded)
                 {

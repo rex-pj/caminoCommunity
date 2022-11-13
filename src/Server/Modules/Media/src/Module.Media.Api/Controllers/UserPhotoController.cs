@@ -4,16 +4,12 @@ using Camino.Application.Validators;
 using Camino.Core.Validators;
 using Camino.Infrastructure.Identity.Attributes;
 using Camino.Infrastructure.AspNetCore.Controllers;
-using Camino.Infrastructure.Identity.Core;
-using Camino.Infrastructure.Identity.Interfaces;
-using Camino.Shared.Constants;
 using Camino.Shared.Enums;
 using Camino.Shared.File;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Module.Media.Api.Models;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Media.Api.Controllers
@@ -22,17 +18,14 @@ namespace Module.Media.Api.Controllers
     public class UserPhotoController : BaseTokenAuthController
     {
         private readonly IUserPhotoAppService _userPhotoAppService;
-        private readonly IUserManager<ApplicationUser> _userManager;
         private readonly BaseValidatorContext _validatorContext;
 
         public UserPhotoController(IUserPhotoAppService userPhotoAppService,
-            IUserManager<ApplicationUser> userManager,
             BaseValidatorContext validatorContext,
             IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;
-            _userManager = userManager;
             _validatorContext = validatorContext;
         }
 
@@ -130,9 +123,7 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
-                var userIdentityId = HttpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
-                var loggedUserId = await _userManager.DecryptUserIdAsync(userIdentityId);
-                await _userPhotoAppService.DeleteByUserIdAsync(loggedUserId, UserPictureTypes.Avatar);
+                await _userPhotoAppService.DeleteByUserIdAsync(LoggedUserId, UserPictureTypes.Avatar);
                 return Ok();
             }
             catch (Exception)
@@ -147,9 +138,7 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
-                var userPrincipalId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                long.TryParse(userPrincipalId, out long loggedUserId);
-                await _userPhotoAppService.DeleteByUserIdAsync(loggedUserId, UserPictureTypes.Cover);
+                await _userPhotoAppService.DeleteByUserIdAsync(LoggedUserId, UserPictureTypes.Cover);
                 return Ok();
             }
             catch (Exception)

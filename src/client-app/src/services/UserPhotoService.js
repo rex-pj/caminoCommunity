@@ -1,6 +1,6 @@
 import { apiConfig } from "../config/api-config";
 import axios from "axios";
-import BaseService from "./BaseService";
+import BaseService from "./baseService";
 
 const UserPhotoService = class extends BaseService {
   updateAvatar = async (request) => {

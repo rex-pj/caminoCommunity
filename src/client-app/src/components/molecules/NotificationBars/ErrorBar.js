@@ -2,7 +2,7 @@ import React from "react";
 import { ErrorBox } from "./NotificationBoxes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function (props) {
+const ErrorBar = (props) => {
   return (
     <ErrorBox>
       <FontAwesomeIcon
@@ -12,4 +12,6 @@ export default function (props) {
       <span>{props.children}</span>
     </ErrorBox>
   );
-}
+};
+
+export default ErrorBar;

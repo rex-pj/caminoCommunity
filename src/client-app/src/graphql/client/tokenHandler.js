@@ -25,7 +25,7 @@ export const getNewTokens = async () => {
     fetch(apiConfig.camino_graphql, {
       headers: {
         "content-type": "application/json",
-        "x-header-authentication-access-token": authenticationToken,
+        Authorization: authenticationToken,
       },
       credentials: "include",
       method: "POST",

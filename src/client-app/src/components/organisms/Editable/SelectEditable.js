@@ -50,7 +50,7 @@ const updateStatus = {
   fail: "fail",
 };
 
-export default function (props) {
+const SelectEditable = (props) => {
   const { selections, value, name, disabled, label } = props;
   const [status, setStatus] = useState("");
 
@@ -185,4 +185,6 @@ export default function (props) {
       {selectedValue ? selectedValue.text : emptyText}
     </TextLabel>
   );
-}
+};
+
+export default SelectEditable;

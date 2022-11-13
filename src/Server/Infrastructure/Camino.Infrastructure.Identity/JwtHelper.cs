@@ -27,7 +27,7 @@ namespace Camino.Infrastructure.Identity
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(HttpHeades.UserIdentityClaimKey, user.UserIdentityId.ToString()),
+                    new Claim(HttpHeaders.UserIdentityClaimKey, user.UserIdentityId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Name, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),

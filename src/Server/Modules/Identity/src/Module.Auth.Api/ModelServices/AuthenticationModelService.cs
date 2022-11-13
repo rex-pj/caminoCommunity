@@ -26,7 +26,7 @@ namespace Module.Auth.Api.ModelServices
             isSecure = false;
             sameSite = SameSiteMode.None;
 #endif
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeades.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeaders.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 SameSite = sameSite,

@@ -30,6 +30,12 @@ export const apiConfig = {
       post: {
         postRegister: `${process.env.REACT_APP_CAMINO_API}/users/registration`,
       },
+      patch: {
+        patchUser: `${process.env.REACT_APP_CAMINO_API}/users/partials`,
+      },
+      put: {
+        putUserIdentifiers: `${process.env.REACT_APP_CAMINO_API}/users/identifiers`,
+      },
     },
   },
 };

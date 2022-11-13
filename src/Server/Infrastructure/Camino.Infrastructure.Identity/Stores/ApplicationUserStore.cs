@@ -641,16 +641,26 @@ namespace Camino.Infrastructure.Identity.Stores
             return IdentityResult.Success;
         }
 
-        public async Task<string> EncryptUserId(long userId)
+        public async Task<string> EncryptUserIdAsync(long userId)
         {
-            var encryptId = _textCrypter.Encrypt(userId.ToString(), _crypterSettings.SaltKey);
-            return await Task.FromResult(encryptId);
+            return await Task.FromResult(EncryptUserId(userId));
         }
 
-        public async Task<long> DecryptUserId(string userIdentityId)
+        public async Task<long> DecryptUserIdAsync(string userIdentityId)
         {
-            var id = long.Parse(_textCrypter.Decrypt(userIdentityId, _crypterSettings.SaltKey));
-            return await Task.FromResult(id);
+            return await Task.FromResult(DecryptUserId(userIdentityId));
+        }
+
+        public string EncryptUserId(long userId)
+        {
+            var encryptId = _textCrypter.Encrypt(userId.ToString(), _crypterSettings.SaltKey);
+            return encryptId;
+        }
+
+        public long DecryptUserId(string userIdentityId)
+        {
+            long.TryParse(_textCrypter.Decrypt(userIdentityId, _crypterSettings.SaltKey), out long id);
+            return id;
         }
 
         protected async Task<ApplicationAuthorizationPolicy> FindPolicyAsync(string policyName, CancellationToken cancellationToken)

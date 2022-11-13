@@ -2,6 +2,7 @@
 using Camino.Infrastructure.Identity.Interfaces;
 using Camino.Shared.Constants;
 using Camino.Shared.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,7 @@ namespace Camino.Infrastructure.Identity.Attributes
 
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                var token = context?.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
+                var token = context?.HttpContext.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
                 if (string.IsNullOrEmpty(token))
                 {
                     return;
@@ -64,7 +65,7 @@ namespace Camino.Infrastructure.Identity.Attributes
 
                     var loginManager = requestServices.GetRequiredService<ILoginManager<ApplicationUser>>();
                     httpContext.User.AddIdentity(claimsIdentity);
-                    var userIdentityId = httpContext.User.FindFirstValue(HttpHeades.UserIdentityClaimKey);
+                    var userIdentityId = httpContext.User.FindFirstValue(HttpHeaders.UserIdentityClaimKey);
                     var user = await userManager.FindByIdentityIdAsync(userIdentityId);
                     await loginManager.SignInWithClaimsAsync(user, true, new Claim[] { new Claim("amr", "pwd") });
                     return;

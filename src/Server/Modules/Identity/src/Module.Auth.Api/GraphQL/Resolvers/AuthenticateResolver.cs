@@ -91,7 +91,7 @@ namespace Module.Auth.Api.GraphQL.Resolvers
             }
 
             var claimsIdentity = await _userManager.GetPrincipalFromExpiredTokenAsync(authenticationToken);
-            var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeades.UserIdentityClaimKey).Value;
+            var userIdentityId = claimsIdentity.Claims.FirstOrDefault(x => x.Type == HttpHeaders.UserIdentityClaimKey).Value;
             if (string.IsNullOrEmpty(userIdentityId))
             {
                 return new UserTokenModel();
@@ -133,7 +133,7 @@ namespace Module.Auth.Api.GraphQL.Resolvers
             isSecure = false;
             sameSite = SameSiteMode.None;
             #endif
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeades.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(HttpHeaders.CookieAuthenticationRefreshToken, refreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 SameSite = sameSite,
@@ -145,12 +145,12 @@ namespace Module.Auth.Api.GraphQL.Resolvers
 
         private string GetRefreshTokenFromCookie()
         {
-            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeades.CookieAuthenticationRefreshToken];
+            return _httpContextAccessor.HttpContext.Request.Cookies[HttpHeaders.CookieAuthenticationRefreshToken];
         }
 
         private string GetAccessTokenFromHeader()
         {
-            return _httpContextAccessor.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
+            return _httpContextAccessor.HttpContext.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
         }
 
         public async Task<CommonResult> ForgotPasswordAsync(ForgotPasswordModel criterias)

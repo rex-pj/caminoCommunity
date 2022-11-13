@@ -23,7 +23,7 @@ const contextLink = setContext(async (_, { headers }) => {
   if (authenticationToken) {
     headers = {
       ...headers,
-      "x-header-authentication-access-token": authenticationToken,
+      Authorization: authenticationToken,
     };
   }
 

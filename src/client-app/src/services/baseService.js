@@ -7,8 +7,7 @@ export default class BaseService {
     axios.defaults.baseURL = apiConfig.camino_api;
     const { authenticationToken } = getAuthenticationToken();
     if (authenticationToken) {
-      axios.defaults.headers.common["x-header-authentication-access-token"] =
-        authenticationToken;
+      axios.defaults.headers.common["Authorization"] = authenticationToken;
     }
   }
 }

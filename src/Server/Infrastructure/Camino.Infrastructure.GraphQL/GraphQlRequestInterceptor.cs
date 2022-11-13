@@ -14,7 +14,7 @@ namespace Camino.Infrastructure.GraphQL
         public override async ValueTask OnCreateAsync(HttpContext context, IRequestExecutor requestExecutor,
             IQueryRequestBuilder requestBuilder, CancellationToken cancellationToken)
         {
-            var token = context.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
+            var token = context.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
             if (string.IsNullOrEmpty(token))
             {
                 return;

@@ -27,7 +27,9 @@ namespace Camino.Infrastructure.Identity.Interfaces
         Task<IdentityResult> ResetPasswordAsync(TUser user, string token, string newPassword);
         Task<IdentityResult> UpdateAsync(TUser user);
         Task<string> EncryptUserIdAsync(long userId);
+        string EncryptUserId(long userId);
         Task<long> DecryptUserIdAsync(string userIdentityId);
+        long DecryptUserId(string userIdentityId);
         string NewSecurityStamp();
         Task<bool> HasPolicyAsync(TUser user, string policy);
         Task<bool> HasPolicyAsync(ClaimsPrincipal user, string policy);

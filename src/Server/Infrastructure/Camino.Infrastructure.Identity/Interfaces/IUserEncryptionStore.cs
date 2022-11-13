@@ -4,7 +4,9 @@ namespace Camino.Infrastructure.Identity.Interfaces
 {
     public interface IUserEncryptionStore<TUser> where TUser: ApplicationUser
     {
-        Task<string> EncryptUserId(long userId);
-        Task<long> DecryptUserId(string userIdentityId);
+        Task<string> EncryptUserIdAsync(long userId);
+        Task<long> DecryptUserIdAsync(string userIdentityId);
+        string EncryptUserId(long userId);
+        long DecryptUserId(string userIdentityId);
     }
 }

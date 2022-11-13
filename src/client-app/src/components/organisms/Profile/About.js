@@ -26,9 +26,9 @@ const InfoList = styled(VerticalList)`
   margin-bottom: 0;
 `;
 
-export default (props) => {
+const About = (props) => {
   const onEdited = async (e) => {
-    return await props.onEdited(e);
+    await props.onEdited(e);
   };
 
   const { userInfo, canEdit, countrySelections, genderSelections } = props;
@@ -124,3 +124,5 @@ export default (props) => {
     </MainPanel>
   );
 };
+
+export default About;

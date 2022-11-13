@@ -30,7 +30,7 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default (props) => {
+const ProfileUpdateForm = (props) => {
   const { userInfo } = props;
 
   let model = {
@@ -161,3 +161,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default ProfileUpdateForm;

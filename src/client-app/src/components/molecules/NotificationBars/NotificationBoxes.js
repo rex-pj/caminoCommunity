@@ -14,7 +14,7 @@ const NotificationBox = styled.div`
 `;
 
 export const ErrorBox = styled(NotificationBox)`
-  color: ${(p) => p.theme.color.neutralText};
+  color: ${(p) => p.theme.color.dangerText};
   background-color: ${(p) => p.theme.color.warnBg};
   border: 1px solid ${(p) => p.theme.color.warnBg};
 `;

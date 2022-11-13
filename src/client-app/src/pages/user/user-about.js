@@ -1,18 +1,16 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
-import { userMutations } from "../../graphql/fetching/mutations";
 import About from "../../components/organisms/Profile/About";
 import {
   ErrorBar,
   LoadingBar,
 } from "../../components/molecules/NotificationBars";
+import UserService from "../../services/userService";
 
-export default (props) => {
+const UserAbout = (props) => {
   const { userId } = props;
-
-  const [partialUserUpdate] = useMutation(userMutations.PARTIAL_USER_UPDATE);
+  const userService = new UserService();
 
   const { loading, error, data, refetch } = useQuery(
     userQueries.GET_FULL_USER_INFO,
@@ -36,23 +34,19 @@ export default (props) => {
   const { canEdit } = fullUserInfo;
 
   const onEdited = async (e) => {
-    if (partialUserUpdate) {
-      return await partialUserUpdate({
-        variables: {
-          criterias: {
-            key: e.primaryKey,
+    await userService
+      .partialUpdate({
+        key: e.primaryKey,
+        updates: [
+          {
             value: e.value,
             propertyName: e.propertyName,
-            canEdit,
           },
-        },
-      }).then((response) => {
-        const { errors } = response;
-        if (!errors) {
-          refetch();
-        }
+        ],
+      })
+      .then((response) => {
+        refetch();
       });
-    }
   };
 
   return (
@@ -65,3 +59,5 @@ export default (props) => {
     />
   );
 };
+
+export default UserAbout;

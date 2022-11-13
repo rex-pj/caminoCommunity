@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import {
@@ -34,15 +34,20 @@ const TextEditing = styled(PrimaryTextbox)`
   border-radius: 0;
 `;
 
-export default function (props) {
+const TextEditable = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(props.value ? props.value : "");
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [setValue, props.value]);
 
   function openTextBox() {
     setIsOpen(true);
   }
 
   function closeTextBox() {
+    setValue(props.value);
     setIsOpen(false);
   }
 
@@ -55,7 +60,6 @@ export default function (props) {
       await pushData();
     } else if (e.keyCode === 13) {
       closeTextBox();
-      setValue(value);
     } else if (e.keyCode === 27) {
       closeTextBox();
       const currentValue = props.value ? props.value : "";
@@ -93,7 +97,6 @@ export default function (props) {
 
   function onBlur() {
     closeTextBox();
-    setValue(value);
   }
 
   function onChange(e) {
@@ -109,7 +112,7 @@ export default function (props) {
     return (
       <TextEditing
         name={props.name}
-        value={value ? value : ""}
+        value={value ?? ""}
         onBlur={onBlur}
         autoFocus={true}
         onKeyUp={onEnterUpdate}
@@ -121,7 +124,7 @@ export default function (props) {
       <Wrap>
         <TextEditing
           name={props.name}
-          value={value ? value : ""}
+          value={value ?? ""}
           autoFocus={true}
           onChange={onChange}
         />{" "}
@@ -150,4 +153,6 @@ export default function (props) {
   ) : (
     <TextLabel className="disabled">{value}</TextLabel>
   );
-}
+};
+
+export default TextEditable;

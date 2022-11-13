@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
@@ -7,8 +7,9 @@ import { LabelNormal } from "../../atoms/Labels";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import AuthNavigation from "../Navigation/AuthNavigation";
 import AuthBanner from "../Banner/AuthBanner";
-import loginModel from "../../../models/loginModel";
 import { checkValidity } from "../../../utils/Validity";
+import loginModel from "../../../models/loginModel";
+import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -71,10 +72,9 @@ const ForgotPasswordRow = styled(FormRow)`
 `;
 
 const LoginForm = (props) => {
-  const [, updateState] = useState();
   const [isRemember, setRemember] = useState(false);
-  const forceUpdate = useCallback(() => updateState({}), []);
-  let formData = loginModel;
+  const [formData, setFormData] = useState(loginModel);
+  const [error, setError] = useState();
 
   const handleInputBlur = (evt) => {
     const { name } = evt.target;
@@ -86,14 +86,14 @@ const LoginForm = (props) => {
   };
 
   const handleInputChange = (evt) => {
-    formData = formData || {};
+    let data = formData || {};
     const { name, value } = evt.target;
 
     // Validate when input
-    formData[name].isValid = checkValidity(formData, value, name);
-    formData[name].value = value;
+    data[name].isValid = checkValidity(data, value, name);
+    data[name].value = value;
 
-    forceUpdate();
+    setFormData({ ...data });
   };
 
   const handleCheckboxChange = (evt) => {
@@ -121,10 +121,7 @@ const LoginForm = (props) => {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        props.showValidationError(
-          "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again"
-        );
+        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
       }
     }
 
@@ -134,12 +131,17 @@ const LoginForm = (props) => {
         loginData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.onlogin(loginData, isRemember);
+      props
+        .onlogin(loginData, isRemember)
+        .catch(() => showError("Có lỗi xảy ra trong quá trình đăng nhập"));
     }
   };
 
-  const isFormValid = checkIsFormValid();
+  const showError = (message) => {
+    setError(message);
+  };
 
+  const isFormValid = checkIsFormValid();
   return (
     <form onSubmit={(e) => onlogin(e)} method="POST">
       <div className="row g-0">
@@ -153,6 +155,7 @@ const LoginForm = (props) => {
         <div className="col col-12 col-sm-5">
           <AuthNavigation />
           <PanelBody>
+            <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
             <FormRow>
               <Label>E-mail</Label>
               <Textbox

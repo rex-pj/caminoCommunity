@@ -23,7 +23,7 @@ namespace Camino.Infrastructure.Identity.Attributes
         {
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                var token = context.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
+                var token = context.HttpContext.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
                 if (string.IsNullOrEmpty(token))
                 {
                     return;

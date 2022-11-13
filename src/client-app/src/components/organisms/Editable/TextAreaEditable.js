@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TextAreaNeutral } from "../../atoms/TextAreas";
@@ -37,9 +37,13 @@ const TextEditing = styled(TextAreaNeutral)`
   vertical-align: middle;
 `;
 
-export default (props) => {
+const TextAreaEditable = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(props.value ? props.value : "");
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [setValue, props.value]);
 
   function openTextBox() {
     setIsOpen(true);
@@ -58,16 +62,15 @@ export default (props) => {
       await pushData();
     } else if (e.keyCode === 13) {
       closeTextBox();
-      setValue(value);
     } else if (e.keyCode === 27) {
       closeTextBox();
-      const currentValue = props.value ? props.value : "";
+      const currentValue = props.value ?? "";
       setValue(currentValue);
     }
   }
 
   async function pushData() {
-    const currentValue = props.value ? props.value : "";
+    const currentValue = props.value ?? "";
 
     let newValue = value;
 
@@ -101,8 +104,8 @@ export default (props) => {
   }
 
   function cancelEdit() {
+    setValue(props.value);
     closeTextBox();
-    setValue(value);
   }
 
   function onChange(e) {
@@ -176,3 +179,5 @@ export default (props) => {
     />
   );
 };
+
+export default TextAreaEditable;

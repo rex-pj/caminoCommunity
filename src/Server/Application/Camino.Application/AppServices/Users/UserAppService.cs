@@ -100,76 +100,79 @@ namespace Camino.Application.AppServices.Users
 
         public async Task<PartialUpdateRequest> PartialUpdateAsync(PartialUpdateRequest request)
         {
-            if (request.PropertyName == null)
-            {
-                throw new ArgumentException(nameof(request.PropertyName));
-            }
-
-            if (request.Key == null)
-            {
-                throw new ArgumentException(nameof(request.Key));
-            }
-
             var user = await _userEntityRepository.FindAsync(x => x.Id == (long)request.Key);
             if (user == null)
             {
                 throw new ArgumentException(nameof(user));
             }
 
-            switch (true)
+            foreach (var updateItem in request.Updates)
             {
-                case bool b when nameof(User.Address).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    user.Address = request.Value?.ToString();
-                    break;
-                case bool b when nameof(User.PhoneNumber).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    _validatorContext.SetValidator(new PhoneValidator());
-                    bool isValid = request.Value == null || string.IsNullOrEmpty(request.Value.ToString()) || _validatorContext.Validate<object, bool>(request.Value);
-                    if (!isValid)
-                    {
-                        user.PhoneNumber = request.Value?.ToString();
-                    }
-                    break;
-                case bool b when nameof(User.Description).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    user.Description = request.Value?.ToString();
-                    break;
-                case bool b when nameof(User.BirthDate).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (DateTime.TryParse(request.Value.ToString(), out var birthDate))
-                    {
-                        user.BirthDate = birthDate;
-                    }
-                    else if (request.Value == null)
-                    {
-                        user.BirthDate = null;
-                    }
-
-                    break;
-                case bool b when nameof(User.GenderId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (int.TryParse(request.Value.ToString(), out var genderId))
-                    {
-                        user.GenderId = genderId;
-                    }
-                    else if (request.Value == null)
-                    {
-                        user.GenderId = null;
-                    }
-                    break;
-                case bool b when nameof(User.CountryId).Equals(request.PropertyName, StringComparison.OrdinalIgnoreCase):
-                    if (short.TryParse(request.Value.ToString(), out var countryId))
-                    {
-                        user.CountryId = countryId;
-                    }
-                    else if (request.Value == null)
-                    {
-                        user.CountryId = null;
-                    }
-                    break;
-                default:
-                    throw new NotSupportedException($"Not support {request.PropertyName}");
+                PartialUpdateItem(user, updateItem);
             }
 
             user.UpdatedById = user.Id;
+            user.UpdatedDate = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
             return request;
+        }
+
+        private void PartialUpdateItem(User user, PartialUpdateItemRequest updateItem)
+        {
+            if (nameof(User.Address).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                user.Address = updateItem.Value?.ToString();
+            }
+            else if (nameof(User.PhoneNumber).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                _validatorContext.SetValidator(new PhoneValidator());
+                bool isValid = updateItem.Value == null || string.IsNullOrEmpty(updateItem.Value.ToString()) || _validatorContext.Validate<object, bool>(updateItem.Value);
+                if (isValid)
+                {
+                    user.PhoneNumber = updateItem.Value.ToString();
+                }
+            }
+            else if (nameof(User.Description).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                user.Description = updateItem.Value?.ToString();
+            }
+            else if (nameof(User.BirthDate).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                if (DateTime.TryParse(updateItem.Value.ToString(), out var birthDate))
+                {
+                    user.BirthDate = birthDate;
+                }
+                else if (updateItem.Value == null)
+                {
+                    user.BirthDate = null;
+                }
+            }
+            else if (nameof(User.GenderId).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                if (int.TryParse(updateItem.Value.ToString(), out var genderId))
+                {
+                    user.GenderId = genderId;
+                }
+                else if (updateItem.Value == null)
+                {
+                    user.GenderId = null;
+                }
+            }
+            else if (nameof(User.CountryId).EqualsIgnoreCase(updateItem.PropertyName))
+            {
+                if (short.TryParse(updateItem.Value.ToString(), out var countryId))
+                {
+                    user.CountryId = countryId;
+                }
+                else if (updateItem.Value == null)
+                {
+                    user.CountryId = null;
+                }
+            }
+            else
+            {
+                throw new NotSupportedException($"Not support {updateItem.PropertyName}");
+            }
         }
 
         public async Task<UserIdentifierUpdateRequest> UpdateIdentifierAsync(UserIdentifierUpdateRequest request)

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace Camino.Infrastructure.Identity.Attributes
 {
@@ -31,7 +32,7 @@ namespace Camino.Infrastructure.Identity.Attributes
 
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                var token = context.HttpContext.Request.Headers[HttpHeades.HeaderAuthenticationAccessToken];
+                var token = context.HttpContext.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
                 if (string.IsNullOrEmpty(token))
                 {
                     context.Result = new ForbidResult();
@@ -62,6 +63,19 @@ namespace Camino.Infrastructure.Identity.Attributes
                     {
                         context.Result = new ForbidResult();
                     }
+
+                    var userIdentityId = httpContext.User.FindFirstValue(HttpHeaders.UserIdentityClaimKey);
+                    if (string.IsNullOrEmpty(userIdentityId))
+                    {
+                        context.Result = new ForbidResult();
+                    }
+
+                    var userId = await userManager.DecryptUserIdAsync(userIdentityId);
+                    if (userId == 0)
+                    {
+                        context.Result = new ForbidResult();
+                    }
+
                     return;
                 }
                 catch (CaminoAuthenticationException)

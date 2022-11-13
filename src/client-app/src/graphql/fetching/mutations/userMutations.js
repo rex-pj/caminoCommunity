@@ -10,24 +10,6 @@ export const REFRESH_TOKEN = gql`
   }
 `;
 
-export const UPDATE_USER_IDENTIFIER = gql`
-  mutation UpdateIdentifier($criterias: UserIdentifierUpdateModelInput) {
-    updateIdentifier(criterias: $criterias) {
-      lastname
-      firstname
-      displayName
-    }
-  }
-`;
-
-export const PARTIAL_USER_UPDATE = gql`
-  mutation PartialUserUpdate($criterias: PartialUpdateRequestModelInput!) {
-    partialUserUpdate(criterias: $criterias) {
-      propertyName
-    }
-  }
-`;
-
 export const UPDATE_USER_PASSWORD = gql`
   mutation UpdatePassword($criterias: UserPasswordUpdateModelInput!) {
     updatePassword(criterias: $criterias) {

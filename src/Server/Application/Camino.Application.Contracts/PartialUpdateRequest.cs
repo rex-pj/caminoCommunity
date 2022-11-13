@@ -3,7 +3,6 @@
     public class PartialUpdateRequest
     {
         public object Key { get; set; }
-        public string PropertyName { get; set; }
-        public object Value { get; set; }
+        public IList<PartialUpdateItemRequest> Updates { get; set; }
     }
 }

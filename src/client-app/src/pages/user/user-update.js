@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import ProfileUpdateFrom from "../../components/organisms/Profile/ProfileUpdateForm";
 import { userQueries } from "../../graphql/fetching/queries";
-import { userMutations } from "../../graphql/fetching/mutations";
+import UserService from "../../services/userService";
 import {
   ErrorBar,
   LoadingBar,
@@ -10,13 +10,11 @@ import {
 import { useStore } from "../../store/hook-store";
 import { SessionContext } from "../../store/context/session-context";
 
-export default (props) => {
+const UserUpdate = (props) => {
   const { userId } = props;
   const [isFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const [updateUserIdentifier] = useMutation(
-    userMutations.UPDATE_USER_IDENTIFIER
-  );
+  const userService = new UserService();
   const { relogin } = useContext(SessionContext);
   const { loading, error, data, refetch } = useQuery(
     userQueries.GET_USER_IDENTIFY,
@@ -40,31 +38,19 @@ export default (props) => {
       return;
     }
 
-    await updateUserIdentifier({
-      variables: {
-        criterias: data,
-      },
-    })
+    await userService
+      .updateIdentifiers(data)
       .then((response) => {
-        const { errors } = response;
-        if (errors) {
-          showNotification(
-            "An error occcured when updating your information",
-            "Please check your input and try again",
-            "error"
-          );
-        } else {
-          showNotification(
-            "The information is changed successfully",
-            "The information is changed successfully",
-            "info"
-          );
-          refetch();
+        showNotification(
+          "The information is changed successfully",
+          "The information is changed successfully",
+          "info"
+        );
+        refetch();
 
-          setTimeout(() => {
-            relogin();
-          }, 300);
-        }
+        setTimeout(() => {
+          relogin();
+        }, 300);
       })
       .catch(() => {
         showNotification(
@@ -102,3 +88,5 @@ export default (props) => {
     />
   );
 };
+
+export default UserUpdate;
