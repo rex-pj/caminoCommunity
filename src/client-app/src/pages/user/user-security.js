@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { SessionContext } from "../../store/context/session-context";
 import PasswordUpdateForm from "../../components/organisms/Profile/PasswordUpdateForm";
-import { userMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import ConfirmToRedirectModal from "../../components/organisms/Modals/ConfirmToRedirectModal";
+import AuthService from "../../services/authService";
+import { setLogin, checkRemember } from "../../services/AuthLogic";
 
-export default (props) => {
+const UserSecurity = (props) => {
+  const authService = new AuthService();
   const navigate = useNavigate();
   const [isFormEnabled, setFormEnabled] = useState(true);
   const dispatch = useStore(false)[1];
-  const [updateUserPassword] = useMutation(userMutations.UPDATE_USER_PASSWORD);
   const { canEdit } = props;
+  const { relogin } = useContext(SessionContext);
 
   const onUpdateConfirmation = () => {
     dispatch("OPEN_MODAL", {
@@ -36,14 +38,6 @@ export default (props) => {
     navigate("/auth/logout");
   };
 
-  const showNotification = (title, message, type) => {
-    dispatch("NOTIFY", {
-      title,
-      message,
-      type: type,
-    });
-  };
-
   const onUpdatePassword = async (data) => {
     if (!canEdit) {
       return;
@@ -51,48 +45,38 @@ export default (props) => {
 
     setFormEnabled(true);
 
-    if (updateUserPassword) {
-      await updateUserPassword({
-        variables: {
-          criterias: data,
-        },
-      })
-        .then((response) => {
-          const { errors } = response;
-          if (errors) {
-            setFormEnabled(true);
-            showNotification(
-              "An error occured when update the password",
-              "Please check your input and try again",
-              "error"
-            );
-          }
+    await authService
+      .updatePassword(data)
+      .then(async (response) => {
+        const { data } = response;
+        const { authenticationToken } = data;
+        if (!authenticationToken) {
+          setFormEnabled(true);
+          return Promise.reject();
+        }
 
-          showNotification(
-            "The password is changed successfully",
-            "The password is changed successfully",
-            "info"
-          );
-          onUpdateConfirmation();
-          setFormEnabled(true);
-        })
-        .catch((error) => {
-          setFormEnabled(true);
-          showNotification(
-            "An error occured when update the password",
-            "Please check your input and try again",
-            "error"
-          );
-        });
-    }
+        const isRemember = checkRemember();
+        setLogin(data, isRemember);
+        await relogin();
+
+        onUpdateConfirmation();
+        setFormEnabled(true);
+        Promise.resolve(data);
+      })
+      .catch((error) => {
+        setFormEnabled(true);
+        Promise.reject(error);
+      });
   };
 
   return (
     <PasswordUpdateForm
-      onUpdate={(e) => onUpdatePassword(e, canEdit)}
+      onUpdate={(e) => onUpdatePassword(e)}
       isFormEnabled={isFormEnabled}
       canEdit={canEdit}
       showValidationError={props.showValidationError}
     />
   );
 };
+
+export default UserSecurity;

@@ -1,7 +1,11 @@
 import { fromPromise } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { getNewTokens } from "./tokenHandler";
-import { setLogin, getAuthenticationToken } from "../../services/AuthLogic";
+import {
+  setLogin,
+  getAuthenticationToken,
+  checkRemember,
+} from "../../services/AuthLogic";
 
 let isRefreshing = false;
 let pendingRequests = [];
@@ -16,7 +20,8 @@ const refreshToken = () => {
     .then((refreshToken) => {
       resolvePendingRequests();
       if (refreshToken) {
-        setLogin(refreshToken);
+        const isRemember = checkRemember();
+        setLogin(refreshToken, isRemember);
         return refreshToken.authenticationToken;
       }
 
@@ -24,7 +29,6 @@ const refreshToken = () => {
     })
     .catch(() => {
       pendingRequests = [];
-      return;
     })
     .finally(() => {
       isRefreshing = false;
@@ -44,7 +48,7 @@ export default onError(({ graphQLErrors, operation, forward }) => {
     return;
   }
 
-  var tokens = getAuthenticationToken();
+  const tokens = getAuthenticationToken();
   if (!tokens && !tokens.refreshTokenExpiryTime) {
     return;
   }

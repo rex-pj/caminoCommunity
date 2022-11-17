@@ -164,7 +164,7 @@ namespace Camino.Infrastructure.Identity
 
         public async Task<ClaimsIdentity> GetPrincipalFromExpiredTokenAsync(string token)
         {
-            var jwtSecurityToken = _jwtHelper.GetSecurityToken(token);
+            var jwtSecurityToken = _jwtHelper.GetExpiredToken(token);
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid token");
@@ -180,6 +180,11 @@ namespace Camino.Infrastructure.Identity
 
         public async Task<ClaimsIdentity> ValidateTokenAsync(string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException(token);
+            }
+
             try
             {
                 var jwtSecurityToken = _jwtHelper.GetSecurityToken(token);

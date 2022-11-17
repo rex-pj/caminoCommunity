@@ -5,6 +5,7 @@ import { getAuthenticationToken } from "./AuthLogic";
 export default class BaseService {
   constructor() {
     axios.defaults.baseURL = apiConfig.camino_api;
+    axios.defaults.withCredentials = true;
     const { authenticationToken } = getAuthenticationToken();
     if (authenticationToken) {
       axios.defaults.headers.common["Authorization"] = authenticationToken;

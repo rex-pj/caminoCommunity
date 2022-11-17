@@ -1,6 +1,5 @@
 ﻿using Camino.Infrastructure.Identity.Core;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace Camino.Infrastructure.Identity.Interfaces
 {
@@ -8,5 +7,6 @@ namespace Camino.Infrastructure.Identity.Interfaces
     {
         string GenerateJwtToken(ApplicationUser user);
         JwtSecurityToken GetSecurityToken(string token);
+        JwtSecurityToken GetExpiredToken(string token);
     }
 }

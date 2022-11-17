@@ -5,12 +5,15 @@ const ButtonTransparent = styled(Link)`
   background-color: transparent;
   border: 0;
   box-shadow: none;
-  padding: ${(p) =>
-    p.size === "xs"
-      ? "5px 8px"
-      : p.size === "sm"
-      ? ".5rem .75rem"
-      : "10px 15px"};
+  padding: ${(p) => {
+    if (p.size === "xs") {
+      return "5px 8px";
+    }
+    if (p.size === "sm") {
+      return ".5rem .75rem";
+    }
+    return "10px 15px";
+  }};
   border-radius: ${(p) => p.theme.borderRadius.normal};
   font-size: 1rem;
   font-weight: bold;

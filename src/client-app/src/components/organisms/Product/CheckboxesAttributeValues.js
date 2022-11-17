@@ -3,7 +3,7 @@ import { VerticalList } from "../../molecules/List";
 import { LabelSecondary } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
-export default (props) => {
+const CheckBoxesAttributeValues = (props) => {
   const { attributeRelationValues, attribute, price } = props;
   if (!attributeRelationValues) {
     return null;
@@ -30,3 +30,5 @@ export default (props) => {
     </VerticalList>
   );
 };
+
+export default CheckBoxesAttributeValues;

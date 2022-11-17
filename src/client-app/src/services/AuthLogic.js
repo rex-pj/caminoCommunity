@@ -108,7 +108,7 @@ export const getAuthenticationToken = () => {
 export const isTokenValid = () => {
   const isRemember = checkRemember();
   const token = getUserToken(isRemember);
-  if (!token) {
+  if (!token || token === "undefined") {
     return false;
   }
   return jwtDecode(token).exp >= Date.now() / 1000;

@@ -24,6 +24,12 @@ export const apiConfig = {
     authentications: {
       post: {
         postLogin: `${process.env.REACT_APP_CAMINO_API}/authentications/login`,
+        postRefreshToken: `${process.env.REACT_APP_CAMINO_API}/authentications/refresh-tokens`,
+        postForgotPassword: `${process.env.REACT_APP_CAMINO_API}/authentications/forgot-password`,
+        postResetPassword: `${process.env.REACT_APP_CAMINO_API}/authentications/reset-password`,
+      },
+      patch: {
+        patchUpdatePassword: `${process.env.REACT_APP_CAMINO_API}/authentications/update-passwords`,
       },
     },
     users: {

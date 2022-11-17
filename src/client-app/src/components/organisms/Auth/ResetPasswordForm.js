@@ -1,29 +1,31 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
-import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
 import ResetPasswordNavigation from "../../../components/organisms/Navigation/ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
 import resetPasswordModel from "../../../models/resetPasswordModel";
+import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
-  border: 1px solid ${(p) => p.theme.color.primaryBg};
-  background-color: ${(p) => p.theme.rgbaColor.darkLight};
+  border: 1px solid ${(p) => p.theme.color.neutralBg};
+  background-color: ${(p) => p.theme.color.lightBg};
   width: 100%;
   color: ${(p) => p.theme.color.darkText};
   padding: ${(p) => p.theme.size.tiny};
 
   ::placeholder {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.darkText};
     font-size: ${(p) => p.theme.fontSize.small};
   }
 
   :focus {
-    background-color: ${(p) => p.theme.color.moreDark};
+    background-color: ${(p) => p.theme.color.neutralBg};
+    color: ${(p) => p.theme.color.darkText};
   }
 
   &.invalid {
@@ -46,7 +48,7 @@ const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
 `;
 
-const SubmitButton = styled(ButtonPrimary)`
+const SubmitButton = styled(ButtonSecondary)`
   font-size: ${(p) => p.theme.fontSize.small};
   cursor: pointer;
   border: 1px solid ${(p) => p.theme.color.primaryBg};
@@ -56,8 +58,7 @@ const SubmitButton = styled(ButtonPrimary)`
   }
 
   :disabled {
-    background-color: ${(p) => p.theme.color.primaryBg};
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.primaryText};
     cursor: auto;
   }
 `;
@@ -84,33 +85,39 @@ const Instruction = styled.div`
   }
 `;
 
-export default (props) => {
-  let formData = resetPasswordModel;
+const ResetPasswordForm = (props) => {
   const { args } = props;
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
-  if (args) {
-    formData.email.value = args.email;
-    formData.email.isValid = checkValidity(formData, args.email, "email");
+  const [formData, setFormData] = useState(resetPasswordModel);
+  const [error, setError] = useState();
+  const initialRef = useRef(false);
 
-    formData.key.value = args.key;
-    formData.key.isValid = checkValidity(formData, args.key, "key");
-  }
+  useEffect(() => {
+    if (args && !initialRef.current) {
+      let data = { ...formData } || {};
+      data.email.value = args.email;
+      data.email.isValid = checkValidity(data, args.email, "email");
+
+      data.key.value = args.key;
+      data.key.isValid = checkValidity(data, args.key, "key");
+      setFormData({ ...data });
+      initialRef.current = true;
+    }
+  }, [args, formData]);
 
   const handleInputBlur = (evt) => {
     alertInvalidForm(evt.target);
   };
 
   const handleInputChange = (evt) => {
-    formData = formData || {};
+    let data = formData || {};
     const { name, value } = evt.target;
 
     // Validate when input
-    formData[name].isValid = checkValidity(formData, value, name);
-    formData[name].value = value;
+    data[name].isValid = checkValidity(data, value, name);
+    data[name].value = value;
 
     alertInvalidForm(evt.target);
-    forceUpdate();
+    setFormData({ ...data });
   };
 
   const alertInvalidForm = (target) => {
@@ -130,10 +137,7 @@ export default (props) => {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        props.showValidationError(
-          "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again"
-        );
+        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
       }
     }
 
@@ -143,7 +147,11 @@ export default (props) => {
         resetPasswordData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.resetPassword(resetPasswordData);
+      props.resetPassword(resetPasswordData).catch(() => {
+        showError(
+          "Có lỗi xảy ra khi thay đổi password của bạn, vui lòng thử lại!"
+        );
+      });
     }
   };
 
@@ -159,6 +167,10 @@ export default (props) => {
     return isFormValid;
   };
 
+  const showError = (message) => {
+    setError(message);
+  };
+
   const isFormCheckValid = checkIsFormValid();
 
   return (
@@ -171,17 +183,7 @@ export default (props) => {
         </p>
       </Instruction>
       <PanelBody>
-        <FormRow>
-          <Label>Current password</Label>
-          <Textbox
-            autoComplete="off"
-            placeholder="Your current password"
-            name="currentPassword"
-            type="password"
-            onChange={(e) => handleInputChange(e)}
-            onBlur={(e) => handleInputBlur(e)}
-          />
-        </FormRow>
+        <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
         <FormRow>
           <Label>New password</Label>
           <Textbox
@@ -213,3 +215,5 @@ export default (props) => {
     </form>
   );
 };
+
+export default ResetPasswordForm;

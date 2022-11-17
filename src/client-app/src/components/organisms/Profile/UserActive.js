@@ -14,7 +14,7 @@ const Root = styled.div`
   min-height: 500px;
 `;
 
-export default function (props) {
+const UserActive = (props) => {
   const { icon, title, instruction, actionUrl, actionText } = props;
   return (
     <PromptLayout>
@@ -29,4 +29,6 @@ export default function (props) {
       </Root>
     </PromptLayout>
   );
-}
+};
+
+export default UserActive;

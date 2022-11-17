@@ -5,13 +5,13 @@ import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { unauthClient } from "../../graphql/client";
 
-export default (props) => {
+const UserActivePage = (props) => {
   const navigate = useNavigate();
   const params = useParams();
   const { email } = params;
   let { key } = params;
-  if (!key && params[0]) {
-    key = params[0];
+  if (!key && params["*"]) {
+    key = params["*"];
   }
 
   const { data, loading, error } = useQuery(userQueries.ACTIVE_USER, {
@@ -23,7 +23,6 @@ export default (props) => {
       },
     },
   });
-  const { history } = props;
 
   if (loading) {
     return (
@@ -58,3 +57,5 @@ export default (props) => {
     />
   );
 };
+
+export default UserActivePage;

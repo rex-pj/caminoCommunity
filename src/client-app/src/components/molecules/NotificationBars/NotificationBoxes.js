@@ -13,6 +13,12 @@ const NotificationBox = styled.div`
   }
 `;
 
+export const SuccessBox = styled(NotificationBox)`
+  color: ${(p) => p.theme.color.secondaryText};
+  background-color: ${(p) => p.theme.color.neutralBorder};
+  border: 1px solid ${(p) => p.theme.color.neutralBorder};
+`;
+
 export const ErrorBox = styled(NotificationBox)`
   color: ${(p) => p.theme.color.dangerText};
   background-color: ${(p) => p.theme.color.warnBg};

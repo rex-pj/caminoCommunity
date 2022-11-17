@@ -19,6 +19,31 @@ namespace Camino.Infrastructure.Identity
             _jwtConfigOptions = jwtConfigOptions.Value;
         }
 
+        public JwtSecurityToken GetExpiredToken(string token)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
+            var claimsPrincipal = jwtTokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+                ValidIssuer = _jwtConfigOptions.Issuer,
+                ValidAudience = _jwtConfigOptions.Audience
+            }, out SecurityToken securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            return jwtSecurityToken;
+        }
+
         public string GenerateJwtToken(ApplicationUser user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();

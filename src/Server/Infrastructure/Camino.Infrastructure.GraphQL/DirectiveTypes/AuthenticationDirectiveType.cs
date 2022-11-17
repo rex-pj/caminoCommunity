@@ -39,7 +39,7 @@ namespace Camino.Infrastructure.GraphQL.DirectiveTypes
                 catch (CaminoAuthenticationException)
                 {
                     context.ReportError(new Error(HttpStatusCode.Forbidden.ToString(), StatusCodes.Status403Forbidden.ToString()));
-                    context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+                    context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
                     return;
                 }
                 catch (Exception)

@@ -5,7 +5,7 @@ import { HorizontalList } from "../../molecules/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Root = styled.div`
-  background-color: ${(p) => p.theme.color.neutralBg};
+  background-color: ${(p) => p.theme.color.secondaryBg};
   position: relative;
 `;
 
@@ -21,7 +21,7 @@ const NavButton = styled(RouterLinkButtonPrimary)`
   background-color: transparent;
 
   :hover {
-    color: ${(p) => p.theme.color.neutralText};
+    color: ${(p) => p.theme.color.lightText};
     background-color: transparent;
   }
 `;

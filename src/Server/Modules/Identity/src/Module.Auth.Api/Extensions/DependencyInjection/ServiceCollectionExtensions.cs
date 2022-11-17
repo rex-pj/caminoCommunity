@@ -26,8 +26,7 @@ namespace Module.Auth.Api.Extensions.DependencyInjection
                 .AddType<UserPhotoQueries>()
                 .AddType<UserQueries>()
                 .AddType<AuthenticationQueries>()
-                .AddType<UserMutations>()
-                .AddType<AuthenticationMutations>();
+                .AddType<UserMutations>();
 
             return services;
         }

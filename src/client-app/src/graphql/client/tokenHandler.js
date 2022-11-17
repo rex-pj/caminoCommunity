@@ -1,55 +1,21 @@
 import { getAuthenticationToken } from "../../services/AuthLogic";
-import { apiConfig } from "../../config/api-config";
-
-const refreshTokenMutation = (tokens) => {
-  return JSON.stringify({
-    query: `mutation refreshToken {
-          refreshToken {
-            authenticationToken
-            refreshTokenExpiryTime
-          }
-        }`,
-  });
-};
+import AuthService from "../../services/authService";
 
 export const getNewTokens = async () => {
+  const authService = new AuthService();
   return new Promise(function (resolve, reject) {
     const { authenticationToken } = getAuthenticationToken();
 
-    // TODO get back || !refreshToken
     if (!authenticationToken) {
       reject({});
       return;
     }
 
-    fetch(apiConfig.camino_graphql, {
-      headers: {
-        "content-type": "application/json",
-        Authorization: authenticationToken,
-      },
-      credentials: "include",
-      method: "POST",
-      body: refreshTokenMutation(),
-    })
-      .then((result) => {
-        result
-          .text()
-          .then(JSON.parse)
-          .then((response) => {
-            const {
-              data: { refreshToken: refreshTokenResponse },
-              errors,
-            } = response;
-
-            if (!errors && refreshTokenResponse) {
-              resolve(refreshTokenResponse);
-            } else if (errors) {
-              reject(errors);
-            }
-          })
-          .catch((errors) => {
-            reject(errors);
-          });
+    authService
+      .refreshToken()
+      .then((response) => {
+        const { data } = response;
+        resolve(data);
       })
       .catch((errors) => {
         reject(errors);

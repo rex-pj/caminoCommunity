@@ -188,30 +188,32 @@ const App = () => {
                 ></Route>
                 <Route path="/search" element={<SearchPage />}></Route>
                 <Route path="/search/:keyword" element={<SearchPage />}></Route>
-                <Route
-                  path="/user/active/:email/:key"
-                  element={<UserActivePage />}
-                ></Route>
-                <Route
-                  path="/user/active/:email/:key+"
-                  element={<UserActivePage />}
-                ></Route>
-                <Route
-                  path="/user/active/:email/*"
-                  element={<UserActivePage />}
-                ></Route>
-                <Route
-                  path="/user/reset-password/:email/:key"
-                  element={<ResetPasswordPage />}
-                ></Route>
-                <Route
-                  path="/user/reset-password/:email/:key+"
-                  element={<ResetPasswordPage />}
-                ></Route>
-                <Route
-                  path="/user/reset-password/:email/*"
-                  element={<ResetPasswordPage />}
-                ></Route>
+                {[
+                  "/user/active/:email/:key",
+                  "/user/active/:email/:key+",
+                  "/user/active/:email/*",
+                ].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<UserActivePage />}
+                    ></Route>
+                  );
+                })}
+                {[
+                  "/user/reset-password/:email/:key",
+                  "/user/reset-password/:email/:key+",
+                  "/user/reset-password/:email/*",
+                ].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<ResetPasswordPage />}
+                    ></Route>
+                  );
+                })}
                 <Route path="/error" element={<ErrorPage />}></Route>
                 <Route path="*" element={<NotFoundPage />}></Route>
               </Routes>

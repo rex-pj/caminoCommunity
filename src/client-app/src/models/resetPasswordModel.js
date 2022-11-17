@@ -2,42 +2,34 @@ let model = {
   email: {
     value: "",
     validation: {
-      isEmail: true
+      isEmail: true,
     },
-    isValid: false
+    isValid: false,
   },
   key: {
     value: "",
     validation: {
-      isRequired: true
-    },
-    isValid: false
-  },
-  currentPassword: {
-    value: "",
-    validation: {
       isRequired: true,
-      minLength: 6
     },
-    isValid: false
+    isValid: false,
   },
   password: {
     value: "",
     validation: {
       isRequired: true,
-      minLength: 6
+      minLength: 6,
     },
-    isValid: false
+    isValid: false,
   },
   confirmPassword: {
     value: "",
     validation: {
       isRequired: true,
       minLength: 6,
-      sameRefProperty: "password"
+      sameRefProperty: "password",
     },
-    isValid: false
-  }
+    isValid: false,
+  },
 };
 
 export default model;

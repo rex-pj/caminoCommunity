@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../molecules/Panels";
@@ -8,6 +8,7 @@ import passwordUpdateModel from "../../../models/passwordUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../molecules/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
+import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -31,20 +32,19 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-export default (props) => {
-  let formData = passwordUpdateModel;
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
+const PasswordUpdateForm = (props) => {
+  const [formData, setFormData] = useState(passwordUpdateModel);
+  const [error, setError] = useState();
 
   const onTextboxChange = (e) => {
-    formData = formData || {};
+    let data = formData || {};
     const { name, value } = e.target;
 
     // Validate when input
-    formData[name].isValid = checkValidity(formData, value, name);
-    formData[name].value = value;
+    data[name].isValid = checkValidity(data, value, name);
+    data[name].value = value;
 
-    forceUpdate();
+    setFormData({ ...data });
   };
 
   const checkIsFormValid = () => {
@@ -67,10 +67,7 @@ export default (props) => {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
 
       if (!isFormValid) {
-        props.showValidationError(
-          "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again"
-        );
+        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
       }
     }
 
@@ -80,8 +77,16 @@ export default (props) => {
         profileData[formIdentifier] = formData[formIdentifier].value;
       }
 
-      props.onUpdate(profileData);
+      props
+        .onUpdate(profileData)
+        .catch(() =>
+          showError("Có lỗi xảy ra trong quá trình thay đổi mật khẩu!")
+        );
     }
+  };
+
+  const showError = (message) => {
+    setError(message);
   };
 
   const { currentPassword, newPassword, confirmPassword } = formData;
@@ -93,6 +98,7 @@ export default (props) => {
       <MainPanel>
         <form onSubmit={(e) => onUpdate(e)} method="POST">
           <Fragment>
+            <FormGroup>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormGroup>
             <FormGroup>
               <LabelAndTextbox
                 label="Current password"
@@ -139,3 +145,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default PasswordUpdateForm;
