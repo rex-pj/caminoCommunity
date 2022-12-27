@@ -7,14 +7,11 @@ import React, {
 } from "react";
 import { useParams } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
-import { fileToBase64 } from "../../utils/Helper";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import authClient from "../../graphql/client/authClient";
 import {
   articleMutations,
   farmMutations,
   productMutations,
-  mediaMutations,
 } from "../../graphql/fetching/mutations";
 import { feedqueries } from "../../graphql/fetching/queries";
 import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorTabs";
@@ -29,6 +26,10 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import MediaService from "../../services/mediaService";
+import ArticleService from "../../services/articleService";
+import FarmService from "../../services/farmService";
+import ProductService from "../../services/productService";
 
 const UserFeeds = (props) => {
   const { userId } = useParams();
@@ -41,9 +42,12 @@ const UserFeeds = (props) => {
   const { currentUser, isLogin } = useContext(SessionContext);
   const [state, dispatch] = useStore(false);
   const [feeds, setFeeds] = useState([]);
+  const mediaService = new MediaService();
+  const articleService = new ArticleService();
+  const farmService = new FarmService();
+  const productService = new ProductService();
 
   // Mutations
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [articleCategories] = useMutation(
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
@@ -58,24 +62,6 @@ const UserFeeds = (props) => {
   );
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
-  const [createArticle] = useMutation(articleMutations.CREATE_ARTICLE, {
-    client: authClient,
-  });
-  const [createProduct] = useMutation(productMutations.CREATE_PRODUCT, {
-    client: authClient,
-  });
-  const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
-    client: authClient,
-  });
-  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
-    client: authClient,
-  });
-  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
-    client: authClient,
-  });
-  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
-    client: authClient,
-  });
 
   // Queries
   const [
@@ -89,29 +75,19 @@ const UserFeeds = (props) => {
     fetchPolicy: "cache-and-network",
   });
 
-  const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
+  async function convertImagefile(file) {
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
-  };
+  }
 
-  const onImageValidate = async (value) =>
-    await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
+  async function onImageValidate(formData) {
+    return await mediaService.validatePicture(formData);
+  }
 
-  const onArticlePost = async (data) => {
-    return await createArticle({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+  async function onArticlePost(data) {
+    return await articleService.create(data).then((response) => {
       return new Promise((resolve) => {
         const { data } = response;
         const { createArticle: article } = data;
@@ -119,14 +95,10 @@ const UserFeeds = (props) => {
         feedsRefetch();
       });
     });
-  };
+  }
 
-  const onProductPost = async (data) => {
-    return await createProduct({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+  async function onProductPost(data) {
+    return await productService.create(data).then((response) => {
       return new Promise((resolve) => {
         const { data } = response;
         const { createProduct: product } = data;
@@ -134,14 +106,10 @@ const UserFeeds = (props) => {
         feedsRefetch();
       });
     });
-  };
+  }
 
-  const onFarmPost = async (data) => {
-    return await createFarm({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+  async function onFarmPost(data) {
+    return await farmService.create(data).then((response) => {
       return new Promise((resolve) => {
         const { data } = response;
         const { createFarm: farm } = data;
@@ -149,17 +117,17 @@ const UserFeeds = (props) => {
         feedsRefetch();
       });
     });
-  };
+  }
 
-  const showValidationError = (title, message) => {
+  function showValidationError(title, message) {
     dispatch("NOTIFY", {
       title,
       message,
       type: "error",
     });
-  };
+  }
 
-  const onOpenDeleteConfirmation = (e, onDelete) => {
+  function onOpenDeleteConfirmation(e, onDelete) {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
       data: {
@@ -174,37 +142,25 @@ const UserFeeds = (props) => {
         position: "fixed",
       },
     });
-  };
+  }
 
-  const onDeleteArticle = (id) => {
-    deleteArticle({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+  function onDeleteArticle(id) {
+    articleService.delete(id).then(() => {
       feedsRefetch();
     });
-  };
+  }
 
-  const onDeleteFarm = (id) => {
-    deleteFarm({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+  function onDeleteFarm(id) {
+    farmService.delete(id).then(() => {
       feedsRefetch();
     });
-  };
+  }
 
-  const onDeleteProduct = (id) => {
-    deleteProduct({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+  function onDeleteProduct(id) {
+    productService.delete(id).then(() => {
       feedsRefetch();
     });
-  };
+  }
 
   useEffect(() => {
     if (state.store === "UPDATE" && state.id) {

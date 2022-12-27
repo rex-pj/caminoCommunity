@@ -2,7 +2,7 @@
 {
     public interface IRoleAuthorizationPolicyRepository
     {
-        Task<bool> CreateAsynx(RoleAuthorizationPolicy roleAuthorizationPolicy);
+        Task<bool> CreateAsync(RoleAuthorizationPolicy roleAuthorizationPolicy);
         Task<bool> DeleteAsync(long roleId, long authorizationPolicyId);
     }
 }

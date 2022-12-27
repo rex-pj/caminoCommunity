@@ -13,8 +13,6 @@ using Camino.Infrastructure.Identity.Core;
 using Camino.Shared.Configuration.Options;
 using Camino.Application.Contracts.AppServices.Articles.Dtos;
 using Camino.Application.Contracts;
-using Camino.Application.Contracts.AppServices.Media.Dtos;
-using Camino.Shared.Exceptions;
 using Camino.Application.Contracts.AppServices.Articles.Dtos.Dtos;
 using Camino.Infrastructure.AspNetCore.Models;
 
@@ -168,120 +166,6 @@ namespace Module.Article.Api.GraphQL.Resolvers
                 var products = await MapArticlesResultToModelAsync(relevantArticles);
 
                 return products;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<ArticleIdResultModel> CreateArticleAsync(ClaimsPrincipal claimsPrincipal, CreateArticleModel criterias)
-        {
-            var currentUserId = GetCurrentUserId(claimsPrincipal);
-            var article = new ArticleModifyRequest
-            {
-                CreatedById = currentUserId,
-                UpdatedById = currentUserId,
-                Content = criterias.Content,
-                Name = criterias.Name,
-                ArticleCategoryId = criterias.ArticleCategoryId
-            };
-
-            if (criterias.Picture != null)
-            {
-                article.Picture = new PictureRequest()
-                {
-                    Base64Data = criterias.Picture.Base64Data,
-                    ContentType = criterias.Picture.ContentType,
-                    FileName = criterias.Picture.FileName
-                };
-            }
-
-            var id = await _articleAppService.CreateAsync(article);
-            return new ArticleIdResultModel
-            {
-                Id = id
-            };
-        }
-
-        public async Task<ArticleIdResultModel> UpdateArticleAsync(ClaimsPrincipal claimsPrincipal, UpdateArticleModel criterias)
-        {
-            var exist = await _articleAppService.FindAsync(new IdRequestFilter<long>
-            {
-                Id = criterias.Id,
-                CanGetInactived = true
-            });
-
-            if (exist == null)
-            {
-                throw new CaminoApplicationException($"The article with id {criterias.Id} has not been found");
-            }
-
-            var currentUserId = GetCurrentUserId(claimsPrincipal);
-            if (currentUserId != exist.CreatedById)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var article = new ArticleModifyRequest
-            {
-                Id = criterias.Id,
-                CreatedById = currentUserId,
-                UpdatedById = currentUserId,
-                Content = criterias.Content,
-                Name = criterias.Name,
-                ArticleCategoryId = criterias.ArticleCategoryId
-            };
-
-            if (criterias.Picture != null)
-            {
-                article.Picture = new PictureRequest
-                {
-                    Base64Data = criterias.Picture.Base64Data,
-                    ContentType = criterias.Picture.ContentType,
-                    FileName = criterias.Picture.FileName,
-                    Id = criterias.Picture.PictureId.GetValueOrDefault()
-                };
-            }
-
-            await _articleAppService.UpdateAsync(article);
-            return new ArticleIdResultModel
-            {
-                Id = article.Id
-            };
-        }
-
-        public async Task<bool> DeleteArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleIdFilterModel criterias)
-        {
-            try
-            {
-                if (criterias.Id <= 0)
-                {
-                    throw new ArgumentNullException(nameof(criterias.Id));
-                }
-
-                var exist = await _articleAppService.FindAsync(new IdRequestFilter<long>
-                {
-                    Id = criterias.Id,
-                    CanGetInactived = true
-                });
-
-                if (exist == null)
-                {
-                    return false;
-                }
-
-                var currentUserId = GetCurrentUserId(claimsPrincipal);
-                if (currentUserId != exist.CreatedById)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                return await _articleAppService.SoftDeleteAsync(new ArticleModifyRequest
-                {
-                    Id = criterias.Id,
-                    UpdatedById = currentUserId,
-                });
             }
             catch (Exception)
             {

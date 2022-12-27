@@ -43,7 +43,7 @@ namespace Camino.Application.AppServices.Authorization
             {
                 return false;
             }
-            return await _roleAuthorizationPolicyRepository.CreateAsynx(new RoleAuthorizationPolicy
+            return await _roleAuthorizationPolicyRepository.CreateAsync(new RoleAuthorizationPolicy
             {
                 RoleId = roleId,
                 GrantedById = loggedUserId,

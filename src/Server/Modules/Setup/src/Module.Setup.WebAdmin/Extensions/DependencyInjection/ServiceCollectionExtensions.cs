@@ -1,6 +1,7 @@
 ﻿using Camino.Application.Contracts;
 using Camino.Core.Contracts.Providers;
 using Camino.Infrastructure;
+using Camino.Infrastructure.EntityFrameworkCore;
 using Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,13 +13,13 @@ namespace Module.Setup.WebAdmin.Extensions.DependencyInjection
     {
         public static void AddSetupDataAccessServices<TContext>(this IServiceCollection services) where TContext : DbContext, IAppDbContext
         {
-            services.AddDbContextPool<IAppDbContext, TContext>(optionsBuilder =>
+            services.AddDbContext<IAppDbContext, TContext>(optionsBuilder =>
             {
                 optionsBuilder.UseSqlServerWithLazyLoading(services, "CaminoEntities");
             });
         }
 
-        public static IServiceCollection ConfigureFileServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             services.AddSetupDataAccessServices<AppDbContext>();
             services.AddSingleton<SetupSettings>();

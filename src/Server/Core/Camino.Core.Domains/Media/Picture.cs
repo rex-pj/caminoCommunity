@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Camino.Core.Domains.Media
+﻿namespace Camino.Core.Domains.Media
 {
     public class Picture
     {

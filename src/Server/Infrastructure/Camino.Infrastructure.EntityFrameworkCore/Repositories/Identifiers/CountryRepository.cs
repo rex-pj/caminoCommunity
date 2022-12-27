@@ -3,6 +3,7 @@ using Camino.Core.Domains.Identifiers;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Camino.Core.Domains.Farms;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
 {
@@ -54,6 +55,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Identifiers
             existing.Code = request.Code;
             existing.Name = request.Name;
 
+            await _countryRepository.UpdateAsync(existing);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
     }

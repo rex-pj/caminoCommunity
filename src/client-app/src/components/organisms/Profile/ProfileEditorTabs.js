@@ -4,7 +4,7 @@ import ProductEditor from "../Product/ProductEditor";
 import FarmEditor from "../Farm/FarmEditor";
 import EditorTabs from "./EditorTabs";
 
-export default (props) => {
+const ProfileEditorTabs = (props) => {
   const {
     convertImagefile,
     onImageValidate,
@@ -86,3 +86,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default ProfileEditorTabs;

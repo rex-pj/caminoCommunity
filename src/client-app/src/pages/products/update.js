@@ -8,18 +8,17 @@ import {
   farmQueries,
 } from "../../graphql/fetching/queries";
 import {
-  mediaMutations,
   productMutations,
   farmMutations,
 } from "../../graphql/fetching/mutations";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
-import { fileToBase64 } from "../../utils/Helper";
 import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
+import MediaService from "../../services/mediaService";
 
-export default (function (props) {
+const UpdatePage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -28,10 +27,11 @@ export default (function (props) {
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
   );
+  const mediaService = new MediaService();
+
   const [productAttributeControlTypes] = useMutation(
     productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
   );
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [updateProduct] = useMutation(productMutations.UPDATE_PRODUCT, {
     client: authClient,
   });
@@ -70,25 +70,18 @@ export default (function (props) {
     },
   });
 
-  const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
+  async function onImageValidate(formData) {
+    return await mediaService.validatePicture(formData);
+  }
+
+  async function convertImagefile(file) {
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
-  };
+  }
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
-  };
-
-  const onProductPost = async (data) => {
+  async function onProductPost(data) {
     return await updateProduct({
       variables: {
         criterias: data,
@@ -115,7 +108,7 @@ export default (function (props) {
         });
       });
     });
-  };
+  }
 
   const raiseProductUpdatedNotify = (product) => {
     dispatch("PRODUCT_UPDATE", {
@@ -138,7 +131,7 @@ export default (function (props) {
     }
   }, [refetch, called, loading]);
 
-  const { product } = data;
+  const product = data ? { ...data.product } : {};
 
   const currentProduct = JSON.parse(JSON.stringify(productCreationModel));
   for (const formIdentifier in currentProduct) {
@@ -211,4 +204,6 @@ export default (function (props) {
       />
     </DetailLayout>
   );
-});
+};
+
+export default UpdatePage;

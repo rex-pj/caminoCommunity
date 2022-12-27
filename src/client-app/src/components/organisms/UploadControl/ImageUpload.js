@@ -21,7 +21,7 @@ const UploadButton = styled.span`
   }
 `;
 
-export default (props) => {
+const ImageUpload = (props) => {
   const fileRef = React.createRef();
 
   const handleImageChange = (e) => {
@@ -34,8 +34,8 @@ export default (props) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (props.onChange) {
-          var blobImage = base64toBlob(reader.result, file.type);
-          var blobUrl = URL.createObjectURL(blobImage);
+          const blobImage = base64toBlob(reader.result, file.type);
+          const blobUrl = URL.createObjectURL(blobImage);
 
           props.onChange({
             target: target,
@@ -72,3 +72,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default ImageUpload;

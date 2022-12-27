@@ -4,6 +4,7 @@ import { EditorState, Modifier } from "draft-js";
 import { DefaultButton } from "./EditorButtons";
 import EditorSelection from "./EditorSelection";
 import { HEADING_TYPES } from "./Utils";
+import { de } from "date-fns/locale";
 
 const Toolbar = styled.div`
   padding: ${(p) => p.theme.size.tiny};
@@ -48,7 +49,7 @@ const SelectHeading = styled(EditorSelection)`
   }
 `;
 
-export default (props) => {
+const EditorToolbar = (props) => {
   const { editorState, styles } = props;
 
   const toggleBlockType = (e) => {
@@ -77,7 +78,7 @@ export default (props) => {
 
   function removeInlineStyles(currentState) {
     const contentState = currentState.getCurrentContent();
-    var inlineStyles = styles.filter((type) => type.type === "inline");
+    let inlineStyles = styles.filter((type) => type.type === "inline");
     const contentWithoutStyles = inlineStyles.reduce(
       (state, item) =>
         Modifier.removeInlineStyle(
@@ -221,3 +222,5 @@ export default (props) => {
 
   return <Toolbar>{items}</Toolbar>;
 };
+
+export default EditorToolbar;

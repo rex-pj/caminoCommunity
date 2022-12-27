@@ -1,5 +1,4 @@
-﻿using Camino.Infrastructure.AspNetCore.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Module.Product.Api.Models
 {
@@ -7,7 +6,6 @@ namespace Module.Product.Api.Models
     {
         public CreateProductModel()
         {
-            Pictures = new List<PictureRequestModel>();
             Farms = new List<ProductFarmModel>();
             Categories = new List<ProductCategoryRelationModel>();
             ProductAttributes = new List<AttributeRelationRequestModel>();
@@ -19,7 +17,6 @@ namespace Module.Product.Api.Models
         public decimal Price { get; set; }
         public IEnumerable<ProductCategoryRelationModel> Categories { get; set; }
         public IEnumerable<ProductFarmModel> Farms { get; set; }
-        public IEnumerable<PictureRequestModel> Pictures { get; set; }
         public IEnumerable<AttributeRelationRequestModel> ProductAttributes { get; set; }
     }
 }

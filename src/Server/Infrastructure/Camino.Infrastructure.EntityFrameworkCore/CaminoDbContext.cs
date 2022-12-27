@@ -19,7 +19,7 @@ using Camino.Core.Domains;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
-    public class CaminoDbContext : EfDbContext, /*IDbContext,*/ IDbContext
+    public class CaminoDbContext : EfDbContext, IDbContext
     {
         #region Dbset
         public DbSet<UserPhoto> UserPhotos { get; set; }
@@ -62,7 +62,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         #region Ctor
 
         public CaminoDbContext(DbContextOptions<CaminoDbContext> options) : base(options) { }
-
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

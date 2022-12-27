@@ -79,6 +79,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Articles
         public async Task<bool> UpdateAsync(ArticleCategory category)
         {
             category.UpdatedDate = DateTime.UtcNow;
+            await _articleCategoryRepository.UpdateAsync(category);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

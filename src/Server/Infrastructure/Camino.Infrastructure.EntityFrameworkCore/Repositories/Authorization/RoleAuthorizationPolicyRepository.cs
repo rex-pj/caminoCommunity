@@ -24,7 +24,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Authorization
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateAsynx(RoleAuthorizationPolicy roleAuthorizationPolicy)
+        public async Task<bool> CreateAsync(RoleAuthorizationPolicy roleAuthorizationPolicy)
         {
             roleAuthorizationPolicy.GrantedDate = DateTime.UtcNow;
             _roleAuthorizationPolicyEntityRepository.Insert(roleAuthorizationPolicy);

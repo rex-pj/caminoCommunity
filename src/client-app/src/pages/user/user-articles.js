@@ -9,34 +9,32 @@ import { useParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { articleQueries } from "../../graphql/fetching/queries";
-import {
-  articleMutations,
-  mediaMutations,
-} from "../../graphql/fetching/mutations";
+import { articleMutations } from "../../graphql/fetching/mutations";
 import {
   ErrorBar,
   LoadingBar,
   NoDataBar,
 } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
-import { fileToBase64 } from "../../utils/Helper";
-import authClient from "../../graphql/client/authClient";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import MediaService from "../../services/mediaService";
+import ArticleService from "../../services/articleService";
 
-export default (function (props) {
+const UserArticles = (props) => {
   const { userId } = useParams();
   const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
+  const mediaService = new MediaService();
+  const articleService = new ArticleService();
 
   const [articleCategories] = useMutation(
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
 
   const [articles, setArticles] = useState([]);
   const pageRef = useRef({
@@ -54,20 +52,8 @@ export default (function (props) {
     fetchPolicy: "cache-and-network",
   });
 
-  const [createArticle] = useMutation(articleMutations.CREATE_ARTICLE, {
-    client: authClient,
-  });
-
-  const [deleteArticle] = useMutation(articleMutations.DELETE_ARTICLE, {
-    client: authClient,
-  });
-
   const onArticlePost = async (data) => {
-    return await createArticle({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+    return await articleService.create(data).then((response) => {
       return new Promise((resolve, reject) => {
         const { data } = response;
         const { createArticle: article } = data;
@@ -85,20 +71,13 @@ export default (function (props) {
     });
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
+  const onImageValidate = async (formData) => {
+    return await mediaService.validatePicture(formData);
   };
 
   const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
   };
@@ -121,11 +100,7 @@ export default (function (props) {
   };
 
   const onDelete = (id) => {
-    deleteArticle({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+    articleService.delete(id).then(() => {
       refetchArticles();
     });
   };
@@ -216,7 +191,7 @@ export default (function (props) {
       </Fragment>
     );
   }
-  if (!(data && pageRef.current.totalResult && articles.length >= 0)) {
+  if (!(data && pageRef.current.totalResult && articles.length > 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderArticleEditor() : null}
@@ -275,4 +250,6 @@ export default (function (props) {
       </InfiniteScroll>
     </Fragment>
   );
-});
+};
+
+export default UserArticles;

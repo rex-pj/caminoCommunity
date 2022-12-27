@@ -43,7 +43,7 @@ namespace Camino.Core.DomainServices.Products
             {
                 foreach (var categoryId in unlinkedCategoryIds)
                 {
-                    _productCategoryRelationRepository.Insert(new ProductCategoryRelation
+                    await _productCategoryRelationRepository.InsertAsync(new ProductCategoryRelation
                     {
                         ProductCategoryId = categoryId,
                         ProductId = productId

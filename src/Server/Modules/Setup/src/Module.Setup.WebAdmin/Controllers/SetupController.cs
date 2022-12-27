@@ -167,7 +167,7 @@ namespace Module.Setup.WebAdmin.Controllers
             }
             catch (Exception ex)
             {
-                //_setupProvider.DeleteSetupSettings();
+                _setupProvider.DeleteSetupSettings();
                 return View();
             }
         }

@@ -1,5 +1,4 @@
-﻿using Camino.Infrastructure.AspNetCore.Models;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Module.Farm.Api.Models
 {
@@ -7,13 +6,14 @@ namespace Module.Farm.Api.Models
     {
         public CreateFarmModel()
         {
-            Pictures = new List<PictureRequestModel>();
         }
 
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public long FarmTypeId { get; set; }
         public string Address { get; set; }
-        public IEnumerable<PictureRequestModel> Pictures { get; set; }
     }
 }

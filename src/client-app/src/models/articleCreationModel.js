@@ -1,4 +1,4 @@
-export default {
+const articleCreationModel = {
   name: {
     value: "",
     validation: {
@@ -24,13 +24,8 @@ export default {
     value: "",
     isValid: true,
   },
-  picture: {
-    value: {
-      pictureId: 0,
-      fileName: "",
-      contentType: "",
-      base64Data: "",
-    },
+  file: {
+    value: null,
     isValid: true,
   },
   id: {
@@ -38,3 +33,5 @@ export default {
     isValid: true,
   },
 };
+
+export default articleCreationModel;

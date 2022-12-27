@@ -1,5 +1,6 @@
 ﻿using Camino.Core.DependencyInjection;
 using Camino.Core.Domains;
+using Camino.Core.Domains.Articles.Repositories;
 using Camino.Core.Domains.Media;
 using Camino.Core.Domains.Products;
 using Camino.Core.Domains.Products.DomainServices;
@@ -63,7 +64,6 @@ namespace Camino.Core.DomainServices.Products
             await _pictureRepository.DeleteAsync(x => pictureIds.Contains(x.Id));
             if (needSaveChanges)
             {
-                await _dbContext.SaveChangesAsync();
                 return (await _dbContext.SaveChangesAsync()) > 0;
             }
 
@@ -84,6 +84,7 @@ namespace Camino.Core.DomainServices.Products
                 picture.UpdatedDate = DateTime.UtcNow;
             }
 
+            await _pictureRepository.UpdateAsync(existingPictures);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

@@ -15,12 +15,10 @@ using Camino.Shared.Constants;
 using Camino.Core.Validators;
 using Module.Auth.Api.Validators;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace Module.Auth.Api.Controllers
 {
-    [Route("authentications")]
+    [Route("api/authentications")]
     public class AuthenticationController : BaseTokenAuthController
     {
         private readonly IUserManager<ApplicationUser> _userManager;

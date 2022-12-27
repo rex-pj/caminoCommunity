@@ -52,28 +52,32 @@ export const base64toFile = (base64, filename) => {
   return new File([unitBuffers], filename, { type: mime });
 };
 
-export const fileToBase64 = (file) => {
-  new Promise((resolve, reject) => {
+export const fileToBase64 = async (file) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
+
+    reader.onloadend = () => {
+      return resolve(reader.result);
+    };
+
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
 };
 
 export const base64toBlob = (dataURI, mineType) => {
-  var urlSplitted = dataURI.split(",");
-  var byteString = null;
+  const urlSplitted = dataURI.split(",");
+  let byteString = null;
   if (urlSplitted.length > 1) {
     byteString = atob(dataURI.split(",")[1]);
   } else {
     byteString = atob(dataURI);
   }
 
-  var buffers = new ArrayBuffer(byteString.length);
-  var unitBuffers = new Uint8Array(buffers);
+  const buffers = new ArrayBuffer(byteString.length);
+  let unitBuffers = new Uint8Array(buffers);
 
-  for (var i = 0; i < byteString.length; i++) {
+  for (let i = 0; i < byteString.length; i++) {
     unitBuffers[i] = byteString.charCodeAt(i);
   }
 

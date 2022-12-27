@@ -21,8 +21,8 @@ const FormRow = styled.div`
   }
 `;
 
-export default (props) => {
-  const { handleImageChange, imageData, onAddImage } = props;
+const EditorImageLink = (props) => {
+  const { handleImageChange, imageData, onAddImage, imageSrc } = props;
   const [photoData, setPhotoData] = useState(imageData);
 
   const handleKeyUp = (e) => {
@@ -32,7 +32,7 @@ export default (props) => {
   };
 
   const onImageUrlChange = (e) => {
-    var { name } = e.target;
+    const { name } = e.target;
     const { src } = photoData;
     handleImageChange(name, src.value);
   };
@@ -65,8 +65,10 @@ export default (props) => {
             onBlur={(e) => onImageUrlChange(e)}
           />
         </FormRow>
-        <EditorImageScalePreview imageData={photoData} />
+        <EditorImageScalePreview previewSrc={imageSrc} imageData={photoData} />
       </Body>
     </Fragment>
   );
 };
+
+export default EditorImageLink;

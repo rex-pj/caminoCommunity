@@ -5,6 +5,7 @@ using Camino.Shared.Utils;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
+using Camino.Core.Domains.Products;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 {
@@ -49,6 +50,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             existing.UpdatedById = updatedById;
             existing.UpdatedDate = DateTime.UtcNow;
 
+            await _userRepository.UpdateAsync(existing);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

@@ -6,6 +6,7 @@ using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Domains.Products;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 {
@@ -55,6 +56,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         public async Task<bool> UpdateAsync(ProductCategory category)
         {
             category.UpdatedDate = DateTime.UtcNow;
+            await _productCategoryRepository.UpdateAsync(category);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

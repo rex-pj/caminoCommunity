@@ -43,6 +43,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Farms
         public async Task<bool> UpdateAsync(FarmType farmType)
         {
             farmType.UpdatedDate = DateTime.UtcNow;
+            await _farmTypeRepository.UpdateAsync(farmType);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

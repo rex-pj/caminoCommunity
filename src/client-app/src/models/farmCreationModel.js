@@ -1,4 +1,4 @@
-export default {
+const farmCreationModel = {
   id: {
     value: 0,
     isValid: true,
@@ -35,8 +35,10 @@ export default {
     },
     isValid: false,
   },
-  pictures: {
+  files: {
     value: [],
     isValid: true,
   },
 };
+
+export default farmCreationModel;

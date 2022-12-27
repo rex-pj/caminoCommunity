@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation, useNavigate } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
@@ -85,7 +84,7 @@ const Footer = styled.div`
   }
 `;
 
-export default (props) => {
+const ProductEditor = (props) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -104,7 +103,7 @@ export default (props) => {
   const farmSelectRef = useRef();
   const dispatch = useStore(true)[1];
 
-  const handleInputChange = (evt) => {
+  function handleInputChange(evt) {
     let data = formData || {};
     const { name, value } = evt.target;
 
@@ -114,7 +113,7 @@ export default (props) => {
     setFormData({
       ...data,
     });
-  };
+  }
 
   const handlePriceChange = (evt) => {
     let data = formData || {};
@@ -148,18 +147,15 @@ export default (props) => {
   };
 
   const handleImageChange = (e) => {
-    let data = formData || {};
+    let data = { ...formData } || {};
     const { preview, file } = e;
-    const { name, type } = file;
-
-    let pictures = Object.assign([], data.pictures.value);
-    pictures.push({
-      base64Data: preview,
-      fileName: name,
-      contentType: type,
+    let files = Object.assign([], data.files.value);
+    files.push({
+      file: file,
+      preview: preview,
     });
 
-    data.pictures.value = pictures;
+    data.files.value = files;
     setFormData({
       ...data,
     });
@@ -215,7 +211,22 @@ export default (props) => {
       delete productData["id"];
     }
 
-    await props.onProductPost(productData).then((response) => {
+    const requestFormData = new FormData();
+    for (const key of Object.keys(productData)) {
+      if (key === "files" && productData[key]) {
+        const files = productData[key];
+        for (const i in files) {
+          requestFormData.append(`files[${i}].file`, files[i].file);
+          if (files[i].pictureId) {
+            requestFormData.append(`files[${i}].pictureId`, files[i].pictureId);
+          }
+        }
+      } else {
+        requestFormData.append(key, productData[key]);
+      }
+    }
+
+    await props.onProductPost(requestFormData).then((response) => {
       if (response && response.id) {
         clearFormData();
       }
@@ -226,22 +237,22 @@ export default (props) => {
     editorRef.current.clearEditor();
     categorySelectRef.current.select.select.clearValue();
     farmSelectRef.current.select.select.clearValue();
-    var productFormData = JSON.parse(JSON.stringify(productCreationModel));
+    const productFormData = JSON.parse(JSON.stringify(productCreationModel));
     setFormData({ ...productFormData });
   };
 
   const onImageRemoved = (e, item) => {
     let data = formData || {};
-    if (!data.pictures) {
+    if (!data.files) {
       return;
     }
 
     if (item.pictureId) {
-      data.pictures.value = data.pictures.value.filter(
+      data.files.value = data.files.value.filter(
         (x) => x.pictureId !== item.pictureId
       );
     } else {
-      data.pictures.value = data.pictures.value.filter((x) => x !== item);
+      data.files.value = data.files.value.filter((x) => x !== item);
     }
 
     setFormData({
@@ -285,7 +296,7 @@ export default (props) => {
 
   const loadCategorySelections = (value) => {
     const { categories } = formData;
-    var currentIds = categories?.value?.map((cate) => cate.id);
+    const currentIds = categories?.value?.map((cate) => cate.id);
 
     return filterCategories({
       variables: {
@@ -293,8 +304,8 @@ export default (props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
@@ -321,8 +332,8 @@ export default (props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
@@ -346,8 +357,8 @@ export default (props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
@@ -362,8 +373,8 @@ export default (props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
@@ -492,7 +503,7 @@ export default (props) => {
   };
 
   /// Attribute value features
-  const onOpenAddAttributeValueModal = (attributeIndex) => {
+  function onOpenAddAttributeValueModal(attributeIndex) {
     dispatch("OPEN_MODAL", {
       data: {
         attributeValue: {
@@ -513,13 +524,13 @@ export default (props) => {
         innerModal: ProductAttributeValueEditModal,
       },
     });
-  };
+  }
 
-  const onOpenEditAttributeValueModal = (
+  function onOpenEditAttributeValueModal(
     currentAttributeValue,
     attributeIndex,
     attributeValueIndex
-  ) => {
+  ) {
     dispatch("OPEN_MODAL", {
       data: {
         attributeValue: currentAttributeValue,
@@ -535,9 +546,9 @@ export default (props) => {
         innerModal: ProductAttributeValueEditModal,
       },
     });
-  };
+  }
 
-  const onAddAttributeValue = (data, attributeIndex) => {
+  function onAddAttributeValue(data, attributeIndex) {
     if (!attributeIndex && attributeIndex !== 0) {
       return;
     }
@@ -559,13 +570,9 @@ export default (props) => {
     }
 
     updateAttributeValue(attributeIndex, attributeRelationValues);
-  };
+  }
 
-  const onUpdateAttributeValue = (
-    data,
-    attributeIndex,
-    attributeValueIndex
-  ) => {
+  function onUpdateAttributeValue(data, attributeIndex, attributeValueIndex) {
     if (!attributeIndex && attributeIndex !== 0) {
       return;
     }
@@ -581,9 +588,9 @@ export default (props) => {
     };
     attributeRelationValues[attributeValueIndex] = { ...data };
     updateAttributeValue(attributeIndex, attributeRelationValues);
-  };
+  }
 
-  const updateAttributeValue = (attributeIndex, attributeRelationValues) => {
+  function updateAttributeValue(attributeIndex, attributeRelationValues) {
     const cloneProductAttributes = productAttributes.value.map(
       (elem, index) => {
         if (attributeIndex === index) {
@@ -596,7 +603,7 @@ export default (props) => {
       }
     );
 
-    var productData = {
+    const productData = {
       ...formData,
       productAttributes: {
         ...productAttributes,
@@ -604,7 +611,7 @@ export default (props) => {
       },
     };
     setFormData(productData);
-  };
+  }
 
   useEffect(() => {
     if (currentProduct && !formData?.id?.value) {
@@ -612,8 +619,7 @@ export default (props) => {
     }
   }, [currentProduct, formData]);
 
-  const { name, price, pictures, categories, farms, productAttributes } =
-    formData;
+  const { name, price, categories, farms, productAttributes, files } = formData;
 
   return (
     <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -623,7 +629,7 @@ export default (props) => {
             name="name"
             value={name.value}
             autoComplete="off"
-            onChange={(e) => handleInputChange(e)}
+            onChange={handleInputChange}
             placeholder="Product title"
           />
         </div>
@@ -632,7 +638,7 @@ export default (props) => {
             name="price"
             value={price.value}
             autoComplete="off"
-            onChange={(e) => handlePriceChange(e)}
+            onChange={handlePriceChange}
             placeholder="Price"
           />
         </div>
@@ -673,25 +679,36 @@ export default (props) => {
           <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
         </div>
       </FormRow>
-      {pictures.value ? (
+      {files.value ? (
         <FormRow className="row">
-          {pictures.value.map((item, index) => {
-            let imageSrc = item.base64Data;
-            if (!imageSrc && item.pictureId) {
-              imageSrc = `${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`;
-            } else if (!imageSrc) {
-              imageSrc = null;
+          {files.value.map((item, index) => {
+            if (item.preview) {
+              return (
+                <div className="col-3" key={index}>
+                  <ImageEditBox>
+                    <Thumbnail src={item.preview}></Thumbnail>
+                    <RemoveImageButton onClick={(e) => onImageRemoved(e, item)}>
+                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                    </RemoveImageButton>
+                  </ImageEditBox>
+                </div>
+              );
+            } else if (item.pictureId) {
+              return (
+                <div className="col-3" key={index}>
+                  <ImageEditBox>
+                    <Thumbnail
+                      src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
+                    ></Thumbnail>
+                    <RemoveImageButton onClick={(e) => onImageRemoved(e, item)}>
+                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                    </RemoveImageButton>
+                  </ImageEditBox>
+                </div>
+              );
             }
-            return (
-              <div className="col-3" key={index}>
-                <ImageEditBox>
-                  <Thumbnail src={imageSrc}></Thumbnail>
-                  <RemoveImageButton onClick={(e) => onImageRemoved(e, item)}>
-                    <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                  </RemoveImageButton>
-                </ImageEditBox>
-              </div>
-            );
+
+            return null;
           })}
         </FormRow>
       ) : null}
@@ -746,3 +763,5 @@ export default (props) => {
     </form>
   );
 };
+
+export default ProductEditor;

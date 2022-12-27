@@ -11,8 +11,8 @@ const Root = styled.div`
   right: 0;
   margin: auto;
   min-width: 100px;
-  border-radius: ${p => p.theme.borderRadius.normal};
-  background-color: ${p => p.theme.rgbaColor.darker};
+  border-radius: ${(p) => p.theme.borderRadius.normal};
+  background-color: ${(p) => p.theme.rgbaColor.darker};
 `;
 
 const Container = styled.div`
@@ -21,7 +21,7 @@ const Container = styled.div`
   z-index: 10;
 `;
 
-export default props => {
+const EditorModal = (props) => {
   const { className, isOpen, modalBodyComponent: ModalBodyComponent } = props;
 
   const currentRef = useRef();
@@ -32,7 +32,7 @@ export default props => {
     }
   };
 
-  const onAccept = e => {
+  const onAccept = (e) => {
     props.onAccept(e);
   };
 
@@ -52,3 +52,5 @@ export default props => {
     </Fragment>
   );
 };
+
+export default EditorModal;

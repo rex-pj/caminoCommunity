@@ -1,4 +1,4 @@
-export default {
+const productCreationModel = {
   name: {
     value: "",
     validation: {
@@ -34,7 +34,7 @@ export default {
     },
     isValid: false,
   },
-  pictures: {
+  files: {
     value: [],
     isValid: true,
   },
@@ -47,3 +47,5 @@ export default {
     isValid: true,
   },
 };
+
+export default productCreationModel;

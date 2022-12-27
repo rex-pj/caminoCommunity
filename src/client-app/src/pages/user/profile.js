@@ -9,7 +9,7 @@ import { parseUserInfo } from "../../services/UserLogic";
 import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import { ProfileLayout } from "../../components/templates/Layout";
-import UserPhotoService from "../../services/UserPhotoService";
+import UserPhotoService from "../../services/userPhotoService";
 
 const ProfileAvatar = React.lazy(() =>
     import("../../components/organisms/Profile/ProfileAvatar")

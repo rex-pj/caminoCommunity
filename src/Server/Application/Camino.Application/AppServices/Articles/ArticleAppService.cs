@@ -302,7 +302,7 @@ namespace Camino.Application.AppServices.Articles
         #region CRUD
         public async Task<long> CreateAsync(ArticleModifyRequest request)
         {
-            var newArticle = new Article()
+            var id = await _articleRepository.CreateAsync(new Article
             {
                 ArticleCategoryId = request.ArticleCategoryId,
                 Content = request.Content,
@@ -311,9 +311,7 @@ namespace Camino.Application.AppServices.Articles
                 Description = request.Description,
                 Name = request.Name,
                 StatusId = ArticleStatuses.Pending.GetCode()
-            };
-
-            var id = await _articleRepository.CreateAsync(newArticle);
+            });
             if (request.Picture != null)
             {
                 var modifiedDate = DateTime.UtcNow;

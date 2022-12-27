@@ -200,8 +200,6 @@ namespace Camino.Application.AppServices.Products
         private async Task<long> CreateAsync(ProductPicturesModifyRequest request, PictureRequest picture, ProductPictureTypes pictureType, bool needSaveChanges = false)
         {
             var modifiedDate = DateTime.UtcNow;
-            var binaryPicture = ImageUtils.EncodeJavascriptBase64(picture.Base64Data);
-            var pictureData = Convert.FromBase64String(binaryPicture);
             var pictureId = await _pictureRepository.CreateAsync(new Picture
             {
                 CreatedById = request.UpdatedById,
@@ -210,7 +208,7 @@ namespace Camino.Application.AppServices.Products
                 MimeType = picture.ContentType,
                 UpdatedById = request.UpdatedById,
                 UpdatedDate = modifiedDate,
-                BinaryData = pictureData,
+                BinaryData = picture.BinaryData,
                 StatusId = PictureStatuses.Pending.GetCode()
             });
 

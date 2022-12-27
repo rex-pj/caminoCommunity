@@ -146,13 +146,13 @@ namespace Camino.Application.AppServices.Farms
             return farmPictures;
         }
 
-        public async Task<bool> CreateAsync(FarmPicturesModifyRequest request)
+        public async Task<bool> CreateAsync(FarmPicturesModifyRequest request, bool needSaveChanges = false)
         {
             var index = 0;
             foreach (var picture in request.Pictures)
             {
                 var pictureType = index == 0 ? FarmPictureTypes.Thumbnail : FarmPictureTypes.Secondary;
-                await CreateAsync(request, picture, pictureType);
+                await CreateAsync(request, picture, pictureType, needSaveChanges);
                 index += 1;
             }
 
@@ -191,8 +191,6 @@ namespace Camino.Application.AppServices.Farms
         private async Task<long> CreateAsync(FarmPicturesModifyRequest request, PictureRequest picture, FarmPictureTypes pictureType, bool needSaveChanges = false)
         {
             var modifiedDate = DateTime.UtcNow;
-            var binaryPicture = ImageUtils.EncodeJavascriptBase64(picture.Base64Data);
-            var pictureData = Convert.FromBase64String(binaryPicture);
             var pictureId = await _pictureRepository.CreateAsync(new Picture
             {
                 CreatedById = request.UpdatedById,
@@ -201,7 +199,7 @@ namespace Camino.Application.AppServices.Farms
                 MimeType = picture.ContentType,
                 UpdatedById = request.UpdatedById,
                 UpdatedDate = modifiedDate,
-                BinaryData = pictureData,
+                BinaryData = picture.BinaryData,
                 StatusId = PictureStatuses.Pending.GetCode()
             });
 

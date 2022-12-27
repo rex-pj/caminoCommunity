@@ -10,10 +10,8 @@ import { useParams } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import authClient from "../../graphql/client/authClient";
-import { fileToBase64 } from "../../utils/Helper";
 import {
   productMutations,
-  mediaMutations,
   farmMutations,
 } from "../../graphql/fetching/mutations";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
@@ -27,8 +25,9 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import MediaService from "../../services/mediaService";
 
-export default (function (props) {
+const UserProducts = (props) => {
   const { userId } = useParams();
   const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
@@ -38,8 +37,8 @@ export default (function (props) {
     pageNumber: pageNumber ? pageNumber : 1,
     userId: userId,
   });
+  const mediaService = new MediaService();
 
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
   );
@@ -71,21 +70,14 @@ export default (function (props) {
   });
 
   const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
+  const onImageValidate = async (formData) => {
+    return await mediaService.validatePicture(formData);
   };
 
   const showValidationError = (title, message) => {
@@ -298,4 +290,6 @@ export default (function (props) {
       </InfiniteScroll>
     </Fragment>
   );
-});
+};
+
+export default UserProducts;

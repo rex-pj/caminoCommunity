@@ -147,8 +147,7 @@ export default (function (props) {
     }
   }, [state, refetch]);
 
-  const { product: productData } = data;
-  let product = { ...productData };
+  const product = data ? { ...data.product } : {};
 
   const breadcrumbs = [
     {

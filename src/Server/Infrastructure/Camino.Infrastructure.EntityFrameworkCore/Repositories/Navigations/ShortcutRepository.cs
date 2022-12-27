@@ -5,6 +5,7 @@ using Camino.Core.Contracts.Repositories.Navigations;
 using Microsoft.EntityFrameworkCore;
 using Camino.Core.DependencyInjection;
 using Camino.Core.Domains;
+using Camino.Core.Domains.Farms;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Navigations
 {
@@ -41,6 +42,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Navigations
         public async Task<bool> UpdateAsync(Shortcut shortcut)
         {
             shortcut.UpdatedDate = DateTime.UtcNow;
+            await _shortcutRepository.UpdateAsync(shortcut);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

@@ -7,11 +7,13 @@ namespace Camino.Infrastructure.AspNetCore.Controllers
         public BaseController()
         { }
 
+        [HttpGet("errors")]
         public IActionResult RedirectToErrorPage()
         {
             return RedirectToAction("Error", "Home");
         }
 
+        [HttpGet("not-found")]
         public IActionResult RedirectToNotFoundPage()
         {
             return RedirectToAction("PageNotFound", "Home");

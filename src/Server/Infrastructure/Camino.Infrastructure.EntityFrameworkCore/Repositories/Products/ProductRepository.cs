@@ -7,6 +7,7 @@ using Camino.Core.Domains.Farms;
 using Microsoft.EntityFrameworkCore;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 {
@@ -69,6 +70,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         {
             var modifiedDate = DateTime.UtcNow;
             product.UpdatedDate = modifiedDate;
+            await _productRepository.UpdateAsync(product);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

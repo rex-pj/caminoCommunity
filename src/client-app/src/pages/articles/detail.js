@@ -27,7 +27,7 @@ const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default (function (props) {
+const ArticleDetail = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -103,9 +103,9 @@ export default (function (props) {
     onOpenDeleteConfirmation(e, onDeleteMain);
   };
 
-  const onOpenDeleteRelevantConfirmation = (e) => {
+  function onOpenDeleteRelevantConfirmation(e) {
     onOpenDeleteConfirmation(e, onDeleteRelevant);
-  };
+  }
 
   const onDeleteMain = (id) => {
     deleteArticle({
@@ -146,24 +146,6 @@ export default (function (props) {
       refetch();
     }
   }, [state, refetch]);
-
-  const { article: articleResponse } = data;
-  let article = { ...articleResponse };
-
-  const breadcrumbs = [
-    {
-      title: "Articles",
-      url: "/articles/",
-    },
-    {
-      isActived: true,
-      title: article.name,
-    },
-  ];
-
-  if (article.picture.pictureId) {
-    article.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${article.picture.pictureId}`;
-  }
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
@@ -244,6 +226,23 @@ export default (function (props) {
     return authorInfo;
   };
 
+  const article = data ? { ...data.article } : {};
+
+  const breadcrumbs = [
+    {
+      title: "Articles",
+      url: "/articles/",
+    },
+    {
+      isActived: true,
+      title: article.name,
+    },
+  ];
+
+  if (article.picture?.pictureId) {
+    article.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${article.picture.pictureId}`;
+  }
+
   return (
     <DetailLayout
       author={getAuthorInfo()}
@@ -259,4 +258,6 @@ export default (function (props) {
       {renderRelevants(relevantLoading, relevantData, relevantError)}
     </DetailLayout>
   );
-});
+};
+
+export default ArticleDetail;

@@ -3,33 +3,28 @@ import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
-import authClient from "../../graphql/client/authClient";
-import {
-  articleMutations,
-  mediaMutations,
-} from "../../graphql/fetching/mutations";
+import { articleMutations } from "../../graphql/fetching/mutations";
 import {
   articleQueries,
   farmQueries,
   userQueries,
 } from "../../graphql/fetching/queries";
 import { useStore } from "../../store/hook-store";
-import { fileToBase64 } from "../../utils/Helper";
 import articleCreationModel from "../../models/articleCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
+import MediaService from "../../services/mediaService";
+import ArticleService from "../../services/articleService";
 
-export default (function (props) {
+const UpdatePage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useStore(false)[1];
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
-  const [updateArticle] = useMutation(articleMutations.UPDATE_ARTICLE, {
-    client: authClient,
-  });
   const [articleCategories] = useMutation(
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
+  const mediaService = new MediaService();
+  const articleService = new ArticleService();
 
   const { loading, data, error, refetch, called } = useQuery(
     articleQueries.GET_ARTICLE_FOR_UPDATE,
@@ -69,8 +64,7 @@ export default (function (props) {
     }
   }, [refetch, called, loading]);
 
-  const { article: articleResponse } = data;
-  let article = { ...articleResponse };
+  const article = data ? { ...data.article } : {};
 
   const breadcrumbs = [
     {
@@ -87,44 +81,31 @@ export default (function (props) {
     },
   ];
 
-  const showValidationError = (title, message) => {
+  function showValidationError(title, message) {
     dispatch("NOTIFY", {
       title,
       message,
       type: "error",
     });
-  };
+  }
 
-  const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
+  async function onImageValidate(formData) {
+    return await mediaService.validatePicture(formData);
+  }
+
+  async function convertImagefile(file) {
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
-  };
+  }
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
-  };
-
-  const onArticlePost = async (data) => {
-    return await updateArticle({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+  async function onArticlePost(data) {
+    return await articleService.update(data).then((response) => {
       return new Promise((resolve) => {
-        const { data } = response;
-        const { updateArticle: article } = data;
         if (location.state && location.state.from) {
           const referrefUri = location.state.from;
-          const articleUpdateUrl = `/articles/update/${article.id}`;
+          const articleUpdateUrl = `/articles/update/${data.id}`;
           if (referrefUri !== articleUpdateUrl) {
             raiseArticleUpdatedNotify(article);
             navigate(referrefUri);
@@ -138,7 +119,7 @@ export default (function (props) {
         resolve({ article });
       });
     });
-  };
+  }
 
   const raiseArticleUpdatedNotify = (article) => {
     dispatch("ARTICLE_UPDATE", {
@@ -199,4 +180,6 @@ export default (function (props) {
       ></ArticleEditor>
     </DetailLayout>
   );
-});
+};
+
+export default UpdatePage;

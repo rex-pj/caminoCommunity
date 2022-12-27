@@ -346,7 +346,7 @@ namespace Camino.Application.AppServices.Farms
                     Pictures = request.Pictures,
                     UpdatedById = request.UpdatedById,
                     UpdatedDate = request.UpdatedDate
-                });
+                }, needSaveChanges: true);
             }
 
             return id;

@@ -15,8 +15,8 @@ const EmptyImage = styled(NoImage)`
   font-size: ${(p) => p.theme.size.large};
 `;
 
-export default (props) => {
-  const { imageData } = props;
+const EditorImageScalePreview = (props) => {
+  const { imageData, previewSrc } = props;
 
   const { src, width, height, alt } = imageData;
   return (
@@ -24,7 +24,7 @@ export default (props) => {
       <ImageWrap>
         {src.value ? (
           <Image
-            src={src.value}
+            src={previewSrc}
             alt={alt.value}
             width={width.value}
             height={height.value}
@@ -36,3 +36,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default EditorImageScalePreview;

@@ -85,6 +85,7 @@ const ArticleEditor = (props) => {
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(articleCreationModel))
   );
+  const [preview, setPreview] = useState(null);
   const editorRef = useRef();
   const selectRef = useRef();
 
@@ -116,16 +117,11 @@ const ArticleEditor = (props) => {
 
   const handleImageChange = (e) => {
     let data = formData || {};
-    const { preview, file } = e;
-    const { name, type } = file;
+    const { preview: srcPreview, file } = e;
+    data["file"].isValid = checkValidity(data, file, "file");
+    data["file"].value = file;
 
-    data["picture"].isValid = checkValidity(data, preview, "picture");
-    data["picture"].value = {
-      base64Data: preview,
-      contentType: type,
-      fileName: name,
-    };
-
+    setPreview(srcPreview);
     setFormData({
       ...data,
     });
@@ -158,8 +154,21 @@ const ArticleEditor = (props) => {
       delete articleData["id"];
     }
 
+    const requestFormData = new FormData();
+    for (const key of Object.keys(articleData)) {
+      if (key === "file" && articleData[key]) {
+        const file = articleData[key];
+        requestFormData.append(`file.file`, file.file);
+        if (file.pictureId) {
+          requestFormData.append(`file.pictureId`, file.pictureId);
+        }
+      } else {
+        requestFormData.append(key, articleData[key]);
+      }
+    }
+
     delete articleData["articleCategoryName"];
-    await props.onArticlePost(articleData).then((response) => {
+    await props.onArticlePost(requestFormData).then((response) => {
       if (response && response.id) {
         clearFormData();
       }
@@ -169,20 +178,17 @@ const ArticleEditor = (props) => {
   const clearFormData = () => {
     editorRef.current.clearEditor();
     selectRef.current.select.select.clearValue();
-    var articleFormData = JSON.parse(JSON.stringify(articleCreationModel));
+    const articleFormData = JSON.parse(JSON.stringify(articleCreationModel));
+    setPreview(null);
     setFormData({ ...articleFormData });
   };
 
   const onImageRemoved = () => {
     let data = formData || {};
-    data["picture"].isValid = false;
-    data["picture"].value = {
-      pictureId: 0,
-      fileName: "",
-      contentType: "",
-      base64Data: "",
-    };
+    data["file"].isValid = false;
+    data["file"].value = null;
 
+    setPreview(null);
     setFormData({
       ...data,
     });
@@ -195,8 +201,8 @@ const ArticleEditor = (props) => {
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
@@ -240,11 +246,18 @@ const ArticleEditor = (props) => {
 
   useEffect(() => {
     if (currentArticle && !formData?.id?.value) {
+      const { picture } = currentArticle;
+      if (picture?.value?.pictureId) {
+        setPreview(
+          `${apiConfig.paths.pictures.get.getPicture}/${picture.value.pictureId}`
+        );
+      }
+
       setFormData(currentArticle);
     }
   }, [currentArticle, formData]);
 
-  const { name, articleCategoryId, picture } = formData;
+  const { name, articleCategoryId } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onArticlePost(e)} method="POST">
@@ -275,25 +288,11 @@ const ArticleEditor = (props) => {
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {picture && picture.value && picture.value.base64Data ? (
+        {preview ? (
           <FormRow className="row">
             <div className="col-3">
               <ImageEditBox>
-                <Thumbnail src={picture.value.base64Data}></Thumbnail>
-                <RemoveImageButton onClick={onImageRemoved}>
-                  <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                </RemoveImageButton>
-              </ImageEditBox>
-            </div>
-          </FormRow>
-        ) : null}
-        {picture && picture.value && picture.value.pictureId ? (
-          <FormRow className="row">
-            <div className="col-3">
-              <ImageEditBox>
-                <Thumbnail
-                  src={`${apiConfig.paths.pictures.get.getPicture}/${picture.value.pictureId}`}
-                ></Thumbnail>
+                <Thumbnail src={preview}></Thumbnail>
                 <RemoveImageButton onClick={onImageRemoved}>
                   <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                 </RemoveImageButton>

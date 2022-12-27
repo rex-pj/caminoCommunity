@@ -177,6 +177,11 @@ namespace Camino.Application.AppServices.Farms
 
         private FarmTypeResult MapEntityToDto(FarmType entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new FarmTypeResult
             {
                 Description = entity.Description,

@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation, useNavigate } from "react-router-dom";
 import CommonEditor from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
@@ -76,7 +75,7 @@ const Footer = styled.div`
   }
 `;
 
-export default (props) => {
+const FarmEditor = (props) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -90,7 +89,7 @@ export default (props) => {
   const editorRef = useRef();
   const selectRef = useRef();
 
-  const handleInputChange = (evt) => {
+  function handleInputChange(evt) {
     let data = formData || {};
     const { name, value } = evt.target;
 
@@ -100,9 +99,9 @@ export default (props) => {
     setFormData({
       ...data,
     });
-  };
+  }
 
-  const onDescriptionChanged = (editorState) => {
+  function onDescriptionChanged(editorState) {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState);
 
@@ -114,27 +113,24 @@ export default (props) => {
     setFormData({
       ...data,
     });
-  };
+  }
 
-  const handleImageChange = (e) => {
+  function handleImageChange(e) {
     let data = { ...formData } || {};
     const { preview, file } = e;
-    const { name, type } = file;
-
-    let pictures = Object.assign([], data.pictures.value);
-    pictures.push({
-      base64Data: preview,
-      fileName: name,
-      contentType: type,
+    let files = Object.assign([], data.files.value);
+    files.push({
+      file: file,
+      preview: preview,
     });
 
-    data.pictures.value = pictures;
+    data.files.value = files;
     setFormData({
       ...data,
     });
-  };
+  }
 
-  const onFarmPost = async (e) => {
+  async function onFarmPost(e) {
     e.preventDefault();
 
     let isFormValid = true;
@@ -162,30 +158,45 @@ export default (props) => {
     }
 
     delete farmData["farmTypeName"];
-    await props.onFarmPost(farmData).then((response) => {
+    const requestFormData = new FormData();
+    for (const key of Object.keys(farmData)) {
+      if (key === "files" && farmData[key]) {
+        const files = farmData[key];
+        for (const i in files) {
+          requestFormData.append(`files[${i}].file`, files[i].file);
+          if (files[i].pictureId) {
+            requestFormData.append(`files[${i}].pictureId`, files[i].pictureId);
+          }
+        }
+      } else {
+        requestFormData.append(key, farmData[key]);
+      }
+    }
+
+    await props.onFarmPost(requestFormData).then((response) => {
       if (response && response.id) {
         clearFormData();
       }
     });
-  };
+  }
 
-  const loadFarmTypeSelections = (value) => {
+  function loadFarmTypeSelections(value) {
     return filterCategories({
       variables: {
         criterias: { query: value },
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selections } = data;
+        const { data } = response;
+        const { selections } = data;
         return mapSelectOptions(selections);
       })
       .catch((error) => {
         return [];
       });
-  };
+  }
 
-  const handleSelectChange = (e, method) => {
+  function handleSelectChange(e, method) {
     const { action } = method;
     let data = formData || {};
     if (action === "clear" || action === "remove-value") {
@@ -202,9 +213,9 @@ export default (props) => {
     setFormData({
       ...data,
     });
-  };
+  }
 
-  const loadFarmTypeSelected = () => {
+  function loadFarmTypeSelected() {
     const { farmTypeId, farmTypeName } = formData;
     if (!farmTypeId.value) {
       return null;
@@ -214,7 +225,7 @@ export default (props) => {
       label: farmTypeName.value,
       value: farmTypeId.value,
     };
-  };
+  }
 
   const clearFormData = () => {
     editorRef.current.clearEditor();
@@ -224,16 +235,16 @@ export default (props) => {
 
   const onImageRemoved = (e, item) => {
     let data = formData || {};
-    if (!data.pictures) {
+    if (!data.files) {
       return;
     }
 
     if (item.pictureId) {
-      data.pictures.value = data.pictures.value.filter(
+      data.files.value = data.files.value.filter(
         (x) => x.pictureId !== item.pictureId
       );
     } else {
-      data.pictures.value = data.pictures.value.filter((x) => x !== item);
+      data.files.value = data.files.value.filter((x) => x !== item);
     }
 
     setFormData({
@@ -247,7 +258,7 @@ export default (props) => {
     }
   }, [currentFarm, formData]);
 
-  const { name, address, farmTypeId, pictures } = formData;
+  const { name, address, farmTypeId, files } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
@@ -257,7 +268,7 @@ export default (props) => {
               name="name"
               value={name.value}
               autoComplete="off"
-              onChange={(e) => handleInputChange(e)}
+              onChange={handleInputChange}
               placeholder="Farm title"
             />
           </div>
@@ -281,7 +292,7 @@ export default (props) => {
               name="address"
               value={address.value ? address.value : ""}
               autoComplete="off"
-              onChange={(e) => handleInputChange(e)}
+              onChange={handleInputChange}
               placeholder="Address"
             />
           </div>
@@ -289,14 +300,14 @@ export default (props) => {
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {pictures.value ? (
+        {files.value ? (
           <FormRow className="row">
-            {pictures.value.map((item, index) => {
-              if (item.base64Data) {
+            {files.value.map((item, index) => {
+              if (item.preview) {
                 return (
                   <div className="col-3" key={index}>
                     <ImageEditBox>
-                      <Thumbnail src={item.base64Data}></Thumbnail>
+                      <Thumbnail src={item.preview}></Thumbnail>
                       <RemoveImageButton
                         onClick={(e) => onImageRemoved(e, item)}
                       >
@@ -345,3 +356,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default FarmEditor;

@@ -35,8 +35,8 @@ const PhotoUpload = styled(ImageUpload)`
   }
 `;
 
-export default (props) => {
-  const { imageData, handleImageChange } = props;
+const EditorImageUploader = (props) => {
+  const { imageData, handleImageChange, imageSrc } = props;
 
   useEffect(() => {
     return () => {};
@@ -49,8 +49,10 @@ export default (props) => {
           Select image to upload
         </PhotoUpload>
 
-        <EditorImageScalePreview imageData={imageData} />
+        <EditorImageScalePreview previewSrc={imageSrc} imageData={imageData} />
       </Body>
     </Fragment>
   );
 };
+
+export default EditorImageUploader;

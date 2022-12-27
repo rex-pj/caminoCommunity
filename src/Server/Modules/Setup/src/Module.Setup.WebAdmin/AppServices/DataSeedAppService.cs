@@ -9,9 +9,9 @@ using Camino.Core.Domains;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Threading.Tasks;
 using System;
-using Camino.Application.Contracts;
 using Microsoft.EntityFrameworkCore.Storage;
 using Module.Setup.WebAdmin.Dtos;
+using Camino.Infrastructure.EntityFrameworkCore;
 
 namespace Module.Setup.WebAdmin.AppServices
 {
@@ -28,9 +28,12 @@ namespace Module.Setup.WebAdmin.AppServices
         private readonly IEntityRepository<AuthorizationPolicy> _authorizationPolicyRepository;
         private readonly IEntityRepository<RoleAuthorizationPolicy> _roleAuthorizationPolicyRepository;
         private readonly IEntityRepository<UserAuthorizationPolicy> _userAuthorizationPolicyRepository;
-        private readonly IAppDbContext _dbContext;
+        private readonly CaminoDbContext _appDbContext;
+        private readonly IDbContext _dbContext;
 
-        public DataSeedAppService(IAppDbContext dbContext, IEntityRepository<User> userRepository,
+        public DataSeedAppService(CaminoDbContext appDbContext,
+            IDbContext dbContext,
+            IEntityRepository<User> userRepository,
             IEntityRepository<Status> userStatusRepository,
             IEntityRepository<UserPhotoType> userPhotoTypeRepository,
             IEntityRepository<Shortcut> shortcutRepository,
@@ -53,18 +56,19 @@ namespace Module.Setup.WebAdmin.AppServices
             _authorizationPolicyRepository = authorizationPolicyRepository;
             _roleAuthorizationPolicyRepository = roleAuthorizationPolicyRepository;
             _userAuthorizationPolicyRepository = userAuthorizationPolicyRepository;
+            _appDbContext = appDbContext;
             _dbContext = dbContext;
         }
 
         public bool IsDatabaseExist()
         {
-            var canConnect = _dbContext.Database.CanConnect();
+            var canConnect = _appDbContext.Database.CanConnect();
             if (!canConnect)
             {
                 return false;
             }
 
-            return _dbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
+            return _appDbContext.Database.GetService<IRelationalDatabaseCreator>().Exists();
         }
 
         public async Task CreateDatabaseAsync()
@@ -76,7 +80,7 @@ namespace Module.Setup.WebAdmin.AppServices
                     return;
                 }
 
-                await _dbContext.Database.EnsureCreatedAsync();
+                await _appDbContext.Database.EnsureCreatedAsync();
             }
             catch (Exception ex)
             {
@@ -86,19 +90,24 @@ namespace Module.Setup.WebAdmin.AppServices
 
         public async Task SeedDataAsync(SetupRequest setupRequest)
         {
-            try
+            using (var transaction = await _appDbContext.Database.BeginTransactionAsync())
             {
-                var isSucceed = await SeedIdentityDataAsync(setupRequest);
-                if (isSucceed)
+                try
                 {
-                    await SeedContentDataAsync(setupRequest);
-                    await _dbContext.Database.CommitTransactionAsync();
+                    var isSucceed = await SeedIdentityDataAsync(setupRequest);
+                    if (isSucceed)
+                    {
+                        await SeedContentDataAsync(setupRequest);
+                        await transaction.CommitAsync();
+                        return;
+                    }
+
+                    await transaction.RollbackAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                await _dbContext.Database.RollbackTransactionAsync();
-                throw;
+                catch(Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                }
             }
         }
 
@@ -132,7 +141,6 @@ namespace Module.Setup.WebAdmin.AppServices
 
         private async Task<bool> SeedIdentityDataAsync(SetupRequest setupRequest)
         {
-            await _dbContext.Database.BeginTransactionAsync();
             var modifiedDate = DateTime.UtcNow;
             // Insert user statuses
             int activedStatusId = 0;
@@ -202,13 +210,13 @@ namespace Module.Setup.WebAdmin.AppServices
                 Address = userRequest.Address
             };
 
-            _userRepository.Insert(user);
-            _dbContext.SaveChanges();
+            await _userRepository.InsertAsync(user);
+            await _dbContext.SaveChangesAsync();
             var userId = user.Id;
-            user.CreatedById = userId;
-            user.UpdatedById = userId;
             if (userId > 0)
             {
+                user.CreatedById = userId;
+                user.UpdatedById = userId;
                 // Insert roles
                 long adminRoleId = 0;
                 foreach (var role in setupRequest.Roles)
@@ -223,15 +231,11 @@ namespace Module.Setup.WebAdmin.AppServices
                         UpdatedDate = modifiedDate
                     };
 
+                    await _roleRepository.InsertAsync(newRole);
+                    await _dbContext.SaveChangesAsync();
                     if (role.Name == "Admin")
                     {
-                        await _roleRepository.InsertAsync(newRole);
-                        await _dbContext.SaveChangesAsync();
                         adminRoleId = newRole.Id;
-                    }
-                    else
-                    {
-                        await _roleRepository.InsertAsync(newRole);
                     }
                 }
 
@@ -274,6 +278,7 @@ namespace Module.Setup.WebAdmin.AppServices
                         RoleId = adminRoleId,
                         AuthorizationPolicyId = authorizationPolicyId
                     });
+                    await _dbContext.SaveChangesAsync();
 
                     await _userAuthorizationPolicyRepository.InsertAsync(new UserAuthorizationPolicy()
                     {
@@ -283,6 +288,8 @@ namespace Module.Setup.WebAdmin.AppServices
                         UserId = userId,
                         AuthorizationPolicyId = authorizationPolicyId
                     });
+
+                    await _dbContext.SaveChangesAsync();
                 }
 
                 return true;

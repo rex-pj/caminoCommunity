@@ -10,12 +10,8 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import FarmItem from "../../components/organisms/Farm/FarmItem";
 import { farmQueries } from "../../graphql/fetching/queries";
-import {
-  farmMutations,
-  mediaMutations,
-} from "../../graphql/fetching/mutations";
+import { farmMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
-import { fileToBase64 } from "../../utils/Helper";
 import authClient from "../../graphql/client/authClient";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import {
@@ -26,8 +22,9 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import MediaService from "../../services/mediaService";
 
-export default (function (props) {
+const UserFarms = (props) => {
   const { userId } = useParams();
   const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
@@ -37,6 +34,7 @@ export default (function (props) {
     pageNumber: pageNumber ? pageNumber : 1,
     userId: userId,
   });
+  const mediaService = new MediaService();
 
   const [
     fetchFarms,
@@ -57,25 +55,17 @@ export default (function (props) {
     client: authClient,
   });
 
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
 
   const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
     return {
-      url,
+      file: file,
       fileName: file.name,
     };
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
+  const onImageValidate = async (formData) => {
+    return await mediaService.validatePicture(formData);
   };
 
   const onFarmPost = async (data) => {
@@ -279,4 +269,6 @@ export default (function (props) {
       </InfiniteScroll>
     </Fragment>
   );
-});
+};
+
+export default UserFarms;

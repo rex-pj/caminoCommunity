@@ -12,7 +12,21 @@ namespace Camino.Infrastructure.Modularity
         {
             get
             {
-                return Name.Split('.').Last();
+                var nameSplitted = Name.Split('.');
+                var middle = "";
+
+                if (nameSplitted.Length >= 3)
+                {
+                    middle = nameSplitted[nameSplitted.Length - 2];
+                }
+
+                var last = nameSplitted.Last();
+                if (string.IsNullOrEmpty(middle))
+                {
+                    return last.ToLower();
+                }
+
+                return $"{middle}-{last}".ToLower();
             }
         }
 

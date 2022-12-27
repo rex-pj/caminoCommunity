@@ -61,7 +61,7 @@ const ButtonCaret = styled.span`
   margin-top: 4px;
 `;
 
-export default (props) => {
+const EditorSelection = (props) => {
   const { className, options, placeholder } = props;
   const [isShown, setShown] = useState(false);
   const currentRef = React.createRef();
@@ -131,3 +131,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default EditorSelection;

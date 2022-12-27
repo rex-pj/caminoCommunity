@@ -1,29 +1,26 @@
 import React, { useEffect } from "react";
 import { farmQueries, userQueries } from "../../graphql/fetching/queries";
-import {
-  mediaMutations,
-  farmMutations,
-} from "../../graphql/fetching/mutations";
+import { farmMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import authClient from "../../graphql/client/authClient";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
-import { fileToBase64 } from "../../utils/Helper";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
+import MediaService from "../../services/mediaService";
 
-export default (function (props) {
+const UpdatePage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useStore(false)[1];
-  const [validateImageUrl] = useMutation(mediaMutations.VALIDATE_IMAGE_URL);
   const [updateFarm] = useMutation(farmMutations.UPDATE_FARM, {
     client: authClient,
   });
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
+  const mediaService = new MediaService();
 
   const { loading, data, error, refetch, called } = useQuery(
     farmQueries.GET_FARM_FOR_UPDATE,
@@ -57,22 +54,15 @@ export default (function (props) {
     },
   });
 
-  const convertImagefile = async (file) => {
-    const url = await fileToBase64(file);
-    return {
-      url,
-      fileName: file.name,
-    };
+  const onImageValidate = async (formData) => {
+    return await mediaService.validatePicture(formData);
   };
 
-  const onImageValidate = async (value) => {
-    return await validateImageUrl({
-      variables: {
-        criterias: {
-          url: value,
-        },
-      },
-    });
+  const convertImagefile = async (file) => {
+    return {
+      file: file,
+      fileName: file.name,
+    };
   };
 
   const onFarmPost = async (data) => {
@@ -123,7 +113,7 @@ export default (function (props) {
     }
   }, [refetch, called, loading]);
 
-  const { farm } = data;
+  const farm = data ? { ...data.farm } : {};
 
   const currentFarm = JSON.parse(JSON.stringify(farmCreationModel));
   for (const formIdentifier in currentFarm) {
@@ -193,4 +183,6 @@ export default (function (props) {
       />
     </DetailLayout>
   );
-});
+};
+
+export default UpdatePage;

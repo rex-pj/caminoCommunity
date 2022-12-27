@@ -17,5 +17,6 @@
 		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
 		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.File\Camino.Shared.File.csproj" />
 	</ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ import imageInfoModel from "../../../models/imageInfoModel";
 import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AtomicBlockUtils, EditorState } from "draft-js";
+import { fileToBase64 } from "../../../utils/Helper";
 
 const Root = styled.div`
   min-width: 400px;
@@ -50,9 +51,10 @@ const ImageEditorTabs = styled(Tabs)`
   }
 `;
 
-export default (props) => {
+const EditorImageModal = (props) => {
   const { editorState, convertImageCallback, onImageValidate } = props;
   const [imageData, setImageData] = useState(imageInfoModel);
+  const [imageSrc, setImageSrc] = useState("");
 
   const clearImageData = () => {
     imageInfoModel.src.value = "";
@@ -82,34 +84,41 @@ export default (props) => {
   };
 
   const handleImageChange = async (e) => {
-    var file = e.file;
+    const file = e.file;
     await convertImageCallback(file).then(async (fileData) => {
-      await handleImageUrlChange(e.target.name, fileData.url);
+      const { file } = fileData;
+      await handleImageUrlChange(e.target.name, file);
     });
   };
 
-  const handleImageUrlChange = async (formName, url) => {
-    let formData = imageData || {};
-    if (!url) {
-      formData[formName].isValid = false;
-      formData[formName].value = "";
+  const handleImageUrlChange = async (formName, file) => {
+    let data = imageData || {};
+    if (!file) {
+      data[formName].isValid = false;
+      data[formName].value = "";
       return;
     }
 
-    await onImageValidate(url).then((response) => {
-      const { errors, data } = response;
-      if (errors || !data) {
-        return;
-      }
-
-      const { validateImageUrl } = data;
-      const { isSucceed } = validateImageUrl;
-      formData[formName].isValid = isSucceed;
-      formData[formName].value = url;
-      setImageData({
-        ...formData,
+    let formData = new FormData();
+    formData.append("file", file);
+    await onImageValidate(formData)
+      .then(async (response) => {
+        data[formName].isValid = true;
+        data[formName].value = file;
+        const previewSrc = await fileToBase64(file);
+        setImageSrc(previewSrc);
+        setImageData({
+          ...data,
+        });
+      })
+      .catch((error) => {
+        data[formName].isValid = false;
+        data[formName].value = null;
+        setImageSrc("");
+        setImageData({
+          ...data,
+        });
       });
-    });
   };
 
   const onScaleChanged = (e) => {
@@ -140,14 +149,14 @@ export default (props) => {
   };
 
   const onImageAdded = () => {
-    const { src, width, height, alt } = imageData;
+    const { width, height, alt } = imageData;
 
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       "IMAGE",
       "IMMUTABLE",
       {
-        src: src.value,
+        src: imageSrc,
         height: height.value,
         width: width.value,
         alt: alt.value,
@@ -190,6 +199,7 @@ export default (props) => {
                 onScaleChanged={onScaleChanged}
                 handleInputChange={handleInputChange}
                 imageData={imageData}
+                imageSrc={imageSrc}
               />
             ),
           },
@@ -204,6 +214,7 @@ export default (props) => {
                 onScaleChanged={onScaleChanged}
                 handleInputChange={handleInputChange}
                 imageData={imageData}
+                imageSrc={imageSrc}
               />
             ),
           },
@@ -226,3 +237,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default EditorImageModal;

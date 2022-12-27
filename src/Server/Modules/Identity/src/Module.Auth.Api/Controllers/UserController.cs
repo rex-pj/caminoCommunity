@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace Module.Auth.Api.Controllers
 {
-    [Route("users")]
+    [Route("api/users")]
     public class UserController : BaseTokenAuthController
     {
         private readonly IUserManager<ApplicationUser> _userManager;

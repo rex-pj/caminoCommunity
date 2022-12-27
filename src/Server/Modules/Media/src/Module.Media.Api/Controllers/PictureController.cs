@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Module.Media.Api.Controllers
 {
-    [Route("pictures")]
+    [Route("api/pictures")]
     public class PictureController : BaseTokenAuthController
     {
 
         private readonly IPictureAppService _pictureAppService;
         private readonly BaseValidatorContext _validatorContext;
-        public PictureController(IHttpContextAccessor httpContextAccessor, 
+        public PictureController(IHttpContextAccessor httpContextAccessor,
             IPictureAppService pictureAppService,
             BaseValidatorContext validatorContext)
             : base(httpContextAccessor)
@@ -43,27 +43,33 @@ namespace Module.Media.Api.Controllers
             return File(exist.BinaryData, exist.ContentType);
         }
 
-        public IActionResult ValidateUrl(ImageValidationModel criterias)
+        [HttpPut("validations")]
+        public async Task<IActionResult> Validate([FromForm] ImageValidationModel criterias)
         {
-            _validatorContext.SetValidator(new ImageUrlValidator());
             if (criterias == null)
             {
                 return BadRequest();
             }
 
-            if (string.IsNullOrEmpty(criterias.Url))
+            bool isValid = false;
+            if (!string.IsNullOrEmpty(criterias.Url))
             {
-                return BadRequest();
+                _validatorContext.SetValidator(new ImageUrlValidator());
+                isValid = _validatorContext.Validate<string, bool>(criterias.Url);
+            }
+            else if (criterias.File != null)
+            {
+                _validatorContext.SetValidator(new ImageFormFileValidator());
+                isValid = await _validatorContext.ValidateAsync<IFormFile, bool>(criterias.File);
             }
 
-            bool canUpdate = _validatorContext.Validate<string, bool>(criterias.Url);
-            if (!canUpdate)
+            if (!string.IsNullOrEmpty(criterias.Url) && !isValid)
             {
                 _validatorContext.SetValidator(new Base64ImageValidator());
-                canUpdate = _validatorContext.Validate<string, bool>(criterias.Url);
+                isValid = _validatorContext.Validate<string, bool>(criterias.Url);
             }
 
-            if (canUpdate)
+            if (isValid)
             {
                 return Ok();
             }

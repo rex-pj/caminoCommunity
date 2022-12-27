@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Camino.Core.Domains.Products;
 using Camino.Core.Domains;
 using Camino.Core.DependencyInjection;
+using Camino.Core.Domains.Farms;
 
 namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
 {
@@ -51,6 +52,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
         {
             var modifiedDate = DateTime.UtcNow;
             productAttribute.UpdatedDate = modifiedDate;
+            await _productAttributeRepository.UpdateAsync(productAttribute);
             return (await _dbContext.SaveChangesAsync()) > 0;
         }
 

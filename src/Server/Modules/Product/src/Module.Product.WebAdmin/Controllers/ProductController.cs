@@ -18,6 +18,8 @@ using Camino.Application.Contracts.AppServices.Products.Dtos;
 using Camino.Application.Contracts;
 using Camino.Application.Contracts.Utils;
 using Camino.Application.Contracts.AppServices.Media.Dtos;
+using Camino.Core.Domains.Media;
+using Camino.Shared.File;
 
 namespace Module.Product.WebAdmin.Controllers
 {
@@ -298,13 +300,20 @@ namespace Module.Product.WebAdmin.Controllers
 
             if (model.Pictures != null && model.Pictures.Any())
             {
-                product.Pictures = model.Pictures.Select(x => new PictureRequest()
+                var pictures = new List<PictureRequest>();
+                foreach (var picture in model.Pictures)
                 {
-                    Base64Data = x.Base64Data,
-                    ContentType = x.ContentType,
-                    FileName = x.FileName,
-                    Id = x.PictureId.GetValueOrDefault()
-                });
+                    var fileData = await FileUtils.GetBytesAsync(picture.File);
+                    pictures.Add(new PictureRequest
+                    {
+                        BinaryData = fileData,
+                        ContentType = picture.File.ContentType,
+                        FileName = picture.File.FileName,
+                        Id = picture.PictureId.GetValueOrDefault()
+                    });
+                }
+
+                product.Pictures = pictures;
             }
 
             product.UpdatedById = LoggedUserId;

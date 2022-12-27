@@ -102,13 +102,13 @@ export default (function (props) {
     });
   };
 
-  const onOpenDeleteMainConfirmation = (e) => {
+  function onOpenDeleteMainConfirmation(e) {
     onOpenDeleteConfirmation(e, onDeleteMain);
-  };
+  }
 
-  const onOpenDeleteProductConfirmation = (e) => {
+  function onOpenDeleteProductConfirmation(e) {
     onOpenDeleteConfirmation(e, onDeleteProduct);
-  };
+  }
 
   const onDeleteMain = (id) => {
     deleteFarm({
@@ -154,8 +154,7 @@ export default (function (props) {
     }
   }, [state, refetch, refetchProducts]);
 
-  const { farm: farmData } = data;
-  let farm = { ...farmData };
+  const farm = data ? { ...data.farm } : {};
 
   const breadcrumbs = [
     {

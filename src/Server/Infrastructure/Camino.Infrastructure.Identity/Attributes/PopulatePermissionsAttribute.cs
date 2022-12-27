@@ -33,7 +33,7 @@ namespace Camino.Infrastructure.Identity.Attributes
                 await next();
             }
 
-            var viewModel = viewResult == null ? viewResult?.Model : partialViewResult?.Model;
+            var viewModel = viewResult != null ? viewResult?.Model : partialViewResult?.Model;
             if (viewModel is not BaseIdentityModel)
             {
                 await next();

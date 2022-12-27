@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Module.Media.Api.Controllers
 {
-    [Route("user-photos")]
+    [Route("api/user-photos")]
     public class UserPhotoController : BaseTokenAuthController
     {
         private readonly IUserPhotoAppService _userPhotoAppService;

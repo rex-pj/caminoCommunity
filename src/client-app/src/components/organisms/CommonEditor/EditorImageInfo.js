@@ -29,7 +29,7 @@ const FormInput = styled.div`
   }
 `;
 
-export default (props) => {
+const EditorImageInfo = (props) => {
   const { imageData, handleInfoChange, onScaleChanged } = props;
 
   const handleScaleChange = (e) => {
@@ -86,3 +86,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default EditorImageInfo;

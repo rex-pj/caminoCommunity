@@ -1,16 +1,14 @@
-﻿using Camino.Infrastructure.AspNetCore.Models;
-using HotChocolate;
-using HotChocolate.Types;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Module.Article.Api.Models
 {
     public class UpdateArticleModel
     {
-        [GraphQLType(typeof(LongType))]
-        public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Content { get; set; }
-        public PictureRequestModel Picture { get; set; }
+        [Required]
         public int ArticleCategoryId { get; set; }
     }
 }
