@@ -49,7 +49,7 @@ namespace Camino.Core.DomainServices.Products
                 ProductAttributeId = attributeRelation.ProductAttributeId,
                 ProductId = attributeRelation.ProductId,
                 TextPrompt = attributeRelation.TextPrompt
-            });
+            }, true);
 
             if (attributeRelation.ProductAttributeRelationValues.Any())
             {

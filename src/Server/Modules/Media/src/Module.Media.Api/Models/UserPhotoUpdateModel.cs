@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Module.Media.Api.Models
+﻿namespace Module.Media.Api.Models
 {
     public class UserPhotoUpdateModel
     {
@@ -10,7 +8,5 @@ namespace Module.Media.Api.Models
         public double Height { get; set; }
         public double Scale { get; set; }
         public string FileName { get; set; }
-
-        public IFormFile File { get; set; }
     }
 }

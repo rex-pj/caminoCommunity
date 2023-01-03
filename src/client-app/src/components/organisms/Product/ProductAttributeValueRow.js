@@ -12,7 +12,7 @@ const SecondaryLabel = styled(LabelNormal)`
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
-export default (props) => {
+const ProductAttributeValueRow = (props) => {
   const {
     attributeValue,
     className,
@@ -84,3 +84,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default ProductAttributeValueRow;

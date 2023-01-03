@@ -25,7 +25,7 @@ const AttributeValuePanel = styled.div`
   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
 `;
 
-export default (props) => {
+const ProductAttributeRow = (props) => {
   const { attribute, onEditAttributeValue, price } = props;
   const { attributeRelationValues } = attribute;
 
@@ -104,3 +104,5 @@ export default (props) => {
     </FormRow>
   );
 };
+
+export default ProductAttributeRow;

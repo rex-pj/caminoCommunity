@@ -1,6 +1,6 @@
 ﻿namespace Camino.Shared.Constants
 {
-    public class ImageMineTypes
+    public class FileContentTypes
     {
         public const string ImageGif = "image/gif";
 

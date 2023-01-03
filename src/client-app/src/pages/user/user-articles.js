@@ -54,12 +54,10 @@ const UserArticles = (props) => {
 
   const onArticlePost = async (data) => {
     return await articleService.create(data).then((response) => {
-      return new Promise((resolve, reject) => {
-        const { data } = response;
-        const { createArticle: article } = data;
-        resolve(article);
-        refetchArticles();
-      });
+      const { data: id } = response;
+      resetArticles();
+
+      return Promise.resolve(id);
     });
   };
 
@@ -99,9 +97,21 @@ const UserArticles = (props) => {
     });
   };
 
-  const onDelete = (id) => {
-    articleService.delete(id).then(() => {
-      refetchArticles();
+  const onDelete = async (id) => {
+    await articleService.delete(id).then(() => {
+      resetArticles();
+    });
+  };
+
+  const resetArticles = () => {
+    setArticles([]);
+    fetchArticles({
+      variables: {
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: 1,
+        },
+      },
     });
   };
 

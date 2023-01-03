@@ -88,34 +88,26 @@ const UserFeeds = (props) => {
 
   async function onArticlePost(data) {
     return await articleService.create(data).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { createArticle: article } = data;
-        resolve(article);
-        feedsRefetch();
-      });
+      const { data: id } = response;
+      resetFeeds();
+
+      return Promise.resolve(id);
     });
   }
 
   async function onProductPost(data) {
     return await productService.create(data).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { createProduct: product } = data;
-        resolve(product);
-        feedsRefetch();
-      });
+      const { data: id } = response;
+      resetFeeds();
+      return Promise.resolve(id);
     });
   }
 
   async function onFarmPost(data) {
     return await farmService.create(data).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { createFarm: farm } = data;
-        resolve(farm);
-        feedsRefetch();
-      });
+      const { data: id } = response;
+      resetFeeds();
+      return Promise.resolve(id);
     });
   }
 
@@ -146,21 +138,33 @@ const UserFeeds = (props) => {
 
   function onDeleteArticle(id) {
     articleService.delete(id).then(() => {
-      feedsRefetch();
+      resetFeeds();
     });
   }
 
   function onDeleteFarm(id) {
     farmService.delete(id).then(() => {
-      feedsRefetch();
+      resetFeeds();
     });
   }
 
   function onDeleteProduct(id) {
     productService.delete(id).then(() => {
-      feedsRefetch();
+      resetFeeds();
     });
   }
+
+  const resetFeeds = () => {
+    setFeeds([]);
+    fetchFeeds({
+      variables: {
+        criterias: {
+          userIdentityId: userId,
+          page: 1,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (state.store === "UPDATE" && state.id) {
@@ -187,7 +191,6 @@ const UserFeeds = (props) => {
       onImageValidate={onImageValidate}
       searchArticleCategories={articleCategories}
       onArticlePost={onArticlePost}
-      refetchNewsFeed={feedsRefetch}
       showValidationError={showValidationError}
       searchProductCategories={productCategories}
       searchProductAttributes={productAttributes}
@@ -259,7 +262,8 @@ const UserFeeds = (props) => {
       </Fragment>
     );
   }
-  if (!(data && pageRef.current.totalResult && feeds.length >= 0)) {
+
+  if (!(data && pageRef.current.totalResult && feeds.length > 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}

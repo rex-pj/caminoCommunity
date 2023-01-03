@@ -206,40 +206,21 @@ namespace Camino.Application.AppServices.Products
         public async Task<IList<ProductCategoryResult>> SearchAsync(BaseFilter filter, long[] currentIds)
         {
             var keyword = string.IsNullOrEmpty(filter.Keyword) ? filter.Keyword.ToLower() : "";
-            var queryParents = _productCategoryEntityRepository.Get(x => !x.ParentId.HasValue);
-
-            var queryChildrens = _productCategoryEntityRepository.Get(x => x.ParentId.HasValue);
+            var query = _productCategoryEntityRepository.Get();
             if (currentIds != null && currentIds.Any())
             {
-                queryParents = queryParents.Where(x => !currentIds.Contains(x.Id));
-                queryChildrens = queryChildrens.Where(x => !currentIds.Contains(x.Id));
+                query = query.Where(x => !currentIds.Contains(x.Id)
+                    || (x.ParentId != null && !currentIds.Contains(x.ParentId.Value)));
             }
-
-            var query = from parent in queryParents
-                        join child in queryChildrens
-                        on parent.Id equals child.ParentId into joined
-                        from j in joined.DefaultIfEmpty()
-                        orderby j.ParentId
-                        select new ProductCategoryResult
-                        {
-                            Id = j.Id,
-                            Name = j.Name,
-                            Description = j.Description,
-                            ParentId = j.ParentId,
-                            ParentCategory = new ProductCategoryResult()
-                            {
-                                Id = parent.Id,
-                                Name = parent.Name,
-                                Description = parent.Description,
-                            }
-                        };
 
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(x => x.Name.ToLower().Contains(keyword)
                         || x.Description.ToLower().Contains(keyword)
-                        || x.ParentCategory.Name.ToLower().Contains(keyword)
-                        || x.ParentCategory.Description.ToLower().Contains(keyword));
+                        || (x.ParentCategory != null
+                            && (x.ParentCategory.Name.ToLower().Contains(keyword)
+                            || x.ParentCategory.Description.ToLower().Contains(keyword)))
+                           );
             }
 
             if (filter.PageSize > 0)
@@ -253,19 +234,19 @@ namespace Camino.Application.AppServices.Products
                     Id = x.Id,
                     Name = x.Name,
                     ParentId = x.ParentId,
-                    ParentCategory = new ProductCategoryResult()
+                    ParentCategory = x.ParentCategory != null ? new ProductCategoryResult()
                     {
                         Id = x.ParentCategory.Id,
                         Name = x.ParentCategory.Name,
                         Description = x.ParentCategory.Description,
-                    }
+                    } : null
                 })
                 .ToListAsync();
 
             var categories = new List<ProductCategoryResult>();
             foreach (var category in data)
             {
-                if (!categories.Any(x => x.Id == category.ParentId))
+                if (category.ParentId.HasValue && !categories.Any(x => x.Id == category.ParentId))
                 {
                     categories.Add(category.ParentCategory);
                 }

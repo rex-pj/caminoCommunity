@@ -37,7 +37,7 @@ namespace Module.Media.Api.Controllers
             {
                 return NotFound();
             }
-            return File(avatar.FileData, "image/jpeg");
+            return File(avatar.FileData, avatar.ContentType);
         }
 
         [HttpGet("covers/{id}")]
@@ -48,21 +48,21 @@ namespace Module.Media.Api.Controllers
             {
                 return NotFound();
             }
-            return File(cover.FileData, "image/jpeg");
+            return File(cover.FileData, cover.ContentType);
         }
 
         [HttpPut("avatars")]
         [TokenAuthentication]
-        public async Task<IActionResult> UpdateAvatarAsync([FromForm] UserPhotoUpdateModel criterias)
+        public async Task<IActionResult> UpdateAvatarAsync([FromForm] UserPhotoUpdateModel criterias, IFormFile file)
         {
             try
             {
-                var fileData = await FileUtils.GetBytesAsync(criterias.File);
+                var fileData = await FileUtils.GetBytesAsync(file);
                 _validatorContext.SetValidator(new ImageFileValidator());
                 bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
-                    return BadRequest(nameof(criterias.File));
+                    return BadRequest(nameof(file));
                 }
 
                 var id = await _userPhotoAppService.UpdateAvatarAsync(new UserPhotoUpdateRequest
@@ -74,6 +74,7 @@ namespace Module.Media.Api.Controllers
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
                     FileData = fileData,
+                    ContentType = file.ContentType
                 }, LoggedUserId);
 
                 return Ok(id);
@@ -86,16 +87,16 @@ namespace Module.Media.Api.Controllers
 
         [HttpPut("covers")]
         [TokenAuthentication]
-        public async Task<IActionResult> UpdateCoverAsync(UserPhotoUpdateModel criterias)
+        public async Task<IActionResult> UpdateCoverAsync(UserPhotoUpdateModel criterias, IFormFile file)
         {
             try
             {
-                var fileData = await FileUtils.GetBytesAsync(criterias.File);
+                var fileData = await FileUtils.GetBytesAsync(file);
                 _validatorContext.SetValidator(new ImageFileValidator());
                 bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
-                    return BadRequest(nameof(criterias.File));
+                    return BadRequest(nameof(file));
                 }
 
                 var id = await _userPhotoAppService.UpdateCoverAsync(new UserPhotoUpdateRequest
@@ -106,7 +107,8 @@ namespace Module.Media.Api.Controllers
                     Scale = criterias.Scale,
                     XAxis = criterias.XAxis,
                     YAxis = criterias.YAxis,
-                    FileData = fileData
+                    FileData = fileData,
+                    ContentType = file.ContentType
                 }, LoggedUserId);
 
                 return Ok(id);

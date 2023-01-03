@@ -221,22 +221,81 @@ const ProductEditor = (props) => {
             requestFormData.append(`files[${i}].pictureId`, files[i].pictureId);
           }
         }
+      } else if (key === "productAttributes" && productData[key]) {
+        const productAttributes = productData[key];
+        for (const i in productAttributes) {
+          requestFormData.append(
+            `productAttributes[${i}].attributeId`,
+            productAttributes[i].attributeId
+          );
+          requestFormData.append(
+            `productAttributes[${i}].textPrompt`,
+            productAttributes[i].textPrompt
+          );
+          requestFormData.append(
+            `productAttributes[${i}].isRequired`,
+            productAttributes[i].isRequired
+          );
+          requestFormData.append(
+            `productAttributes[${i}].controlTypeId`,
+            productAttributes[i].controlTypeId
+          );
+          requestFormData.append(
+            `productAttributes[${i}].displayOrder`,
+            productAttributes[i].displayOrder
+          );
+          if (productAttributes[i].id) {
+            requestFormData.append(
+              `productAttributes[${i}].id`,
+              productAttributes[i].id
+            );
+          }
+
+          if (
+            productAttributes[i].attributeRelationValues &&
+            productAttributes[i].attributeRelationValues.length > 0
+          ) {
+            for (const vIndex in productAttributes[i].attributeRelationValues) {
+              requestFormData.append(
+                `productAttributes[${i}].attributeRelationValues[${vIndex}].displayOrder`,
+                productAttributes[i].attributeRelationValues[vIndex]
+                  .displayOrder
+              );
+              requestFormData.append(
+                `productAttributes[${i}].attributeRelationValues[${vIndex}].name`,
+                productAttributes[i].attributeRelationValues[vIndex].name
+              );
+              requestFormData.append(
+                `productAttributes[${i}].attributeRelationValues[${vIndex}].priceAdjustment`,
+                productAttributes[i].attributeRelationValues[vIndex]
+                  .priceAdjustment
+              );
+              requestFormData.append(
+                `productAttributes[${i}].attributeRelationValues[${vIndex}].pricePercentageAdjustment`,
+                productAttributes[i].attributeRelationValues[vIndex]
+                  .pricePercentageAdjustment
+              );
+              requestFormData.append(
+                `productAttributes[${i}].attributeRelationValues[${vIndex}].quantity`,
+                productAttributes[i].attributeRelationValues[vIndex].quantity
+              );
+            }
+          }
+        }
       } else {
         requestFormData.append(key, productData[key]);
       }
     }
 
     await props.onProductPost(requestFormData).then((response) => {
-      if (response && response.id) {
-        clearFormData();
-      }
+      clearFormData();
     });
   };
 
   const clearFormData = () => {
     editorRef.current.clearEditor();
-    categorySelectRef.current.select.select.clearValue();
-    farmSelectRef.current.select.select.clearValue();
+    categorySelectRef.current.clearValue();
+    farmSelectRef.current.clearValue();
     const productFormData = JSON.parse(JSON.stringify(productCreationModel));
     setFormData({ ...productFormData });
   };

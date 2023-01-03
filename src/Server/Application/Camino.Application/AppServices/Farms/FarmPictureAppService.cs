@@ -61,7 +61,7 @@ namespace Camino.Application.AppServices.Farms
             if (!string.IsNullOrEmpty(filter.MimeType))
             {
                 var mimeType = filter.MimeType.ToLower();
-                pictureQuery = pictureQuery.Where(x => x.MimeType.Contains(mimeType));
+                pictureQuery = pictureQuery.Where(x => x.ContentType.Contains(mimeType));
             }
 
             // Filter by register date/ created date
@@ -92,7 +92,7 @@ namespace Camino.Application.AppServices.Farms
                             FarmPictureTypeId = ap.PictureTypeId,
                             PictureCreatedById = p.CreatedById,
                             PictureCreatedDate = p.CreatedDate,
-                            ContentType = p.MimeType
+                            ContentType = p.ContentType
                         };
 
             var filteredNumber = query.Select(x => x.PictureId).Count();
@@ -196,7 +196,7 @@ namespace Camino.Application.AppServices.Farms
                 CreatedById = request.UpdatedById,
                 CreatedDate = modifiedDate,
                 FileName = picture.FileName,
-                MimeType = picture.ContentType,
+                ContentType = picture.ContentType,
                 UpdatedById = request.UpdatedById,
                 UpdatedDate = modifiedDate,
                 BinaryData = picture.BinaryData,

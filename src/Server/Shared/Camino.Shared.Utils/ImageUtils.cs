@@ -1,5 +1,4 @@
 ﻿using SkiaSharp;
-using System.Text.RegularExpressions;
 
 namespace Camino.Shared.Utils
 {
@@ -33,29 +32,28 @@ namespace Camino.Shared.Utils
 
         public static byte[] Crop(byte[] fileData, double x, double y, double width, double height, double scale, int maxSize = 600)
         {
-            var resizedImage = Resize(fileData, maxSize);
+            using var resizedImage = Resize(fileData, maxSize);
 
             var xAxis = (int)(x * resizedImage.Width);
             var yAxis = (int)(y * resizedImage.Height);
-            var newWidth = (int)(width * resizedImage.Width);
-            var newHeight = (int)(height * resizedImage.Height);
+            var right = (int)((width * resizedImage.Width) + xAxis);
+            var newHeight = (int)((height * resizedImage.Height) + yAxis);
 
-            using (var target = new SKBitmap(newWidth, newHeight))
+            using var subset = resizedImage.Subset(new SKRectI
             {
-                using (var canvas = new SKCanvas(target))
-                {
-                    var srcRect = new SKRect(xAxis, yAxis, newWidth, newHeight);
-                    var descRect = new SKRect(0, 0, newWidth, newHeight);
-                    canvas.DrawImage(resizedImage, srcRect, descRect);
+                Left = xAxis,
+                Right = right ,
+                Top = yAxis,
+                Bottom = newHeight,
+            });
 
-                    return target.Bytes;
-                }
-            }
+            using var data = subset.Encode(SKEncodedImageFormat.Png, (int)SKFilterQuality.High);
+            return data.ToArray();
         }
 
         private static SKImage Resize(byte[] fileData, int maxSize)
         {
-            var image = FileDataToImage(fileData);
+            using var image = FileDataToImage(fileData);
             if (image.Width > maxSize && image.Width >= image.Height)
             {
                 var ratio = maxSize / (float)image.Width;
@@ -75,22 +73,12 @@ namespace Camino.Shared.Utils
         public static SKImage Resize(byte[] bytes, int width, int height)
         {
             var quality = SKFilterQuality.Medium;
-            using var ms = new MemoryStream(bytes);
-            using var sourceBitmap = SKBitmap.Decode(ms);
+            using var stream = new MemoryStream(bytes);
+            using var sourceBitmap = SKBitmap.Decode(stream);
 
             using var scaledBitmap = sourceBitmap.Resize(new SKImageInfo(width, height), quality);
-            using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-            using var data = scaledImage.Encode();
-
+            var data = scaledBitmap.Encode(SKEncodedImageFormat.Png, (int)quality);
             return FileDataToImage(data.ToArray());
-        }
-
-        public static string EncodeJavascriptBase64(string javascriptBase64)
-        {
-            var result = Regex.Match(javascriptBase64, @"data:image/(?<type>.+?);(?<base64>.+?),(?<data>.+)")
-                .Groups["data"].Value;
-
-            return result;
         }
     }
 }

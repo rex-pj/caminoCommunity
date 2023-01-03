@@ -17,6 +17,8 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Media
 
             builder.Property(x => x.Name)
                 .IsRequired();
+            builder.Property(x => x.ContentType)
+                .IsRequired();
             builder.Property(x => x.CreatedDate)
                 .IsRequired();
             builder.Property(x => x.CreatedById)

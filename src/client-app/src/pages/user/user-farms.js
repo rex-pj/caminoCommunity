@@ -12,7 +12,6 @@ import FarmItem from "../../components/organisms/Farm/FarmItem";
 import { farmQueries } from "../../graphql/fetching/queries";
 import { farmMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
-import authClient from "../../graphql/client/authClient";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import {
   ErrorBar,
@@ -23,6 +22,7 @@ import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import MediaService from "../../services/mediaService";
+import FarmService from "../../services/farmService";
 
 const UserFarms = (props) => {
   const { userId } = useParams();
@@ -35,6 +35,7 @@ const UserFarms = (props) => {
     userId: userId,
   });
   const mediaService = new MediaService();
+  const farmService = new FarmService();
 
   const [
     fetchFarms,
@@ -45,14 +46,6 @@ const UserFarms = (props) => {
       onFetchCompleted(data);
     },
     fetchPolicy: "cache-and-network",
-  });
-
-  const [createFarm] = useMutation(farmMutations.CREATE_FARM, {
-    client: authClient,
-  });
-
-  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
-    client: authClient,
   });
 
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
@@ -69,17 +62,11 @@ const UserFarms = (props) => {
   };
 
   const onFarmPost = async (data) => {
-    return await createFarm({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { createFarm: farm } = data;
-        resolve(farm);
-        refetchFarms();
-      });
+    return await farmService.create(data).then((response) => {
+      const { data: id } = response;
+      resetFarms();
+
+      return Promise.resolve(id);
     });
   };
 
@@ -108,13 +95,21 @@ const UserFarms = (props) => {
     });
   };
 
-  const onDelete = (id) => {
-    deleteFarm({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+  const onDelete = async (id) => {
+    await farmService.delete(id).then(() => {
       refetchFarms();
+    });
+  };
+
+  const resetFarms = () => {
+    setFarms([]);
+    fetchFarms({
+      variables: {
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: 1,
+        },
+      },
     });
   };
 

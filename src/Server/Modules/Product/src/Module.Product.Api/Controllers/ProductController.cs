@@ -56,6 +56,7 @@ namespace Module.Product.Api.Controllers
                         ControlTypeId = x.ControlTypeId,
                         DisplayOrder = x.DisplayOrder,
                         ProductAttributeId = x.AttributeId,
+                        TextPrompt = x.TextPrompt ?? "",
                         AttributeRelationValues = x.AttributeRelationValues.Select(c => new ProductAttributeRelationValueRequest
                         {
                             DisplayOrder = c.DisplayOrder,
@@ -141,6 +142,7 @@ namespace Module.Product.Api.Controllers
                         ControlTypeId = x.ControlTypeId,
                         DisplayOrder = x.DisplayOrder,
                         ProductAttributeId = x.AttributeId,
+                        TextPrompt = x.TextPrompt,
                         AttributeRelationValues = x.AttributeRelationValues?.Select(c => new ProductAttributeRelationValueRequest
                         {
                             Id = c.Id.GetValueOrDefault(),

@@ -132,7 +132,7 @@ const FarmInfo = styled(RowItem)`
   }
 `;
 
-export default (props) => {
+const ProductItem = (props) => {
   const location = useLocation();
   const naviagte = useNavigate();
   const { product, onOpenDeleteConfirmationModal } = props;
@@ -178,6 +178,8 @@ export default (props) => {
   let description = null;
   if (product.description && product.description.length >= 120) {
     description = `${product.description.substring(0, 120)}...`;
+  } else {
+    description = product.description;
   }
 
   const onOpenDeleteConfirmation = () => {
@@ -293,3 +295,5 @@ export default (props) => {
     </Panel>
   );
 };
+
+export default ProductItem;

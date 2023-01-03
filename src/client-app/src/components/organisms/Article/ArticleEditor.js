@@ -119,7 +119,9 @@ const ArticleEditor = (props) => {
     let data = formData || {};
     const { preview: srcPreview, file } = e;
     data["file"].isValid = checkValidity(data, file, "file");
-    data["file"].value = file;
+    data["file"].value = {
+      file,
+    };
 
     setPreview(srcPreview);
     setFormData({
@@ -169,15 +171,13 @@ const ArticleEditor = (props) => {
 
     delete articleData["articleCategoryName"];
     await props.onArticlePost(requestFormData).then((response) => {
-      if (response && response.id) {
-        clearFormData();
-      }
+      clearFormData();
     });
   };
 
   const clearFormData = () => {
     editorRef.current.clearEditor();
-    selectRef.current.select.select.clearValue();
+    selectRef.current.clearValue();
     const articleFormData = JSON.parse(JSON.stringify(articleCreationModel));
     setPreview(null);
     setFormData({ ...articleFormData });

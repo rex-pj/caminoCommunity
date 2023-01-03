@@ -46,7 +46,7 @@ namespace Camino.Application.AppServices.Products
         private readonly int _farmDeletedStatus = FarmStatuses.Deleted.GetCode();
         private readonly int _farmInactivedStatus = FarmStatuses.Inactived.GetCode();
 
-        public ProductAppService(IDbContext dbContext, 
+        public ProductAppService(IDbContext dbContext,
             IProductRepository productRepository,
             IUserRepository userRepository, IUserPhotoRepository userPhotoRepository,
             IProductAttributeDomainService productAttributeDomainService,
@@ -175,11 +175,11 @@ namespace Camino.Application.AppServices.Products
                 })
             };
 
-            await PopulateProductPicturesAsync(product, filter);
-            await PopulateProductAttributesAsync(product, filter);
+            await PopulateProductPicturesAsync(result, filter);
+            await PopulateProductAttributesAsync(result, filter);
 
-            await PopulateModifiersAsync(product);
-            return product;
+            await PopulateModifiersAsync(result);
+            return result;
         }
 
         private async Task PopulateModifiersAsync(ProductResult product)
@@ -260,23 +260,10 @@ namespace Camino.Application.AppServices.Products
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
-            var farmQuery = from farm in _farmEntityRepository.Get(x => x.StatusId != _farmDeletedStatus)
-                            join farmProduct in _farmProductEntityRepository.Table
-                            on farm.Id equals farmProduct.FarmId
-                            select new
-                            {
-                                Id = farmProduct.Id,
-                                FarmId = farm.Id,
-                                ProductId = farmProduct.ProductId,
-                                Name = farm.Name
-                            };
-
             var query = from product in productQuery
                         join pr in _productPriceEntityRepository.Get(x => x.IsCurrent)
                         on product.Id equals pr.ProductId into prices
                         from price in prices.DefaultIfEmpty()
-                        join fp in farmQuery
-                        on product.Id equals fp.ProductId into farmProducts
                         select new ProductResult
                         {
                             Id = product.Id,
@@ -288,11 +275,11 @@ namespace Camino.Application.AppServices.Products
                             UpdatedById = product.UpdatedById,
                             UpdatedDate = product.UpdatedDate,
                             StatusId = product.StatusId,
-                            Farms = farmProducts.Select(x => new ProductFarmResult
+                            Farms = product.ProductFarmRelations.Select(x => new ProductFarmResult
                             {
                                 Id = x.Id,
                                 FarmId = x.FarmId,
-                                Name = x.Name
+                                Name = x.Farm.Name
                             })
                         };
 
@@ -312,44 +299,25 @@ namespace Camino.Application.AppServices.Products
 
         public async Task<IList<ProductResult>> GetRelevantsAsync(long id, ProductFilter filter)
         {
-            var exist = (from pr in _productEntityRepository.Get(x => x.Id == id && x.StatusId != _deletedStatus)
-                         join fp in _farmProductEntityRepository.Table
-                         on pr.Id equals fp.ProductId into farmProducts
-                         join productCategoryRelation in _productCategoryRelationEntityRepository.Table
-                         on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
-                         select new ProductResult
-                         {
-                             Id = pr.Id,
-                             CreatedById = pr.CreatedById,
-                             UpdatedById = pr.UpdatedById,
-                             Categories = categoriesRelation.Select(x => new ProductCategoryResult()
-                             {
-                                 Id = x.ProductCategoryId
-                             }),
-                             Farms = farmProducts.Select(x => new ProductFarmResult()
-                             {
-                                 FarmId = x.FarmId
-                             })
-                         }).FirstOrDefault();
+            var exist = _productEntityRepository.Get(x => x.Id == id && x.StatusId != _deletedStatus)
+                .Select(pr => new ProductResult
+                {
+                    Id = pr.Id,
+                    CreatedById = pr.CreatedById,
+                    UpdatedById = pr.UpdatedById,
+                    Categories = pr.ProductCategoryRelations.Select(x => new ProductCategoryResult()
+                    {
+                        Id = x.ProductCategoryId
+                    }),
+                    Farms = pr.ProductFarmRelations.Select(x => new ProductFarmResult()
+                    {
+                        FarmId = x.FarmId
+                    })
+                }).FirstOrDefault();
 
             var farmIds = exist.Farms.Select(x => x.FarmId);
             var categoryIds = exist.Categories.Select(x => x.Id);
-
-            var farmQuery = from farm in _farmEntityRepository.Get(x => farmIds.Contains(x.Id))
-                            join farmProduct in _farmProductEntityRepository.Table
-                            on farm.Id equals farmProduct.FarmId
-                            select new
-                            {
-                                Id = farmProduct.Id,
-                                FarmId = farm.Id,
-                                ProductId = farmProduct.ProductId,
-                                Name = farm.Name
-                            };
-
             var relevantProductQuery = (from pr in _productEntityRepository.Get(x => x.Id != exist.Id)
-                                        join fp in farmQuery
-                                        on pr.Id equals fp.ProductId into farmProducts
-
                                         join productCategoryRelation in _productCategoryRelationEntityRepository.Table
                                         on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
                                         from categoryRelation in categoriesRelation.DefaultIfEmpty()
@@ -371,11 +339,11 @@ namespace Camino.Application.AppServices.Products
                                             Description = pr.Description,
                                             UpdatedById = pr.UpdatedById,
                                             UpdatedDate = pr.UpdatedDate,
-                                            Farms = farmProducts.Select(x => new ProductFarmResult
+                                            Farms = pr.ProductFarmRelations.Select(x => new ProductFarmResult
                                             {
                                                 Id = x.Id,
                                                 FarmId = x.FarmId,
-                                                Name = x.Name
+                                                Name = x.Farm.Name
                                             })
                                         });
 
@@ -562,7 +530,7 @@ namespace Camino.Application.AppServices.Products
             existing.Description = request.Description;
             existing.Name = request.Name;
             existing.UpdatedById = request.UpdatedById;
-            
+
             var isUpdated = await _productRepository.UpdateAsync(existing);
             if (!isUpdated)
             {

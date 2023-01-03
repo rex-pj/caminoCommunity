@@ -264,10 +264,6 @@ namespace Camino.Application.AppServices.Products
             var productAttributes = await (from pattr in _productAttributeRelationEntityRepository.Table
                                            join attr in _productAttributeEntityRepository.Table
                                            on pattr.ProductAttributeId equals attr.Id
-
-                                           join attrv in _productAttributeRelationValueEntityRepository.Table
-                                           on pattr.Id equals attrv.ProductAttributeRelationId into attributeRelationValues
-
                                            where pattr.ProductId == productId
                                            select new ProductAttributeRelationResult
                                            {
@@ -278,7 +274,7 @@ namespace Camino.Application.AppServices.Products
                                                AttributeId = pattr.ProductAttributeId,
                                                TextPrompt = pattr.TextPrompt,
                                                AttributeName = attr.Name,
-                                               AttributeRelationValues = attributeRelationValues.Select(x => new ProductAttributeRelationValueResult
+                                               AttributeRelationValues = pattr.ProductAttributeRelationValues.Select(x => new ProductAttributeRelationValueResult
                                                {
                                                    DisplayOrder = x.DisplayOrder,
                                                    Id = x.Id,
@@ -314,6 +310,11 @@ namespace Camino.Application.AppServices.Products
 
         private ProductAttributeResult MapEntityToDto(ProductAttribute entity)
         {
+            if (entity == null)
+            {
+                return null;
+            }
+
             return new ProductAttributeResult()
             {
                 Id = entity.Id,

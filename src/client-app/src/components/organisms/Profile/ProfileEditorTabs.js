@@ -10,7 +10,6 @@ const ProfileEditorTabs = (props) => {
     onImageValidate,
     searchArticleCategories,
     onArticlePost,
-    refetchNewsFeed,
     showValidationError,
     searchProductCategories,
     searchProductAttributes,
@@ -36,7 +35,6 @@ const ProfileEditorTabs = (props) => {
           onImageValidate={onImageValidate}
           filterCategories={searchArticleCategories}
           onArticlePost={onArticlePost}
-          refetchNews={refetchNewsFeed}
           showValidationError={showValidationError}
         />
       </Fragment>
@@ -57,7 +55,6 @@ const ProfileEditorTabs = (props) => {
           filterCategories={searchProductCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
-          refetchNews={refetchNewsFeed}
           filterFarms={searchFarms}
           filterAttributes={searchProductAttributes}
           filterProductAttributeControlTypes={
@@ -80,7 +77,6 @@ const ProfileEditorTabs = (props) => {
         onImageValidate={onImageValidate}
         filterCategories={searchFarmTypes}
         onFarmPost={onFarmPost}
-        refetchNews={refetchNewsFeed}
         showValidationError={showValidationError}
       />
     </Fragment>

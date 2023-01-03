@@ -9,7 +9,6 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
 import ProductItem from "../../components/organisms/Product/ProductItem";
-import authClient from "../../graphql/client/authClient";
 import {
   productMutations,
   farmMutations,
@@ -26,6 +25,7 @@ import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import MediaService from "../../services/mediaService";
+import ProductService from "../../services/productService";
 
 const UserProducts = (props) => {
   const { userId } = useParams();
@@ -38,6 +38,7 @@ const UserProducts = (props) => {
     userId: userId,
   });
   const mediaService = new MediaService();
+  const productService = new ProductService();
 
   const [productCategories] = useMutation(
     productMutations.FILTER_PRODUCT_CATEGORIES
@@ -48,13 +49,6 @@ const UserProducts = (props) => {
   const [productAttributeControlTypes] = useMutation(
     productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
   );
-  const [createProduct] = useMutation(productMutations.CREATE_PRODUCT, {
-    client: authClient,
-  });
-
-  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
-    client: authClient,
-  });
 
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
 
@@ -89,17 +83,11 @@ const UserProducts = (props) => {
   };
 
   const onProductPost = async (data) => {
-    return await createProduct({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
-      return new Promise((resolve) => {
-        const { data } = response;
-        const { createProduct: product } = data;
-        resolve(product);
-        refetchProducts();
-      });
+    return await productService.create(data).then((response) => {
+      const { data: id } = response;
+      resetProducts();
+
+      return Promise.resolve(id);
     });
   };
 
@@ -120,13 +108,21 @@ const UserProducts = (props) => {
     });
   };
 
-  const onDelete = (id) => {
-    deleteProduct({
+  const onDelete = async (id) => {
+    await productService.delete(id).then(() => {
+      resetProducts();
+    });
+  };
+
+  const resetProducts = () => {
+    setProducts([]);
+    fetchProducts({
       variables: {
-        criterias: { id },
+        criterias: {
+          userIdentityId: pageRef.current.userId,
+          page: 1,
+        },
       },
-    }).then(() => {
-      refetchProducts();
     });
   };
 

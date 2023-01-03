@@ -1,13 +1,12 @@
 ﻿using Camino.Shared.Enums;
 using Camino.Core.Domains.Media;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Camino.Core.Contracts.Repositories.Users
 {
     public interface IUserPhotoRepository
     {
-        Task<long> CreateAsync(UserPhoto userPhoto);
+        Task DeleteAsync(UserPhoto userPhoto, bool needSaveChanges = false);
+        Task<long> CreateAsync(UserPhoto userPhoto, bool needSaveChanges = false);
         Task DeleteByUserIdAsync(long userId, UserPictureTypes userPhotoType);
         Task<UserPhoto> GetByIdAsync(long id, UserPictureTypes type);
         Task<UserPhoto> GetByUserIdAsync(long userId, UserPictureTypes typeId);

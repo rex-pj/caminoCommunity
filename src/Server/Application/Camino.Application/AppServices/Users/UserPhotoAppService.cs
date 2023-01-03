@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using Camino.Core.Domains;
 
 namespace Camino.Application.AppServices.Users
 {
@@ -21,15 +22,18 @@ namespace Camino.Application.AppServices.Users
         private readonly IUserPhotoRepository _userPhotoRepository;
         private readonly IUserRepository _userRepository;
         private readonly BaseValidatorContext _validatorContext;
+        private readonly IDbContext _dbContext;
         private const int _avatarMaxSize = 600;
-        private const int _coverMaxSize = 1000;
+        private const int _coverMaxSize = 1240;
 
         public UserPhotoAppService(IUserPhotoRepository userPhotoRepository,
             IUserRepository userRepository,
+            IDbContext dbContext,
             BaseValidatorContext validatorContext)
         {
             _userPhotoRepository = userPhotoRepository;
             _userRepository = userRepository;
+            _dbContext = dbContext;
             _validatorContext = validatorContext;
         }
 
@@ -51,27 +55,24 @@ namespace Camino.Application.AppServices.Users
             var newImage = ImageUtils
                 .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, _coverMaxSize);
 
-            var userPhoto = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Cover);
-            if (userPhoto == null)
+            var exist = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Cover);
+            if (exist != null)
             {
-                userPhoto = new UserPhoto()
-                {
-                    CreatedById = userId,
-                    CreatedDate = DateTime.UtcNow,
-                    FileData = newImage,
-                    TypeId = UserPictureTypes.Cover.GetCode(),
-                    UserId = userId,
-                    Name = request.FileName,
-                };
-                await _userPhotoRepository.CreateAsync(userPhoto);
-            }
-            else
-            {
-                userPhoto.FileData = newImage;
-                userPhoto.Name = request.FileName;
-                await _userPhotoRepository.UpdateAsync(userPhoto);
+                await _userPhotoRepository.DeleteAsync(exist);
             }
 
+            var userPhoto = new UserPhoto
+            {
+                CreatedById = userId,
+                CreatedDate = DateTime.UtcNow,
+                FileData = newImage,
+                TypeId = UserPictureTypes.Cover.GetCode(),
+                UserId = userId,
+                Name = request.FileName,
+                ContentType = request.ContentType
+            };
+            await _userPhotoRepository.CreateAsync(userPhoto);
+            await _dbContext.SaveChangesAsync();
             return userPhoto.Id;
         }
 
@@ -93,27 +94,24 @@ namespace Camino.Application.AppServices.Users
             var newImage = ImageUtils
                 .Crop(request.FileData, request.XAxis, request.YAxis, request.Width, request.Height, request.Scale, _avatarMaxSize);
 
-            var userPhoto = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Avatar);
-            if (userPhoto == null)
+            var exist = await _userPhotoRepository.GetByUserIdAsync(userId, UserPictureTypes.Avatar);
+            if (exist != null)
             {
-                userPhoto = new UserPhoto()
-                {
-                    CreatedById = userId,
-                    CreatedDate = DateTime.UtcNow,
-                    FileData = newImage,
-                    TypeId = UserPictureTypes.Avatar.GetCode(),
-                    UserId = userId,
-                    Name = request.FileName,
-                };
-                await _userPhotoRepository.CreateAsync(userPhoto);
+                await _userPhotoRepository.DeleteAsync(exist);
             }
-            else
+            
+            var userPhoto = new UserPhoto
             {
-                userPhoto.FileData = newImage;
-                userPhoto.Name = request.FileName;
-                await _userPhotoRepository.UpdateAsync(userPhoto);
-            }
-
+                CreatedById = userId,
+                CreatedDate = DateTime.UtcNow,
+                FileData = newImage,
+                TypeId = UserPictureTypes.Avatar.GetCode(),
+                UserId = userId,
+                Name = request.FileName,
+                ContentType = request.ContentType
+            };
+            await _userPhotoRepository.CreateAsync(userPhoto);
+            await _dbContext.SaveChangesAsync();
             return userPhoto.Id;
         }
 
@@ -170,7 +168,8 @@ namespace Camino.Application.AppServices.Users
                 FileData = entity.FileData,
                 Name = entity.Name,
                 TypeId = entity.TypeId,
-                UserId = entity.UserId
+                UserId = entity.UserId,
+                ContentType = entity.ContentType
             };
         }
     }

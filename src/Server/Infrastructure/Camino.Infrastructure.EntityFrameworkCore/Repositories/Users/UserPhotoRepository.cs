@@ -20,17 +20,35 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
             _dbContext = dbContext;
         }
 
-        public async Task<long> CreateAsync(UserPhoto userPhoto)
+        public async Task<long> CreateAsync(UserPhoto userPhoto, bool needSaveChanges = false)
         {
             await _userPhotoEntityRepository.InsertAsync(userPhoto);
-            await _dbContext.SaveChangesAsync();
-            return userPhoto.Id;
+            if (needSaveChanges)
+            {
+                await _dbContext.SaveChangesAsync();
+                return userPhoto.Id;
+            }
+            return -1;
         }
 
         public async Task UpdateAsync(UserPhoto userPhoto)
         {
             await _userPhotoEntityRepository.UpdateAsync(userPhoto);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(UserPhoto userPhoto, bool needSaveChanges = false)
+        {
+            if (userPhoto == null)
+            {
+                throw new ArgumentNullException(nameof(userPhoto));
+            }
+
+            await _userPhotoEntityRepository.DeleteAsync(userPhoto);
+            if (needSaveChanges)
+            {
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteByUserIdAsync(long userId, UserPictureTypes userPhotoType)
@@ -65,7 +83,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
 
             return userPhotos.FirstOrDefault();
         }
-        
+
         public async Task<UserPhoto> GetByUserIdAsync(long userId, UserPictureTypes typeId)
         {
             var photoType = (int)typeId;
@@ -87,7 +105,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Users
                 }
 
                 return userPhotos;
-            }               
+            }
         }
 
         public async Task<long> GetIdByUserIdAsync(long userId, UserPictureTypes typeId)

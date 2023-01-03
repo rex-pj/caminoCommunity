@@ -276,8 +276,7 @@ const ProfileCover = (props) => {
   };
 
   const onUpdate = async () => {
-    const { src } = coverState;
-    if (photoEditor && props.onUpdated && src) {
+    if (photoEditor && props.onUpdated) {
       const validateResult = validateForSubmit();
       if (!validateResult.isSucceed) {
         showValidationError(

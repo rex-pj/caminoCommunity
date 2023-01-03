@@ -184,8 +184,7 @@ const UpdateAvatarModal = (props) => {
   const onUploading = async (e) => {
     props.setDisabled(true);
 
-    const { src } = avatarData;
-    if (avatarEditor && src) {
+    if (avatarEditor) {
       const rect = avatarEditor.getCroppingRect();
       if (!canSubmit()) {
         return;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Camino.Core.Domains.Products
+﻿namespace Camino.Core.Domains.Products
 {
     public class ProductAttribute
     {

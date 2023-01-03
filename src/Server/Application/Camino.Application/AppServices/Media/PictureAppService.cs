@@ -47,7 +47,7 @@ namespace Camino.Application.AppServices.Media
                 Id = pic.Id,
                 FileName = pic.FileName,
                 BinaryData = pic.BinaryData,
-                ContentType = pic.MimeType,
+                ContentType = pic.ContentType,
                 CreatedById = pic.CreatedById,
                 UpdatedById = pic.UpdatedById
             };

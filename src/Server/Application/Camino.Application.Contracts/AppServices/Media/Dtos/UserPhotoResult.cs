@@ -8,5 +8,6 @@
         public long UserId { get; set; }
         public int TypeId { get; set; }
         public byte[] FileData { get; set; }
+        public string ContentType { get; set; }
     }
 }

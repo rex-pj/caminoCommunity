@@ -173,10 +173,8 @@ const FarmEditor = (props) => {
       }
     }
 
-    await props.onFarmPost(requestFormData).then((response) => {
-      if (response && response.id) {
-        clearFormData();
-      }
+    await props.onFarmPost(requestFormData).then((id) => {
+      clearFormData();
     });
   }
 
@@ -229,8 +227,9 @@ const FarmEditor = (props) => {
 
   const clearFormData = () => {
     editorRef.current.clearEditor();
-    selectRef.current.select.select.clearValue();
-    setFormData(JSON.parse(JSON.stringify(farmCreationModel)));
+    selectRef.current.clearValue();
+    const farmFormData = JSON.parse(JSON.stringify(farmCreationModel));
+    setFormData({ ...farmFormData });
   };
 
   const onImageRemoved = (e, item) => {
