@@ -148,7 +148,7 @@ const EmptyImage = styled(NoImage)`
   margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
-export default (props) => {
+const SearchBar = (props) => {
   const navigate = useNavigate();
   const { keyword: searchText } = useParams();
 
@@ -196,6 +196,10 @@ export default (props) => {
         result.url = `${UrlConstant.Product.url}${result.id}`;
       } else if (result.feedType === FeedType.User) {
         result.url = `${UrlConstant.Profile.url}${result.id}`;
+      }
+
+      if (!result.pictureId) {
+        return result;
       }
 
       if (result.feedType === FeedType.User) {
@@ -328,3 +332,5 @@ export default (props) => {
     </SearchForm>
   );
 };
+
+export default SearchBar;

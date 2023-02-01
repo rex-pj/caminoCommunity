@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useMemo,
 } from "react";
 import { useParams } from "react-router-dom";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
@@ -13,7 +14,7 @@ import {
   farmMutations,
   productMutations,
 } from "../../graphql/fetching/mutations";
-import { feedqueries } from "../../graphql/fetching/queries";
+import { feedqueries, productQueries } from "../../graphql/fetching/queries";
 import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
@@ -51,8 +52,11 @@ const UserFeeds = (props) => {
   const [articleCategories] = useMutation(
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
-  const [productCategories] = useMutation(
-    productMutations.FILTER_PRODUCT_CATEGORIES
+  const [fetchProductCategories] = useLazyQuery(
+    productQueries.FILTER_PRODUCT_CATEGORIES,
+    {
+      variables: {},
+    }
   );
   const [productAttributes] = useMutation(
     productMutations.FILTER_PRODUCT_ATTRIBUTES
@@ -63,6 +67,10 @@ const UserFeeds = (props) => {
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
 
+  const getProductCategories = useMemo(
+    () => fetchProductCategories,
+    [fetchProductCategories]
+  );
   // Queries
   const [
     fetchFeeds,
@@ -192,7 +200,7 @@ const UserFeeds = (props) => {
       searchArticleCategories={articleCategories}
       onArticlePost={onArticlePost}
       showValidationError={showValidationError}
-      searchProductCategories={productCategories}
+      searchProductCategories={getProductCategories}
       searchProductAttributes={productAttributes}
       searchProductAttributeControlTypes={productAttributeControlTypes}
       onProductPost={onProductPost}

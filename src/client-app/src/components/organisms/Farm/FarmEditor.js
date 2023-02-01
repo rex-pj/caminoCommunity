@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect } from "react";
+import React, { Fragment, useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CommonEditor from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
@@ -118,13 +118,13 @@ const FarmEditor = (props) => {
   function handleImageChange(e) {
     let data = { ...formData } || {};
     const { preview, file } = e;
-    let files = Object.assign([], data.files.value);
-    files.push({
+    let pictures = Object.assign([], data.pictures.value);
+    pictures.push({
       file: file,
       preview: preview,
     });
 
-    data.files.value = files;
+    data.pictures.value = pictures;
     setFormData({
       ...data,
     });
@@ -160,12 +160,15 @@ const FarmEditor = (props) => {
     delete farmData["farmTypeName"];
     const requestFormData = new FormData();
     for (const key of Object.keys(farmData)) {
-      if (key === "files" && farmData[key]) {
-        const files = farmData[key];
-        for (const i in files) {
-          requestFormData.append(`files[${i}].file`, files[i].file);
-          if (files[i].pictureId) {
-            requestFormData.append(`files[${i}].pictureId`, files[i].pictureId);
+      if (key === "pictures" && farmData[key]) {
+        const pictures = farmData[key];
+        for (const i in pictures) {
+          requestFormData.append(`pictures[${i}].file`, pictures[i].file);
+          if (pictures[i].pictureId) {
+            requestFormData.append(
+              `pictures[${i}].pictureId`,
+              pictures[i].pictureId
+            );
           }
         }
       } else {
@@ -178,21 +181,19 @@ const FarmEditor = (props) => {
     });
   }
 
-  function loadFarmTypeSelections(value) {
-    return filterCategories({
-      variables: {
-        criterias: { query: value },
-      },
-    })
-      .then((response) => {
-        const { data } = response;
-        const { selections } = data;
-        return mapSelectOptions(selections);
-      })
-      .catch((error) => {
-        return [];
+  const loadFarmTypeSelections = useMemo(() => {
+    return async (value) => {
+      const response = await filterCategories({
+        variables: {
+          criterias: { query: value },
+        },
       });
-  }
+
+      const { data } = response;
+      const { selections } = data;
+      return mapSelectOptions(selections);
+    };
+  }, [filterCategories]);
 
   function handleSelectChange(e, method) {
     const { action } = method;
@@ -234,16 +235,16 @@ const FarmEditor = (props) => {
 
   const onImageRemoved = (e, item) => {
     let data = formData || {};
-    if (!data.files) {
+    if (!data.pictures) {
       return;
     }
 
     if (item.pictureId) {
-      data.files.value = data.files.value.filter(
+      data.pictures.value = data.pictures.value.filter(
         (x) => x.pictureId !== item.pictureId
       );
     } else {
-      data.files.value = data.files.value.filter((x) => x !== item);
+      data.pictures.value = data.pictures.value.filter((x) => x !== item);
     }
 
     setFormData({
@@ -257,7 +258,7 @@ const FarmEditor = (props) => {
     }
   }, [currentFarm, formData]);
 
-  const { name, address, farmTypeId, files } = formData;
+  const { name, address, farmTypeId, pictures } = formData;
   return (
     <Fragment>
       <form onSubmit={(e) => onFarmPost(e)} method="POST">
@@ -299,9 +300,9 @@ const FarmEditor = (props) => {
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
-        {files.value ? (
+        {pictures.value ? (
           <FormRow className="row">
-            {files.value.map((item, index) => {
+            {pictures.value.map((item, index) => {
               if (item.preview) {
                 return (
                   <div className="col-3" key={index}>

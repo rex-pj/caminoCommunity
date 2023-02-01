@@ -1,6 +1,4 @@
 ﻿using Camino.Infrastructure.AspNetCore.Models;
-using HotChocolate;
-using HotChocolate.Types;
 using System.Collections.Generic;
 
 namespace Module.Product.Api.Models
@@ -15,8 +13,6 @@ namespace Module.Product.Api.Models
             ProductAttributes = new List<AttributeRelationRequestModel>();
         }
 
-        [GraphQLType(typeof(LongType))]
-        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

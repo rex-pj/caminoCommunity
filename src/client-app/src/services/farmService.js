@@ -13,15 +13,12 @@ const FarmService = class extends BaseService {
   };
 
   update = async (request) => {
-    return axios.put(
-      `${apiConfig.paths.farms.put.putFarm}/${request.id}`,
-      request,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const id = request.get("id");
+    return axios.put(`${apiConfig.paths.farms.put.putFarm}/${id}`, request, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
 
   delete = async (id) => {

@@ -24,18 +24,18 @@ namespace Camino.Application.AppServices.Media
 
         public async Task<PictureResult> FindAsync(IdRequestFilter<long> filter)
         {
-            var x = await _pictureRepository.FindAsync(filter.Id);
-            if (x.StatusId == _pictureDeletedStatus && filter.CanGetDeleted)
+            var picture = await _pictureRepository.FindAsync(filter.Id);
+            if (picture.StatusId == _pictureDeletedStatus && filter.CanGetDeleted)
             {
-                return MapEntityToDto(x);
+                return MapEntityToDto(picture);
             }
-            if (x.StatusId == _pictureInactivedStatus && filter.CanGetInactived)
+            if (picture.StatusId == _pictureInactivedStatus && filter.CanGetInactived)
             {
-                return MapEntityToDto(x);
+                return MapEntityToDto(picture);
             }
-            if (x.StatusId != _pictureDeletedStatus && x.StatusId != _pictureInactivedStatus)
+            if (picture.StatusId != _pictureDeletedStatus && picture.StatusId != _pictureInactivedStatus)
             {
-                return MapEntityToDto(x);
+                return MapEntityToDto(picture);
             }
             return null;
         }

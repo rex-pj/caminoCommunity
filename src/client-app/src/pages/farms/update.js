@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { farmQueries, userQueries } from "../../graphql/fetching/queries";
 import { farmMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
-import authClient from "../../graphql/client/authClient";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
@@ -10,17 +9,16 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import farmCreationModel from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import MediaService from "../../services/mediaService";
+import FarmService from "../../services/farmService";
 
 const UpdatePage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useStore(false)[1];
-  const [updateFarm] = useMutation(farmMutations.UPDATE_FARM, {
-    client: authClient,
-  });
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const mediaService = new MediaService();
+  const farmService = new FarmService();
 
   const { loading, data, error, refetch, called } = useQuery(
     farmQueries.GET_FARM_FOR_UPDATE,
@@ -30,6 +28,7 @@ const UpdatePage = (props) => {
           id: parseFloat(id),
         },
       },
+      fetchPolicy: "cache-and-network",
     }
   );
 
@@ -45,13 +44,7 @@ const UpdatePage = (props) => {
 
   const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
     skip: !userIdentityId,
-    variables: {
-      criterias: {
-        userIdentityId: userIdentityId,
-        page: 1,
-        pageSize: 4,
-      },
-    },
+    variables: {},
   });
 
   const onImageValidate = async (formData) => {
@@ -66,35 +59,20 @@ const UpdatePage = (props) => {
   };
 
   const onFarmPost = async (data) => {
-    return await updateFarm({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+    return await farmService.update(data).then((response) => {
       return new Promise((resolve) => {
-        const { data } = response;
-        const { updateFarm: farm } = data;
         if (location.state && location.state.from) {
           const referrefUri = location.state.from;
-          const farmUpdateUrl = `/farms/update/${farm.id}`;
+          const farmUpdateUrl = `/farms/update/${data.id}`;
           if (referrefUri !== farmUpdateUrl) {
-            raiseFarmUpdatedNotify(farm);
             navigate(referrefUri);
-            resolve({ farm });
+            resolve();
             return;
           }
         }
-
-        raiseFarmUpdatedNotify(farm);
         navigate(`/farms/${farm.id}`);
-        resolve({ farm });
+        resolve();
       });
-    });
-  };
-
-  const raiseFarmUpdatedNotify = (farm) => {
-    dispatch("FARM_UPDATE", {
-      id: farm.id,
     });
   };
 
@@ -157,9 +135,13 @@ const UpdatePage = (props) => {
     }
 
     if (userFarmData) {
-      const { userFarms } = userFarmData;
-      const { collections } = userFarms;
-      authorInfo.farms = collections;
+      const { selections } = userFarmData;
+      authorInfo.farms = selections.map((x) => {
+        return {
+          id: x.id,
+          name: x.text,
+        };
+      });
     }
     return authorInfo;
   };

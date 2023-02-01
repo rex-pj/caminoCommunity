@@ -41,7 +41,7 @@ const DetailLayout = (props) => {
   ] = useLazyQuery(userQueries.GET_SUGGESSTION_USERS);
 
   useEffect(() => {
-    var currentUserId = currentUser?.userIdentityId;
+    const currentUserId = currentUser?.userIdentityId;
     fetchFarms({
       variables: {
         criterias: {

@@ -47,7 +47,7 @@ const UpdatePage = (props) => {
     },
   });
 
-  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS, {
     skip: !userIdentityId,
     variables: {
       criterias: {
@@ -101,38 +101,36 @@ const UpdatePage = (props) => {
   }
 
   async function onArticlePost(data) {
-    return await articleService.update(data).then((response) => {
-      return new Promise((resolve) => {
-        if (location.state && location.state.from) {
-          const referrefUri = location.state.from;
-          const articleUpdateUrl = `/articles/update/${data.id}`;
-          if (referrefUri !== articleUpdateUrl) {
-            raiseArticleUpdatedNotify(article);
-            navigate(referrefUri);
-            resolve({ article });
-            return;
+    return await articleService
+      .update(data, data.get("id"))
+      .then((response) => {
+        return new Promise((resolve) => {
+          if (location.state && location.state.from) {
+            const referrefUri = location.state.from;
+            const articleUpdateUrl = `/articles/update/${data.id}`;
+            if (referrefUri !== articleUpdateUrl) {
+              navigate(referrefUri);
+              resolve();
+              return;
+            }
           }
-        }
 
-        raiseArticleUpdatedNotify(article);
-        navigate(`/articles/${article.id}`);
-        resolve({ article });
+          navigate(`/articles/${article.id}`);
+          resolve();
+        });
       });
-    });
   }
 
-  const raiseArticleUpdatedNotify = (article) => {
-    dispatch("ARTICLE_UPDATE", {
-      id: article.id,
-    });
-  };
-
-  const currentArticle = JSON.parse(JSON.stringify(articleCreationModel));
-  for (const formIdentifier in currentArticle) {
-    currentArticle[formIdentifier].value = article[formIdentifier];
-    if (article[formIdentifier]) {
-      currentArticle[formIdentifier].isValid = true;
+  function getCurrentArticle() {
+    const currentArticle = JSON.parse(JSON.stringify(articleCreationModel));
+    for (const formIdentifier in currentArticle) {
+      currentArticle[formIdentifier].value = article[formIdentifier];
+      if (article[formIdentifier]) {
+        currentArticle[formIdentifier].isValid = true;
+      }
     }
+
+    return currentArticle;
   }
 
   const getAuthorInfo = () => {
@@ -171,7 +169,7 @@ const UpdatePage = (props) => {
       <Breadcrumb list={breadcrumbs} />
       <ArticleEditor
         height={350}
-        currentArticle={currentArticle}
+        currentArticle={getCurrentArticle()}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
         filterCategories={articleCategories}

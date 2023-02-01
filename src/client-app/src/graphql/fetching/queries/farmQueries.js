@@ -28,7 +28,7 @@ export const GET_USER_FARMS = gql`
   }
 `;
 
-export const SELECT_USER_FARMS = gql`
+export const GET_USER_FARM_SELECTIONS = gql`
   query ($criterias: FarmFilterModelInput) {
     userFarms(criterias: $criterias) {
       collections {
@@ -103,6 +103,16 @@ export const GET_FARM_FOR_UPDATE = gql`
       pictures {
         pictureId
       }
+    }
+  }
+`;
+
+export const SELECT_USER_FARMS = gql`
+  query ($criterias: FarmSelectFilterModelInput) {
+    selections: selectUserFarms(criterias: $criterias) {
+      id
+      isSelected
+      text
     }
   }
 `;

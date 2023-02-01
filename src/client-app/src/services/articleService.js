@@ -12,16 +12,16 @@ const ArticleService = class extends BaseService {
     });
   };
 
-  update = async (request) => {
-    return axios.put(
-      `${apiConfig.paths.articles.put.putArticle}/${request.id}`,
-      request,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+  update = async (request, id = null) => {
+    let url = `${apiConfig.paths.articles.put.putArticle}`;
+    if (id) {
+      url += `/${id}`;
+    }
+    return axios.put(url, request, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
 
   delete = async (id) => {

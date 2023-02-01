@@ -118,8 +118,8 @@ const ArticleEditor = (props) => {
   const handleImageChange = (e) => {
     let data = formData || {};
     const { preview: srcPreview, file } = e;
-    data["file"].isValid = checkValidity(data, file, "file");
-    data["file"].value = {
+    data["picture"].isValid = checkValidity(data, file, "picture");
+    data["picture"].value = {
       file,
     };
 
@@ -158,11 +158,17 @@ const ArticleEditor = (props) => {
 
     const requestFormData = new FormData();
     for (const key of Object.keys(articleData)) {
-      if (key === "file" && articleData[key]) {
-        const file = articleData[key];
-        requestFormData.append(`file.file`, file.file);
-        if (file.pictureId) {
-          requestFormData.append(`file.pictureId`, file.pictureId);
+      if (key === "picture" && articleData[key]) {
+        const picture = articleData[key];
+        requestFormData.append(`picture.file`, picture.file);
+        if (picture.pictureId) {
+          requestFormData.append(`file.pictureId`, picture.pictureId);
+        }
+      }
+      if (key === "picture" && articleData[key]) {
+        const picture = articleData[key];
+        if (picture.pictureId) {
+          requestFormData.append(`file.pictureId`, picture.pictureId);
         }
       } else {
         requestFormData.append(key, articleData[key]);
@@ -185,8 +191,8 @@ const ArticleEditor = (props) => {
 
   const onImageRemoved = () => {
     let data = formData || {};
-    data["file"].isValid = false;
-    data["file"].value = null;
+    data["picture"].isValid = false;
+    data["picture"].value = null;
 
     setPreview(null);
     setFormData({

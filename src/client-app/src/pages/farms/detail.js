@@ -6,10 +6,7 @@ import {
   productQueries,
   userQueries,
 } from "../../graphql/fetching/queries";
-import {
-  farmMutations,
-  productMutations,
-} from "../../graphql/fetching/mutations";
+import { farmMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import styled from "styled-components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -23,14 +20,16 @@ import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { authClient } from "../../graphql/client";
 import { apiConfig } from "../../config/api-config";
+import FarmService from "../../services/farmService";
 
 const FarmProductsBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default (function (props) {
+const DetailPage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const farmService = new FarmService();
   const { id } = useParams();
   const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARM, {
@@ -38,6 +37,7 @@ export default (function (props) {
       criterias: {
         id: parseFloat(id),
       },
+      fetchPolicy: "cache-and-network",
     },
   });
 
@@ -51,7 +51,7 @@ export default (function (props) {
     },
   });
 
-  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS, {
     skip: !userIdentityId,
     variables: {
       criterias: {
@@ -63,10 +63,6 @@ export default (function (props) {
   });
 
   const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
-    client: authClient,
-  });
-
-  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
     client: authClient,
   });
 
@@ -132,11 +128,7 @@ export default (function (props) {
   };
 
   const onDeleteProduct = (id) => {
-    deleteProduct({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+    farmService.delete(id).then(() => {
       dispatch("PRODUCT_DELETE", {
         id: id,
       });
@@ -295,4 +287,6 @@ export default (function (props) {
       </FarmProductsBox>
     </DetailLayout>
   );
-});
+};
+
+export default DetailPage;

@@ -4,6 +4,7 @@ import React, {
   useState,
   useRef,
   useEffect,
+  useMemo,
 } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -40,8 +41,11 @@ const UserProducts = (props) => {
   const mediaService = new MediaService();
   const productService = new ProductService();
 
-  const [productCategories] = useMutation(
-    productMutations.FILTER_PRODUCT_CATEGORIES
+  const [fetchProductCategories] = useLazyQuery(
+    productQueries.FILTER_PRODUCT_CATEGORIES,
+    {
+      variables: {},
+    }
   );
   const [productAttributes] = useMutation(
     productMutations.FILTER_PRODUCT_ATTRIBUTES
@@ -52,6 +56,10 @@ const UserProducts = (props) => {
 
   const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
 
+  const getProductCategories = useMemo(
+    () => fetchProductCategories,
+    [fetchProductCategories]
+  );
   const [
     fetchProducts,
     { loading, data, error, networkStatus, refetch: refetchProducts },
@@ -172,7 +180,7 @@ const UserProducts = (props) => {
           height={230}
           convertImageCallback={convertImagefile}
           onImageValidate={onImageValidate}
-          filterCategories={productCategories}
+          filterCategories={getProductCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
           refetchNews={refetchProducts}

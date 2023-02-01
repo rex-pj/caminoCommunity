@@ -2,20 +2,20 @@ import React, { useEffect, useState, useRef } from "react";
 import { DefaultLayout } from "../../components/templates/Layout";
 import Farm from "../../components/templates/Farm";
 import { UrlConstant } from "../../utils/Constants";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { farmQueries } from "../../graphql/fetching/queries";
-import { farmMutations } from "../../graphql/fetching/mutations";
 import { useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
-import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import FarmService from "../../services/farmService";
 
-export default (function (props) {
+const Farms = (props) => {
   const { pageNumber } = useParams();
   const [state, dispatch] = useStore(false);
   const [farms, setFarms] = useState([]);
+  const farmService = new FarmService();
   const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });
   const [fetchFarms, { loading, data, error, refetch }] = useLazyQuery(
     farmQueries.GET_FARMS,
@@ -27,10 +27,6 @@ export default (function (props) {
       fetchPolicy: "cache-and-network",
     }
   );
-
-  const [deleteFarm] = useMutation(farmMutations.DELETE_FARM, {
-    client: authClient,
-  });
 
   const setPageInfo = (data) => {
     const {
@@ -113,11 +109,7 @@ export default (function (props) {
   };
 
   const onDelete = (id) => {
-    deleteFarm({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+    farmService.delete(id).then(() => {
       refetch();
     });
   };
@@ -169,4 +161,6 @@ export default (function (props) {
       </InfiniteScroll>
     </DefaultLayout>
   );
-});
+};
+
+export default Farms;

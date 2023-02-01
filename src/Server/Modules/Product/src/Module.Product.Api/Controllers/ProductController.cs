@@ -13,6 +13,7 @@ using Camino.Application.Contracts.AppServices.Products.Dtos;
 using System.Collections.Generic;
 using System.Linq;
 using Camino.Infrastructure.AspNetCore.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Module.Product.Api.Controllers
 {
@@ -27,7 +28,7 @@ namespace Module.Product.Api.Controllers
 
         [HttpPost]
         [TokenAuthentication]
-        public async Task<IActionResult> CreateAsync(CreateProductModel request, IEnumerable<PictureRequestModel> files)
+        public async Task<IActionResult> CreateAsync(CreateProductModel request, IEnumerable<PictureRequestModel> pictures)
         {
             try
             {
@@ -68,21 +69,21 @@ namespace Module.Product.Api.Controllers
                     })
                 };
 
-                if (files?.Any(x => x.File != null) ?? false)
+                if (pictures?.Any() ?? false)
                 {
-                    var pictures = new List<PictureRequest>();
-                    foreach (var file in files)
+                    var files = new List<PictureRequest>();
+                    foreach (var file in pictures)
                     {
-                        var fileData = await FileUtils.GetBytesAsync(file.File);
-                        pictures.Add(new PictureRequest
+                        var fileData = file.File != null ? await FileUtils.GetBytesAsync(file.File) : null;
+                        files.Add(new PictureRequest
                         {
                             BinaryData = fileData,
-                            FileName = file.File.FileName,
-                            ContentType = file.File.ContentType
+                            FileName = file.File?.FileName,
+                            ContentType = file.File?.ContentType
                         });
                     }
 
-                    product.Pictures = pictures;
+                    product.Pictures = files;
                 }
 
                 var id = await _farmAppService.CreateAsync(product);
@@ -94,9 +95,9 @@ namespace Module.Product.Api.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [TokenAuthentication]
-        public async Task<IActionResult> UpdateAsync(UpdateProductModel request, IEnumerable<PictureRequestModel> files)
+        public async Task<IActionResult> UpdateAsync([Required] long id, [FromForm] UpdateProductModel request, IEnumerable<PictureRequestModel> pictures)
         {
             try
             {
@@ -106,7 +107,7 @@ namespace Module.Product.Api.Controllers
                 }
                 var exist = await _farmAppService.FindAsync(new IdRequestFilter<long>
                 {
-                    Id = request.Id,
+                    Id = id,
                     CanGetInactived = true
                 });
 
@@ -122,7 +123,7 @@ namespace Module.Product.Api.Controllers
 
                 var product = new ProductModifyRequest
                 {
-                    Id = request.Id,
+                    Id = id,
                     CreatedById = LoggedUserId,
                     UpdatedById = LoggedUserId,
                     Name = request.Name,
@@ -155,22 +156,22 @@ namespace Module.Product.Api.Controllers
                     })
                 };
 
-                if (files?.Any(x => x.File != null) ?? false)
+                if (pictures?.Any() ?? false)
                 {
-                    var pictures = new List<PictureRequest>();
-                    foreach (var file in files)
+                    var files = new List<PictureRequest>();
+                    foreach (var file in pictures)
                     {
-                        var fileData = await FileUtils.GetBytesAsync(file.File);
-                        pictures.Add(new PictureRequest
+                        var fileData = file.File != null ? await FileUtils.GetBytesAsync(file.File) : null;
+                        files.Add(new PictureRequest
                         {
                             BinaryData = fileData,
-                            FileName = file.File.FileName,
-                            ContentType = file.File.ContentType,
+                            FileName = file.File?.FileName,
+                            ContentType = file.File?.ContentType,
                             Id = file.PictureId.GetValueOrDefault()
                         });
                     }
 
-                    product.Pictures = pictures;
+                    product.Pictures = files;
                 }
 
                 await _farmAppService.UpdateAsync(product);

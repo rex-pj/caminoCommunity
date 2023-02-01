@@ -260,28 +260,24 @@ namespace Camino.Application.AppServices.Products
 
             var filteredNumber = productQuery.Select(x => x.Id).Count();
 
-            var query = from product in productQuery
-                        join pr in _productPriceEntityRepository.Get(x => x.IsCurrent)
-                        on product.Id equals pr.ProductId into prices
-                        from price in prices.DefaultIfEmpty()
-                        select new ProductResult
-                        {
-                            Id = product.Id,
-                            Name = product.Name,
-                            Price = price != null ? price.Price : 0,
-                            CreatedById = product.CreatedById,
-                            CreatedDate = product.CreatedDate,
-                            Description = product.Description,
-                            UpdatedById = product.UpdatedById,
-                            UpdatedDate = product.UpdatedDate,
-                            StatusId = product.StatusId,
-                            Farms = product.ProductFarmRelations.Select(x => new ProductFarmResult
-                            {
-                                Id = x.Id,
-                                FarmId = x.FarmId,
-                                Name = x.Farm.Name
-                            })
-                        };
+            var query = productQuery.Select(product => new ProductResult
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.ProductPriceRelations.FirstOrDefault(x => x.IsCurrent) != null ? product.ProductPriceRelations.First(x => x.IsCurrent).Price : 0,
+                CreatedById = product.CreatedById,
+                CreatedDate = product.CreatedDate,
+                Description = product.Description,
+                UpdatedById = product.UpdatedById,
+                UpdatedDate = product.UpdatedDate,
+                StatusId = product.StatusId,
+                Farms = product.ProductFarmRelations.Select(x => new ProductFarmResult
+                {
+                    Id = x.Id,
+                    FarmId = x.FarmId,
+                    Name = x.Farm.Name
+                })
+            });
 
             var products = await query
                 .OrderByDescending(x => x.CreatedDate)
@@ -317,35 +313,29 @@ namespace Camino.Application.AppServices.Products
 
             var farmIds = exist.Farms.Select(x => x.FarmId);
             var categoryIds = exist.Categories.Select(x => x.Id);
-            var relevantProductQuery = (from pr in _productEntityRepository.Get(x => x.Id != exist.Id)
-                                        join productCategoryRelation in _productCategoryRelationEntityRepository.Table
-                                        on pr.Id equals productCategoryRelation.ProductId into categoriesRelation
-                                        from categoryRelation in categoriesRelation.DefaultIfEmpty()
 
-                                        join prc in _productPriceEntityRepository.Get(x => x.IsCurrent)
-                                        on pr.Id equals prc.ProductId into prices
-                                        from price in prices.DefaultIfEmpty()
-
-                                        where pr.CreatedById == exist.CreatedById
-                                        || categoryIds.Contains(categoryRelation.ProductCategoryId)
-                                        || pr.UpdatedById == exist.UpdatedById
-                                        select new ProductResult
-                                        {
-                                            Id = pr.Id,
-                                            Name = pr.Name,
-                                            Price = price != null ? price.Price : 0,
-                                            CreatedById = pr.CreatedById,
-                                            CreatedDate = pr.CreatedDate,
-                                            Description = pr.Description,
-                                            UpdatedById = pr.UpdatedById,
-                                            UpdatedDate = pr.UpdatedDate,
-                                            Farms = pr.ProductFarmRelations.Select(x => new ProductFarmResult
-                                            {
-                                                Id = x.Id,
-                                                FarmId = x.FarmId,
-                                                Name = x.Farm.Name
-                                            })
-                                        });
+            var relevantProductQuery = _productEntityRepository
+                .Get(pr => pr.Id != exist.Id && pr.StatusId != _deletedStatus && (pr.CreatedById == exist.CreatedById
+                    || pr.UpdatedById == exist.UpdatedById
+                    || pr.ProductCategoryRelations.Any(f => categoryIds.Contains(f.ProductCategoryId))
+                    || pr.ProductFarmRelations.Any(f => farmIds.Contains(f.FarmId))))
+                .Select(pr => new ProductResult
+                {
+                    Id = pr.Id,
+                    Name = pr.Name,
+                    Price = pr.ProductPriceRelations.FirstOrDefault(x => x.IsCurrent) != null ? pr.ProductPriceRelations.First(x => x.IsCurrent).Price : 0,
+                    CreatedById = pr.CreatedById,
+                    CreatedDate = pr.CreatedDate,
+                    Description = pr.Description,
+                    UpdatedById = pr.UpdatedById,
+                    UpdatedDate = pr.UpdatedDate,
+                    Farms = pr.ProductFarmRelations.Select(x => new ProductFarmResult
+                    {
+                        Id = x.Id,
+                        FarmId = x.FarmId,
+                        Name = x.Farm.Name
+                    })
+                });
 
             var relevantProducts = await relevantProductQuery
                 .OrderByDescending(x => x.CreatedDate)
@@ -429,6 +419,7 @@ namespace Camino.Application.AppServices.Products
                 CreatedById = entity.CreatedById,
                 Id = entity.Id,
                 Name = entity.Name,
+                Description = entity.Description,
                 UpdatedById = entity.UpdatedById,
                 UpdatedDate = entity.UpdatedDate,
                 StatusId = entity.StatusId

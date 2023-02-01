@@ -45,7 +45,7 @@ const DefaultLayout = (props) => {
     useLazyQuery(navigationQueries.GET_SHORTCUTS);
 
   useEffect(() => {
-    var currentUserId = currentUser?.userIdentityId;
+    const currentUserId = currentUser?.userIdentityId;
     fetchFarms({
       variables: {
         criterias: {

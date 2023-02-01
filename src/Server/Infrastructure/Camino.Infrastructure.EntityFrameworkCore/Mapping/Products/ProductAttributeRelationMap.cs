@@ -14,6 +14,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Products
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.TextPrompt).IsRequired(false);
 
             builder.HasMany(x => x.ProductAttributeRelationValues)
                 .WithOne(x => x.ProductAttributeRelation)

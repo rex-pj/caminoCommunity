@@ -1,15 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const FILTER_PRODUCT_CATEGORIES = gql`
-  mutation ($criterias: ProductCategorySelectFilterModelInput) {
-    selections: productCategories(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
 export const UPDATE_PRODUCT = gql`
   mutation ($criterias: UpdateProductModelInput!) {
     updateProduct(criterias: $criterias) {

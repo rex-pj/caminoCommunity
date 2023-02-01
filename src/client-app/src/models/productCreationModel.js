@@ -34,7 +34,7 @@ const productCreationModel = {
     },
     isValid: false,
   },
-  files: {
+  pictures: {
     value: [],
     isValid: true,
   },

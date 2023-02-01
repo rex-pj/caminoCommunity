@@ -113,6 +113,7 @@ namespace Camino.Application.AppServices.Farms
                 UpdatedById = farm.UpdatedById,
                 UpdatedDate = farm.UpdatedDate,
                 FarmTypeId = farm.FarmTypeId,
+                FarmTypeName = farm.FarmType.Name,
                 StatusId = farm.StatusId,
             };
         }
@@ -373,7 +374,7 @@ namespace Camino.Application.AppServices.Farms
                     CreatedDate = modifiedDate,
                     UpdatedDate = modifiedDate,
                     Pictures = request.Pictures
-                });
+                }, true);
             }
             return isUpdated;
         }

@@ -47,7 +47,7 @@ const ChildItem = styled.li`
   }
 `;
 
-export default function (props) {
+const ProfileCard = (props) => {
   const { author } = props;
   let authorInfo = { ...author };
   if (!author) {
@@ -118,4 +118,6 @@ export default function (props) {
       </PanelBody>
     </Root>
   );
-}
+};
+
+export default ProfileCard;

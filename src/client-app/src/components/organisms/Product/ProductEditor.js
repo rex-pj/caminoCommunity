@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CommonEditor from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
@@ -103,7 +103,7 @@ const ProductEditor = (props) => {
   const farmSelectRef = useRef();
   const dispatch = useStore(true)[1];
 
-  function handleInputChange(evt) {
+  const handleInputChange = (evt) => {
     let data = formData || {};
     const { name, value } = evt.target;
 
@@ -113,7 +113,7 @@ const ProductEditor = (props) => {
     setFormData({
       ...data,
     });
-  }
+  };
 
   const handlePriceChange = (evt) => {
     let data = formData || {};
@@ -149,13 +149,13 @@ const ProductEditor = (props) => {
   const handleImageChange = (e) => {
     let data = { ...formData } || {};
     const { preview, file } = e;
-    let files = Object.assign([], data.files.value);
-    files.push({
+    let pictures = Object.assign([], data.pictures.value);
+    pictures.push({
       file: file,
       preview: preview,
     });
 
-    data.files.value = files;
+    data.pictures.value = pictures;
     setFormData({
       ...data,
     });
@@ -213,13 +213,26 @@ const ProductEditor = (props) => {
 
     const requestFormData = new FormData();
     for (const key of Object.keys(productData)) {
-      if (key === "files" && productData[key]) {
-        const files = productData[key];
-        for (const i in files) {
-          requestFormData.append(`files[${i}].file`, files[i].file);
-          if (files[i].pictureId) {
-            requestFormData.append(`files[${i}].pictureId`, files[i].pictureId);
+      if (key === "pictures" && productData[key]) {
+        const pictures = productData[key];
+        for (const i in pictures) {
+          requestFormData.append(`pictures[${i}].file`, pictures[i].file);
+          if (pictures[i].pictureId) {
+            requestFormData.append(
+              `pictures[${i}].pictureId`,
+              pictures[i].pictureId
+            );
           }
+        }
+      } else if (key === "farms" && productData[key]) {
+        const farms = productData[key];
+        for (const i in farms) {
+          requestFormData.append(`farms[${i}].id`, farms[i].id);
+        }
+      } else if (key === "categories" && productData[key]) {
+        const categories = productData[key];
+        for (const i in categories) {
+          requestFormData.append(`categories[${i}].id`, categories[i].id);
         }
       } else if (key === "productAttributes" && productData[key]) {
         const productAttributes = productData[key];
@@ -302,16 +315,16 @@ const ProductEditor = (props) => {
 
   const onImageRemoved = (e, item) => {
     let data = formData || {};
-    if (!data.files) {
+    if (!data.pictures) {
       return;
     }
 
     if (item.pictureId) {
-      data.files.value = data.files.value.filter(
+      data.pictures.value = data.pictures.value.filter(
         (x) => x.pictureId !== item.pictureId
       );
     } else {
-      data.files.value = data.files.value.filter((x) => x !== item);
+      data.pictures.value = data.pictures.value.filter((x) => x !== item);
     }
 
     setFormData({
@@ -319,7 +332,7 @@ const ProductEditor = (props) => {
     });
   };
 
-  const handleSelectChange = async (e, method, name) => {
+  async function handleSelectChange(e, method, name) {
     let data = formData || {};
     const { action, removedValue } = method;
     if (action === "clear") {
@@ -341,7 +354,7 @@ const ProductEditor = (props) => {
     setFormData({
       ...data,
     });
-  };
+  }
 
   const loadCategoriesSelected = () => {
     const { categories } = formData;
@@ -353,24 +366,22 @@ const ProductEditor = (props) => {
     });
   };
 
-  const loadCategorySelections = (value) => {
-    const { categories } = formData;
-    const currentIds = categories?.value?.map((cate) => cate.id);
+  const loadCategorySelections = useMemo(() => {
+    return async (value) => {
+      const { categories } = formData;
+      const currentIds = categories?.value?.map((cate) => cate.id);
 
-    return filterCategories({
-      variables: {
-        criterias: { query: value, currentIds },
-      },
-    })
-      .then((response) => {
-        const { data } = response;
-        const { selections } = data;
-        return mapSelectOptions(selections);
-      })
-      .catch((error) => {
-        return [];
+      const response = await filterCategories({
+        variables: {
+          criterias: { query: value, currentIds },
+        },
       });
-  };
+
+      const { data } = response;
+      const { selections } = data;
+      return mapSelectOptions(selections);
+    };
+  }, [filterCategories, formData]);
 
   const loadFarmsSelected = () => {
     const { farms } = formData;
@@ -382,23 +393,22 @@ const ProductEditor = (props) => {
     });
   };
 
-  const loadFarmSelections = (value) => {
-    const { farms } = formData;
-    const currentIds = farms?.value?.map((farm) => farm.id);
-    return filterFarms({
-      variables: {
-        criterias: { query: value, currentIds },
-      },
-    })
-      .then((response) => {
-        const { data } = response;
-        const { selections } = data;
-        return mapSelectOptions(selections);
-      })
-      .catch((error) => {
-        return [];
+  const loadFarmSelections = useMemo(() => {
+    return async (value) => {
+      const { farms } = formData;
+      const currentIds = farms?.value?.map((farm) => farm.id);
+
+      const response = await filterFarms({
+        variables: {
+          criterias: { query: value, currentIds },
+        },
       });
-  };
+
+      const { data } = response;
+      const { selections } = data;
+      return mapSelectOptions(selections);
+    };
+  }, [filterFarms, formData]);
 
   /// Attribute features
   const loadAttributeSelections = (value) => {
@@ -678,7 +688,8 @@ const ProductEditor = (props) => {
     }
   }, [currentProduct, formData]);
 
-  const { name, price, categories, farms, productAttributes, files } = formData;
+  const { name, price, categories, farms, productAttributes, pictures } =
+    formData;
 
   return (
     <form onSubmit={(e) => onProductPost(e)} method="POST">
@@ -738,9 +749,9 @@ const ProductEditor = (props) => {
           <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
         </div>
       </FormRow>
-      {files.value ? (
+      {pictures.value ? (
         <FormRow className="row">
-          {files.value.map((item, index) => {
+          {pictures.value.map((item, index) => {
             if (item.preview) {
               return (
                 <div className="col-3" key={index}>

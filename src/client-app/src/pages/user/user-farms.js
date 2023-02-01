@@ -228,7 +228,7 @@ const UserFarms = (props) => {
     fetchFarms({
       variables: {
         criterias: {
-          userId: pageRef.current.userId,
+          userIdentityId: pageRef.current.userId,
           page: pageRef.current.pageNumber,
         },
       },

@@ -2,14 +2,13 @@ import React, { useEffect } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import {
   productQueries,
   userQueries,
   farmQueries,
 } from "../../graphql/fetching/queries";
-import { productMutations } from "../../graphql/fetching/mutations";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
@@ -19,16 +18,17 @@ import {
 } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
-import { authClient } from "../../graphql/client";
 import { apiConfig } from "../../config/api-config";
+import ProductService from "../../services/productService";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default (function (props) {
+const DetailPage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const productService = new ProductService();
   const { id } = useParams();
   const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(
@@ -39,6 +39,7 @@ export default (function (props) {
           id: parseFloat(id),
         },
       },
+      fetchPolicy: "cache-and-network",
     }
   );
 
@@ -52,7 +53,7 @@ export default (function (props) {
     },
   });
 
-  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS, {
     skip: !userIdentityId,
     variables: {
       criterias: {
@@ -61,10 +62,6 @@ export default (function (props) {
         pageSize: 3,
       },
     },
-  });
-
-  const [deleteProduct] = useMutation(productMutations.DELETE_PRODUCT, {
-    client: authClient,
   });
 
   const {
@@ -108,11 +105,7 @@ export default (function (props) {
   };
 
   const onDeleteMain = (id) => {
-    deleteProduct({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+    productService.delete(id).then(() => {
       if (location.state?.from) {
         dispatch("PRODUCT_DELETE", {
           id: id,
@@ -129,11 +122,7 @@ export default (function (props) {
   };
 
   const onDeleteRelevant = (id) => {
-    deleteProduct({
-      variables: {
-        criterias: { id },
-      },
-    }).then(() => {
+    productService.delete(id).then(() => {
       dispatch("PRODUCT_DELETE", {
         id: id,
       });
@@ -286,4 +275,6 @@ export default (function (props) {
       {renderRelevants(relevantLoading, relevantData, relevantError)}
     </DetailLayout>
   );
-});
+};
+
+export default DetailPage;

@@ -153,9 +153,12 @@ namespace Camino.Application.AppServices.Products
             var index = 0;
             foreach (var picture in request.Pictures)
             {
-                var pictureType = index == 0 ? ProductPictureTypes.Thumbnail : ProductPictureTypes.Secondary;
-                await CreateAsync(request, picture, pictureType);
-                index += 1;
+                if (picture.BinaryData != null)
+                {
+                    var pictureType = index == 0 ? ProductPictureTypes.Thumbnail : ProductPictureTypes.Secondary;
+                    await CreateAsync(request, picture, pictureType);
+                    index += 1;
+                }                    
             }
 
             if (needSaveChanges)
@@ -169,7 +172,7 @@ namespace Camino.Application.AppServices.Products
         public async Task<bool> UpdateAsync(ProductPicturesModifyRequest request, bool needSaveChanges = false)
         {
             // Delete old images
-            var pictureIds = request.Pictures.Select(x => x.Id).ToList();
+            var pictureIds = request.Pictures.Where(x => x.Id > 0).Select(x => x.Id).ToList();
             await _productPictureDomainService.DeleteByProductIdAsync(request.ProductId, pictureIds);
 
             var thumbnailType = ProductPictureTypes.Thumbnail;
@@ -180,10 +183,10 @@ namespace Camino.Application.AppServices.Products
             var index = 0;
             foreach (var picture in request.Pictures)
             {
-                if (!string.IsNullOrEmpty(picture.Base64Data))
+                if (picture.BinaryData != null)
                 {
                     var productPictureType = shouldAddThumbnail && index == 0 ? thumbnailType : ProductPictureTypes.Secondary;
-                    await CreateAsync(request, picture, productPictureType, needSaveChanges);
+                    await CreateAsync(request, picture, productPictureType, false);
                     shouldAddThumbnail = false;
                     index += 1;
                 }

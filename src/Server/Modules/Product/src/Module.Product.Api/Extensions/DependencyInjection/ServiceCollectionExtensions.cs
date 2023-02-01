@@ -17,7 +17,7 @@ namespace Module.Product.Api.Extensions.DependencyInjection
 
             services.AddGraphQLServer()
                 .AddType<ProductQueries>()
-                .AddType<ProductCategoryMutations>()
+                .AddType<ProductCategoryQueries>()
                 .AddType<ProductAttributeMutations>();
 
             return services;

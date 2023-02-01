@@ -32,7 +32,7 @@ namespace Camino.Core.DomainServices.Products
                 .Select(x => x.FarmId)
                 .ToList();
 
-            var unlinkedFarmIds = linkedFarmIds.Where(x => !linkedFarmIds.Contains(x));
+            var unlinkedFarmIds = farmIds.Where(x => !linkedFarmIds.Contains(x));
             if (unlinkedFarmIds != null && unlinkedFarmIds.Any())
             {
                 foreach (var farmId in unlinkedFarmIds)

@@ -24,7 +24,7 @@ const articleCreationModel = {
     value: "",
     isValid: true,
   },
-  file: {
+  picture: {
     value: null,
     isValid: true,
   },

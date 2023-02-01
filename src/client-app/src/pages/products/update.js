@@ -1,43 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import { useQuery, useMutation } from "@apollo/client";
-import authClient from "../../graphql/client/authClient";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import {
   productQueries,
   userQueries,
   farmQueries,
 } from "../../graphql/fetching/queries";
-import {
-  productMutations,
-  farmMutations,
-} from "../../graphql/fetching/mutations";
+import { productMutations } from "../../graphql/fetching/mutations";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import productCreationModel from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import MediaService from "../../services/mediaService";
+import ProductService from "../../services/productService";
 
 const UpdatePage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useStore(false)[1];
-  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
-  const [productCategories] = useMutation(
-    productMutations.FILTER_PRODUCT_CATEGORIES
-  );
-  const mediaService = new MediaService();
-
-  const [productAttributeControlTypes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
-  );
-  const [updateProduct] = useMutation(productMutations.UPDATE_PRODUCT, {
-    client: authClient,
-  });
-  const [productAttributes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTES
-  );
   const { loading, data, error, refetch, called } = useQuery(
     productQueries.GET_PRODUCT_FOR_UPDATE,
     {
@@ -46,26 +28,44 @@ const UpdatePage = (props) => {
           id: parseFloat(id),
         },
       },
+      fetchPolicy: "cache-and-network",
     }
   );
 
-  const userIdentityId = data?.farm?.createdByIdentityId;
+  const userIdentityId = data?.product?.createdByIdentityId;
+  const [fetchUserFarms, { data: userFarmData }] = useLazyQuery(
+    farmQueries.SELECT_USER_FARMS,
+    {
+      variables: {},
+    }
+  );
+  const [fetchProductCategories] = useLazyQuery(
+    productQueries.FILTER_PRODUCT_CATEGORIES,
+    {
+      variables: {},
+    }
+  );
+  const mediaService = new MediaService();
+  const productService = new ProductService();
+
+  const getProductCategories = useMemo(
+    () => fetchProductCategories,
+    [fetchProductCategories]
+  );
+  const getUserFarms = useMemo(() => fetchUserFarms, [fetchUserFarms]);
+
+  const [productAttributeControlTypes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
+  );
+  const [productAttributes] = useMutation(
+    productMutations.FILTER_PRODUCT_ATTRIBUTES
+  );
+
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
     skip: !userIdentityId,
     variables: {
       criterias: {
         userId: userIdentityId,
-      },
-    },
-  });
-
-  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
-    skip: !userIdentityId,
-    variables: {
-      criterias: {
-        userIdentityId: userIdentityId,
-        page: 1,
-        pageSize: 4,
       },
     },
   });
@@ -82,39 +82,25 @@ const UpdatePage = (props) => {
   }
 
   async function onProductPost(data) {
-    return await updateProduct({
-      variables: {
-        criterias: data,
-      },
-    }).then((response) => {
+    return await productService.update(data).then((response) => {
       refetch().then(() => {
         return new Promise((resolve) => {
-          const { data } = response;
-          const { updateProduct: product } = data;
           if (location.state && location.state.from) {
             const referrefUri = location.state.from;
-            const productUpdateUrl = `/products/update/${product.id}`;
+            const productUpdateUrl = `/products/update/${data.id}`;
             if (referrefUri !== productUpdateUrl) {
-              raiseProductUpdatedNotify(product);
               navigate(referrefUri);
-              resolve({ product });
+              resolve();
               return;
             }
           }
 
-          raiseProductUpdatedNotify(product);
           navigate(`/products/${product.id}`);
-          resolve({ product });
+          resolve();
         });
       });
     });
   }
-
-  const raiseProductUpdatedNotify = (product) => {
-    dispatch("PRODUCT_UPDATE", {
-      id: product.id,
-    });
-  };
 
   const showValidationError = (title, message) => {
     dispatch("NOTIFY", {
@@ -130,6 +116,36 @@ const UpdatePage = (props) => {
       refetch();
     }
   }, [refetch, called, loading]);
+
+  const getAuthorInfo = () => {
+    if (!authorData) {
+      return {};
+    }
+    const { userInfo } = authorData;
+    const authorInfo = { ...userInfo };
+    if (authorData) {
+      const { userPhotos } = authorData;
+      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+      if (avatar) {
+        authorInfo.userAvatar = avatar;
+      }
+      const cover = userPhotos.find((item) => item.photoType === "COVER");
+      if (cover) {
+        authorInfo.userCover = cover;
+      }
+    }
+
+    if (userFarmData) {
+      const { selections } = userFarmData;
+      authorInfo.farms = selections.map((x) => {
+        return {
+          id: x.id,
+          name: x.text,
+        };
+      });
+    }
+    return authorInfo;
+  };
 
   const product = data ? { ...data.product } : {};
 
@@ -156,32 +172,6 @@ const UpdatePage = (props) => {
     },
   ];
 
-  const getAuthorInfo = () => {
-    if (!authorData) {
-      return {};
-    }
-    const { userInfo } = authorData;
-    const authorInfo = { ...userInfo };
-    if (authorData) {
-      const { userPhotos } = authorData;
-      const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
-      if (avatar) {
-        authorInfo.userAvatar = avatar;
-      }
-      const cover = userPhotos.find((item) => item.photoType === "COVER");
-      if (cover) {
-        authorInfo.userCover = cover;
-      }
-    }
-
-    if (userFarmData) {
-      const { userFarms } = userFarmData;
-      const { collections } = userFarms;
-      authorInfo.farms = collections;
-    }
-    return authorInfo;
-  };
-
   return (
     <DetailLayout
       author={getAuthorInfo()}
@@ -195,10 +185,10 @@ const UpdatePage = (props) => {
         height={350}
         convertImageCallback={convertImagefile}
         onImageValidate={onImageValidate}
-        filterCategories={productCategories}
+        filterCategories={getProductCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}
-        filterFarms={userFarms}
+        filterFarms={getUserFarms}
         filterAttributes={productAttributes}
         filterProductAttributeControlTypes={productAttributeControlTypes}
       />

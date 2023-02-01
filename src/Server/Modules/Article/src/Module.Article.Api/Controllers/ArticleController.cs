@@ -26,7 +26,7 @@ namespace Module.Article.Api.Controllers
 
         [HttpPost]
         [TokenAuthentication]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateArticleModel request, PictureRequestModel file)
+        public async Task<IActionResult> CreateAsync([FromForm] CreateArticleModel request, PictureRequestModel picture)
         {
             try
             {
@@ -44,14 +44,14 @@ namespace Module.Article.Api.Controllers
                     ArticleCategoryId = request.ArticleCategoryId
                 };
 
-                if (file?.File != null)
+                if (picture?.File != null)
                 {
-                    var fileData = await FileUtils.GetBytesAsync(file.File);
+                    var fileData = await FileUtils.GetBytesAsync(picture.File);
                     article.Picture = new PictureRequest()
                     {
                         BinaryData = fileData,
-                        ContentType = file.File.ContentType,
-                        FileName = file.File.FileName
+                        ContentType = picture.File.ContentType,
+                        FileName = picture.File.FileName
                     };
                 }
 
@@ -66,7 +66,7 @@ namespace Module.Article.Api.Controllers
 
         [HttpPut("{id}")]
         [TokenAuthentication]
-        public async Task<IActionResult> UpdateAsync([Required] long id, [FromForm] UpdateArticleModel request, PictureRequestModel file)
+        public async Task<IActionResult> UpdateAsync([Required] long id, [FromForm] UpdateArticleModel request, PictureRequestModel picture)
         {
             try
             {
@@ -100,15 +100,15 @@ namespace Module.Article.Api.Controllers
                     ArticleCategoryId = request.ArticleCategoryId
                 };
 
-                if (file?.File != null)
+                if (picture?.File != null)
                 {
-                    var fileData = await FileUtils.GetBytesAsync(file.File);
+                    var fileData = await FileUtils.GetBytesAsync(picture.File);
                     article.Picture = new PictureRequest
                     {
                         BinaryData = fileData,
-                        ContentType = file.File.ContentType,
-                        FileName = file.File.FileName,
-                        Id = file.PictureId.GetValueOrDefault()
+                        ContentType = picture.File.ContentType,
+                        FileName = picture.File.FileName,
+                        Id = picture.PictureId.GetValueOrDefault()
                     };
                 }
 

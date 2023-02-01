@@ -151,9 +151,12 @@ namespace Camino.Application.AppServices.Farms
             var index = 0;
             foreach (var picture in request.Pictures)
             {
-                var pictureType = index == 0 ? FarmPictureTypes.Thumbnail : FarmPictureTypes.Secondary;
-                await CreateAsync(request, picture, pictureType, needSaveChanges);
-                index += 1;
+                if (picture.BinaryData != null)
+                {
+                    var pictureType = index == 0 ? FarmPictureTypes.Thumbnail : FarmPictureTypes.Secondary;
+                    await CreateAsync(request, picture, pictureType, needSaveChanges);
+                    index += 1;
+                }
             }
 
             return true;
@@ -171,10 +174,10 @@ namespace Camino.Application.AppServices.Farms
             var index = 0;
             foreach (var picture in request.Pictures)
             {
-                if (!string.IsNullOrEmpty(picture.Base64Data))
+                if (picture.BinaryData != null)
                 {
                     var farmPictureType = shouldAddThumbnail && index == 0 ? thumbnailType : FarmPictureTypes.Secondary;
-                    await CreateAsync(request, picture, farmPictureType, needSaveChanges);
+                    await CreateAsync(request, picture, farmPictureType, false);
                     shouldAddThumbnail = false;
                     index += 1;
                 }

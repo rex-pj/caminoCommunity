@@ -171,3 +171,13 @@ export const GET_RELEVANT_PRODUCTS = gql`
     }
   }
 `;
+
+export const FILTER_PRODUCT_CATEGORIES = gql`
+  query ($criterias: ProductCategorySelectFilterModelInput) {
+    selections: productCategories(criterias: $criterias) {
+      id
+      isSelected
+      text
+    }
+  }
+`;

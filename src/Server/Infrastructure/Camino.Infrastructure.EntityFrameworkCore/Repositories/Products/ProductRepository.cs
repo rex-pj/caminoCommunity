@@ -41,6 +41,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Repositories.Products
                                    CreatedById = product.CreatedById,
                                    Id = product.Id,
                                    Name = product.Name,
+                                   Description = product.Description,
                                    UpdatedById = product.UpdatedById,
                                    UpdatedDate = product.UpdatedDate,
                                    StatusId = product.StatusId

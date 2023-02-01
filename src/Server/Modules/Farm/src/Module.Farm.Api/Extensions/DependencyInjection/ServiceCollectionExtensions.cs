@@ -16,7 +16,6 @@ namespace Module.Farm.Api.Extensions.DependencyInjection
 
             services.AddGraphQLServer()
                 .AddType<FarmQueries>()
-                .AddType<FarmMutations>()
                 .AddType<FarmTypeMutations>();
 
             return services;

@@ -35,7 +35,7 @@ const farmCreationModel = {
     },
     isValid: false,
   },
-  files: {
+  pictures: {
     value: [],
     isValid: true,
   },
