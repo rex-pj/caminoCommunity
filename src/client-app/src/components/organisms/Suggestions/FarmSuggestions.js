@@ -18,7 +18,7 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default (props) => {
+const FarmSuggestions = (props) => {
   const { loading, data } = props;
   if (loading) {
     return <LoadingBar>Loading</LoadingBar>;
@@ -31,7 +31,7 @@ export default (props) => {
   const { collections } = farmsData;
 
   let farms = collections.map((farm) => {
-    var pictureUrl = null;
+    let pictureUrl = null;
     if (farm.pictures && farm.pictures.length > 0) {
       const picture = farm.pictures[0];
       if (picture.pictureId > 0) {
@@ -49,16 +49,20 @@ export default (props) => {
   });
 
   return (
-    <div>
-      <FifthHeadingNeutralTitle>Visit other farms</FifthHeadingNeutralTitle>
-      <Root>
-        <List>
-          {farms &&
-            farms.map((farm, index) => (
-              <FarmSuggestionItem key={index} farm={farm} index={index} />
+    farms &&
+    farms.length > 0 && (
+      <div>
+        <FifthHeadingNeutralTitle>Visit other farms</FifthHeadingNeutralTitle>
+        <Root>
+          <List>
+            {farms.map((farm, index) => (
+              <FarmSuggestionItem key={farm.id} farm={farm} index={index} />
             ))}
-        </List>
-      </Root>
-    </div>
+          </List>
+        </Root>
+      </div>
+    )
   );
 };
+
+export default FarmSuggestions;

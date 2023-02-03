@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LabelNormal, LabelDark } from "../../atoms/Labels";
+import { LabelSecondary, LabelDark } from "../../atoms/Labels";
 import {
   ButtonOutlinePrimary,
   ButtonOutlineDanger,
@@ -20,9 +20,13 @@ const FormRow = styled.div`
 `;
 
 const AttributeValuePanel = styled.div`
-  background-color: ${(p) => p.theme.color.neutralBg};
+  background-color: ${(p) => p.theme.color.neutralBorder};
   border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
+
+  .attr-value-row {
+    border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
+  }
 `;
 
 const ProductAttributeRow = (props) => {
@@ -54,15 +58,15 @@ const ProductAttributeRow = (props) => {
           </ButtonOutlinePrimary>
         </div>
         <div className="col-3 col-xl-3 ps-0 pt-1">
-          <LabelNormal className="me-1">Tên thuộc tính:</LabelNormal>
+          <LabelSecondary className="me-1">Tên thuộc tính:</LabelSecondary>
           <LabelDark>{attribute.name}</LabelDark>
         </div>
         <div className="col-3 col-xl-3 pt-1">
-          <LabelNormal className="me-1">Kiểu hiển thị:</LabelNormal>
+          <LabelSecondary className="me-1">Kiểu hiển thị:</LabelSecondary>
           <LabelDark>{attribute.controlTypeName}</LabelDark>
         </div>
         <div className="col-2 col-xl-3 pt-1">
-          <LabelNormal className="me-1">Thứ tự:</LabelNormal>
+          <LabelSecondary className="me-1">Thứ tự:</LabelSecondary>
           <LabelDark>{attribute.displayOrder}</LabelDark>
         </div>
         <div className="col-auto">
@@ -90,8 +94,8 @@ const ProductAttributeRow = (props) => {
           ? attributeRelationValues.map((attrVal, index) => {
               return (
                 <ProductAttributeValueRow
-                  className="p-2 row mb-2"
-                  key={index}
+                  className="py-2 row mb-2 attr-value-row mx-0"
+                  key={attrVal.id}
                   price={price}
                   attributeValue={attrVal}
                   onRemoveAttributeValue={onRemoveAttributeValue}

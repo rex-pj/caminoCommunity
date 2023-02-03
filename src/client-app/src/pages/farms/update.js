@@ -48,6 +48,7 @@ const UpdatePage = (props) => {
       criterias: {
         userIdentityId: userIdentityId,
         page: 1,
+        pageSize: 5,
       },
     },
   });

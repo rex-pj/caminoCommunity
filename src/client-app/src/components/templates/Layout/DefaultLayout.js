@@ -9,7 +9,7 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import {
   FarmSuggestions,
-  CommunitySuggestions,
+  // CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 import { SessionContext } from "../../../store/context/session-context";
@@ -19,11 +19,11 @@ import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
 const Shortcut = React.lazy(() => import("../../organisms/Shortcut"));
-const Interesting = React.lazy(() => import("../../organisms/Interesting"));
+// const Interesting = React.lazy(() => import("../../organisms/Interesting"));
 const LoggedInCard = React.lazy(() =>
   import("../../organisms/ProfileCard/LoggedInCard")
 );
-const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
+// const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
@@ -89,9 +89,9 @@ const DefaultLayout = (props) => {
             <PageColumnPanel>
               <Shortcut loading={shortcutLoading} data={shortcutData} />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <Interesting />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
           </div>
 
           <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
@@ -111,7 +111,7 @@ const DefaultLayout = (props) => {
                 data={suggestFarmData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
             </PageColumnPanel>
             <PageColumnPanel>
@@ -119,16 +119,16 @@ const DefaultLayout = (props) => {
             </PageColumnPanel>
             <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
             <PageColumnPanel>
               <ConnectionSuggestions
                 loading={suggestUserloading}
                 data={suggestUserData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
           </div>
         </div>
       </Wrapper>

@@ -63,6 +63,15 @@ const client = new ApolloClient({
       SelectOption: {
         keyFields: ["text", "id"],
       },
+      FarmModel: {
+        keyFields: ["pictures", ["pictureId"]],
+      },
+      ProductModel: {
+        keyFields: ["pictures", ["pictureId"]],
+      },
+      ArticleModel: {
+        keyFields: ["pictures", ["pictureId"]],
+      },
     },
   }),
   ssrMode: true,

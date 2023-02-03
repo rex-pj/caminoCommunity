@@ -23,7 +23,7 @@ const Body = styled.div`
   padding-bottom: ${(p) => p.theme.size.exTiny};
 `;
 
-export default (props) => {
+const AdsSuggestionPanel = (props) => {
   const { data, className, index } = props;
   return (
     <ListItem
@@ -52,3 +52,5 @@ export default (props) => {
     </ListItem>
   );
 };
+
+export default AdsSuggestionPanel;

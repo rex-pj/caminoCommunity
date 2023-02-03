@@ -5,10 +5,10 @@ import {
 } from "../../atoms/Buttons/OutlineButtons";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LabelNormal, LabelDark } from "../../atoms/Labels";
+import { LabelSecondary, LabelDark } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
 
-const SecondaryLabel = styled(LabelNormal)`
+const SecondaryLabel = styled(LabelSecondary)`
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
@@ -25,7 +25,7 @@ const ProductAttributeValueRow = (props) => {
     <div className={className}>
       <div className="col-12 col-md-12 col-lg-3">
         <div className="mb-1">
-          <LabelNormal className="me-1">Tên:</LabelNormal>
+          <SecondaryLabel className="me-1">Tên:</SecondaryLabel>
           <LabelDark>{attributeValue.name}</LabelDark>
         </div>
         <div className="mb-1">
@@ -38,7 +38,7 @@ const ProductAttributeValueRow = (props) => {
       </div>
       <div className="col-12 col-md-6 col-lg-5">
         <div className="mb-1">
-          <LabelNormal className="me-1">Giá điều chỉnh:</LabelNormal>
+          <SecondaryLabel className="me-1">Giá điều chỉnh:</SecondaryLabel>
           <LabelDark>
             $
             {attributeValue.priceAdjustment
@@ -59,7 +59,7 @@ const ProductAttributeValueRow = (props) => {
         </div>
       </div>
       <div className="col-12 col-md-3 col-lg-2">
-        <LabelNormal className="me-1">Thứ tự:</LabelNormal>
+        <SecondaryLabel className="me-1">Thứ tự:</SecondaryLabel>
         <LabelDark>{attributeValue.displayOrder}</LabelDark>
       </div>
       <div className="col-auto offset-auto">

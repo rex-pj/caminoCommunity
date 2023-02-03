@@ -5,7 +5,7 @@ import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { useLazyQuery } from "@apollo/client";
 import {
   FarmSuggestions,
-  CommunitySuggestions,
+  // CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 import { SessionContext } from "../../../store/context/session-context";
@@ -14,7 +14,7 @@ import { Header } from "../../organisms/Containers";
 import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
-const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
+// const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
   > .row {
@@ -80,7 +80,7 @@ const DefaultLayout = (props) => {
                 data={suggestFarmData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
             </PageColumnPanel>
             <PageColumnPanel>
@@ -88,16 +88,16 @@ const DefaultLayout = (props) => {
             </PageColumnPanel>
             <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
             <PageColumnPanel>
               <ConnectionSuggestions
                 loading={suggestUserloading}
                 data={suggestUserData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
           </div>
         </div>
       </Wrapper>

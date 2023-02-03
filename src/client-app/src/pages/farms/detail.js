@@ -57,7 +57,7 @@ const DetailPage = (props) => {
       criterias: {
         userIdentityId: userIdentityId,
         page: 1,
-        pageSize: 4,
+        pageSize: 5,
       },
     },
   });

@@ -2,11 +2,11 @@ import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { PageColumnPanel } from "../../molecules/Panels";
-import AdsList from "../../organisms/Ads/AdsList";
+// const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 import AuthorCard from "../../organisms/ProfileCard/AuthorCard";
 import {
   FarmSuggestions,
-  CommunitySuggestions,
+  // CommunitySuggestions,
   ConnectionSuggestions,
 } from "../../organisms/Suggestions";
 import { useLazyQuery } from "@apollo/client";
@@ -89,7 +89,7 @@ const DetailLayout = (props) => {
                 data={suggestFarmData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
             </PageColumnPanel>
             <PageColumnPanel>
@@ -97,16 +97,16 @@ const DetailLayout = (props) => {
             </PageColumnPanel>
             <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
             <PageColumnPanel>
               <ConnectionSuggestions
                 loading={suggestUserloading}
                 data={suggestUserData}
               />
             </PageColumnPanel>
-            <PageColumnPanel>
+            {/* <PageColumnPanel>
               <AdsList />
-            </PageColumnPanel>
+            </PageColumnPanel> */}
           </div>
         </div>
       </Wrapper>
