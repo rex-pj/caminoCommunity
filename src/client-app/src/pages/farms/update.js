@@ -42,9 +42,14 @@ const UpdatePage = (props) => {
     },
   });
 
-  const { data: userFarmData } = useQuery(farmQueries.SELECT_USER_FARMS, {
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS, {
     skip: !userIdentityId,
-    variables: {},
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+      },
+    },
   });
 
   const onImageValidate = async (formData) => {
@@ -135,13 +140,9 @@ const UpdatePage = (props) => {
     }
 
     if (userFarmData) {
-      const { selections } = userFarmData;
-      authorInfo.farms = selections.map((x) => {
-        return {
-          id: x.id,
-          name: x.text,
-        };
-      });
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
     }
     return authorInfo;
   };

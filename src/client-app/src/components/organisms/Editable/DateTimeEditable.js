@@ -49,15 +49,20 @@ const updateStatus = {
   fail: "fail",
 };
 
-export default (props) => {
+const DateTimeEditable = (props) => {
   const { value, name, disabled } = props;
+
   const [status, setStatus] = useState("");
-  const [currentDate, updateCurrentDate] = useState(value);
+  const [currentDate, setCurrentDate] = useState(null);
   let statusTimer = null;
 
   useEffect(() => {
     return () => clearTimeout(statusTimer);
   }, [statusTimer]);
+
+  useEffect(() => {
+    setCurrentDate(value);
+  }, [setCurrentDate, value]);
 
   const onChanged = (e) => {
     const { name, primaryKey } = props;
@@ -79,7 +84,7 @@ export default (props) => {
           });
       }
     } else {
-      updateCurrentDate(value);
+      setCurrentDate(value);
     }
   };
 
@@ -107,7 +112,7 @@ export default (props) => {
         onDateChanged={(e) => onChanged(e)}
       />
     );
-  } else if (!props.disabled && value) {
+  } else if (!props.disabled && !!value) {
     return (
       <DateTimePicker
         className={`${status}`}
@@ -129,8 +134,10 @@ export default (props) => {
   } else {
     return (
       <TextLabel className={`disabled`}>
-        {currentDate ? format(currentDate, "MMMM, dd yyyy") : ""}
+        {currentDate ? format(new Date(currentDate), "MMMM, dd yyyy") : ""}
       </TextLabel>
     );
   }
 };
+
+export default DateTimeEditable;

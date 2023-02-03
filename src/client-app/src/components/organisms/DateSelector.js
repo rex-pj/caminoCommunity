@@ -21,10 +21,11 @@ const DateSelector = (props) => {
 
   let birthdate = { year: "", month: "", date: "" };
   if (value) {
+    const dateTime = new Date(value);
     birthdate = {
-      year: getYear(value),
-      month: getMonth(value) + 1,
-      date: getDate(value),
+      year: getYear(dateTime),
+      month: getMonth(dateTime) + 1,
+      date: getDate(dateTime),
     };
   } else if (strDate) {
     birthdate = {

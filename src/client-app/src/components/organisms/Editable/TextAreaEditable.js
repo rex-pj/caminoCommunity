@@ -156,7 +156,9 @@ const TextAreaEditable = (props) => {
   }
 
   let data = value;
-  data = data.replace(/\n/g, "<br />");
+  if (data) {
+    data = data.replace(/\n/g, "<br />");
+  }
 
   if (!data && !props.disabled) {
     return (

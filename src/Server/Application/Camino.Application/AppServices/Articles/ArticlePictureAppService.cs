@@ -183,7 +183,7 @@ namespace Camino.Application.AppServices.Articles
                 await _articlePictureDomainService.DeleteByArticleIdAsync(request.ArticleId);
             }
 
-            var shouldUpdatePicture = request.Picture.Id == 0 && !string.IsNullOrEmpty(request.Picture.Base64Data);
+            var shouldUpdatePicture = request.Picture.Id == 0 && request.Picture.BinaryData != null;
             if (shouldUpdatePicture)
             {
                 var articlePictureId = await CreateAsync(request, ArticlePictureTypes.Thumbnail, true);

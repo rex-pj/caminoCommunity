@@ -7,23 +7,11 @@ import {
   ErrorBar,
   LoadingBar,
 } from "../../components/molecules/NotificationBars";
-import styled from "styled-components";
 import { getParameters, generateQueryParameters } from "../../utils/Helper";
 import SearchFeed from "../../components/templates/Feeds/search-feed";
 import SearchForm from "../../components/templates/Feeds/search-form";
 import { authClient } from "../../graphql/client";
-import { BodyLayout } from "../../components/templates/Layout";
-
-const Wrapper = styled.div`
-  > .row {
-    margin-left: -12px;
-    margin-right: -12px;
-  }
-
-  > .row > .col {
-    padding: 0 12px;
-  }
-`;
+import { MiddleRightLayout } from "../../components/templates/Layout";
 
 const Search = (props) => {
   const navigate = useNavigate();
@@ -90,37 +78,48 @@ const Search = (props) => {
   };
 
   const { advancedSearch } = data;
+  const checkHasData = () => {
+    return !!(
+      advancedSearch &&
+      (advancedSearch.farms ||
+        advancedSearch.products ||
+        advancedSearch.articles)
+    );
+  };
+
   const baseUrl = `/search/`;
   return (
-    <BodyLayout>
-      <Wrapper className="container-lg container-fluid px-lg-5 mt-3">
-        <div className="row px-lg-3">
-          <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
-            <SearchForm
-              timeOptions={timeOptions}
-              feedTypeDictonaries={feedTypeDictonaries}
-              advancedSearchResult={advancedSearch}
-              selectUsers={selectUsers}
-              baseUrl={baseUrl}
-              searchParams={{
-                hoursCreatedFrom,
-                hoursCreatedTo,
-                userIdentityId,
-                feedFilterType,
-              }}
-              onSearch={onSearch}
-            ></SearchForm>
-          </div>
-          <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
-            <SearchFeed
-              keyword={keyword}
-              advancedSearchResult={advancedSearch}
-              baseUrl={baseUrl}
-            ></SearchFeed>
-          </div>
+    <MiddleRightLayout
+      isLoading={!!loading}
+      hasData={checkHasData()}
+      hasError={!!error}
+    >
+      <div className="row px-lg-3">
+        <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
+          <SearchForm
+            timeOptions={timeOptions}
+            feedTypeDictonaries={feedTypeDictonaries}
+            advancedSearchResult={advancedSearch}
+            selectUsers={selectUsers}
+            baseUrl={baseUrl}
+            searchParams={{
+              hoursCreatedFrom,
+              hoursCreatedTo,
+              userIdentityId,
+              feedFilterType,
+            }}
+            onSearch={onSearch}
+          ></SearchForm>
         </div>
-      </Wrapper>
-    </BodyLayout>
+        <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
+          <SearchFeed
+            keyword={keyword}
+            advancedSearchResult={advancedSearch}
+            baseUrl={baseUrl}
+          ></SearchFeed>
+        </div>
+      </div>
+    </MiddleRightLayout>
   );
 };
 

@@ -1,11 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
-import {
-  farmQueries,
-  userQueries,
-  navigationQueries,
-} from "../../../graphql/fetching/queries";
+import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { useLazyQuery } from "@apollo/client";
 import {
   FarmSuggestions,
@@ -18,11 +14,6 @@ import { Header } from "../../organisms/Containers";
 import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
-const Shortcut = React.lazy(() => import("../../organisms/Shortcut"));
-const Interesting = React.lazy(() => import("../../organisms/Interesting"));
-const LoggedInCard = React.lazy(() =>
-  import("../../organisms/ProfileCard/LoggedInCard")
-);
 const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
@@ -43,9 +34,6 @@ const DefaultLayout = (props) => {
     fetchSuggestions,
     { loading: suggestUserloading, data: suggestUserData },
   ] = useLazyQuery(userQueries.GET_SUGGESSTION_USERS);
-
-  const [fetchShortcuts, { loading: shortcutLoading, data: shortcutData }] =
-    useLazyQuery(navigationQueries.GET_SHORTCUTS);
 
   useEffect(() => {
     const currentUserId = currentUser?.userIdentityId;
@@ -68,33 +56,14 @@ const DefaultLayout = (props) => {
         },
       },
     });
-
-    fetchShortcuts();
-  }, [
-    fetchFarms,
-    fetchSuggestions,
-    fetchShortcuts,
-    currentUser?.userIdentityId,
-  ]);
+  }, [fetchFarms, fetchSuggestions, currentUser?.userIdentityId]);
 
   return (
     <>
       <Header />
       <Wrapper className="container-fluid px-lg-5 mt-md-3 mt-lg-5">
         <div className="row px-lg-3 gx-3">
-          <div className="col col-12 col-sm-12 col-md-12 col-lg-2">
-            <PageColumnPanel>
-              <LoggedInCard />
-            </PageColumnPanel>
-            <PageColumnPanel>
-              <Shortcut loading={shortcutLoading} data={shortcutData} />
-            </PageColumnPanel>
-            <PageColumnPanel>
-              <Interesting />
-            </PageColumnPanel>
-          </div>
-
-          <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
+          <div className="col col-12 col-sm-12 col-md-12 col-lg-9">
             <BodyLayout
               isLoading={isLoading}
               hasData={hasData}

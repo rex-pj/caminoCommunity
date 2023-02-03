@@ -6,6 +6,7 @@ import AuthLayout from "./AuthLayout";
 import ProfileLayout from "./ProfileLayout";
 import MasterLayout from "./MasterLayout";
 import PromptLayout from "./PromptLayout";
+import MiddleRightLayout from "./MiddleRightLayout";
 
 export {
   BodyLayout,
@@ -16,4 +17,5 @@ export {
   ProfileLayout,
   MasterLayout,
   PromptLayout,
+  MiddleRightLayout,
 };

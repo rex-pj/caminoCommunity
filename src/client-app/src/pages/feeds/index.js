@@ -16,7 +16,7 @@ import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 
-export default (function (props) {
+const FeedPage = (props) => {
   const { pageNumber } = useParams();
   const [state, dispatch] = useStore(true);
   const pageRef = useRef({ pageNumber: pageNumber ? pageNumber : 1 });
@@ -178,7 +178,7 @@ export default (function (props) {
   };
 
   const checkHasData = () => {
-    return !!(data && pageRef.current.totalResult && feeds.length >= 0);
+    return !!(data && pageRef.current.totalResult && feeds.length > 0);
   };
 
   return (
@@ -204,4 +204,6 @@ export default (function (props) {
       </InfiniteScroll>
     </DefaultLayout>
   );
-});
+};
+
+export default FeedPage;

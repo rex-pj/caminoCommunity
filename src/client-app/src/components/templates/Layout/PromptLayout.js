@@ -29,7 +29,7 @@ const Wrap = styled.div`
   }
 `;
 
-export default ({ children }) => {
+const PromptLayout = ({ children }) => {
   return (
     <MasterLayout>
       <Root>
@@ -40,3 +40,5 @@ export default ({ children }) => {
     </MasterLayout>
   );
 };
+
+export default PromptLayout;

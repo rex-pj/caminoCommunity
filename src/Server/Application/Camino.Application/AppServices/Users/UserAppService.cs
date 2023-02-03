@@ -112,7 +112,6 @@ namespace Camino.Application.AppServices.Users
             }
 
             user.UpdatedById = user.Id;
-            user.UpdatedDate = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
             return request;
         }
@@ -140,7 +139,8 @@ namespace Camino.Application.AppServices.Users
             {
                 if (DateTime.TryParse(updateItem.Value.ToString(), out var birthDate))
                 {
-                    user.BirthDate = birthDate;
+                    var universalDateTime = birthDate.ToUniversalTime();
+                    user.BirthDate = universalDateTime;
                 }
                 else if (updateItem.Value == null)
                 {

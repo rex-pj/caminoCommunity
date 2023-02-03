@@ -37,7 +37,7 @@ const UpdatePage = (props) => {
     }
   );
 
-  const userIdentityId = data?.farm?.createdByIdentityId;
+  const userIdentityId = data?.article?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
     skip: !userIdentityId,
     variables: {

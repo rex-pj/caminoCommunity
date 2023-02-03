@@ -33,12 +33,20 @@ const UpdatePage = (props) => {
   );
 
   const userIdentityId = data?.product?.createdByIdentityId;
-  const [fetchUserFarms, { data: userFarmData }] = useLazyQuery(
-    farmQueries.SELECT_USER_FARMS,
-    {
-      variables: {},
-    }
-  );
+  const [fetchUserFarms] = useLazyQuery(farmQueries.SELECT_USER_FARMS, {
+    variables: {},
+  });
+
+  const { data: userFarmData } = useQuery(farmQueries.GET_USER_FARMS, {
+    skip: !userIdentityId,
+    variables: {
+      criterias: {
+        userIdentityId: userIdentityId,
+        page: 1,
+      },
+    },
+  });
+
   const [fetchProductCategories] = useLazyQuery(
     productQueries.FILTER_PRODUCT_CATEGORIES,
     {
@@ -136,13 +144,9 @@ const UpdatePage = (props) => {
     }
 
     if (userFarmData) {
-      const { selections } = userFarmData;
-      authorInfo.farms = selections.map((x) => {
-        return {
-          id: x.id,
-          name: x.text,
-        };
-      });
+      const { userFarms } = userFarmData;
+      const { collections } = userFarms;
+      authorInfo.farms = collections;
     }
     return authorInfo;
   };
