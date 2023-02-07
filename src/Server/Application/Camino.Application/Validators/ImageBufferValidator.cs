@@ -3,15 +3,12 @@ using Camino.Shared.Utils;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using Microsoft.AspNetCore.Http;
-using Camino.Shared.File;
-using System.Threading.Tasks;
 
 namespace Camino.Application.Validators
 {
-    public class ImageFormFileValidator : BaseAsyncValidator<IFormFile, bool>
+    public class ImageBufferValidator : BaseValidator<byte[], bool>
     {
-        public override async Task<bool> IsValidAsync(IFormFile value)
+        public override bool IsValid(byte[] value)
         {
             try
             {
@@ -20,8 +17,7 @@ namespace Camino.Application.Validators
                     return false;
                 }
 
-                var fileData = await FileUtils.GetBytesAsync(value);
-                ImageUtils.FileDataToImage(fileData);
+                ImageUtils.FileDataToImage(value);
                 return true;
             }
             catch (Exception e)

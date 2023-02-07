@@ -95,7 +95,7 @@ const ProductAttributeRow = (props) => {
               return (
                 <ProductAttributeValueRow
                   className="py-2 row mb-2 attr-value-row mx-0"
-                  key={attrVal.id}
+                  key={`${attrVal.id}${index}`}
                   price={price}
                   attributeValue={attrVal}
                   onRemoveAttributeValue={onRemoveAttributeValue}

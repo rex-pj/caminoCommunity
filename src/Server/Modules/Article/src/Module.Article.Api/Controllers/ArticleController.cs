@@ -12,6 +12,10 @@ using Camino.Infrastructure.Identity.Attributes;
 using Camino.Application.Contracts.AppServices.Articles;
 using System.ComponentModel.DataAnnotations;
 using Camino.Infrastructure.AspNetCore.Models;
+using Camino.Shared.Configuration.Options;
+using Camino.Core.Validators;
+using Camino.Application.Validators;
+using Microsoft.Extensions.Options;
 
 namespace Module.Article.Api.Controllers
 {
@@ -19,9 +23,17 @@ namespace Module.Article.Api.Controllers
     public class ArticleController : BaseTokenAuthController
     {
         private readonly IArticleAppService _articleAppService;
-        public ArticleController(IHttpContextAccessor httpContextAccessor, IArticleAppService articleAppService) : base(httpContextAccessor)
+        private readonly BaseValidatorContext _validatorContext;
+        private readonly IOptions<AppSettings> _appSettings;
+
+        public ArticleController(IHttpContextAccessor httpContextAccessor,
+            IArticleAppService articleAppService,
+            BaseValidatorContext validatorContext,
+             IOptions<AppSettings> appSettings) : base(httpContextAccessor)
         {
             _articleAppService = articleAppService;
+            _validatorContext = validatorContext;
+            _appSettings = appSettings;
         }
 
         [HttpPost]
@@ -46,7 +58,21 @@ namespace Module.Article.Api.Controllers
 
                 if (picture?.File != null)
                 {
+                    _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                    bool canUpdate = _validatorContext.Validate<IFormFile, bool>(picture.File);
+                    if (!canUpdate)
+                    {
+                        return BadRequest(nameof(picture.File));
+                    }
+
                     var fileData = await FileUtils.GetBytesAsync(picture.File);
+                    _validatorContext.SetValidator(new ImageBufferValidator());
+                    canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                    if (!canUpdate)
+                    {
+                        return BadRequest(nameof(picture.File));
+                    }
+
                     article.Picture = new PictureRequest()
                     {
                         BinaryData = fileData,
@@ -102,7 +128,21 @@ namespace Module.Article.Api.Controllers
 
                 if (picture?.File != null)
                 {
+                    _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                    bool canUpdate = _validatorContext.Validate<IFormFile, bool>(picture.File);
+                    if (!canUpdate)
+                    {
+                        return BadRequest(nameof(picture.File));
+                    }
+
                     var fileData = await FileUtils.GetBytesAsync(picture.File);
+                    _validatorContext.SetValidator(new ImageBufferValidator());
+                    canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                    if (!canUpdate)
+                    {
+                        return BadRequest(nameof(picture.File));
+                    }
+
                     article.Picture = new PictureRequest
                     {
                         BinaryData = fileData,

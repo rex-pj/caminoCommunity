@@ -7,5 +7,6 @@
         public string MyAllowSpecificOrigins { get; set; }
         public string[] AllowOrigins { get; set; }
         public string CaminoClientAppUrl { get; set; }
+        public int MaxUploadFileSize { get; set; }
     }
 }

@@ -7,6 +7,9 @@ using Module.Media.Api.Models;
 using Camino.Application.Validators;
 using Camino.Core.Validators;
 using Microsoft.AspNetCore.Http;
+using Camino.Shared.Configuration.Options;
+using Camino.Shared.File;
+using Microsoft.Extensions.Options;
 
 namespace Module.Media.Api.Controllers
 {
@@ -16,13 +19,17 @@ namespace Module.Media.Api.Controllers
 
         private readonly IPictureAppService _pictureAppService;
         private readonly BaseValidatorContext _validatorContext;
+        private readonly IOptions<AppSettings> _appSettings;
+
         public PictureController(IHttpContextAccessor httpContextAccessor,
             IPictureAppService pictureAppService,
-            BaseValidatorContext validatorContext)
+            BaseValidatorContext validatorContext,
+            IOptions<AppSettings> appSettings)
             : base(httpContextAccessor)
         {
             _pictureAppService = pictureAppService;
             _validatorContext = validatorContext;
+            _appSettings = appSettings;
         }
 
         [HttpGet("{id}")]
@@ -51,30 +58,46 @@ namespace Module.Media.Api.Controllers
                 return BadRequest();
             }
 
-            bool isValid = false;
+            bool isValid;
             if (!string.IsNullOrEmpty(criterias.Url))
             {
                 _validatorContext.SetValidator(new ImageUrlValidator());
                 isValid = _validatorContext.Validate<string, bool>(criterias.Url);
-            }
-            else if (criterias.File != null)
-            {
-                _validatorContext.SetValidator(new ImageFormFileValidator());
-                isValid = await _validatorContext.ValidateAsync<IFormFile, bool>(criterias.File);
-            }
+                if (!isValid)
+                {
+                    _validatorContext.SetValidator(new Base64ImageValidator());
+                    isValid = _validatorContext.Validate<string, bool>(criterias.Url);
+                }
 
-            if (!string.IsNullOrEmpty(criterias.Url) && !isValid)
-            {
-                _validatorContext.SetValidator(new Base64ImageValidator());
-                isValid = _validatorContext.Validate<string, bool>(criterias.Url);
-            }
+                if (!isValid)
+                {
+                    return ValidationProblem(nameof(criterias.Url));
+                }
 
-            if (isValid)
-            {
                 return Ok();
             }
 
-            return ValidationProblem();
+            if (criterias.File != null)
+            {
+                _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                isValid = _validatorContext.Validate<IFormFile, bool>(criterias.File);
+                if (!isValid)
+                {
+                    return ValidationProblem(nameof(criterias.File));
+                }
+
+                var fileData = await FileUtils.GetBytesAsync(criterias.File);
+                _validatorContext.SetValidator(new ImageBufferValidator());
+                isValid = _validatorContext.Validate<byte[], bool>(fileData);
+                if (!isValid)
+                {
+                    return ValidationProblem(nameof(criterias.File));
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }

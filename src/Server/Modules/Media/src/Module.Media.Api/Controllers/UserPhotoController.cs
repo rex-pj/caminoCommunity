@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Module.Media.Api.Models;
 using System;
 using System.Threading.Tasks;
+using Camino.Shared.Configuration.Options;
+using Microsoft.Extensions.Options;
 
 namespace Module.Media.Api.Controllers
 {
@@ -19,14 +21,17 @@ namespace Module.Media.Api.Controllers
     {
         private readonly IUserPhotoAppService _userPhotoAppService;
         private readonly BaseValidatorContext _validatorContext;
+        private readonly IOptions<AppSettings> _appSettings;
 
         public UserPhotoController(IUserPhotoAppService userPhotoAppService,
             BaseValidatorContext validatorContext,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<AppSettings> appSettings)
             : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;
             _validatorContext = validatorContext;
+            _appSettings = appSettings;
         }
 
         [HttpGet("avatars/{id}")]
@@ -57,9 +62,16 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
+                _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file);
+                if (!canUpdate)
+                {
+                    return BadRequest(nameof(file));
+                }
+
                 var fileData = await FileUtils.GetBytesAsync(file);
-                _validatorContext.SetValidator(new ImageFileValidator());
-                bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                _validatorContext.SetValidator(new ImageBufferValidator());
+                canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
                     return BadRequest(nameof(file));
@@ -91,9 +103,16 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
+                _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file);
+                if (!canUpdate)
+                {
+                    return BadRequest(nameof(file));
+                }
+
                 var fileData = await FileUtils.GetBytesAsync(file);
-                _validatorContext.SetValidator(new ImageFileValidator());
-                bool canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                _validatorContext.SetValidator(new ImageBufferValidator());
+                canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
                     return BadRequest(nameof(file));

@@ -14,6 +14,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Camino.Infrastructure.AspNetCore.Models;
 using System.ComponentModel.DataAnnotations;
+using Camino.Shared.Configuration.Options;
+using Camino.Core.Validators;
+using Microsoft.Extensions.Options;
+using Camino.Application.Validators;
 
 namespace Module.Product.Api.Controllers
 {
@@ -21,9 +25,17 @@ namespace Module.Product.Api.Controllers
     public class ProductController : BaseTokenAuthController
     {
         private readonly IProductAppService _farmAppService;
-        public ProductController(IHttpContextAccessor httpContextAccessor, IProductAppService farmAppService) : base(httpContextAccessor)
+        private readonly BaseValidatorContext _validatorContext;
+        private readonly IOptions<AppSettings> _appSettings;
+
+        public ProductController(IHttpContextAccessor httpContextAccessor,
+            IProductAppService farmAppService,
+            BaseValidatorContext validatorContext,
+            IOptions<AppSettings> appSettings) : base(httpContextAccessor)
         {
             _farmAppService = farmAppService;
+            _validatorContext = validatorContext;
+            _appSettings = appSettings;
         }
 
         [HttpPost]
@@ -74,7 +86,21 @@ namespace Module.Product.Api.Controllers
                     var files = new List<PictureRequest>();
                     foreach (var file in pictures)
                     {
-                        var fileData = file.File != null ? await FileUtils.GetBytesAsync(file.File) : null;
+                        _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                        bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file.File);
+                        if (!canUpdate)
+                        {
+                            return BadRequest(nameof(file.File));
+                        }
+
+                        var fileData = await FileUtils.GetBytesAsync(file.File);
+                        _validatorContext.SetValidator(new ImageBufferValidator());
+                        canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                        if (!canUpdate)
+                        {
+                            return BadRequest(nameof(file.File));
+                        }
+
                         files.Add(new PictureRequest
                         {
                             BinaryData = fileData,
@@ -161,13 +187,36 @@ namespace Module.Product.Api.Controllers
                     var files = new List<PictureRequest>();
                     foreach (var file in pictures)
                     {
-                        var fileData = file.File != null ? await FileUtils.GetBytesAsync(file.File) : null;
+                        if (file.PictureId > 0)
+                        {
+                            files.Add(new PictureRequest
+                            {
+                                Id = file.PictureId.GetValueOrDefault()
+                            });
+
+                            continue;
+                        }
+
+                        _validatorContext.SetValidator(new FormFileValidator(_appSettings));
+                        bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file.File);
+                        if (!canUpdate)
+                        {
+                            return BadRequest(nameof(file.File));
+                        }
+
+                        var fileData = await FileUtils.GetBytesAsync(file.File);
+                        _validatorContext.SetValidator(new ImageBufferValidator());
+                        canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
+                        if (!canUpdate)
+                        {
+                            return BadRequest(nameof(file.File));
+                        }
+
                         files.Add(new PictureRequest
                         {
                             BinaryData = fileData,
-                            FileName = file.File?.FileName,
-                            ContentType = file.File?.ContentType,
-                            Id = file.PictureId.GetValueOrDefault()
+                            FileName = file.File.FileName,
+                            ContentType = file.File.ContentType
                         });
                     }
 

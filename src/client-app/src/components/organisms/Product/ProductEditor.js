@@ -794,26 +794,23 @@ const ProductEditor = (props) => {
         </ButtonOutlinePrimary>
       </FormRow>
       <FormRow className="mb-4">
-        {productAttributes && productAttributes.value
-          ? productAttributes.value.map((attr, index) => {
-              return (
-                <ProductAttributeRow
-                  key={index}
-                  attribute={attr}
-                  price={price.value ? price.value : 0}
-                  onRemoveAttribute={onRemoveAttribute}
-                  onAttributeChange={(e) => onAttributeChange(e, index)}
-                  onEditAttribute={(e) => onOpenEditAttributeModal(e, index)}
-                  onAddAttributeValue={() =>
-                    onOpenAddAttributeValueModal(index)
-                  }
-                  onEditAttributeValue={(e, attributeValueIndex) =>
-                    onOpenEditAttributeValueModal(e, index, attributeValueIndex)
-                  }
-                />
-              );
-            })
-          : null}
+        {productAttributes?.value &&
+          productAttributes.value.map((attr, index) => {
+            return (
+              <ProductAttributeRow
+                key={index}
+                attribute={attr}
+                price={price.value ? price.value : 0}
+                onRemoveAttribute={onRemoveAttribute}
+                onAttributeChange={(e) => onAttributeChange(e, index)}
+                onEditAttribute={(e) => onOpenEditAttributeModal(e, index)}
+                onAddAttributeValue={() => onOpenAddAttributeValueModal(index)}
+                onEditAttributeValue={(e, attributeValueIndex) =>
+                  onOpenEditAttributeValueModal(e, index, attributeValueIndex)
+                }
+              />
+            );
+          })}
       </FormRow>
       <CommonEditor
         contentHtml={currentProduct ? currentProduct.description.value : null}
