@@ -24,8 +24,8 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
             services.AddJwtBearerServices(services.BuildServiceProvider());
 
             services.AddHttpContextAccessor()
-                .AddApplicationServices(configuration)
-                .ConfigureCorsServices(services.BuildServiceProvider());
+                    .AddApplicationServices(configuration);
+            services.ConfigureCorsServices(services.BuildServiceProvider());
 
             services.AddInfrastructureServices();
             services.AddDataAccessServices<CaminoDbContext>();
@@ -95,7 +95,7 @@ namespace Camino.ApiHost.Extensions.DependencyInjection
 
         public static IServiceCollection ConfigureCorsServices(this IServiceCollection services, IServiceProvider serviceProvider)
         {
-            var appSettings = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
+            var appSettings = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
             services.AddCors(options =>
             {
                 options.AddPolicy(appSettings.MyAllowSpecificOrigins,

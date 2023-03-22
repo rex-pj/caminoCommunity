@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Camino.Core.Contracts.Modularity;
 using Camino.Infrastructure.Modularity;
-//using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 using Camino.Infrastructure.Files.Contracts;
 using System.Text;
@@ -50,13 +49,13 @@ namespace Camino.Infrastructure.Extensions.DependencyInjection
             var fileProvider = serviceProvider.GetRequiredService<IFileProvider>();
             var projectPath = Directory.GetParent(webHostEnvironment.ContentRootPath);
 
-            var moduleSettingsPath = $"{projectPath.FullName}{configuration[_settingsPath]}";
+            var moduleSettingsPath = Path.Combine(configuration[_settingsPath]);
             var settingsJson = fileProvider.ReadText(moduleSettingsPath, Encoding.UTF8);
 
             var settings = JsonConvert.DeserializeObject<ModuleListSettings>(settingsJson);
             var modularManager = serviceProvider.GetRequiredService<IModularManager>();
 
-            var modules = modularManager.LoadModules(projectPath.Parent.Parent.FullName, settings);
+            var modules = modularManager.LoadModules(projectPath.FullName, settings);
             return modules;
         }
 

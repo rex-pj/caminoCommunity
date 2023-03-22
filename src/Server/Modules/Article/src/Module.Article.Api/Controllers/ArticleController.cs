@@ -24,12 +24,12 @@ namespace Module.Article.Api.Controllers
     {
         private readonly IArticleAppService _articleAppService;
         private readonly BaseValidatorContext _validatorContext;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly IOptions<ApplicationSettings> _appSettings;
 
         public ArticleController(IHttpContextAccessor httpContextAccessor,
             IArticleAppService articleAppService,
             BaseValidatorContext validatorContext,
-             IOptions<AppSettings> appSettings) : base(httpContextAccessor)
+             IOptions<ApplicationSettings> appSettings) : base(httpContextAccessor)
         {
             _articleAppService = articleAppService;
             _validatorContext = validatorContext;

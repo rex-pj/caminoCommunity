@@ -1,37 +1,37 @@
 {
-  "Path": "\\Modules",
+  "Path": "/Modules",
   "modules": [
     {
       "name": "Module.Article.Api",
-      "path": "Article\\src\\Module.Article.Api"
+      "path": "Article/src/Module.Article.Api"
     },
     {
       "name": "Module.Farm.Api",
-      "path": "Farm\\src\\Module.Farm.Api"
+      "path": "Farm/src/Module.Farm.Api"
     },
     {
       "name": "Module.Feed.Api",
-      "path": "Feed\\src\\Module.Feed.Api"
+      "path": "Feed/src/Module.Feed.Api"
     },
     {
       "name": "Module.Auth.Api",
-      "path": "Identity\\src\\Module.Auth.Api"
+      "path": "Identity/src/Module.Auth.Api"
     },
     {
       "name": "Module.Media.Api",
-      "path": "Media\\src\\Module.Media.Api"
+      "path": "Media/src/Module.Media.Api"
     },
     {
       "name": "Module.Navigation.Api",
-      "path": "Navigation\\src\\Module.Navigation.Api"
+      "path": "Navigation/src/Module.Navigation.Api"
     },
     {
       "name": "Module.Order.Api",
-      "path": "Order\\src\\Module.Order.Api"
+      "path": "Order/src/Module.Order.Api"
     },
     {
       "name": "Module.Product.Api",
-      "path": "Product\\src\\Product.Order.Api"
+      "path": "Product/src/Product.Order.Api"
     }
   ]
 }

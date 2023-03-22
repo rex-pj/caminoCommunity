@@ -28,7 +28,7 @@ namespace Camino.Infrastructure.DependencyInjection
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AppSettings>(configuration.GetSection(AppSettings.Name));
+            services.Configure<ApplicationSettings>(configuration.GetSection(ApplicationSettings.Name));
             services.Configure<CrypterSettings>(configuration.GetSection(CrypterSettings.Name));
             services.Configure<EmailSenderSettings>(configuration.GetSection(EmailSenderSettings.Name));
             services.Configure<PagerOptions>(configuration.GetSection(PagerOptions.Name));

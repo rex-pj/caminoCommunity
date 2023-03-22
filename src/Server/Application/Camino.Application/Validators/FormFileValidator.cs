@@ -13,8 +13,8 @@ namespace Camino.Application.Validators
 {
     public class FormFileValidator : BaseValidator<IFormFile, bool>
     {
-        private readonly AppSettings _appSettings;
-        public FormFileValidator(IOptions<AppSettings> appSettings)
+        private readonly ApplicationSettings _appSettings;
+        public FormFileValidator(IOptions<ApplicationSettings> appSettings)
         {
             _appSettings = appSettings.Value;
         }

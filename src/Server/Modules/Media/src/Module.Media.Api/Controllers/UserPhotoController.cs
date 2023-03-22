@@ -21,12 +21,12 @@ namespace Module.Media.Api.Controllers
     {
         private readonly IUserPhotoAppService _userPhotoAppService;
         private readonly BaseValidatorContext _validatorContext;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly IOptions<ApplicationSettings> _appSettings;
 
         public UserPhotoController(IUserPhotoAppService userPhotoAppService,
             BaseValidatorContext validatorContext,
             IHttpContextAccessor httpContextAccessor,
-            IOptions<AppSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings)
             : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;

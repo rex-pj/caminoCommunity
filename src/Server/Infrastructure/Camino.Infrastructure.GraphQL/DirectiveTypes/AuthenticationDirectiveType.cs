@@ -17,7 +17,7 @@ namespace Camino.Infrastructure.GraphQL.DirectiveTypes
             descriptor.Location(DirectiveLocation.Query);
             descriptor.Location(DirectiveLocation.Mutation);
             descriptor.Location(DirectiveLocation.FieldDefinition);
-            descriptor.Use(next => async context =>
+            descriptor.Use((next, directive) => async context =>
             {
                 var httpContextAccessor = context.Services.GetService<IHttpContextAccessor>();
                 var token = httpContextAccessor.HttpContext.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];

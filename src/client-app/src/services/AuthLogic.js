@@ -20,36 +20,29 @@ export const getUserToken = (isRemember) => {
   return cookieUtils.getStorageByKey(ACCESS_TOKEN, { path: "/" });
 };
 
-export const parseUserInfo = (response) => {
+export const parseUserSession = (response) => {
   const isLogin = isTokenValid();
-  let userLanguage = localStorageUtils.getStorageByKey(USER_LANGUAGE);
+  const userLanguage = localStorageUtils.getStorageByKey(USER_LANGUAGE);
+  const language = userLanguage ? userLanguage : "vn";
 
   if (!response) {
     return {
       isLogin,
-      userLanguage: userLanguage ? userLanguage : "vn",
+      userLanguage: language,
     };
   }
 
   const { currentUser, userPhotos } = response;
-  if (!userPhotos || userPhotos.length === 0) {
-    return {
-      ...currentUser,
-      userAvatar: {},
-      userCover: {},
-      isLogin,
-      userLanguage,
-    };
-  }
-
-  const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
-  const cover = userPhotos.find((item) => item.photoType === "COVER");
+  const avatar = userPhotos?.find((item) => item.photoType === "AVATAR");
+  const cover = userPhotos?.find((item) => item.photoType === "COVER");
   return {
-    ...currentUser,
-    userAvatar: avatar ? avatar : {},
-    userCover: cover ? cover : {},
+    currentUser: {
+      ...currentUser,
+      userAvatar: avatar ?? {},
+      userCover: cover ?? {},
+    },
     isLogin,
-    userLanguage,
+    lang: language,
   };
 };
 

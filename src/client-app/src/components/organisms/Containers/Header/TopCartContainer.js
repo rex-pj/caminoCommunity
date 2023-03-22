@@ -54,7 +54,7 @@ const CartLabel = styled.span`
   font-size: inherit;
 `;
 
-export default function (props) {
+const TopCartContainer = (props) => {
   return (
     <Root className={props.className}>
       <ShoppingCartButtonGroup>
@@ -68,4 +68,6 @@ export default function (props) {
       </ShoppingCartButtonGroup>
     </Root>
   );
-}
+};
+
+export default TopCartContainer;

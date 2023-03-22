@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<Configurations>Debug;Release;Staging</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,4 +15,19 @@
 		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+		<Content Update="Views\**\*.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\js\*.js">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\*.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>

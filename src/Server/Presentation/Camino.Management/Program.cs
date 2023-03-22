@@ -14,9 +14,10 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHttpsRedirection();
 }
 
-app.UseManagementConfiguration();
+app.ConfigureAppBuilder();
 app.UseModular(app.Environment);
 
 app.UseEndpoints(endpoints =>

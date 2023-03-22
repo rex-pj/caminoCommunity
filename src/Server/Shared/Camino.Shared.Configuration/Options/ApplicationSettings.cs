@@ -1,8 +1,8 @@
 ﻿namespace Camino.Shared.Configuration.Options
 {
-    public class AppSettings
+    public class ApplicationSettings
     {
-        public const string Name = "App";
+        public const string Name = "Application";
         public string ApplicationName { get; set; }
         public string MyAllowSpecificOrigins { get; set; }
         public string[] AllowOrigins { get; set; }

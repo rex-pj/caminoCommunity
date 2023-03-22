@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -10,10 +10,11 @@ import configureNotifyStore from "./store/hook-store/notify-store";
 import configureContentChangeStore from "./store/hook-store/content-change-store";
 import { userQueries } from "./graphql/fetching/queries";
 import { SessionContext } from "./store/context/session-context";
-import { parseUserInfo, isTokenValid } from "./services/AuthLogic";
+import { parseUserSession, isTokenValid } from "./services/AuthLogic";
 import { ThemeProvider } from "styled-components";
 import * as theme from "./utils/Theme";
 import { LoadingBar } from "./components/molecules/NotificationBars";
+import "./i18n";
 const FeedsPage = React.lazy(() => import("./pages/feeds"));
 const ArticlesPage = React.lazy(() => import("./pages/articles"));
 const ArticleDetailPage = React.lazy(() => import("./pages/articles/detail"));
@@ -64,35 +65,35 @@ const App = () => {
     return refetch();
   };
 
-  const parseUserResponse = (response) => {
-    const currentUser = parseUserInfo(response);
-    return {
-      lang: "vn",
-      authenticationToken: currentUser.tokenkey,
-      isLogin: currentUser.isLogin,
-      currentUser: currentUser,
-    };
-  };
+  const parseLoggedUser = useMemo(
+    () => () => {
+      if (error) {
+        return { isLogin: false };
+      }
 
-  const parseLoggedUser = () => {
-    if (error) {
-      return { isLogin: false };
-    }
+      function parseUserResponse(response) {
+        // Login success
+        const isValid = isTokenValid();
+        if (!isValid) {
+          return { isLogin: false };
+        }
 
-    // Login success
-    const isValid = isTokenValid();
-    if (!isValid) {
-      return { isLogin: false };
-    }
+        const currentUser = parseUserSession(response);
+        return currentUser;
+      }
 
-    return parseUserResponse(data);
+      return parseUserResponse(data);
+    },
+    [data, error]
+  );
+
+  const sessionContext = () => {
+    return { ...parseLoggedUser(), relogin, isLoading: loading };
   };
 
   return (
     <ApolloProvider client={authClient}>
-      <SessionContext.Provider
-        value={{ ...parseLoggedUser(), relogin, isLoading: loading }}
-      >
+      <SessionContext.Provider value={sessionContext()}>
         <ThemeProvider theme={theme}>
           <Suspense fallback={<LoadingBar>Loading...</LoadingBar>}>
             <BrowserRouter>

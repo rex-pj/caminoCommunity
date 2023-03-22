@@ -26,12 +26,12 @@ namespace Module.Product.Api.Controllers
     {
         private readonly IProductAppService _farmAppService;
         private readonly BaseValidatorContext _validatorContext;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly IOptions<ApplicationSettings> _appSettings;
 
         public ProductController(IHttpContextAccessor httpContextAccessor,
             IProductAppService farmAppService,
             BaseValidatorContext validatorContext,
-            IOptions<AppSettings> appSettings) : base(httpContextAccessor)
+            IOptions<ApplicationSettings> appSettings) : base(httpContextAccessor)
         {
             _farmAppService = farmAppService;
             _validatorContext = validatorContext;

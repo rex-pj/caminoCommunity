@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Text;
 using Camino.Core.Contracts.Providers;
 using System.IO;
 using System.Reflection;
-using Camino.Shared.Constants;
 using Camino.Infrastructure.Files.Contracts;
+using Newtonsoft.Json;
 
 namespace Module.Setup.WebAdmin.Providers
 {
@@ -38,7 +37,7 @@ namespace Module.Setup.WebAdmin.Providers
         public string LoadFileText(string relativePath)
         {
             var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return _fileProvider.ReadText($"{assemblyDirectory}\\{relativePath}", Encoding.Default);
+            return _fileProvider.ReadText(Path.Combine(assemblyDirectory, relativePath), Encoding.Default);
         }
 
         public void SetDatabaseHasBeenSetup(string filePath = null)
@@ -82,7 +81,7 @@ namespace Module.Setup.WebAdmin.Providers
             setupSettingsFilePath ??= SetupConfigs.SetupConfigurationPath;
             if (!_fileProvider.FileExists(setupSettingsFilePath))
             {
-                var installSettings = new SetupSettings()
+                var installSettings = new SetupSettings
                 {
                     IsInitialized = true,
                     SeedDataJsonFilePath = SetupConfigs.PrepareDataPath
@@ -113,15 +112,12 @@ namespace Module.Setup.WebAdmin.Providers
 
         public void SaveSettings(SetupSettings settings, string setupSettingsFilePath)
         {
-            _fileProvider.CreateFile(setupSettingsFilePath);
-
-            var serializerSettings = new JsonSerializerSettings
+            var settingsJson = JsonConvert.SerializeObject(settings, Formatting.Indented, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
-            };
+            });
 
-            var text = JsonConvert.SerializeObject(settings, Formatting.Indented, serializerSettings);
-            _fileProvider.WriteText(setupSettingsFilePath, text, Encoding.UTF8);
+           _fileProvider.CreateFile(setupSettingsFilePath, settingsJson);
         }
     }
 }

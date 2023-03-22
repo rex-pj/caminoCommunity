@@ -14,6 +14,7 @@ import { ImageRound } from "../../atoms/Images";
 import NoImage from "../../molecules/NoImages/no-image";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiConfig } from "../../../config/api-config";
+import { useTranslation } from "react-i18next";
 
 const DropdownPanel = styled.div`
   position: absolute;
@@ -151,6 +152,7 @@ const EmptyImage = styled(NoImage)`
 const SearchBar = (props) => {
   const navigate = useNavigate();
   const { keyword: searchText } = useParams();
+  const { t } = useTranslation();
 
   const [fetchResults] = useLazyQuery(feedqueries.LIVE_SEARCH, {
     onCompleted: (response) => onSearchCompleted(response),
@@ -296,7 +298,7 @@ const SearchBar = (props) => {
         type="text"
         name="keyword"
         defaultValue={keyword}
-        placeholder="Search"
+        placeholder={t("type_to_search")}
         autoComplete="off"
         onKeyUp={onEnterExecuteSearch}
       />

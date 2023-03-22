@@ -19,12 +19,12 @@ namespace Module.Media.Api.Controllers
 
         private readonly IPictureAppService _pictureAppService;
         private readonly BaseValidatorContext _validatorContext;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly IOptions<ApplicationSettings> _appSettings;
 
         public PictureController(IHttpContextAccessor httpContextAccessor,
             IPictureAppService pictureAppService,
             BaseValidatorContext validatorContext,
-            IOptions<AppSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings)
             : base(httpContextAccessor)
         {
             _pictureAppService = pictureAppService;

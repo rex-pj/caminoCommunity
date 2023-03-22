@@ -12,7 +12,7 @@ const NavRoot = styled.nav`
   z-index: 100;
 `;
 
-export default (props) => {
+const Header = (props) => {
   return (
     <NavRoot className="navbar px-0 px-sm-3 px-md-1 px-lg-3">
       <div className="container-fluid">
@@ -32,3 +32,5 @@ export default (props) => {
     </NavRoot>
   );
 };
+
+export default Header;

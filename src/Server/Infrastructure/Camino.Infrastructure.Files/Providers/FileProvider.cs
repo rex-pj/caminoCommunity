@@ -5,11 +5,6 @@ namespace Camino.Infrastructure.Providers
 {
     public class FileProvider : IFileProvider
     {
-        public void WriteText(string path, string contents, Encoding encoding)
-        {
-            File.WriteAllText(path, contents, encoding);
-        }
-
         public string ReadText(string path, Encoding encoding)
         {
             using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -31,17 +26,12 @@ namespace Camino.Infrastructure.Providers
             File.Delete(filePath);
         }
 
-        public void CreateFile(string path)
+        public void CreateFile(string path, string text)
         {
-            if (FileExists(path))
+            using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
-                return;
+                writer.Write(text);
             }
-
-            var fileInfo = new FileInfo(path);
-            CreateDirectory(fileInfo.DirectoryName);
-
-            File.Create(path).Close();
         }
 
         public void CreateDirectory(string path)

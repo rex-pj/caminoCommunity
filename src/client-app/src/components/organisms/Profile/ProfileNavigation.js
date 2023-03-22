@@ -61,7 +61,7 @@ const UserDropdown = styled(DropdownButton)`
 
 export default (function (props) {
   const { className, userId, baseUrl } = props;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const currentUserDropdown = [
     {
       url: `${baseUrl}/${userId}/update`,

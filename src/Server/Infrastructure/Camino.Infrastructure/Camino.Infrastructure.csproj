@@ -4,12 +4,13 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release;Staging</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
 	</ItemGroup>
 

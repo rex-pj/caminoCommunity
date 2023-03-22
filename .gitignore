@@ -134,3 +134,10 @@ src/Server/Modules/Product/src/Module.Product.WebAdmin/bin/
 src/Server/Modules/Product/src/Module.Product.WebAdmin/obj/
 src/Server/Modules/Setup/src/Module.Setup.WebAdmin/bin/
 src/Server/Modules/Setup/src/Module.Setup.WebAdmin/obj/
+src/Server/Presentation/Camino.ApiHost/appsettings.Release.json
+src/Server/Presentation/Camino.Management/appsettings.Release.json
+src/Server/Presentation/Camino.ApiHost/appsettings.Staging.json
+src/Server/Presentation/Camino.Management/appsettings.Staging.json
+src/Server/Presentation/Camino.Management/Modules/
+src/Server/Presentation/Camino.ApiHost/Modules/
+/src/Server/Presentation/Camino.Management/App_Data/setupsettings.json

@@ -26,12 +26,12 @@ namespace Module.Farm.Api.Controllers
     {
         private readonly IFarmAppService _farmAppService;
         private readonly BaseValidatorContext _validatorContext;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly IOptions<ApplicationSettings> _appSettings;
 
         public FarmController(IHttpContextAccessor httpContextAccessor,
             IFarmAppService farmAppService,
             BaseValidatorContext validatorContext,
-            IOptions<AppSettings> appSettings) : base(httpContextAccessor)
+            IOptions<ApplicationSettings> appSettings) : base(httpContextAccessor)
         {
             _farmAppService = farmAppService;
             _validatorContext = validatorContext;

@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<Configurations>Debug;Release;Staging</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -10,9 +11,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
-	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
-	  <ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
-	  <ProjectReference Include="..\..\..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
+		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.Configuration\Camino.Shared.Configuration.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="Views\**\*.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\js\*.js">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\css\*.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 </Project>

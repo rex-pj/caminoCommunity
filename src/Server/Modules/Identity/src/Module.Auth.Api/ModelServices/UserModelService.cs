@@ -14,11 +14,11 @@ namespace Module.Auth.Api.ModelServices
     public class UserModelService : IUserModelService, IScopedDependency
     {
         private readonly IEmailClient _emailClient;
-        private readonly AppSettings _appSettings;
+        private readonly ApplicationSettings _appSettings;
         private readonly RegisterConfirmationSettings _registerConfirmationSettings;
 
         public UserModelService(IEmailClient emailClient,
-            IOptions<AppSettings> appSettings,
+            IOptions<ApplicationSettings> appSettings,
             IOptions<RegisterConfirmationSettings> registerConfirmationSettings, IOptions<PagerOptions> pagerOptions)
         {
             _appSettings = appSettings.Value;

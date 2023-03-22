@@ -4,6 +4,7 @@ import { RouterLinkButtonPrimary } from "../../../atoms/Buttons/RouterLinkButton
 import { SessionContext } from "../../../../store/context/session-context";
 import TopProfileContainer from "./TopProfileContainer";
 import TopCartContainer from "./TopCartContainer";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   text-align: right;
@@ -45,8 +46,9 @@ const AuthButton = styled(RouterLinkButtonPrimary)`
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
-export default (props) => {
+const TopMenuContainer = (props) => {
   const { currentUser, isLogin, isLoading } = useContext(SessionContext);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return null;
@@ -71,14 +73,16 @@ export default (props) => {
     <Root>
       <List className={props.className}>
         <ListItem className="d-none d-sm-inline-block">
-          <AuthButton to="/auth/signup">Sign Up</AuthButton>
+          <AuthButton to="/auth/signup">{t("sign_up")}</AuthButton>
         </ListItem>
 
         <Devided />
         <ListItem>
-          <AuthButton to="/auth/login">Login</AuthButton>
+          <AuthButton to="/auth/login">{t("login")}</AuthButton>
         </ListItem>
       </List>
     </Root>
   );
 };
+
+export default TopMenuContainer;

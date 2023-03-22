@@ -1,30 +1,22 @@
 {
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:54920/",
-      "sslPort": 44333
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "Home/Index",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "Camino.ApiHost": {
+    "Development": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "Home/Index",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7000"
+      "applicationUrl": "https://localhost:7001"
+    },
+    "Staging": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "Home/Index",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      },
+      "applicationUrl": "http://localhost:7000"
     }
   }
 }

@@ -4,13 +4,14 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release;Staging</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.15" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
 	</ItemGroup>
 

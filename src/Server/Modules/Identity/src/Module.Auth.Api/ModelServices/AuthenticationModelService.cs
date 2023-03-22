@@ -21,12 +21,12 @@ namespace Module.Auth.Api.ModelServices
         private readonly JwtConfigOptions _jwtConfigOptions;
         private readonly IEmailClient _emailClient;
         private readonly ResetPasswordSettings _resetPasswordSettings;
-        private readonly AppSettings _appSettings;
+        private readonly ApplicationSettings _appSettings;
 
         public AuthenticationModelService(IHttpContextAccessor httpContextAccessor, 
             IOptions<JwtConfigOptions> jwtConfigOptions,
             IEmailClient emailClient,
-            IOptions<AppSettings> appSettings,
+            IOptions<ApplicationSettings> appSettings,
             IOptions<ResetPasswordSettings> resetPasswordSettings)
         {
             _httpContextAccessor = httpContextAccessor;

@@ -1,7 +1,5 @@
-﻿using Camino.Infrastructure.Modularity.Extensions;
-using Camino.Shared.Configuration.Options;
+﻿using Camino.Shared.Configuration.Options;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -10,29 +8,27 @@ namespace Camino.ApiHost.Middlewares
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder ConfigureAppBuilder(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static IApplicationBuilder ConfigureAppBuilder(this IApplicationBuilder app)
         {
-            var appSettings = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value;
-            app.UseHttpsRedirection()
-                .UseRouting()
-                .UseCookiePolicy()
-                .UseAuthentication()
-                .UseAuthorization()
-                .UseWebSockets()
-                .UseCors(appSettings.MyAllowSpecificOrigins)
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}");
-                    endpoints.MapGraphQL();
-                    endpoints.MapGet("/", context =>
-                    {
-                        context.Response.Redirect("/graphql");
-                        return Task.CompletedTask;
-                    });
-                })
-                .UseModular(env);
+            var appSettings = app.ApplicationServices.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+            app.UseRouting()
+               .UseCookiePolicy()
+               .UseAuthentication()
+               .UseAuthorization()
+               .UseWebSockets()
+               .UseCors(appSettings.MyAllowSpecificOrigins)
+               .UseEndpoints(endpoints =>
+               {
+                   endpoints.MapControllerRoute(
+                       name: "default",
+                       pattern: "{controller=Home}/{action=Index}/{id?}");
+                   endpoints.MapGraphQL();
+                   endpoints.MapGet("/", context =>
+                   {
+                       context.Response.Redirect("/graphql");
+                       return Task.CompletedTask;
+                   });
+               });
 
             return app;
         }
