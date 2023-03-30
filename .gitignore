@@ -141,3 +141,8 @@ src/Server/Presentation/Camino.Management/appsettings.Staging.json
 src/Server/Presentation/Camino.Management/Modules/
 src/Server/Presentation/Camino.ApiHost/Modules/
 /src/Server/Presentation/Camino.Management/App_Data/setupsettings.json
+/src/Server/Presentation/Camino.Management/appsettings.Production.json
+/src/Server/Presentation/Camino.ApiHost/appsettings.Production.json
+/src/client-app/environments/.env.staging
+/src/client-app/environments/.env.production
+/src/client-app/dist

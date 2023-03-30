@@ -17,7 +17,7 @@ const AdsList = (props) => {
       description:
         "Specializing in supplying fresh coconuts to agents, bars, wholesalers and retailers in the southern provinces...",
       title: "Baro Siamese coconut granary",
-      photoUrl: `${process.env.PUBLIC_URL}/photos/coconut-farm.jpg`,
+      photoUrl: null,
       url: "#",
       icon: "bullhorn",
     });

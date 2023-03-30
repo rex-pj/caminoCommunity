@@ -5,6 +5,9 @@ import "./index.css";
 import App from "./App";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import "./assets/css/bootstrap-reboot.min.css";
+import "./assets/css/bootstrap-grid.min.css";
+import "./assets/css/main.css";
 
 // Allow the passed state to be garbage-collected
 delete window.__APOLLO_STORE__;

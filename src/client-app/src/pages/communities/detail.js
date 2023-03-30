@@ -10,10 +10,10 @@ const Wrapper = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
-export default () => {
+const DetailPage = () => {
   const community = {
     createdDate: "25/03/2019 00:00",
-    pictureUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
+    pictureUrl: null,
     info: {
       url: `${UrlConstant.Community.url}1`,
       title: "Hội trái cây sạch An Thạnh",
@@ -44,25 +44,24 @@ export default () => {
   const articleItem = {
     id: "2",
     creator: {
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+      photoUrl: null,
       profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
       name: "Anh Sáu",
     },
     createdDate: "26/11/2018 9:28",
     updatedDate: "26/11/2018 9:28",
-    pictureUrl: `${process.env.PUBLIC_URL}/photos/farmstay.jpg`,
+    pictureUrl: null,
     description:
       "Bọ rùa (Coccinellidae), hay còn gọi là bọ hoàng hậu, bọ cánh cam là tên gọi chung cho các loài côn trùng nhỏ, mình tròn hình cái trống, phủ giáp trụ, trên mặt cánh có những chấm đen (có loài không có). Người ta phân loại bọ rùa tùy theo số chấm và hình thái cơ thể Loài bọ rùa thường thấy nhất là bọ rùa 7 sao. Trên bộ cánh vỏ vàng cam có 7 nốt đen (mỗi cánh có ba nốt, còn một nốt ở chỗ giáp lại giữ hai cánh). Đây là loài bọ rùa to nhất và là một thợ săn đáng",
     url: `${UrlConstant.Article.url}1`,
     reactionNumber: "2.5k+",
     commentNumber: "14",
-    name:
-      "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
+    name: "Ban quản lý một siêu thị lớn tại Mỹ thả khoảng 72.000 con bọ rùa vào các gian hàng để chúng diệt rệp vừng.",
     feedType: FeedType.Article,
   };
 
   const product = {
-    pictureUrl: `${process.env.PUBLIC_URL}/photos/peach.png`,
+    pictureUrl: null,
     description:
       "Ambrosia có nghĩa là “thức ăn của các vị thần” trong thần thoại Hy Lạp cổ đại và được lựa chọn bởi Wilfrid Mennell và vợ, họ phát hiện ra cây táo Ambrosia gốc trong vườn tại",
     name: "Đào ngâm thuốc sáu tháng không hư",
@@ -76,7 +75,7 @@ export default () => {
     reactionNumber: "45+",
     url: `${UrlConstant.Product.url}1`,
     creator: {
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farmer-avatar.jpg`,
+      photoUrl: null,
       profileUrl: "/profile/4976920d11d17ddb37cd40c54330ba8e",
       name: "Bác Chín",
     },
@@ -110,3 +109,5 @@ export default () => {
     </CommunityLayout>
   );
 };
+
+export default DetailPage;

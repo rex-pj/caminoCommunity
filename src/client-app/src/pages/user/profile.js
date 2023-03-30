@@ -170,7 +170,7 @@ const ProfilePage = () => {
       <CoverPageBlock>
         {!isEditCoverMode &&
         isLogin &&
-        currentUser.userIdentityId !== userIdentityId ? (
+        currentUser?.userIdentityId !== userIdentityId ? (
           <ConnectButton icon="user-plus" size="sm">
             Connect
           </ConnectButton>

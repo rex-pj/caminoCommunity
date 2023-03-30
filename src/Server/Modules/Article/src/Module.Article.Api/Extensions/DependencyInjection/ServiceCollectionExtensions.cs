@@ -14,9 +14,11 @@ namespace Module.Article.Api.Extensions.DependencyInjection
             services.AddScoped<IArticleCategoryResolver, ArticleCategoryResolver>();
             services.AddScoped<IArticleResolver, ArticleResolver>();
 
-            services.AddGraphQLServer().AddType<ArticleMutations>()
-                .AddType<ArticleCategoryMutations>()
-                .AddType<ArticleQueries>();
+            services.AddGraphQLServer()
+               .AddType<ArticleQueries>()
+               .AddType<ArticleCategoryMutations>()
+               .AddType<ArticleMutations>();
+
             return services;
         }
 

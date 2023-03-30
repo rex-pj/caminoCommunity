@@ -4,10 +4,10 @@ import { Image } from "../../atoms/Images";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnchorLink } from "../../atoms/Links";
+import bgUrl from "../../../assets/images/activeuser-bg.jpg";
 
 const Root = styled.div`
-  background: url(${`${process.env.PUBLIC_URL}/images/activeuser-bg.jpg`})
-    no-repeat center;
+  background: url(${bgUrl}) no-repeat center;
   width: 100%;
   background-size: cover;
   position: relative;

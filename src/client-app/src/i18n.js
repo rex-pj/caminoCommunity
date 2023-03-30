@@ -7,6 +7,9 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "vn",
+    backend: {
+      loadPath: "./assets/locales/{{lng}}/{{ns}}.json",
+    },
     detection: {
       order: ["path", "localStorage", "htmlTag", "cookie"],
       caches: ["localStorage", "cookie"], // cache user language on

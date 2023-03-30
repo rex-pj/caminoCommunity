@@ -9,14 +9,11 @@ using Camino.Infrastructure.Identity.Core;
 
 namespace Camino.Infrastructure.GraphQL.DirectiveTypes
 {
+    [DirectiveType(DirectiveLocation.Executable)]
     public class AuthenticationDirectiveType : DirectiveType
     {
         protected override void Configure(IDirectiveTypeDescriptor descriptor)
         {
-            descriptor.Name("Authentication");
-            descriptor.Location(DirectiveLocation.Query);
-            descriptor.Location(DirectiveLocation.Mutation);
-            descriptor.Location(DirectiveLocation.FieldDefinition);
             descriptor.Use((next, directive) => async context =>
             {
                 var httpContextAccessor = context.Services.GetService<IHttpContextAccessor>();
@@ -50,7 +47,7 @@ namespace Camino.Infrastructure.GraphQL.DirectiveTypes
                 }
 
                 await next.Invoke(context);
-            });
+            });            
         }
     }
 }

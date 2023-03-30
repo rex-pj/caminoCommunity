@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import ErrorBanner from "../Banner/ErrorBanner";
+import bgUrl from "../../../assets/images/notfound-bg.jpg";
 
 const Root = styled.div`
-  background: url(${`${process.env.PUBLIC_URL}/images/auth-bg.jpg`}) no-repeat
-    center;
+  background: url(${bgUrl}) no-repeat center;
   width: 100%;
   background-size: cover;
   position: relative;
@@ -13,7 +13,7 @@ const Root = styled.div`
   min-height: 500px;
 `;
 
-export default function(props) {
+const NotFound = (props) => {
   const { icon, title, instruction, actionUrl, actionText } = props;
   return (
     <Root>
@@ -26,4 +26,6 @@ export default function(props) {
       ></ErrorBanner>
     </Root>
   );
-}
+};
+
+export default NotFound;

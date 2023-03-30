@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { AnchorLink } from "../../../atoms/Links";
 import { PageInfo } from "../../../../utils/Constants";
 import { Image } from "../../../atoms/Images";
+import logoUrl from "../../../../assets/images/logo.png";
 
 const LogoImageLink = styled.a`
   float: left;
@@ -47,13 +48,13 @@ const TitleTail = styled.span`
   height: ${(p) => p.theme.size.normal};
 `;
 
-export default () => {
+const Logo = () => {
   return (
     <div className="clearfix">
       <LogoImageLink href="/" className="me-0 me-md-1">
         <Image
-          src={`${process.env.PUBLIC_URL}/images/logo.png`}
-          alt={`${PageInfo.BrandName} ${PageInfo.BrandDescription}`}
+          src={logoUrl}
+          alt={`/${PageInfo.BrandName} ${PageInfo.BrandDescription}`}
         />
       </LogoImageLink>
       <TitleLink to="/" className="d-none d-md-block">
@@ -65,3 +66,5 @@ export default () => {
     </div>
   );
 };
+
+export default Logo;

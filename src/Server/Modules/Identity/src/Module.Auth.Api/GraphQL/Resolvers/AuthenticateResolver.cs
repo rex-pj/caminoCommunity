@@ -23,6 +23,11 @@ namespace Module.Auth.Api.GraphQL.Resolvers
             long currentUserId = GetCurrentUserId(claimsPrincipal);
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
             var userIdentityId = await _userManager.EncryptUserIdAsync(currentUserId);
+            if (currentUser == null)
+            {
+                return null;
+            }
+
             return new UserInfoModel
             {
                 Address = currentUser.Address,

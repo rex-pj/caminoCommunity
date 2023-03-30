@@ -10,6 +10,7 @@ import AuthBanner from "../Banner/AuthBanner";
 import { checkValidity } from "../../../utils/Validity";
 import loginModel from "../../../models/loginModel";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
+import bgUrl from "../../../assets/images/logo.png";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -147,7 +148,7 @@ const LoginForm = (props) => {
       <div className="row g-0">
         <div className="col col-12 col-sm-7">
           <AuthBanner
-            imageUrl={`${process.env.PUBLIC_URL}/images/logo.png`}
+            imageUrl={`${bgUrl}`}
             title="Login"
             instruction="Join with us to connect with many other farmers"
           />

@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import ConfirmationBanner from "../Banner/ConfirmationBanner";
 import { PromptLayout } from "../../templates/Layout";
+import bgUrl from "../../../assets/images/activeuser-bg.jpg";
 
 const Root = styled.div`
-  background: url(${`${process.env.PUBLIC_URL}/images/activeuser-bg.jpg`})
-    no-repeat center;
+  background: url(${bgUrl}) no-repeat center;
   width: 100%;
   background-size: cover;
   position: relative;

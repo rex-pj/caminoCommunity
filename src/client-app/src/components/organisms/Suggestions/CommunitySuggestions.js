@@ -17,7 +17,7 @@ const List = styled(VerticalList)`
   }
 `;
 
-export default () => {
+const CommunitySuggestions = () => {
   let communities = [];
   for (let i = 0; i < 3; i++) {
     communities.push({
@@ -27,7 +27,7 @@ export default () => {
         "Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.",
       url: `${UrlConstant.Community.url}1`,
       id: "1212234r5423",
-      photoUrl: `${process.env.PUBLIC_URL}/photos/farm-group-cover.jpg`,
+      photoUrl: null,
     });
   }
 
@@ -51,3 +51,5 @@ export default () => {
     </div>
   );
 };
+
+export default CommunitySuggestions;

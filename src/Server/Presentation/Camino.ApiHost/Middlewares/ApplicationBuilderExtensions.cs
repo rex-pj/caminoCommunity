@@ -23,11 +23,6 @@ namespace Camino.ApiHost.Middlewares
                        name: "default",
                        pattern: "{controller=Home}/{action=Index}/{id?}");
                    endpoints.MapGraphQL();
-                   endpoints.MapGet("/", context =>
-                   {
-                       context.Response.Redirect("/graphql");
-                       return Task.CompletedTask;
-                   });
                });
 
             return app;

@@ -5,10 +5,11 @@ import { PageInfo } from "../../../utils/Constants";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnchorLink } from "../../atoms/Links";
+import logoUrl from "../../../assets/images/logo.png";
+import bgUrl from "../../../assets/images/auth-bg.jpg";
 
 const Root = styled.div`
-  background: url(${`${process.env.PUBLIC_URL}/images/auth-bg.jpg`}) no-repeat
-    center;
+  background: url(${bgUrl}) no-repeat center;
   width: 100%;
   background-size: cover;
   position: relative;
@@ -74,14 +75,14 @@ const Instruction = styled.div`
   }
 `;
 
-export default function (props) {
+const AuthBanner = (props) => {
   const { imageUrl, icon, title, instruction, actionUrl, actionText } = props;
   return (
     <Root>
       <Instruction>
         {imageUrl ? (
           <Image
-            src={`${process.env.PUBLIC_URL}/images/logo.png`}
+            src={logoUrl}
             alt={`${PageInfo.BrandName} ${PageInfo.BrandDescription}`}
           />
         ) : null}
@@ -94,4 +95,6 @@ export default function (props) {
       </Instruction>
     </Root>
   );
-}
+};
+
+export default AuthBanner;

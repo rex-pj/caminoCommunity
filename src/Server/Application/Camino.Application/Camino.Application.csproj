@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
-		<Configurations>Debug;Release;Staging</Configurations>
+		<Configurations>Debug;Release;Staging;Production</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>

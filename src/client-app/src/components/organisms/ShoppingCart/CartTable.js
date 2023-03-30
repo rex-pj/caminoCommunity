@@ -40,9 +40,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">1</td>
                 <td width="12%">
-                  <Image
-                    src={`${process.env.PUBLIC_URL}/photos/farmstay.jpg`}
-                  ></Image>
+                  <Image src={null}></Image>
                 </td>
                 <td width="28%">
                   <strong>
@@ -74,9 +72,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">2</td>
                 <td width="12%">
-                  <Image
-                    src={`${process.env.PUBLIC_URL}/photos/farmstay.jpg`}
-                  ></Image>
+                  <Image src={null}></Image>
                 </td>
                 <td width="28%">
                   <strong>
@@ -108,9 +104,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">2</td>
                 <td width="12%">
-                  <Image
-                    src={`${process.env.PUBLIC_URL}/photos/farmstay.jpg`}
-                  ></Image>
+                  <Image src={null}></Image>
                 </td>
                 <td width="28%">
                   <strong>

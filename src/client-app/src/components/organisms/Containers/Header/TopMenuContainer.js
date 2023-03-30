@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../../atoms/Buttons/RouterLinkButtons";
 import { SessionContext } from "../../../../store/context/session-context";
 import TopProfileContainer from "./TopProfileContainer";
-import TopCartContainer from "./TopCartContainer";
 import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
@@ -57,10 +56,6 @@ const TopMenuContainer = (props) => {
   if (currentUser && isLogin) {
     return (
       <Root>
-        <TopCartContainer
-          className="top-cart-container me-2"
-          userInfo={currentUser}
-        />
         <TopProfileContainer
           className="top-profile-container"
           userInfo={currentUser}
