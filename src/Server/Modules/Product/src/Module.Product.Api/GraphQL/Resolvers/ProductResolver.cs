@@ -178,7 +178,7 @@ namespace Module.Product.Api.GraphQL.Resolvers
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias)
+        public async Task<ProductModel> GetProductAsync(ProductIdFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -198,11 +198,6 @@ namespace Module.Product.Api.GraphQL.Resolvers
                     CanGetInactived = true
                 });
 
-                var currentUserId = GetCurrentUserId(claimsPrincipal);
-                if (currentUserId != productResult.CreatedById)
-                {
-                    throw new UnauthorizedAccessException();
-                }
 
                 var product = await MapProductResultToModelAsync(productResult);
                 return product;

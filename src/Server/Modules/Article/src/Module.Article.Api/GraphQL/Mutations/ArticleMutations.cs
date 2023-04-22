@@ -4,7 +4,6 @@ using HotChocolate;
 using HotChocolate.Types;
 using Module.Article.Api.GraphQL.Resolvers.Contracts;
 using Module.Article.Api.Models;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Module.Article.Api.GraphQL.Mutations
@@ -13,9 +12,9 @@ namespace Module.Article.Api.GraphQL.Mutations
     public class ArticleMutations : BaseMutations
     {
         [GraphQlAuthentication]
-        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync([Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
         {
-            return await articleResolver.GetArticleAsync(claimsPrincipal, criterias);
+            return await articleResolver.GetArticleAsync(criterias);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Module.Product.Api.GraphQL.Resolvers.Contracts
     {
         Task<ProductPageListModel> GetUserProductsAsync(ClaimsPrincipal claimsPrincipal, ProductFilterModel criterias);
         Task<ProductPageListModel> GetProductsAsync(ProductFilterModel criterias);
-        Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, ProductIdFilterModel criterias);
+        Task<ProductModel> GetProductAsync(ProductIdFilterModel criterias);
         Task<IList<ProductModel>> GetRelevantProductsAsync(ProductFilterModel criterias);
     }
 }

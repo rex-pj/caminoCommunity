@@ -11,6 +11,11 @@ namespace Camino.Infrastructure.GraphQL.Resolvers
 
         protected long GetCurrentUserId(ClaimsPrincipal claimsPrincipal)
         {
+            if (claimsPrincipal == null)
+            {
+                return -1;
+            }
+
             if (!claimsPrincipal.Claims.Any(x => x.Type == HttpHeaders.UserIdClaimKey))
             {
                 return -1;

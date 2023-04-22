@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Camino.Infrastructure.EntityFrameworkCore\Camino.Infrastructure.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Camino.Infrastructure.Files\Camino.Infrastructure.Files.csproj" />
     <ProjectReference Include="..\Camino.Infrastructure.Http\Camino.Infrastructure.Http.csproj" />
+	  <ProjectReference Include="..\Camino.Infrastructure.Emails\Camino.Infrastructure.Emails.csproj" />
     <ProjectReference Include="..\Camino.Infrastructure.Identity\Camino.Infrastructure.Identity.csproj" />
   </ItemGroup>
 

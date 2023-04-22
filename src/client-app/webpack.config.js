@@ -9,16 +9,14 @@ const JsonMinimizerPlugin = require("json-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (e, argv) => {
-  let envMode = "";
-  if (argv.nodeEnv && argv.nodeEnv !== "none") {
-    envMode = `.${argv.nodeEnv}`;
-  }
+  const { nodeEnv } = argv;
+  const envMode = nodeEnv && nodeEnv !== "none" ? `.${nodeEnv}` : "";
 
   const destDir = "build";
   const outputPath = path.resolve(__dirname, destDir);
   const assetsDir = "assets";
   return {
-    mode: argv.nodeEnv,
+    mode: nodeEnv,
     entry: "./src/index.js",
     output: {
       path: outputPath,
@@ -72,7 +70,7 @@ module.exports = (e, argv) => {
         template: "./public/index.html",
         favicon: "./public/favicon.ico",
         publicPath: "/",
-        title: argv.nodeEnv,
+        title: nodeEnv,
       }),
       new InterpolateHtmlPlugin({
         PUBLIC_URL: `/${assetsDir}/`,

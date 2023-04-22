@@ -113,7 +113,7 @@ namespace Module.Article.Api.GraphQL.Resolvers
             }
         }
 
-        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, ArticleIdFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync(ArticleIdFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -130,12 +130,6 @@ namespace Module.Article.Api.GraphQL.Resolvers
                 Id = criterias.Id,
                 CanGetInactived = true
             });
-
-            var currentUserId = GetCurrentUserId(claimsPrincipal);
-            if (currentUserId != articleResult.CreatedById)
-            {
-                throw new UnauthorizedAccessException();
-            }
 
             var article = await MapArticleResultToModelAsync(articleResult);
             return article;

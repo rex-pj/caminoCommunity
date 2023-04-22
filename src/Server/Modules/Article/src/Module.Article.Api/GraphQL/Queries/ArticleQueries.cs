@@ -22,9 +22,9 @@ namespace Module.Article.Api.GraphQL.Queries
             return await articleResolver.GetArticlesAsync(criterias);
         }
 
-        public async Task<ArticleModel> GetArticleAsync(ClaimsPrincipal claimsPrincipal, [Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
+        public async Task<ArticleModel> GetArticleAsync([Service] IArticleResolver articleResolver, ArticleIdFilterModel criterias)
         {
-            return await articleResolver.GetArticleAsync(claimsPrincipal, criterias);
+            return await articleResolver.GetArticleAsync(criterias);
         }
 
         public async Task<IList<ArticleModel>> GetRelevantArticlesAsync([Service] IArticleResolver articleResolver, ArticleFilterModel criterias)

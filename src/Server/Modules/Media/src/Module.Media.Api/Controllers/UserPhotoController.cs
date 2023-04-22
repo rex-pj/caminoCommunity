@@ -13,6 +13,7 @@ using System;
 using System.Threading.Tasks;
 using Camino.Shared.Configuration.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Module.Media.Api.Controllers
 {
@@ -22,16 +23,19 @@ namespace Module.Media.Api.Controllers
         private readonly IUserPhotoAppService _userPhotoAppService;
         private readonly BaseValidatorContext _validatorContext;
         private readonly IOptions<ApplicationSettings> _appSettings;
+        private readonly ILogger _logger;
 
         public UserPhotoController(IUserPhotoAppService userPhotoAppService,
             BaseValidatorContext validatorContext,
             IHttpContextAccessor httpContextAccessor,
-            IOptions<ApplicationSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings,
+            ILogger<UserPhotoController> logger)
             : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;
             _validatorContext = validatorContext;
             _appSettings = appSettings;
+            _logger = logger;
         }
 
         [HttpGet("avatars/{id}")]
@@ -66,6 +70,7 @@ namespace Module.Media.Api.Controllers
                 bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file);
                 if (!canUpdate)
                 {
+                    _logger.LogInformation($"{nameof(UpdateAvatarAsync)}  {nameof(FormFileValidator)}: ", _validatorContext.Errors);
                     return BadRequest(nameof(file));
                 }
 
@@ -74,6 +79,7 @@ namespace Module.Media.Api.Controllers
                 canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
+                    _logger.LogInformation($"{nameof(UpdateAvatarAsync)}  {nameof(FormFileValidator)}: ", _validatorContext.Errors);
                     return BadRequest(nameof(file));
                 }
 

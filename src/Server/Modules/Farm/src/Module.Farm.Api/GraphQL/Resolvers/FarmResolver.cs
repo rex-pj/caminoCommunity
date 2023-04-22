@@ -149,7 +149,7 @@ namespace Module.Farm.Api.GraphQL.Resolvers
             }
         }
 
-        public async Task<FarmModel> GetFarmAsync(ClaimsPrincipal claimsPrincipal, FarmIdFilterModel criterias)
+        public async Task<FarmModel> GetFarmAsync(FarmIdFilterModel criterias)
         {
             if (criterias == null)
             {
@@ -169,11 +169,6 @@ namespace Module.Farm.Api.GraphQL.Resolvers
                     CanGetInactived = true
                 });
 
-                var currentUserId = GetCurrentUserId(claimsPrincipal);
-                if (currentUserId != farmResult.CreatedById)
-                {
-                    throw new UnauthorizedAccessException();
-                }
                 var farm = await MapFarmResultToModelAsync(farmResult);
                 return farm;
             }

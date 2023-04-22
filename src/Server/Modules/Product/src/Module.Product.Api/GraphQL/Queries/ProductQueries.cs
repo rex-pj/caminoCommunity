@@ -30,10 +30,10 @@ namespace Module.Product.Api.GraphQL.Queries
             return await productResolver.GetRelevantProductsAsync(criterias);
         }
 
-        public async Task<ProductModel> GetProductAsync(ClaimsPrincipal claimsPrincipal, [Service] IProductResolver productResolver,
+        public async Task<ProductModel> GetProductAsync([Service] IProductResolver productResolver,
             ProductIdFilterModel criterias)
         {
-            return await productResolver.GetProductAsync(claimsPrincipal, criterias);
+            return await productResolver.GetProductAsync(criterias);
         }
     }
 }
