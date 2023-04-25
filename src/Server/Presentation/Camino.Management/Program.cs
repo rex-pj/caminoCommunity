@@ -3,11 +3,17 @@ using Camino.Management.Extensions.DependencyInjection;
 using Camino.Management.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using Camino.Infrastructure.Serilog.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
+SerilogConfig.BootstrapSerilog(builder.Configuration);
 
 // Configure services
 builder.Services.ConfigureManagementServices(builder.Configuration);
+
+// Confugure Serilog
+builder.Host.Configurelog();
 
 // Configure application
 var app = builder.Build();

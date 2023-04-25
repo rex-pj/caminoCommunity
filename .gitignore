@@ -146,3 +146,7 @@ src/Server/Presentation/Camino.ApiHost/Modules/
 /src/client-app/environments/.env.staging
 /src/client-app/environments/.env.production
 /src/client-app/dist
+src/Server/Infrastructure/Camino.Infrastructure.Serilog/bin/
+src/Server/Infrastructure/Camino.Infrastructure.Serilog/obj/
+src/Server/Presentation/Camino.ApiHost/logs/
+src/Server/Presentation/Camino.Management/logs/

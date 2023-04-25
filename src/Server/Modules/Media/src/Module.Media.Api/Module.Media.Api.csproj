@@ -11,5 +11,6 @@
 		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
 		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Modularity\Camino.Infrastructure.Modularity.csproj" />
 		<ProjectReference Include="..\..\..\..\Shared\Camino.Shared.File\Camino.Shared.File.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\Camino.Infrastructure.Serilog\Camino.Infrastructure.Serilog.csproj" />
 	</ItemGroup>
 </Project>

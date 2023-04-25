@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Camino.Infrastructure.AspNetCore.Controllers
 {
@@ -8,15 +9,20 @@ namespace Camino.Infrastructure.AspNetCore.Controllers
         { }
 
         [HttpGet("errors")]
-        public IActionResult RedirectToErrorPage()
+        protected IActionResult RedirectToErrorPage()
         {
             return RedirectToAction("Error", "Home");
         }
 
         [HttpGet("not-found")]
-        public IActionResult RedirectToNotFoundPage()
+        protected IActionResult RedirectToNotFoundPage()
         {
             return RedirectToAction("PageNotFound", "Home");
+        }
+
+        protected IList<ModelError> GetModelStateErrors()
+        {
+            return ModelState.Values.SelectMany(x => x.Errors).ToList();
         }
     }
 }

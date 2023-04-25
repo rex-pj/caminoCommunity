@@ -13,7 +13,8 @@ using System;
 using System.Threading.Tasks;
 using Camino.Shared.Configuration.Options;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using System.Linq;
 
 namespace Module.Media.Api.Controllers
 {
@@ -29,7 +30,7 @@ namespace Module.Media.Api.Controllers
             BaseValidatorContext validatorContext,
             IHttpContextAccessor httpContextAccessor,
             IOptions<ApplicationSettings> appSettings,
-            ILogger<UserPhotoController> logger)
+            ILogger logger)
             : base(httpContextAccessor)
         {
             _userPhotoAppService = userPhotoAppService;
@@ -66,12 +67,19 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var errors = GetModelStateErrors();
+                    _logger.Warning($"{nameof(UpdateAvatarAsync)}-Bad request {{Errors}}", errors);
+                    return BadRequest(ModelState);
+                }
+
                 _validatorContext.SetValidator(new FormFileValidator(_appSettings));
                 bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file);
                 if (!canUpdate)
                 {
-                    _logger.LogInformation($"{nameof(UpdateAvatarAsync)}  {nameof(FormFileValidator)}: ", _validatorContext.Errors);
-                    return BadRequest(nameof(file));
+                    _logger.Warning($"{nameof(UpdateAvatarAsync)}-{nameof(FormFileValidator)}: {{_validatorContext.Errors}}", _validatorContext.Errors);
+                    return ValidationProblem(_validatorContext.Errors[0].Message);
                 }
 
                 var fileData = await FileUtils.GetBytesAsync(file);
@@ -79,8 +87,8 @@ namespace Module.Media.Api.Controllers
                 canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
-                    _logger.LogInformation($"{nameof(UpdateAvatarAsync)}  {nameof(FormFileValidator)}: ", _validatorContext.Errors);
-                    return BadRequest(nameof(file));
+                    _logger.Warning($"{nameof(UpdateAvatarAsync)} {nameof(FormFileValidator)}: {{_validatorContext.Errors}}", _validatorContext.Errors);
+                    return ValidationProblem(_validatorContext.Errors[0].Message);
                 }
 
                 var id = await _userPhotoAppService.UpdateAvatarAsync(new UserPhotoUpdateRequest
@@ -97,9 +105,10 @@ namespace Module.Media.Api.Controllers
 
                 return Ok(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return RedirectToErrorPage();
+                _logger.Error(ex, ex.Message);
+                return Problem();
             }
         }
 
@@ -109,10 +118,18 @@ namespace Module.Media.Api.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var errors = GetModelStateErrors();
+                    _logger.Warning($"{nameof(UpdateCoverAsync)}-Bad request {{Errors}}", errors);
+                    return BadRequest(ModelState);
+                }
+
                 _validatorContext.SetValidator(new FormFileValidator(_appSettings));
                 bool canUpdate = _validatorContext.Validate<IFormFile, bool>(file);
                 if (!canUpdate)
                 {
+                    _logger.Warning($"{nameof(UpdateCoverAsync)}-{nameof(FormFileValidator)}: {{_validatorContext.Errors}}", _validatorContext.Errors);
                     return BadRequest(nameof(file));
                 }
 
@@ -121,6 +138,7 @@ namespace Module.Media.Api.Controllers
                 canUpdate = _validatorContext.Validate<byte[], bool>(fileData);
                 if (!canUpdate)
                 {
+                    _logger.Warning($"{nameof(UpdateCoverAsync)}-{nameof(FormFileValidator)}: {{_validatorContext.Errors}}", _validatorContext.Errors);
                     return BadRequest(nameof(file));
                 }
 
@@ -138,9 +156,10 @@ namespace Module.Media.Api.Controllers
 
                 return Ok(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.Error(ex, ex.Message);
+                return Problem();
             }
         }
 

@@ -17,6 +17,7 @@ namespace Camino.Infrastructure.GraphQL
             var token = context.Request.Headers[HttpHeaders.HeaderAuthenticationAccessToken];
             if (string.IsNullOrEmpty(token))
             {
+                await base.OnCreateAsync(context, requestExecutor, requestBuilder, cancellationToken);
                 return;
             }
 

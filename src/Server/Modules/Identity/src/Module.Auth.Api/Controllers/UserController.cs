@@ -62,6 +62,12 @@ namespace Module.Auth.Api.Controllers
             };
             try
             {
+                var existing = await _userManager.FindByNameAsync(user.UserName);
+                if (existing != null)
+                {
+                    return Conflict();
+                }
+
                 var result = await _userManager.CreateAsync(user, criterias.Password);
                 if (!result.Succeeded)
                 {

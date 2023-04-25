@@ -31,6 +31,11 @@
 		<None Include="Modules\**" CopyToPublishDirectory="PreserveNewest" Exclude="Modules\**\runtimes\**;Modules\**\ref\**;Modules\**\*.pdb" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+	  <Folder Include="logs\" />
+	</ItemGroup>
+
 	<Target Name="CaminoTarget" AfterTargets="Build">
 		<RemoveDir Directories="$(MSBuildProjectDirectory)\Modules\" />
 
