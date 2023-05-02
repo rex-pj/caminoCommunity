@@ -4,11 +4,12 @@ import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
-import ResetPasswordNavigation from "../../../components/organisms/Navigation/ResetPasswordNavigation";
+import ResetPasswordNavigation from "./ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
 import { checkValidity } from "../../../utils/Validity";
 import resetPasswordModel from "../../../models/resetPasswordModel";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
+import { useTranslation } from "react-i18next";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -87,6 +88,7 @@ const Instruction = styled.div`
 
 const ResetPasswordForm = (props) => {
   const { args } = props;
+  const { t } = useTranslation();
   const [formData, setFormData] = useState(resetPasswordModel);
   const [error, setError] = useState();
   const initialRef = useRef(false);
@@ -185,10 +187,10 @@ const ResetPasswordForm = (props) => {
       <PanelBody>
         <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
         <FormRow>
-          <Label>New password</Label>
+          <Label>{t("new_password_label")}</Label>
           <Textbox
             autoComplete="off"
-            placeholder="Enter new password"
+            placeholder={t("please_input_new_password")}
             type="password"
             name="password"
             onChange={(e) => handleInputChange(e)}
@@ -196,10 +198,10 @@ const ResetPasswordForm = (props) => {
           />
         </FormRow>
         <FormRow>
-          <Label>Confirm password</Label>
+          <Label>{t("confirm_new_password_label")}</Label>
           <Textbox
             autoComplete="off"
-            placeholder="Please confirm your new password"
+            placeholder={t("please_confirm_new_password")}
             type="password"
             name="confirmPassword"
             onChange={(e) => handleInputChange(e)}
@@ -208,7 +210,7 @@ const ResetPasswordForm = (props) => {
         </FormRow>
         <FormFooter>
           <SubmitButton type="submit" disabled={!isFormCheckValid}>
-            Change password
+            {t("change_password")}
           </SubmitButton>
         </FormFooter>
       </PanelBody>

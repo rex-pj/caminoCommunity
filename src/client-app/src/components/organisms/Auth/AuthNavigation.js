@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { RouterLinkButtonPrimary } from "../../atoms/Buttons/RouterLinkButtons";
 import { HorizontalList } from "../../molecules/List";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   background-color: ${(p) => p.theme.color.secondaryBg};
@@ -32,6 +33,8 @@ const ListItem = styled.li`
 
   &.actived ${NavButton} {
     background-color: ${(p) => p.theme.color.primaryBg};
+    color: ${(p) => p.theme.color.whiteText};
+    font-weight: 600;
   }
 
   :first-child ${NavButton} {
@@ -40,18 +43,17 @@ const ListItem = styled.li`
 `;
 
 export default (function (props) {
-  const { className } = props;
+  const { t } = useTranslation();
   const { pathname } = useLocation();
+  const { className } = props;
   return (
     <Root>
       <HorizontalList className={className}>
-        <ListItem className={pathname === "/auth/login" ? "actived" : ""}>
-          <NavButton to="/auth/login">Login</NavButton>
+        <ListItem className={pathname === "/auth/signup" ? "actived" : ""}>
+          <NavButton to="/auth/signup">{t("sign_up")}</NavButton>
         </ListItem>
-        <ListItem
-          className={pathname === "/auth/forgot-password" ? "actived" : ""}
-        >
-          <NavButton to="/auth/forgot-password">Forgot Password</NavButton>
+        <ListItem className={pathname === "/auth/login" ? "actived" : ""}>
+          <NavButton to="/auth/login">{t("login")}</NavButton>
         </ListItem>
         <ListItem>
           <NavButton to="/">

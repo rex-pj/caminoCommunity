@@ -197,7 +197,7 @@ const UserArticles = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderArticleEditor() : null}
-        <LoadingBar>Loading...</LoadingBar>
+        <LoadingBar />
       </Fragment>
     );
   }
@@ -205,7 +205,7 @@ const UserArticles = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderArticleEditor() : null}
-        <NoDataBar>No Data!</NoDataBar>
+        <NoDataBar />
       </Fragment>
     );
   }
@@ -213,7 +213,7 @@ const UserArticles = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderArticleEditor() : null}
-        <ErrorBar>Error!</ErrorBar>
+        <ErrorBar />
       </Fragment>
     );
   }
@@ -241,7 +241,7 @@ const UserArticles = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         {articles
           ? articles.map((item) => (

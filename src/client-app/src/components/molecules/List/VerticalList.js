@@ -11,6 +11,8 @@ const VList = styled.ul`
   }
 `;
 
-export default props => {
+const VerticalList = (props) => {
   return <VList className={props.className}>{props.children}</VList>;
 };
+
+export default VerticalList;

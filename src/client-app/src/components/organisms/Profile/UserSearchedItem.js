@@ -81,7 +81,7 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default (props) => {
+const UserSearchedItem = (props) => {
   const location = useLocation();
   const { user } = props;
   return (
@@ -117,7 +117,7 @@ export default (props) => {
           </ContentBody>
         </div>
 
-        <div className="interactive-toolbar">
+        {/* <div className="interactive-toolbar">
           <HorizontalList className="clearfix">
             <InteractItem>
               <HorizontalReactBar reactionNumber={user.reactionNumber} />
@@ -129,8 +129,10 @@ export default (props) => {
               />
             </InteractRightItem>
           </HorizontalList>
-        </div>
+        </div> */}
       </PanelBody>
     </Panel>
   );
 };
+
+export default UserSearchedItem;

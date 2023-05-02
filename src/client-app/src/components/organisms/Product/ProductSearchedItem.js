@@ -142,7 +142,7 @@ export default (function (props) {
           </div>
         </div>
       </PanelBody>
-      <InteractiveToolbar>
+      {/* <InteractiveToolbar>
         <HorizontalList>
           <InteractiveItem>
             <HorizontalReactBar reactionNumber={product.reactionNumber} />
@@ -155,7 +155,7 @@ export default (function (props) {
             />
           </InteractiveItem>
         </HorizontalList>
-      </InteractiveToolbar>
+      </InteractiveToolbar> */}
     </Panel>
   );
 });

@@ -76,7 +76,7 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default (props) => {
+const CommunityItem = (props) => {
   const { community } = props;
 
   return (
@@ -100,7 +100,7 @@ export default (props) => {
           <ContentBody>{community.description}</ContentBody>
         </div>
 
-        <div className="interactive-toolbar">
+        {/* <div className="interactive-toolbar">
           <HorizontalList className="clearfix">
             <InteractItem>
               <FontButtonItem
@@ -109,8 +109,10 @@ export default (props) => {
               />
             </InteractItem>
           </HorizontalList>
-        </div>
+        </div> */}
       </PanelBody>
     </Panel>
   );
 };
+
+export default CommunityItem;

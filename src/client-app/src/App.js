@@ -95,7 +95,7 @@ const App = () => {
     <ApolloProvider client={authClient}>
       <SessionContext.Provider value={sessionContext()}>
         <ThemeProvider theme={theme}>
-          <Suspense fallback={<LoadingBar>Loading...</LoadingBar>}>
+          <Suspense fallback={<LoadingBar />}>
             <BrowserRouter>
               <Routes>
                 {[

@@ -1,6 +1,6 @@
 import React from "react";
 import { PageInfo } from "../../../utils/Constants";
-import AuthBanner from "../Banner/AuthBanner";
+import AuthBanner from "./AuthBanner";
 import logoUrl from "../../../assets/images/logo.png";
 
 const LogoutPanel = () => {

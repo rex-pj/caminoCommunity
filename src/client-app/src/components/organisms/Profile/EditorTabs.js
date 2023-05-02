@@ -2,8 +2,9 @@ import React, { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
-const EditorTabs = styled.div`
+const Tabs = styled.div`
   margin-bottom: ${(p) => p.theme.size.exTiny};
   .tabs-bar button {
     border-radius: 0;
@@ -19,12 +20,13 @@ const EditorTabs = styled.div`
   }
 `;
 
-export default function (props) {
+const EditorTabs = (props) => {
   const { editorMode, onToggleCreateMode } = props;
+  const { t } = useTranslation();
 
   return (
     <Fragment>
-      <EditorTabs>
+      <Tabs>
         <div className="tabs-bar">
           <ButtonPrimary
             size="xs"
@@ -36,7 +38,7 @@ export default function (props) {
                 icon="list-alt"
                 className="me-1"
               ></FontAwesomeIcon>
-              Create Post
+              {t("publish_post")}
             </span>
           </ButtonPrimary>
           <ButtonPrimary
@@ -49,7 +51,7 @@ export default function (props) {
                 icon="tractor"
                 className="me-1"
               ></FontAwesomeIcon>
-              Create Farm
+              {t("create_farm")}
             </span>
           </ButtonPrimary>
           <ButtonPrimary
@@ -59,11 +61,13 @@ export default function (props) {
           >
             <span>
               <FontAwesomeIcon icon="carrot" className="me-1"></FontAwesomeIcon>
-              Create Product
+              {t("publish_product")}
             </span>
           </ButtonPrimary>
         </div>
-      </EditorTabs>
+      </Tabs>
     </Fragment>
   );
-}
+};
+
+export default EditorTabs;

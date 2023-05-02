@@ -31,7 +31,7 @@ const AuthorCard = (props) => {
   ];
 
   return (
-    <Root>
+    <Root className="mt-4 mt-md-0">
       <Card menuList={menuList} userInfo={author} />
       <ProfileCardInfo author={author} />
     </Root>

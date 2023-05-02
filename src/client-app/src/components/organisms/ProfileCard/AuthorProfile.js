@@ -57,7 +57,7 @@ const MoreInfo = styled.p`
   }
 `;
 
-export default (props) => {
+const AuthorProfile = (props) => {
   const { profile, className } = props;
   return (
     <div className={`${className ? className : ""} row g-0`}>
@@ -79,3 +79,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default AuthorProfile;

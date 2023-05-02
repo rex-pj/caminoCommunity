@@ -201,7 +201,7 @@ export default (function (props) {
                 ></span>
               </ContentBody>
 
-              <div className="interactive-toolbar">
+              {/* <div className="interactive-toolbar">
                 <HorizontalList>
                   <InteractiveItem>
                     <HorizontalReactBar
@@ -219,7 +219,7 @@ export default (function (props) {
                     <FontButtonItem icon="bookmark" title="Đánh dấu" />
                   </InteractiveItem>
                 </HorizontalList>
-              </div>
+              </div> */}
             </div>
           </div>
         </PanelBody>

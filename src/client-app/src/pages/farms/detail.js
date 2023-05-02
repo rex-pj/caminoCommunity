@@ -175,13 +175,13 @@ const DetailPage = (props) => {
     if (productLoading || !productData) {
       return (
         <div className="col-12">
-          <LoadingBar>Loading...</LoadingBar>
+          <LoadingBar />
         </div>
       );
     } else if (productError) {
       return (
         <div className="col-12">
-          <ErrorBar>Error!</ErrorBar>
+          <ErrorBar />
         </div>
       );
     }

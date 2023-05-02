@@ -10,6 +10,7 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import FarmService from "../../services/farmService";
+import { LoadingBar } from "../../components/molecules/NotificationBars";
 
 const Farms = (props) => {
   const { pageNumber } = useParams();
@@ -151,7 +152,7 @@ const Farms = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         <Farm
           onOpenDeleteConfirmation={onOpenDeleteConfirmation}

@@ -272,7 +272,7 @@ export default (function (props) {
               ></span>
             </ContentBody>
 
-            <div className="interactive-toolbar">
+            {/* <div className="interactive-toolbar">
               <div className="row">
                 <div className="col col-8 col-sm-9 col-md-10 col-lg-11">
                   <HorizontalList>
@@ -301,7 +301,7 @@ export default (function (props) {
                   </PostActions>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </PanelBody>
       </PanelDefault>

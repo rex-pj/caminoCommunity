@@ -211,7 +211,7 @@ const ArticleListItem = (props) => {
             </ContentBody>
           </div>
         </PanelBody>
-        <InteractiveToolbar className="interactive-toolbar">
+        {/* <InteractiveToolbar className="interactive-toolbar">
           <HorizontalList>
             <InteractiveItem>
               <HorizontalReactBar reactionNumber={article.reactionNumber} />
@@ -227,7 +227,7 @@ const ArticleListItem = (props) => {
               <FontButtonItem icon="bookmark" title="Save this article" />
             </InteractiveItem>
           </HorizontalList>
-        </InteractiveToolbar>
+        </InteractiveToolbar> */}
       </Panel>
     </div>
   );

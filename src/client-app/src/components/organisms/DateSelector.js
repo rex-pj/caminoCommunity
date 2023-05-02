@@ -3,6 +3,7 @@ import { Selection } from "../atoms/Selections";
 import { getDaysInMonth, getYear, getMonth, getDate } from "date-fns";
 import styled from "styled-components";
 import { createArray, generateDate } from "../../utils/Helper";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   & > * {
@@ -11,6 +12,7 @@ const Root = styled.div`
 `;
 
 const DateSelector = (props) => {
+  const { t } = useTranslation();
   let { yearFrom, yearTo } = props;
   const { className, name, value } = props;
   yearFrom = yearFrom ? yearFrom : 1900;
@@ -92,7 +94,7 @@ const DateSelector = (props) => {
         name="date"
         onBlur={handleOnBlur}
       >
-        <option value="">Date</option>
+        <option value="">{t("date_label")}</option>
         {createArray(1, daysInMonth).map((day) => (
           <option value={day} key={day}>
             {day}
@@ -105,7 +107,7 @@ const DateSelector = (props) => {
         name="month"
         onBlur={handleOnBlur}
       >
-        <option value="">Month</option>
+        <option value="">{t("month_label")}</option>
         {createArray(1, 12).map((month) => (
           <option value={month} key={month}>
             {month}
@@ -118,7 +120,7 @@ const DateSelector = (props) => {
         name="year"
         onBlur={handleOnBlur}
       >
-        <option value="">Year</option>
+        <option value="">{t("year_label")}</option>
         {years.map((year) => (
           <option value={year} key={year}>
             {year}

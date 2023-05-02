@@ -5,12 +5,13 @@ import { SelectionPrimary } from "../../../components/atoms/Selections";
 import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
 import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
-import AuthNavigation from "../../../components/organisms/Navigation/AuthNavigation";
-import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
+import AuthNavigation from "./AuthNavigation";
+import AuthBanner from "./AuthBanner";
 import DateSelector from "../../../components/organisms/DateSelector";
 import { checkValidity } from "../../../utils/Validity";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import signupModel from "../../../models/signupModel";
+import { useTranslation } from "react-i18next";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -94,6 +95,7 @@ const BirthDateSelector = styled(DateSelector)`
 `;
 
 const SignUpForm = (props) => {
+  const { t } = useTranslation();
   let [formData, setFormData] = useState(signupModel);
   const [error, setError] = useState();
 
@@ -134,7 +136,7 @@ const SignUpForm = (props) => {
       }
     }
 
-    if (!!isFormValid) {
+    if (isFormValid) {
       const signUpData = {};
       for (const formIdentifier in formData) {
         signUpData[formIdentifier] = formData[formIdentifier].value;
@@ -170,8 +172,8 @@ const SignUpForm = (props) => {
         <div className="col col-12 col-sm-7">
           <AuthBanner
             icon="signature"
-            title="Sign Up"
-            instruction="Sign up here to join with other farmers"
+            title={t("sign_up")}
+            instruction={t("signup_instruction")}
           />
         </div>
         <div className="col col-12 col-sm-5">
@@ -179,30 +181,30 @@ const SignUpForm = (props) => {
           <PanelBody>
             <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
             <FormRow>
-              <Label>Lastname</Label>
+              <Label>{t("lastname_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Your Lastname"
+                placeholder={t("please_input_your_lastname")}
                 name="lastname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
-              <Label>Firstname</Label>
+              <Label>{t("firstname_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Your Firstname"
+                placeholder={t("please_input_your_firstname")}
                 name="firstname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
             <FormRow>
-              <Label>E-mail</Label>
+              <Label>{t("email_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Your e-mail"
+                placeholder={t("please_input_your_email")}
                 type="email"
                 name="email"
                 onChange={(e) => handleInputChange(e)}
@@ -210,10 +212,10 @@ const SignUpForm = (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Password</Label>
+              <Label>{t("password_label")}</Label>
               <Textbox
                 autoComplete="new-password"
-                placeholder="Your password"
+                placeholder={t("please_input_your_password")}
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}
@@ -221,10 +223,10 @@ const SignUpForm = (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Confirm password</Label>
+              <Label>{t("confirm_password_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder="Confirm your password"
+                placeholder={t("please_confirm_your_password")}
                 type="password"
                 name="confirmPassword"
                 onChange={(e) => handleInputChange(e)}
@@ -232,7 +234,7 @@ const SignUpForm = (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Date of Birth</Label>
+              <Label>{t("date_of_birth_label")}</Label>
               <BirthDateSelector
                 name="birthDate"
                 onDateChanged={(e) => handleInputChange(e)}
@@ -240,15 +242,15 @@ const SignUpForm = (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Sex</Label>
+              <Label>{t("sex_label")}</Label>
               <Selection
-                placeholder="Male/Female"
+                placeholder={t("male_or_female")}
                 name="genderId"
                 onChange={(e) => handleInputChange(e)}
                 defaultValue={1}
               >
-                <option value={1}>Male</option>
-                <option value={2}>Female</option>
+                <option value={1}>{t("male")}</option>
+                <option value={2}>{t("female")}</option>
               </Selection>
             </FormRow>
             <FormFooter>
@@ -256,7 +258,7 @@ const SignUpForm = (props) => {
                 type="submit"
                 disabled={!props.isFormEnabled || !isFormCheckValid}
               >
-                Sign Up
+                {t("sign_up")}
               </SubmitButton>
             </FormFooter>
           </PanelBody>

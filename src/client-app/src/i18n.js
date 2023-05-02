@@ -8,7 +8,7 @@ i18n
   .init({
     fallbackLng: "vn",
     backend: {
-      loadPath: "./assets/locales/{{lng}}/{{ns}}.json",
+      loadPath: "/assets/locales/{{lng}}/{{ns}}.json",
     },
     detection: {
       order: ["path", "localStorage", "htmlTag", "cookie"],
@@ -28,6 +28,9 @@ i18n
             currency: "VND",
           }).format(value);
         }
+      },
+      react: {
+        wait: true,
       },
       escapeValue: false, // react already safes from xss
     },

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import MasterLayout from "../../templates/Layout/MasterLayout";
 import { Header } from "../../organisms/Containers";
 import { LoadingBar } from "../../molecules/NotificationBars";
@@ -9,20 +9,24 @@ const LoadingBlock = styled(LoadingBar)`
   margin-top: ${(p) => p.theme.size.distance};
 `;
 
+const LoadingBody = (props) => {
+  return (
+    <>
+      <Header onSearching={props.onSearching} />
+      <div className="container-fluid px-lg-5">
+        <LoadingBlock />
+      </div>
+    </>
+  );
+};
+
 const PageLoading = (...rest) => {
   const onSearching = (value) => {};
 
   return (
     <MasterLayout
       {...rest}
-      component={(matchProps) => (
-        <Fragment>
-          <Header onSearching={onSearching} />
-          <div className="container-fluid px-lg-5">
-            <LoadingBlock>Loading</LoadingBlock>
-          </div>
-        </Fragment>
-      )}
+      component={<LoadingBody onSearching={onSearching} />}
     />
   );
 };

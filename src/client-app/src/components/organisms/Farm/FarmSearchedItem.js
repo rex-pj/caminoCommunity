@@ -91,7 +91,7 @@ const TopBarInfo = styled.span`
   }
 `;
 
-export default (props) => {
+const FarmSearchedItem = (props) => {
   const location = useLocation();
   const { farm } = props;
   const loadCreatedInfo = () => {
@@ -161,7 +161,7 @@ export default (props) => {
           </div>
         </div>
       </PanelBody>
-      <InteractiveToolbar>
+      {/* <InteractiveToolbar>
         <HorizontalList>
           <InteractiveItem>
             <HorizontalReactBar reactionNumber={farm.reactionNumber} />
@@ -175,7 +175,9 @@ export default (props) => {
             />
           </InteractiveItem>
         </HorizontalList>
-      </InteractiveToolbar>
+      </InteractiveToolbar> */}
     </Panel>
   );
 };
+
+export default FarmSearchedItem;

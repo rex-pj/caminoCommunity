@@ -266,7 +266,7 @@ const UserFeeds = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
-        <LoadingBar>Loading...</LoadingBar>
+        <LoadingBar />
       </Fragment>
     );
   }
@@ -275,7 +275,7 @@ const UserFeeds = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
-        <NoDataBar>No Data!</NoDataBar>
+        <NoDataBar />
       </Fragment>
     );
   }
@@ -283,7 +283,7 @@ const UserFeeds = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProfileEditorTabs() : null}
-        <ErrorBar>Error!</ErrorBar>
+        <ErrorBar />
       </Fragment>
     );
   }
@@ -310,7 +310,7 @@ const UserFeeds = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         {feeds
           ? feeds.map((item) => {

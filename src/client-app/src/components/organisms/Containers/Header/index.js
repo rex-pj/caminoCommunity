@@ -15,16 +15,16 @@ const NavRoot = styled.nav`
 const Header = (props) => {
   return (
     <NavRoot className="navbar px-0 px-sm-3 px-md-1 px-lg-3">
-      <div className="container-fluid">
+      <div className="container-fluid px-1 px-sm-3">
         <div className="row gx-0 gx-lg-4">
-          <div className="col-auto col-sm-1 col-md-auto col-lg-auto pe-2 pe-sm-0 pe-md-4 ">
+          <div className="col-1 col-sm-1 col-md-auto col-lg-auto pe-2 pe-sm-0 pe-md-4">
             <Logo />
           </div>
 
-          <div className="col-8 col-sm-7 col-md-6 col-lg-auto me-auto">
+          <div className="col-7 col-sm-7 col-md-6 col-lg-auto me-auto">
             <SearchBar className="ms-1 ms-sm-0" />
           </div>
-          <div className="col">
+          <div className="col-auto">
             <TopMenuContainer />
           </div>
         </div>

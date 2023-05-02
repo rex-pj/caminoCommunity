@@ -1,6 +1,6 @@
 import React from "react";
 import MasterLayout from "./MasterLayout";
-import AuthBanner from "../../../components/organisms/Banner/AuthBanner";
+import AuthBanner from "../../organisms/Auth/AuthBanner";
 import { isTokenValid } from "../../../services/AuthLogic";
 import styled from "styled-components";
 

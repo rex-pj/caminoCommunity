@@ -230,15 +230,15 @@ const UserProducts = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProductEditor() : null}
-        <LoadingBar>Loading...</LoadingBar>
+        <LoadingBar />
       </Fragment>
     );
   }
-  if (!(data && pageRef.current.totalResult && products.length >= 0)) {
+  if (!(data && pageRef.current.totalResult && products.length > 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProductEditor() : null}
-        <NoDataBar>No Data!</NoDataBar>
+        <NoDataBar />
       </Fragment>
     );
   }
@@ -246,7 +246,7 @@ const UserProducts = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderProductEditor() : null}
-        <ErrorBar>Error!</ErrorBar>
+        <ErrorBar />
       </Fragment>
     );
   }
@@ -274,7 +274,7 @@ const UserProducts = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         <div className="row">
           {products

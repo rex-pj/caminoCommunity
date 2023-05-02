@@ -171,9 +171,9 @@ const DetailPage = (props) => {
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
-      return <LoadingBar className="mt-3">Loading...</LoadingBar>;
+      return <LoadingBar className="mt-3" />;
     } else if (relevantError) {
-      return <ErrorBar>Error!</ErrorBar>;
+      return <ErrorBar />;
     }
     const { relevantProducts } = relevantData;
     const relevants = relevantProducts.map((item) => {

@@ -150,9 +150,9 @@ const ArticleDetail = (props) => {
 
   const renderRelevants = (relevantLoading, relevantData, relevantError) => {
     if (relevantLoading || !relevantData) {
-      return <LoadingBar>Loading...</LoadingBar>;
+      return <LoadingBar />;
     } else if (relevantError) {
-      return <ErrorBar>Error!</ErrorBar>;
+      return <ErrorBar />;
     }
     const { relevantArticles } = relevantData;
     const relevants = relevantArticles.map((item) => {

@@ -55,9 +55,9 @@ const Search = (props) => {
   });
 
   if (loading || !data) {
-    return <LoadingBar>Loading</LoadingBar>;
+    return <LoadingBar />;
   } else if (error) {
-    return <ErrorBar>Error!</ErrorBar>;
+    return <ErrorBar />;
   }
 
   const onSearch = (searchParams) => {

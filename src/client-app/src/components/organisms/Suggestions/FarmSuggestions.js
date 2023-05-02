@@ -21,7 +21,7 @@ const List = styled(VerticalList)`
 const FarmSuggestions = (props) => {
   const { loading, data } = props;
   if (loading) {
-    return <LoadingBar>Loading</LoadingBar>;
+    return <LoadingBar />;
   }
 
   if (!data) {

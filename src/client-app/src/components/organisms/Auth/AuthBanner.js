@@ -28,7 +28,7 @@ const Instruction = styled.div`
   margin: auto ${(p) => p.theme.size.distance};
   min-height: 180px;
   padding: ${(p) => p.theme.size.distance};
-  background: ${(p) => p.theme.rgbaColor.light};
+  background: ${(p) => p.theme.rgbaColor.dark};
   border-radius: ${(p) => p.theme.borderRadius.medium};
 
   ${SecondaryHeading} {
@@ -58,14 +58,14 @@ const Instruction = styled.div`
   }
 
   p {
-    color: ${(p) => p.theme.color.whiteText};
+    color: ${(p) => p.theme.color.neutralText};
     margin-bottom: 0;
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
   }
 
   a {
-    color: ${(p) => p.theme.color.whiteText};
+    color: ${(p) => p.theme.color.neutralText};
     font-size: ${(p) => p.theme.fontSize.small};
     font-weight: 600;
     font-size: ${(p) => p.theme.fontSize.normal};

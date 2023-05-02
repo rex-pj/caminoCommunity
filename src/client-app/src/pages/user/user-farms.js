@@ -199,15 +199,15 @@ const UserFarms = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderFarmEditor() : null}
-        <LoadingBar>Loading...</LoadingBar>
+        <LoadingBar />
       </Fragment>
     );
   }
-  if (!(data && pageRef.current.totalResult && farms.length >= 0)) {
+  if (!(data && pageRef.current.totalResult && farms.length > 0)) {
     return (
       <Fragment>
         {currentUser && isLogin ? renderFarmEditor() : null}
-        <NoDataBar>No Data!</NoDataBar>
+        <NoDataBar />
       </Fragment>
     );
   }
@@ -215,7 +215,7 @@ const UserFarms = (props) => {
     return (
       <Fragment>
         {currentUser && isLogin ? renderFarmEditor() : null}
-        <ErrorBar>Error!</ErrorBar>
+        <ErrorBar />
       </Fragment>
     );
   }
@@ -243,7 +243,7 @@ const UserFarms = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         <div className="row">
           {farms

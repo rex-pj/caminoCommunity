@@ -14,8 +14,8 @@ const Card = styled(UserCoverCard)`
   border-radius: 0;
 `;
 
-export default (props) => {
-  var { currentUser, isLogin } = useContext(SessionContext);
+const LoggedInCard = (props) => {
+  const { currentUser, isLogin } = useContext(SessionContext);
   const menu = {
     menuList: [
       {
@@ -33,10 +33,12 @@ export default (props) => {
 
   const { menuList } = menu;
   return (
-    <Root>
+    <Root className="mt-4 mt-md-0">
       {currentUser && isLogin ? (
         <Card userInfo={currentUser} menuList={menuList} />
       ) : null}
     </Root>
   );
 };
+
+export default LoggedInCard;

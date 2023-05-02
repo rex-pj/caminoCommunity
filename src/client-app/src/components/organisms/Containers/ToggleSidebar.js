@@ -11,7 +11,7 @@ const SidebarButton = styled(ButtonTransparent)`
   }
 `;
 
-export default (props) => {
+const ToggleSidebar = (props) => {
   const { isLeftShown, isRightShown } = props;
   const showLeftSidebar = () => {
     props.showLeftSidebar();
@@ -64,3 +64,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default ToggleSidebar;

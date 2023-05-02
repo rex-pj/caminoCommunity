@@ -94,8 +94,8 @@ module.exports = (e, argv) => {
         basePath: assetsDir,
         fileName: `${assetsDir}/manifest.json`,
         seed: {
-          short_name: "Camino",
-          name: "Camino Community",
+          short_name: "Nông Trại Lồ Ồ",
+          name: "Nông Trại Lồ Ồ",
           icons: [
             {
               src: `favicon.ico`,

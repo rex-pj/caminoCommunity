@@ -128,12 +128,12 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default (props) => {
+const FarmItem = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { farm, onOpenDeleteConfirmationModal } = props;
   const { creator, createdByIdentityId } = farm;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
@@ -256,7 +256,7 @@ export default (props) => {
           </ContentBody>
         </div>
 
-        <div className="interactive-toolbar">
+        {/* <div className="interactive-toolbar">
           <HorizontalList className="clearfix">
             <InteractItem>
               <HorizontalReactBar reactionNumber={farm.reactionNumber} />
@@ -268,8 +268,10 @@ export default (props) => {
               />
             </InteractRightItem>
           </HorizontalList>
-        </div>
+        </div> */}
       </PanelBody>
     </Panel>
   );
 };
+
+export default FarmItem;

@@ -114,16 +114,17 @@ namespace Module.Auth.Api.GraphQL.Resolvers
         public async Task<UserInfoModel> GetFullUserInfoAsync(ClaimsPrincipal claimsPrincipal, FindUserModel criterias)
         {
             var currentUserId = GetCurrentUserId(claimsPrincipal);
-            var userId = currentUserId;
+            var requestUserId = currentUserId;
             if (!string.IsNullOrEmpty(criterias.UserId))
             {
-                userId = await _userManager.DecryptUserIdAsync(criterias.UserId);
+                requestUserId = await _userManager.DecryptUserIdAsync(criterias.UserId);
             }
 
+            var isLoggedUserId = currentUserId == requestUserId;
             var user = await _userAppService.FindFullByIdAsync(new IdRequestFilter<long>
             {
-                Id = userId,
-                CanGetInactived = currentUserId == userId
+                Id = requestUserId,
+                CanGetInactived = currentUserId == requestUserId
             });
 
             if (user == null)
@@ -138,7 +139,7 @@ namespace Module.Auth.Api.GraphQL.Resolvers
                 CountryCode = user.CountryCode,
                 CountryId = user.CountryId,
                 CountryName = user.CountryName,
-                Email = user.Email,
+                Email = isLoggedUserId ? user.Email : null,
                 CreatedDate = user.CreatedDate,
                 Description = user.Description,
                 DisplayName = user.DisplayName,
@@ -146,11 +147,11 @@ namespace Module.Auth.Api.GraphQL.Resolvers
                 GenderId = user.GenderId,
                 GenderLabel = user.GenderLabel,
                 Lastname = user.Lastname,
-                PhoneNumber = user.PhoneNumber,
+                PhoneNumber = isLoggedUserId ? user.PhoneNumber : null,
                 StatusId = user.StatusId,
                 StatusLabel = user.StatusLabel,
                 UpdatedDate = user.UpdatedDate,
-                CanEdit = userId == currentUserId,
+                CanEdit = isLoggedUserId,
                 UserIdentityId = await _userManager.EncryptUserIdAsync(user.Id)
             };
             return userInfo;

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { ImageRound } from "../../atoms/Images";
 import { Thumbnail } from "../../molecules/Thumbnails";
-import Menubar from "./CardToolbar";
+// import Menubar from "./CardToolbar";
 import Overlay from "../../atoms/Overlay";
 import { AnchorLink } from "../../atoms/Links";
 import NoAvatar from "../../molecules/NoImages/no-avatar";
@@ -27,12 +27,13 @@ const CoverWrapper = styled.div`
 const Username = styled.h3`
   margin-bottom: 0;
   position: absolute;
-  bottom: calc(${(p) => p.theme.size.normal} + 10px);
+  /* bottom: calc(${(p) => p.theme.size.normal} + 10px); */
   left: ${(p) => p.theme.size.exSmall};
   z-index: 1;
   line-height: 1;
-  font-size: ${(p) => p.theme.fontSize.normal};
+  font-size: ${(p) => p.theme.fontSize.small};
   text-shadow: ${(p) => p.theme.shadow.TextShadow};
+  bottom: ${(p) => p.theme.size.exSmall};
   a {
     color: ${(p) => p.theme.color.lightText};
   }
@@ -68,14 +69,14 @@ const BoxShadowBar = styled.div`
   position: relative;
 `;
 
-const StaticBar = styled.div`
-  height: ${(p) => p.theme.size.medium};
-  border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
-  border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
-`;
+// const StaticBar = styled.div`
+//   height: ${(p) => p.theme.size.medium};
+//   border-bottom-left-radius: ${(p) => p.theme.borderRadius.normal};
+//   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
+// `;
 
 const UserCoverCard = (props) => {
-  const { className, menuList } = props;
+  const { className } = props;
   const { userInfo } = props;
   const userIdentityId = userInfo?.userIdentityId;
 
@@ -105,9 +106,9 @@ const UserCoverCard = (props) => {
             {userInfo ? userInfo.displayName : ""}
           </AnchorLink>
         </Username>
-        <StaticBar>
+        {/* <StaticBar>
           <Menubar menuList={menuList} />
-        </StaticBar>
+        </StaticBar> */}
       </BoxShadowBar>
     </Root>
   );

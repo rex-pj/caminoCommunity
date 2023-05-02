@@ -11,8 +11,9 @@ import { authClient } from "../../graphql/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import { LoadingBar } from "../../components/molecules/NotificationBars";
 
-export default (function (props) {
+const Products = (props) => {
   const { pageNumber } = useParams();
   const [state, dispatch] = useStore(false);
   const [products, setProducts] = useState([]);
@@ -167,7 +168,7 @@ export default (function (props) {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         <Product
           onOpenDeleteConfirmation={onOpenDeleteConfirmation}
@@ -177,4 +178,6 @@ export default (function (props) {
       </InfiniteScroll>
     </DefaultLayout>
   );
-});
+};
+
+export default Products;

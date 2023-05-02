@@ -267,7 +267,7 @@ export default (function (props) {
             </div>
           </div>
         </PanelBody>
-        <InteractiveToolbar>
+        {/* <InteractiveToolbar>
           <HorizontalList>
             <InteractiveItem>
               <HorizontalReactBar
@@ -288,7 +288,7 @@ export default (function (props) {
               />
             </InteractRightItem>
           </HorizontalList>
-        </InteractiveToolbar>
+        </InteractiveToolbar> */}
       </Panel>
     </div>
   );

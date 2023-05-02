@@ -11,10 +11,10 @@ const IconBlock = styled.span`
   width: 28px;
 `;
 
-export default function (props) {
+const Shortcuts = (props) => {
   const { data, loading } = props;
   if (loading) {
-    return <LoadingBar>Loading</LoadingBar>;
+    return <LoadingBar />;
   }
 
   if (!data) {
@@ -23,12 +23,13 @@ export default function (props) {
 
   const { shortcuts } = data;
   return (
-    <VerticalList>
+    <VerticalList className="row">
       {shortcuts
         ? shortcuts.map((item, index) => (
             <ModuleMenuListItem
+              className="col-4 col-sm-12"
               isActived={item.isActived}
-              key={index}
+              key={item.id}
               title={item.description}
               index={index}
             >
@@ -43,4 +44,6 @@ export default function (props) {
         : null}
     </VerticalList>
   );
-}
+};
+
+export default Shortcuts;

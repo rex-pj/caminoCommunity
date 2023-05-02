@@ -7,6 +7,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "./assets/css/bootstrap-reboot.min.css";
 import "./assets/css/bootstrap-grid.min.css";
+import "./assets/css/bootstrap-utilities.min.css";
 import "./assets/css/main.css";
 
 // Allow the passed state to be garbage-collected

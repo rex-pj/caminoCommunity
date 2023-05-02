@@ -70,10 +70,10 @@ const UserUpdate = (props) => {
   };
 
   if (loading) {
-    return <LoadingBar>Loading</LoadingBar>;
+    return <LoadingBar />;
   }
   if (error) {
-    return <ErrorBar>Error</ErrorBar>;
+    return <ErrorBar />;
   }
 
   const { userIdentityInfo } = data;

@@ -130,7 +130,7 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default (props) => {
+const Detail = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { farm, breadcrumbs, onOpenDeleteConfirmationModal } = props;
@@ -231,7 +231,7 @@ export default (props) => {
               ></span>
             </ContentBody>
 
-            <div className="interactive-toolbar">
+            {/* <div className="interactive-toolbar">
               <div className="row">
                 <div className="col col-8 col-sm-9 col-md-10 col-lg-10">
                   <HorizontalList>
@@ -258,10 +258,12 @@ export default (props) => {
                   </FollowButton>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </PanelBody>
       </PanelDefault>
     </Fragment>
   );
 };
+
+export default Detail;

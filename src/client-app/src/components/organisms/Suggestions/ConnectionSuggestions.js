@@ -5,6 +5,7 @@ import { VerticalList } from "../../molecules/List";
 import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { LoadingBar } from "../../molecules/NotificationBars";
 import { apiConfig } from "../../../config/api-config";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   box-shadow: ${(p) => p.theme.shadow.BoxShadow};
@@ -13,9 +14,10 @@ const Root = styled.div`
 `;
 
 const ConnectionSuggestions = (props) => {
+  const { t } = useTranslation();
   const { loading, data } = props;
   if (loading) {
-    return <LoadingBar>Loading</LoadingBar>;
+    return <LoadingBar />;
   }
 
   if (!data) {
@@ -40,7 +42,7 @@ const ConnectionSuggestions = (props) => {
   return (
     <div>
       <FifthHeadingNeutralTitle>
-        Connect To Other Farmers
+        {t("connect_other_farmers")}
       </FifthHeadingNeutralTitle>
       <Root>
         <VerticalList>

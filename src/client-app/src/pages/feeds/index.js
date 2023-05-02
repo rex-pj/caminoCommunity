@@ -15,6 +15,7 @@ import { useStore } from "../../store/hook-store";
 import { authClient } from "../../graphql/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
+import { LoadingBar } from "../../components/molecules/NotificationBars";
 
 const FeedPage = (props) => {
   const { pageNumber } = useParams();
@@ -191,7 +192,7 @@ const FeedPage = (props) => {
         dataLength={pageRef.current.totalResult ?? 0}
         next={fetchMoreData}
         hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingBar />}
       >
         <Feeds
           onOpenDeleteConfirmation={onOpenDeleteConfirmation}

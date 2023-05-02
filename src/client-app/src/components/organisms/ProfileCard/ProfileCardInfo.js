@@ -99,7 +99,7 @@ const ProfileCard = (props) => {
             </Fragment>
           ) : null}
 
-          {farms ? (
+          {farms && farms.length > 0 ? (
             <InfoList>
               {farms.map((farm, index) => {
                 const farmUrl = `${UrlConstant.Farm.url}${farm.id}`;

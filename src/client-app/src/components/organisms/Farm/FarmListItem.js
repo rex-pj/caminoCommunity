@@ -140,12 +140,12 @@ const TopBarInfo = styled.div`
   }
 `;
 
-export default (props) => {
+const FarmListItem = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { farm, onOpenDeleteConfirmationModal } = props;
   const { createdByIdentityId } = farm;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
@@ -277,7 +277,7 @@ export default (props) => {
             </Description>
           </div>
         </PanelBody>
-        <InteractiveToolbar>
+        {/* <InteractiveToolbar>
           <HorizontalList>
             <InteractiveItem>
               <HorizontalReactBar reactionNumber={farm.reactionNumber} />
@@ -291,8 +291,10 @@ export default (props) => {
               />
             </InteractiveItem>
           </HorizontalList>
-        </InteractiveToolbar>
+        </InteractiveToolbar> */}
       </Panel>
     </div>
   );
 };
+
+export default FarmListItem;

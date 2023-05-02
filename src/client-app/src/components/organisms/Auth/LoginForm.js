@@ -5,12 +5,13 @@ import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { LabelNormal } from "../../atoms/Labels";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
-import AuthNavigation from "../Navigation/AuthNavigation";
-import AuthBanner from "../Banner/AuthBanner";
+import AuthNavigation from "./AuthNavigation";
+import AuthBanner from "./AuthBanner";
 import { checkValidity } from "../../../utils/Validity";
 import loginModel from "../../../models/loginModel";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import bgUrl from "../../../assets/images/logo.png";
+import { useTranslation } from "react-i18next";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -73,6 +74,7 @@ const ForgotPasswordRow = styled(FormRow)`
 `;
 
 const LoginForm = (props) => {
+  const { t } = useTranslation();
   const [isRemember, setRemember] = useState(false);
   const [formData, setFormData] = useState(loginModel);
   const [error, setError] = useState();
@@ -126,7 +128,7 @@ const LoginForm = (props) => {
       }
     }
 
-    if (!!isFormValid) {
+    if (isFormValid) {
       const loginData = {};
       for (const formIdentifier in formData) {
         loginData[formIdentifier] = formData[formIdentifier].value;
@@ -149,8 +151,8 @@ const LoginForm = (props) => {
         <div className="col col-12 col-sm-7">
           <AuthBanner
             imageUrl={`${bgUrl}`}
-            title="Login"
-            instruction="Join with us to connect with many other farmers"
+            title={t("login")}
+            instruction={t("join_us_instruction")}
           />
         </div>
         <div className="col col-12 col-sm-5">
@@ -158,9 +160,9 @@ const LoginForm = (props) => {
           <PanelBody>
             <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
             <FormRow>
-              <Label>E-mail</Label>
+              <Label>{t("email_label")}</Label>
               <Textbox
-                placeholder="Please input your e-mail"
+                placeholder={t("please_input_your_email")}
                 type="email"
                 name="username"
                 onChange={(e) => handleInputChange(e)}
@@ -168,9 +170,9 @@ const LoginForm = (props) => {
               />
             </FormRow>
             <FormRow>
-              <Label>Password</Label>
+              <Label>{t("password_label")}</Label>
               <Textbox
-                placeholder="Password"
+                placeholder={t("please_input_your_password")}
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}
@@ -184,18 +186,20 @@ const LoginForm = (props) => {
                 id="isRemember"
                 onChange={(e) => handleCheckboxChange(e)}
               ></input>
-              <Label htmlFor="isRemember">Remember?</Label>
+              <Label htmlFor="isRemember">{t("remember_label")}</Label>
             </FormRow>
             <FormFooter>
               <SubmitButton
                 disabled={!props.isFormEnabled || !isFormValid}
                 type="submit"
               >
-                Login
+                {t("login")}
               </SubmitButton>
             </FormFooter>
             <ForgotPasswordRow>
-              <Link to="/auth/forgot-password">Forgot your password?</Link>
+              <Link to="/auth/forgot-password">
+                {t("forgot_password_title")}
+              </Link>
             </ForgotPasswordRow>
           </PanelBody>
         </div>

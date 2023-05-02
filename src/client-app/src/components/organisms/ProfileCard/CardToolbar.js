@@ -42,7 +42,7 @@ const ListBar = styled(HorizontalList)`
   }
 `;
 
-export default (props) => {
+const CardToolbar = (props) => {
   const { menuList } = props;
   return (
     <ListBar percent={menuList ? 100 / menuList.length : 0}>
@@ -61,3 +61,5 @@ export default (props) => {
     </ListBar>
   );
 };
+
+export default CardToolbar;

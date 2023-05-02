@@ -9,12 +9,16 @@ export function convertDateTimeToPeriod(dateTime) {
   const days = parseInt((millisec / (1000 * 60 * 60 * 24)).toFixed(1));
 
   if (seconds < 60) {
-    return seconds + " sec";
-  } else if (minutes < 60) {
-    return minutes + " min";
-  } else if (hours < 24) {
-    return hours + " hrs";
-  } else {
-    return days + " days";
+    return `${seconds} sec`;
   }
+
+  if (minutes < 60) {
+    return `${minutes} min`;
+  }
+
+  if (hours < 24) {
+    return `${hours} hrs`;
+  }
+
+  return `${days} days`;
 }

@@ -84,7 +84,7 @@ const ArticleItem = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { creator, createdByIdentityId } = article;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
@@ -209,13 +209,13 @@ const ArticleItem = (props) => {
           </ContentBody>
         </div>
 
-        <div className="interactive-toolbar">
+        {/* <div className="interactive-toolbar">
           <HorizontalList>
             <InteractiveItem>
               <HorizontalReactBar reactionNumber={article.reactionNumber} />
             </InteractiveItem>
           </HorizontalList>
-        </div>
+        </div> */}
       </PanelBody>
     </Panel>
   );

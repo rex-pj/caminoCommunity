@@ -4,6 +4,7 @@ import { HorizontalList } from "../../molecules/List";
 import DropdownButton from "../../molecules/DropdownButton";
 import ProfileNavLink from "../../molecules/Links/ProfileNavLink";
 import { SessionContext } from "../../../store/context/session-context";
+import { useTranslation } from "react-i18next";
 
 const Root = styled.div`
   position: relative;
@@ -60,6 +61,7 @@ const UserDropdown = styled(DropdownButton)`
 `;
 
 export default (function (props) {
+  const { t } = useTranslation();
   const { className, userId, baseUrl } = props;
   const { currentUser, isLogin } = useContext(SessionContext);
   const currentUserDropdown = [
@@ -79,28 +81,28 @@ export default (function (props) {
 
   const navs = [
     {
-      pageNav: "",
-      title: "Feeds",
+      relative_url: "",
+      title_key: "feeds",
     },
     {
-      pageNav: "articles",
-      title: "Articles",
+      relative_url: "articles",
+      title_key: "articles",
     },
     {
-      pageNav: "farms",
-      title: "Farms",
+      relative_url: "farms",
+      title_key: "farms",
     },
     {
-      pageNav: "products",
-      title: "Products",
+      relative_url: "products",
+      title_key: "products",
     },
     {
-      pageNav: "about",
-      title: "About Me",
+      relative_url: "about",
+      title_key: "about",
     },
     {
-      pageNav: "followings",
-      title: "Followings",
+      relative_url: "followings",
+      title_key: "followings",
     },
   ];
 
@@ -111,14 +113,14 @@ export default (function (props) {
           <HorizontalList className={className}>
             {navs.map((nav) => {
               return (
-                <ListItem key={nav.pageNav}>
+                <ListItem key={nav.relative_url}>
                   <ProfileNavLink
-                    pageNav={nav.pageNav}
+                    pageNav={nav.relative_url}
                     {...props}
                     userId={userId}
                     baseUrl={baseUrl}
                   >
-                    {nav.title}
+                    {t(nav.title_key)}
                   </ProfileNavLink>
                 </ListItem>
               );

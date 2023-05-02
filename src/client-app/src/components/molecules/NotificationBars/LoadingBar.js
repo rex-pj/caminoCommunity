@@ -2,7 +2,7 @@ import React from "react";
 import { LoadingBox } from "./NotificationBoxes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function (props) {
+const LoadingBar = (props) => {
   return (
     <LoadingBox>
       <FontAwesomeIcon
@@ -10,7 +10,9 @@ export default function (props) {
         spin={true}
         className="me-2"
       ></FontAwesomeIcon>
-      <span>{props.children}</span>
+      {props.children ? <span>{props.children}</span> : null}
     </LoadingBox>
   );
-}
+};
+
+export default LoadingBar;

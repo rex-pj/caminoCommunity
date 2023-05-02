@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { PanelBody } from "../../molecules/Panels";
 import { VerticalList } from "../../molecules/List";
@@ -9,6 +9,8 @@ import DateTimeEditable from "../Editable/DateTimeEditable";
 import TextAreaEditable from "../Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
+import { SessionContext } from "../../../store/context/session-context";
+import { useTranslation } from "react-i18next";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -27,28 +29,34 @@ const InfoList = styled(VerticalList)`
 `;
 
 const About = (props) => {
+  const { t } = useTranslation();
+  const { currentUser } = useContext(SessionContext);
   const onEdited = async (e) => {
     await props.onEdited(e);
   };
 
   const { userInfo, canEdit, countrySelections, genderSelections } = props;
 
+  const isLoggedUserId =
+    userInfo &&
+    currentUser &&
+    userInfo?.userIdentityId === currentUser?.userIdentityId;
   return (
     <MainPanel>
       <Root>
         {userInfo ? (
           <InfoList>
-            <LabelAndInfo label="Name">
+            <LabelAndInfo label={t("name_label")}>
               <div className="row">
                 <div className="col-auto">{userInfo.lastname}</div>
                 <div className="col-auto">-</div>
                 <div className="col-auto">{userInfo.firstname}</div>
               </div>
             </LabelAndInfo>
-            <LabelAndInfo label="Display Name">
+            <LabelAndInfo label={t("display_name_label")}>
               {userInfo.displayName}
             </LabelAndInfo>
-            <LabelAndInfo label="Bio">
+            <LabelAndInfo label={t("bio_label")}>
               <TextAreaEditable
                 rows={5}
                 cols={50}
@@ -59,7 +67,7 @@ const About = (props) => {
                 disabled={!canEdit}
               />
             </LabelAndInfo>
-            <LabelAndInfo label="Phone number">
+            <LabelAndInfo label={t("phone_number_label")}>
               <TextEditable
                 value={userInfo.phoneNumber}
                 primaryKey={userInfo.userIdentityId}
@@ -68,19 +76,19 @@ const About = (props) => {
                 disabled={!canEdit}
               />
             </LabelAndInfo>
-            <LabelAndInfo label="Sex">
+            <LabelAndInfo label={t("sex_label")}>
               <SelectEditable
                 value={userInfo.genderId}
                 label={userInfo.genderLabel}
                 primaryKey={userInfo.userIdentityId}
                 name="genderId"
-                emptyText="Your sex"
+                emptyText={t("your_sex")}
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
                 selections={mapSelectOptions(genderSelections)}
               />
             </LabelAndInfo>
-            <LabelAndInfo label="Address">
+            <LabelAndInfo label={t("address_label")}>
               <TextEditable
                 value={userInfo.address}
                 primaryKey={userInfo.userIdentityId}
@@ -89,20 +97,20 @@ const About = (props) => {
                 disabled={!canEdit}
               />
             </LabelAndInfo>
-            <LabelAndInfo label="Country">
+            <LabelAndInfo label={t("country_label")}>
               <SelectEditable
                 value={userInfo.countryId}
                 label={userInfo.countryName}
                 primaryKey={userInfo.userIdentityId}
                 name="countryId"
-                emptyText="Select your country"
+                emptyText={t("select_your_country")}
                 onUpdated={(e) => onEdited(e)}
                 disabled={!canEdit}
                 selections={mapSelectOptions(countrySelections)}
               />
               {userInfo.country}
             </LabelAndInfo>
-            <LabelAndInfo label="Date of Birth">
+            <LabelAndInfo label={t("date_of_birth_label")}>
               <DateTimeEditable
                 value={userInfo.birthDate}
                 primaryKey={userInfo.userIdentityId}
@@ -111,13 +119,17 @@ const About = (props) => {
                 disabled={!canEdit}
               />
             </LabelAndInfo>
-            <LabelAndInfo label="Email" isEmail={true}>
-              {userInfo.email}
-            </LabelAndInfo>
-            <LabelAndInfo label="Joined Date">
+            {isLoggedUserId ? (
+              <LabelAndInfo label={t("email_label")} isEmail={true}>
+                {userInfo.email}
+              </LabelAndInfo>
+            ) : null}
+            <LabelAndInfo label={t("joined_date_label")}>
               {format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}
             </LabelAndInfo>
-            <LabelAndInfo label="Status">{userInfo.statusLabel}</LabelAndInfo>
+            <LabelAndInfo label={t("status_label")}>
+              {userInfo.statusLabel}
+            </LabelAndInfo>
           </InfoList>
         ) : null}
       </Root>
