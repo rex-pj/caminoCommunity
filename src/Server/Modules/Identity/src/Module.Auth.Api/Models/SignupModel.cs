@@ -16,8 +16,5 @@ namespace  Module.Auth.Api.Models
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
-        [Required]
-        public DateTime? BirthDate { get; set; }
-        public int? GenderId { get; set; }
     }
 }

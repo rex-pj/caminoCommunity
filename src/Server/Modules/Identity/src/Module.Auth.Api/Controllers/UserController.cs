@@ -51,12 +51,10 @@ namespace Module.Auth.Api.Controllers
 
             var user = new ApplicationUser()
             {
-                BirthDate = criterias.BirthDate,
                 DisplayName = $"{criterias.Lastname} {criterias.Firstname}",
                 Email = criterias.Email,
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
-                GenderId = (int)criterias.GenderId,
                 StatusId = (int)UserStatuses.Pending,
                 UserName = criterias.Email,
             };

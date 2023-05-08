@@ -17,7 +17,7 @@ module.exports = (e, argv) => {
   const assetsDir = "assets";
   return {
     mode: nodeEnv,
-    entry: "./src/index.js",
+    entry: "./src/index.ts",
     output: {
       path: outputPath,
       filename: "bundle.js",
@@ -40,7 +40,12 @@ module.exports = (e, argv) => {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
+          test: /\.tsx?$/,
+          use: "ts-loader",
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           use: ["babel-loader"],
         },
@@ -62,7 +67,7 @@ module.exports = (e, argv) => {
       ],
     },
     resolve: {
-      extensions: ["*", ".js", ".jsx"],
+      extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],
     },
     plugins: [
       new LoadablePlugin(),
