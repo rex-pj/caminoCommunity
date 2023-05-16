@@ -1,9 +1,11 @@
-import React, { Fragment, useState, useRef } from "react";
+import * as React from "react";
+import { Fragment, useState, useRef } from "react";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import AsyncSelect from "react-select/async";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import styled from "styled-components";
+import { IProductAttribute } from "../../../models/productAttributesModel";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -14,7 +16,20 @@ const FormRow = styled.div`
   }
 `;
 
-export default function (props) {
+type Props = {
+  data: {
+    attribute: IProductAttribute;
+    index: number;
+  };
+  execution: {
+    onEditAttribute: (formData: IProductAttribute, index: number) => void;
+    loadAttributeSelections: () => void;
+    loadAttributeControlTypeSelections: () => void;
+  };
+  closeModal: () => void;
+};
+
+const ProductAttributeEditModal = (props: Props) => {
   const { data, execution } = props;
   const {
     onEditAttribute,
@@ -22,11 +37,14 @@ export default function (props) {
     loadAttributeControlTypeSelections,
   } = execution;
   const { attribute, index } = data;
-  const selectRef = useRef();
-  const [formData, setFormData] = useState(attribute);
+  const selectRef = useRef<any>();
+  const [formData, setFormData] = useState<IProductAttribute>(attribute);
 
-  const handleInputChange = (evt, formatFunc) => {
-    let attribute = { ...formData };
+  const handleInputChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    formatFunc?: any
+  ) => {
+    let attribute: IProductAttribute = { ...formData };
     const { name, value } = evt.target;
     if (formatFunc) {
       attribute[name] = formatFunc(value);
@@ -52,15 +70,15 @@ export default function (props) {
     };
   };
 
-  const handleAttributeSelectChange = (e, method) => {
-    const { action } = method;
-    let data = { ...formData } || {};
+  const handleAttributeSelectChange = (newValue: any, actionMeta: any) => {
+    const { action } = actionMeta;
+    let data: IProductAttribute = { ...formData } || ({} as IProductAttribute);
     if (action === "clear" || action === "remove-value") {
       data.attributeId = 0;
       data.name = "";
     } else {
-      const { value, label } = e;
-      data.attributeId = parseInt(value);
+      const { value, label } = newValue;
+      data.attributeId = value;
       data.name = label;
     }
 
@@ -80,15 +98,15 @@ export default function (props) {
     };
   };
 
-  const handleControlTypeSelectChange = (e, method) => {
-    const { action } = method;
-    let data = { ...formData } || {};
+  const handleControlTypeSelectChange = (newValue: any, actionMeta: any) => {
+    const { action } = actionMeta;
+    let data = { ...formData } || ({} as IProductAttribute);
     if (action === "clear" || action === "remove-value") {
       data.controlTypeId = 0;
       data.controlTypeName = "";
     } else {
-      const { value, label } = e;
-      data.controlTypeId = parseInt(value);
+      const { value, label } = newValue;
+      data.controlTypeId = value;
       data.controlTypeName = label;
     }
 
@@ -148,4 +166,6 @@ export default function (props) {
       </PanelFooter>
     </Fragment>
   );
-}
+};
+
+export default ProductAttributeEditModal;

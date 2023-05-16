@@ -3,7 +3,7 @@ import axios from "axios";
 import BaseService from "./baseService";
 
 const ArticleService = class extends BaseService {
-  create = async (request) => {
+  create = async (request: any) => {
     return axios.post(apiConfig.paths.articles.post.postArticle, request, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -12,7 +12,7 @@ const ArticleService = class extends BaseService {
     });
   };
 
-  update = async (request, id = null) => {
+  update = async (request: any, id: number) => {
     let url = `${apiConfig.paths.articles.put.putArticle}`;
     if (id) {
       url += `/${id}`;
@@ -24,7 +24,7 @@ const ArticleService = class extends BaseService {
     });
   };
 
-  delete = async (id) => {
+  delete = async (id: number) => {
     return axios.delete(
       `${apiConfig.paths.articles.delete.deleteArticle}/${id}`
     );

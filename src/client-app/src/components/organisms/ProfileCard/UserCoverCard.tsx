@@ -75,7 +75,13 @@ const BoxShadowBar = styled.div`
 //   border-bottom-right-radius: ${(p) => p.theme.borderRadius.normal};
 // `;
 
-const UserCoverCard = (props) => {
+interface Props {
+  userInfo?: any;
+  className?: string;
+  menuList?: any[];
+}
+
+const UserCoverCard = (props: Props) => {
   const { className } = props;
   const { userInfo } = props;
   const userIdentityId = userInfo?.userIdentityId;

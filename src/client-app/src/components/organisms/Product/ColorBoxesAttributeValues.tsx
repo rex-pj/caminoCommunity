@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { HorizontalList } from "../../molecules/List";
 import { adjustPrice } from "../../../utils/PriceUtils";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
 const ColorBox = styled.div`
   width: ${(p) => p.theme.size.normal};
@@ -9,7 +10,12 @@ const ColorBox = styled.div`
   background-color: ${(p) => p.color};
 `;
 
-export default (props) => {
+type Props = {
+  attributeRelationValues?: IProductAttributeValue[];
+  price?: number;
+};
+
+const ColorBoxesAttributeValues = (props: Props) => {
   const { attributeRelationValues, price } = props;
   if (!attributeRelationValues) {
     return null;
@@ -29,3 +35,5 @@ export default (props) => {
     </HorizontalList>
   );
 };
+
+export default ColorBoxesAttributeValues;

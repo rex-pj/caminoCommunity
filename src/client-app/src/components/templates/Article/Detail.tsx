@@ -1,4 +1,5 @@
-import React, { Fragment, useRef, useState, useEffect } from "react";
+import * as React from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PanelDefault } from "../../molecules/Panels";
 import styled from "styled-components";
@@ -102,13 +103,18 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default (function (props) {
+type Props = {
+  article?: any;
+  onOpenDeleteConfirmationModal: (e: any) => void;
+};
+
+const Detail = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { article, onOpenDeleteConfirmationModal } = props;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -119,8 +125,7 @@ export default (function (props) {
   };
 
   const onEditMode = async () => {
-    navigate({
-      pathname: `/articles/update/${article.id}`,
+    navigate(`/articles/update/${article.id}`, {
       state: {
         from: location.pathname,
       },
@@ -129,7 +134,7 @@ export default (function (props) {
 
   const onOpenDeleteConfirmation = () => {
     onOpenDeleteConfirmationModal({
-      title: "Delete Farm",
+      title: "Delete Article",
       innerModal: DeleteConfirmationModal,
       message: `Are you sure to delete article "${article.name}"?`,
       id: parseFloat(article.id),
@@ -226,4 +231,6 @@ export default (function (props) {
       </PanelDefault>
     </Fragment>
   );
-});
+};
+
+export default Detail;

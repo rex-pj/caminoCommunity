@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-let globalState = {};
-let listeners = [];
-let actions = {};
+let globalState: any = {};
+let listeners: any[] = [];
+let actions: any = {};
 
 export const useStore = (shouldListen = true) => {
   const setState = useState(globalState)[1];
 
-  const dispatch = (actionIdentifier, payload) => {
+  const dispatch = (actionIdentifier: string, payload: any) => {
     const newState = actions[actionIdentifier](globalState, payload);
     globalState = { ...globalState, ...newState };
 
@@ -23,7 +23,7 @@ export const useStore = (shouldListen = true) => {
 
     return () => {
       if (shouldListen) {
-        listeners = listeners.filter(li => li !== setState);
+        listeners = listeners.filter((li) => li !== setState);
       }
     };
   }, [setState, shouldListen]);
@@ -31,7 +31,7 @@ export const useStore = (shouldListen = true) => {
   return [globalState, dispatch];
 };
 
-export const initStore = (userActions, initialState) => {
+export const initStore = (userActions: any, initialState: any) => {
   if (initialState) {
     globalState = { ...globalState, ...initialState };
   }

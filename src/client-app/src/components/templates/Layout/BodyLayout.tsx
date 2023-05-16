@@ -6,11 +6,17 @@ import {
   LoadingBar,
   NoDataBar,
 } from "../../molecules/NotificationBars";
-import PropTypes from "prop-types";
 import PageLoading from "../../molecules/Loading/PageLoading";
 
+interface Props {
+  isLoading?: boolean;
+  hasData?: boolean;
+  hasError?: boolean;
+  children?: any;
+}
+
 // The layout with header
-const BodyLayout = (props) => {
+const BodyLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   const { isLoading: isRequestLogin } = useContext(SessionContext);
 
@@ -33,18 +39,6 @@ const BodyLayout = (props) => {
   };
 
   return <>{renderChildren()}</>;
-};
-
-BodyLayout.propTypes = {
-  isLoading: PropTypes.bool,
-  hasData: PropTypes.bool,
-  hasError: PropTypes.bool,
-};
-
-BodyLayout.defaultProps = {
-  isLoading: false,
-  hasData: false,
-  hasError: false,
 };
 
 export default BodyLayout;

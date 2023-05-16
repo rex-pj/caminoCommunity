@@ -18,7 +18,7 @@ const List = styled(VerticalList)`
 `;
 
 const CommunitySuggestions = () => {
-  let communities = [];
+  let communities: any[] = [];
   for (let i = 0; i < 3; i++) {
     communities.push({
       info: "125 participants",

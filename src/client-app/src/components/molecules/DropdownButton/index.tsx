@@ -71,7 +71,7 @@ interface DropdownButtonProps {
 
 const DropdownButton: React.FC<DropdownButtonProps> = (props) => {
   const [isShown, setShow] = useState(false);
-  const currentRef = useRef<HTMLDivElement>();
+  const currentRef = useRef<any>();
   const { className, dropdown, icon } = props;
 
   useEffect(() => {

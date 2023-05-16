@@ -35,4 +35,4 @@ const DefaultEditorLink: EditorLinkModel = {
   },
 };
 
-export { EditorLinkModel, DefaultEditorLink };
+export { type EditorLinkModel, DefaultEditorLink };

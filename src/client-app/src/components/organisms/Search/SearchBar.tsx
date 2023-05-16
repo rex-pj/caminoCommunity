@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { ApolloError, useLazyQuery } from "@apollo/client";
 import styled from "styled-components";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
@@ -150,7 +150,18 @@ const EmptyImage = styled(NoImage)`
   margin-right: ${(p) => p.theme.size.exTiny};
 `;
 
-const SearchBar = (props) => {
+interface ISearchData {
+  searchResults?: any[];
+  keyword?: string;
+  isDropdownShown?: boolean;
+  [index: string]: any;
+}
+
+type Props = {
+  className?: string;
+};
+
+const SearchBar = (props: Props) => {
   const navigate = useNavigate();
   const { keyword: searchText } = useParams();
   const { t } = useTranslation();
@@ -161,17 +172,17 @@ const SearchBar = (props) => {
     fetchPolicy: "no-cache",
   });
 
-  const [searchData, setSearchData] = useState({
+  const [searchData, setSearchData] = useState<ISearchData>({
     searchResults: [],
     keyword: searchText,
     isDropdownShown: false,
   });
-  const inputRef = useRef({
+  const inputRef = useRef<any>({
     isSearching: false,
   });
-  const dropdownRef = useRef();
+  const dropdownRef = useRef<any>();
 
-  const onSearchCompleted = (response) => {
+  const onSearchCompleted = (response: any) => {
     const {
       liveSearch: { articles, products, farms, users },
     } = response;
@@ -188,8 +199,8 @@ const SearchBar = (props) => {
     inputRef.current.isSearching = false;
   };
 
-  const parseSearchResults = (data) => {
-    return data.map((rs) => {
+  const parseSearchResults = (data: any[]) => {
+    return data.map((rs: any) => {
       let result = { ...rs };
       if (result.feedType === FeedType.Farm) {
         result.url = `${UrlConstant.Farm.url}${result.id}`;
@@ -215,11 +226,11 @@ const SearchBar = (props) => {
     });
   };
 
-  const onSearchError = (error) => {
+  const onSearchError = (error: ApolloError) => {
     inputRef.current.isSearching = false;
   };
 
-  const onInputChange = (e) => {
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     if (!value) {
       inputRef.current.isSearching = false;
@@ -239,7 +250,7 @@ const SearchBar = (props) => {
     });
   };
 
-  const onEnterExecuteSearch = (evt) => {
+  const onEnterExecuteSearch = (evt: React.KeyboardEvent<HTMLInputElement>) => {
     if (evt.keyCode === 13) {
       onRedirectToSearch();
     }
@@ -249,7 +260,7 @@ const SearchBar = (props) => {
     navigate(`/search/${searchData.keyword}`);
   };
 
-  const onFetchResults = async (value) => {
+  const onFetchResults = async (value: string) => {
     return await fetchResults({
       variables: {
         criterias: {
@@ -266,7 +277,7 @@ const SearchBar = (props) => {
     }
   };
 
-  const onDropdownHide = (e) => {
+  const onDropdownHide = (e: MouseEvent) => {
     if (inputRef.current && inputRef.current.contains(e.target)) {
       return;
     }
@@ -299,7 +310,7 @@ const SearchBar = (props) => {
         type="text"
         name="keyword"
         defaultValue={keyword}
-        placeholder={t("type_to_search")}
+        placeholder={t("type_to_search").toString()}
         autoComplete="off"
         onKeyUp={onEnterExecuteSearch}
       />

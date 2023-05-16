@@ -1,10 +1,5 @@
-import React, {
-  Fragment,
-  useRef,
-  useEffect,
-  useState,
-  useContext,
-} from "react";
+import * as React from "react";
+import { Fragment, useRef, useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { AnchorLink } from "../../atoms/Links";
 import { PrimaryTitle } from "../../atoms/Titles";
@@ -23,6 +18,7 @@ import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
 import { SessionContext } from "../../../store/context/session-context";
 import AttributesDetail from "../../organisms/Product/AttributesDetail";
+import { IBreadcrumbItem } from "../../organisms/Navigation/Breadcrumb";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.darkText};
@@ -144,7 +140,13 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-export default (function (props) {
+type Props = {
+  product?: any;
+  breadcrumbs: IBreadcrumbItem[];
+  onOpenDeleteConfirmationModal: (e: any) => void;
+};
+
+const Detail = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { product, onOpenDeleteConfirmationModal } = props;
@@ -153,8 +155,8 @@ export default (function (props) {
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -165,8 +167,7 @@ export default (function (props) {
   };
 
   const onEditMode = async () => {
-    navigate({
-      pathname: `/products/update/${product.id}`,
+    navigate(`/products/update/${product.id}`, {
       state: {
         from: location.pathname,
       },
@@ -198,7 +199,7 @@ export default (function (props) {
           <ThumbnailSlider
             currentImage={product.images[0]}
             images={product.images}
-            numberOfDisplay={5}
+            displayNumber={5}
           />
         ) : null}
 
@@ -248,7 +249,7 @@ export default (function (props) {
               <LabelPrice price={product.price} currency="vnđ" />
             </RowItem>
             {product.farms
-              ? product.farms.map((pf) => {
+              ? product.farms.map((pf: any) => {
                   if (!pf.id) {
                     return null;
                   }
@@ -307,4 +308,6 @@ export default (function (props) {
       </PanelDefault>
     </Fragment>
   );
-});
+};
+
+export default Detail;

@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import * as React from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
@@ -132,17 +133,22 @@ const FarmInfo = styled(RowItem)`
   }
 `;
 
-const ProductItem = (props) => {
+interface Props {
+  product?: any;
+  onOpenDeleteConfirmationModal: (e: any) => void;
+}
+
+const ProductItem = (props: Props) => {
   const location = useLocation();
   const naviagte = useNavigate();
   const { product, onOpenDeleteConfirmationModal } = props;
   const { creator, createdByIdentityId } = product;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -153,8 +159,7 @@ const ProductItem = (props) => {
   };
 
   const onEditMode = async () => {
-    naviagte({
-      pathname: `/products/update/${product.id}`,
+    naviagte(`/products/update/${product.id}`, {
       state: {
         from: location.pathname,
       },
@@ -175,7 +180,7 @@ const ProductItem = (props) => {
     return creator;
   };
 
-  let description = null;
+  let description = "";
   if (product.description && product.description.length >= 120) {
     description = `${product.description.substring(0, 120)}...`;
   } else {
@@ -256,7 +261,7 @@ const ProductItem = (props) => {
           ) : null}
         </RowItem>
         {product.farms
-          ? product.farms.map((pf) => {
+          ? product.farms.map((pf: any) => {
               if (!pf.id) {
                 return null;
               }
@@ -279,10 +284,12 @@ const ProductItem = (props) => {
 
         <div className="panel-content">
           <ContentBody>
-            <p dangerouslySetInnerHTML={{ __html: description }}></p>
+            {description ? (
+              <p dangerouslySetInnerHTML={{ __html: description }}></p>
+            ) : null}
           </ContentBody>
         </div>
-        <HorizontalList className="clearfix">
+        {/* <HorizontalList className="clearfix">
           <InteractItem>
             <HorizontalReactBar reactionNumber={100} className="me-3" />
             <FontButtonItem icon="comments" dynamicText={200} />
@@ -290,7 +297,7 @@ const ProductItem = (props) => {
           <InteractRightItem>
             <FontButtonItem className="add-to-cart" icon="shopping-bag" />
           </InteractRightItem>
-        </HorizontalList>
+        </HorizontalList> */}
       </PanelBody>
     </Panel>
   );

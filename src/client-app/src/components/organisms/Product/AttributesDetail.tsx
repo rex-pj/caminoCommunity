@@ -8,19 +8,25 @@ import DropdownListAttributeValues from "./DropdownListAttributeValues";
 import RadioListAttributeValues from "./RadioListAttributeValues";
 import CheckboxesAttributeValues from "./CheckboxesAttributeValues";
 import ColorBoxesAttributeValues from "./ColorBoxesAttributeValues";
+import { IProductAttribute } from "../../../models/productAttributesModel";
 
 const AttributeLabel = styled(LabelPrimary)`
   font-weight: 700;
 `;
 
-export default function (props) {
+type Props = {
+  productAttributes: IProductAttribute[];
+  price: number;
+};
+
+const AttributesDetail = (props: Props) => {
   const { productAttributes, price } = props;
 
   if (!productAttributes) {
     return null;
   }
 
-  const renderAttributeValues = (attribute) => {
+  const renderAttributeValues = (attribute: IProductAttribute) => {
     const { attributeRelationValues } = attribute;
     if (
       attribute.controlTypeId === ProductAttributeControlType.HorizontalList
@@ -89,13 +95,19 @@ export default function (props) {
     }
   };
 
-  return productAttributes.map((attr, index) => {
-    return (
-      <div key={index} className="mt-3">
-        <AttributeLabel>{attr.name}:</AttributeLabel>
+  return (
+    <>
+      {productAttributes.map((attr, index) => {
+        return (
+          <div key={index} className="mt-3">
+            <AttributeLabel>{attr.name}:</AttributeLabel>
 
-        {renderAttributeValues(attr)}
-      </div>
-    );
-  });
-}
+            {renderAttributeValues(attr)}
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
+export default AttributesDetail;

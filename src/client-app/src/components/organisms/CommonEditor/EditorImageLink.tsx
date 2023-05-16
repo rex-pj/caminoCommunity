@@ -31,7 +31,7 @@ const FormRow = styled.div`
 
 interface EditorImageLinkProps {
   imageData: ImageInfoModel;
-  handleImageChange: (name: string, value: string) => void;
+  handleImageChange: (name: string, value?: string) => void;
   onScaleChanged: (e: ChangeEvent<HTMLInputElement>) => void;
   onAddImage: () => void;
   imageSrc: string;

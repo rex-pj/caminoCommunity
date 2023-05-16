@@ -5,13 +5,17 @@ import {
   setLogin,
   getAuthenticationToken,
   checkRemember,
+  IAuthenticationToken,
 } from "../../services/AuthLogic";
 
 let isRefreshing = false;
-let pendingRequests = [];
+let pendingRequests: any[] = [];
 
 const resolvePendingRequests = () => {
-  pendingRequests.map((callback) => callback());
+  if (pendingRequests) {
+    pendingRequests.forEach((callback) => callback());
+  }
+
   pendingRequests = [];
 };
 
@@ -48,8 +52,8 @@ export default onError(({ graphQLErrors, operation, forward }) => {
     return;
   }
 
-  const tokens = getAuthenticationToken();
-  if (!tokens && !tokens.refreshTokenExpiryTime) {
+  const tokens: IAuthenticationToken = getAuthenticationToken();
+  if (!tokens || !tokens.refreshTokenExpiryTime) {
     return;
   }
 

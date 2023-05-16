@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
@@ -81,7 +82,11 @@ const TopBarInfo = styled.div`
   }
 `;
 
-const UserSearchedItem = (props) => {
+interface Props {
+  user?: any;
+}
+
+const UserSearchedItem = (props: Props) => {
   const location = useLocation();
   const { user } = props;
   return (

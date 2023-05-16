@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Select from "react-select";
+import { DefaultTFuncReturn } from "i18next";
 
 const TextLabel = styled.span`
   display: inline-block;
@@ -57,7 +58,7 @@ interface SelectEditableProps {
   disabled?: boolean;
   label?: string;
   selections: any[];
-  emptyText?: string;
+  emptyText?: string | DefaultTFuncReturn;
   onUpdated?: (e: {
     primaryKey: string;
     value: any;
@@ -79,7 +80,7 @@ const SelectEditable = (props: SelectEditableProps) => {
     return () => clearTimeout(statusTimer);
   });
 
-  let current = null;
+  let current: any = null;
   if (value && selections && selections.length > 0) {
     current = selections.find(
       (item) => item.value.toString() === value.toString()

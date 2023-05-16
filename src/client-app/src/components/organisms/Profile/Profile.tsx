@@ -29,12 +29,19 @@ const UserFeedsPage = React.lazy(
 
 const ProfileInfo = React.lazy(() => import("./ProfileInfo"));
 
-const Profile = (props) => {
+type Props = {
+  userId?: string;
+  userInfo?: any;
+  pageNumber?: number;
+  baseUrl: string;
+};
+
+const Profile = (props: Props) => {
   const { userId, userInfo, pageNumber } = props;
   const { canEdit } = userInfo;
 
   const [editorMode, setEditorMode] = useState("ARTICLE");
-  const onToggleCreateMode = (name) => {
+  const onToggleCreateMode = (name: string) => {
     setEditorMode(name);
   };
 
@@ -83,15 +90,7 @@ const Profile = (props) => {
               <Route
                 key={route}
                 path={route}
-                element={
-                  <UserArticlesPage
-                    userId={userId}
-                    canEdit={canEdit}
-                    pageNumber={pageNumber}
-                    editorMode={editorMode}
-                    onToggleCreateMode={onToggleCreateMode}
-                  />
-                }
+                element={<UserArticlesPage pageNumber={pageNumber} />}
               />
             );
           })}
@@ -100,15 +99,7 @@ const Profile = (props) => {
               <Route
                 key={route}
                 path={route}
-                element={
-                  <UserProductsPage
-                    userId={userId}
-                    canEdit={canEdit}
-                    pageNumber={pageNumber}
-                    editorMode={editorMode}
-                    onToggleCreateMode={onToggleCreateMode}
-                  />
-                }
+                element={<UserProductsPage pageNumber={pageNumber} />}
               />
             );
           })}
@@ -117,15 +108,7 @@ const Profile = (props) => {
               <Route
                 key={route}
                 path={route}
-                element={
-                  <UserFarmsPage
-                    userId={userId}
-                    canEdit={canEdit}
-                    pageNumber={pageNumber}
-                    editorMode={editorMode}
-                    onToggleCreateMode={onToggleCreateMode}
-                  />
-                }
+                element={<UserFarmsPage pageNumber={pageNumber} />}
               />
             );
           })}
@@ -134,15 +117,7 @@ const Profile = (props) => {
               <Route
                 key={route}
                 path={route}
-                element={
-                  <UserFollowingsPage
-                    userId={userId}
-                    canEdit={canEdit}
-                    pageNumber={pageNumber}
-                    editorMode={editorMode}
-                    onToggleCreateMode={onToggleCreateMode}
-                  />
-                }
+                element={<UserFollowingsPage />}
               />
             );
           })}
@@ -153,8 +128,6 @@ const Profile = (props) => {
                 path={route}
                 element={
                   <UserFeedsPage
-                    userId={userId}
-                    canEdit={canEdit}
                     pageNumber={pageNumber}
                     editorMode={editorMode}
                     onToggleCreateMode={onToggleCreateMode}
@@ -163,7 +136,7 @@ const Profile = (props) => {
               />
             );
           })}
-          <Route path="/*" element={() => <div>NOT FOUND</div>} />
+          <Route path="/*" element={<div>NOT FOUND</div>} />
         </Routes>
       </div>
       <div className="col col-12 col-sm-12 col-md-12 col-lg-3 order-first order-lg-last mb-3">

@@ -68,7 +68,7 @@ interface EditorLinkModalProps {
 
 export const EditorLinkModal: React.FC<EditorLinkModalProps> = (props) => {
   const { isOpen, editorState, currentValue } = props;
-  const linkRef = useRef<HTMLInputElement>();
+  const linkRef = useRef<any>();
   const { link, selectionText } = currentValue;
   const linkText = link && link.title ? link.title : "";
   const isLinkValid = validateLink(link ? link.target : "");
@@ -205,7 +205,7 @@ export const EditorLinkModal: React.FC<EditorLinkModalProps> = (props) => {
 
   const onAddLink = () => {
     const { url, title } = linkData;
-    if (props.onAccept && url.isValid) {
+    if (url.isValid) {
       const linkTitle = title.value ? title.value : url.value;
       onAccept(linkTitle, url.value, {});
       clear();

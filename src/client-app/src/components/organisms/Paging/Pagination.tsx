@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Bullet from "./Bullet";
@@ -22,30 +23,41 @@ const PageItem = styled.li`
   }
 `;
 
-export default (props) => {
+type Props = {
+  baseUrl?: string;
+  currentPage?: number;
+  pageQuery?: string;
+  totalPage?: number;
+};
+
+const Pagination = (props: Props) => {
   const { totalPage, baseUrl, pageQuery } = props;
-  if (totalPage <= 1) {
+  if (!totalPage || totalPage <= 1) {
     return <Fragment></Fragment>;
   }
   let { currentPage } = props;
   currentPage = Number(currentPage);
   currentPage = currentPage <= 0 ? 1 : currentPage;
   currentPage = currentPage > totalPage ? totalPage : currentPage;
-  const first =
-    currentPage < 2
-      ? currentPage
-      : currentPage === 2
-      ? currentPage - 1
-      : currentPage - 2;
+  let first = 0;
+  if (currentPage < 2) {
+    first = currentPage;
+  } else if (currentPage === 2) {
+    first = currentPage - 1;
+  } else {
+    first = currentPage - 2;
+  }
 
-  const last =
-    currentPage <= totalPage - 2
-      ? currentPage + 2
-      : currentPage === totalPage - 1
-      ? currentPage + 1
-      : currentPage;
+  let last = 0;
+  if (currentPage <= totalPage - 2) {
+    last = currentPage + 2;
+  } else if (currentPage === totalPage - 1) {
+    last = currentPage + 1;
+  } else {
+    last = currentPage;
+  }
 
-  let pageItems = [];
+  let pageItems: any[] = [];
   for (let i = first; i <= last; i++) {
     pageItems.push(
       <PageItem key={i}>
@@ -111,3 +123,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default Pagination;

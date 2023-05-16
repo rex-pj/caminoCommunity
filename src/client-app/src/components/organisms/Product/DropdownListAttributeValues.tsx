@@ -1,8 +1,14 @@
 import * as React from "react";
 import { SelectionSecondary } from "../../atoms/Selections";
 import { adjustPrice } from "../../../utils/PriceUtils";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
-export default (props) => {
+type Props = {
+  attributeRelationValues?: IProductAttributeValue[];
+  price?: number;
+};
+
+const DropdownListAttributeValues = (props: Props) => {
   const { attributeRelationValues, price } = props;
   if (!attributeRelationValues) {
     return null;
@@ -20,3 +26,5 @@ export default (props) => {
     </SelectionSecondary>
   );
 };
+
+export default DropdownListAttributeValues;

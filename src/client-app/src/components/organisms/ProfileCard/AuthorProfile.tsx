@@ -57,7 +57,12 @@ const MoreInfo = styled.p`
   }
 `;
 
-const AuthorProfile = (props) => {
+interface Props {
+  profile: any;
+  className?: string;
+}
+
+const AuthorProfile = (props: Props) => {
   const { profile, className } = props;
   return (
     <div className={`${className ? className : ""} row g-0`}>

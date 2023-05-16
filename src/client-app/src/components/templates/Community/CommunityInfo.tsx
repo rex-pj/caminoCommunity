@@ -46,7 +46,11 @@ const ChildItem = styled.li`
   }
 `;
 
-export default function (props) {
+type Props = {
+  info: any;
+};
+
+const CommunityInfo = (props: Props) => {
   const { info } = props;
   return (
     <Root>
@@ -66,4 +70,6 @@ export default function (props) {
       </InfoList>
     </Root>
   );
-}
+};
+
+export default CommunityInfo;

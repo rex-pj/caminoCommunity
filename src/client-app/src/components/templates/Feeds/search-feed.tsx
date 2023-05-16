@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryDarkHeading } from "../../atoms/Heading";
 import SearchBlock from "./search-blocks";
@@ -7,12 +8,19 @@ import { useLocation } from "react-router-dom";
 import { UrlConstant } from "../../../utils/Constants";
 import { getParameters, generateQueryParameters } from "../../../utils/Helper";
 import { apiConfig } from "../../../config/api-config";
+import { IAdvancedSearchResult } from ".";
 
-const SearchFeed = (props) => {
+type Props = {
+  advancedSearchResult: IAdvancedSearchResult;
+  baseUrl: string;
+  keyword?: string;
+};
+
+const SearchFeed = (props: Props) => {
   const { advancedSearchResult, baseUrl, keyword } = props;
   const location = useLocation();
-  const mapSearchResults = (collections) => {
-    return collections.map((item) => {
+  const mapSearchResults = (collections: any) => {
+    return collections.map((item: any) => {
       let feed = { ...item };
       if (feed.feedType === FeedType.Farm) {
         feed.url = `${UrlConstant.Farm.url}${feed.id}`;
@@ -44,7 +52,7 @@ const SearchFeed = (props) => {
     });
   };
 
-  const buildPageQuery = (filterType) => {
+  const buildPageQuery = (filterType: FeedType) => {
     const { userIdentityId, hoursCreatedFrom, hoursCreatedTo } = getParameters(
       location.search
     );

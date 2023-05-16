@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ConfirmationBanner from "../Banner/ConfirmationBanner";
 import { PromptLayout } from "../../templates/Layout";
 import bgUrl from "../../../assets/images/activeuser-bg.jpg";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const Root = styled.div`
   background: url(${bgUrl}) no-repeat center;
@@ -14,7 +15,15 @@ const Root = styled.div`
   min-height: 500px;
 `;
 
-const UserActive = (props) => {
+interface Props {
+  icon?: IconProp;
+  title: string;
+  instruction?: string;
+  actionUrl?: string;
+  actionText?: string;
+}
+
+const UserActive = (props: Props) => {
   const { icon, title, instruction, actionUrl, actionText } = props;
   return (
     <PromptLayout>

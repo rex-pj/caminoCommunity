@@ -1,5 +1,5 @@
-export const ACCESS_TOKEN = "Authorization";
-export const AUTH_REFRESH_TOKEN_EXPIRATION =
+export const ACCESS_TOKEN: string = "Authorization";
+export const AUTH_REFRESH_TOKEN_EXPIRATION: string =
   "user-authentication-refresh-token-expiration";
-export const AUTH_IS_REMEMBER = "user-authenticate-user-language";
-export const USER_LANGUAGE = "user-language";
+export const AUTH_IS_REMEMBER: string = "user-authenticate-user-language";
+export const USER_LANGUAGE: string = "user-language";

@@ -42,7 +42,11 @@ const ListBar = styled(HorizontalList)`
   }
 `;
 
-const CardToolbar = (props) => {
+interface Props {
+  menuList: any[];
+}
+
+const CardToolbar = (props: Props) => {
   const { menuList } = props;
   return (
     <ListBar percent={menuList ? 100 / menuList.length : 0}>
@@ -51,7 +55,7 @@ const CardToolbar = (props) => {
             <MenubarItem
               key={index}
               title={item.description}
-              className={index === 0 ? "first" : null}
+              className={index === 0 ? "first" : ""}
             >
               <FontAwesomeIcon icon={item.icon} />
               <Content>{item.text}</Content>

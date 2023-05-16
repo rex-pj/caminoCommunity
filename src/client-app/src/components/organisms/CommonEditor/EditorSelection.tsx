@@ -1,9 +1,13 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
-const Root = styled.div`
+interface RootProps extends React.HTMLAttributes<HTMLDivElement> {
+  isShown?: boolean;
+}
+
+const Root = styled.div<RootProps>`
   position: relative;
   display: inline-block;
   min-width: 125px;
@@ -65,7 +69,7 @@ const ButtonCaret = styled.span`
 const EditorSelection = (props) => {
   const { className, options, placeholder } = props;
   const [isShown, setShown] = useState(false);
-  const currentRef = React.createRef();
+  const currentRef = useRef<any>();
 
   const onToggle = (e, value) => {
     if (props.actived !== value) {

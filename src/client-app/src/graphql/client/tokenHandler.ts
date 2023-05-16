@@ -1,7 +1,11 @@
 import { getAuthenticationToken } from "../../services/AuthLogic";
 import AuthService from "../../services/authService";
 
-export const getNewTokens = async () => {
+interface TokenResponse {
+  authenticationToken: string;
+}
+
+export const getNewTokens: () => Promise<TokenResponse> = async () => {
   const authService = new AuthService();
   return new Promise(function (resolve, reject) {
     const { authenticationToken } = getAuthenticationToken();

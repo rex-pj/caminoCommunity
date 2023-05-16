@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TableResponsive, Table } from "../../atoms/Tables.js";
+import { TableResponsive, Table } from "../../atoms/Tables";
 import styled from "styled-components";
 import { Image } from "../../atoms/Images";
 import { LightTextbox } from "../../atoms/Textboxes";
@@ -11,23 +11,25 @@ import { ButtonSecondary, ButtonLight } from "../../atoms/Buttons/Buttons";
 import { PanelDefault, PanelBody, PanelFooter } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CartTable = styled(PanelDefault)`
+const CustomTable = styled(PanelDefault)`
   ${PanelFooter} {
     text-align: right;
     margin: 0 ${(p) => p.theme.size.distance};
   }
 `;
 
-export default (function (props) {
+type Props = {};
+
+const CartTable = (props: Props) => {
   return (
-    <CartTable>
+    <CustomTable>
       <PanelBody>
         <TableResponsive>
           <Table className="table table-striped table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col" colSpan="2">
+                <th scope="col" colSpan={2}>
                   Sản phẩm
                 </th>
                 <th scope="col">Giá</th>
@@ -40,7 +42,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">1</td>
                 <td width="12%">
-                  <Image src={null}></Image>
+                  <Image></Image>
                 </td>
                 <td width="28%">
                   <strong>
@@ -72,7 +74,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">2</td>
                 <td width="12%">
-                  <Image src={null}></Image>
+                  <Image></Image>
                 </td>
                 <td width="28%">
                   <strong>
@@ -104,7 +106,7 @@ export default (function (props) {
               <tr>
                 <td width="3%">2</td>
                 <td width="12%">
-                  <Image src={null}></Image>
+                  <Image></Image>
                 </td>
                 <td width="28%">
                   <strong>
@@ -147,6 +149,8 @@ export default (function (props) {
           Tiếp tục mua hàng
         </ButtonLight>
       </PanelFooter>
-    </CartTable>
+    </CustomTable>
   );
-});
+};
+
+export default CartTable;

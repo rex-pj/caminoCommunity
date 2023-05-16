@@ -1,10 +1,12 @@
 import * as React from "react";
-import { Table } from "../../atoms/Tables.js";
+import { Table } from "../../atoms/Tables";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { PanelDefault, PanelBody, PanelFooter } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default (function () {
+type Props = {};
+
+const CartSummary = (props: Props) => {
   return (
     <PanelDefault className="mt-3">
       <PanelBody>
@@ -55,4 +57,6 @@ export default (function () {
       </PanelFooter>
     </PanelDefault>
   );
-});
+};
+
+export default CartSummary;

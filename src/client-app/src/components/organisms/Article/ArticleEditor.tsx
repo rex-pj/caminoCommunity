@@ -101,7 +101,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(new ArticleCreationModel()))
   );
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState<string>("");
   const editorRef = useRef<any>();
   const selectRef = useRef<any>();
 
@@ -132,14 +132,14 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
   };
 
   const handleImageChange = (e: ImageUploadOnChangeEvent) => {
-    let data = formData || new ArticleCreationModel();
+    const data = formData || new ArticleCreationModel();
     const { preview: srcPreview, file } = e;
     data["picture"].isValid = checkValidity(data, file, "picture");
     data["picture"].value = {
       file,
     };
 
-    setPreview(srcPreview);
+    setPreview(srcPreview ?? "");
     setFormData({
       ...data,
     });
@@ -163,7 +163,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
       return;
     }
 
-    const articleData: ArticleCreationModel = new ArticleCreationModel();
+    let articleData: any;
     for (const formIdentifier in formData) {
       articleData[formIdentifier] = formData[formIdentifier].value;
     }
@@ -203,7 +203,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
     const articleFormData = JSON.parse(
       JSON.stringify(new ArticleCreationModel())
     );
-    setPreview(null);
+    setPreview("");
     setFormData({ ...articleFormData });
   };
 
@@ -212,7 +212,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
     data["picture"].isValid = false;
     data["picture"].value = null;
 
-    setPreview(null);
+    setPreview("");
     setFormData({
       ...data,
     });

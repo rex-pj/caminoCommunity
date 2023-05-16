@@ -1,6 +1,8 @@
 import SuggestionPanel from "./SuggestionPanel";
 import PeopleSuggestionPanel from "./PeopleSuggestionPanel";
-import AdsSuggestionPanel, { AdsSuggestionData } from "./AdsSuggestionPanel";
+import AdsSuggestionPanel, {
+  type AdsSuggestionData,
+} from "./AdsSuggestionPanel";
 
 export {
   SuggestionPanel,

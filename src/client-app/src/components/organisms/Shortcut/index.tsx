@@ -5,13 +5,29 @@ import { AnchorLink } from "../../atoms/Links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModuleMenuListItem } from "../../molecules/MenuList";
 import { LoadingBar } from "../../molecules/NotificationBars";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const IconBlock = styled.span`
   display: inline-block;
   width: 28px;
 `;
 
-const Shortcuts = (props) => {
+interface Props {
+  data?: {
+    shortcuts?: {
+      isActived: boolean;
+      id: number;
+      description: string;
+      text: string;
+      url: string;
+      icon: IconProp;
+      name: string;
+    }[];
+  };
+  loading?: boolean;
+}
+
+const Shortcuts = (props: Props) => {
   const { data, loading } = props;
   if (loading) {
     return <LoadingBar />;

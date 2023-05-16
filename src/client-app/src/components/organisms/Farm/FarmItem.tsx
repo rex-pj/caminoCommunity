@@ -1,10 +1,5 @@
-import React, {
-  Fragment,
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import * as React from "react";
+import { Fragment, useState, useRef, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
@@ -128,7 +123,12 @@ const TopBarInfo = styled.div`
   }
 `;
 
-const FarmItem = (props) => {
+interface Props {
+  farm?: any;
+  onOpenDeleteConfirmationModal: (e: any) => void;
+}
+
+const FarmItem = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { farm, onOpenDeleteConfirmationModal } = props;
@@ -137,8 +137,8 @@ const FarmItem = (props) => {
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -149,8 +149,7 @@ const FarmItem = (props) => {
   };
 
   const onEditMode = async () => {
-    navigate({
-      pathname: `/farms/update/${farm.id}`,
+    navigate(`/farms/update/${farm.id}`, {
       state: {
         from: location.pathname,
       },

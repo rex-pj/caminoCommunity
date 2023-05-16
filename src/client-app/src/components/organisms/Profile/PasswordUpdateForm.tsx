@@ -2,12 +2,11 @@ import * as React from "react";
 import { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PanelBody } from "../../molecules/Panels";
+import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import { PasswordUpdateModel } from "../../../models/passwordUpdateModel";
 import { checkValidity } from "../../../utils/Validity";
-import { PanelFooter } from "../../molecules/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 
@@ -33,12 +32,17 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-const PasswordUpdateForm = (props) => {
-  const [formData, setFormData] = useState(new PasswordUpdateModel());
-  const [error, setError] = useState();
+type Props = {
+  isFormEnabled?: boolean;
+  onUpdate: (e: any) => Promise<any>;
+};
 
-  const onTextboxChange = (e) => {
-    let data = formData || {};
+const PasswordUpdateForm = (props: Props) => {
+  const [formData, setFormData] = useState(new PasswordUpdateModel());
+  const [error, setError] = useState<string>();
+
+  const onTextboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let data = formData || new PasswordUpdateModel();
     const { name, value } = e.target;
 
     // Validate when input
@@ -60,7 +64,7 @@ const PasswordUpdateForm = (props) => {
     return isFormValid;
   };
 
-  const onUpdate = (e) => {
+  const onUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -72,8 +76,8 @@ const PasswordUpdateForm = (props) => {
       }
     }
 
-    if (!!isFormValid) {
-      const profileData = {};
+    if (isFormValid) {
+      const profileData: any = {};
       for (const formIdentifier in formData) {
         profileData[formIdentifier] = formData[formIdentifier].value;
       }
@@ -86,7 +90,7 @@ const PasswordUpdateForm = (props) => {
     }
   };
 
-  const showError = (message) => {
+  const showError = (message: string) => {
     setError(message);
   };
 

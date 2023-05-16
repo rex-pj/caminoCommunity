@@ -13,7 +13,11 @@ const HList = styled.ul`
   }
 `;
 
-const HorizontalList: React.FC<HTMLAttributes<HTMLUListElement>> = (props) => {
+interface Props extends HTMLAttributes<HTMLUListElement> {
+  percent?: number;
+}
+
+const HorizontalList = (props: Props) => {
   return <HList className={props.className}>{props.children}</HList>;
 };
 

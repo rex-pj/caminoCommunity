@@ -10,18 +10,15 @@ import "./assets/css/bootstrap-grid.min.css";
 import "./assets/css/bootstrap-utilities.min.css";
 import "./assets/css/main.css";
 
-// Allow the passed state to be garbage-collected
-delete window.__APOLLO_STORE__;
-
 const rootElement = document.getElementById("root");
-if (rootElement.hasChildNodes()) {
-  const root = hydrateRoot(rootElement);
+if (rootElement && rootElement.hasChildNodes()) {
+  const root = hydrateRoot(rootElement, <></>);
   root.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
-} else {
+} else if (rootElement) {
   const root = createRoot(rootElement);
   root.render(
     <React.StrictMode>

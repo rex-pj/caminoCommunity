@@ -87,7 +87,7 @@ const ConfirmationBanner: React.FC<ConfirmationBannerProps> = (props) => {
   return (
     <Root>
       <Instruction>
-        <FontAwesomeIcon icon={icon} />
+        {icon ? <FontAwesomeIcon icon={icon} /> : null}
         <SecondaryHeading>{title}</SecondaryHeading>
         <p>{instruction}</p>
         {actionUrl && actionText ? (

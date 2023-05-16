@@ -2,7 +2,17 @@ import * as React from "react";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
 import { RouterLinkButtonOutlineNeutral } from "../../atoms/Buttons/RouterLinkButtons";
 
-export default (props) => {
+type Props = {
+  children?: any;
+  baseUrl?: string;
+  currentPage: number;
+  disabled?: boolean;
+  pageQuery?: string;
+  className?: string;
+  size?: string;
+};
+
+const PagerBullet = (props: Props) => {
   const {
     baseUrl,
     children,
@@ -40,3 +50,5 @@ export default (props) => {
     </RouterLinkButtonOutlineNeutral>
   );
 };
+
+export default PagerBullet;

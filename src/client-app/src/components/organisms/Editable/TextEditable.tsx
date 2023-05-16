@@ -56,7 +56,7 @@ const TextEditable = (props: TextEditableProps) => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    setValue(props.value);
+    setValue(props.value ?? "");
   }, [setValue, props.value]);
 
   function openTextBox() {
@@ -64,7 +64,7 @@ const TextEditable = (props: TextEditableProps) => {
   }
 
   function closeTextBox() {
-    setValue(props.value);
+    setValue(props.value ?? "");
     setIsOpen(false);
   }
 
@@ -85,30 +85,37 @@ const TextEditable = (props: TextEditableProps) => {
   }
 
   async function pushData() {
-    const currentValue = props.value ? props.value : "";
-
-    if (!!props.primaryKey && !!props.name && currentValue !== value) {
-      await props
-        .onUpdated({
-          primaryKey: props.primaryKey,
-          value: value,
-          propertyName: props.name,
-        })
-        .then(function (response) {
-          if (response) {
-            const { data } = response;
-            const { updateUserInfoItem } = data;
-            const { result } = updateUserInfoItem;
-            setValue(result.value);
-          } else {
-            setValue(currentValue);
-          }
-        })
-        .catch(function (errors) {
-          setValue(currentValue);
-        });
+    if (!props.onUpdated) {
+      closeTextBox();
+      return;
     }
 
+    const currentValue = props.value ?? "";
+    if (!props.primaryKey || !props.name || currentValue === value) {
+      closeTextBox();
+      return;
+    }
+
+    await props
+      .onUpdated({
+        primaryKey: props.primaryKey,
+        value: value,
+        propertyName: props.name,
+      })
+      .then(function (response) {
+        if (!response) {
+          setValue(currentValue);
+          return;
+        }
+
+        const { data } = response;
+        const { updateUserInfoItem } = data;
+        const { result } = updateUserInfoItem;
+        setValue(result.value);
+      })
+      .catch(function (errors) {
+        setValue(currentValue);
+      });
     closeTextBox();
   }
 

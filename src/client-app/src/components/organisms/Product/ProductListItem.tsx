@@ -1,10 +1,5 @@
-import React, {
-  Fragment,
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import * as React from "react";
+import { Fragment, useState, useRef, useEffect, useContext } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
@@ -105,17 +100,22 @@ const InteractRightItem = styled(InteractiveItem)`
   }
 `;
 
-export default (function (props) {
+interface Props {
+  product?: any;
+  onOpenDeleteConfirmationModal: (e: any) => void;
+}
+
+const ProductListItem = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { product, onOpenDeleteConfirmationModal } = props;
   const { creator, createdByIdentityId } = product;
-  var { currentUser, isLogin } = useContext(SessionContext);
+  const { currentUser, isLogin } = useContext(SessionContext);
   const isAuthor =
     currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -126,8 +126,7 @@ export default (function (props) {
   };
 
   const onEditMode = async () => {
-    navigate({
-      pathname: `/products/update/${product.id}`,
+    navigate(`/products/update/${product.id}`, {
       state: {
         from: location.pathname,
       },
@@ -143,7 +142,7 @@ export default (function (props) {
 
   const loadCreatedInfo = () => {
     if (creator) {
-      var datePeriod = convertDateTimeToPeriod(product.createdDate);
+      const datePeriod = convertDateTimeToPeriod(product.createdDate);
       creator.info = (
         <Fragment>
           <FontAwesomeIcon icon="calendar-alt" />
@@ -209,12 +208,12 @@ export default (function (props) {
 
           <Title>
             {product.farms
-              ? product.farms.map((pf) => {
+              ? product.farms.map((pf: any) => {
                   if (!pf.id) {
                     return null;
                   }
                   return (
-                    <Fragment>
+                    <Fragment key={pf.id}>
                       <AnchorLink
                         to={{
                           pathname: pf.url,
@@ -292,4 +291,6 @@ export default (function (props) {
       </Panel>
     </div>
   );
-});
+};
+
+export default ProductListItem;

@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from "@apollo/client";
 import * as React from "react";
 
 interface LoginSesstion {
@@ -8,7 +9,7 @@ interface LoginSesstion {
   };
   isLoading?: boolean;
   login?: (data: any) => void;
-  relogin?: (data: any) => Promise<void>;
+  relogin: (data?: any) => Promise<any>;
 }
 
 export const initialSession: LoginSesstion = {
@@ -17,7 +18,7 @@ export const initialSession: LoginSesstion = {
   currentUser: {},
   isLoading: true,
   login: () => {},
-  relogin: async (data) => {},
+  relogin: () => Promise.resolve(),
 };
 
 export const SessionContext = React.createContext(initialSession);

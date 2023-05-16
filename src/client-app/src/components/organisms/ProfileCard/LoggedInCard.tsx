@@ -15,7 +15,9 @@ const Card = styled(UserCoverCard)`
   border-radius: 0;
 `;
 
-const LoggedInCard = (props) => {
+interface Props {}
+
+const LoggedInCard = (props: Props) => {
   const { currentUser, isLogin } = useContext(SessionContext);
   const menu = {
     menuList: [

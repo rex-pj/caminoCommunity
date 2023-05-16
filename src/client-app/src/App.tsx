@@ -1,4 +1,5 @@
-import React, { Suspense, useMemo } from "react";
+import * as React from "react";
+import { Suspense, useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -15,7 +16,7 @@ import { ThemeProvider } from "styled-components";
 import * as theme from "./utils/Theme";
 import { LoadingBar } from "./components/molecules/NotificationBars";
 import "./i18n";
-import "../../../../type-checkings/file-import";
+import "./type-checkings/file-import";
 const FeedsPage = React.lazy(() => import("./pages/feeds"));
 const ArticlesPage = React.lazy(() => import("./pages/articles"));
 const ArticleDetailPage = React.lazy(() => import("./pages/articles/detail"));
@@ -72,7 +73,7 @@ const App: React.FC = () => {
         return { isLogin: false };
       }
 
-      function parseUserResponse(response) {
+      function parseUserResponse(response: any) {
         // Login success
         const isValid = isTokenValid();
         if (!isValid) {
@@ -89,7 +90,7 @@ const App: React.FC = () => {
   );
 
   const sessionContext = () => {
-    return { ...parseLoggedUser(), relogin, isLoading: loading };
+    return { ...parseLoggedUser(), relogin, lang: "vn", isLoading: loading };
   };
 
   return (

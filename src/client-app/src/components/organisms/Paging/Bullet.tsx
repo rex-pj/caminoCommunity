@@ -1,8 +1,18 @@
-import React, { Fragment } from "react";
 import { ButtonOutlineLight } from "../../atoms/Buttons/OutlineButtons";
 import { RouterLinkButtonOutlineNeutral } from "../../atoms/Buttons/RouterLinkButtons";
 
-export default (props) => {
+type Props = {
+  children?: any;
+  baseUrl?: string;
+  currentPage?: number;
+  pageNumber?: number;
+  disabled?: boolean;
+  pageQuery?: string;
+  className?: string;
+  size?: string;
+};
+
+const Bullet = (props: Props) => {
   const {
     baseUrl,
     children,
@@ -14,7 +24,7 @@ export default (props) => {
     size,
   } = props;
 
-  let to = `${baseUrl}${"/page/"}${pageNumber}`;
+  let to = "";
   if (baseUrl && pageNumber) {
     to = `${baseUrl}${"/page/"}${pageNumber}`;
   } else if (baseUrl) {
@@ -29,9 +39,9 @@ export default (props) => {
     to = `${to}${pageQuery}`;
   }
 
-  let ButtonItem = null;
+  let ButtonItem: any;
   if ((!pageNumber && !baseUrl) || disabled) {
-    ButtonItem = (
+    return (
       <ButtonOutlineLight
         size={size ? size : "sm"}
         disabled={true}
@@ -40,8 +50,9 @@ export default (props) => {
         {children}
       </ButtonOutlineLight>
     );
-  } else if (currentPage === pageNumber) {
-    ButtonItem = (
+  }
+  if (currentPage === pageNumber) {
+    return (
       <RouterLinkButtonOutlineNeutral
         size={size ? size : "sm"}
         to={to}
@@ -51,17 +62,16 @@ export default (props) => {
         {children}
       </RouterLinkButtonOutlineNeutral>
     );
-  } else {
-    ButtonItem = (
-      <RouterLinkButtonOutlineNeutral
-        size={size ? size : "sm"}
-        to={to}
-        className={className}
-      >
-        {children}
-      </RouterLinkButtonOutlineNeutral>
-    );
   }
-
-  return <Fragment>{ButtonItem}</Fragment>;
+  return (
+    <RouterLinkButtonOutlineNeutral
+      size={size ? size : "sm"}
+      to={to}
+      className={className}
+    >
+      {children}
+    </RouterLinkButtonOutlineNeutral>
+  );
 };
+
+export default Bullet;

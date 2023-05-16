@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useContext } from "react";
 import styled from "styled-components";
 import { PanelBody } from "../../molecules/Panels";
@@ -9,7 +8,10 @@ import SelectEditable from "../Editable/SelectEditable";
 import DateTimeEditable from "../Editable/DateTimeEditable";
 import TextAreaEditable from "../Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
-import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
+import {
+  SelectOption,
+  mapSelectOptions,
+} from "../../../utils/SelectOptionUtils";
 import { SessionContext } from "../../../store/context/session-context";
 import { useTranslation } from "react-i18next";
 
@@ -29,10 +31,18 @@ const InfoList = styled(VerticalList)`
   margin-bottom: 0;
 `;
 
-const About = (props) => {
+type Props = {
+  onEdited: (e: any) => Promise<any>;
+  userInfo: any;
+  canEdit?: boolean;
+  countrySelections?: SelectOption[];
+  genderSelections?: SelectOption[];
+};
+
+const About = (props: Props) => {
   const { t } = useTranslation();
   const { currentUser } = useContext(SessionContext);
-  const onEdited = async (e) => {
+  const onEdited = async (e: any) => {
     await props.onEdited(e);
   };
 

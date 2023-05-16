@@ -8,6 +8,10 @@ import {
 } from "../../atoms/Buttons/OutlineButtons";
 import styled from "styled-components";
 import ProductAttributeValueRow from "./ProductAttributeValueRow";
+import {
+  IProductAttribute,
+  IProductAttributeValue,
+} from "../../../models/productAttributesModel";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -29,12 +33,30 @@ const AttributeValuePanel = styled.div`
   }
 `;
 
-const ProductAttributeRow = (props) => {
+type Props = {
+  attribute: IProductAttribute;
+  onAttributeChange: (attribute: IProductAttribute) => void;
+  onAddAttributeValue: () => void;
+  onEditAttribute: (attribute: IProductAttribute) => void;
+  onRemoveAttribute: (attribute: IProductAttribute) => void;
+  onEditAttributeValue: (
+    attributeValue: IProductAttributeValue,
+    attributeValueIndex: number
+  ) => void;
+  price: number;
+};
+
+const ProductAttributeRow = (props: Props) => {
   const { attribute, onEditAttributeValue, price } = props;
   const { attributeRelationValues } = attribute;
 
-  const onRemoveAttributeValue = (currentAttributeValue) => {
+  const onRemoveAttributeValue = (
+    currentAttributeValue: IProductAttributeValue
+  ) => {
     let { attribute } = { ...props };
+    if (!attribute || !attribute.attributeRelationValues) {
+      return;
+    }
     let {
       attributeRelationValues: [...attributeRelationValues],
     } = attribute;

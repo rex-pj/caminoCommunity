@@ -1,8 +1,23 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 
-export default function (props) {
+type Props = {
+  children?: any;
+  data: {
+    id: any;
+    title: string;
+    children?: any;
+    executeButtonName: string;
+  };
+  execution: {
+    onDelete: (id: any) => void;
+  };
+  closeModal: () => void;
+};
+
+const DeleteConfirmationModal = (props: Props) => {
   const { children } = props;
 
   const onDeletting = () => {
@@ -26,4 +41,6 @@ export default function (props) {
       </PanelFooter>
     </Fragment>
   );
-}
+};
+
+export default DeleteConfirmationModal;

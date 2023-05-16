@@ -1,7 +1,16 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import ArticleListItem from "../../organisms/Article/ArticleListItem";
+import { IBreadcrumbItem } from "../../organisms/Navigation/Breadcrumb";
 
-export default function (props) {
+type Props = {
+  articles: any[];
+  baseUrl: string;
+  breadcrumbs: IBreadcrumbItem[];
+  onOpenDeleteConfirmation: (e: any, onDeleteFunc: void) => void;
+};
+
+const Index = (props: Props) => {
   const { articles, onOpenDeleteConfirmation } = props;
 
   return (
@@ -17,4 +26,6 @@ export default function (props) {
         : null}
     </Fragment>
   );
-}
+};
+
+export default Index;

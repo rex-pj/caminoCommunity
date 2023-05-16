@@ -18,3 +18,5 @@ const ThumbnailRound: React.FC<ImageProps> = (props) => (
     />
   </Root>
 );
+
+export default ThumbnailRound;

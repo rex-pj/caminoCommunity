@@ -1,4 +1,5 @@
-import React, { Fragment, useRef, useEffect, useState } from "react";
+import * as React from "react";
+import { Fragment, useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PrimaryTitle } from "../../atoms/Titles";
@@ -8,7 +9,9 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelDefault } from "../../molecules/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
+import Breadcrumb, {
+  IBreadcrumbItem,
+} from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
@@ -130,13 +133,19 @@ const DropdownList = styled(Dropdown)`
   }
 `;
 
-const Detail = (props) => {
+type Props = {
+  farm?: any;
+  breadcrumbs: IBreadcrumbItem[];
+  onOpenDeleteConfirmationModal: (e: any) => void;
+};
+
+const Detail = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { farm, breadcrumbs, onOpenDeleteConfirmationModal } = props;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
-  const currentRef = useRef();
-  const onActionDropdownHide = (e) => {
+  const currentRef = useRef<any>();
+  const onActionDropdownHide = (e: MouseEvent) => {
     if (currentRef.current && !currentRef.current.contains(e.target)) {
       setActionDropdownShown(false);
     }
@@ -147,8 +156,7 @@ const Detail = (props) => {
   };
 
   const onEditMode = async () => {
-    navigate({
-      pathname: `/farms/update/${farm.id}`,
+    navigate(`/farms/update/${farm.id}`, {
       state: {
         from: location.pathname,
       },
@@ -178,7 +186,7 @@ const Detail = (props) => {
           <ThumbnailSlider
             currentImage={farm.images[0]}
             images={farm.images}
-            numberOfDisplay={5}
+            displayNumber={5}
           />
         ) : null}
 

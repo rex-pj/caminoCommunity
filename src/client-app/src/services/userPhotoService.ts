@@ -3,7 +3,7 @@ import axios from "axios";
 import BaseService from "./baseService";
 
 const UserPhotoService = class extends BaseService {
-  updateAvatar = async (request) => {
+  updateAvatar = async (request: any) => {
     return axios
       .put(apiConfig.paths.userPhotos.put.updateAvatar, request, {
         headers: {
@@ -29,7 +29,7 @@ const UserPhotoService = class extends BaseService {
       });
   };
 
-  updateCover = async (request) => {
+  updateCover = async (request: any) => {
     return axios
       .put(`${apiConfig.paths.userPhotos.put.updateCover}`, request)
       .then((response) => {
@@ -40,9 +40,9 @@ const UserPhotoService = class extends BaseService {
       });
   };
 
-  deleteCover = async (request) => {
+  deleteCover = async () => {
     return axios
-      .delete(`${apiConfig.paths.userPhotos.delete.deleteCover}`, request)
+      .delete(`${apiConfig.paths.userPhotos.delete.deleteCover}`)
       .then((response) => {
         return response;
       })

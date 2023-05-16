@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HorizontalReactBar } from "../../molecules/Reaction";
@@ -76,7 +77,11 @@ const InteractiveItem = styled.li`
   }
 `;
 
-export default (function (props) {
+interface Props {
+  product?: any;
+}
+
+const ProductSearchedItem = (props: Props) => {
   const location = useLocation();
   const { product } = props;
   const { creator } = product;
@@ -158,4 +163,6 @@ export default (function (props) {
       </InteractiveToolbar> */}
     </Panel>
   );
-});
+};
+
+export default ProductSearchedItem;

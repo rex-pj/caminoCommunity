@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PagerBullet from "./PagerBullet";
@@ -22,9 +23,18 @@ const PageItem = styled.li`
   }
 `;
 
-export default (props) => {
+type Props = {
+  baseUrl?: string;
+  currentPage?: number;
+  pageQuery?: string;
+  totalPage?: number;
+  text?: string;
+  bulletSize?: string;
+};
+
+const Pager = (props: Props) => {
   const { totalPage, baseUrl, pageQuery, text, bulletSize } = props;
-  if (totalPage <= 1) {
+  if (!totalPage || totalPage <= 1) {
     return <Fragment></Fragment>;
   }
   let { currentPage } = props;
@@ -42,7 +52,6 @@ export default (props) => {
               baseUrl={baseUrl}
               currentPage={currentPage}
               pageQuery={pageQuery}
-              totalPage={totalPage}
             >
               {text ? <span className="me-1">{text}</span> : null}
               <FontAwesomeIcon icon="angle-down" />
@@ -53,3 +62,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default Pager;

@@ -1,14 +1,18 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import * as React from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CommonEditor from "../CommonEditor";
+import { CommonEditor } from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
-import ImageUpload from "../UploadControl/ImageUpload";
+import {
+  ImageUpload,
+  ImageUploadOnChangeEvent,
+} from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import productCreationModel from "../../../models/productCreationModel";
+import { ProductCreationModel } from "../../../models/productCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { ButtonOutlinePrimary } from "../../atoms/Buttons/OutlineButtons";
 import ProductAttributeRow from "./ProductAttributeRow";
@@ -17,6 +21,10 @@ import ProductAttributeEditModal from "./ProductAttributeEditModal";
 import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
+import { EditorState } from "draft-js";
+import { ActionMeta, OnChangeValue } from "react-select";
+import { IProductAttribute } from "../../../models/productAttributesModel";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -28,14 +36,10 @@ const FormRow = styled.div`
 
   .cate-selection {
     z-index: 10;
-
+    max-width: 100%;
     > div {
       border: 1px solid ${(p) => p.theme.color.secondaryBg};
     }
-  }
-
-  ${AsyncSelect} {
-    max-width: 100%;
   }
 `;
 
@@ -84,7 +88,20 @@ const Footer = styled.div`
   }
 `;
 
-const ProductEditor = (props) => {
+interface Props {
+  convertImageCallback: (e: any) => Promise<any>;
+  onImageValidate: (e: any) => Promise<any>;
+  height?: number;
+  filterCategories: (e: any) => Promise<any>;
+  filterFarms: (e: any) => Promise<any>;
+  filterAttributes: (e: any) => Promise<any>;
+  filterProductAttributeControlTypes: (e: any) => Promise<any>;
+  currentProduct?: any;
+  showValidationError: (title: string, message: string) => void;
+  onProductPost: (e: any) => Promise<any>;
+}
+
+const ProductEditor = (props: Props) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -95,16 +112,16 @@ const ProductEditor = (props) => {
     filterAttributes,
     filterProductAttributeControlTypes,
   } = props;
-  const [formData, setFormData] = useState(
-    JSON.parse(JSON.stringify(productCreationModel))
+  const [formData, setFormData] = useState<ProductCreationModel>(
+    JSON.parse(JSON.stringify(new ProductCreationModel()))
   );
-  const editorRef = useRef();
-  const categorySelectRef = useRef();
-  const farmSelectRef = useRef();
+  const editorRef = useRef<any>();
+  const categorySelectRef = useRef<any>();
+  const farmSelectRef = useRef<any>();
   const dispatch = useStore(true)[1];
 
-  const handleInputChange = (evt) => {
-    let data = formData || {};
+  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    let data = { ...formData } || new ProductCreationModel();
     const { name, value } = evt.target;
 
     data[name].isValid = checkValidity(data, value, name);
@@ -115,13 +132,13 @@ const ProductEditor = (props) => {
     });
   };
 
-  const handlePriceChange = (evt) => {
-    let data = formData || {};
+  const handlePriceChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    let data = { ...formData } || new ProductCreationModel();
     const { value } = evt.target;
     const name = "price";
 
     data[name].isValid = checkValidity(data, value, name);
-    if (!value || isNaN(value)) {
+    if (!value || Number.isNaN(value)) {
       data[name].value = 0;
     } else {
       data[name].value = parseFloat(value);
@@ -132,11 +149,11 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onDescriptionChanged = (editorState) => {
+  const onDescriptionChanged = (editorState: EditorState) => {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState);
 
-    let data = formData || {};
+    let data = { ...formData } || new ProductCreationModel();
 
     data["description"].isValid = checkValidity(data, html, "description");
     data["description"].value = html;
@@ -146,8 +163,8 @@ const ProductEditor = (props) => {
     });
   };
 
-  const handleImageChange = (e) => {
-    let data = { ...formData } || {};
+  const handleImageChange = (e: ImageUploadOnChangeEvent) => {
+    let data = { ...formData } || new ProductCreationModel();
     const { preview, file } = e;
     let pictures = Object.assign([], data.pictures.value);
     pictures.push({
@@ -161,7 +178,7 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onProductPost = async (e) => {
+  const onProductPost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -179,12 +196,12 @@ const ProductEditor = (props) => {
       return;
     }
 
-    const productData = {};
+    let productData: any;
     for (let formIdentifier in formData) {
       if (formIdentifier !== "productAttributes") {
         productData[formIdentifier] = formData[formIdentifier].value;
       } else if (formIdentifier === "productAttributes") {
-        let productAttributes = [];
+        let productAttributes: any[] = [];
         const attributes = formData[formIdentifier].value;
         if (!attributes || attributes.length === 0) {
           continue;
@@ -309,22 +326,27 @@ const ProductEditor = (props) => {
     editorRef.current.clearEditor();
     categorySelectRef.current.clearValue();
     farmSelectRef.current.clearValue();
-    const productFormData = JSON.parse(JSON.stringify(productCreationModel));
+    const productFormData = JSON.parse(
+      JSON.stringify(new ProductCreationModel())
+    );
     setFormData({ ...productFormData });
   };
 
-  const onImageRemoved = (e, item) => {
-    let data = formData || {};
-    if (!data.pictures) {
+  const onImageRemoved = (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+    item: any
+  ) => {
+    let data = { ...formData } || new ProductCreationModel();
+    if (!data.pictures || !data.pictures.value) {
       return;
     }
 
     if (item.pictureId) {
       data.pictures.value = data.pictures.value.filter(
-        (x) => x.pictureId !== item.pictureId
+        (x: any) => x.pictureId !== item.pictureId
       );
     } else {
-      data.pictures.value = data.pictures.value.filter((x) => x !== item);
+      data.pictures.value = data.pictures.value.filter((x: any) => x !== item);
     }
 
     setFormData({
@@ -332,19 +354,23 @@ const ProductEditor = (props) => {
     });
   };
 
-  async function handleSelectChange(e, method, name) {
-    let data = formData || {};
-    const { action, removedValue } = method;
+  async function handleSelectChange(
+    newValue: OnChangeValue<any, any>,
+    actionMeta: ActionMeta<any>,
+    name: string
+  ) {
+    let data = { ...formData } || new ProductCreationModel();
+    const { action, removedValue } = actionMeta;
     if (action === "clear") {
       data[name].value = [];
       data[name].isValid = false;
     } else if (action === "remove-value") {
       data[name].value = data[name].value.filter(
-        (x) => x.id !== parseFloat(removedValue.value)
+        (x: any) => x.id !== parseFloat(removedValue.value)
       );
       data[name].isValid = !!data[name].value;
     } else {
-      data[name].value = e.map((item) => {
+      data[name].value = newValue.map((item: any) => {
         return { id: parseFloat(item.value), name: item.label };
       });
 
@@ -361,15 +387,15 @@ const ProductEditor = (props) => {
     if (!categories.value) {
       return null;
     }
-    return categories.value.map((item) => {
+    return categories.value.map((item: any) => {
       return { value: item.id, label: item.name };
     });
   };
 
   const loadCategorySelections = useMemo(() => {
-    return async (value) => {
+    return async (value: string) => {
       const { categories } = formData;
-      const currentIds = categories?.value?.map((cate) => cate.id);
+      const currentIds = categories?.value?.map((cate: any) => cate.id);
 
       const response = await filterCategories({
         variables: {
@@ -388,15 +414,15 @@ const ProductEditor = (props) => {
     if (!farms.value) {
       return null;
     }
-    return farms.value.map((item) => {
+    return farms.value.map((item: any) => {
       return { value: item.id, label: item.name };
     });
   };
 
   const loadFarmSelections = useMemo(() => {
-    return async (value) => {
+    return async (value: string) => {
       const { farms } = formData;
-      const currentIds = farms?.value?.map((farm) => farm.id);
+      const currentIds = farms?.value?.map((farm: any) => farm.id);
 
       const response = await filterFarms({
         variables: {
@@ -411,14 +437,17 @@ const ProductEditor = (props) => {
   }, [filterFarms, formData]);
 
   /// Attribute features
-  const loadAttributeSelections = (value) => {
+  const loadAttributeSelections = (value?: string) => {
     const {
       productAttributes: { ...productAttributes },
     } = { ...formData };
-    let {
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
+    const {
       value: [...attributes],
     } = productAttributes;
-    const attributeIds = attributes.map((item) => parseInt(item.attributeId));
+    const attributeIds = attributes.map((item) => item.attributeId);
 
     return filterAttributes({
       variables: {
@@ -435,7 +464,7 @@ const ProductEditor = (props) => {
       });
   };
 
-  const loadAttributeControlTypeSelections = (value) => {
+  const loadAttributeControlTypeSelections = (value?: string) => {
     return filterProductAttributeControlTypes({
       variables: {
         criterias: { query: value },
@@ -476,7 +505,10 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onOpenEditAttributeModal = (currentAttr, index) => {
+  const onOpenEditAttributeModal = (
+    currentAttr: IProductAttribute,
+    index: number
+  ) => {
     dispatch("OPEN_MODAL", {
       data: {
         attribute: currentAttr,
@@ -496,15 +528,17 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onAddAttribute = (data, index) => {
+  const onAddAttribute = (newAttr: IProductAttribute) => {
     let {
       productAttributes: { ...productAttributes },
     } = { ...formData };
-
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
     let {
       value: [...attributes],
     } = productAttributes;
-    attributes.push(data);
+    attributes.push(newAttr);
 
     setFormData({
       ...formData,
@@ -515,15 +549,17 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onUpdateAttribute = (data, index) => {
-    let {
+  const onUpdateAttribute = (currentAttr: IProductAttribute, index: number) => {
+    const {
       productAttributes: { ...productAttributes },
     } = { ...formData };
-
-    let {
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
+    const {
       value: [...attributes],
     } = productAttributes;
-    attributes[index] = data;
+    attributes[index] = currentAttr;
 
     setFormData({
       ...formData,
@@ -534,10 +570,13 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onRemoveAttribute = (currentAttr) => {
+  const onRemoveAttribute = (currentAttr: IProductAttribute) => {
     let {
       productAttributes: { ...productAttributes },
     } = { ...formData };
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
     let {
       value: [...attributes],
     } = productAttributes;
@@ -553,14 +592,17 @@ const ProductEditor = (props) => {
     });
   };
 
-  const onAttributeChange = (e, index) => {
+  const onAttributeChange = (currentAttr: IProductAttribute, index: number) => {
     let {
       productAttributes: { ...productAttributes },
     } = { ...formData };
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
     let {
       value: [...attributes],
     } = productAttributes;
-    attributes[index] = e;
+    attributes[index] = currentAttr;
 
     setFormData({
       ...formData,
@@ -572,7 +614,7 @@ const ProductEditor = (props) => {
   };
 
   /// Attribute value features
-  function onOpenAddAttributeValueModal(attributeIndex) {
+  function onOpenAddAttributeValueModal(attributeIndex: number) {
     dispatch("OPEN_MODAL", {
       data: {
         attributeValue: {
@@ -596,9 +638,9 @@ const ProductEditor = (props) => {
   }
 
   function onOpenEditAttributeValueModal(
-    currentAttributeValue,
-    attributeIndex,
-    attributeValueIndex
+    currentAttributeValue: IProductAttributeValue,
+    attributeIndex: number,
+    attributeValueIndex: number
   ) {
     dispatch("OPEN_MODAL", {
       data: {
@@ -617,7 +659,10 @@ const ProductEditor = (props) => {
     });
   }
 
-  function onAddAttributeValue(data, attributeIndex) {
+  function onAddAttributeValue(
+    attributeValue: IProductAttributeValue,
+    attributeIndex: number
+  ) {
     if (!attributeIndex && attributeIndex !== 0) {
       return;
     }
@@ -625,23 +670,31 @@ const ProductEditor = (props) => {
     let {
       productAttributes: { ...productAttributes },
     } = { ...formData };
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
+
     let {
       value: [...attributes],
     } = productAttributes;
 
-    let attributeRelationValues = [];
+    let attributeRelationValues: IProductAttributeValue[] = [];
     let currentAttribute = attributes[attributeIndex];
     if (!currentAttribute.attributeRelationValues) {
-      attributeRelationValues = [data];
+      attributeRelationValues = [attributeValue];
     } else {
       attributeRelationValues = [...currentAttribute.attributeRelationValues];
-      attributeRelationValues.push(data);
+      attributeRelationValues.push(attributeValue);
     }
 
     updateAttributeValue(attributeIndex, attributeRelationValues);
   }
 
-  function onUpdateAttributeValue(data, attributeIndex, attributeValueIndex) {
+  function onUpdateAttributeValue(
+    attributeValue: IProductAttributeValue,
+    attributeIndex: number,
+    attributeValueIndex: number
+  ) {
     if (!attributeIndex && attributeIndex !== 0) {
       return;
     }
@@ -650,16 +703,35 @@ const ProductEditor = (props) => {
       productAttributes: { ...productAttributes },
     } = { ...formData };
 
-    let {
-      attributeRelationValues: [...attributeRelationValues],
-    } = {
+    if (
+      !productAttributes ||
+      !productAttributes.value ||
+      !productAttributes.value[attributeIndex]
+    ) {
+      return;
+    }
+
+    let { attributeRelationValues } = {
       ...productAttributes.value[attributeIndex],
     };
-    attributeRelationValues[attributeValueIndex] = { ...data };
-    updateAttributeValue(attributeIndex, attributeRelationValues);
+
+    if (!attributeRelationValues || !attributeRelationValues.length) {
+      return;
+    }
+
+    const relationValues = [...attributeRelationValues];
+    relationValues[attributeValueIndex] = { ...attributeValue };
+    updateAttributeValue(attributeIndex, relationValues);
   }
 
-  function updateAttributeValue(attributeIndex, attributeRelationValues) {
+  function updateAttributeValue(
+    attributeIndex: number,
+    attributeRelationValues: IProductAttributeValue[]
+  ) {
+    if (!productAttributes || !productAttributes.value) {
+      return;
+    }
+
     const cloneProductAttributes = productAttributes.value.map(
       (elem, index) => {
         if (attributeIndex === index) {
@@ -727,7 +799,6 @@ const ProductEditor = (props) => {
             }
             loadOptions={loadCategorySelections}
             isClearable={true}
-            cache={false}
             placeholder="Select categories"
           />
         </div>
@@ -740,7 +811,7 @@ const ProductEditor = (props) => {
             ref={farmSelectRef}
             defaultValue={loadFarmsSelected()}
             onChange={(e, action) => handleSelectChange(e, action, "farms")}
-            loadOptions={loadFarmSelections}
+            loadOptions={(e) => loadFarmSelections(e)}
             isClearable={true}
             placeholder="Select farms"
           />

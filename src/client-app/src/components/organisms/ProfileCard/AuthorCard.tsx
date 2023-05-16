@@ -15,7 +15,11 @@ const Card = styled(UserCoverCard)`
   border-bottom: 1px solid ${(p) => p.theme.color.neutralBg};
 `;
 
-const AuthorCard = (props) => {
+interface Props {
+  author: any;
+}
+
+const AuthorCard = (props: Props) => {
   const { author } = props;
   const menuList = [
     {

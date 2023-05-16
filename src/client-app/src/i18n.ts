@@ -28,9 +28,8 @@ i18n
             currency: "VND",
           }).format(value);
         }
-      },
-      react: {
-        wait: true,
+
+        return lng ?? "";
       },
       escapeValue: false, // react already safes from xss
     },

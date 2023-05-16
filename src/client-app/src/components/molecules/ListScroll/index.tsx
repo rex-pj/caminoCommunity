@@ -19,18 +19,16 @@ interface ListScrollProps extends HTMLAttributes<HTMLUListElement> {
 
 const ListScroll = function (props: ListScrollProps) {
   const { list, className } = props;
-  let { numberOfDisplay } = props;
-  if (!numberOfDisplay) {
-    numberOfDisplay = list ? list.length : 0;
-  }
+  const { numberOfDisplay } = props;
+  const displayNumber = !numberOfDisplay && list ? list.length : 0;
 
-  const percent = 100 / numberOfDisplay;
+  const percent = 100 / displayNumber;
   return (
     <HorizontalList className={className}>
       {list
         ? list()
             .filter((item: any, index: number) => {
-              return index < numberOfDisplay;
+              return index < displayNumber;
             })
             .map((item: any, index: number) => {
               return (

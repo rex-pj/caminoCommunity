@@ -13,7 +13,7 @@ const Root = styled.div`
 interface AdsListProps {}
 
 const AdsList: React.FC<AdsListProps> = (props) => {
-  let listAds = [];
+  let listAds: any[] = [];
   for (let i = 0; i < 1; i++) {
     listAds.push({
       description:

@@ -59,7 +59,7 @@ const TextAreaEditable = (props: TextAreaEditableProps) => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    setValue(props.value);
+    setValue(props.value ?? "");
   }, [setValue, props.value]);
 
   function openTextBox() {
@@ -87,32 +87,37 @@ const TextAreaEditable = (props: TextAreaEditableProps) => {
   }
 
   async function pushData() {
-    const currentValue = props.value ?? "";
-
-    let newValue = value;
-
-    if (!!props.primaryKey && !!props.name && currentValue !== newValue) {
-      await props
-        .onUpdated({
-          primaryKey: props.primaryKey,
-          value: newValue,
-          propertyName: props.name,
-        })
-        .then(function (response) {
-          if (response) {
-            const { data } = response;
-            const { updateUserInfoItem } = data;
-            const { result } = updateUserInfoItem;
-            setValue(result.value);
-          } else {
-            setValue(currentValue);
-          }
-        })
-        .catch(function (errors) {
-          setValue(currentValue);
-        });
+    if (!props.onUpdated) {
+      closeTextBox();
+      return;
     }
 
+    const currentValue = props.value ?? "";
+    const newValue = value;
+    if (!props.primaryKey || !props.name || currentValue === newValue) {
+      closeTextBox();
+      return;
+    }
+
+    await props
+      .onUpdated({
+        primaryKey: props.primaryKey,
+        value: newValue,
+        propertyName: props.name,
+      })
+      .then(function (response) {
+        if (response) {
+          const { data } = response;
+          const { updateUserInfoItem } = data;
+          const { result } = updateUserInfoItem;
+          setValue(result.value);
+        } else {
+          setValue(currentValue);
+        }
+      })
+      .catch(function (errors) {
+        setValue(currentValue);
+      });
     closeTextBox();
   }
 
@@ -121,7 +126,7 @@ const TextAreaEditable = (props: TextAreaEditableProps) => {
   }
 
   function cancelEdit() {
-    setValue(props.value);
+    setValue(props.value ?? "");
     closeTextBox();
   }
 

@@ -7,12 +7,21 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LabelSecondary, LabelDark } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
 const SecondaryLabel = styled(LabelSecondary)`
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
-const ProductAttributeValueRow = (props) => {
+type Props = {
+  className?: string;
+  attributeValue: IProductAttributeValue;
+  onEditAttributeValue: (attributeValue: IProductAttributeValue) => void;
+  onRemoveAttributeValue: (attributeValue: IProductAttributeValue) => void;
+  price: number;
+};
+
+const ProductAttributeValueRow = (props: Props) => {
   const {
     attributeValue,
     className,

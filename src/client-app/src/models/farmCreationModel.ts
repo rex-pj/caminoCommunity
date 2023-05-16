@@ -30,7 +30,7 @@ class FarmCreationModel {
       },
       isValid: true,
     });
-    this.farmTypeNamenew = new FormControl("", {
+    this.farmTypeName = new FormControl("", {
       isValid: true,
     });
     this.farmTypeId = new ValidationFormControl(0, {

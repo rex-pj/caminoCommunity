@@ -3,6 +3,7 @@ import { Link, LinkProps } from "react-router-dom";
 
 interface RouterLinkButtonProps extends LinkProps {
   readonly size?: string;
+  readonly disabled?: boolean;
 }
 
 const ButtonTransparent = styled(Link)<RouterLinkButtonProps>`

@@ -14,7 +14,7 @@ export function getError(key: string, lang: string) {
 }
 
 export const createArray = (from: number, to: number, isInvert?: boolean) => {
-  const arr = [];
+  const arr: number[] = [];
 
   if (isInvert) {
     for (let index = to; index >= from; index--) {
@@ -43,9 +43,21 @@ export const generateDate = (data: {
 };
 
 export const base64toFile = (base64: string, filename: string) => {
+  if (!base64) {
+    return null;
+  }
   const arr = base64.split(",");
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const byteString = atob(arr[1]);
+  if (!arr) {
+    return null;
+  }
+
+  const base64Header = arr[0].match(/:(.*?);/);
+  if (!base64Header) {
+    return null;
+  }
+
+  const mime = base64Header[1];
+  const byteString = window.atob(arr[1]);
   let length = byteString.length;
   let unitBuffers = new Uint8Array(length);
 
@@ -65,17 +77,17 @@ export const fileToBase64 = async (file: File) => {
     };
 
     reader.readAsDataURL(file);
-    reader.onerror = (error) => reject(error);
+    reader.onerror = (error: any) => reject(error);
   });
 };
 
 export const base64toBlob = (dataURI: string, mineType: string) => {
   const urlSplitted = dataURI.split(",");
-  let byteString = null;
+  let byteString: string = "";
   if (urlSplitted.length > 1) {
-    byteString = atob(dataURI.split(",")[1]);
+    byteString = window.atob(dataURI.split(",")[1]);
   } else {
-    byteString = atob(dataURI);
+    byteString = window.atob(dataURI);
   }
 
   const buffers = new ArrayBuffer(byteString.length);
@@ -93,7 +105,7 @@ export const getParameters = (
   urlParams: string | string[][] | Record<string, string> | URLSearchParams
 ) => {
   const parameters = new URLSearchParams(urlParams);
-  let obj: {
+  let obj!: {
     [index: string]: any;
   };
 
@@ -111,7 +123,7 @@ export const getParameters = (
 export const generateQueryParameters = (parameters: {
   [index: string]: any;
 }) => {
-  const urlParams = [];
+  const urlParams: string[] = [];
   for (const parameter in parameters) {
     const paramValue = parameters[parameter];
     if (paramValue) {

@@ -6,6 +6,7 @@ import { ThumbnailCircle } from "../../molecules/Thumbnails";
 import { TertiaryTitle } from "../../atoms/Titles";
 import { TypographySecondary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const ListItem = styled.li`
   padding: ${(p) => p.theme.size.distance};
@@ -49,7 +50,20 @@ const Avatar = styled(ThumbnailCircle)`
   }
 `;
 
-export default (props) => {
+type Props = {
+  data: {
+    description: string;
+    actionText: string;
+    url: string;
+    imageUrl: string;
+    name: string;
+    actionIcon?: IconProp;
+  };
+  className?: string;
+  index?: number;
+};
+
+const PeopleSuggestionPanel = (props: Props) => {
   const { data, className, index } = props;
   return (
     <ListItem
@@ -68,7 +82,10 @@ export default (props) => {
             <AnchorLink to={data.url}>{data.name}</AnchorLink>
           </TertiaryTitle>
           <ActionButton>
-            <FontAwesomeIcon icon={data.actionIcon} /> {data.actionText}
+            {data.actionIcon ? (
+              <FontAwesomeIcon icon={data.actionIcon} />
+            ) : null}{" "}
+            {data.actionText}
           </ActionButton>
         </div>
       </div>
@@ -76,3 +93,5 @@ export default (props) => {
     </ListItem>
   );
 };
+
+export default PeopleSuggestionPanel;

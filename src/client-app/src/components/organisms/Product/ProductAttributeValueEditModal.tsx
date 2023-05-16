@@ -4,6 +4,7 @@ import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { PrimaryTextbox } from "../../atoms/Textboxes";
 import styled from "styled-components";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -18,20 +19,41 @@ const FormRow = styled.div`
   }
 `;
 
-export default function (props) {
+type Props = {
+  data: {
+    attributeValue: IProductAttributeValue;
+    attributeIndex: number;
+    attributeValueIndex: number;
+  };
+  execution: {
+    onEditAttributeValue: (
+      attributeValue: IProductAttributeValue,
+      attributeIndex: number,
+      attributeValueIndex: number
+    ) => void;
+    loadAttributeSelections: () => void;
+    loadAttributeControlTypeSelections: () => void;
+  };
+  closeModal: () => void;
+};
+
+export default function (props: Props) {
   const { data, execution } = props;
   const { onEditAttributeValue } = execution;
   const { attributeValue, attributeIndex, attributeValueIndex } = data;
   const [formData, setFormData] = useState(attributeValue);
 
-  const parseValueToFloat = (value) => {
-    if (!value || isNaN(value)) {
+  const parseValueToFloat = (value: string) => {
+    if (!value || Number.isNaN(value)) {
       return 0;
     }
     return parseFloat(value);
   };
 
-  const handleInputBlur = (evt, formatFunc) => {
+  const handleInputBlur = (
+    evt: React.FocusEvent<HTMLInputElement, Element>,
+    formatFunc?: any
+  ) => {
     let attributeValue = { ...formData };
     const { name, value } = evt.target;
     if (formatFunc) {
@@ -43,7 +65,10 @@ export default function (props) {
     setFormData({ ...attributeValue });
   };
 
-  const handleInputChange = (evt, formatFunc) => {
+  const handleInputChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    formatFunc?: any
+  ) => {
     let attributeValue = { ...formData };
     const { name, value } = evt.target;
     if (formatFunc) {
@@ -78,7 +103,9 @@ export default function (props) {
         <FormRow>
           <PrimaryTextbox
             name="priceAdjustment"
-            disabled={pricePercentageAdjustment}
+            disabled={
+              !!pricePercentageAdjustment && pricePercentageAdjustment > 0
+            }
             placeholder="Giá điều chỉnh"
             onChange={(e) => handleInputChange(e)}
             onBlur={(e) => handleInputBlur(e, parseValueToFloat)}
@@ -89,7 +116,7 @@ export default function (props) {
           <PrimaryTextbox
             name="pricePercentageAdjustment"
             placeholder="Giá điều chỉnh theo phần trăm"
-            disabled={priceAdjustment}
+            disabled={!!priceAdjustment && priceAdjustment > 0}
             onChange={(e) => handleInputChange(e)}
             onBlur={(e) => handleInputBlur(e, parseValueToFloat)}
             value={pricePercentageAdjustment ? pricePercentageAdjustment : ""}

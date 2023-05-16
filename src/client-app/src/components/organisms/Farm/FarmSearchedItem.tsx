@@ -1,14 +1,12 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import AuthorProfile from "../ProfileCard/AuthorProfile";
-import { HorizontalReactBar } from "../../molecules/Reaction";
 import styled from "styled-components";
 import { PanelHeading, PanelDefault, PanelBody } from "../../molecules/Panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageThumb from "../../molecules/Images/ImageThumb";
 import { secondaryTitleLink } from "../../atoms/Titles/TitleLinks";
 import { AnchorLink } from "../../atoms/Links";
-import { HorizontalList } from "../../molecules/List";
-import { FontButtonItem } from "../../molecules/ActionIcons";
 import { convertDateTimeToPeriod } from "../../../utils/DateTimeUtils";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { useLocation } from "react-router-dom";
@@ -91,7 +89,11 @@ const TopBarInfo = styled.span`
   }
 `;
 
-const FarmSearchedItem = (props) => {
+interface Props {
+  farm?: any;
+}
+
+const FarmSearchedItem = (props: Props) => {
   const location = useLocation();
   const { farm } = props;
   const loadCreatedInfo = () => {

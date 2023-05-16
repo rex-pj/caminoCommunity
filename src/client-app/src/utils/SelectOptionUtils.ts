@@ -1,4 +1,9 @@
-export const mapSelectOptions = (selections) => {
+export interface SelectOption {
+  id: any;
+  text: string;
+}
+
+export const mapSelectOptions = (selections?: SelectOption[]) => {
   if (!selections) {
     return [];
   }

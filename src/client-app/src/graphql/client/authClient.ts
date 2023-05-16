@@ -3,20 +3,12 @@ import {
   createHttpLink,
   InMemoryCache,
   ApolloLink,
+  RequestHandler,
 } from "@apollo/client";
-import { setContext } from "apollo-link-context";
+import { setContext } from "@apollo/client/link/context";
 import { getAuthenticationToken } from "../../services/AuthLogic";
 import errorLink from "./errorLink";
 import { apiConfig } from "../../config/api-config";
-
-const preloadedState = window.__APOLLO_STORE__;
-// Allow the passed state to be garbage-collected
-delete window.__APOLLO_STORE__;
-
-const httpLink = createHttpLink({
-  uri: apiConfig.camino_graphql,
-  credentials: "include",
-});
 
 const contextLink = setContext(async (_, { headers }) => {
   const { authenticationToken } = getAuthenticationToken();
@@ -34,7 +26,7 @@ const contextLink = setContext(async (_, { headers }) => {
 
 const cleanTypeName = new ApolloLink((operation, forward) => {
   if (operation.variables) {
-    const omitTypename = (key, value) =>
+    const omitTypename = (key: any, value: any) =>
       key === "__typename" ? undefined : value;
     operation.variables = JSON.parse(
       JSON.stringify(operation.variables),
@@ -44,6 +36,11 @@ const cleanTypeName = new ApolloLink((operation, forward) => {
   return forward(operation).map((data) => {
     return data;
   });
+});
+
+const httpLink: ApolloLink | RequestHandler = createHttpLink({
+  uri: apiConfig.camino_graphql,
+  credentials: "include",
 });
 
 const client = new ApolloClient({
@@ -75,7 +72,6 @@ const client = new ApolloClient({
     },
   }),
   ssrMode: true,
-  initialState: preloadedState,
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "cache-and-network",
@@ -88,11 +84,6 @@ const client = new ApolloClient({
       errorPolicy: "all",
     },
   },
-});
-
-// Tell react-snap how to save state
-window.snapSaveState = () => ({
-  __APOLLO_STORE__: client.store.getCache(),
 });
 
 export default client;

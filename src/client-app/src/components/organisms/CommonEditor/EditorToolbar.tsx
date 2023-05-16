@@ -97,7 +97,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = (props) => {
         Modifier.removeInlineStyle(
           state,
           currentState.getSelection(),
-          item.style
+          item.style ?? "inline"
         ),
       contentState
     );
@@ -127,7 +127,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = (props) => {
   }
 
   const clearFormat = () => {
-    const helpers = [];
+    const helpers: any[] = [];
 
     helpers.push(removeInlineStyles);
 

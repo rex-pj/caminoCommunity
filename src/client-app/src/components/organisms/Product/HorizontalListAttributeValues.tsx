@@ -2,8 +2,14 @@ import * as React from "react";
 import { HorizontalList } from "../../molecules/List";
 import { BadgeOutlineSecondary } from "../../atoms/Badges";
 import { adjustPrice } from "../../../utils/PriceUtils";
+import { IProductAttributeValue } from "../../../models/productAttributesModel";
 
-export default (props) => {
+type Props = {
+  attributeRelationValues?: IProductAttributeValue[];
+  price?: number;
+};
+
+const HorizontalListAttributeValues = (props: Props) => {
   const { attributeRelationValues, price } = props;
   if (!attributeRelationValues) {
     return null;
@@ -23,3 +29,5 @@ export default (props) => {
     </HorizontalList>
   );
 };
+
+export default HorizontalListAttributeValues;

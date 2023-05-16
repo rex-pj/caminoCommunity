@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import * as React from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
 import { PageColumnPanel } from "../../molecules/Panels";
@@ -27,8 +28,16 @@ const Wrapper = styled.div`
   }
 `;
 
+interface Props {
+  isLoading: boolean;
+  hasData: boolean;
+  hasError: boolean;
+  children?: any;
+  author?: any;
+}
+
 // The layout or article or farm detail page
-const DetailLayout = (props) => {
+const DetailLayout = (props: Props) => {
   const { author, children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
 

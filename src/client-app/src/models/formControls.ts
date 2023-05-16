@@ -21,6 +21,7 @@ interface ValidationOptions {
   readonly isEmail?: boolean;
   readonly minLength?: number;
   readonly sameRefProperty?: string;
+  readonly pattern?: string[];
 }
 
 class ValidationFormControl<T> extends FormControl<T> {
@@ -40,5 +41,5 @@ class ValidationFormControl<T> extends FormControl<T> {
       super();
     }
   }
-  validation: ValidationOptions;
+  validation?: ValidationOptions;
 }

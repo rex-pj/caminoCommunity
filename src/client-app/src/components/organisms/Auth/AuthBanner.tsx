@@ -8,6 +8,7 @@ import { AnchorLink } from "../../atoms/Links";
 import logoUrl from "../../../assets/images/logo.png";
 import bgUrl from "../../../assets/images/auth-bg.jpg";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { DefaultTFuncReturn } from "i18next";
 
 const Root = styled.div`
   background: url(${bgUrl}) no-repeat center;
@@ -80,7 +81,7 @@ interface AuthBannerProps {
   imageUrl?: string;
   icon?: IconProp;
   title: string;
-  instruction?: string;
+  instruction?: string | DefaultTFuncReturn;
   actionUrl?: string;
   actionText?: string;
 }

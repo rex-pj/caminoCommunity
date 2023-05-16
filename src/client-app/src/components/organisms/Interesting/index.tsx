@@ -19,7 +19,9 @@ const IconBlock = styled.span`
   width: 25px;
 `;
 
-export default function (props) {
+type Props = {};
+
+const index = (props: Props) => {
   const shortcuts = [
     {
       icon: "seedling",
@@ -77,7 +79,7 @@ export default function (props) {
     <Root>
       <FifthHeadingPrimary>Interested in</FifthHeadingPrimary>
       <ListControl>
-        {shortcuts.map((item, index) => (
+        {shortcuts.map((item: any, index: number) => (
           <ModuleMenuListItem
             isActived={item.isActived}
             key={index}
@@ -95,4 +97,6 @@ export default function (props) {
       </ListControl>
     </Root>
   );
-}
+};
+
+export default index;

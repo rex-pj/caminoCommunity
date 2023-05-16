@@ -1,11 +1,15 @@
-import React, { Fragment, useState, useContext } from "react";
+import * as React from "react";
+import { Fragment, useState, useContext } from "react";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import Overlay from "../../atoms/Overlay";
 import { SessionContext } from "../../../store/context/session-context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../UploadControl/ImageUpload";
-import AvatarEditor from "react-avatar-editor";
+import {
+  ImageUpload,
+  ImageUploadOnChangeEvent,
+} from "../UploadControl/ImageUpload";
+import AvatarEditor, { ImageState } from "react-avatar-editor";
 import Slider from "rc-slider";
 import NoImage from "../../molecules/NoImages/no-image";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
@@ -188,24 +192,59 @@ const Wrap = styled.div`
     right: 0;
   `;
 
-const ProfileCover = (props) => {
+type Props = {
+  isDisabled?: boolean;
+  setDisabled?: (isDisabled: boolean) => void;
+  children?: any;
+  data?: {
+    canEdit: boolean;
+    imageUrl?: string;
+  };
+  execution?: {
+    onUpload: (formData: any) => Promise<any>;
+    onDelete: () => Promise<any>;
+  };
+  closeModal?: () => void;
+  canEdit: boolean;
+  onToggleEditMode: (e: boolean) => void;
+  showValidationError: (title: string, message: string) => void;
+  onUpdated: (formData: FormData) => Promise<any>;
+  onDeleted: () => Promise<any>;
+  userInfo?: any;
+};
+
+interface ICoverData {
+  src: string;
+  contentType?: string;
+  fileName?: string;
+  file?: File;
+}
+
+interface ICropData {
+  width: number;
+  height: number;
+  scale: number;
+}
+
+const ProfileCover = (props: Props) => {
   const [isInUpdateMode, setInUpdateMode] = useState(false);
   const [showDeletePopover] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const { isLogin, currentUser } = useContext(SessionContext);
-  const [coverState, setCoverState] = useState({
-    fileName: null,
-    src: null,
+  const [coverState, setCoverState] = useState<ICoverData>({
+    fileName: "",
+    src: "",
+    contentType: "",
   });
 
-  const [coverCrop, setCoverCrop] = useState({
+  const [coverCrop, setCoverCrop] = useState<ICropData>({
     width: 1224,
     height: 300,
     scale: 1,
   });
 
-  let photoEditor = null;
-  const setEditorRef = (editor) => (photoEditor = editor);
+  let photoEditor: AvatarEditor;
+  const setEditorRef = (editor: AvatarEditor) => (photoEditor = editor);
 
   const validateForSubmit = () => {
     const { canEdit } = props;
@@ -213,7 +252,7 @@ const ProfileCover = (props) => {
     const isValid = image.width > 1000 && image.height > 300;
 
     let isSucceed = false;
-    let message = null;
+    let message: string = "";
     if (canEdit && isValid) {
       isSucceed = true;
     }
@@ -246,7 +285,7 @@ const ProfileCover = (props) => {
     setInUpdateMode(false);
     setCoverState({
       ...coverState,
-      src: null,
+      src: "",
     });
 
     if (props.onToggleEditMode) {
@@ -254,24 +293,29 @@ const ProfileCover = (props) => {
     }
   };
 
-  const onChangeImage = (e) => {
+  const onChangeImage = (e: ImageUploadOnChangeEvent) => {
+    let file: File | undefined;
+    if (e.preview) {
+      file = base64toFile(e.preview.toString(), e.file.name) ?? undefined;
+    }
+
     setCoverState({
       contentType: e.file.type,
       fileName: e.file.name,
-      src: e.preview,
-      file: base64toFile(e.preview, e.file.name),
+      src: e.preview?.toString() ?? "",
+      file: file,
     });
   };
 
-  const onUpdateScale = (e) => {
+  const onUpdateScale = (e: number | number[]) => {
     validateForSubmit();
     setCoverCrop({
       ...coverCrop,
-      scale: e,
+      scale: e as number,
     });
   };
 
-  const showValidationError = (title, message) => {
+  const showValidationError = (title: string, message: string) => {
     props.showValidationError(title, message);
   };
 
@@ -289,14 +333,21 @@ const ProfileCover = (props) => {
       const rect = photoEditor.getCroppingRect();
       const { fileName, file } = coverState;
       const { scale } = coverCrop;
+      if (!fileName || !file) {
+        showValidationError(
+          "Something when wrong when upload your file",
+          validateResult.message
+        );
+        return;
+      }
 
       let formData = new FormData();
-      formData.append("xAxis", rect.x);
-      formData.append("yAxis", rect.y);
-      formData.append("width", rect.width);
-      formData.append("height", rect.height);
+      formData.append("xAxis", rect.x.toString());
+      formData.append("yAxis", rect.y.toString());
+      formData.append("width", rect.width.toString());
+      formData.append("height", rect.height.toString());
       formData.append("fileName", fileName);
-      formData.append("scale", scale);
+      formData.append("scale", scale.toString());
       formData.append("file", file);
 
       await props
@@ -318,7 +369,7 @@ const ProfileCover = (props) => {
     });
   };
 
-  const onLoadSuccess = (e) => {
+  const onLoadSuccess = (e: ImageState) => {
     const { canEdit } = props;
 
     const isValid = e.width > 1000 && e.height > 300;
@@ -369,7 +420,7 @@ const ProfileCover = (props) => {
 
   return (
     <Wrap>
-      {!!isInUpdateMode ? (
+      {isInUpdateMode ? (
         <Fragment>
           {userCover && userCover.id ? (
             <Thumbnail
@@ -393,7 +444,7 @@ const ProfileCover = (props) => {
               isShown={showDeletePopover}
               target="DeleteCover"
               title="Please confirm your cover photo deletion?"
-              onExecute={(e) => onDelete()}
+              onExecute={onDelete}
             />
             <ButtonOutlineLight id="DeleteCover" size="sm">
               <FontAwesomeIcon icon="trash-alt" />
@@ -402,7 +453,7 @@ const ProfileCover = (props) => {
         </Fragment>
       ) : (
         <Fragment>
-          {isLogin && currentUser.userIdentityId === userIdentityId ? (
+          {isLogin && currentUser?.userIdentityId === userIdentityId ? (
             <EditButton size="sm" onClick={turnOnUpdateMode}>
               <FontAwesomeIcon icon="pencil-alt" />
             </EditButton>

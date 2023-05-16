@@ -18,7 +18,12 @@ const List = styled(VerticalList)`
   }
 `;
 
-const FarmSuggestions = (props) => {
+type Props = {
+  loading?: boolean;
+  data?: any;
+};
+
+const FarmSuggestions = (props: Props) => {
   const { loading, data } = props;
   if (loading) {
     return <LoadingBar />;
@@ -30,8 +35,8 @@ const FarmSuggestions = (props) => {
   const { farms: farmsData } = data;
   const { collections } = farmsData;
 
-  let farms = collections.map((farm) => {
-    let pictureUrl = null;
+  let farms = collections.map((farm: any) => {
+    let pictureUrl = "";
     if (farm.pictures && farm.pictures.length > 0) {
       const picture = farm.pictures[0];
       if (picture.pictureId > 0) {
@@ -55,7 +60,7 @@ const FarmSuggestions = (props) => {
         <FifthHeadingNeutralTitle>Visit other farms</FifthHeadingNeutralTitle>
         <Root>
           <List>
-            {farms.map((farm, index) => (
+            {farms.map((farm: any, index: number) => (
               <FarmSuggestionItem key={farm.id} farm={farm} index={index} />
             ))}
           </List>

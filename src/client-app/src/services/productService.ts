@@ -3,7 +3,7 @@ import axios from "axios";
 import BaseService from "./baseService";
 
 const ProductService = class extends BaseService {
-  create = async (request) => {
+  create = async (request: any) => {
     return axios.post(apiConfig.paths.products.post.postProduct, request, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -12,7 +12,7 @@ const ProductService = class extends BaseService {
     });
   };
 
-  update = async (request) => {
+  update = async (request: any) => {
     const id = request.get("id");
     return axios.put(
       `${apiConfig.paths.products.put.putProduct}/${id}`,
@@ -25,7 +25,7 @@ const ProductService = class extends BaseService {
     );
   };
 
-  delete = async (id) => {
+  delete = async (id: number) => {
     return axios.delete(
       `${apiConfig.paths.products.delete.deleteProduct}/${id}`
     );

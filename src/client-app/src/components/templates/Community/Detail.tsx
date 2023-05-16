@@ -2,7 +2,9 @@ import * as React from "react";
 import { AnchorLink } from "../../atoms/Links";
 import styled from "styled-components";
 import { Thumbnail } from "../../molecules/Thumbnails";
-import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
+import Breadcrumb, {
+  IBreadcrumbItem,
+} from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import Overlay from "../../atoms/Overlay";
 import { PanelDefault } from "../../molecules/Panels";
@@ -40,7 +42,12 @@ const ThumbnailOverlay = styled(Overlay)`
   bottom: 0;
 `;
 
-export default function (props) {
+type Props = {
+  community?: any;
+  breadcrumbs: IBreadcrumbItem[];
+};
+
+const Detail = (props: Props) => {
   const { community, breadcrumbs } = props;
   return (
     <PanelDefault>
@@ -56,4 +63,6 @@ export default function (props) {
       <BreadCrumbNav list={breadcrumbs} />
     </PanelDefault>
   );
-}
+};
+
+export default Detail;

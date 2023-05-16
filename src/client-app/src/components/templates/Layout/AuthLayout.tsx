@@ -31,11 +31,15 @@ const Wrap = styled.div`
   }
 `;
 
+interface Props {
+  children?: any;
+}
+
 // The layout for login, signup or forgot password
-const AuthLyaout = (props) => {
+const AuthLyaout = (props: Props) => {
   const { children } = props;
   const renderBody = () => {
-    var isValid = isTokenValid();
+    const isValid = isTokenValid();
     if (isValid) {
       return (
         <AuthBanner

@@ -36,7 +36,7 @@ interface AdsSuggestionPanelProps extends HTMLAttributes<HTMLLIElement> {
   data: AdsSuggestionData;
 }
 
-const AdsSuggestionPanel: React.FC<AdsSuggestionPanelProps> = (props) => {
+const AdsSuggestionPanel = (props: AdsSuggestionPanelProps) => {
   const { data, className, index } = props;
   return (
     <ListItem

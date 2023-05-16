@@ -16,8 +16,15 @@ const Wrapper = styled.div`
   }
 `;
 
+interface Props {
+  isLoading: boolean;
+  hasData: boolean;
+  hasError: boolean;
+  children?: any;
+}
+
 // The layout for User profile page
-const ProfileLayout = (props) => {
+const ProfileLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   return (
     <>

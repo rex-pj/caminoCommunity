@@ -1,8 +1,11 @@
+import { InputHTMLAttributes } from "react";
 import styled from "styled-components";
+
+interface ITextboxProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 export const PrimaryTextbox = styled.input.attrs((p) => ({
   type: p.type === "password" ? "password" : p.type,
-}))`
+}))<ITextboxProps>`
   height: ${(p) => p.theme.size.normal};
   border: 1px solid ${(p) => p.theme.color.primaryBg};
   padding: 6px 5px;

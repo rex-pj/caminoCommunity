@@ -2,12 +2,12 @@ import { initStore } from "./index";
 
 const configureStore = () => {
   const actions = {
-    NOTIFY: (curState, payload) => {
+    NOTIFY: (curState: any, payload: any) => {
       curState.notifications.push(payload);
       const updatedNotifications = [...curState.notifications];
       return { notifications: updatedNotifications };
     },
-    UNNOTIFY: (curState, payload) => {
+    UNNOTIFY: (curState: any, payload: any) => {
       let updatedNotifications = [...curState.notifications];
 
       if (payload) {

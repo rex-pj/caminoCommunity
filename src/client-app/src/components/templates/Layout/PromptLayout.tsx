@@ -29,7 +29,12 @@ const Wrap = styled.div`
   }
 `;
 
-const PromptLayout = ({ children }) => {
+interface Props {
+  children?: any;
+}
+
+const PromptLayout = (props: Props) => {
+  const { children } = props;
   return (
     <MasterLayout>
       <Root>

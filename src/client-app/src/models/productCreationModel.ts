@@ -1,3 +1,5 @@
+import { IProductAttribute } from "./productAttributesModel";
+
 class ProductCreationModel {
   name: ValidationFormControl<string>;
   price: ValidationFormControl<number>;
@@ -6,7 +8,7 @@ class ProductCreationModel {
   farms: ValidationFormControl<any[]>;
   pictures: FormControl<any[]>;
   id: FormControl<number>;
-  productAttributes: FormControl<any[]>;
+  productAttributes: FormControl<IProductAttribute[]>;
   [index: string]: any;
   constructor() {
     this.name = new ValidationFormControl("", {
@@ -52,7 +54,7 @@ class ProductCreationModel {
       isValid: true,
     });
 
-    this.productAttributes = new FormControl([], {
+    this.productAttributes = new FormControl<IProductAttribute[]>([], {
       isValid: true,
     });
   }

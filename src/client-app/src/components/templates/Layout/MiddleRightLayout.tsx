@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import * as React from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
 import { farmQueries, userQueries } from "../../../graphql/fetching/queries";
@@ -23,8 +24,15 @@ const Wrapper = styled.div`
   }
 `;
 
+interface Props {
+  isLoading: boolean;
+  hasData: boolean;
+  hasError: boolean;
+  children?: any;
+}
+
 // The layout default like home, products, articles or farms index page
-const DefaultLayout = (props) => {
+const MiddleRightLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
   const [fetchFarms, { loading: suggestFarmloading, data: suggestFarmData }] =
@@ -107,4 +115,4 @@ const DefaultLayout = (props) => {
   );
 };
 
-export default DefaultLayout;
+export default MiddleRightLayout;

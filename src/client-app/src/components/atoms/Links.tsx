@@ -8,7 +8,7 @@ interface LinksProps extends LinkProps {
 const AnchorLink: React.FC<LinksProps> = (props) => {
   const { children, target, to, className } = props;
   const { pathname } = useLocation();
-  let currentPath: string;
+  let currentPath: string = "";
   if (pathname) {
     currentPath = pathname.split(":") ? pathname.split(":")[0] : pathname;
   }

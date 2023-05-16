@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import * as React from "react";
+import { useRef, useEffect, useState } from "react";
 import ListScroll from "../../molecules/ListScroll";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import styled from "styled-components";
@@ -97,62 +98,78 @@ const NextButton = styled(NavigateButton)`
   right: ${(p) => p.theme.size.exTiny};
 `;
 
-export default function (props) {
-  const currentRef = useRef();
+type Props = {
+  displayNumber?: number;
+  images?: ThumbnailPicture[];
+  currentImage?: ThumbnailPicture;
+};
+
+class ThumbnailPicture {
+  groupIndex?: number;
+  index?: number;
+  pictureUrl?: string;
+  url?: string;
+  name?: string;
+}
+
+const Index = (props: Props) => {
+  const currentRef = useRef<any>();
   const { images, currentImage } = props;
   let { displayNumber } = props;
-  const numberOfImages = images.length;
+  const numberOfImages = images?.length ?? 0;
   const numberOfDisplay = displayNumber ? displayNumber : numberOfImages;
-  const [thumbnailPicture, setThumbnailPicture] = useState({});
+  const [thumbnailPicture, setThumbnailPicture] = useState<ThumbnailPicture>(
+    new ThumbnailPicture()
+  );
 
-  const renderRelationImages = (relationImages) => {
-    if (relationImages) {
-      let groupIndex = 0;
-      relationImages = relationImages.map((item, index) => {
-        if (index > 0 && index % numberOfDisplay === 0) {
-          groupIndex += 1;
-        }
-        item.groupIndex = groupIndex;
-        item.index = index;
-
-        return item;
-      });
-
-      relationImages = relationImages.filter(
-        (data) => data.groupIndex === thumbnailPicture.groupIndex
-      );
-
-      return relationImages.map((item, index) => {
-        let className =
-          index === 0
-            ? "first-item"
-            : index === numberOfDisplay - 1
-            ? "last-item"
-            : "";
-
-        if (item === thumbnailPicture) {
-          className += " actived";
-        }
-
-        return (
-          <ThumbnailItem
-            className={className}
-            key={index}
-            src={item.url}
-            alt={item.name}
-            onClick={(e) => onChangeThumbnail(item)}
-          />
-        );
-      });
-    } else {
-      return null;
+  const renderRelationImages = (relationImages?: ThumbnailPicture[]): any[] => {
+    if (!relationImages) {
+      return [];
     }
+
+    let groupIndex = 0;
+    const groupImages = relationImages.map((item, index) => {
+      if (index > 0 && index % numberOfDisplay === 0) {
+        groupIndex += 1;
+      }
+      item.groupIndex = groupIndex;
+      item.index = index;
+
+      return item;
+    });
+
+    const filteredImages = groupImages.filter(
+      (data) => data.groupIndex === thumbnailPicture.groupIndex
+    );
+
+    return filteredImages.map((item, index) => {
+      let className = "";
+      if (index === 0) {
+        className = "first-item";
+      } else if (index === numberOfDisplay - 1) {
+        className = "last-item";
+      }
+
+      if (item === thumbnailPicture) {
+        className += " actived";
+      }
+
+      return (
+        <ThumbnailItem
+          className={className}
+          key={index}
+          src={item.url}
+          alt={item.name}
+          onClick={(e) => onChangeThumbnail(item)}
+        />
+      );
+    });
   };
 
-  const onChangeThumbnail = (item) => {
+  const onChangeThumbnail = (item: ThumbnailPicture) => {
     const { images } = props;
-    images.map((item) => {
-      return item;
+    images?.forEach((image) => {
+      return image;
     });
 
     setThumbnailPicture(item);
@@ -160,8 +177,12 @@ export default function (props) {
 
   const onNext = () => {
     const { images } = props;
-    let image = null;
-    if (thumbnailPicture.index < numberOfImages - 1) {
+    if (!images || images.length <= 1) {
+      return;
+    }
+
+    let image: ThumbnailPicture;
+    if (thumbnailPicture.index && thumbnailPicture.index < numberOfImages - 1) {
       image = images[thumbnailPicture.index + 1];
     } else {
       image = images[0];
@@ -172,8 +193,11 @@ export default function (props) {
 
   const onPrev = () => {
     const { images } = props;
-    let image = null;
-    if (thumbnailPicture.index > 0) {
+    if (!images || images.length <= 1) {
+      return;
+    }
+    let image: ThumbnailPicture;
+    if (thumbnailPicture.index && thumbnailPicture.index > 0) {
       image = images[thumbnailPicture.index - 1];
     } else {
       image = images[numberOfImages - 1];
@@ -182,47 +206,53 @@ export default function (props) {
   };
 
   useEffect(() => {
+    if (!currentImage) {
+      return;
+    }
     setThumbnailPicture(currentImage);
   }, [currentImage]);
 
   useEffect(() => {
-    var thumbnailRef = currentRef.current;
+    const thumbnailRef = currentRef.current;
     thumbnailRef.addEventListener("keydown", onChangeImage, false);
     return () => {
       thumbnailRef.removeEventListener("keydown", onChangeImage);
     };
   });
 
-  const onChangeImage = (e) => {
-    var originator = e.keyCode || e.which;
+  const onChangeImage = (e: KeyboardEvent) => {
+    const originator = e.key;
 
-    if (originator === 39) {
+    if (originator === "39") {
       onNext();
-    } else if (originator === 37) {
+    } else if (originator === "37") {
       onPrev();
     }
   };
 
-  const onMouseOvered = (e) => {
+  const onMouseOvered = (e: React.MouseEvent<HTMLDivElement>) => {
     currentRef.current.focus();
   };
 
   const renderThumbnailPicture = () => {
+    if (!images || images.length === 0 || !currentImage) {
+      return null;
+    }
     const isThumbnailInList = images.some((x) => {
       return x.pictureUrl === currentImage.pictureUrl;
     });
-    if (isThumbnailInList) {
-      return (
-        <Thumbnail src={thumbnailPicture.pictureUrl} onClick={onNext} alt="" />
-      );
+    if (!isThumbnailInList) {
+      return null;
     }
-    return null;
+    return (
+      <Thumbnail src={thumbnailPicture.pictureUrl} onClick={onNext} alt="" />
+    );
   };
 
   const canSlide = numberOfImages > 1;
   return (
     <PostThumbnail>
-      <MainThumbnail onMouseOver={onMouseOvered} ref={currentRef} tabIndex="1">
+      <MainThumbnail onMouseOver={onMouseOvered} ref={currentRef} tabIndex={1}>
         {canSlide ? (
           <NavigateLeft onClick={onPrev}>
             <PrevButton>
@@ -242,9 +272,11 @@ export default function (props) {
       {canSlide ? (
         <HorizontalListScroll
           numberOfDisplay={numberOfDisplay}
-          list={()=>renderRelationImages(images)}
+          list={() => renderRelationImages(images)}
         />
       ) : null}
     </PostThumbnail>
   );
-}
+};
+
+export default Index;

@@ -1,7 +1,13 @@
 import * as React from "react";
 import { SuggestionPanel } from "../SuggestionPanels";
 
-export default (props) => {
+type Props = {
+  className?: string;
+  index: number;
+  community?: any;
+};
+
+const CommunitySuggestionItem = (props: Props) => {
   const { className, index } = props;
   let { community } = props;
 
@@ -15,3 +21,5 @@ export default (props) => {
     <SuggestionPanel data={community} className={className} index={index} />
   );
 };
+
+export default CommunitySuggestionItem;

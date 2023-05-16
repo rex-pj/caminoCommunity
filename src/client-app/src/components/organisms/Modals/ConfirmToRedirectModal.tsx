@@ -1,8 +1,22 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 
-export default function (props) {
+type Props = {
+  children?: any;
+  data: {
+    title: string;
+    children?: any;
+    executeButtonName: string;
+  };
+  execution: {
+    onSucceed: () => void;
+  };
+  closeModal: () => void;
+};
+
+const ConfirmToRedirectModal = (props: Props) => {
   const { children, data, execution } = props;
   const { executeButtonName } = data;
   const { onSucceed } = execution;
@@ -20,4 +34,6 @@ export default function (props) {
       </PanelFooter>
     </Fragment>
   );
-}
+};
+
+export default ConfirmToRedirectModal;

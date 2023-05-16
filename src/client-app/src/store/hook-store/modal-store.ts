@@ -2,27 +2,27 @@ import { initStore } from "./index";
 
 const configureStore = () => {
   const actions = {
-    OPEN_MODAL: (curState, payload) => {
+    OPEN_MODAL: (curState: any, payload: any) => {
       return { ...payload };
     },
-    CLOSE_MODAL: (curState, payload) => {
+    CLOSE_MODAL: (curState: any, payload: any) => {
       return {
         options: {
-          isOpen: false
-        }
+          isOpen: false,
+        },
       };
-    }
+    },
   };
   initStore(actions, {
     data: {
       imageUrl: null,
       title: null,
-      canEdit: false
+      canEdit: false,
     },
     options: {
       isOpen: false,
-      unableClose: false
-    }
+      unableClose: false,
+    },
   });
 };
 

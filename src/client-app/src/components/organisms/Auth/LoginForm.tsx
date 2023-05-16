@@ -170,7 +170,7 @@ const LoginForm = (props: LoginFormProps) => {
             <FormRow>
               <Label>{t("email_label")}</Label>
               <Textbox
-                placeholder={t("please_input_your_email")}
+                placeholder={t("please_input_your_email").toString()}
                 type="email"
                 name="username"
                 onChange={(e) => handleInputChange(e)}
@@ -180,7 +180,7 @@ const LoginForm = (props: LoginFormProps) => {
             <FormRow>
               <Label>{t("password_label")}</Label>
               <Textbox
-                placeholder={t("please_input_your_password")}
+                placeholder={t("please_input_your_password").toString()}
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}

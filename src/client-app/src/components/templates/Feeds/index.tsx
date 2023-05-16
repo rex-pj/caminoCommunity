@@ -2,7 +2,31 @@ import * as React from "react";
 import { Fragment } from "react";
 import FeedItem from "../../organisms/Feeds/FeedItem";
 
-export default (props) => {
+export interface IAdvancedSearchResult {
+  farms: any[];
+  products: any[];
+  articles: any[];
+  users: any[];
+  totalFarmPage: number;
+  totalProductPage: number;
+  totalArticlePage: number;
+  totalUserPage: number;
+  page: number;
+  userFilterByName?: string;
+}
+
+type Props = {
+  feeds: any[];
+  baseUrl: string;
+  totalPage?: number;
+  currentPage?: number;
+  onOpenDeleteConfirmation?: (e: any, onDeleteFunc: any) => void;
+  onDeleteArticle?: (id: number) => Promise<any>;
+  onDeleteFarm?: (id: number) => Promise<any>;
+  onDeleteProduct?: (id: number) => Promise<any>;
+};
+
+const index = (props: Props) => {
   const {
     feeds,
     onDeleteArticle,
@@ -13,7 +37,7 @@ export default (props) => {
 
   return (
     <Fragment>
-      {feeds.map((item, index) => (
+      {feeds.map((item: any, index: number) => (
         <FeedItem
           key={index}
           feed={item}
@@ -26,3 +50,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default index;

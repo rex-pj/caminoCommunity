@@ -1,3 +1,4 @@
+import { DefaultTFuncReturn } from "i18next";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import styled from "styled-components";
@@ -34,11 +35,11 @@ const ChildItem = styled.div`
 `;
 
 interface LabelAndInfoProps extends HTMLAttributes<HTMLDivElement> {
-  label?: string;
+  label?: string | DefaultTFuncReturn;
   isEmail?: boolean;
 }
 
-function renderChildren(isEmaill: boolean, children: any) {
+function renderChildren(isEmaill?: boolean, children?: any) {
   if (isEmaill) {
     return <p>{children}</p>;
   }

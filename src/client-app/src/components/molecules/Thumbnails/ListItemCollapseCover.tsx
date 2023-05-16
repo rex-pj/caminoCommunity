@@ -33,11 +33,11 @@ const ThumbnailOverlay = styled(Overlay)`
   cursor: pointer;
 `;
 
-interface ListItemCollapseCoverProps {
+interface Props {
   imageUrl?: string;
 }
 
-const ListItemCollapseCover: React.FC<ListItemCollapseCoverProps> = (props) => {
+const ListItemCollapseCover = (props: Props) => {
   const { imageUrl } = props;
   const [isImageExpanded, setImageExpand] = useState(false);
   function expandImage() {
@@ -50,27 +50,28 @@ const ListItemCollapseCover: React.FC<ListItemCollapseCoverProps> = (props) => {
 
   if (!imageUrl) {
     return <NoImage className="no-image mt-2"></NoImage>;
-  } else if (!isImageExpanded) {
+  }
+  if (!isImageExpanded) {
     return (
       <CollapsedThumbnail>
         <Thumbnail src={imageUrl} alt="" />
         <ThumbnailOverlay onClick={expandImage}></ThumbnailOverlay>
       </CollapsedThumbnail>
     );
-  } else if (isImageExpanded) {
-    return (
-      <ExpandedThumbnail>
-        <Thumbnail src={imageUrl} alt="" />
-        <ButtonOutlineCircleLight
-          type="button"
-          onClick={collapseImage}
-          className="btn-expand"
-        >
-          <FontAwesomeIcon icon="angle-double-up"></FontAwesomeIcon>
-        </ButtonOutlineCircleLight>
-      </ExpandedThumbnail>
-    );
   }
+
+  return (
+    <ExpandedThumbnail>
+      <Thumbnail src={imageUrl} alt="" />
+      <ButtonOutlineCircleLight
+        type="button"
+        onClick={collapseImage}
+        className="btn-expand"
+      >
+        <FontAwesomeIcon icon="angle-double-up"></FontAwesomeIcon>
+      </ButtonOutlineCircleLight>
+    </ExpandedThumbnail>
+  );
 };
 
 export default ListItemCollapseCover;

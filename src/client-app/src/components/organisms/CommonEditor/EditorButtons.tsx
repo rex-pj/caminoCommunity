@@ -59,7 +59,7 @@ const DefaultButton: React.FC<DefaultButtonProps> = (props) => {
   const onToggle = (e: React.MouseEvent<HTMLElement>) => {
     const event: DefaultButtonToggleEvent = {
       target: {
-        value: props.style,
+        value: props.style ?? "",
       },
       preventDefault: e.preventDefault,
     };

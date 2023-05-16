@@ -9,7 +9,6 @@ import { ImageInfoModel } from "../../../models/imageInfoModel";
 import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AtomicBlockUtils, EditorState } from "draft-js";
-import { fileToBase64 } from "../../../utils/Helper";
 import { ImageUploadOnChangeEvent } from "../UploadControl/ImageUpload";
 
 const Root = styled.div`
@@ -89,17 +88,25 @@ const EditorImageModal: React.FC<EditorImageModalProps> = (props) => {
 
   const handleImageChange = async (e: ImageUploadOnChangeEvent) => {
     const file = e.file;
+    if (!convertImageCallback) {
+      return;
+    }
+
     await convertImageCallback(file).then(async (fileData: any) => {
       const { file } = fileData;
       await handleImageUrlChange(e.target.name, file);
     });
   };
 
-  const handleImageUrlChange = async (formName: string, src: string) => {
+  const handleImageUrlChange = async (formName: string, src?: string) => {
     let data = imageData || new ImageInfoModel();
     if (!src) {
       data[formName].isValid = false;
       data[formName].value = "";
+      return;
+    }
+
+    if (!onImageValidate) {
       return;
     }
 
@@ -109,7 +116,6 @@ const EditorImageModal: React.FC<EditorImageModalProps> = (props) => {
       .then(async (response: any) => {
         data[formName].isValid = true;
         data[formName].value = src;
-        // const previewSrc = await fileToBase64(file);
         setImageSrc(src);
         setImageData({
           ...data,

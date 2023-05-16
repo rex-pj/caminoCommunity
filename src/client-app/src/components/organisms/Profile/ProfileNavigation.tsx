@@ -61,7 +61,14 @@ const UserDropdown = styled(DropdownButton)`
   }
 `;
 
-export default (function (props) {
+type Props = {
+  to?: string;
+  className?: string;
+  userId?: string;
+  baseUrl: string;
+};
+
+const ProfileNavigation = (props: Props) => {
   const { t } = useTranslation();
   const { className, userId, baseUrl } = props;
   const { currentUser, isLogin } = useContext(SessionContext);
@@ -78,7 +85,7 @@ export default (function (props) {
     },
   ];
 
-  const otherUserDropdown = [];
+  const otherUserDropdown: any[] = [];
 
   const navs = [
     {
@@ -107,6 +114,17 @@ export default (function (props) {
     },
   ];
 
+  const renderUserDropdown = () => {
+    if (!isLogin) {
+      return null;
+    }
+    if (currentUser?.userIdentityId === userId) {
+      return <UserDropdown icon="ellipsis-v" dropdown={currentUserDropdown} />;
+    }
+
+    return <UserDropdown icon="ellipsis-v" dropdown={otherUserDropdown} />;
+  };
+
   return (
     <Root>
       <div className="row">
@@ -116,6 +134,7 @@ export default (function (props) {
               return (
                 <ListItem key={nav.relative_url}>
                   <ProfileNavLink
+                    to={props.to ?? ""}
                     pageNav={nav.relative_url}
                     {...props}
                     userId={userId}
@@ -129,14 +148,10 @@ export default (function (props) {
           </HorizontalList>
         </div>
 
-        <div className="col-auto">
-          {isLogin && currentUser.userIdentityId === userId ? (
-            <UserDropdown icon="ellipsis-v" dropdown={currentUserDropdown} />
-          ) : isLogin ? (
-            <UserDropdown icon="ellipsis-v" dropdown={otherUserDropdown} />
-          ) : null}
-        </div>
+        <div className="col-auto">{renderUserDropdown()}</div>
       </div>
     </Root>
   );
-});
+};
+
+export default ProfileNavigation;

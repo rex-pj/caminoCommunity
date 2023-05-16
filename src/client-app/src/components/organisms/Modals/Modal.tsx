@@ -1,4 +1,5 @@
-import React, { useState, Fragment } from "react";
+import * as React from "react";
+import { useState, Fragment } from "react";
 import styled from "styled-components";
 import {
   PanelDefault,
@@ -9,7 +10,12 @@ import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStore } from "../../../store/hook-store";
 
-const Root = styled(PanelDefault)`
+interface RootProps {
+  position?: string;
+  size?: string;
+}
+
+const Root = styled(PanelDefault)<RootProps>`
   top: 10%;
   left: 0;
   right: 0;
@@ -59,7 +65,11 @@ const Backdrop = styled.div`
   z-index: 99;
 `;
 
-export default ({ ...props }) => {
+type Props = {
+  className?: string;
+};
+
+const Modal = (props: Props) => {
   const [showBackdrop] = useState(true);
   const [isDisabled, setDisabled] = useState(true);
   const { className } = props;
@@ -112,3 +122,5 @@ export default ({ ...props }) => {
     </Fragment>
   );
 };
+
+export default Modal;

@@ -3,7 +3,7 @@ import axios from "axios";
 import BaseService from "./baseService";
 
 const MediaService = class extends BaseService {
-  validatePicture = (request) => {
+  validatePicture = (request: { url?: string; file?: File }) => {
     return axios.put(apiConfig.paths.pictures.put.putValidatePicture, request);
   };
 };

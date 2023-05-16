@@ -1,7 +1,13 @@
 import * as React from "react";
 import { SuggestionPanel } from "../SuggestionPanels";
 
-export default (props) => {
+type Props = {
+  className?: string;
+  index: number;
+  farm?: any;
+};
+
+const FarmSuggestionItem = (props: Props) => {
   const { className, index } = props;
   let { farm } = props;
 
@@ -13,3 +19,5 @@ export default (props) => {
   };
   return <SuggestionPanel data={farm} className={className} index={index} />;
 };
+
+export default FarmSuggestionItem;

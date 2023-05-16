@@ -179,7 +179,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             <FormRow>
               <Label>E-mail</Label>
               <Textbox
-                placeholder={t("please_input_your_email")}
+                placeholder={t("please_input_your_email").toString()}
                 type="email"
                 name="email"
                 autoComplete="off"

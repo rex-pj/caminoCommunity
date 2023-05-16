@@ -201,7 +201,7 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
           <Label>{t("new_password_label")}</Label>
           <Textbox
             autoComplete="off"
-            placeholder={t("please_input_new_password")}
+            placeholder={t("please_input_new_password").toString()}
             type="password"
             name="password"
             onChange={(e) => handleInputChange(e)}
@@ -212,7 +212,7 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
           <Label>{t("confirm_new_password_label")}</Label>
           <Textbox
             autoComplete="off"
-            placeholder={t("please_confirm_new_password")}
+            placeholder={t("please_confirm_new_password").toString()}
             type="password"
             name="confirmPassword"
             onChange={(e) => handleInputChange(e)}

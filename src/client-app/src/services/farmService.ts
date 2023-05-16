@@ -3,7 +3,7 @@ import axios from "axios";
 import BaseService from "./baseService";
 
 const FarmService = class extends BaseService {
-  create = async (request) => {
+  create = async (request: any) => {
     return axios.post(apiConfig.paths.farms.post.postFarm, request, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -12,7 +12,7 @@ const FarmService = class extends BaseService {
     });
   };
 
-  update = async (request) => {
+  update = async (request: any) => {
     const id = request.get("id");
     return axios.put(`${apiConfig.paths.farms.put.putFarm}/${id}`, request, {
       headers: {
@@ -21,7 +21,7 @@ const FarmService = class extends BaseService {
     });
   };
 
-  delete = async (id) => {
+  delete = async (id: number) => {
     return axios.delete(`${apiConfig.paths.farms.delete.deleteFarm}/${id}`);
   };
 };

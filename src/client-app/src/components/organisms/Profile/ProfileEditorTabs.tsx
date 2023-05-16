@@ -1,10 +1,28 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import ArticleEditor from "../Article/ArticleEditor";
 import ProductEditor from "../Product/ProductEditor";
 import FarmEditor from "../Farm/FarmEditor";
 import EditorTabs from "./EditorTabs";
 
-const ProfileEditorTabs = (props) => {
+type Props = {
+  convertImagefile: (e: any) => Promise<any>;
+  onImageValidate: (e: any) => Promise<any>;
+  searchArticleCategories: (e: any) => Promise<any>;
+  onArticlePost: (e: any) => Promise<any>;
+  showValidationError: (title: string, message: string) => void;
+  searchProductCategories: (e: any) => Promise<any>;
+  searchProductAttributes: (e: any) => Promise<any>;
+  searchProductAttributeControlTypes: (e: any) => Promise<any>;
+  onProductPost: (e: any) => Promise<number>;
+  searchFarms: (e: any) => Promise<any>;
+  onFarmPost: (e: any) => Promise<number>;
+  searchFarmTypes: (e: any) => Promise<any>;
+  editorMode: string;
+  onToggleCreateMode: (editorMode: string) => void;
+};
+
+const ProfileEditorTabs = (props: Props) => {
   const {
     convertImagefile,
     onImageValidate,

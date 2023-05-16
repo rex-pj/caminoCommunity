@@ -2,8 +2,18 @@ import * as React from "react";
 import { VerticalList } from "../../molecules/List";
 import { LabelSecondary } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
+import {
+  IProductAttribute,
+  IProductAttributeValue,
+} from "../../../models/productAttributesModel";
 
-const CheckBoxesAttributeValues = (props) => {
+type Props = {
+  attributeRelationValues?: IProductAttributeValue[];
+  attribute: IProductAttribute;
+  price?: number;
+};
+
+const CheckboxesAttributeValues = (props: Props) => {
   const { attributeRelationValues, attribute, price } = props;
   if (!attributeRelationValues) {
     return null;
@@ -31,4 +41,4 @@ const CheckBoxesAttributeValues = (props) => {
   );
 };
 
-export default CheckBoxesAttributeValues;
+export default CheckboxesAttributeValues;

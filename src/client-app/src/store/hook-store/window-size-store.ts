@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function getBreakPoint(windowWidth) {
+function getBreakPoint(windowWidth: number) {
   if (!windowWidth) {
     return undefined;
   }

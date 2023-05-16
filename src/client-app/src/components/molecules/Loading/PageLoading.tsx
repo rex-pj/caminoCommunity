@@ -13,10 +13,10 @@ interface LoadingBodyProps {
   onSearching: any;
 }
 
-const LoadingBody: React.FC<LoadingBodyProps> = (props) => {
+const LoadingBody = (props: LoadingBodyProps) => {
   return (
     <>
-      <Header onSearching={props.onSearching} />
+      <Header />
       <div className="container-fluid px-lg-5">
         <LoadingBlock />
       </div>
@@ -24,16 +24,16 @@ const LoadingBody: React.FC<LoadingBodyProps> = (props) => {
   );
 };
 
-interface PageLoadingProps {
+interface Props {
   children?: any;
 }
 
-const PageLoading: React.FC<PageLoadingProps> = (...rest) => {
+const PageLoading = (props: Props) => {
   const onSearching = (value: any) => {};
 
   return (
     <MasterLayout
-      {...rest}
+      {...props}
       component={<LoadingBody onSearching={onSearching} />}
     />
   );

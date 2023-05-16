@@ -1,19 +1,22 @@
-import React, { useEffect } from "react";
+import * as React from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import NotifyItem from "./NotifyItem";
 import { useStore } from "../../../store/hook-store";
 
 const Root = styled.div`
   position: fixed;
-  right: ${p => p.theme.size.distance};
-  bottom: ${p => p.theme.size.distance};
+  right: ${(p) => p.theme.size.distance};
+  bottom: ${(p) => p.theme.size.distance};
   z-index: 100;
 `;
 
-export default () => {
+type Props = {};
+
+const Notifications = (props: Props) => {
   const [state, dispatch] = useStore(true);
 
-  const closePopup = notify => {
+  const closePopup = (notify: any) => {
     dispatch("UNNOTIFY", notify);
   };
 
@@ -27,7 +30,7 @@ export default () => {
   return (
     <Root>
       {notifications
-        ? notifications.map((item, index) => {
+        ? notifications.map((item: any, index: number) => {
             return (
               <NotifyItem
                 key={index}
@@ -41,3 +44,5 @@ export default () => {
     </Root>
   );
 };
+
+export default Notifications;

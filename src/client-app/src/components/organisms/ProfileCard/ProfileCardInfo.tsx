@@ -47,7 +47,11 @@ const ChildItem = styled.li`
   }
 `;
 
-const ProfileCard = (props) => {
+interface Props {
+  author?: any;
+}
+
+const ProfileCard = (props: Props) => {
   const { author } = props;
   let authorInfo = { ...author };
   if (!author) {
@@ -65,7 +69,7 @@ const ProfileCard = (props) => {
           {authorInfo.description ? (
             <Fragment>
               <InfoList>
-                <ChildItem isLink={false}>
+                <ChildItem>
                   <FontAwesomeIcon icon="quote-left" />
                   <span>{authorInfo.description}</span>
                 </ChildItem>
@@ -75,12 +79,12 @@ const ProfileCard = (props) => {
           <Label>Title</Label>
           <InfoList>
             {farms ? (
-              <ChildItem isLink={false}>
+              <ChildItem>
                 <FontAwesomeIcon icon="user" />
                 <span>Farmer</span>
               </ChildItem>
             ) : (
-              <ChildItem isLink={false}>
+              <ChildItem>
                 <FontAwesomeIcon icon="user" />
                 <span>Visitor</span>
               </ChildItem>
@@ -91,7 +95,7 @@ const ProfileCard = (props) => {
             <Fragment>
               <Label>Address</Label>
               <InfoList>
-                <ChildItem isLink={false}>
+                <ChildItem>
                   <FontAwesomeIcon icon="map-marker-alt" />
                   <span>{authorInfo.address}</span>
                 </ChildItem>
@@ -101,14 +105,12 @@ const ProfileCard = (props) => {
 
           {farms && farms.length > 0 ? (
             <InfoList>
-              {farms.map((farm, index) => {
+              {farms.map((farm: any, index: number) => {
                 const farmUrl = `${UrlConstant.Farm.url}${farm.id}`;
                 return (
-                  <ChildItem key={index} isLink={true}>
+                  <ChildItem key={index}>
                     <FontAwesomeIcon icon="warehouse" />
-                    <AnchorLink to={farmUrl} as={farmUrl}>
-                      {farm.name}
-                    </AnchorLink>
+                    <AnchorLink to={farmUrl}>{farm.name}</AnchorLink>
                   </ChildItem>
                 );
               })}

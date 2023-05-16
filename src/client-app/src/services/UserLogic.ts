@@ -1,4 +1,4 @@
-export const parseUserInfo = (response) => {
+export const parseUserInfo = (response: any) => {
   if (!response) {
     return {};
   }
@@ -13,12 +13,12 @@ export const parseUserInfo = (response) => {
     return user;
   }
 
-  const avatar = userPhotos.find((item) => item.photoType === "AVATAR");
+  const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
   if (avatar) {
     user.userAvatar = avatar;
   }
 
-  const cover = userPhotos.find((item) => item.photoType === "COVER");
+  const cover = userPhotos.find((item: any) => item.photoType === "COVER");
   if (cover) {
     user.userCover = cover;
   }

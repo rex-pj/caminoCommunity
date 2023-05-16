@@ -134,3 +134,5 @@ const CommunityListItem: React.FC<CommunityItemProps> = (props) => {
     </Panel>
   );
 };
+
+export default CommunityListItem;

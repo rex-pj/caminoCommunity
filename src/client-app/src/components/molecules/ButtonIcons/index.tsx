@@ -16,14 +16,14 @@ interface ActionButtonProps {
   size?: string;
 }
 
-const ButtonIconPrimary:React.FC<ActionButtonProps> =(props)=> {
+const ButtonIconPrimary = (props: ActionButtonProps) => {
   const { icon, children, className, size } = props;
   return (
     <ButtonPrimary className={className} size={size}>
-      <FontAwesomeIcon icon={icon} />
+      {icon ? <FontAwesomeIcon icon={icon} /> : null}
       <Text>{children}</Text>
     </ButtonPrimary>
   );
-}
+};
 
 export { ButtonIconPrimary };

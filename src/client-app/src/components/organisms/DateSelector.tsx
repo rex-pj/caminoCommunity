@@ -35,7 +35,7 @@ const DateSelector = (props: DateSelectorProps) => {
     month: string;
     year: string;
   }>();
-  const parentRef = useRef<HTMLDivElement>();
+  const parentRef = useRef<any>();
 
   let birthdate = { year: "", month: "", date: "" };
   if (value) {

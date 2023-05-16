@@ -2,6 +2,12 @@ class PictureFormControl extends FormControl<any> {
   public constructor(options?: { isValid?: boolean });
 
   public constructor(value?: any, options?: { isValid?: boolean });
+  public constructor(
+    value?: any,
+    file?: File,
+    pictureId?: number,
+    options?: { isValid?: boolean }
+  );
 
   public constructor(
     value?: any,

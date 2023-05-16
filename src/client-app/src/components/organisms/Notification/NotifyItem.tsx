@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import * as React from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { ButtonTransparent } from "../../atoms/Buttons/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -55,12 +56,26 @@ const Root = styled.div`
   }
 `;
 
-export default (props) => {
+interface INotify {
+  id?: any;
+  type: string;
+  url?: string;
+  title: string;
+  message?: string;
+}
+
+type Props = {
+  closeLatestPopup: () => void;
+  notify: INotify;
+  closePopup: (notify: INotify) => void;
+};
+
+const NotifyItem = (props: Props) => {
   const { closeLatestPopup, notify } = props;
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      closeLatestPopup && closeLatestPopup(notify.id);
-      clearTimeout();
+      closeLatestPopup && closeLatestPopup();
+      clearTimeout(timeOut);
     }, 9000);
 
     return () => {
@@ -81,3 +96,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default NotifyItem;

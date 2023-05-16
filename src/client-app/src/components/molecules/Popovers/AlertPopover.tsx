@@ -44,9 +44,9 @@ const Wrap = styled(PanelDefault)<WrapProps>`
 
 interface AlertPopoverProps {
   target: any;
-  onClose: () => void | undefined;
-  onOpen: () => void | undefined;
-  onExecute: () => void | undefined;
+  onClose?: () => void | undefined;
+  onOpen?: () => void | undefined;
+  onExecute: () => void | Promise<any>;
   isShown: boolean;
   title?: string;
   className?: string;
@@ -59,8 +59,6 @@ const AlertPopover: React.FC<AlertPopoverProps> = (props) => {
     top?: number | string;
   }>({
     isShown: false,
-    left: null,
-    top: null,
   });
 
   useEffect(() => {

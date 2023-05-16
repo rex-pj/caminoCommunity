@@ -1,7 +1,13 @@
 import * as React from "react";
 import { PeopleSuggestionPanel } from "../SuggestionPanels";
 
-export default (props) => {
+type Props = {
+  className?: string;
+  index: number;
+  connection?: any;
+};
+
+const ConnectionSuggestionItem = (props: Props) => {
   const { className, index } = props;
   let { connection } = props;
 
@@ -18,3 +24,5 @@ export default (props) => {
     />
   );
 };
+
+export default ConnectionSuggestionItem;

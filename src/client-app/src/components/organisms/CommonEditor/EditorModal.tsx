@@ -36,7 +36,7 @@ interface EditorModalProps extends HTMLAttributes<HTMLDivElement> {
 const EditorModal: React.FC<EditorModalProps> = (props) => {
   const { className, isOpen, modalBodyComponent: ModalBodyComponent } = props;
 
-  const currentRef = useRef();
+  const currentRef = useRef<any>();
 
   const onClose = () => {
     if (props.onClose) {
@@ -45,6 +45,9 @@ const EditorModal: React.FC<EditorModalProps> = (props) => {
   };
 
   const onAccept = (e: UIEvent) => {
+    if (!props.onAccept) {
+      return;
+    }
     props.onAccept(e);
   };
 

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import * as React from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
 import CommunityInfo from "../Community/CommunityInfo";
@@ -33,8 +34,16 @@ const Column = styled.div`
   margin-top: ${(p) => p.theme.size.normal};
 `;
 
+interface Props {
+  isLoading?: boolean;
+  hasData?: boolean;
+  hasError?: boolean;
+  children?: any;
+  info?: any;
+}
+
 // The layout of Communitys
-const CommunityLayout = (props) => {
+const CommunityLayout = (props: Props) => {
   const { info, children, isLoading, hasData, hasError } = props;
   const [fetchShortcuts, { loading: shortcutLoading, data: shortcutData }] =
     useLazyQuery(navigationQueries.GET_SHORTCUTS);

@@ -3,13 +3,13 @@ import { Fragment } from "react";
 import Notifications from "../../organisms/Notification/Notifications";
 import Modal from "../../organisms/Modals/Modal";
 
-interface MasterLayoutProps {
+interface Props {
   children?: any;
-  component: any;
+  component?: any;
 }
 
 /// the layout with popup and notifications
-const MasterLayout: React.FC<MasterLayoutProps> = (props) => {
+const MasterLayout = (props: Props) => {
   const { children } = props;
   return (
     <Fragment>

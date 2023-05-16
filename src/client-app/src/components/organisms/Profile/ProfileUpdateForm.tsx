@@ -8,6 +8,7 @@ import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
 import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/molecules/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
+import { ProfileUpdateModel } from "../../../models/profileUpdateModel";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -31,37 +32,22 @@ const FormFooter = styled(PanelFooter)`
   padding-right: 0;
 `;
 
-const ProfileUpdateForm = (props) => {
+interface Props {
+  userInfo?: any;
+  onUpdate: (e: any) => Promise<any>;
+  isFormEnabled?: boolean;
+  showValidationError: (title: string, message: string) => void;
+}
+
+const ProfileUpdateForm = (props: Props) => {
   const { userInfo } = props;
 
-  let model = {
-    displayName: {
-      value: userInfo.displayName,
-      validation: {
-        isRequired: true,
-      },
-      isValid: !!userInfo.displayName,
-    },
-    lastname: {
-      value: userInfo.lastname,
-      validation: {
-        isRequired: true,
-      },
-      isValid: !!userInfo.lastname,
-    },
-    firstname: {
-      value: userInfo.firstname,
-      validation: {
-        isRequired: true,
-      },
-      isValid: !!userInfo.firstname,
-    },
-  };
+  const [formData, setFromData] = useState<ProfileUpdateModel>(
+    new ProfileUpdateModel()
+  );
 
-  const [formData, setFromData] = useState(model);
-
-  const onTextboxChange = (e) => {
-    let userData = formData || {};
+  const onTextboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let userData = formData || new ProfileUpdateModel();
     const { name, value } = e.target;
 
     // Validate when input
@@ -85,7 +71,7 @@ const ProfileUpdateForm = (props) => {
     return isFormValid;
   };
 
-  const onUpdate = (e) => {
+  const onUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let isFormValid = true;
@@ -95,14 +81,13 @@ const ProfileUpdateForm = (props) => {
       if (!isFormValid) {
         props.showValidationError(
           "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again",
-          "error"
+          "Something went wrong with your information, please check and input again"
         );
       }
     }
 
-    if (!!isFormValid) {
-      const profileData = {};
+    if (isFormValid) {
+      const profileData: any = {};
       for (const formIdentifier in formData) {
         profileData[formIdentifier] = formData[formIdentifier].value;
       }

@@ -57,7 +57,7 @@ const ProfileAvatar = ({ ...props }) => {
   const { userAvatar } = userInfo;
   const dispatch = useStore(true)[1];
 
-  function onOpenUploadModal(e) {
+  function onOpenUploadModal() {
     dispatch("OPEN_MODAL", {
       data: {
         imageUrl:
@@ -89,8 +89,8 @@ const ProfileAvatar = ({ ...props }) => {
           <EmptyAvatar />
         )}
       </AvatarLink>
-      {!!canEdit ? (
-        <AvatarUpload onClick={(e) => onOpenUploadModal(e)}>
+      {canEdit ? (
+        <AvatarUpload onClick={onOpenUploadModal}>
           <FontAwesomeIcon icon="pencil-alt" />
         </AvatarUpload>
       ) : null}

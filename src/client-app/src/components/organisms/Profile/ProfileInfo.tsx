@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VerticalList } from "../../molecules/List";
 import { format } from "date-fns";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const Root = styled.div`
   position: relative;
@@ -45,12 +46,19 @@ const ChildItem = styled.li`
   }
 `;
 
-const UnserInfoChild = (props) => {
+interface UnserInfoChildProps {
+  className?: string;
+  children?: any;
+  icon?: IconProp;
+  isEmail?: boolean;
+}
+
+const UnserInfoChild = (props: UnserInfoChildProps) => {
   const { className, children, icon, isEmail } = props;
   return children ? (
     <ChildItem className={className}>
       {icon ? <FontAwesomeIcon icon={icon} /> : null}
-      {!!isEmail ? (
+      {isEmail ? (
         <a href={`mailto:${children}`}>{children}</a>
       ) : (
         <span>{children}</span>
@@ -59,7 +67,11 @@ const UnserInfoChild = (props) => {
   ) : null;
 };
 
-const ProfileInfo = (props) => {
+type Props = {
+  userInfo?: any;
+};
+
+const ProfileInfo = (props: Props) => {
   const { userInfo } = props;
 
   return (

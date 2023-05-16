@@ -1,9 +1,20 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import CommunityItem from "../../organisms/Community/CommunityItem";
 import { Pagination } from "../../organisms/Paging";
-import Breadcrumb from "../../organisms/Navigation/Breadcrumb";
+import Breadcrumb, {
+  IBreadcrumbItem,
+} from "../../organisms/Navigation/Breadcrumb";
 
-export default function (props) {
+type Props = {
+  communities: any[];
+  breadcrumbs: IBreadcrumbItem[];
+  totalPage?: number;
+  baseUrl: string;
+  currentPage?: number;
+};
+
+const Index = (props: Props) => {
   const { communities, breadcrumbs, totalPage, baseUrl, currentPage } = props;
 
   return (
@@ -28,4 +39,6 @@ export default function (props) {
       />
     </Fragment>
   );
-}
+};
+
+export default Index;

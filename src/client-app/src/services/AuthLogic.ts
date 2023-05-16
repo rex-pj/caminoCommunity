@@ -6,21 +6,26 @@ import {
 } from "../utils/AppSettings";
 import * as localStorageUtils from "../utils/localStorageUtils";
 import * as cookieUtils from "../utils/cookieUtils";
-import jwtDecode from "jwt-decode";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 export const checkRemember = () => {
   const isRemember = localStorageUtils.getStorageByKey(AUTH_IS_REMEMBER);
-  return isRemember === true || isRemember === "true";
+  return isRemember === "true";
 };
 
-export const getUserToken = (isRemember) => {
+export const getUserToken = (isRemember: boolean): string => {
   if (isRemember) {
-    return localStorageUtils.getStorageByKey(ACCESS_TOKEN);
+    return localStorageUtils.getStorageByKey(ACCESS_TOKEN) ?? "";
   }
-  return cookieUtils.getStorageByKey(ACCESS_TOKEN, { path: "/" });
+  return cookieUtils.getStorageByKey(ACCESS_TOKEN);
 };
 
-export const parseUserSession = (response) => {
+export interface IAuthenticationToken {
+  authenticationToken: string;
+  refreshTokenExpiryTime: string;
+}
+
+export const parseUserSession = (response: any) => {
   const isLogin = isTokenValid();
   const userLanguage = localStorageUtils.getStorageByKey(USER_LANGUAGE);
   const language = userLanguage ? userLanguage : "vn";
@@ -33,8 +38,8 @@ export const parseUserSession = (response) => {
   }
 
   const { currentUser, userPhotos } = response;
-  const avatar = userPhotos?.find((item) => item.photoType === "AVATAR");
-  const cover = userPhotos?.find((item) => item.photoType === "COVER");
+  const avatar = userPhotos?.find((item: any) => item.photoType === "AVATAR");
+  const cover = userPhotos?.find((item: any) => item.photoType === "COVER");
   return {
     currentUser: {
       ...currentUser,
@@ -46,7 +51,7 @@ export const parseUserSession = (response) => {
   };
 };
 
-export const setLogin = (tokenData, isRember) => {
+export const setLogin = (tokenData: any, isRember: boolean) => {
   logOut();
   const { authenticationToken, refreshTokenExpiryTime } = tokenData;
   if (isRember) {
@@ -71,40 +76,50 @@ export const setLogin = (tokenData, isRember) => {
       }
     );
   }
-  localStorageUtils.setStorage(AUTH_IS_REMEMBER, !!isRember);
+  localStorageUtils.setStorage(AUTH_IS_REMEMBER, isRember.toString());
 };
 
-export const getAuthenticationToken = () => {
+export const getAuthenticationToken = (): IAuthenticationToken => {
   const isRemember = checkRemember();
   const authenticationToken = getUserToken(isRemember);
-  if (isRemember) {
-    if (!authenticationToken) {
-      return {};
-    }
+  if (!authenticationToken) {
+    return {
+      authenticationToken: "",
+      refreshTokenExpiryTime: "",
+    };
+  }
 
+  if (isRemember) {
     const refreshTokenExpiryTime = localStorageUtils.getStorageByKey(
       AUTH_REFRESH_TOKEN_EXPIRATION
     );
-    return { authenticationToken, refreshTokenExpiryTime };
-  } else {
-    if (!authenticationToken) {
-      return {};
-    }
-
-    const refreshTokenExpiryTime = cookieUtils.getStorageByKey(
-      AUTH_REFRESH_TOKEN_EXPIRATION
-    );
-    return { authenticationToken, refreshTokenExpiryTime };
+    return {
+      authenticationToken,
+      refreshTokenExpiryTime: refreshTokenExpiryTime ?? "",
+    };
   }
+
+  const refreshTokenExpiryTime = cookieUtils.getStorageByKey(
+    AUTH_REFRESH_TOKEN_EXPIRATION
+  );
+  return {
+    authenticationToken,
+    refreshTokenExpiryTime: refreshTokenExpiryTime ?? "",
+  };
 };
 
 export const isTokenValid = () => {
   const isRemember = checkRemember();
   const token = getUserToken(isRemember);
-  if (!token || token === "undefined") {
+  if (!token) {
     return false;
   }
-  return jwtDecode(token).exp >= Date.now() / 1000;
+
+  const decoded: JwtPayload = jwtDecode(token);
+  if (!decoded || !decoded.exp) {
+    return false;
+  }
+  return decoded.exp >= Date.now() / 1000;
 };
 
 export const logOut = () => {

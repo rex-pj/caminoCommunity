@@ -5,11 +5,17 @@ import { SecondaryDarkHeading } from "../../atoms/Heading";
 import { LightTextbox } from "../../atoms/Textboxes";
 import styled from "styled-components";
 import { ButtonPrimary, ButtonTransparent } from "../../atoms/Buttons/Buttons";
-import Select from "react-select";
+import Select, {
+  ActionMeta,
+  OnChangeValue,
+  OptionsOrGroups,
+} from "react-select";
 import AsyncSelect from "react-select/async";
 import { useParams } from "react-router-dom";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FeedType } from "../../../utils/Enums";
+import { IAdvancedSearchResult } from ".";
 
 const SearchInput = styled(LightTextbox)`
   width: 100%;
@@ -19,9 +25,27 @@ const Footer = styled.div`
   text-align: right;
 `;
 
-export default (props) => {
+export interface ISearchFormParams {
+  keyword?: string;
+  userIdentityId?: string;
+  hoursCreatedFrom?: any;
+  hoursCreatedTo?: any;
+  feedFilterType?: FeedType;
+  [key: string]: any;
+}
+
+type Props = {
+  selectUsers: (e: any) => Promise<any>;
+  searchParams: ISearchFormParams;
+  advancedSearchResult: IAdvancedSearchResult;
+  onSearch: (e: ISearchFormParams) => void;
+  feedTypeDictonaries: any;
+  timeOptions: any[];
+  baseUrl?: string;
+};
+
+const SearchForm = (props: Props) => {
   const {
-    match,
     selectUsers,
     onSearch,
     searchParams,
@@ -31,7 +55,7 @@ export default (props) => {
   } = props;
   const { keyword } = useParams();
 
-  const [searchData, setSearchData] = useState({
+  const [searchData, setSearchData] = useState<ISearchFormParams>({
     keyword: keyword,
     userIdentityId: searchParams.userIdentityId,
     hoursCreatedFrom: searchParams.hoursCreatedFrom,
@@ -39,14 +63,17 @@ export default (props) => {
     feedFilterType: searchParams.feedFilterType,
   });
 
-  const handleSelectChange = (evt, method) => {
+  const handleSelectChange = (
+    newValue: OnChangeValue<any, any>,
+    actionMeta: ActionMeta<any>
+  ) => {
     let searchFormData = searchData;
-    const { name } = method;
-    const { action } = method;
-    if (action === "clear" || action === "remove-value") {
+    const { name } = actionMeta;
+    const { action } = actionMeta;
+    if ((action === "clear" || action === "remove-value") && name) {
       searchFormData[name] = null;
-    } else {
-      searchFormData[name] = evt.value;
+    } else if (name) {
+      searchFormData[name] = newValue.value;
     }
 
     setSearchData({
@@ -54,7 +81,7 @@ export default (props) => {
     });
   };
 
-  const handleInputChange = (evt) => {
+  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
     let searchFormData = searchData;
     searchFormData[name] = value;
@@ -75,22 +102,27 @@ export default (props) => {
     };
   };
 
-  const loadTimeSelected = (hoursValue) => {
+  const loadTimeSelected = (hoursValue: any) => {
     if (!hoursValue) {
       return null;
     }
     return timeOptions.find((x) => x.value === parseInt(hoursValue));
   };
 
-  const loadUserSelections = (value) => {
+  const loadUserSelections = (
+    inputValue: string,
+    callback: (
+      options: OptionsOrGroups<any, any>
+    ) => Promise<OptionsOrGroups<any, any>> | void
+  ) => {
     return selectUsers({
       variables: {
-        criterias: { search: value, page: 1 },
+        criterias: { search: inputValue, page: 1 },
       },
     })
       .then((response) => {
-        var { data } = response;
-        var { selectUsers } = data;
+        const { data } = response;
+        const { selectUsers } = data;
         return mapSelectOptions(selectUsers);
       })
       .catch((error) => {
@@ -110,7 +142,7 @@ export default (props) => {
     });
   };
 
-  const loadFilterTypeLabel = (filterType) => {
+  const loadFilterTypeLabel = (filterType: FeedType) => {
     return feedTypeDictonaries[filterType];
   };
 
@@ -121,12 +153,12 @@ export default (props) => {
       userIdentityId,
       hoursCreatedFrom,
       hoursCreatedTo,
-      feedFilterType: null,
+      feedFilterType: FeedType.Undefinded,
     });
   };
 
-  const onEnterExecuteSearch = (evt) => {
-    if (evt.keyCode === 13) {
+  const onEnterExecuteSearch = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+    if (evt.key === "Enter") {
       executeSearch();
     }
   };
@@ -209,3 +241,5 @@ export default (props) => {
     </Fragment>
   );
 };
+
+export default SearchForm;

@@ -1,4 +1,5 @@
-import React, { useState, Fragment } from "react";
+import * as React from "react";
+import { useState, Fragment } from "react";
 import styled from "styled-components";
 import { PanelFooter, PanelBody } from "../../molecules/Panels";
 import { ButtonOutlineDanger } from "../../atoms/Buttons/OutlineButtons";
@@ -8,10 +9,13 @@ import {
   ButtonAlert,
 } from "../../atoms/Buttons/Buttons";
 import { Image } from "../../atoms/Images";
-import AvatarEditor from "react-avatar-editor";
+import AvatarEditor, { CroppedRect, ImageState } from "react-avatar-editor";
 import Slider from "rc-slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageUpload from "../UploadControl/ImageUpload";
+import {
+  ImageUpload,
+  ImageUploadOnChangeEvent,
+} from "../UploadControl/ImageUpload";
 import AlertPopover from "../../molecules/Popovers/AlertPopover";
 import NoAvatar from "../../molecules/NoImages/no-avatar";
 import { base64toFile } from "../../../utils/Helper";
@@ -107,30 +111,62 @@ const EmptyAvatar = styled(NoAvatar)`
   margin: auto;
 `;
 
-const UpdateAvatarModal = (props) => {
+type Props = {
+  isDisabled: boolean;
+  setDisabled: (isDisabled: boolean) => void;
+  children?: any;
+  data: {
+    canEdit: boolean;
+    imageUrl?: string;
+  };
+  execution: {
+    onUpload: (formData: any) => Promise<any>;
+    onDelete: () => Promise<any>;
+  };
+  closeModal: () => void;
+};
+
+interface IAvatarData {
+  src: string;
+  oldImage: string;
+  contentType?: string;
+  fileName?: string;
+  file?: File;
+}
+
+interface ICropData {
+  width: number;
+  height: number;
+  scale: number;
+}
+
+const UpdateAvatarModal = (props: Props) => {
   const { isDisabled } = props;
   const { imageUrl } = props.data;
   const [showDeletePopover] = useState(false);
 
-  const [cropData, setCropData] = useState({
+  const [cropData, setCropData] = useState<ICropData>({
     width: 255,
     height: 255,
     scale: 1,
   });
 
-  const [avatarData, setAvatarData] = useState({
-    src: null,
-    oldImage: imageUrl,
-    contentType: null,
-    fileName: null,
+  const [avatarData, setAvatarData] = useState<IAvatarData>({
+    src: "",
+    oldImage: imageUrl ?? "",
+    contentType: "",
+    fileName: "",
   });
 
-  let avatarEditor = null;
-  const setEditorRef = (editor) => (avatarEditor = editor);
+  let avatarEditor: AvatarEditor | null;
+  const setEditorRef = (editor: AvatarEditor | null) => (avatarEditor = editor);
 
   function canSubmit() {
     const { data } = props;
     const { canEdit } = data;
+    if (!avatarEditor) {
+      return false;
+    }
     const image = avatarEditor.getImage();
     const isValid = image.width > 100 && image.height > 100;
 
@@ -144,27 +180,32 @@ const UpdateAvatarModal = (props) => {
     return isSucceed;
   }
 
-  function onChangeImage(e) {
+  function onChangeImage(e: ImageUploadOnChangeEvent) {
     setCropData({
       width: 250,
       height: 250,
       scale: 1,
     });
 
+    let file: File | undefined;
+    if (e.preview) {
+      file = base64toFile(e.preview.toString(), e.file.name) ?? undefined;
+    }
+
     setAvatarData({
       ...avatarData,
-      file: base64toFile(e.preview, e.file.name),
+      file: file,
       contentType: e.file.type,
       fileName: e.file.name,
-      src: e.preview,
+      src: e.preview?.toString() ?? "",
     });
   }
 
-  function onUpdateScale(e) {
+  function onUpdateScale(e: number | number[]) {
     canSubmit();
-    let crop = {
+    let crop: ICropData = {
       ...cropData,
-      scale: e,
+      scale: e as number,
     };
 
     setCropData({
@@ -175,33 +216,38 @@ const UpdateAvatarModal = (props) => {
   function remove() {
     setAvatarData({
       ...avatarData,
-      contentType: null,
-      fileName: null,
-      src: null,
+      contentType: "",
+      fileName: "",
+      src: "",
     });
   }
 
-  const onUploading = async (e) => {
+  const onUploading = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     props.setDisabled(true);
 
     if (avatarEditor) {
-      const rect = avatarEditor.getCroppingRect();
+      const rect: CroppedRect = avatarEditor.getCroppingRect();
       if (!canSubmit()) {
         return;
       }
 
       const { fileName, file } = avatarData;
+      if (!fileName || !file) {
+        return;
+      }
       const { scale } = cropData;
       const { execution } = props;
       const { onUpload } = execution;
 
       let formData = new FormData();
-      formData.append("xAxis", rect.x);
-      formData.append("yAxis", rect.y);
-      formData.append("width", rect.width);
-      formData.append("height", rect.height);
+      formData.append("xAxis", rect.x.toString());
+      formData.append("yAxis", rect.y.toString());
+      formData.append("width", rect.width.toString());
+      formData.append("height", rect.height.toString());
       formData.append("fileName", fileName);
-      formData.append("scale", scale);
+      formData.append("scale", scale.toString());
       formData.append("file", file);
       await onUpload(formData).then(async () => {
         props.setDisabled(false);
@@ -210,7 +256,7 @@ const UpdateAvatarModal = (props) => {
     }
   };
 
-  const onDeletting = async (e) => {
+  const onDeletting = async () => {
     const { data, execution } = props;
     const { canEdit } = data;
     const { onDelete } = execution;
@@ -225,7 +271,7 @@ const UpdateAvatarModal = (props) => {
     });
   };
 
-  function onLoadSuccess(e) {
+  function onLoadSuccess(e: ImageState) {
     canSubmit();
   }
 
@@ -248,7 +294,7 @@ const UpdateAvatarModal = (props) => {
           <Fragment>
             <ImageWrap>
               <AvatarEditor
-                ref={setEditorRef}
+                ref={(e) => setEditorRef(e)}
                 image={src}
                 width={cropData.width}
                 height={cropData.height}
@@ -260,7 +306,12 @@ const UpdateAvatarModal = (props) => {
               />
             </ImageWrap>
             <SliderWrap>
-              <Slider onChange={onUpdateScale} min={1} max={5} step={0.1} />
+              <Slider
+                onChange={(e) => onUpdateScale(e)}
+                min={1}
+                max={5}
+                step={0.1}
+              />
             </SliderWrap>
           </Fragment>
         ) : null}
@@ -278,7 +329,7 @@ const UpdateAvatarModal = (props) => {
               isShown={showDeletePopover}
               target="DeleteAvatar"
               title="Please confirm your avatar deletion?"
-              onExecute={(e) => onDeletting(e)}
+              onExecute={() => onDeletting()}
             />
             <ButtonOutlineDanger size="xs" id="DeleteAvatar">
               <FontAwesomeIcon icon="trash-alt" />

@@ -45,7 +45,18 @@ const Slash = styled.span`
   color: ${(p) => p.theme.color.secondaryText};
 `;
 
-export default (props) => {
+export interface IBreadcrumbItem {
+  isActived?: boolean;
+  title?: string;
+  url?: string;
+}
+
+type Props = {
+  list: IBreadcrumbItem[];
+  className?: string;
+};
+
+const Breadcrumb = (props: Props) => {
   const { list, className } = props;
   return (
     <Root className={className}>
@@ -76,3 +87,5 @@ export default (props) => {
     </Root>
   );
 };
+
+export default Breadcrumb;

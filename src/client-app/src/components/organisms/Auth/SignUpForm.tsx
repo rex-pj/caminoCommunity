@@ -198,7 +198,7 @@ const SignUpForm = (props: SignUpFormProps) => {
               <Label>{t("lastname_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder={t("please_input_your_lastname")}
+                placeholder={t("please_input_your_lastname").toString()}
                 name="lastname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
@@ -208,7 +208,7 @@ const SignUpForm = (props: SignUpFormProps) => {
               <Label>{t("firstname_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder={t("please_input_your_firstname")}
+                placeholder={t("please_input_your_firstname").toString()}
                 name="firstname"
                 onChange={(e) => handleInputChange(e)}
                 onBlur={(e) => handleInputBlur(e)}
@@ -218,7 +218,7 @@ const SignUpForm = (props: SignUpFormProps) => {
               <Label>{t("email_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder={t("please_input_your_email")}
+                placeholder={t("please_input_your_email").toString()}
                 type="email"
                 name="email"
                 onChange={(e) => handleInputChange(e)}
@@ -229,7 +229,7 @@ const SignUpForm = (props: SignUpFormProps) => {
               <Label>{t("password_label")}</Label>
               <Textbox
                 autoComplete="new-password"
-                placeholder={t("please_input_your_password")}
+                placeholder={t("please_input_your_password").toString()}
                 type="password"
                 name="password"
                 onChange={(e) => handleInputChange(e)}
@@ -240,7 +240,7 @@ const SignUpForm = (props: SignUpFormProps) => {
               <Label>{t("confirm_password_label")}</Label>
               <Textbox
                 autoComplete="off"
-                placeholder={t("please_confirm_your_password")}
+                placeholder={t("please_confirm_your_password").toString()}
                 type="password"
                 name="confirmPassword"
                 onChange={(e) => handleInputChange(e)}
@@ -258,7 +258,7 @@ const SignUpForm = (props: SignUpFormProps) => {
             <FormRow>
               <Label>{t("sex_label")}</Label>
               <Selection
-                placeholder={t("male_or_female")}
+                placeholder={t("male_or_female").toString()}
                 name="genderId"
                 onChange={(e) => handleInputChange(e)}
                 defaultValue={1}

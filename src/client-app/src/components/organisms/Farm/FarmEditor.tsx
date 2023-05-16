@@ -1,17 +1,23 @@
-import React, { Fragment, useState, useRef, useEffect, useMemo } from "react";
+import * as React from "react";
+import { Fragment, useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CommonEditor from "../CommonEditor";
+import { CommonEditor } from "../../organisms/CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import { stateToHTML } from "draft-js-export-html";
-import ImageUpload from "../UploadControl/ImageUpload";
+import {
+  ImageUpload,
+  ImageUploadOnChangeEvent,
+} from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import farmCreationModel from "../../../models/farmCreationModel";
+import { FarmCreationModel } from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
+import { EditorState } from "draft-js";
+import { ActionMeta, OnChangeValue } from "react-select";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -75,7 +81,17 @@ const Footer = styled.div`
   }
 `;
 
-const FarmEditor = (props) => {
+interface FarmEditorProps {
+  convertImageCallback: (e: any) => Promise<any>;
+  onImageValidate: (e: any) => Promise<any>;
+  height?: number;
+  filterCategories: (e: any) => Promise<any>;
+  currentFarm?: any;
+  showValidationError: (title: string, message: string) => void;
+  onFarmPost: (e: any) => Promise<any>;
+}
+
+const FarmEditor = (props: FarmEditorProps) => {
   const {
     convertImageCallback,
     onImageValidate,
@@ -84,12 +100,12 @@ const FarmEditor = (props) => {
     currentFarm,
   } = props;
   const [formData, setFormData] = useState(
-    JSON.parse(JSON.stringify(farmCreationModel))
+    JSON.parse(JSON.stringify(new FarmCreationModel()))
   );
-  const editorRef = useRef();
-  const selectRef = useRef();
+  const editorRef = useRef<any>();
+  const selectRef = useRef<any>();
 
-  function handleInputChange(evt) {
+  function handleInputChange(evt: React.ChangeEvent<HTMLInputElement>) {
     let data = formData || {};
     const { name, value } = evt.target;
 
@@ -101,7 +117,7 @@ const FarmEditor = (props) => {
     });
   }
 
-  function onDescriptionChanged(editorState) {
+  function onDescriptionChanged(editorState: EditorState) {
     const contentState = editorState.getCurrentContent();
     const html = stateToHTML(contentState);
 
@@ -115,8 +131,8 @@ const FarmEditor = (props) => {
     });
   }
 
-  function handleImageChange(e) {
-    let data = { ...formData } || {};
+  function handleImageChange(e: ImageUploadOnChangeEvent) {
+    let data = { ...formData } || new FarmCreationModel();
     const { preview, file } = e;
     let pictures = Object.assign([], data.pictures.value);
     pictures.push({
@@ -130,7 +146,7 @@ const FarmEditor = (props) => {
     });
   }
 
-  async function onFarmPost(e) {
+  async function onFarmPost(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     let isFormValid = true;
@@ -148,7 +164,7 @@ const FarmEditor = (props) => {
       return;
     }
 
-    const farmData = {};
+    let farmData: any;
     for (const formIdentifier in formData) {
       farmData[formIdentifier] = formData[formIdentifier].value;
     }
@@ -161,13 +177,13 @@ const FarmEditor = (props) => {
     const requestFormData = new FormData();
     for (const key of Object.keys(farmData)) {
       if (key === "pictures" && farmData[key]) {
-        const pictures = farmData[key];
-        for (const i in pictures) {
-          requestFormData.append(`pictures[${i}].file`, pictures[i].file);
-          if (pictures[i].pictureId) {
+        const pictures = farmData["pictures"];
+        for (const i in pictures.value) {
+          requestFormData.append(`pictures[${i}].file`, pictures.value[i].file);
+          if (pictures.value[i].pictureId) {
             requestFormData.append(
               `pictures[${i}].pictureId`,
-              pictures[i].pictureId
+              pictures.value[i].pictureId
             );
           }
         }
@@ -182,7 +198,7 @@ const FarmEditor = (props) => {
   }
 
   const loadFarmTypeSelections = useMemo(() => {
-    return async (value) => {
+    return async (value: string) => {
       const response = await filterCategories({
         variables: {
           criterias: { query: value },
@@ -195,15 +211,18 @@ const FarmEditor = (props) => {
     };
   }, [filterCategories]);
 
-  function handleSelectChange(e, method) {
-    const { action } = method;
+  function handleSelectChange(
+    newValue: OnChangeValue<any, any>,
+    actionMeta: ActionMeta<any>
+  ) {
+    const { action } = actionMeta;
     let data = formData || {};
     if (action === "clear" || action === "remove-value") {
       data.farmTypeId.isValid = false;
       data.farmTypeId.value = 0;
       data.farmTypeName.value = "";
     } else {
-      const { value, label } = e;
+      const { value, label } = newValue;
       data.farmTypeId.isValid = checkValidity(data, value, "farmTypeId");
       data.farmTypeId.value = parseFloat(value);
       data.farmTypeName.value = label;
@@ -229,11 +248,14 @@ const FarmEditor = (props) => {
   const clearFormData = () => {
     editorRef.current.clearEditor();
     selectRef.current.clearValue();
-    const farmFormData = JSON.parse(JSON.stringify(farmCreationModel));
+    const farmFormData = JSON.parse(JSON.stringify(new FarmCreationModel()));
     setFormData({ ...farmFormData });
   };
 
-  const onImageRemoved = (e, item) => {
+  const onImageRemoved = (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+    item: any
+  ) => {
     let data = formData || {};
     if (!data.pictures) {
       return;
@@ -241,10 +263,10 @@ const FarmEditor = (props) => {
 
     if (item.pictureId) {
       data.pictures.value = data.pictures.value.filter(
-        (x) => x.pictureId !== item.pictureId
+        (x: any) => x.pictureId !== item.pictureId
       );
     } else {
-      data.pictures.value = data.pictures.value.filter((x) => x !== item);
+      data.pictures.value = data.pictures.value.filter((x: any) => x !== item);
     }
 
     setFormData({
@@ -302,7 +324,7 @@ const FarmEditor = (props) => {
         </FormRow>
         {pictures.value ? (
           <FormRow className="row">
-            {pictures.value.map((item, index) => {
+            {pictures.value.map((item: any, index: number) => {
               if (item.preview) {
                 return (
                   <div className="col-3" key={index}>

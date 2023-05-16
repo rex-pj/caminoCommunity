@@ -1,8 +1,14 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary, ButtonLight } from "../../atoms/Buttons/Buttons";
 
-export default function (props) {
+type Props = {
+  children?: any;
+  closeModal: () => void;
+};
+
+const DefaultModal = (props: Props) => {
   const { children, closeModal } = props;
 
   return (
@@ -14,4 +20,6 @@ export default function (props) {
       </PanelFooter>
     </Fragment>
   );
-}
+};
+
+export default DefaultModal;

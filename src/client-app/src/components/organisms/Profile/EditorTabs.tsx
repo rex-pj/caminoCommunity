@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import * as React from "react";
+import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import styled from "styled-components";
@@ -20,7 +21,12 @@ const Tabs = styled.div`
   }
 `;
 
-const EditorTabs = (props) => {
+type Props = {
+  editorMode: string;
+  onToggleCreateMode: (editorMode: string) => void;
+};
+
+const EditorTabs = (props: Props) => {
   const { editorMode, onToggleCreateMode } = props;
   const { t } = useTranslation();
 

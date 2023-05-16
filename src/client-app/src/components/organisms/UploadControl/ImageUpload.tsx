@@ -1,9 +1,8 @@
 import * as React from "react";
-import { useRef } from "react";
+import { useRef, ChangeEvent } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { base64toBlob } from "../../../utils/Helper";
-import { ChangeEvent } from "react";
 
 const InputFile = styled.input.attrs((p) => ({ type: "file" }))`
   display: none;
@@ -33,12 +32,12 @@ interface ImageUploadProps {
 export interface ImageUploadOnChangeEvent {
   target: EventTarget & HTMLInputElement;
   file: File;
-  preview: string | ArrayBuffer | null;
-  blobUrl: string;
+  preview?: string;
+  blobUrl?: string;
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = (props) => {
-  const fileRef = useRef<HTMLInputElement>();
+  const fileRef = useRef<any>();
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -50,13 +49,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (props.onChange) {
-          const blobImage = base64toBlob(reader.result, file.type);
+          if (!reader.result) {
+            return;
+          }
+          const blobImage = base64toBlob(reader.result.toString(), file.type);
           const blobUrl = URL.createObjectURL(blobImage);
 
           props.onChange({
             target: target,
             file,
-            preview: reader.result,
+            preview: reader.result.toString(),
             blobUrl: blobUrl,
           });
         }

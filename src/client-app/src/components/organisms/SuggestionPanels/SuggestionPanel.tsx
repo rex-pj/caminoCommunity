@@ -7,6 +7,7 @@ import { FifthHeadingNeutralTitle } from "../../atoms/Heading";
 import { TypographyPrimary } from "../../atoms/Typographies";
 import { AnchorLink } from "../../atoms/Links";
 import Overlay from "../../atoms/Overlay";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const ListGroupItem = styled.li`
   padding-bottom: ${(p) => p.theme.size.tiny};
@@ -70,7 +71,23 @@ const Body = styled.div`
   padding-bottom: 0;
 `;
 
-export default (props) => {
+type Props = {
+  data: {
+    description: string;
+    actionText: string;
+    url: string;
+    imageUrl: string;
+    name: string;
+    actionIcon?: IconProp;
+    infoIcon?: IconProp;
+    photoUrl?: string;
+    info: string;
+  };
+  className?: string;
+  index?: number;
+};
+
+const SuggestionPanel = (props: Props) => {
   const { data, className, index } = props;
   const listGroupItemClassName = `${className ? className : ""}${
     index === 0 ? "first-item" : ""
@@ -79,7 +96,8 @@ export default (props) => {
     <ListGroupItem className={listGroupItemClassName}>
       <Cover>
         <InfoRow>
-          <FontAwesomeIcon icon={data.infoIcon} /> {data.info}
+          {data.infoIcon ? <FontAwesomeIcon icon={data.infoIcon} /> : null}
+          {data.info}
         </InfoRow>
         <ActionButton>
           {data.actionIcon ? <FontAwesomeIcon icon={data.actionIcon} /> : null}
@@ -99,3 +117,5 @@ export default (props) => {
     </ListGroupItem>
   );
 };
+
+export default SuggestionPanel;

@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import * as React from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
 import {
@@ -20,8 +21,8 @@ import Modal from "../../organisms/Modals/Modal";
 
 const Shortcut = React.lazy(() => import("../../organisms/Shortcut"));
 // const Interesting = React.lazy(() => import("../../organisms/Interesting"));
-const LoggedInCard = React.lazy(() =>
-  import("../../organisms/ProfileCard/LoggedInCard")
+const LoggedInCard = React.lazy(
+  () => import("../../organisms/ProfileCard/LoggedInCard")
 );
 // const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
@@ -32,8 +33,15 @@ const Wrapper = styled.div`
   }
 `;
 
+interface Props {
+  isLoading?: boolean;
+  hasData?: boolean;
+  hasError?: boolean;
+  children?: any;
+}
+
 // The layout default like home, products, articles or farms index page
-const DefaultLayout = (props) => {
+const DefaultLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
   const [fetchFarms, { loading: suggestFarmloading, data: suggestFarmData }] =
