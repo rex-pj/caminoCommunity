@@ -1,3 +1,4 @@
+import { ValidationFormControl } from "./formControls";
 class LoginModel {
   username: ValidationFormControl<string>;
   password: ValidationFormControl<string>;

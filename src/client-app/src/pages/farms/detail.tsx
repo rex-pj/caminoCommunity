@@ -38,7 +38,7 @@ const DetailPage = (props: Props) => {
   const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARM, {
     variables: {
       criterias: {
-        id: id,
+        id: Number(id),
       },
       fetchPolicy: "cache-and-network",
     },
@@ -73,7 +73,7 @@ const DetailPage = (props: Props) => {
   } = useQuery(productQueries.GET_PRODUCTS, {
     variables: {
       criterias: {
-        farmId: id,
+        farmId: Number(id),
         page: 1,
         pageSize: 3,
       },

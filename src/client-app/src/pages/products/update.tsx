@@ -28,7 +28,7 @@ const UpdatePage = (props: Props) => {
     {
       variables: {
         criterias: {
-          id: id,
+          id: Number(id),
         },
       },
       fetchPolicy: "cache-and-network",

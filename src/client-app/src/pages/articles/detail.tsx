@@ -75,7 +75,7 @@ const ArticleDetail = (props: Props) => {
   } = useQuery(articleQueries.GET_RELEVANT_ARTICLES, {
     variables: {
       criterias: {
-        id: id,
+        id: Number(id),
         page: 1,
         pageSize: 8,
       },

@@ -1,3 +1,5 @@
+import { ValidationFormControl } from "./formControls";
+
 class ImageInfoModel {
   constructor() {
     this.src = new ValidationFormControl("", {

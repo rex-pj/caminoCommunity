@@ -1,3 +1,5 @@
+import { ValidationFormControl } from "./formControls";
+
 class ProfileUpdateModel {
   displayName: ValidationFormControl<string>;
   lastname: ValidationFormControl<string>;

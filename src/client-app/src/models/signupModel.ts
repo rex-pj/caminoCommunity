@@ -1,3 +1,5 @@
+import { ValidationFormControl } from "./formControls";
+
 class SignupModel {
   lastname: ValidationFormControl<string>;
   firstname: ValidationFormControl<string>;
