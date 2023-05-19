@@ -1,12 +1,11 @@
 import * as React from "react";
 import { Fragment, useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CommonEditor } from "../CommonEditor";
+import { RichEditor } from "../CommonEditor/Index";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import { stateToHTML } from "draft-js-export-html";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
@@ -16,7 +15,6 @@ import { ArticleCreationModel } from "../../../models/articleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
-import { EditorState } from "draft-js";
 import { ActionMeta, OnChangeValue } from "react-select";
 
 const FormRow = styled.div`
@@ -91,13 +89,7 @@ interface ArticleEditorProps {
 }
 
 const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
-  const {
-    convertImageCallback,
-    onImageValidate,
-    height,
-    filterCategories,
-    currentArticle,
-  } = props;
+  const { filterCategories, currentArticle } = props;
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(new ArticleCreationModel()))
   );
@@ -111,20 +103,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
 
     data[name].isValid = checkValidity(data, value, name);
     data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  };
-
-  const onContentChanged = (editorState: EditorState) => {
-    const contentState = editorState.getCurrentContent();
-    const html = stateToHTML(contentState);
-
-    let data = formData || {};
-
-    data["content"].isValid = checkValidity(data, html, "content");
-    data["content"].value = html;
 
     setFormData({
       ...data,
@@ -311,7 +289,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
               isClearable={true}
             />
           </div>
-          <div className="col-auto pl-1">
+          <div className="col">
             <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
           </div>
         </FormRow>
@@ -327,15 +305,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
             </div>
           </FormRow>
         ) : null}
-        <CommonEditor
-          contentHtml={currentArticle ? currentArticle.content.value : null}
-          height={height}
-          convertImageCallback={convertImageCallback}
-          onImageValidate={onImageValidate}
-          placeholder="Enter the content here"
-          onChanged={onContentChanged}
-          ref={editorRef}
-        />
+        <RichEditor />
         <Footer className="row mb-3">
           <div className="col-auto"></div>
           <div className="col-auto ms-auto">

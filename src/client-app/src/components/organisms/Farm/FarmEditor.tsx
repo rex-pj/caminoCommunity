@@ -1,12 +1,11 @@
 import * as React from "react";
 import { Fragment, useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CommonEditor } from "../../organisms/CommonEditor";
+import { RichEditor } from "../../organisms/CommonEditor/Index";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import { stateToHTML } from "draft-js-export-html";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
@@ -16,7 +15,6 @@ import { FarmCreationModel } from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
-import { EditorState } from "draft-js";
 import { ActionMeta, OnChangeValue } from "react-select";
 
 const FormRow = styled.div`
@@ -92,13 +90,7 @@ interface FarmEditorProps {
 }
 
 const FarmEditor = (props: FarmEditorProps) => {
-  const {
-    convertImageCallback,
-    onImageValidate,
-    height,
-    filterCategories,
-    currentFarm,
-  } = props;
+  const { filterCategories, currentFarm } = props;
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(new FarmCreationModel()))
   );
@@ -111,20 +103,6 @@ const FarmEditor = (props: FarmEditorProps) => {
 
     data[name].isValid = checkValidity(data, value, name);
     data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  }
-
-  function onDescriptionChanged(editorState: EditorState) {
-    const contentState = editorState.getCurrentContent();
-    const html = stateToHTML(contentState);
-
-    let data = formData || {};
-
-    data["description"].isValid = checkValidity(data, html, "description");
-    data["description"].value = html;
 
     setFormData({
       ...data,
@@ -359,15 +337,7 @@ const FarmEditor = (props: FarmEditorProps) => {
             })}
           </FormRow>
         ) : null}
-        <CommonEditor
-          contentHtml={currentFarm ? currentFarm.description.value : null}
-          height={height}
-          convertImageCallback={convertImageCallback}
-          onImageValidate={onImageValidate}
-          placeholder="Enter the description here"
-          onChanged={onDescriptionChanged}
-          ref={editorRef}
-        />
+        <RichEditor />
         <Footer className="row mb-3">
           <div className="col-auto"></div>
           <div className="col-auto ms-auto">

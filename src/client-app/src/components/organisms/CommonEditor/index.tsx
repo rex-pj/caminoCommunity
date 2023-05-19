@@ -1,331 +1,307 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import * as React from "react";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { CharacterLimitPlugin } from "@lexical/react/LexicalCharacterLimitPlugin";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import AutoEmbedPlugin from "./plugins/AutoEmbedPlugin";
+import YouTubePlugin from "./plugins/YouTubePlugin";
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { useEffect, useState } from "react";
+import { CAN_USE_DOM } from "./shared/canUseDOM";
+
+import { useSettings } from "./context/SettingsContext";
 import {
-  useEffect,
-  useState,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
-import styled from "styled-components";
-import EditorToolbar from "./EditorToolbar";
-import EditorModal from "./EditorModal";
-import { EditorLinkModal, EditorLinkModalAcceptEvent } from "./EditorLinkModal";
-import EditorImageModal from "./EditorImageModal";
+  SharedHistoryContext,
+  useSharedHistoryContext,
+} from "./context/SharedHistoryContext";
+import TableCellNodes from "./nodes/TableCellNodes";
+import AutocompletePlugin from "./plugins/AutocompletePlugin";
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import CollapsiblePlugin from "./plugins/CollapsiblePlugin";
+import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
+import DragDropPaste from "./plugins/DragDropPastePlugin";
+import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+import EmojiPickerPlugin from "./plugins/EmojiPickerPlugin";
+import EmojisPlugin from "./plugins/EmojisPlugin";
+import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
+import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatToolbarPlugin";
+import ImagesPlugin from "./plugins/ImagesPlugin";
+import KeywordsPlugin from "./plugins/KeywordsPlugin";
+import LinkPlugin from "./plugins/LinkPlugin";
+import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
+import { MaxLengthPlugin } from "./plugins/MaxLengthPlugin";
+import MentionsPlugin from "./plugins/MentionsPlugin";
+import PollPlugin from "./plugins/PollPlugin";
+import TabFocusPlugin from "./plugins/TabFocusPlugin";
+import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
+import TableCellResizer from "./plugins/TableCellResizer";
+import TableOfContentsPlugin from "./plugins/TableOfContentsPlugin";
 import {
-  getEntityRange,
-  getSelectionEntity,
-  getSelectionText,
-} from "draftjs-utils";
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  CompositeDecorator,
-  ContentState,
-  EditorCommand,
-} from "draft-js";
-import { styleMap, STYLES, findLinkEntities, findImageEntities } from "./Utils";
-import { stateFromHTML } from "draft-js-import-html";
-import { DefaultButtonToggleEvent } from "./EditorButtons";
+  TablePlugin as NewTablePlugin,
+  TableContext,
+} from "./plugins/TablePlugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
+import ContentEditable from "./ui/ContentEditable";
+import Placeholder from "./ui/Placeholder";
+import { SharedAutocompleteContext } from "./context/SharedAutocompleteContext";
+import PlaygroundNodes from "./nodes/PlaygroundNodes";
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
 
-const Root = styled.div`
-  position: relative;
-`;
-
-interface ContainerProps {
-  height?: number;
-}
-
-const Container = styled.div<ContainerProps>`
-  margin-bottom: 15px;
-  background: ${(p) => p.theme.color.whiteBg};
-  border-radius: ${(p) => p.theme.borderRadius.normal};
-  box-shadow: ${(p) => p.theme.shadow.BoxShadow};
-  min-height: ${(p) => (p.height ? `${p.height}px` : "100px")};
-`;
-
-const ConttentBox = styled.div`
-  padding: ${(p) => p.theme.size.distance};
-`;
-
-const styles = {
-  link: {
-    textDecoration: "underline",
-  },
-  image: {
-    maxWidth: "100%",
-  },
-};
-
-interface LinkComponentProps {
-  contentState: ContentState;
-  entityKey: string;
-  children?: any;
-}
-
-const LinkComponent: React.FC<LinkComponentProps> = (props) => {
-  const { url } = props.contentState.getEntity(props.entityKey).getData();
-  return (
-    <a href={url} style={styles.link}>
-      {props.children}
-    </a>
-  );
-};
-
-interface ImageComponentProps {
-  contentState: ContentState;
-  entityKey: string;
-}
-
-const ImageComponent: React.FC<ImageComponentProps> = (props) => {
-  const { src, width, height, alt } = props.contentState
-    .getEntity(props.entityKey)
-    .getData();
-  return (
-    <img
-      src={src}
-      width={width}
-      height={height}
-      alt={alt}
-      style={styles.image}
-    />
-  );
-};
-
-interface CommonEditorProps {
-  placeholder?: string;
-  className?: string;
-  height?: number;
-  convertImageCallback?: (e: any) => void;
-  onImageValidate?: (e: any) => void;
-  onChanged: (editorState: EditorState) => void;
-  contentHtml?: string;
-  ref?: React.ForwardedRef<any>;
-}
-
-const CommonEditor: React.FC<CommonEditorProps> = forwardRef((props, ref) => {
-  const decorator = new CompositeDecorator([
-    {
-      strategy: findLinkEntities,
-      component: LinkComponent,
-    },
-    {
-      strategy: findImageEntities,
-      component: ImageComponent,
-    },
-  ]);
-
+const RichEditor = () => {
+  const { historyState } = useSharedHistoryContext();
   const {
-    placeholder,
-    className,
-    height,
-    convertImageCallback,
-    onImageValidate,
-    onChanged,
-    contentHtml,
-  } = props;
+    settings: {
+      isCollab,
+      isAutocomplete,
+      isMaxLength,
+      isCharLimit,
+      isCharLimitUtf8,
+      isRichText,
+      showTreeView,
+      showTableOfContents,
+      tableCellMerge,
+      tableCellBackgroundColor,
+      emptyEditor,
+    },
+  } = useSettings();
+  const text = isCollab
+    ? "Enter some collaborative rich text..."
+    : isRichText
+    ? "Enter some rich text..."
+    : "Enter some plain text...";
+  const placeholder = <Placeholder>{text}</Placeholder>;
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] =
+    useState<boolean>(false);
 
-  const initContentState = contentHtml
-    ? EditorState.createWithContent(stateFromHTML(contentHtml))
-    : EditorState.createEmpty(decorator);
-  const [editorState, setEditorState] = useState(initContentState);
-  let timeoutId: any;
-
-  const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
-  const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-
-  const editorRef = useRef<any>(null);
-
-  const getCurrentValues = () => {
-    const currentEntity = editorState
-      ? getSelectionEntity(editorState)
-      : undefined;
-
-    if (!currentEntity) {
-      return {};
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
     }
-
-    // TODO: Replace to other editor
-    // const contentState = editorState.getCurrentContent();
-    // const entityType = contentState.getEntity(currentEntity).getType();
-
-    // let currentValues: {
-    //   selectionText: string;
-    //   link?: {
-    //     target: any;
-    //     targetOption: any;
-    //     title: string;
-    //   };
-    // } = {
-    //   selectionText: getSelectionText(editorState),
-    // };
-    // if (entityType === "LINK") {
-    //   const entityRange = getEntityRange(editorState, currentEntity);
-    //   const contentStateData = contentState.getEntity(currentEntity).getData();
-
-    //   currentValues.link = {
-    //     target: contentStateData.url,
-    //     targetOption: contentStateData.targetOption,
-    //     title: entityRange && entityRange.text,
-    //   };
-    // }
-    // return currentValues;
-    return null;
   };
 
-  const onChange = (editorState: EditorState) => {
-    if (onChanged) {
-      onChanged(editorState);
-    }
-    return setEditorState(editorState);
-  };
-
-  const focusEditor = () => {
-    editorRef.current.focus();
-  };
-
-  const focus = () => {
-    focusEditor();
+  const cellEditorConfig = {
+    namespace: "Playground",
+    nodes: [...TableCellNodes],
+    onError: (error: Error) => {
+      throw error;
+    },
+    theme: PlaygroundEditorTheme,
   };
 
   useEffect(() => {
-    focusEditor();
+    const updateViewPortWidth = () => {
+      const isNextSmallWidthViewport =
+        CAN_USE_DOM && window.matchMedia("(max-width: 1025px)").matches;
+
+      if (isNextSmallWidthViewport !== isSmallWidthViewport) {
+        setIsSmallWidthViewport(isNextSmallWidthViewport);
+      }
+    };
+    updateViewPortWidth();
+    window.addEventListener("resize", updateViewPortWidth);
 
     return () => {
-      clearTimeout(timeoutId);
+      window.removeEventListener("resize", updateViewPortWidth);
     };
-  }, []);
+  }, [isSmallWidthViewport]);
 
-  const handleKeyCommand = (
-    command: EditorCommand,
-    editorState: EditorState
-  ) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      onChange(newState);
-      return "handled";
-    }
-    return "not-handled";
-  };
-
-  const toggleInlineStyle = (style: string) => {
-    const newState = RichUtils.toggleInlineStyle(editorState, style);
-    if (newState) {
-      onChange(newState);
-    }
-  };
-
-  const toggleBlockType = (style: string) => {
-    const newState = RichUtils.toggleBlockType(editorState, style);
-    if (newState) {
-      onChange(newState);
-    }
-  };
-
-  const onAddLink = (e: EditorLinkModalAcceptEvent) => {
-    const { newEditorState, entityKey } = e;
-    onChange(
-      RichUtils.toggleLink(
-        newEditorState,
-        newEditorState.getSelection(),
-        entityKey
-      )
-    );
-
-    timeoutId = setTimeout(() => {
-      focus();
-    }, 0);
-  };
-
-  const removeLink = (e: DefaultButtonToggleEvent) => {
-    e.preventDefault();
-    const selection = editorState.getSelection();
-    if (!selection.isCollapsed()) {
-      setEditorState(RichUtils.toggleLink(editorState, selection, null));
-    }
-  };
-
-  const clearFormat = (newEditorState: EditorState) => {
-    onChange(newEditorState);
-  };
-
-  const toggleLinkModal = (isOpen: boolean) => {
-    if (!isOpen) {
-      timeoutId = setTimeout(() => {
-        focus();
-      }, 0);
-    }
-    setLinkPopupOpen(!!isOpen);
-  };
-
-  const toggleImageModal = (isOpen: boolean) => {
-    if (!isOpen) {
-      timeoutId = setTimeout(() => {
-        focus();
-      }, 0);
-    }
-    setImagePopupOpen(!!isOpen);
-  };
-
-  const onAddImage = (newEditorState: any) => {
-    onChange(newEditorState);
-  };
-
-  useImperativeHandle(ref, () => ({
-    clearEditor() {
-      const newEditorState = EditorState.push(
-        editorState,
-        ContentState.createFromText(""),
-        "remove-range"
+  function prepopulatedRichText() {
+    const root = $getRoot();
+    if (root.getFirstChild() === null) {
+      const heading = $createHeadingNode("h1");
+      heading.append($createTextNode("Welcome to the playground"));
+      root.append(heading);
+      const quote = $createQuoteNode();
+      quote.append(
+        $createTextNode(
+          `In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. ` +
+            `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`
+        )
       );
-      setEditorState(newEditorState);
+      root.append(quote);
+      const paragraph = $createParagraphNode();
+      paragraph.append(
+        $createTextNode("The playground is a demo environment built with "),
+        $createTextNode("@lexical/react").toggleFormat("code"),
+        $createTextNode("."),
+        $createTextNode(" Try typing in "),
+        $createTextNode("some text").toggleFormat("bold"),
+        $createTextNode(" with "),
+        $createTextNode("different").toggleFormat("italic"),
+        $createTextNode(" formats.")
+      );
+      root.append(paragraph);
+      const paragraph2 = $createParagraphNode();
+      paragraph2.append(
+        $createTextNode(
+          "Make sure to check out the various plugins in the toolbar. You can also use #hashtags or @-mentions too!"
+        )
+      );
+      root.append(paragraph2);
+      const paragraph3 = $createParagraphNode();
+      paragraph3.append(
+        $createTextNode(
+          `If you'd like to find out more about Lexical, you can:`
+        )
+      );
+      root.append(paragraph3);
+      const list = $createTextNode("bullet");
+      root.append(list);
+      const paragraph4 = $createParagraphNode();
+      paragraph4.append(
+        $createTextNode(
+          `Lastly, we're constantly adding cool new features to this playground. So make sure you check back here when you next get a chance :).`
+        )
+      );
+      root.append(paragraph4);
+    }
+  }
+
+  const editorConfig = {
+    editorState: isCollab
+      ? null
+      : emptyEditor
+      ? undefined
+      : prepopulatedRichText,
+    namespace: "Playground",
+    nodes: [...PlaygroundNodes],
+    onError: (error: Error) => {
+      throw error;
     },
-  }));
+    theme: PlaygroundEditorTheme,
+  };
 
   return (
-    <Root className={className}>
-      <Container onClick={focusEditor} height={height}>
-        <EditorToolbar
-          editorState={editorState}
-          toggleBlockType={toggleBlockType}
-          toggleInlineStyle={toggleInlineStyle}
-          styles={STYLES}
-          focusEditor={focus}
-          clearFormat={clearFormat}
-          onRemoveLink={removeLink}
-          onLinkModalOpen={toggleLinkModal}
-          onImageModalOpen={toggleImageModal}
-        />
-        <ConttentBox>
-          <Editor
-            customStyleMap={styleMap}
-            ref={editorRef}
-            editorState={editorState}
-            onChange={onChange}
-            handleKeyCommand={handleKeyCommand}
-            placeholder={placeholder ? placeholder : "Nội dung bài viết..."}
-          />
-        </ConttentBox>
-      </Container>
-      <EditorModal
-        onAccept={onAddLink}
-        isOpen={isLinkPopupOpen}
-        onClose={toggleLinkModal}
-        editorState={editorState}
-        modalBodyComponent={EditorLinkModal}
-        currentValue={getCurrentValues()}
-      />
-      <EditorModal
-        onAccept={onAddImage}
-        isOpen={isImagePopupOpen}
-        onClose={toggleImageModal}
-        editorState={editorState}
-        convertImageCallback={convertImageCallback}
-        modalBodyComponent={EditorImageModal}
-        onImageValidate={onImageValidate}
-      />
-    </Root>
+    <LexicalComposer initialConfig={editorConfig}>
+      <SharedHistoryContext>
+        <TableContext>
+          <SharedAutocompleteContext>
+            {isRichText && <ToolbarPlugin />}
+            <div
+              className={`editor-container ${showTreeView ? "tree-view" : ""} ${
+                !isRichText ? "plain-text" : ""
+              }`}
+            >
+              {isMaxLength && <MaxLengthPlugin maxLength={30} />}
+              <DragDropPaste />
+              <AutoFocusPlugin />
+              <ComponentPickerPlugin />
+              <EmojiPickerPlugin />
+              <MentionsPlugin />
+              <AutoEmbedPlugin />
+              <YouTubePlugin />
+              <EmojisPlugin />
+              <HashtagPlugin />
+              <KeywordsPlugin />
+              <AutoLinkPlugin />
+              {isRichText ? (
+                <>
+                  <HistoryPlugin externalHistoryState={historyState} />
+                  <RichTextPlugin
+                    contentEditable={
+                      <div className="editor-scroller">
+                        <div className="editor" ref={onRef}>
+                          <ContentEditable />
+                        </div>
+                      </div>
+                    }
+                    placeholder={placeholder}
+                    ErrorBoundary={LexicalErrorBoundary}
+                  />
+                  <CodeHighlightPlugin />
+                  <ListPlugin />
+                  <CheckListPlugin />
+                  <ListMaxIndentLevelPlugin maxDepth={7} />
+                  <TablePlugin
+                    hasCellMerge={tableCellMerge}
+                    hasCellBackgroundColor={tableCellBackgroundColor}
+                  />
+                  <TableCellResizer />
+                  <NewTablePlugin cellEditorConfig={cellEditorConfig}>
+                    <AutoFocusPlugin />
+                    <RichTextPlugin
+                      contentEditable={
+                        <ContentEditable className="TableNode__contentEditable" />
+                      }
+                      placeholder={null}
+                      ErrorBoundary={LexicalErrorBoundary}
+                    />
+                    <MentionsPlugin />
+                    <HistoryPlugin />
+                    <ImagesPlugin captionsEnabled={false} />
+                    <LinkPlugin />
+                    {/* <LexicalClickableLinkPlugin /> */}
+                    <FloatingTextFormatToolbarPlugin />
+                  </NewTablePlugin>
+                  <ImagesPlugin />
+                  <LinkPlugin />
+                  <PollPlugin />
+                  {/* {!isEditable && <LexicalClickableLinkPlugin />} */}
+                  <HorizontalRulePlugin />
+                  <TabFocusPlugin />
+                  <TabIndentationPlugin />
+                  <CollapsiblePlugin />
+                  {floatingAnchorElem && !isSmallWidthViewport && (
+                    <>
+                      <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                      <FloatingLinkEditorPlugin
+                        anchorElem={floatingAnchorElem}
+                      />
+                      <TableCellActionMenuPlugin
+                        anchorElem={floatingAnchorElem}
+                        cellMerge={true}
+                      />
+                      <FloatingTextFormatToolbarPlugin
+                        anchorElem={floatingAnchorElem}
+                      />
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <PlainTextPlugin
+                    contentEditable={<ContentEditable />}
+                    placeholder={placeholder}
+                    ErrorBoundary={LexicalErrorBoundary}
+                  />
+                  <HistoryPlugin externalHistoryState={historyState} />
+                </>
+              )}
+              {(isCharLimit || isCharLimitUtf8) && (
+                <CharacterLimitPlugin
+                  charset={isCharLimit ? "UTF-16" : "UTF-8"}
+                  maxLength={5}
+                />
+              )}
+              {isAutocomplete && <AutocompletePlugin />}
+              <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
+            </div>
+          </SharedAutocompleteContext>
+        </TableContext>
+      </SharedHistoryContext>
+    </LexicalComposer>
   );
-});
+};
 
-export { CommonEditor };
+export { RichEditor };

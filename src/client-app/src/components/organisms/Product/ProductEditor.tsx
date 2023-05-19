@@ -1,12 +1,11 @@
 import * as React from "react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CommonEditor } from "../CommonEditor";
+import { RichEditor } from "../CommonEditor/Index";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import { stateToHTML } from "draft-js-export-html";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
@@ -21,10 +20,11 @@ import ProductAttributeEditModal from "./ProductAttributeEditModal";
 import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
-import { EditorState } from "draft-js";
 import { ActionMeta, OnChangeValue } from "react-select";
-import { IProductAttribute } from "../../../models/productAttributesModel";
-import { IProductAttributeValue } from "../../../models/productAttributesModel";
+import {
+  IProductAttribute,
+  IProductAttributeValue,
+} from "../../../models/productAttributesModel";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -103,9 +103,6 @@ interface Props {
 
 const ProductEditor = (props: Props) => {
   const {
-    convertImageCallback,
-    onImageValidate,
-    height,
     filterCategories,
     filterFarms,
     currentProduct,
@@ -143,20 +140,6 @@ const ProductEditor = (props: Props) => {
     } else {
       data[name].value = parseFloat(value);
     }
-
-    setFormData({
-      ...data,
-    });
-  };
-
-  const onDescriptionChanged = (editorState: EditorState) => {
-    const contentState = editorState.getCurrentContent();
-    const html = stateToHTML(contentState);
-
-    let data = { ...formData } || new ProductCreationModel();
-
-    data["description"].isValid = checkValidity(data, html, "description");
-    data["description"].value = html;
 
     setFormData({
       ...data,
@@ -883,15 +866,7 @@ const ProductEditor = (props: Props) => {
             );
           })}
       </FormRow>
-      <CommonEditor
-        contentHtml={currentProduct ? currentProduct.description.value : null}
-        height={height}
-        convertImageCallback={convertImageCallback}
-        onImageValidate={onImageValidate}
-        placeholder="Enter the description here"
-        onChanged={onDescriptionChanged}
-        ref={editorRef}
-      />
+      <RichEditor />
       <Footer className="row mb-3">
         <div className="col-auto"></div>
         <div className="col-auto ms-auto">
