@@ -26,13 +26,11 @@ import {
   ListNode,
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
-import { $isDecoratorBlockNode } from "@lexical/react/LexicalDecoratorBlockNode";
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
 import {
   $createHeadingNode,
   $createQuoteNode,
   $isHeadingNode,
-  $isQuoteNode,
   HeadingTagType,
 } from "@lexical/rich-text";
 import {
@@ -44,7 +42,6 @@ import {
 import { $isTableNode } from "@lexical/table";
 import {
   $findMatchingParent,
-  $getNearestBlockElementAncestorOrThrow,
   $getNearestNodeOfType,
   mergeRegister,
 } from "@lexical/utils";
@@ -54,7 +51,6 @@ import {
   $getSelection,
   $isRangeSelection,
   $isRootOrShadowRoot,
-  $isTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
@@ -99,7 +95,7 @@ const blockTypeToBlockName = {
   quote: "Quote",
 };
 
-var blockTypeToIcons: { [key: string]: IconProp } = {
+const blockTypeToIcons: { [key: string]: IconProp } = {
   bullet: "list",
   check: "list-check",
   code: "code",
@@ -407,7 +403,7 @@ const ToolbarPlugin = () => {
   const [fontSize, setFontSize] = useState<string>("15px");
   const [fontColor, setFontColor] = useState<string>("#000");
   const [bgColor, setBgColor] = useState<string>("#fff");
-  const [fontFamily, setFontFamily] = useState<string>("Arial");
+  const [, setFontFamily] = useState<string>("Arial");
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -589,46 +585,6 @@ const ToolbarPlugin = () => {
     [activeEditor]
   );
 
-  const clearFormatting = useCallback(() => {
-    activeEditor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const anchor = selection.anchor;
-        const focus = selection.focus;
-        const nodes = selection.getNodes();
-
-        if (anchor.key === focus.key && anchor.offset === focus.offset) {
-          return;
-        }
-
-        nodes.forEach((node, idx) => {
-          // We split the first and last node by the selection
-          // So that we don't format unselected text inside those nodes
-          if ($isTextNode(node)) {
-            if (idx === 0 && anchor.offset !== 0) {
-              node = node.splitText(anchor.offset)[1] || node;
-            }
-            if (idx === nodes.length - 1) {
-              node = node.splitText(focus.offset)[0] || node;
-            }
-
-            if (node.__style !== "") {
-              node.setStyle("");
-            }
-            if (node.__format !== 0) {
-              node.setFormat(0);
-              $getNearestBlockElementAncestorOrThrow(node).setFormat("");
-            }
-          } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
-            node.replace($createParagraphNode(), true);
-          } else if ($isDecoratorBlockNode(node)) {
-            node.setFormat("");
-          }
-        });
-      }
-    });
-  }, [activeEditor]);
-
   const onFontColorSelect = useCallback(
     (value: string) => {
       applyStyleText({ color: value });
@@ -726,12 +682,6 @@ const ToolbarPlugin = () => {
         </DropDown>
       ) : (
         <>
-          <FontDropDown
-            disabled={!isEditable}
-            style={"font-family"}
-            value={fontFamily}
-            editor={editor}
-          />
           <FontDropDown
             disabled={!isEditable}
             style={"font-size"}
@@ -869,15 +819,6 @@ const ToolbarPlugin = () => {
               <FontAwesomeIcon icon="superscript" />
               <span className="text">Superscript</span>
             </DropDownItem>
-            <DropDownItem
-              onClick={clearFormatting}
-              className="item"
-              title="Clear text formatting"
-              aria-label="Clear all text formatting"
-            >
-              <FontAwesomeIcon icon="eraser" />
-              <span className="text">Clear Formatting</span>
-            </DropDownItem>
           </DropDown>
           <Divider />
           {rootType === "table" && (
@@ -917,7 +858,7 @@ const ToolbarPlugin = () => {
               }}
               className="item"
             >
-              <i className="icon horizontal-rule" />
+              <FontAwesomeIcon icon="ruler-horizontal" />
               <span className="text">Horizontal Rule</span>
             </DropDownItem>
             <DropDownItem
@@ -931,7 +872,7 @@ const ToolbarPlugin = () => {
               }}
               className="item"
             >
-              <i className="icon image" />
+              <FontAwesomeIcon icon="image" />
               <span className="text">Image</span>
             </DropDownItem>
             <DropDownItem
@@ -945,7 +886,7 @@ const ToolbarPlugin = () => {
               }}
               className="item"
             >
-              <i className="icon table" />
+              <FontAwesomeIcon icon="table" />
               <span className="text">Table</span>
             </DropDownItem>
             <DropDownItem
@@ -959,7 +900,7 @@ const ToolbarPlugin = () => {
               }}
               className="item"
             >
-              <i className="icon table" />
+              <FontAwesomeIcon icon="table" />
               <span className="text">Table (Experimental)</span>
             </DropDownItem>
             <DropDownItem
@@ -968,7 +909,7 @@ const ToolbarPlugin = () => {
               }}
               className="item"
             >
-              <i className="icon caret-right" />
+              <FontAwesomeIcon icon="caret-right" />
               <span className="text">Collapsible container</span>
             </DropDownItem>
             {EmbedConfigs.map((embedConfig) => (
@@ -982,7 +923,9 @@ const ToolbarPlugin = () => {
                 }}
                 className="item"
               >
-                {embedConfig.icon}
+                {embedConfig.icon && (
+                  <FontAwesomeIcon icon={embedConfig.icon} />
+                )}
                 <span className="text">{embedConfig.contentName}</span>
               </DropDownItem>
             ))}
@@ -1003,7 +946,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className="icon left-align" />
+          <FontAwesomeIcon icon="align-left" />
           <span className="text">Left Align</span>
         </DropDownItem>
         <DropDownItem
@@ -1012,7 +955,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className="icon center-align" />
+          <FontAwesomeIcon icon="align-center" />
           <span className="text">Center Align</span>
         </DropDownItem>
         <DropDownItem
@@ -1021,7 +964,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className="icon right-align" />
+          <FontAwesomeIcon icon="align-right" />
           <span className="text">Right Align</span>
         </DropDownItem>
         <DropDownItem
@@ -1030,7 +973,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className="icon justify-align" />
+          <FontAwesomeIcon icon="align-justify" />
           <span className="text">Justify Align</span>
         </DropDownItem>
         <Divider />
@@ -1040,7 +983,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className={"icon " + (isRTL ? "indent" : "outdent")} />
+          <FontAwesomeIcon icon={`${isRTL ? "indent" : "outdent"}`} />
           <span className="text">Outdent</span>
         </DropDownItem>
         <DropDownItem
@@ -1049,7 +992,7 @@ const ToolbarPlugin = () => {
           }}
           className="item"
         >
-          <i className={"icon " + (isRTL ? "outdent" : "indent")} />
+          <FontAwesomeIcon icon={`${isRTL ? "outdent" : "indent"}`} />
           <span className="text">Indent</span>
         </DropDownItem>
       </DropDown>

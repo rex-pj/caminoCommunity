@@ -28,6 +28,7 @@ import { createPortal } from "react-dom";
 import { getDOMRangeRect } from "../../utils/getDOMRangeRect";
 import { getSelectedNode } from "../../utils/getSelectedNode";
 import { setFloatingElemPosition } from "../../utils/setFloatingElemPosition";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function TextFormatFloatingToolbar({
   editor,
@@ -172,42 +173,47 @@ function TextFormatFloatingToolbar({
       {editor.isEditable() && (
         <>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
             }}
             className={"popup-item spaced " + (isBold ? "active" : "")}
             aria-label="Format text as bold"
           >
-            <i className="format bold" />
+            <FontAwesomeIcon icon="bold"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
             }}
             className={"popup-item spaced " + (isItalic ? "active" : "")}
             aria-label="Format text as italics"
           >
-            <i className="format italic" />
+            <FontAwesomeIcon icon="italic"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
             }}
             className={"popup-item spaced " + (isUnderline ? "active" : "")}
             aria-label="Format text to underlined"
           >
-            <i className="format underline" />
+            <FontAwesomeIcon icon="underline"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
             }}
             className={"popup-item spaced " + (isStrikethrough ? "active" : "")}
             aria-label="Format text with a strikethrough"
           >
-            <i className="format strikethrough" />
+            <FontAwesomeIcon icon="strikethrough"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "subscript");
             }}
@@ -215,9 +221,10 @@ function TextFormatFloatingToolbar({
             title="Subscript"
             aria-label="Format Subscript"
           >
-            <i className="format subscript" />
+            <FontAwesomeIcon icon="subscript"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "superscript");
             }}
@@ -225,23 +232,25 @@ function TextFormatFloatingToolbar({
             title="Superscript"
             aria-label="Format Superscript"
           >
-            <i className="format superscript" />
+            <FontAwesomeIcon icon="superscript"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
             }}
             className={"popup-item spaced " + (isCode ? "active" : "")}
             aria-label="Insert code block"
           >
-            <i className="format code" />
+            <FontAwesomeIcon icon="code"></FontAwesomeIcon>
           </button>
           <button
+            type="button"
             onClick={insertLink}
             className={"popup-item spaced " + (isLink ? "active" : "")}
             aria-label="Insert link"
           >
-            <i className="format link" />
+            <FontAwesomeIcon icon="link"></FontAwesomeIcon>
           </button>
         </>
       )}

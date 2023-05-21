@@ -13,7 +13,6 @@ import {
 import { useStore } from "../../store/hook-store";
 import { ArticleCreationModel } from "../../models/articleCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
-import MediaService from "../../services/mediaService";
 import ArticleService from "../../services/articleService";
 
 type Props = {};
@@ -26,7 +25,6 @@ const UpdatePage = (props: Props) => {
   const [articleCategories] = useMutation(
     articleMutations.FILTER_ARTICLE_CATEGORIES
   );
-  const mediaService = new MediaService();
   const articleService = new ArticleService();
 
   const { loading, data, error, refetch, called } = useQuery(
@@ -37,6 +35,7 @@ const UpdatePage = (props: Props) => {
           id: Number(id),
         },
       },
+      fetchPolicy: "cache-and-network",
     }
   );
 
@@ -93,17 +92,6 @@ const UpdatePage = (props: Props) => {
     });
   }
 
-  async function onImageValidate(formData: { url?: string; file?: File }) {
-    return await mediaService.validatePicture(formData);
-  }
-
-  async function convertImagefile(file: File) {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  }
-
   async function onArticlePost(data: any) {
     return await articleService
       .update(data, data.get("id"))
@@ -125,16 +113,12 @@ const UpdatePage = (props: Props) => {
       });
   }
 
-  function getCurrentArticle() {
-    const currentArticle = JSON.parse(JSON.stringify(ArticleCreationModel));
-    for (const formIdentifier in currentArticle) {
-      currentArticle[formIdentifier].value = article[formIdentifier];
-      if (article[formIdentifier]) {
-        currentArticle[formIdentifier].isValid = true;
-      }
+  const currentArticle = { ...new ArticleCreationModel() };
+  for (const formIdentifier in currentArticle) {
+    currentArticle[formIdentifier].value = article[formIdentifier];
+    if (article[formIdentifier]) {
+      currentArticle[formIdentifier].isValid = true;
     }
-
-    return currentArticle;
   }
 
   const getAuthorInfo = () => {
@@ -175,9 +159,7 @@ const UpdatePage = (props: Props) => {
       <Breadcrumb list={breadcrumbs} />
       <ArticleEditor
         height={350}
-        currentArticle={getCurrentArticle()}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
+        currentArticle={currentArticle}
         filterCategories={articleCategories}
         onArticlePost={onArticlePost}
         showValidationError={showValidationError}

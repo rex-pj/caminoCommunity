@@ -292,18 +292,6 @@ a:hover {
  *
  */
 
- @import 'https://fonts.googleapis.com/css?family=Reenie+Beanie';
-
- body {
-   margin: 0;
-   font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular',
-     sans-serif;
-   -webkit-font-smoothing: antialiased;
-   -moz-osx-font-smoothing: grayscale;
-   background: #eee;
-   padding: 0 20px;
- }
- 
  header {
    max-width: 580px;
    margin: auto;
@@ -597,16 +585,19 @@ a:hover {
    min-width: 150px;
  }
  
- .typeahead-popover li .icon {
+ .typeahead-popover li > svg {
    display: flex;
-   width: 20px;
-   height: 20px;
+   width: 15px;
+   height: 15px;
    user-select: none;
-   margin-right: 8px;
-   line-height: 16px;
+   margin-right: 3px;
+   line-height: 15px;
    background-size: contain;
    background-repeat: no-repeat;
    background-position: center;
+   > path{
+    color: #444;
+   }
  }
  
  .component-picker-menu {
@@ -673,6 +664,19 @@ a:hover {
    word-break: break-word;
    width: calc(100% - 33px);
  }
+
+ .link-editor div.link-command {
+  display: flex;
+  align-items: center;
+ }
+
+ .link-editor div.link-command svg {
+  height: 15px;
+  width: 15px;
+  vertical-align: -0.25em;
+  display: flex;
+  opacity: 0.6;
+ }
  
  .link-editor div.link-edit {
    background-size: 16px;
@@ -681,7 +685,7 @@ a:hover {
    width: 35px;
    vertical-align: -0.25em;
    position: absolute;
-   right: 30px;
+   right: 20px;
    top: 0;
    bottom: 0;
    cursor: pointer;
@@ -694,7 +698,7 @@ a:hover {
    width: 35px;
    vertical-align: -0.25em;
    position: absolute;
-   right: 0;
+   right: -10px;
    top: 0;
    bottom: 0;
    cursor: pointer;
@@ -706,7 +710,7 @@ a:hover {
    background-repeat: no-repeat;
    width: 35px;
    vertical-align: -0.25em;
-   margin-right: 28px;
+   margin-right: 20px;
    position: absolute;
    right: 0;
    top: 0;
@@ -720,7 +724,7 @@ a:hover {
    background-repeat: no-repeat;
    width: 35px;
    vertical-align: -0.25em;
-   margin-right: 2px;
+   margin-right: -6px;
    position: absolute;
    right: 0;
    top: 0;
@@ -801,6 +805,7 @@ a:hover {
    border: 0;
    max-width: 250px;
    min-width: 100px;
+   align-items: center;
  }
  
  .dropdown .item.fontsize-item,
@@ -834,16 +839,20 @@ a:hover {
    min-width: 150px;
  }
  
- .dropdown .item .icon {
+ .dropdown .item > svg {
    display: flex;
-   width: 20px;
-   height: 20px;
+   width: 15px;
+   height: 15px;
    user-select: none;
-   margin-right: 12px;
-   line-height: 16px;
+   margin-right: 5px;
+   line-height: 15px;
    background-size: contain;
    background-position: center;
    background-repeat: no-repeat;
+
+   > path{
+    color: #444;
+   }
  }
  
  .dropdown .divider {
@@ -1171,11 +1180,11 @@ a:hover {
  .action-button {
    background-color: #eee;
    border: 0;
-   padding: 8px 12px;
+   padding: 5px 11px;
    position: relative;
    margin-left: 5px;
    border-radius: 15px;
-   color: #222;
+   color: #444;
    display: inline-block;
    cursor: pointer;
  }
@@ -1285,14 +1294,15 @@ a:hover {
  
  .toolbar {
    display: flex;
+   flex-wrap: wrap;
    margin-bottom: 1px;
-   background: #fff;
+   background: #B5C98D;
    padding: 4px;
    border-top-left-radius: 10px;
    border-top-right-radius: 10px;
    vertical-align: middle;
    overflow: auto;
-   height: 36px;
+   min-height: 46px;
    position: sticky;
    top: 0;
    z-index: 2;
@@ -1319,20 +1329,19 @@ a:hover {
    margin-right: 2px;
  }
  
- .toolbar button.toolbar-item i.format {
+ .toolbar button.toolbar-item .svg-inline--fa {
    background-size: contain;
    display: inline-block;
-   height: 18px;
-   width: 18px;
+   height: 15px;
+   width: 15px;
    vertical-align: -0.25em;
    display: flex;
    opacity: 0.6;
  }
  
- .toolbar button.toolbar-item:disabled .icon,
  .toolbar button.toolbar-item:disabled .text,
- .toolbar button.toolbar-item:disabled i.format,
- .toolbar button.toolbar-item:disabled .chevron-down {
+ .toolbar button.toolbar-item:disabled .svg-inline--fa,
+ .toolbar button.toolbar-item:disabled .svg-inline--fa.fa-chevron-down  {
    opacity: 0.2;
  }
  
@@ -1340,18 +1349,24 @@ a:hover {
    background-color: rgba(223, 232, 250, 0.3);
  }
  
- .toolbar button.toolbar-item.active i {
+ .toolbar button.toolbar-item .svg-inline--fa.fa-chevron-down {
+  opacity: 1;
+  width: 12px;
+  height: 12px;
+  margin-left: 3px;
+}
+
+ .toolbar button.toolbar-item.active .svg-inline--fa {
    opacity: 1;
  }
  
  .toolbar .toolbar-item:hover:not([disabled]) {
-   background-color: #eee;
+   background-color: #E9F6D0;
  }
  
  .toolbar .toolbar-item.font-family .text {
    display: block;
-   max-width: 40px;
- }
+   max-width: 40px; }
  
  .toolbar .code-language {
    width: 150px;
@@ -1368,15 +1383,15 @@ a:hover {
    height: 20px;
    text-align: left;
    padding-right: 10px;
+   margin-left: 3px;
  }
  
- .toolbar .toolbar-item .icon {
+ .toolbar .toolbar-item > svg {
    display: flex;
-   width: 20px;
-   height: 20px;
+   width: 15px;
+   height: 15px;
    user-select: none;
-   margin-right: 8px;
-   line-height: 16px;
+   line-height: 15px;
    background-size: contain;
  }
  
@@ -1400,7 +1415,7 @@ a:hover {
  
  .toolbar .divider {
    width: 1px;
-   background-color: #eee;
+   background-color: #E9F6D0;
    margin: 0 4px;
  }
  

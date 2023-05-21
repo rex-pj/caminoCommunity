@@ -6,8 +6,6 @@ import FarmEditor from "../Farm/FarmEditor";
 import EditorTabs from "./EditorTabs";
 
 type Props = {
-  convertImagefile: (e: any) => Promise<any>;
-  onImageValidate: (e: any) => Promise<any>;
   searchArticleCategories: (e: any) => Promise<any>;
   onArticlePost: (e: any) => Promise<any>;
   showValidationError: (title: string, message: string) => void;
@@ -24,8 +22,6 @@ type Props = {
 
 const ProfileEditorTabs = (props: Props) => {
   const {
-    convertImagefile,
-    onImageValidate,
     searchArticleCategories,
     onArticlePost,
     showValidationError,
@@ -49,8 +45,6 @@ const ProfileEditorTabs = (props: Props) => {
         ></EditorTabs>
         <ArticleEditor
           height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
           filterCategories={searchArticleCategories}
           onArticlePost={onArticlePost}
           showValidationError={showValidationError}
@@ -68,8 +62,6 @@ const ProfileEditorTabs = (props: Props) => {
         ></EditorTabs>
         <ProductEditor
           height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
           filterCategories={searchProductCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
@@ -91,8 +83,6 @@ const ProfileEditorTabs = (props: Props) => {
       ></EditorTabs>
       <FarmEditor
         height={230}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
         filterCategories={searchFarmTypes}
         onFarmPost={onFarmPost}
         showValidationError={showValidationError}

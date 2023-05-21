@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { RichEditor } from "../CommonEditor/Index";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import {
@@ -25,6 +24,15 @@ import {
   IProductAttribute,
   IProductAttributeValue,
 } from "../../../models/productAttributesModel";
+import { LexicalEditor } from "lexical";
+import { $generateHtmlFromNodes } from "@lexical/html";
+import { RichTextEditor } from "../CommonEditor/RichTextEditor";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { SharedHistoryContext } from "../CommonEditor/context/SharedHistoryContext";
+import { TableContext } from "../CommonEditor/plugins/TablePlugin";
+import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocompleteContext";
+import { defaultEditorConfigs } from "../CommonEditor/configs";
+import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -83,14 +91,12 @@ const RemoveImageButton = styled.span`
 `;
 
 const Footer = styled.div`
-  ${ButtonPrimary} {
+  ${ButtonSecondary} {
     width: 200px;
   }
 `;
 
 interface Props {
-  convertImageCallback: (e: any) => Promise<any>;
-  onImageValidate: (e: any) => Promise<any>;
   height?: number;
   filterCategories: (e: any) => Promise<any>;
   filterFarms: (e: any) => Promise<any>;
@@ -112,10 +118,11 @@ const ProductEditor = (props: Props) => {
   const [formData, setFormData] = useState<ProductCreationModel>(
     JSON.parse(JSON.stringify(new ProductCreationModel()))
   );
-  const editorRef = useRef<any>();
+
   const categorySelectRef = useRef<any>();
   const farmSelectRef = useRef<any>();
   const dispatch = useStore(true)[1];
+  const [isSubmitted, setSubmitted] = useState(false);
 
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     let data = { ...formData } || new ProductCreationModel();
@@ -161,9 +168,11 @@ const ProductEditor = (props: Props) => {
     });
   };
 
-  const onProductPost = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onProductPost: (
+    e: React.FormEvent<HTMLFormElement>
+  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setSubmitted(true);
     let isFormValid = true;
     for (let formIdentifier in formData) {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
@@ -176,10 +185,11 @@ const ProductEditor = (props: Props) => {
         "Something went wrong with your information, please check and input again"
       );
 
-      return;
+      setSubmitted(false);
+      return Promise.reject("validation: Something went wrong with your input");
     }
 
-    let productData: any;
+    let productData: any = {};
     for (let formIdentifier in formData) {
       if (formIdentifier !== "productAttributes") {
         productData[formIdentifier] = formData[formIdentifier].value;
@@ -300,13 +310,20 @@ const ProductEditor = (props: Props) => {
       }
     }
 
-    await props.onProductPost(requestFormData).then((response) => {
-      clearFormData();
-    });
+    return await props
+      .onProductPost(requestFormData)
+      .then((response) => {
+        clearFormData();
+        setSubmitted(false);
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        setSubmitted(false);
+        return Promise.reject(error);
+      });
   };
 
   const clearFormData = () => {
-    editorRef.current.clearEditor();
     categorySelectRef.current.clearValue();
     farmSelectRef.current.clearValue();
     const productFormData = JSON.parse(
@@ -743,137 +760,191 @@ const ProductEditor = (props: Props) => {
     }
   }, [currentProduct, formData]);
 
-  const { name, price, categories, farms, productAttributes, pictures } =
-    formData;
+  const onDescriptionChanged = (editor: LexicalEditor) => {
+    const html = $generateHtmlFromNodes(editor, null);
+    let data = formData || {};
 
+    data["description"].isValid = checkValidity(data, html, "description");
+    data["description"].value = html;
+
+    setFormData({
+      ...data,
+    });
+  };
+
+  const {
+    name,
+    price,
+    categories,
+    farms,
+    productAttributes,
+    pictures,
+    description,
+  } = formData;
+  const htmlContent = description?.value;
   return (
-    <form onSubmit={(e) => onProductPost(e)} method="POST">
-      <FormRow className="row g-0">
-        <div className="col-12 col-lg-9 mb-2 mb-lg-0 pe-lg-1">
-          <SecondaryTextbox
-            name="name"
-            value={name.value}
-            autoComplete="off"
-            onChange={handleInputChange}
-            placeholder="Product title"
-          />
-        </div>
-        <div className="col-12 col-lg-3 ps-lg-1">
-          <SecondaryTextbox
-            name="price"
-            value={price.value}
-            autoComplete="off"
-            onChange={handlePriceChange}
-            placeholder="Price"
-          />
-        </div>
-      </FormRow>
-      <FormRow className="row g-0 mb-2">
-        <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
-          <AsyncSelect
-            key={JSON.stringify(categories)}
-            className="cate-selection"
-            defaultOptions
-            isMulti
-            ref={categorySelectRef}
-            defaultValue={loadCategoriesSelected()}
-            onChange={(e, action) =>
-              handleSelectChange(e, action, "categories")
-            }
-            loadOptions={loadCategorySelections}
-            isClearable={true}
-            placeholder="Select categories"
-          />
-        </div>
-        <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
-          <AsyncSelect
-            className="cate-selection"
-            key={JSON.stringify(farms)}
-            defaultOptions
-            isMulti
-            ref={farmSelectRef}
-            defaultValue={loadFarmsSelected()}
-            onChange={(e, action) => handleSelectChange(e, action, "farms")}
-            loadOptions={(e) => loadFarmSelections(e)}
-            isClearable={true}
-            placeholder="Select farms"
-          />
-        </div>
-        <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
-          <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
-        </div>
-      </FormRow>
-      {pictures.value ? (
-        <FormRow className="row">
-          {pictures.value.map((item, index) => {
-            if (item.preview) {
-              return (
-                <div className="col-3" key={index}>
-                  <ImageEditBox>
-                    <Thumbnail src={item.preview}></Thumbnail>
-                    <RemoveImageButton onClick={(e) => onImageRemoved(e, item)}>
-                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                    </RemoveImageButton>
-                  </ImageEditBox>
+    <LexicalComposer initialConfig={defaultEditorConfigs}>
+      <SharedHistoryContext>
+        <TableContext>
+          <SharedAutocompleteContext>
+            <AsyncSubmitFormPlugin
+              onSubmitAsync={(e) => onProductPost(e)}
+              method="POST"
+              clearAfterSubmit={true}
+            >
+              <FormRow className="row g-0">
+                <div className="col-12 col-lg-9 mb-2 mb-lg-0 pe-lg-1">
+                  <SecondaryTextbox
+                    name="name"
+                    defaultValue={name.value}
+                    autoComplete="off"
+                    onChange={handleInputChange}
+                    placeholder="Product title"
+                  />
                 </div>
-              );
-            } else if (item.pictureId) {
-              return (
-                <div className="col-3" key={index}>
-                  <ImageEditBox>
-                    <Thumbnail
-                      src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
-                    ></Thumbnail>
-                    <RemoveImageButton onClick={(e) => onImageRemoved(e, item)}>
-                      <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                    </RemoveImageButton>
-                  </ImageEditBox>
+                <div className="col-12 col-lg-3 ps-lg-1">
+                  <SecondaryTextbox
+                    name="price"
+                    defaultValue={price.value}
+                    autoComplete="off"
+                    onChange={handlePriceChange}
+                    placeholder="Price"
+                  />
                 </div>
-              );
-            }
+              </FormRow>
+              <FormRow className="row g-0 mb-2">
+                <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
+                  <AsyncSelect
+                    key={JSON.stringify(categories)}
+                    className="cate-selection"
+                    defaultOptions
+                    isMulti
+                    ref={categorySelectRef}
+                    defaultValue={loadCategoriesSelected()}
+                    onChange={(e, action) =>
+                      handleSelectChange(e, action, "categories")
+                    }
+                    loadOptions={loadCategorySelections}
+                    isClearable={true}
+                    placeholder="Select categories"
+                  />
+                </div>
+                <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
+                  <AsyncSelect
+                    className="cate-selection"
+                    key={JSON.stringify(farms)}
+                    defaultOptions
+                    isMulti
+                    ref={farmSelectRef}
+                    defaultValue={loadFarmsSelected()}
+                    onChange={(e, action) =>
+                      handleSelectChange(e, action, "farms")
+                    }
+                    loadOptions={(e) => loadFarmSelections(e)}
+                    isClearable={true}
+                    placeholder="Select farms"
+                  />
+                </div>
+                <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
+                  <ThumbnailUpload
+                    onChange={handleImageChange}
+                  ></ThumbnailUpload>
+                </div>
+              </FormRow>
+              {pictures.value ? (
+                <FormRow className="row">
+                  {pictures.value.map((item, index) => {
+                    if (item.preview) {
+                      return (
+                        <div className="col-3" key={index}>
+                          <ImageEditBox>
+                            <Thumbnail src={item.preview}></Thumbnail>
+                            <RemoveImageButton
+                              onClick={(e) => onImageRemoved(e, item)}
+                            >
+                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                            </RemoveImageButton>
+                          </ImageEditBox>
+                        </div>
+                      );
+                    } else if (item.pictureId) {
+                      return (
+                        <div className="col-3" key={index}>
+                          <ImageEditBox>
+                            <Thumbnail
+                              src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
+                            ></Thumbnail>
+                            <RemoveImageButton
+                              onClick={(e) => onImageRemoved(e, item)}
+                            >
+                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                            </RemoveImageButton>
+                          </ImageEditBox>
+                        </div>
+                      );
+                    }
 
-            return null;
-          })}
-        </FormRow>
-      ) : null}
-      <FormRow>
-        <label className="me-1">Thuộc tính sản phẩm</label>
-        <ButtonOutlinePrimary
-          type="button"
-          size="xs"
-          title="Thêm thuộc tính sản phẩm"
-          onClick={openAddAttributeModal}
-        >
-          <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
-        </ButtonOutlinePrimary>
-      </FormRow>
-      <FormRow className="mb-4">
-        {productAttributes?.value &&
-          productAttributes.value.map((attr, index) => {
-            return (
-              <ProductAttributeRow
-                key={index}
-                attribute={attr}
-                price={price.value ? price.value : 0}
-                onRemoveAttribute={onRemoveAttribute}
-                onAttributeChange={(e) => onAttributeChange(e, index)}
-                onEditAttribute={(e) => onOpenEditAttributeModal(e, index)}
-                onAddAttributeValue={() => onOpenAddAttributeValueModal(index)}
-                onEditAttributeValue={(e, attributeValueIndex) =>
-                  onOpenEditAttributeValueModal(e, index, attributeValueIndex)
-                }
-              />
-            );
-          })}
-      </FormRow>
-      <RichEditor />
-      <Footer className="row mb-3">
-        <div className="col-auto"></div>
-        <div className="col-auto ms-auto">
-          <ButtonPrimary size="xs">Post</ButtonPrimary>
-        </div>
-      </Footer>
-    </form>
+                    return null;
+                  })}
+                </FormRow>
+              ) : null}
+              <FormRow>
+                <label className="me-1">Thuộc tính sản phẩm</label>
+                <ButtonOutlinePrimary
+                  type="button"
+                  size="xs"
+                  title="Thêm thuộc tính sản phẩm"
+                  onClick={openAddAttributeModal}
+                >
+                  <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
+                </ButtonOutlinePrimary>
+              </FormRow>
+              <FormRow className="mb-4">
+                {productAttributes?.value &&
+                  productAttributes.value.map((attr, index) => {
+                    return (
+                      <ProductAttributeRow
+                        key={index}
+                        attribute={attr}
+                        price={price.value ? price.value : 0}
+                        onRemoveAttribute={onRemoveAttribute}
+                        onAttributeChange={(e) => onAttributeChange(e, index)}
+                        onEditAttribute={(e) =>
+                          onOpenEditAttributeModal(e, index)
+                        }
+                        onAddAttributeValue={() =>
+                          onOpenAddAttributeValueModal(index)
+                        }
+                        onEditAttributeValue={(e, attributeValueIndex) =>
+                          onOpenEditAttributeValueModal(
+                            e,
+                            index,
+                            attributeValueIndex
+                          )
+                        }
+                      />
+                    );
+                  })}
+              </FormRow>
+              <div className="editor-shell">
+                <RichTextEditor
+                  initialHtml={htmlContent}
+                  onChange={onDescriptionChanged}
+                />
+              </div>
+              <Footer className="row mb-3">
+                <div className="col-auto"></div>
+                <div className="col-auto ms-auto">
+                  <ButtonSecondary disabled={isSubmitted} size="xs">
+                    Post
+                  </ButtonSecondary>
+                </div>
+              </Footer>
+            </AsyncSubmitFormPlugin>
+          </SharedAutocompleteContext>
+        </TableContext>
+      </SharedHistoryContext>
+    </LexicalComposer>
   );
 };
 

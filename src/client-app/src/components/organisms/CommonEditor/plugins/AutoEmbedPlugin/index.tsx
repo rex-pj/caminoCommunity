@@ -24,13 +24,15 @@ import useModal from "../../hooks/useModal";
 import Button from "../../ui/Button";
 import { DialogActions } from "../../ui/Dialog";
 import { INSERT_YOUTUBE_COMMAND } from "../YouTubePlugin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
   // Human readable name of the embeded content e.g. Tweet or Google Map.
   contentName: string;
 
   // Icon for display.
-  icon?: JSX.Element;
+  icon?: IconProp;
 
   // An example of a matching url https://twitter.com/jack/status/20
   exampleUrl: string;
@@ -48,7 +50,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
   exampleUrl: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
 
   // Icon for display.
-  icon: <i className="icon youtube" />,
+  icon: ["fab", "youtube"],
 
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
     editor.dispatchCommand(INSERT_YOUTUBE_COMMAND, result.id);

@@ -32,20 +32,22 @@
 
 .floating-text-format-popup button.popup-item.spaced {
   margin-right: 2px;
+  align-items: center;
 }
 
-.floating-text-format-popup button.popup-item i.format {
+.floating-text-format-popup button.popup-item i.format,
+.floating-text-format-popup button.popup-item svg {
   background-size: contain;
   display: inline-block;
-  height: 18px;
-  width: 18px;
-  margin-top: 2px;
+  height: 15px;
+  width: 15px;
   vertical-align: -0.25em;
   display: flex;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
-.floating-text-format-popup button.popup-item:disabled i.format {
+.floating-text-format-popup button.popup-item:disabled i.format,
+.floating-text-format-popup button.popup-item:disabled svg {
   opacity: 0.2;
 }
 
@@ -53,7 +55,8 @@
   background-color: rgba(223, 232, 250, 0.3);
 }
 
-.floating-text-format-popup button.popup-item.active i {
+.floating-text-format-popup button.popup-item.active i
+.floating-text-format-popup button.popup-item.active svg {
   opacity: 1;
 }
 

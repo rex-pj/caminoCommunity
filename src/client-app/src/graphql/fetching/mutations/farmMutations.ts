@@ -10,16 +10,6 @@ export const FILTER_FARM_TYPES = gql`
   }
 `;
 
-export const FILTER_FARMS = gql`
-  mutation ($criterias: FarmSelectFilterModelInput) {
-    selections: selectUserFarms(criterias: $criterias) {
-      id
-      isSelected
-      text
-    }
-  }
-`;
-
 export const CREATE_FARM = gql`
   mutation ($criterias: CreateFarmModelInput!) {
     createFarm(criterias: $criterias) {

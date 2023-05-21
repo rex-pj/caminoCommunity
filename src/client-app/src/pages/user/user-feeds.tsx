@@ -14,7 +14,11 @@ import {
   farmMutations,
   productMutations,
 } from "../../graphql/fetching/mutations";
-import { feedqueries, productQueries } from "../../graphql/fetching/queries";
+import {
+  farmQueries,
+  feedqueries,
+  productQueries,
+} from "../../graphql/fetching/queries";
 import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
@@ -27,7 +31,6 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
-import MediaService from "../../services/mediaService";
 import ArticleService from "../../services/articleService";
 import FarmService from "../../services/farmService";
 import ProductService from "../../services/productService";
@@ -50,7 +53,6 @@ const UserFeeds = (props: Props) => {
   const { currentUser, isLogin } = useContext(SessionContext);
   const [state, dispatch] = useStore(false);
   const [feeds, setFeeds] = useState<any[]>([]);
-  const mediaService = new MediaService();
   const articleService = new ArticleService();
   const farmService = new FarmService();
   const productService = new ProductService();
@@ -72,7 +74,10 @@ const UserFeeds = (props: Props) => {
     productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
   );
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
-  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
+  const [fetchUserFarms] = useLazyQuery(farmQueries.SELECT_USER_FARMS, {
+    variables: {},
+  });
+  const getUserFarms = useMemo(() => fetchUserFarms, [fetchUserFarms]);
 
   const getProductCategories = useMemo(
     () => fetchProductCategories,
@@ -89,17 +94,6 @@ const UserFeeds = (props: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
-
-  const convertImagefile = async (file: File) => {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  };
-
-  const onImageValidate = async (formData: { url?: string; file?: File }) => {
-    return await mediaService.validatePicture(formData);
-  };
 
   const onArticlePost = async (data: any) => {
     return await articleService.create(data).then((response) => {
@@ -201,8 +195,6 @@ const UserFeeds = (props: Props) => {
 
   const renderProfileEditorTabs = () => (
     <ProfileEditorTabs
-      convertImagefile={convertImagefile}
-      onImageValidate={onImageValidate}
       searchArticleCategories={articleCategories}
       onArticlePost={onArticlePost}
       showValidationError={showValidationError}
@@ -210,7 +202,7 @@ const UserFeeds = (props: Props) => {
       searchProductAttributes={productAttributes}
       searchProductAttributeControlTypes={productAttributeControlTypes}
       onProductPost={onProductPost}
-      searchFarms={userFarms}
+      searchFarms={getUserFarms}
       searchFarmTypes={farmTypes}
       onFarmPost={onFarmPost}
       editorMode={editorMode}

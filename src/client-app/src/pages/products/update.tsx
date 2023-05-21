@@ -13,7 +13,6 @@ import { useStore } from "../../store/hook-store";
 import { ProductCreationModel } from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
-import MediaService from "../../services/mediaService";
 import ProductService from "../../services/productService";
 
 interface Props {}
@@ -57,7 +56,6 @@ const UpdatePage = (props: Props) => {
       variables: {},
     }
   );
-  const mediaService = new MediaService();
   const productService = new ProductService();
 
   const getProductCategories = useMemo(
@@ -81,17 +79,6 @@ const UpdatePage = (props: Props) => {
       },
     },
   });
-
-  async function onImageValidate(formData: { url?: string; file?: File }) {
-    return await mediaService.validatePicture(formData);
-  }
-
-  async function convertImagefile(file: File) {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  }
 
   async function onProductPost(data: any) {
     return await productService.update(data).then((response) => {
@@ -159,7 +146,7 @@ const UpdatePage = (props: Props) => {
 
   const product = data ? { ...data.product } : {};
 
-  const currentProduct = JSON.parse(JSON.stringify(new ProductCreationModel()));
+  const currentProduct = { ...new ProductCreationModel() };
   for (const formIdentifier in currentProduct) {
     currentProduct[formIdentifier].value = product[formIdentifier];
     if (product[formIdentifier]) {
@@ -193,8 +180,6 @@ const UpdatePage = (props: Props) => {
       <ProductEditor
         currentProduct={currentProduct}
         height={350}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
         filterCategories={getProductCategories}
         onProductPost={onProductPost}
         showValidationError={showValidationError}

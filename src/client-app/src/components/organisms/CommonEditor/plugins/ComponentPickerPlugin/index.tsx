@@ -39,6 +39,7 @@ import { INSERT_COLLAPSIBLE_COMMAND } from "../CollapsiblePlugin";
 import { InsertImageDialog } from "../ImagesPlugin";
 import { InsertPollDialog } from "../PollPlugin";
 import { InsertNewTableDialog, InsertTableDialog } from "../TablePlugin";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 class ComponentPickerOption extends TypeaheadOption {
   // What shows up in the editor
@@ -56,7 +57,7 @@ class ComponentPickerOption extends TypeaheadOption {
   public constructor(
     title: string,
     options: {
-      icon?: JSX.Element;
+      icon?: IconProp;
       keywords?: Array<string>;
       keyboardShortcut?: string;
       onSelect: (queryString: string) => void;
@@ -139,7 +140,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
 
       options.push(
         new ComponentPickerOption(`${rows}x${columns} Table`, {
-          icon: <i className="icon table" />,
+          icon: "table",
           keywords: ["table"],
           onSelect: () =>
             // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
@@ -153,7 +154,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
         ...Array.from({ length: 5 }, (_, i) => i + 1).map(
           (columns) =>
             new ComponentPickerOption(`${rows}x${columns} Table`, {
-              icon: <i className="icon table" />,
+              icon: "table",
               keywords: ["table"],
               onSelect: () =>
                 // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
@@ -169,7 +170,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
   const options = useMemo(() => {
     const baseOptions = [
       new ComponentPickerOption("Paragraph", {
-        icon: <i className="icon paragraph" />,
+        icon: "paragraph",
         keywords: ["normal", "paragraph", "p", "text"],
         onSelect: () =>
           editor.update(() => {
@@ -182,7 +183,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
       ...Array.from({ length: 3 }, (_, i) => i + 1).map(
         (n) =>
           new ComponentPickerOption(`Heading ${n}`, {
-            icon: <i className={`icon h${n}`} />,
+            icon: "h",
             keywords: ["heading", "header", `h${n}`],
             onSelect: () =>
               editor.update(() => {
@@ -197,7 +198,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           })
       ),
       new ComponentPickerOption("Table", {
-        icon: <i className="icon table" />,
+        icon: "table",
         keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
         onSelect: () =>
           showModal("Insert Table", (onClose) => (
@@ -205,7 +206,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           )),
       }),
       new ComponentPickerOption("Table (Experimental)", {
-        icon: <i className="icon table" />,
+        icon: "table",
         keywords: ["table", "grid", "spreadsheet", "rows", "columns"],
         onSelect: () =>
           showModal("Insert Table", (onClose) => (
@@ -213,25 +214,25 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           )),
       }),
       new ComponentPickerOption("Numbered List", {
-        icon: <i className="icon number" />,
+        icon: "list-ol",
         keywords: ["numbered list", "ordered list", "ol"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),
       }),
       new ComponentPickerOption("Bulleted List", {
-        icon: <i className="icon bullet" />,
+        icon: "list",
         keywords: ["bulleted list", "unordered list", "ul"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
       }),
       new ComponentPickerOption("Check List", {
-        icon: <i className="icon check" />,
+        icon: "list-check",
         keywords: ["check list", "todo list"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
       }),
       new ComponentPickerOption("Quote", {
-        icon: <i className="icon quote" />,
+        icon: "quote-left",
         keywords: ["block quote"],
         onSelect: () =>
           editor.update(() => {
@@ -242,7 +243,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           }),
       }),
       new ComponentPickerOption("Code", {
-        icon: <i className="icon code" />,
+        icon: "code",
         keywords: ["javascript", "python", "js", "codeblock"],
         onSelect: () =>
           editor.update(() => {
@@ -262,13 +263,13 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           }),
       }),
       new ComponentPickerOption("Divider", {
-        icon: <i className="icon horizontal-rule" />,
+        icon: "ruler-horizontal",
         keywords: ["horizontal rule", "divider", "hr"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
       }),
       new ComponentPickerOption("Poll", {
-        icon: <i className="icon poll" />,
+        icon: "poll",
         keywords: ["poll", "vote"],
         onSelect: () =>
           showModal("Insert Poll", (onClose) => (
@@ -285,7 +286,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           })
       ),
       new ComponentPickerOption("Image", {
-        icon: <i className="icon image" />,
+        icon: "image",
         keywords: ["image", "photo", "picture", "file"],
         onSelect: () =>
           showModal("Insert Image", (onClose) => (
@@ -293,21 +294,35 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
           )),
       }),
       new ComponentPickerOption("Collapsible", {
-        icon: <i className="icon caret-right" />,
+        icon: "caret-right",
         keywords: ["collapse", "collapsible", "toggle"],
         onSelect: () =>
           editor.dispatchCommand(INSERT_COLLAPSIBLE_COMMAND, undefined),
       }),
-      ...["left", "center", "right", "justify"].map(
-        (alignment) =>
-          new ComponentPickerOption(`Align ${alignment}`, {
-            icon: <i className={`icon ${alignment}-align`} />,
-            keywords: ["align", "justify", alignment],
-            onSelect: () =>
-              // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, alignment),
-          })
-      ),
+      ...["left", "center", "right", "justify"].map((alignment) => {
+        let icon: IconProp;
+        switch (alignment) {
+          case "center":
+            icon = "align-center";
+            break;
+          case "right":
+            icon = "align-right";
+            break;
+          case "justify":
+            icon = "align-justify";
+            break;
+          default:
+            icon = "align-left";
+            break;
+        }
+        return new ComponentPickerOption(`Align ${alignment}`, {
+          icon: icon,
+          keywords: ["align", "justify", alignment],
+          onSelect: () =>
+            // @ts-ignore Correct types, but since they're dynamic TS doesn't like it.
+            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, alignment),
+        });
+      }),
     ];
 
     const dynamicOptions = getDynamicOptions();

@@ -13,6 +13,10 @@ const Tabs = styled.div`
     font-weight: normal;
     border-color: transparent;
     color: ${(p) => p.theme.color.primaryText};
+
+    svg {
+      opacity: 0.6;
+    }
   }
   .tabs-bar button.actived {
     color: ${(p) => p.theme.color.neutralText};

@@ -16,7 +16,6 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
-import MediaService from "../../services/mediaService";
 import FarmService from "../../services/farmService";
 
 interface Props {
@@ -33,7 +32,6 @@ const UserFarms = (props: Props) => {
     pageNumber: pageNumber ? pageNumber : 1,
     userId: userId,
   });
-  const mediaService = new MediaService();
   const farmService = new FarmService();
 
   const [
@@ -48,17 +46,6 @@ const UserFarms = (props: Props) => {
   });
 
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
-
-  const convertImagefile = async (file: File) => {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  };
-
-  const onImageValidate = async (formData: { url?: string; file?: File }) => {
-    return await mediaService.validatePicture(formData);
-  };
 
   const onFarmPost = async (data: any) => {
     return await farmService.create(data).then((response) => {
@@ -117,8 +104,6 @@ const UserFarms = (props: Props) => {
       return (
         <FarmEditor
           height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
           filterCategories={farmTypes}
           onFarmPost={onFarmPost}
           showValidationError={showValidationError}
