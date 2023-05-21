@@ -16,7 +16,6 @@ import { SessionContext } from "../../store/context/session-context";
 import ArticleListItem from "../../components/organisms/Article/ArticleListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
-import MediaService from "../../services/mediaService";
 import ArticleService from "../../services/articleService";
 
 interface Props {
@@ -28,7 +27,6 @@ const UserArticles = (props: Props) => {
   const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
-  const mediaService = new MediaService();
   const articleService = new ArticleService();
 
   const [articleCategories] = useMutation(
@@ -66,17 +64,6 @@ const UserArticles = (props: Props) => {
       message,
       type: "error",
     });
-  };
-
-  const onImageValidate = async (formData: { url?: string; file?: File }) => {
-    return await mediaService.validatePicture(formData);
-  };
-
-  const convertImagefile = async (file: File) => {
-    return {
-      file: file,
-      fileName: file.name,
-    };
   };
 
   const onOpenDeleteConfirmation = (e: any) => {
@@ -119,8 +106,6 @@ const UserArticles = (props: Props) => {
       return (
         <ArticleEditor
           height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
           filterCategories={articleCategories}
           onArticlePost={onArticlePost}
           showValidationError={showValidationError}

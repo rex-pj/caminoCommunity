@@ -29,7 +29,7 @@ i18n
           }).format(value);
         }
 
-        return lng ?? "";
+        return value ?? "";
       },
       escapeValue: false, // react already safes from xss
     },

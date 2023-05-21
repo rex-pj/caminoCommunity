@@ -102,7 +102,9 @@ const ProfileInfo = (props: Props) => {
             className="col col-6 col-md-4 col-lg-12"
             icon="calendar-alt"
           >
-            {format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}
+            {userInfo.createdDate
+              ? format(new Date(userInfo.createdDate), "MMMM, dd yyyy")
+              : null}
           </UnserInfoChild>
         </InfoList>
       ) : null}

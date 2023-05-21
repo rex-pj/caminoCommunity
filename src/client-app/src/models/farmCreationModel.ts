@@ -1,3 +1,4 @@
+import { ValidationFormControl, FormControl } from "./formControls";
 class FarmCreationModel {
   id: FormControl<number>;
   name: ValidationFormControl<string>;

@@ -20,14 +20,11 @@ const BodyLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   const { isLoading: isRequestLogin } = useContext(SessionContext);
 
-  if (isRequestLogin) {
+  if (isRequestLogin || isLoading) {
     return <PageLoading {...props} />;
   }
 
   const renderChildren = () => {
-    if (isLoading) {
-      return <LoadingBar />;
-    }
     if (!hasData) {
       return <NoDataBar />;
     }

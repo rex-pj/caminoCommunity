@@ -1,4 +1,4 @@
-class FormControl<T> {
+export class FormControl<T> {
   public constructor();
   public constructor(value?: T, options?: { isValid?: boolean });
 
@@ -24,7 +24,7 @@ interface ValidationOptions {
   readonly pattern?: string[];
 }
 
-class ValidationFormControl<T> extends FormControl<T> {
+export class ValidationFormControl<T> extends FormControl<T> {
   public constructor();
   public constructor(
     value?: T,
@@ -35,8 +35,8 @@ class ValidationFormControl<T> extends FormControl<T> {
     if (arr.length === 1) {
       super(arr as T);
     } else if (arr.length === 2) {
-      super();
-      this.validation = arr[3].validation;
+      super(arr[0].value, { isValid: arr[1].isValid });
+      this.validation = arr[1].validation;
     } else {
       super();
     }

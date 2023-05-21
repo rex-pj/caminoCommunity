@@ -245,7 +245,12 @@ const Index = (props: Props) => {
       return null;
     }
     return (
-      <Thumbnail src={thumbnailPicture.pictureUrl} onClick={onNext} alt="" />
+      <Thumbnail
+        maxHeight={400}
+        src={thumbnailPicture.pictureUrl}
+        onClick={onNext}
+        alt=""
+      />
     );
   };
 

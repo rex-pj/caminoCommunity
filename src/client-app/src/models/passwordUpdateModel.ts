@@ -1,3 +1,5 @@
+import { ValidationFormControl } from "./formControls";
+
 class PasswordUpdateModel {
   currentPassword: ValidationFormControl<string>;
   newPassword: ValidationFormControl<string>;

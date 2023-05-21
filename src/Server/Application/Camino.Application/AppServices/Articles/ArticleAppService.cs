@@ -312,7 +312,7 @@ namespace Camino.Application.AppServices.Articles
                 Name = request.Name,
                 StatusId = ArticleStatuses.Pending.GetCode()
             });
-            if (request.Picture != null)
+            if (request.Picture != null && request.Picture.BinaryData != null)
             {
                 var modifiedDate = DateTime.UtcNow;
                 await _articlePictureAppService.CreateAsync(new ArticlePictureModifyRequest

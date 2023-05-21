@@ -39,7 +39,7 @@ const DetailPage = (props: Props) => {
     {
       variables: {
         criterias: {
-          id: id,
+          id: Number(id),
         },
       },
       fetchPolicy: "cache-and-network",
@@ -75,7 +75,7 @@ const DetailPage = (props: Props) => {
   } = useQuery(productQueries.GET_RELEVANT_PRODUCTS, {
     variables: {
       criterias: {
-        id: id,
+        id: Number(id),
         page: 1,
         pageSize: 8,
       },

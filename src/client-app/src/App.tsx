@@ -2,6 +2,7 @@ import * as React from "react";
 import { Suspense, useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { ApolloProvider, useQuery } from "@apollo/client";
 import { authClient } from "./graphql/client";
@@ -54,6 +55,7 @@ configureContentChangeStore();
 
 // Font Awesome
 library.add(fas);
+library.add(fab);
 
 const App: React.FC = () => {
   const { loading, data, refetch, error } = useQuery(

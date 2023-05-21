@@ -67,7 +67,7 @@ const client = new ApolloClient({
         keyFields: ["pictures", ["pictureId"]],
       },
       ArticleModel: {
-        keyFields: ["pictures", ["pictureId"]],
+        keyFields: ["picture", ["pictureId"]],
       },
     },
   }),

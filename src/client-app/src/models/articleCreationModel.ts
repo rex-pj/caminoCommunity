@@ -1,3 +1,5 @@
+import { ValidationFormControl, FormControl } from "./formControls";
+
 class PictureFormControl extends FormControl<any> {
   public constructor(options?: { isValid?: boolean });
 

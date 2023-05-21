@@ -1,12 +1,10 @@
 import * as React from "react";
-import { Fragment, useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CommonEditor } from "../../organisms/CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import { stateToHTML } from "draft-js-export-html";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
@@ -16,8 +14,16 @@ import { FarmCreationModel } from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
-import { EditorState } from "draft-js";
 import { ActionMeta, OnChangeValue } from "react-select";
+import { LexicalEditor } from "lexical";
+import { $generateHtmlFromNodes } from "@lexical/html";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { SharedHistoryContext } from "../CommonEditor/context/SharedHistoryContext";
+import { TableContext } from "../CommonEditor/plugins/TablePlugin";
+import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocompleteContext";
+import { defaultEditorConfigs } from "../CommonEditor/configs";
+import { RichTextEditor } from "../CommonEditor/RichTextEditor";
+import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -76,14 +82,12 @@ const RemoveImageButton = styled.span`
 `;
 
 const Footer = styled.div`
-  ${ButtonPrimary} {
+  ${ButtonSecondary} {
     width: 200px;
   }
 `;
 
 interface FarmEditorProps {
-  convertImageCallback: (e: any) => Promise<any>;
-  onImageValidate: (e: any) => Promise<any>;
   height?: number;
   filterCategories: (e: any) => Promise<any>;
   currentFarm?: any;
@@ -92,18 +96,10 @@ interface FarmEditorProps {
 }
 
 const FarmEditor = (props: FarmEditorProps) => {
-  const {
-    convertImageCallback,
-    onImageValidate,
-    height,
-    filterCategories,
-    currentFarm,
-  } = props;
-  const [formData, setFormData] = useState(
-    JSON.parse(JSON.stringify(new FarmCreationModel()))
-  );
-  const editorRef = useRef<any>();
+  const { filterCategories, currentFarm } = props;
+  const [formData, setFormData] = useState({ ...new FarmCreationModel() });
   const selectRef = useRef<any>();
+  const [isSubmitted, setSubmitted] = useState(false);
 
   function handleInputChange(evt: React.ChangeEvent<HTMLInputElement>) {
     let data = formData || {};
@@ -111,20 +107,6 @@ const FarmEditor = (props: FarmEditorProps) => {
 
     data[name].isValid = checkValidity(data, value, name);
     data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  }
-
-  function onDescriptionChanged(editorState: EditorState) {
-    const contentState = editorState.getCurrentContent();
-    const html = stateToHTML(contentState);
-
-    let data = formData || {};
-
-    data["description"].isValid = checkValidity(data, html, "description");
-    data["description"].value = html;
 
     setFormData({
       ...data,
@@ -146,8 +128,11 @@ const FarmEditor = (props: FarmEditorProps) => {
     });
   }
 
-  async function onFarmPost(e: React.FormEvent<HTMLFormElement>) {
+  const onFarmPost: (
+    e: React.FormEvent<HTMLFormElement>
+  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitted(true);
 
     let isFormValid = true;
     for (let formIdentifier in formData) {
@@ -161,10 +146,11 @@ const FarmEditor = (props: FarmEditorProps) => {
         "Something went wrong with your information, please check and input again"
       );
 
-      return;
+      setSubmitted(false);
+      return Promise.reject("validation: Something went wrong with your input");
     }
 
-    let farmData: any;
+    let farmData: any = {};
     for (const formIdentifier in formData) {
       farmData[formIdentifier] = formData[formIdentifier].value;
     }
@@ -192,10 +178,22 @@ const FarmEditor = (props: FarmEditorProps) => {
       }
     }
 
-    await props.onFarmPost(requestFormData).then((id) => {
-      clearFormData();
-    });
-  }
+    return await props
+      .onFarmPost(requestFormData)
+      .then((id) => {
+        clearFormData();
+        let timeoutId = setTimeout(() => {
+          setSubmitted(false);
+          clearTimeout(timeoutId);
+        }, 3000);
+
+        return Promise.resolve(id);
+      })
+      .catch((error) => {
+        setSubmitted(false);
+        return Promise.reject(error);
+      });
+  };
 
   const loadFarmTypeSelections = useMemo(() => {
     return async (value: string) => {
@@ -246,9 +244,8 @@ const FarmEditor = (props: FarmEditorProps) => {
   }
 
   const clearFormData = () => {
-    editorRef.current.clearEditor();
     selectRef.current.clearValue();
-    const farmFormData = JSON.parse(JSON.stringify(new FarmCreationModel()));
+    const farmFormData = { ...new FarmCreationModel() };
     setFormData({ ...farmFormData });
   };
 
@@ -261,11 +258,11 @@ const FarmEditor = (props: FarmEditorProps) => {
       return;
     }
 
-    if (item.pictureId) {
+    if (item.pictureId && data.pictures.value) {
       data.pictures.value = data.pictures.value.filter(
         (x: any) => x.pictureId !== item.pictureId
       );
-    } else {
+    } else if (data.pictures.value) {
       data.pictures.value = data.pictures.value.filter((x: any) => x !== item);
     }
 
@@ -280,102 +277,130 @@ const FarmEditor = (props: FarmEditorProps) => {
     }
   }, [currentFarm, formData]);
 
-  const { name, address, farmTypeId, pictures } = formData;
-  return (
-    <Fragment>
-      <form onSubmit={(e) => onFarmPost(e)} method="POST">
-        <FormRow className="row">
-          <div className="col-6 col-lg-6 pr-lg-1">
-            <SecondaryTextbox
-              name="name"
-              value={name.value}
-              autoComplete="off"
-              onChange={handleInputChange}
-              placeholder="Farm title"
-            />
-          </div>
-          <div className="col-6 col-lg-6 pl-lg-1">
-            <AsyncSelect
-              key={JSON.stringify(farmTypeId)}
-              className="cate-selection"
-              cacheOptions
-              defaultOptions
-              ref={selectRef}
-              defaultValue={loadFarmTypeSelected()}
-              onChange={(e, action) => handleSelectChange(e, action)}
-              loadOptions={loadFarmTypeSelections}
-              isClearable={true}
-            />
-          </div>
-        </FormRow>
-        <FormRow className="row">
-          <div className="col-9 col-lg-10 pr-lg-1">
-            <SecondaryTextbox
-              name="address"
-              value={address.value ? address.value : ""}
-              autoComplete="off"
-              onChange={handleInputChange}
-              placeholder="Address"
-            />
-          </div>
-          <div className="col-3 col-lg-2 pl-lg-1 pl-1">
-            <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
-          </div>
-        </FormRow>
-        {pictures.value ? (
-          <FormRow className="row">
-            {pictures.value.map((item: any, index: number) => {
-              if (item.preview) {
-                return (
-                  <div className="col-3" key={index}>
-                    <ImageEditBox>
-                      <Thumbnail src={item.preview}></Thumbnail>
-                      <RemoveImageButton
-                        onClick={(e) => onImageRemoved(e, item)}
-                      >
-                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                      </RemoveImageButton>
-                    </ImageEditBox>
-                  </div>
-                );
-              } else if (item.pictureId) {
-                return (
-                  <div className="col-3" key={index}>
-                    <ImageEditBox>
-                      <Thumbnail
-                        src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
-                      ></Thumbnail>
-                      <RemoveImageButton
-                        onClick={(e) => onImageRemoved(e, item)}
-                      >
-                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                      </RemoveImageButton>
-                    </ImageEditBox>
-                  </div>
-                );
-              }
+  const onDescriptionChanged = (editor: LexicalEditor) => {
+    const html = $generateHtmlFromNodes(editor, null);
+    let data = formData || {};
 
-              return null;
-            })}
-          </FormRow>
-        ) : null}
-        <CommonEditor
-          contentHtml={currentFarm ? currentFarm.description.value : null}
-          height={height}
-          convertImageCallback={convertImageCallback}
-          onImageValidate={onImageValidate}
-          placeholder="Enter the description here"
-          onChanged={onDescriptionChanged}
-          ref={editorRef}
-        />
-        <Footer className="row mb-3">
-          <div className="col-auto"></div>
-          <div className="col-auto ms-auto">
-            <ButtonPrimary size="xs">Post</ButtonPrimary>
-          </div>
-        </Footer>
-      </form>
-    </Fragment>
+    data.description.isValid = checkValidity(data, html, "description");
+    data.description.value = html;
+
+    setFormData({
+      ...data,
+    });
+  };
+
+  const { name, address, farmTypeId, pictures, description } = formData;
+  const htmlContent = description?.value;
+  return (
+    <LexicalComposer initialConfig={defaultEditorConfigs}>
+      <SharedHistoryContext>
+        <TableContext>
+          <SharedAutocompleteContext>
+            <AsyncSubmitFormPlugin
+              onSubmitAsync={(e) => onFarmPost(e)}
+              method="POST"
+              clearAfterSubmit={true}
+            >
+              <FormRow className="row">
+                <div className="col-6 col-lg-6 pr-lg-1">
+                  <SecondaryTextbox
+                    name="name"
+                    defaultValue={name.value}
+                    autoComplete="off"
+                    onChange={handleInputChange}
+                    placeholder="Farm title"
+                  />
+                </div>
+                <div className="col-6 col-lg-6 pl-lg-1">
+                  <AsyncSelect
+                    key={JSON.stringify(farmTypeId)}
+                    className="cate-selection"
+                    cacheOptions
+                    defaultOptions
+                    ref={selectRef}
+                    defaultValue={loadFarmTypeSelected()}
+                    onChange={(e, action) => handleSelectChange(e, action)}
+                    loadOptions={loadFarmTypeSelections}
+                    isClearable={true}
+                  />
+                </div>
+              </FormRow>
+              <FormRow className="row">
+                <div className="col-9 col-lg-10 pr-lg-1">
+                  <SecondaryTextbox
+                    name="address"
+                    defaultValue={address.value ? address.value : ""}
+                    autoComplete="off"
+                    onChange={handleInputChange}
+                    placeholder="Address"
+                  />
+                </div>
+                <div className="col-3 col-lg-2 pl-lg-1 pl-1">
+                  <ThumbnailUpload
+                    onChange={handleImageChange}
+                  ></ThumbnailUpload>
+                </div>
+              </FormRow>
+              {pictures.value ? (
+                <FormRow className="row">
+                  {pictures.value.map((item: any, index: number) => {
+                    if (item.preview) {
+                      return (
+                        <div className="col-3" key={index}>
+                          <ImageEditBox>
+                            <Thumbnail src={item.preview}></Thumbnail>
+                            <RemoveImageButton
+                              onClick={(e) => onImageRemoved(e, item)}
+                            >
+                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                            </RemoveImageButton>
+                          </ImageEditBox>
+                        </div>
+                      );
+                    } else if (item.pictureId) {
+                      return (
+                        <div className="col-3" key={index}>
+                          <ImageEditBox>
+                            <Thumbnail
+                              src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
+                            ></Thumbnail>
+                            <RemoveImageButton
+                              onClick={(e) => onImageRemoved(e, item)}
+                            >
+                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                            </RemoveImageButton>
+                          </ImageEditBox>
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })}
+                </FormRow>
+              ) : null}
+              <div className="editor-shell">
+                <RichTextEditor
+                  initialHtml={htmlContent}
+                  onChange={onDescriptionChanged}
+                />
+              </div>
+              <Footer className="row mb-3">
+                <div className="col-auto"></div>
+                <div className="col-auto ms-auto">
+                  <ButtonSecondary
+                    type="submit"
+                    disabled={isSubmitted}
+                    size="xs"
+                  >
+                    Post
+                  </ButtonSecondary>
+                </div>
+              </Footer>
+            </AsyncSubmitFormPlugin>
+          </SharedAutocompleteContext>
+        </TableContext>
+      </SharedHistoryContext>
+    </LexicalComposer>
   );
 };
 

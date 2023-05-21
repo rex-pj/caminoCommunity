@@ -9,7 +9,6 @@ import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { FarmCreationModel } from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
-import MediaService from "../../services/mediaService";
 import FarmService from "../../services/farmService";
 
 type Props = {};
@@ -20,7 +19,6 @@ const UpdatePage = (props: Props) => {
   const { id } = useParams();
   const dispatch = useStore(false)[1];
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
-  const mediaService = new MediaService();
   const farmService = new FarmService();
 
   const { loading, data, error, refetch, called } = useQuery(
@@ -28,7 +26,7 @@ const UpdatePage = (props: Props) => {
     {
       variables: {
         criterias: {
-          id: id,
+          id: Number(id),
         },
       },
       fetchPolicy: "cache-and-network",
@@ -55,17 +53,6 @@ const UpdatePage = (props: Props) => {
       },
     },
   });
-
-  const onImageValidate = async (formData: { url?: string; file?: File }) => {
-    return await mediaService.validatePicture(formData);
-  };
-
-  const convertImagefile = async (file: File) => {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  };
 
   const onFarmPost = async (data: any) => {
     return await farmService.update(data).then((response) => {
@@ -102,7 +89,7 @@ const UpdatePage = (props: Props) => {
 
   const farm = data ? { ...data.farm } : {};
 
-  const currentFarm = JSON.parse(JSON.stringify(new FarmCreationModel()));
+  const currentFarm = { ...new FarmCreationModel() };
   for (const formIdentifier in currentFarm) {
     currentFarm[formIdentifier].value = farm[formIdentifier];
     if (farm[formIdentifier]) {
@@ -163,8 +150,6 @@ const UpdatePage = (props: Props) => {
       <Breadcrumb list={breadcrumbs} />
       <FarmEditor
         height={350}
-        convertImageCallback={convertImagefile}
-        onImageValidate={onImageValidate}
         filterCategories={farmTypes}
         onFarmPost={onFarmPost}
         showValidationError={showValidationError}

@@ -17,7 +17,7 @@ import {
 } from "../../graphql/fetching/mutations";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import { useStore } from "../../store/hook-store";
-import { productQueries } from "../../graphql/fetching/queries";
+import { farmQueries, productQueries } from "../../graphql/fetching/queries";
 import {
   ErrorBar,
   LoadingBar,
@@ -26,7 +26,6 @@ import {
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
-import MediaService from "../../services/mediaService";
 import ProductService from "../../services/productService";
 
 interface Props {
@@ -43,7 +42,6 @@ const UserProducts = (props: Props) => {
     pageNumber: pageNumber ? pageNumber : 1,
     userId: userId,
   });
-  const mediaService = new MediaService();
   const productService = new ProductService();
 
   const [fetchProductCategories] = useLazyQuery(
@@ -59,7 +57,10 @@ const UserProducts = (props: Props) => {
     productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
   );
 
-  const [userFarms] = useMutation(farmMutations.FILTER_FARMS);
+  const [fetchUserFarms] = useLazyQuery(farmQueries.SELECT_USER_FARMS, {
+    variables: {},
+  });
+  const getUserFarms = useMemo(() => fetchUserFarms, [fetchUserFarms]);
 
   const getProductCategories = useMemo(
     () => fetchProductCategories,
@@ -75,17 +76,6 @@ const UserProducts = (props: Props) => {
     },
     fetchPolicy: "cache-and-network",
   });
-
-  const convertImagefile = async (file: File) => {
-    return {
-      file: file,
-      fileName: file.name,
-    };
-  };
-
-  const onImageValidate = async (formData: { url?: string; file?: File }) => {
-    return await mediaService.validatePicture(formData);
-  };
 
   const showValidationError = (title: string, message: string) => {
     dispatch("NOTIFY", {
@@ -183,12 +173,10 @@ const UserProducts = (props: Props) => {
       return (
         <ProductEditor
           height={230}
-          convertImageCallback={convertImagefile}
-          onImageValidate={onImageValidate}
           filterCategories={getProductCategories}
           onProductPost={onProductPost}
           showValidationError={showValidationError}
-          filterFarms={userFarms}
+          filterFarms={getUserFarms}
           filterAttributes={productAttributes}
           filterProductAttributeControlTypes={productAttributeControlTypes}
         />

@@ -1,12 +1,10 @@
 import * as React from "react";
-import { Fragment, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CommonEditor } from "../CommonEditor";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import { stateToHTML } from "draft-js-export-html";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
@@ -16,8 +14,16 @@ import { ArticleCreationModel } from "../../../models/articleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
-import { EditorState } from "draft-js";
 import { ActionMeta, OnChangeValue } from "react-select";
+import { LexicalEditor } from "lexical";
+import { $generateHtmlFromNodes } from "@lexical/html";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { SharedHistoryContext } from "../CommonEditor/context/SharedHistoryContext";
+import { TableContext } from "../CommonEditor/plugins/TablePlugin";
+import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocompleteContext";
+import { RichTextEditor } from "../CommonEditor/RichTextEditor";
+import { defaultEditorConfigs } from "../CommonEditor/configs";
+import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -75,14 +81,12 @@ const RemoveImageButton = styled.span`
 `;
 
 const Footer = styled.div`
-  ${ButtonPrimary} {
+  ${ButtonSecondary} {
     width: 200px;
   }
 `;
 
 interface ArticleEditorProps {
-  convertImageCallback: (e: any) => Promise<any>;
-  onImageValidate: (e: any) => Promise<any>;
   height?: number;
   filterCategories: (e: any) => Promise<any>;
   currentArticle?: any;
@@ -91,18 +95,10 @@ interface ArticleEditorProps {
 }
 
 const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
-  const {
-    convertImageCallback,
-    onImageValidate,
-    height,
-    filterCategories,
-    currentArticle,
-  } = props;
-  const [formData, setFormData] = useState(
-    JSON.parse(JSON.stringify(new ArticleCreationModel()))
-  );
+  const { filterCategories, currentArticle } = props;
+  const [isSubmitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState(new ArticleCreationModel());
   const [preview, setPreview] = useState<string>("");
-  const editorRef = useRef<any>();
   const selectRef = useRef<any>();
 
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,20 +107,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
 
     data[name].isValid = checkValidity(data, value, name);
     data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  };
-
-  const onContentChanged = (editorState: EditorState) => {
-    const contentState = editorState.getCurrentContent();
-    const html = stateToHTML(contentState);
-
-    let data = formData || {};
-
-    data["content"].isValid = checkValidity(data, html, "content");
-    data["content"].value = html;
 
     setFormData({
       ...data,
@@ -145,9 +127,11 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
     });
   };
 
-  const onArticlePost = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onArticlePost: (
+    e: React.FormEvent<HTMLFormElement>
+  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setSubmitted(true);
     let isFormValid = true;
     for (let formIdentifier in formData) {
       isFormValid = formData[formIdentifier].isValid && isFormValid;
@@ -160,49 +144,55 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
         "Something went wrong with your information, please check and input again"
       );
 
-      return;
+      setSubmitted(false);
+      return Promise.reject("validation: Something went wrong with your input");
     }
 
-    let articleData: any;
+    let articleForm: any = {};
     for (const formIdentifier in formData) {
-      articleData[formIdentifier] = formData[formIdentifier].value;
+      articleForm[formIdentifier] = formData[formIdentifier].value;
     }
 
-    if (!articleData.id) {
-      delete articleData["id"];
+    if (!articleForm.id) {
+      delete articleForm["id"];
     }
 
-    const requestFormData = new FormData();
-    for (const key of Object.keys(articleData)) {
-      if (key === "picture" && articleData[key]) {
-        const picture = articleData[key];
-        requestFormData.append(`picture.file`, picture.file);
+    const requestData = new FormData();
+    for (const key of Object.keys(articleForm)) {
+      if (key === "picture" && articleForm[key]) {
+        const picture = articleForm[key];
+        requestData.append(`picture.file`, picture.file);
         if (picture.pictureId) {
-          requestFormData.append(`file.pictureId`, picture.pictureId);
+          requestData.append(`file.pictureId`, picture.pictureId);
         }
       }
-      if (key === "picture" && articleData[key]) {
-        const picture = articleData[key];
+      if (key === "picture" && articleForm[key]) {
+        const picture = articleForm[key];
         if (picture.pictureId) {
-          requestFormData.append(`file.pictureId`, picture.pictureId);
+          requestData.append(`file.pictureId`, picture.pictureId);
         }
       } else {
-        requestFormData.append(key, articleData[key]);
+        requestData.append(key, articleForm[key]);
       }
     }
 
-    delete articleData["articleCategoryName"];
-    await props.onArticlePost(requestFormData).then((response: any) => {
-      clearFormData();
-    });
+    delete articleForm["articleCategoryName"];
+    return await props
+      .onArticlePost(requestData)
+      .then((response: any) => {
+        clearFormData();
+        setSubmitted(false);
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        setSubmitted(false);
+        return Promise.reject(error);
+      });
   };
 
   const clearFormData = () => {
-    editorRef.current.clearEditor();
     selectRef.current.clearValue();
-    const articleFormData = JSON.parse(
-      JSON.stringify(new ArticleCreationModel())
-    );
+    const articleFormData = { ...new ArticleCreationModel() };
     setPreview("");
     setFormData({ ...articleFormData });
   };
@@ -271,6 +261,16 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
     };
   };
 
+  const onContentChanged = (editor: LexicalEditor) => {
+    const html = $generateHtmlFromNodes(editor, null);
+    let data = formData || new ArticleCreationModel();
+    data.content.isValid = checkValidity(data, html, "content");
+    data.content.value = html;
+    setFormData({
+      ...data,
+    });
+  };
+
   useEffect(() => {
     if (currentArticle && !formData?.id?.value) {
       const { picture } = currentArticle;
@@ -280,70 +280,84 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
         );
       }
 
-      setFormData(currentArticle);
+      setFormData({ ...currentArticle });
     }
   }, [currentArticle, formData]);
 
-  const { name, articleCategoryId } = formData;
+  const { name, articleCategoryId, content } = formData;
+  const htmlContent = content?.value;
   return (
-    <Fragment>
-      <form onSubmit={(e) => onArticlePost(e)} method="POST">
-        <FormRow className="row">
-          <div className="col-12 col-lg-6 pr-lg-1 mb-2 mb-lg-0">
-            <SecondaryTextbox
-              name="name"
-              value={name.value}
-              autoComplete="off"
-              onChange={(e) => handleInputChange(e)}
-              placeholder="Post title"
-            />
-          </div>
-          <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
-            <AsyncSelect
-              key={JSON.stringify(articleCategoryId)}
-              className="cate-selection"
-              ref={selectRef}
-              defaultValue={loadCategorySelected()}
-              cacheOptions
-              defaultOptions
-              onChange={handleSelectChange}
-              loadOptions={loadCategorySelections}
-              isClearable={true}
-            />
-          </div>
-          <div className="col-auto pl-1">
-            <ThumbnailUpload onChange={handleImageChange}></ThumbnailUpload>
-          </div>
-        </FormRow>
-        {preview ? (
-          <FormRow className="row">
-            <div className="col-3">
-              <ImageEditBox>
-                <Thumbnail src={preview}></Thumbnail>
-                <RemoveImageButton onClick={onImageRemoved}>
-                  <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                </RemoveImageButton>
-              </ImageEditBox>
-            </div>
-          </FormRow>
-        ) : null}
-        <CommonEditor
-          contentHtml={currentArticle ? currentArticle.content.value : null}
-          height={height}
-          convertImageCallback={convertImageCallback}
-          onImageValidate={onImageValidate}
-          placeholder="Enter the content here"
-          onChanged={onContentChanged}
-          ref={editorRef}
-        />
-        <Footer className="row mb-3">
-          <div className="col-auto"></div>
-          <div className="col-auto ms-auto">
-            <ButtonPrimary size="xs">Post</ButtonPrimary>
-          </div>
-        </Footer>
-      </form>
-    </Fragment>
+    <LexicalComposer initialConfig={defaultEditorConfigs}>
+      <SharedHistoryContext>
+        <TableContext>
+          <SharedAutocompleteContext>
+            <AsyncSubmitFormPlugin
+              onSubmitAsync={(e) => onArticlePost(e)}
+              method="POST"
+              clearAfterSubmit={true}
+            >
+              <FormRow className="row">
+                <div className="col-12 col-lg-6 pr-lg-1 mb-2 mb-lg-0">
+                  <SecondaryTextbox
+                    name="name"
+                    defaultValue={name.value}
+                    autoComplete="off"
+                    onChange={(e) => handleInputChange(e)}
+                    placeholder="Post title"
+                  />
+                </div>
+                <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
+                  <AsyncSelect
+                    key={JSON.stringify(articleCategoryId)}
+                    className="cate-selection"
+                    ref={selectRef}
+                    defaultValue={loadCategorySelected()}
+                    cacheOptions
+                    defaultOptions
+                    onChange={handleSelectChange}
+                    loadOptions={loadCategorySelections}
+                    isClearable={true}
+                  />
+                </div>
+                <div className="col">
+                  <ThumbnailUpload
+                    onChange={handleImageChange}
+                  ></ThumbnailUpload>
+                </div>
+              </FormRow>
+              {preview ? (
+                <FormRow className="row">
+                  <div className="col-3">
+                    <ImageEditBox>
+                      <Thumbnail src={preview}></Thumbnail>
+                      <RemoveImageButton onClick={onImageRemoved}>
+                        <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                      </RemoveImageButton>
+                    </ImageEditBox>
+                  </div>
+                </FormRow>
+              ) : null}
+
+              <div className="editor-shell">
+                <RichTextEditor
+                  initialHtml={htmlContent}
+                  onChange={onContentChanged}
+                />
+              </div>
+
+              <Footer className="row mb-3">
+                <div className="col-auto"></div>
+                <div className="col-auto ms-auto">
+                  <ButtonSecondary disabled={isSubmitted} size="xs">
+                    Post
+                  </ButtonSecondary>
+                </div>
+              </Footer>
+            </AsyncSubmitFormPlugin>
+          </SharedAutocompleteContext>
+        </TableContext>
+      </SharedHistoryContext>
+    </LexicalComposer>
   );
 };
 

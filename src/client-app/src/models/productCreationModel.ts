@@ -1,4 +1,5 @@
 import { IProductAttribute } from "./productAttributesModel";
+import { ValidationFormControl, FormControl } from "./formControls";
 
 class ProductCreationModel {
   name: ValidationFormControl<string>;

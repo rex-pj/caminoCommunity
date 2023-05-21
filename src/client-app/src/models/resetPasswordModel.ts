@@ -1,3 +1,5 @@
+import { ValidationFormControl } from "./formControls";
+
 class ResetPasswordModel {
   email: ValidationFormControl<string>;
   key: ValidationFormControl<string>;

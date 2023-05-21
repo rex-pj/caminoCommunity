@@ -1,3 +1,4 @@
+import { ValidationFormControl } from "./formControls";
 class ForgotPasswordModel {
   email: ValidationFormControl<string>;
   [key: string]: any;
