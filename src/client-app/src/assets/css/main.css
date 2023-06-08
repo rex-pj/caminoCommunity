@@ -1296,7 +1296,8 @@ a:hover {
    display: flex;
    flex-wrap: wrap;
    margin-bottom: 1px;
-   background: #B5C98D;
+   background-image: linear-gradient(to bottom, #739e2e 0%, #82a745 100%);
+   background-color: #739E2E;
    padding: 4px;
    border-top-left-radius: 10px;
    border-top-right-radius: 10px;
@@ -1328,6 +1329,10 @@ a:hover {
  .toolbar button.toolbar-item.spaced {
    margin-right: 2px;
  }
+
+ .toolbar .toolbar-item:hover:not([disabled]) .svg-inline--fa {
+  color: #739E2E;
+}
  
  .toolbar button.toolbar-item .svg-inline--fa {
    background-size: contain;
@@ -1337,7 +1342,12 @@ a:hover {
    vertical-align: -0.25em;
    display: flex;
    opacity: 0.6;
+   color: #F8FBF1;
  }
+
+ .toolbar button.toolbar-item .svg-inline--fa path{
+  color: inherit;
+}
  
  .toolbar button.toolbar-item:disabled .text,
  .toolbar button.toolbar-item:disabled .svg-inline--fa,
@@ -1361,12 +1371,18 @@ a:hover {
  }
  
  .toolbar .toolbar-item:hover:not([disabled]) {
-   background-color: #E9F6D0;
+   background-color: #FFFBCE;
  }
- 
+
+.toolbar .toolbar-item:hover .text {
+  color: #739E2E;
+ }
+
  .toolbar .toolbar-item.font-family .text {
    display: block;
-   max-width: 40px; }
+   max-width: 40px;
+   color: #E9F6D0;
+  }
  
  .toolbar .code-language {
    width: 150px;
@@ -1377,7 +1393,7 @@ a:hover {
    line-height: 20px;
    vertical-align: middle;
    font-size: 14px;
-   color: #777;
+   color: #F8FBF1;
    text-overflow: ellipsis;
    overflow: hidden;
    height: 20px;
@@ -1415,7 +1431,7 @@ a:hover {
  
  .toolbar .divider {
    width: 1px;
-   background-color: #E9F6D0;
+   background-color: #B5C98D;
    margin: 0 4px;
  }
  

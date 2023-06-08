@@ -247,26 +247,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                 onBlur={(e) => handleInputBlur(e)}
               />
             </FormRow>
-            <FormRow>
-              <Label>{t("date_of_birth_label")}</Label>
-              <BirthDateSelector
-                name="birthDate"
-                onDateChanged={(e) => handleInputChange(e)}
-                onBlur={handleInputBlur}
-              />
-            </FormRow>
-            <FormRow>
-              <Label>{t("sex_label")}</Label>
-              <Selection
-                placeholder={t("male_or_female").toString()}
-                name="genderId"
-                onChange={(e) => handleInputChange(e)}
-                defaultValue={1}
-              >
-                <option value={1}>{t("male")}</option>
-                <option value={2}>{t("female")}</option>
-              </Selection>
-            </FormRow>
             <FormFooter>
               <SubmitButton
                 type="submit"

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
-import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
+import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
 import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import {
@@ -81,8 +81,8 @@ const RemoveImageButton = styled.span`
 `;
 
 const Footer = styled.div`
-  ${ButtonSecondary} {
-    width: 200px;
+  button {
+    min-width: 150px;
   }
 `;
 
@@ -348,9 +348,13 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
               <Footer className="row mb-3">
                 <div className="col-auto"></div>
                 <div className="col-auto ms-auto">
-                  <ButtonSecondary disabled={isSubmitted} size="xs">
+                  <ButtonIconSecondary
+                    disabled={isSubmitted}
+                    size="xs"
+                    icon={["far", "paper-plane"]}
+                  >
                     Post
-                  </ButtonSecondary>
+                  </ButtonIconSecondary>
                 </div>
               </Footer>
             </AsyncSubmitFormPlugin>

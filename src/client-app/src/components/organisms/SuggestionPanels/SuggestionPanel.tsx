@@ -20,6 +20,7 @@ const ListGroupItem = styled.li`
 
 const Cover = styled.div`
   position: relative;
+  min-height: 80px;
 
   .thumbnail {
     max-height: 120px;

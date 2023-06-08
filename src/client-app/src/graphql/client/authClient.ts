@@ -61,7 +61,7 @@ const client = new ApolloClient({
         keyFields: ["text", "id"],
       },
       FarmModel: {
-        keyFields: ["pictures", ["pictureId"]],
+        keyFields: ["id", "pictures", ["pictureId"]],
       },
       ProductModel: {
         keyFields: ["pictures", ["pictureId"]],

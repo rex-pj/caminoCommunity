@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
+import ReactDOMServer from "react-dom/server";
 import "./index.css";
 import App from "./App";
 import "core-js/stable";
@@ -11,7 +12,7 @@ import "./assets/css/bootstrap-utilities.min.css";
 import "./assets/css/main.css";
 
 const rootElement = document.getElementById("root");
-if (rootElement && rootElement.hasChildNodes()) {
+if (rootElement?.hasChildNodes()) {
   const root = hydrateRoot(rootElement, <></>);
   root.render(
     <React.StrictMode>
