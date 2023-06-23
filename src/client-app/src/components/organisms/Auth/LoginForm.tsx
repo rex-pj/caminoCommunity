@@ -8,11 +8,12 @@ import { LabelNormal } from "../../atoms/Labels";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import AuthNavigation from "./AuthNavigation";
 import AuthBanner from "./AuthBanner";
-import { checkValidity } from "../../../utils/Validity";
-import { LoginModel } from "../../../models/loginModel";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import bgUrl from "../../../assets/images/logo.png";
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
+import { validateEmail } from "../../../utils/Validity";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -81,80 +82,24 @@ interface LoginFormProps {
 
 const LoginForm = (props: LoginFormProps) => {
   const { t } = useTranslation();
-  const [isRemember, setRemember] = useState(false);
-  const [formData, setFormData] = useState(new LoginModel());
   const [error, setError] = useState<string>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleInputBlur = (
-    evt: React.FocusEvent<HTMLInputElement, Element>
-  ) => {
-    const { name } = evt.target;
-    if (!formData[name].isValid) {
-      evt.target.classList.add("invalid");
-    } else {
-      evt.target.classList.remove("invalid");
-    }
+  const onlogin = (data: any) => {
+    const { isRemember } = data;
+    const loginRequest: any = { ...data };
+
+    props
+      .onlogin(loginRequest, isRemember)
+      .catch(() => setError("Có lỗi xảy ra trong quá trình đăng nhập"));
   };
 
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let data = formData || new LoginModel();
-    const { name, value } = evt.target;
-
-    // Validate when input
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    setFormData({ ...data });
-  };
-
-  const handleCheckboxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked } = evt.target;
-    setRemember(checked);
-  };
-
-  const checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  const onlogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
-      }
-    }
-
-    if (isFormValid) {
-      const loginRequest: any = {};
-      for (const formIdentifier in formData) {
-        loginRequest[formIdentifier] = formData[formIdentifier].value;
-      }
-
-      props
-        .onlogin(loginRequest, isRemember)
-        .catch(() => showError("Có lỗi xảy ra trong quá trình đăng nhập"));
-    }
-  };
-
-  const showError = (message: string) => {
-    setError(message);
-  };
-
-  const isFormValid = checkIsFormValid();
   return (
-    <form onSubmit={(e) => onlogin(e)} method="POST">
+    <form onSubmit={handleSubmit(onlogin)} method="POST">
       <div className="row g-0">
         <div className="col col-12 col-sm-7">
           <AuthBanner
@@ -170,37 +115,59 @@ const LoginForm = (props: LoginFormProps) => {
             <FormRow>
               <Label>{t("email_label")}</Label>
               <Textbox
+                {...register("username", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  validate: (val) => {
+                    const isEmailValid = validateEmail(val);
+                    if (!isEmailValid) {
+                      return "Invalid email address";
+                    }
+                  },
+                })}
                 placeholder={t("please_input_your_email").toString()}
                 type="email"
-                name="username"
-                onChange={(e) => handleInputChange(e)}
-                onBlur={(e) => handleInputBlur(e)}
               />
+              {errors.username && (
+                <ValidationWarningMessage>
+                  {errors.username.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormRow>
             <FormRow>
               <Label>{t("password_label")}</Label>
               <Textbox
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Must be more than 6 characters",
+                  },
+                })}
                 placeholder={t("please_input_your_password").toString()}
                 type="password"
-                name="password"
-                onChange={(e) => handleInputChange(e)}
-                onBlur={(e) => handleInputBlur(e)}
               />
+              {errors.password && (
+                <ValidationWarningMessage>
+                  {errors.password.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormRow>
             <FormRow className="mt-3">
               <input
+                {...register("isRemember")}
                 type="checkbox"
-                name="isRemember"
                 id="isRemember"
-                onChange={(e) => handleCheckboxChange(e)}
               ></input>
               <Label htmlFor="isRemember">{t("remember_label")}</Label>
             </FormRow>
             <FormFooter>
-              <SubmitButton
-                disabled={!props.isFormEnabled || !isFormValid}
-                type="submit"
-              >
+              <SubmitButton disabled={!props.isFormEnabled} type="submit">
                 {t("login")}
               </SubmitButton>
             </FormFooter>

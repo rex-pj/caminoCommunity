@@ -33,6 +33,8 @@ import { TableContext } from "../CommonEditor/plugins/TablePlugin";
 import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocompleteContext";
 import { defaultEditorConfigs } from "../CommonEditor/configs";
 import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
+import { Controller, useForm, useFormContext } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -928,7 +930,7 @@ const ProductEditor = (props: Props) => {
               </FormRow>
               <div className="editor-shell">
                 <RichTextEditor
-                  initialHtml={htmlContent}
+                  value={htmlContent}
                   onChange={onDescriptionChanged}
                 />
               </div>

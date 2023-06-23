@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
-import { PasswordUpdateModel } from "../../../models/passwordUpdateModel";
-import { checkValidity } from "../../../utils/Validity";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
+import { useForm } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -38,108 +38,107 @@ type Props = {
 };
 
 const PasswordUpdateForm = (props: Props) => {
-  const [formData, setFormData] = useState(new PasswordUpdateModel());
   const [error, setError] = useState<string>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const onTextboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let data = formData || new PasswordUpdateModel();
-    const { name, value } = e.target;
-
-    // Validate when input
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    setFormData({ ...data });
+  const onUpdate = (data: any) => {
+    const profileData: any = { ...data };
+    props
+      .onUpdate(profileData)
+      .catch(() =>
+        setError("Có lỗi xảy ra trong quá trình thay đổi mật khẩu!")
+      );
   };
-
-  const checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  const onUpdate = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
-      }
-    }
-
-    if (isFormValid) {
-      const profileData: any = {};
-      for (const formIdentifier in formData) {
-        profileData[formIdentifier] = formData[formIdentifier].value;
-      }
-
-      props
-        .onUpdate(profileData)
-        .catch(() =>
-          showError("Có lỗi xảy ra trong quá trình thay đổi mật khẩu!")
-        );
-    }
-  };
-
-  const showError = (message: string) => {
-    setError(message);
-  };
-
-  const { currentPassword, newPassword, confirmPassword } = formData;
-  const isFormValid = checkIsFormValid();
 
   return (
     <Fragment>
       <Heading>Change Password</Heading>
       <MainPanel>
-        <form onSubmit={(e) => onUpdate(e)} method="POST">
+        <form onSubmit={handleSubmit(onUpdate)} method="POST">
           <Fragment>
             <FormGroup>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormGroup>
             <FormGroup>
               <LabelAndTextbox
                 label="Current password"
-                name="currentPassword"
                 type="password"
                 placeholder="Enter current password"
-                value={currentPassword.value}
-                onChange={onTextboxChange}
+                {...register("currentPassword", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Must be more than 6 characters",
+                  },
+                })}
               />
+              {errors.currentPassword && (
+                <ValidationWarningMessage>
+                  {errors.currentPassword.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormGroup>
             <FormGroup>
               <LabelAndTextbox
                 label="New password"
-                name="newPassword"
                 placeholder="Enter new password"
-                value={newPassword.value}
                 type="password"
-                onChange={onTextboxChange}
+                {...register("newPassword", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Must be more than 6 characters",
+                  },
+                })}
               />
+              {errors.newPassword && (
+                <ValidationWarningMessage>
+                  {errors.newPassword.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormGroup>
             <FormGroup>
               <LabelAndTextbox
                 label="Confirm new password"
-                name="confirmPassword"
                 placeholder="Confirm new password"
-                value={confirmPassword.value}
                 type="password"
-                onChange={onTextboxChange}
+                {...register("confirmPassword", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Must be more than 6 characters",
+                  },
+                  validate: (val) => {
+                    if (watch("newPassword") !== val) {
+                      return "Your password does not match";
+                    }
+                  },
+                })}
               />
+              {errors.confirmPassword && (
+                <ValidationWarningMessage>
+                  {errors.confirmPassword.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormGroup>
           </Fragment>
           <FormFooter>
             <ButtonPrimary
               type="submit"
               size="xs"
-              disabled={!props.isFormEnabled || !isFormValid}
+              disabled={!props.isFormEnabled}
             >
               <FontAwesomeIcon icon="pencil-alt" className="me-1" />
               Change Password

@@ -61,11 +61,11 @@ import { $getRoot, $insertNodes, LexicalEditor } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 interface Props {
-  initialHtml?: string;
+  value?: string;
   onChange: (editor: LexicalEditor) => void;
 }
 
-const RichTextEditor = (props: Props) => {
+const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
   const { historyState } = useSharedHistoryContext();
   const {
     settings: {
@@ -135,14 +135,14 @@ const RichTextEditor = (props: Props) => {
   }, [isSmallWidthViewport]);
 
   useEffect(() => {
-    const { initialHtml } = props;
-    if (!initialHtml || !initialRef.current) {
+    const { value } = props;
+    if (!value || !initialRef.current) {
       return;
     }
 
     editor.update(() => {
       const parser = new DOMParser();
-      const dom = parser.parseFromString(initialHtml ?? "", "text/html");
+      const dom = parser.parseFromString(value ?? "", "text/html");
       const nodes = $generateNodesFromDOM(editor, dom);
       $insertNodes(nodes);
       props.onChange(editor);
@@ -151,7 +151,7 @@ const RichTextEditor = (props: Props) => {
   });
 
   return (
-    <div>
+    <div ref={ref}>
       {isRichText && <ToolbarPlugin />}
       <div className={`editor-container ${!isRichText ? "plain-text" : ""}`}>
         {isMaxLength && <MaxLengthPlugin maxLength={30} />}
@@ -249,6 +249,6 @@ const RichTextEditor = (props: Props) => {
       </div>
     </div>
   );
-};
+});
 
 export { RichTextEditor };

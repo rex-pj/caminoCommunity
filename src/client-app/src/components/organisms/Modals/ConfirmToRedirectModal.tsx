@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { PanelBody, PanelFooter } from "../../molecules/Panels";
 import { ButtonPrimary } from "../../atoms/Buttons/Buttons";
 
-type Props = {
+interface ConfirmToRedirectModalProps {
   children?: any;
   data: {
     title: string;
@@ -14,9 +14,9 @@ type Props = {
     onSucceed: () => void;
   };
   closeModal: () => void;
-};
+}
 
-const ConfirmToRedirectModal = (props: Props) => {
+export const ConfirmToRedirectModal = (props: ConfirmToRedirectModalProps) => {
   const { children, data, execution } = props;
   const { executeButtonName } = data;
   const { onSucceed } = execution;
@@ -35,5 +35,3 @@ const ConfirmToRedirectModal = (props: Props) => {
     </Fragment>
   );
 };
-
-export default ConfirmToRedirectModal;

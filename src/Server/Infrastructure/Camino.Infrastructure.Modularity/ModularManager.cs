@@ -74,7 +74,9 @@ namespace Camino.Infrastructure.Modularity
                 return null;
             }
 
-            return new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.FullName };
+            var lastIndex = assembly.Location.LastIndexOf($"{moduleFolder.Name}.dll");
+            var moduleBinPath = assembly.Location.Remove(lastIndex);
+            return new ModuleInfo { Name = moduleFolder.Name, Assembly = assembly, Path = moduleBinPath };
         }
 
         private Assembly GetModuleAssembly(FileSystemInfo fileSystemInfo)

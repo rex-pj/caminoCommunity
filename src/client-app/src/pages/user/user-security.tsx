@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../../store/context/session-context";
 import PasswordUpdateForm from "../../components/organisms/Profile/PasswordUpdateForm";
 import { useStore } from "../../store/hook-store";
-import ConfirmToRedirectModal from "../../components/organisms/Modals/ConfirmToRedirectModal";
+import { ConfirmToRedirectModal } from "../../components/organisms/Modals/ConfirmToRedirectModal";
 import AuthService from "../../services/authService";
 import { setLogin, checkRemember } from "../../services/AuthLogic";
 
@@ -62,11 +62,11 @@ const UserSecurity = (props) => {
 
         onUpdateConfirmation();
         setFormEnabled(true);
-        Promise.resolve(data);
+        return Promise.resolve(data);
       })
       .catch((error) => {
         setFormEnabled(true);
-        Promise.reject(error);
+        return Promise.reject(error);
       });
   };
 

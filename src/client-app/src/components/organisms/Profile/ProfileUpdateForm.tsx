@@ -3,12 +3,16 @@ import { Fragment, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PanelBody } from "../../molecules/Panels";
-import { ButtonPrimary } from "../../../components/atoms/Buttons/Buttons";
+import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
 import LabelAndTextbox from "../../molecules/InfoWithLabels/LabelAndTextbox";
-import { checkValidity } from "../../../utils/Validity";
 import { PanelFooter } from "../../../components/molecules/Panels";
 import { QuaternaryDarkHeading } from "../../atoms/Heading";
-import { ProfileUpdateModel } from "../../../models/profileUpdateModel";
+import { useForm } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
+import {
+  ErrorBox,
+  SuccessBox,
+} from "../../molecules/NotificationBars/NotificationBoxes";
 
 const MainPanel = styled(PanelBody)`
   border-radius: ${(p) => p.theme.borderRadius.normal};
@@ -36,111 +40,109 @@ interface Props {
   userInfo?: any;
   onUpdate: (e: any) => Promise<any>;
   isFormEnabled?: boolean;
-  showValidationError: (title: string, message: string) => void;
 }
 
 const ProfileUpdateForm = (props: Props) => {
   const { userInfo } = props;
+  const [error, setError] = useState<string>();
+  const [successMessage, setSuccessMessage] = useState<string>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      lastname: userInfo?.lastname,
+      firstname: userInfo?.firstname,
+      displayName: userInfo?.displayName,
+    },
+  });
 
-  const [formData, setFromData] = useState<ProfileUpdateModel>(
-    new ProfileUpdateModel()
-  );
-
-  const onTextboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let userData = formData || new ProfileUpdateModel();
-    const { name, value } = e.target;
-
-    // Validate when input
-    userData[name].isValid = checkValidity(userData, value, name);
-    userData[name].value = value;
-
-    setFromData({
-      ...userData,
-    });
+  const onUpdate = (data: any) => {
+    const profileData: any = { ...data };
+    return props
+      .onUpdate(profileData)
+      .then(() => {
+        setSuccessMessage("Cập nhật thông tin cá nhân thành công");
+      })
+      .catch(() => {
+        setError("Có lỗi xảy ra trong quá trình cập nhật thông tin cá nhân");
+      });
   };
-
-  const checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  const onUpdate = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        props.showValidationError(
-          "Something went wrong with your input",
-          "Something went wrong with your information, please check and input again"
-        );
-      }
-    }
-
-    if (isFormValid) {
-      const profileData: any = {};
-      for (const formIdentifier in formData) {
-        profileData[formIdentifier] = formData[formIdentifier].value;
-      }
-
-      props.onUpdate(profileData);
-    }
-  };
-
-  const { displayName, firstname, lastname } = formData;
-  const isFormValid = checkIsFormValid();
 
   return (
     <Fragment>
       <Heading>Update personal information</Heading>
       <MainPanel>
-        <form onSubmit={(e) => onUpdate(e)} method="POST">
+        <FormGroup>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormGroup>
+        <FormGroup>
+          {successMessage ? <SuccessBox>{successMessage}</SuccessBox> : null}
+        </FormGroup>
+        <form onSubmit={handleSubmit(onUpdate)} method="POST">
           {userInfo ? (
             <Fragment>
               <FormGroup>
                 <LabelAndTextbox
                   label="Lastname"
-                  name="lastname"
-                  value={lastname.value}
-                  onChange={onTextboxChange}
+                  defaultValue={userInfo?.lastname}
+                  {...register("lastname", {
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                  })}
                 />
+                {errors.lastname && (
+                  <ValidationWarningMessage>
+                    {errors.lastname.message?.toString()}
+                  </ValidationWarningMessage>
+                )}
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
                   label="Firstname"
-                  name="firstname"
-                  value={firstname.value}
-                  onChange={onTextboxChange}
+                  defaultValue={userInfo?.firstname}
+                  {...register("firstname", {
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                  })}
                 />
+                {errors.firstname && (
+                  <ValidationWarningMessage>
+                    {errors.firstname.message?.toString()}
+                  </ValidationWarningMessage>
+                )}
               </FormGroup>
               <FormGroup>
                 <LabelAndTextbox
                   label="Display Name"
-                  name="displayName"
-                  value={displayName.value}
-                  onChange={onTextboxChange}
+                  defaultValue={userInfo?.displayName}
+                  {...register("displayName", {
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                  })}
                 />
+                {errors.displayName && (
+                  <ValidationWarningMessage>
+                    {errors.displayName.message?.toString()}
+                  </ValidationWarningMessage>
+                )}
               </FormGroup>
             </Fragment>
           ) : null}
           <FormFooter>
-            <ButtonPrimary
+            <ButtonSecondary
               type="submit"
               size="xs"
-              disabled={!props.isFormEnabled || !isFormValid}
+              disabled={!props.isFormEnabled}
             >
               <FontAwesomeIcon icon="pencil-alt" className="me-1" />
               Update
-            </ButtonPrimary>
+            </ButtonSecondary>
           </FormFooter>
         </form>
       </MainPanel>

@@ -1,16 +1,14 @@
 import * as React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
-import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
 } from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import { ArticleCreationModel } from "../../../models/articleCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
@@ -24,6 +22,14 @@ import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocom
 import { RichTextEditor } from "../CommonEditor/RichTextEditor";
 import { defaultEditorConfigs } from "../CommonEditor/configs";
 import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
+import { Controller, useForm, useFormContext } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
+
+export const ConnectForm = ({ children }) => {
+  const methods = useFormContext();
+
+  return children({ ...methods });
+};
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -86,7 +92,7 @@ const Footer = styled.div`
   }
 `;
 
-interface ArticleEditorProps {
+interface Props {
   height?: number;
   filterCategories: (e: any) => Promise<any>;
   currentArticle?: any;
@@ -94,89 +100,58 @@ interface ArticleEditorProps {
   onArticlePost: (e: any) => Promise<any>;
 }
 
-const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
+const ArticleEditor = (props: Props) => {
   const { filterCategories, currentArticle } = props;
   const [isSubmitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState(new ArticleCreationModel());
   const [preview, setPreview] = useState<string>("");
   const selectRef = useRef<any>();
-
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let data = formData || {};
-    const { name, value } = evt.target;
-
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  };
+  const { control } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    resetField,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: currentArticle?.name,
+      content: currentArticle?.content,
+      articleCategoryId: currentArticle?.articleCategoryId,
+      picture: currentArticle?.picture,
+    },
+  });
 
   const handleImageChange = (e: ImageUploadOnChangeEvent) => {
-    const data = formData || new ArticleCreationModel();
     const { preview: srcPreview, file } = e;
-    data["picture"].isValid = checkValidity(data, file, "picture");
-    data["picture"].value = {
-      file,
-    };
 
     setPreview(srcPreview ?? "");
-    setFormData({
-      ...data,
-    });
+    setValue("picture", { file });
   };
 
-  const onArticlePost: (
-    e: React.FormEvent<HTMLFormElement>
-  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onArticlePost = async (articleForm: any) => {
     setSubmitted(true);
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-      break;
-    }
-
-    if (!isFormValid) {
-      props.showValidationError(
-        "Something went wrong with your input",
-        "Something went wrong with your information, please check and input again"
-      );
-
-      setSubmitted(false);
-      return Promise.reject("validation: Something went wrong with your input");
-    }
-
-    let articleForm: any = {};
-    for (const formIdentifier in formData) {
-      articleForm[formIdentifier] = formData[formIdentifier].value;
-    }
-
-    if (!articleForm.id) {
-      delete articleForm["id"];
-    }
-
     const requestData = new FormData();
     for (const key of Object.keys(articleForm)) {
-      if (key === "picture" && articleForm[key]) {
-        const picture = articleForm[key];
-        requestData.append(`picture.file`, picture.file);
-        if (picture.pictureId) {
-          requestData.append(`file.pictureId`, picture.pictureId);
-        }
-      }
-      if (key === "picture" && articleForm[key]) {
-        const picture = articleForm[key];
-        if (picture.pictureId) {
-          requestData.append(`file.pictureId`, picture.pictureId);
-        }
-      } else {
+      if (key !== "picture") {
         requestData.append(key, articleForm[key]);
+        continue;
+      }
+
+      const picture = articleForm[key];
+      if (!picture) {
+        continue;
+      }
+
+      if (picture.file) {
+        requestData.append(`picture.file`, picture.file);
+      }
+
+      if (picture.pictureId) {
+        requestData.append(`file.pictureId`, picture.pictureId);
       }
     }
 
-    delete articleForm["articleCategoryName"];
     return await props
       .onArticlePost(requestData)
       .then((response: any) => {
@@ -191,37 +166,54 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
   };
 
   const clearFormData = () => {
+    reset();
     selectRef.current.clearValue();
-    const articleFormData = { ...new ArticleCreationModel() };
     setPreview("");
-    setFormData({ ...articleFormData });
   };
 
   const onImageRemoved = () => {
-    let data = formData || {};
-    data["picture"].isValid = false;
-    data["picture"].value = null;
-
+    resetField("picture");
     setPreview("");
-    setFormData({
-      ...data,
-    });
   };
 
-  const loadCategorySelections = (value: string) => {
-    return filterCategories({
-      variables: {
-        criterias: { query: value, isParentOnly: true },
-      },
-    })
-      .then((response: any) => {
-        const { data } = response;
-        const { selections } = data;
-        return mapSelectOptions(selections);
+  const loadCategorySelections = useMemo(() => {
+    return async (value: string) => {
+      return await filterCategories({
+        variables: {
+          criterias: { query: value, isParentOnly: true },
+        },
       })
-      .catch((error) => {
-        return [];
-      });
+        .then((response: any) => {
+          const { data } = response;
+          const { selections } = data;
+          const mappedSelections = mapSelectOptions(selections);
+          return mappedSelections;
+        })
+        .catch((error) => {
+          return [];
+        });
+    };
+  }, [filterCategories]);
+
+  const loadCategorySelected = useMemo(() => {
+    return () => {
+      if (!currentArticle) {
+        return null;
+      }
+      const { articleCategoryName, articleCategoryId } = currentArticle;
+      if (!articleCategoryId) {
+        return null;
+      }
+      return {
+        label: articleCategoryName,
+        value: articleCategoryId,
+      };
+    };
+  }, [currentArticle]);
+
+  const onContentChanged = (editor: LexicalEditor) => {
+    const html = $generateHtmlFromNodes(editor, null);
+    setValue("content", html);
   };
 
   const handleSelectChange = (
@@ -229,100 +221,104 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
     actionMeta: ActionMeta<any>
   ) => {
     const { action } = actionMeta;
-    let data = formData || {};
+    let articleCategoryId: number;
     if (action === "clear" || action === "remove-value") {
-      data.articleCategoryId.isValid = false;
-      data.articleCategoryId.value = 0;
-      data.articleCategoryName.value = "";
+      articleCategoryId = 0;
     } else {
-      const { value, label } = newValue;
-      data.articleCategoryId.isValid = checkValidity(
-        data,
-        value,
-        "articleCategoryId"
-      );
-      data.articleCategoryId.value = parseFloat(value);
-      data.articleCategoryName.value = label;
+      const { value } = newValue;
+      articleCategoryId = parseFloat(value);
     }
 
-    setFormData({
-      ...data,
-    });
-  };
-
-  const loadCategorySelected = () => {
-    const { articleCategoryName, articleCategoryId } = formData;
-    if (!articleCategoryId.value) {
-      return null;
-    }
-    return {
-      label: articleCategoryName.value,
-      value: articleCategoryId.value,
-    };
-  };
-
-  const onContentChanged = (editor: LexicalEditor) => {
-    const html = $generateHtmlFromNodes(editor, null);
-    let data = formData || new ArticleCreationModel();
-    data.content.isValid = checkValidity(data, html, "content");
-    data.content.value = html;
-    setFormData({
-      ...data,
-    });
+    setValue("articleCategoryId", articleCategoryId);
   };
 
   useEffect(() => {
-    if (currentArticle && !formData?.id?.value) {
+    if (currentArticle?.picture) {
       const { picture } = currentArticle;
-      if (picture?.value?.pictureId) {
+      if (picture?.pictureId) {
         setPreview(
-          `${apiConfig.paths.pictures.get.getPicture}/${picture.value.pictureId}`
+          `${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`
         );
       }
-
-      setFormData({ ...currentArticle });
     }
-  }, [currentArticle, formData]);
+  }, [currentArticle]);
 
-  const { name, articleCategoryId, content } = formData;
-  const htmlContent = content?.value;
   return (
     <LexicalComposer initialConfig={defaultEditorConfigs}>
       <SharedHistoryContext>
         <TableContext>
           <SharedAutocompleteContext>
             <AsyncSubmitFormPlugin
-              onSubmitAsync={(e) => onArticlePost(e)}
+              onSubmitAsync={handleSubmit(onArticlePost)}
               method="POST"
               clearAfterSubmit={true}
             >
               <FormRow className="row">
                 <div className="col-12 col-lg-6 pr-lg-1 mb-2 mb-lg-0">
                   <SecondaryTextbox
-                    name="name"
-                    defaultValue={name.value}
+                    {...register("name", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      maxLength: {
+                        value: 255,
+                        message: "The text length cannot exceed the limit 255",
+                      },
+                    })}
+                    defaultValue={currentArticle?.name}
                     autoComplete="off"
-                    onChange={(e) => handleInputChange(e)}
                     placeholder="Post title"
                   />
+                  {errors.name && (
+                    <ValidationWarningMessage>
+                      {errors.name.message?.toString()}
+                    </ValidationWarningMessage>
+                  )}
                 </div>
                 <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
-                  <AsyncSelect
-                    key={JSON.stringify(articleCategoryId)}
-                    className="cate-selection"
-                    ref={selectRef}
-                    defaultValue={loadCategorySelected()}
-                    cacheOptions
-                    defaultOptions
-                    onChange={handleSelectChange}
-                    loadOptions={loadCategorySelections}
-                    isClearable={true}
+                  <Controller
+                    control={control}
+                    defaultValue={() => loadCategorySelected()}
+                    name="articleCategoryId"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <AsyncSelect
+                        {...field}
+                        ref={selectRef}
+                        key={JSON.stringify(currentArticle?.articleCategoryId)}
+                        className="cate-selection"
+                        cacheOptions
+                        defaultOptions
+                        loadOptions={(e) => loadCategorySelections(e)}
+                        isClearable={true}
+                        placeholder="Select category"
+                        onChange={handleSelectChange}
+                      />
+                    )}
                   />
+                  {errors.articleCategoryId && (
+                    <ValidationWarningMessage>
+                      {errors.articleCategoryId.message?.toString()}
+                    </ValidationWarningMessage>
+                  )}
                 </div>
                 <div className="col">
-                  <ThumbnailUpload
-                    onChange={handleImageChange}
-                  ></ThumbnailUpload>
+                  <Controller
+                    control={control}
+                    name="picture"
+                    render={({ field }) => (
+                      <ThumbnailUpload
+                        {...field}
+                        onChange={handleImageChange}
+                      />
+                    )}
+                  />
                 </div>
               </FormRow>
               {preview ? (
@@ -339,10 +335,34 @@ const ArticleEditor: React.FC<ArticleEditorProps> = (props) => {
               ) : null}
 
               <div className="editor-shell">
-                <RichTextEditor
-                  initialHtml={htmlContent}
-                  onChange={onContentChanged}
+                <Controller
+                  control={control}
+                  defaultValue={currentArticle?.content}
+                  name="content"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                    maxLength: {
+                      value: 4000,
+                      message: "The text length cannot exceed the limit 4000",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      {...field}
+                      onChange={(editor: LexicalEditor) =>
+                        onContentChanged(editor)
+                      }
+                    />
+                  )}
                 />
+                {errors.content && (
+                  <ValidationWarningMessage>
+                    {errors.content.message?.toString()}
+                  </ValidationWarningMessage>
+                )}
               </div>
 
               <Footer className="row mb-3">

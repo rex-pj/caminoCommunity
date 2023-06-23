@@ -320,7 +320,7 @@ const FarmEditor = (props: FarmEditorProps) => {
                     ref={selectRef}
                     defaultValue={loadFarmTypeSelected()}
                     onChange={(e, action) => handleSelectChange(e, action)}
-                    loadOptions={loadFarmTypeSelections}
+                    // loadOptions={loadFarmTypeSelections}
                     isClearable={true}
                   />
                 </div>
@@ -380,7 +380,7 @@ const FarmEditor = (props: FarmEditorProps) => {
               ) : null}
               <div className="editor-shell">
                 <RichTextEditor
-                  initialHtml={htmlContent}
+                  value={htmlContent}
                   onChange={onDescriptionChanged}
                 />
               </div>

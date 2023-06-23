@@ -88,9 +88,9 @@ const Modal = (props: Props) => {
   const { children, title } = data;
   const { unableClose, innerModal: InnerModal } = options;
   const renderBackdrop = () => {
-    if (!!showBackdrop && !unableClose) {
+    if (showBackdrop && !unableClose) {
       return <Backdrop onClick={closeModal} />;
-    } else if (!!showBackdrop) {
+    } else if (showBackdrop) {
       return <Backdrop />;
     }
   };

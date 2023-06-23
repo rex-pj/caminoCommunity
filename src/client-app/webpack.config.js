@@ -121,6 +121,6 @@ module.exports = (e, argv) => {
         safe: "./environments/.env",
       }),
     ],
-    devtool: "eval-cheap-source-map",
+    devtool: "eval-cheap-module-source-map",
   };
 };

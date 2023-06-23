@@ -57,7 +57,9 @@ const ForgotPasswordNavigation = (props: ForgotPasswordNavigationProps) => {
         <ListItem
           className={pathname === "/auth/forgot-password" ? "actived" : ""}
         >
-          <NavButton to="/auth/forgot-password">{t("login")}</NavButton>
+          <NavButton to="/auth/forgot-password">
+            {t("forgot_password_title")}
+          </NavButton>
         </ListItem>
         <ListItem>
           <NavButton to="/">

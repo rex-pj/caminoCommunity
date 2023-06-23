@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { SecondaryTextbox } from "../../../components/atoms/Textboxes";
 import { PanelBody, PanelFooter } from "../../../components/molecules/Panels";
@@ -7,10 +7,10 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
 import ResetPasswordNavigation from "./ResetPasswordNavigation";
 import { SecondaryHeading } from "../../atoms/Heading";
-import { checkValidity } from "../../../utils/Validity";
-import { ResetPasswordModel } from "../../../models/resetPasswordModel";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -87,7 +87,7 @@ const Instruction = styled.div`
   }
 `;
 
-interface ResetPasswordFormProps {
+interface Props {
   args?: {
     key?: string;
     email?: string;
@@ -95,105 +95,38 @@ interface ResetPasswordFormProps {
   resetPassword: (e: any) => Promise<any>;
 }
 
-const ResetPasswordForm = (props: ResetPasswordFormProps) => {
+const ResetPasswordForm = (props: Props) => {
   const { args } = props;
   const { t } = useTranslation();
-  const [formData, setFormData] = useState(new ResetPasswordModel());
   const [error, setError] = useState<string>();
-  const initialRef = useRef(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: args?.email,
+      key: args?.key,
+      password: null,
+      confirmPassword: null,
+    },
+  });
 
-  useEffect(() => {
-    if (args && !initialRef.current) {
-      let data = { ...formData } || new ResetPasswordModel();
-      data.email.value = args.email;
-      data.email.isValid = checkValidity(data, args.email, "email");
-
-      data.key.value = args.key;
-      data.key.isValid = checkValidity(data, args.key, "key");
-      setFormData({ ...data });
-      initialRef.current = true;
-    }
-  }, [args, formData]);
-
-  const handleInputBlur = (
-    evt: React.FocusEvent<HTMLInputElement, Element>
-  ) => {
-    alertInvalidForm(evt.target);
+  const onResetPassword = (data: any) => {
+    const resetPasswordRequest: any = { ...data };
+    props.resetPassword(resetPasswordRequest).catch(() => {
+      setError(
+        "Có lỗi xảy ra khi thay đổi password của bạn, vui lòng thử lại!"
+      );
+    });
   };
-
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let data = formData || new ResetPasswordModel();
-    const { name, value } = evt.target;
-
-    // Validate when input
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    alertInvalidForm(evt.target);
-    setFormData({ ...data });
-  };
-
-  const alertInvalidForm = (target: EventTarget & HTMLInputElement) => {
-    const { name } = target;
-    if (!formData[name].isValid) {
-      target.classList.add("invalid");
-    } else {
-      target.classList.remove("invalid");
-    }
-  };
-
-  const onResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
-      }
-    }
-
-    if (isFormValid) {
-      const resetPasswordRequest: any = {};
-      for (const formIdentifier in formData) {
-        resetPasswordRequest[formIdentifier] = formData[formIdentifier].value;
-      }
-
-      props.resetPassword(resetPasswordRequest).catch(() => {
-        showError(
-          "Có lỗi xảy ra khi thay đổi password của bạn, vui lòng thử lại!"
-        );
-      });
-    }
-  };
-
-  const checkIsFormValid = () => {
-    let isFormValid = false;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid;
-      if (!isFormValid) {
-        break;
-      }
-    }
-
-    return isFormValid;
-  };
-
-  const showError = (message: string) => {
-    setError(message);
-  };
-
-  const isFormCheckValid = checkIsFormValid();
 
   return (
-    <form onSubmit={(e) => onResetPassword(e)} method="POST">
+    <form onSubmit={handleSubmit(onResetPassword)} method="POST">
       <ResetPasswordNavigation />
       <Instruction>
-        <p>
-          Password must contain lower case, upper case letters, numeric, special
-          characters
-        </p>
+        <p>{t("reset_password_rules_instruction").toString()}</p>
       </Instruction>
       <PanelBody>
         <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
@@ -203,10 +136,22 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
             autoComplete="off"
             placeholder={t("please_input_new_password").toString()}
             type="password"
-            name="password"
-            onChange={(e) => handleInputChange(e)}
-            onBlur={(e) => handleInputBlur(e)}
+            {...register("password", {
+              required: {
+                value: true,
+                message: "This field is required",
+              },
+              minLength: {
+                value: 6,
+                message: "Must be more than 6 characters",
+              },
+            })}
           />
+          {errors.password && (
+            <ValidationWarningMessage>
+              {errors.password.message?.toString()}
+            </ValidationWarningMessage>
+          )}
         </FormRow>
         <FormRow>
           <Label>{t("confirm_new_password_label")}</Label>
@@ -214,15 +159,30 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
             autoComplete="off"
             placeholder={t("please_confirm_new_password").toString()}
             type="password"
-            name="confirmPassword"
-            onChange={(e) => handleInputChange(e)}
-            onBlur={(e) => handleInputBlur(e)}
+            {...register("confirmPassword", {
+              required: {
+                value: true,
+                message: "This field is required",
+              },
+              minLength: {
+                value: 6,
+                message: "Must be more than 6 characters",
+              },
+              validate: (val) => {
+                if (watch("password") !== val) {
+                  return "Your password does not match";
+                }
+              },
+            })}
           />
+          {errors.confirmPassword && (
+            <ValidationWarningMessage>
+              {errors.confirmPassword.message?.toString()}
+            </ValidationWarningMessage>
+          )}
         </FormRow>
         <FormFooter>
-          <SubmitButton type="submit" disabled={!isFormCheckValid}>
-            {t("change_password")}
-          </SubmitButton>
+          <SubmitButton type="submit">{t("change_password")}</SubmitButton>
         </FormFooter>
       </PanelBody>
     </form>

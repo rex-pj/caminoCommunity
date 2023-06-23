@@ -7,21 +7,22 @@
  */
 
 import * as React from "react";
+import { FormHTMLAttributes } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { CLEAR_EDITOR_COMMAND } from "lexical";
+import { FormProvider, useForm } from "react-hook-form";
 
-interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
+interface Props extends FormHTMLAttributes<HTMLFormElement> {
   clearAfterSubmit?: boolean;
-  onSubmitAsync: (e: React.FormEvent<HTMLFormElement>) => Promise<any>;
+  onSubmitAsync: (e: any) => Promise<any>;
 }
 
 export default function AsyncSubmitFormPlugin(props: Props): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const { children, method, clearAfterSubmit } = props;
+  const methods = useForm();
 
-  const onSubmitAsync: (
-    e: React.FormEvent<HTMLFormElement>
-  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitAsync: (e: any) => Promise<any> = async (e: any) => {
     return props.onSubmitAsync(e).then(() => {
       if (clearAfterSubmit) {
         editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
@@ -31,8 +32,10 @@ export default function AsyncSubmitFormPlugin(props: Props): JSX.Element {
   };
 
   return (
+    // <FormProvider {...methods}>
     <form onSubmit={(e) => onSubmitAsync(e)} method={method}>
       {children}
     </form>
+    // </FormProvider>
   );
 }
