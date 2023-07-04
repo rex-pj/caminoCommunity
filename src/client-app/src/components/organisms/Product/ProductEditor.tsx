@@ -1,29 +1,23 @@
 import * as React from "react";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
-import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
 import {
   ImageUpload,
   ImageUploadOnChangeEvent,
 } from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import { ProductCreationModel } from "../../../models/productCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { ButtonOutlinePrimary } from "../../atoms/Buttons/OutlineButtons";
 import ProductAttributeRow from "./ProductAttributeRow";
 import { useStore } from "../../../store/hook-store";
 import ProductAttributeEditModal from "./ProductAttributeEditModal";
-import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
 import { ActionMeta, OnChangeValue } from "react-select";
-import {
-  IProductAttribute,
-  IProductAttributeValue,
-} from "../../../models/productAttributesModel";
+import { IProductAttribute } from "../../../models/productAttributesModel";
 import { LexicalEditor } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { RichTextEditor } from "../CommonEditor/RichTextEditor";
@@ -33,8 +27,8 @@ import { TableContext } from "../CommonEditor/plugins/TablePlugin";
 import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocompleteContext";
 import { defaultEditorConfigs } from "../CommonEditor/configs";
 import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
-import { Controller, useForm, useFormContext } from "react-hook-form";
-import { ValidationWarningMessage } from "../../ErrorMessage";
+import { FormProvider, Controller, useForm } from "react-hook-form";
+import { ValidationDangerMessage } from "../../ErrorMessage";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -47,7 +41,7 @@ const FormRow = styled.div`
   .cate-selection {
     z-index: 10;
     max-width: 100%;
-    > div {
+    > div:first-child {
       border: 1px solid ${(p) => p.theme.color.secondaryBg};
     }
   }
@@ -117,112 +111,45 @@ const ProductEditor = (props: Props) => {
     filterAttributes,
     filterProductAttributeControlTypes,
   } = props;
-  const [formData, setFormData] = useState<ProductCreationModel>(
-    JSON.parse(JSON.stringify(new ProductCreationModel()))
-  );
+  const [previews, setPreviews] = useState<
+    { pictureId?: number; url?: string; preview?: string; fileName?: string }[]
+  >([]);
+  const methods = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    control,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = methods;
 
-  const categorySelectRef = useRef<any>();
-  const farmSelectRef = useRef<any>();
   const dispatch = useStore(true)[1];
   const [isSubmitted, setSubmitted] = useState(false);
 
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let data = { ...formData } || new ProductCreationModel();
-    const { name, value } = evt.target;
-
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  };
-
-  const handlePriceChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let data = { ...formData } || new ProductCreationModel();
-    const { value } = evt.target;
-    const name = "price";
-
-    data[name].isValid = checkValidity(data, value, name);
-    if (!value || Number.isNaN(value)) {
-      data[name].value = 0;
-    } else {
-      data[name].value = parseFloat(value);
-    }
-
-    setFormData({
-      ...data,
-    });
-  };
-
   const handleImageChange = (e: ImageUploadOnChangeEvent) => {
-    let data = { ...formData } || new ProductCreationModel();
+    const { pictures } = getValues();
     const { preview, file } = e;
-    let pictures = Object.assign([], data.pictures.value);
-    pictures.push({
+    const pictureList = pictures ? [...pictures] : [];
+    pictureList.push({
       file: file,
       preview: preview,
     });
 
-    data.pictures.value = pictures;
-    setFormData({
-      ...data,
+    let previewPics = [...previews];
+    previewPics.push({
+      preview: preview,
     });
+
+    setPreviews([...previewPics]);
+    setValue("pictures", pictureList);
   };
 
-  const onProductPost: (
-    e: React.FormEvent<HTMLFormElement>
-  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onProductPost = async (productForm: any) => {
     setSubmitted(true);
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-      break;
-    }
-
-    if (!isFormValid) {
-      props.showValidationError(
-        "Something went wrong with your input",
-        "Something went wrong with your information, please check and input again"
-      );
-
-      setSubmitted(false);
-      return Promise.reject("validation: Something went wrong with your input");
-    }
-
-    let productData: any = {};
-    for (let formIdentifier in formData) {
-      if (formIdentifier !== "productAttributes") {
-        productData[formIdentifier] = formData[formIdentifier].value;
-      } else if (formIdentifier === "productAttributes") {
-        let productAttributes: any[] = [];
-        const attributes = formData[formIdentifier].value;
-        if (!attributes || attributes.length === 0) {
-          continue;
-        }
-        const attributeLength = attributes.length;
-        for (let i = 0; i < attributeLength; i++) {
-          const attribute = attributes[i];
-          productAttributes.push({
-            id: attribute.id,
-            attributeId: attribute.attributeId,
-            textPrompt: attribute.textPrompt,
-            isRequired: attribute.isRequired,
-            controlTypeId: attribute.controlTypeId,
-            displayOrder: attribute.displayOrder,
-            attributeRelationValues: attribute.attributeRelationValues,
-          });
-        }
-
-        productData[formIdentifier] = productAttributes;
-      }
-    }
-
-    if (!productData.id) {
-      delete productData["id"];
-    }
-
+    const productData: any = { ...productForm };
     const requestFormData = new FormData();
     for (const key of Object.keys(productData)) {
       if (key === "pictures" && productData[key]) {
@@ -239,12 +166,12 @@ const ProductEditor = (props: Props) => {
       } else if (key === "farms" && productData[key]) {
         const farms = productData[key];
         for (const i in farms) {
-          requestFormData.append(`farms[${i}].id`, farms[i].id);
+          requestFormData.append(`farms[${i}].id`, farms[i].value);
         }
       } else if (key === "categories" && productData[key]) {
         const categories = productData[key];
         for (const i in categories) {
-          requestFormData.append(`categories[${i}].id`, categories[i].id);
+          requestFormData.append(`categories[${i}].id`, categories[i].value);
         }
       } else if (key === "productAttributes" && productData[key]) {
         const productAttributes = productData[key];
@@ -326,78 +253,77 @@ const ProductEditor = (props: Props) => {
   };
 
   const clearFormData = () => {
-    categorySelectRef.current.clearValue();
-    farmSelectRef.current.clearValue();
-    const productFormData = JSON.parse(
-      JSON.stringify(new ProductCreationModel())
-    );
-    setFormData({ ...productFormData });
+    reset((formValues) => ({
+      ...formValues,
+      name: null,
+      farmType: null,
+      description: null,
+      pictures: [],
+    }));
+    setPreviews([]);
   };
 
-  const onImageRemoved = (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    item: any
-  ) => {
-    let data = { ...formData } || new ProductCreationModel();
-    if (!data.pictures || !data.pictures.value) {
+  const onImageRemoved = (item: {
+    pictureId?: number;
+    url?: string;
+    preview?: string;
+    fileName?: string;
+  }) => {
+    const formData = getValues();
+    const pictures = formData.pictures;
+    if (!pictures || pictures.length < 0) {
       return;
     }
 
+    let updatedPictures = [...formData.pictures];
+    let previewPics = [...previews];
     if (item.pictureId) {
-      data.pictures.value = data.pictures.value.filter(
+      updatedPictures = updatedPictures.filter(
+        (x: any) => x.pictureId !== item.pictureId
+      );
+      previewPics = previewPics.filter(
         (x: any) => x.pictureId !== item.pictureId
       );
     } else {
-      data.pictures.value = data.pictures.value.filter((x: any) => x !== item);
+      previewPics = previewPics.filter((x: any) => x.preview !== item.preview);
+      updatedPictures = updatedPictures.filter((x: any) => x !== item);
     }
 
-    setFormData({
-      ...data,
-    });
+    setPreviews([...previewPics]);
+    setValue("pictures", updatedPictures);
   };
 
-  async function handleSelectChange(
+  const handleSelectChange = (
     newValue: OnChangeValue<any, any>,
     actionMeta: ActionMeta<any>,
     name: string
-  ) {
-    let data = { ...formData } || new ProductCreationModel();
-    const { action, removedValue } = actionMeta;
+  ) => {
+    const { action } = actionMeta;
     if (action === "clear") {
-      data[name].value = [];
-      data[name].isValid = false;
+      setValue(name, []);
     } else if (action === "remove-value") {
-      data[name].value = data[name].value.filter(
-        (x: any) => x.id !== parseFloat(removedValue.value)
-      );
-      data[name].isValid = !!data[name].value;
+      setValue(name, newValue);
     } else {
-      data[name].value = newValue.map((item: any) => {
-        return { id: parseFloat(item.value), name: item.label };
-      });
-
-      data[name].isValid = data[name].value && data[name].value.length > 0;
+      setValue(name, newValue);
     }
-
-    setFormData({
-      ...data,
-    });
-  }
+  };
 
   const loadCategoriesSelected = () => {
-    const { categories } = formData;
-    if (!categories.value) {
+    if (!currentProduct?.categories) {
       return null;
     }
-    return categories.value.map((item: any) => {
+    const { categories } = currentProduct;
+    return categories.map((item: any) => {
       return { value: item.id, label: item.name };
     });
   };
 
   const loadCategorySelections = useMemo(() => {
     return async (value: string) => {
-      const { categories } = formData;
-      const currentIds = categories?.value?.map((cate: any) => cate.id);
+      const categories = currentProduct?.categories;
+      const currentIds = categories
+        ? categories.map((cate: any) => cate.id)
+        : [];
 
       const response = await filterCategories({
         variables: {
@@ -409,22 +335,22 @@ const ProductEditor = (props: Props) => {
       const { selections } = data;
       return mapSelectOptions(selections);
     };
-  }, [filterCategories, formData]);
+  }, [filterCategories, currentProduct]);
 
   const loadFarmsSelected = () => {
-    const { farms } = formData;
-    if (!farms.value) {
+    if (!currentProduct?.farms) {
       return null;
     }
-    return farms.value.map((item: any) => {
+    const { farms } = currentProduct;
+    return farms.map((item: any) => {
       return { value: item.id, label: item.name };
     });
   };
 
   const loadFarmSelections = useMemo(() => {
     return async (value: string) => {
-      const { farms } = formData;
-      const currentIds = farms?.value?.map((farm: any) => farm.id);
+      const famrs = currentProduct?.famrs;
+      const currentIds = famrs ? famrs.map((cate: any) => cate.id) : [];
 
       const response = await filterFarms({
         variables: {
@@ -436,21 +362,14 @@ const ProductEditor = (props: Props) => {
       const { selections } = data;
       return mapSelectOptions(selections);
     };
-  }, [filterFarms, formData]);
+  }, [filterFarms, currentProduct]);
 
   /// Attribute features
   const loadAttributeSelections = (value?: string) => {
-    const {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
-      return;
-    }
-    const {
-      value: [...attributes],
-    } = productAttributes;
-    const attributeIds = attributes.map((item) => item.attributeId);
-
+    const productAttributes = currentProduct?.productAttributes;
+    const attributeIds = productAttributes
+      ? productAttributes.map((item) => item.attributeId)
+      : [];
     return filterAttributes({
       variables: {
         criterias: { query: value, excludedIds: attributeIds },
@@ -531,426 +450,335 @@ const ProductEditor = (props: Props) => {
   };
 
   const onAddAttribute = (newAttr: IProductAttribute) => {
-    let {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
-      return;
+    const formValues = getValues();
+    let productAttributes = formValues["productAttributes"];
+    if (!productAttributes) {
+      productAttributes = [];
     }
-    let {
-      value: [...attributes],
-    } = productAttributes;
-    attributes.push(newAttr);
 
-    setFormData({
-      ...formData,
-      productAttributes: {
-        ...productAttributes,
-        value: attributes,
-      },
-    });
+    productAttributes.push(newAttr);
+    setValue("productAttributes", productAttributes);
   };
 
-  const onUpdateAttribute = (currentAttr: IProductAttribute, index: number) => {
-    const {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
-      return;
+  const onUpdateAttribute = (changed: IProductAttribute, index: number) => {
+    const formValues = getValues();
+    let productAttributes = formValues["productAttributes"];
+    if (!productAttributes) {
+      productAttributes = [changed];
+    } else {
+      productAttributes[index] = changed;
     }
-    const {
-      value: [...attributes],
-    } = productAttributes;
-    attributes[index] = currentAttr;
 
-    setFormData({
-      ...formData,
-      productAttributes: {
-        ...productAttributes,
-        value: attributes,
-      },
-    });
+    setValue("productAttributes", productAttributes);
   };
 
   const onRemoveAttribute = (currentAttr: IProductAttribute) => {
-    let {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
+    const formValues = getValues();
+    let productAttributes = formValues["productAttributes"];
+    if (!productAttributes) {
       return;
     }
-    let {
-      value: [...attributes],
-    } = productAttributes;
-    const index = attributes.indexOf(currentAttr);
-    attributes.splice(index, 1);
-
-    setFormData({
-      ...formData,
-      productAttributes: {
-        ...productAttributes,
-        value: attributes,
-      },
-    });
-  };
-
-  const onAttributeChange = (currentAttr: IProductAttribute, index: number) => {
-    let {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
-      return;
-    }
-    let {
-      value: [...attributes],
-    } = productAttributes;
-    attributes[index] = currentAttr;
-
-    setFormData({
-      ...formData,
-      productAttributes: {
-        ...productAttributes,
-        value: attributes,
-      },
-    });
-  };
-
-  /// Attribute value features
-  function onOpenAddAttributeValueModal(attributeIndex: number) {
-    dispatch("OPEN_MODAL", {
-      data: {
-        attributeValue: {
-          name: "",
-          priceAdjustment: 0,
-          pricePercentageAdjustment: 0,
-          quantity: 0,
-          displayOrder: 0,
-        },
-        title: "Thêm giá trị của thuộc tính sản phẩm",
-        attributeIndex: attributeIndex,
-      },
-      execution: {
-        onEditAttributeValue: onAddAttributeValue,
-      },
-      options: {
-        isOpen: true,
-        innerModal: ProductAttributeValueEditModal,
-      },
-    });
-  }
-
-  function onOpenEditAttributeValueModal(
-    currentAttributeValue: IProductAttributeValue,
-    attributeIndex: number,
-    attributeValueIndex: number
-  ) {
-    dispatch("OPEN_MODAL", {
-      data: {
-        attributeValue: currentAttributeValue,
-        title: "Sửa giá trị của thuộc tính sản phẩm",
-        attributeIndex: attributeIndex,
-        attributeValueIndex: attributeValueIndex,
-      },
-      execution: {
-        onEditAttributeValue: onUpdateAttributeValue,
-      },
-      options: {
-        isOpen: true,
-        innerModal: ProductAttributeValueEditModal,
-      },
-    });
-  }
-
-  function onAddAttributeValue(
-    attributeValue: IProductAttributeValue,
-    attributeIndex: number
-  ) {
-    if (!attributeIndex && attributeIndex !== 0) {
-      return;
-    }
-
-    let {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-    if (!productAttributes || !productAttributes.value) {
-      return;
-    }
-
-    let {
-      value: [...attributes],
-    } = productAttributes;
-
-    let attributeRelationValues: IProductAttributeValue[] = [];
-    let currentAttribute = attributes[attributeIndex];
-    if (!currentAttribute.attributeRelationValues) {
-      attributeRelationValues = [attributeValue];
-    } else {
-      attributeRelationValues = [...currentAttribute.attributeRelationValues];
-      attributeRelationValues.push(attributeValue);
-    }
-
-    updateAttributeValue(attributeIndex, attributeRelationValues);
-  }
-
-  function onUpdateAttributeValue(
-    attributeValue: IProductAttributeValue,
-    attributeIndex: number,
-    attributeValueIndex: number
-  ) {
-    if (!attributeIndex && attributeIndex !== 0) {
-      return;
-    }
-
-    let {
-      productAttributes: { ...productAttributes },
-    } = { ...formData };
-
-    if (
-      !productAttributes ||
-      !productAttributes.value ||
-      !productAttributes.value[attributeIndex]
-    ) {
-      return;
-    }
-
-    let { attributeRelationValues } = {
-      ...productAttributes.value[attributeIndex],
-    };
-
-    if (!attributeRelationValues || !attributeRelationValues.length) {
-      return;
-    }
-
-    const relationValues = [...attributeRelationValues];
-    relationValues[attributeValueIndex] = { ...attributeValue };
-    updateAttributeValue(attributeIndex, relationValues);
-  }
-
-  function updateAttributeValue(
-    attributeIndex: number,
-    attributeRelationValues: IProductAttributeValue[]
-  ) {
-    if (!productAttributes || !productAttributes.value) {
-      return;
-    }
-
-    const cloneProductAttributes = productAttributes.value.map(
-      (elem, index) => {
-        if (attributeIndex === index) {
-          return {
-            ...elem,
-            attributeRelationValues: attributeRelationValues,
-          };
-        }
-        return { ...elem };
-      }
+    productAttributes = productAttributes.filter(
+      (x: IProductAttribute) => x != currentAttr
     );
+    setValue("productAttributes", productAttributes);
+    trigger("productAttributes");
+  };
 
-    const productData = {
-      ...formData,
-      productAttributes: {
-        ...productAttributes,
-        value: cloneProductAttributes,
-      },
-    };
-    setFormData(productData);
-  }
+  const onAttributeChange = (changed: IProductAttribute, index: number) => {
+    onUpdateAttribute(changed, index);
+    trigger("productAttributes");
+  };
 
   useEffect(() => {
-    if (currentProduct && !formData?.id?.value) {
-      setFormData(currentProduct);
+    if (currentProduct?.productAttributes) {
+      setValue("productAttributes", currentProduct?.productAttributes);
     }
-  }, [currentProduct, formData]);
+  }, [currentProduct, currentProduct]);
+
+  useEffect(() => {
+    if (currentProduct?.pictures) {
+      const { pictures } = currentProduct;
+      const previewPics: { url?: string; preview?: string }[] = [];
+      if (!pictures) {
+        return;
+      }
+
+      const pictureList: any[] = [];
+      for (const picture of pictures) {
+        if (picture.pictureId) {
+          const { pictureId } = picture;
+          pictureList.push({ pictureId: pictureId });
+          previewPics.push({
+            url: `${apiConfig.paths.pictures.get.getPicture}/${pictureId}`,
+          });
+        }
+      }
+      setValue("pictures", pictureList);
+      setPreviews([...previewPics]);
+    }
+  }, [currentProduct]);
 
   const onDescriptionChanged = (editor: LexicalEditor) => {
     const html = $generateHtmlFromNodes(editor, null);
-    let data = formData || {};
-
-    data["description"].isValid = checkValidity(data, html, "description");
-    data["description"].value = html;
-
-    setFormData({
-      ...data,
-    });
+    setValue("description", html);
   };
 
-  const {
-    name,
-    price,
-    categories,
-    farms,
-    productAttributes,
-    pictures,
-    description,
-  } = formData;
-  const htmlContent = description?.value;
-  return (
-    <LexicalComposer initialConfig={defaultEditorConfigs}>
-      <SharedHistoryContext>
-        <TableContext>
-          <SharedAutocompleteContext>
-            <AsyncSubmitFormPlugin
-              onSubmitAsync={(e) => onProductPost(e)}
-              method="POST"
-              clearAfterSubmit={true}
-            >
-              <FormRow className="row g-0">
-                <div className="col-12 col-lg-9 mb-2 mb-lg-0 pe-lg-1">
-                  <SecondaryTextbox
-                    name="name"
-                    defaultValue={name.value}
-                    autoComplete="off"
-                    onChange={handleInputChange}
-                    placeholder="Product title"
-                  />
-                </div>
-                <div className="col-12 col-lg-3 ps-lg-1">
-                  <SecondaryTextbox
-                    name="price"
-                    defaultValue={price.value}
-                    autoComplete="off"
-                    onChange={handlePriceChange}
-                    placeholder="Price"
-                  />
-                </div>
-              </FormRow>
-              <FormRow className="row g-0 mb-2">
-                <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
-                  <AsyncSelect
-                    key={JSON.stringify(categories)}
-                    className="cate-selection"
-                    defaultOptions
-                    isMulti
-                    ref={categorySelectRef}
-                    defaultValue={loadCategoriesSelected()}
-                    onChange={(e, action) =>
-                      handleSelectChange(e, action, "categories")
-                    }
-                    loadOptions={loadCategorySelections}
-                    isClearable={true}
-                    placeholder="Select categories"
-                  />
-                </div>
-                <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
-                  <AsyncSelect
-                    className="cate-selection"
-                    key={JSON.stringify(farms)}
-                    defaultOptions
-                    isMulti
-                    ref={farmSelectRef}
-                    defaultValue={loadFarmsSelected()}
-                    onChange={(e, action) =>
-                      handleSelectChange(e, action, "farms")
-                    }
-                    loadOptions={(e) => loadFarmSelections(e)}
-                    isClearable={true}
-                    placeholder="Select farms"
-                  />
-                </div>
-                <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
-                  <ThumbnailUpload
-                    onChange={handleImageChange}
-                  ></ThumbnailUpload>
-                </div>
-              </FormRow>
-              {pictures.value ? (
-                <FormRow className="row">
-                  {pictures.value.map((item, index) => {
-                    if (item.preview) {
-                      return (
-                        <div className="col-3" key={index}>
-                          <ImageEditBox>
-                            <Thumbnail src={item.preview}></Thumbnail>
-                            <RemoveImageButton
-                              onClick={(e) => onImageRemoved(e, item)}
-                            >
-                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                            </RemoveImageButton>
-                          </ImageEditBox>
-                        </div>
-                      );
-                    } else if (item.pictureId) {
-                      return (
-                        <div className="col-3" key={index}>
-                          <ImageEditBox>
-                            <Thumbnail
-                              src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
-                            ></Thumbnail>
-                            <RemoveImageButton
-                              onClick={(e) => onImageRemoved(e, item)}
-                            >
-                              <FontAwesomeIcon icon="times"></FontAwesomeIcon>
-                            </RemoveImageButton>
-                          </ImageEditBox>
-                        </div>
-                      );
-                    }
+  const handlePriceChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = evt.target;
+    if (!value || Number.isNaN(value)) {
+      setValue(name, 0);
+    } else {
+      setValue(name, parseFloat(value));
+    }
+    trigger(name);
+  };
 
-                    return null;
-                  })}
+  const formValues = getValues();
+  const productAttributes = formValues["productAttributes"];
+  const price = formValues["price"];
+  return (
+    <FormProvider {...methods}>
+      <LexicalComposer initialConfig={defaultEditorConfigs}>
+        <SharedHistoryContext>
+          <TableContext>
+            <SharedAutocompleteContext>
+              <AsyncSubmitFormPlugin
+                onSubmitAsync={handleSubmit(onProductPost)}
+                method="POST"
+                clearAfterSubmit={true}
+              >
+                <FormRow className="row g-0">
+                  <div className="col-12 col-lg-9 mb-2 mb-lg-0 pe-lg-1">
+                    <SecondaryTextbox
+                      {...register("name", {
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "The text length cannot exceed the limit 255",
+                        },
+                      })}
+                      defaultValue={currentProduct?.name}
+                      autoComplete="off"
+                      placeholder="Product title"
+                    />
+                    {errors.name && (
+                      <ValidationDangerMessage>
+                        {errors.name.message?.toString()}
+                      </ValidationDangerMessage>
+                    )}
+                  </div>
+                  <div className="col-12 col-lg-3 ps-lg-1">
+                    <SecondaryTextbox
+                      {...register("price")}
+                      defaultValue={currentProduct?.price}
+                      autoComplete="off"
+                      placeholder="Price"
+                      onChange={handlePriceChange}
+                    />
+                    {errors.price && (
+                      <ValidationDangerMessage>
+                        {errors.price.message?.toString()}
+                      </ValidationDangerMessage>
+                    )}
+                  </div>
                 </FormRow>
-              ) : null}
-              <FormRow>
-                <label className="me-1">Thuộc tính sản phẩm</label>
-                <ButtonOutlinePrimary
-                  type="button"
-                  size="xs"
-                  title="Thêm thuộc tính sản phẩm"
-                  onClick={openAddAttributeModal}
-                >
-                  <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
-                </ButtonOutlinePrimary>
-              </FormRow>
-              <FormRow className="mb-4">
-                {productAttributes?.value &&
-                  productAttributes.value.map((attr, index) => {
-                    return (
-                      <ProductAttributeRow
-                        key={index}
-                        attribute={attr}
-                        price={price.value ? price.value : 0}
-                        onRemoveAttribute={onRemoveAttribute}
-                        onAttributeChange={(e) => onAttributeChange(e, index)}
-                        onEditAttribute={(e) =>
-                          onOpenEditAttributeModal(e, index)
-                        }
-                        onAddAttributeValue={() =>
-                          onOpenAddAttributeValueModal(index)
-                        }
-                        onEditAttributeValue={(e, attributeValueIndex) =>
-                          onOpenEditAttributeValueModal(
-                            e,
-                            index,
-                            attributeValueIndex
-                          )
+
+                <FormRow className="row g-0 mb-2">
+                  <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
+                    <Controller
+                      control={control}
+                      defaultValue={loadCategoriesSelected()}
+                      name="categories"
+                      rules={{
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <AsyncSelect
+                          {...field}
+                          className="cate-selection"
+                          isMulti
+                          cacheOptions
+                          defaultOptions
+                          loadOptions={(e) => loadCategorySelections(e)}
+                          isClearable={true}
+                          placeholder="Select categories"
+                          onChange={(e, action) =>
+                            handleSelectChange(e, action, "categories")
+                          }
+                        />
+                      )}
+                    />
+                    {errors.categories && (
+                      <ValidationDangerMessage>
+                        {errors.categories.message?.toString()}
+                      </ValidationDangerMessage>
+                    )}
+                  </div>
+                  <div className="col-12 col-sm-5 col-md-5 col-lg-5 mb-2 mb-md-0 pe-sm-1">
+                    <Controller
+                      control={control}
+                      defaultValue={loadFarmsSelected()}
+                      name="farms"
+                      rules={{
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <AsyncSelect
+                          {...field}
+                          className="cate-selection"
+                          cacheOptions
+                          isMulti
+                          defaultOptions
+                          loadOptions={(e) => loadFarmSelections(e)}
+                          isClearable={true}
+                          placeholder="Select farms"
+                          onChange={(e, action) =>
+                            handleSelectChange(e, action, "farms")
+                          }
+                        />
+                      )}
+                    />
+                    {errors.farms && (
+                      <ValidationDangerMessage>
+                        {errors.farms.message?.toString()}
+                      </ValidationDangerMessage>
+                    )}
+                  </div>
+                  <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
+                    <Controller
+                      control={control}
+                      name="pictures"
+                      render={({ field }) => (
+                        <ThumbnailUpload
+                          {...field}
+                          onChange={handleImageChange}
+                        />
+                      )}
+                    />
+                  </div>
+                </FormRow>
+                {previews ? (
+                  <FormRow className="row">
+                    {previews.map((item, index: number) => {
+                      if (item.preview) {
+                        return (
+                          <div className="col-3" key={index}>
+                            <ImageEditBox>
+                              <Thumbnail src={item.preview}></Thumbnail>
+                              <RemoveImageButton
+                                onClick={(e) => onImageRemoved(item)}
+                              >
+                                <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                              </RemoveImageButton>
+                            </ImageEditBox>
+                          </div>
+                        );
+                      } else if (item.url) {
+                        return (
+                          <div className="col-3" key={index}>
+                            <ImageEditBox>
+                              <Thumbnail src={item.url}></Thumbnail>
+                              <RemoveImageButton
+                                onClick={() => onImageRemoved(item)}
+                              >
+                                <FontAwesomeIcon icon="times"></FontAwesomeIcon>
+                              </RemoveImageButton>
+                            </ImageEditBox>
+                          </div>
+                        );
+                      }
+
+                      return null;
+                    })}
+                  </FormRow>
+                ) : null}
+                <FormRow>
+                  <label className="me-1">Thuộc tính sản phẩm</label>
+                  <ButtonOutlinePrimary
+                    type="button"
+                    size="xs"
+                    title="Thêm thuộc tính sản phẩm"
+                    onClick={openAddAttributeModal}
+                  >
+                    <FontAwesomeIcon icon="plus"></FontAwesomeIcon>
+                  </ButtonOutlinePrimary>
+                </FormRow>
+                <FormRow className="mb-4">
+                  {productAttributes &&
+                    productAttributes.map((attr, index) => {
+                      return (
+                        <ProductAttributeRow
+                          key={index}
+                          attribute={attr}
+                          price={price ? price : 0}
+                          onRemoveAttribute={onRemoveAttribute}
+                          onChange={(e) => onAttributeChange(e, index)}
+                          onEditAttribute={(e) =>
+                            onOpenEditAttributeModal(e, index)
+                          }
+                        />
+                      );
+                    })}
+                </FormRow>
+                <div className="editor-shell">
+                  <Controller
+                    control={control}
+                    defaultValue={currentProduct?.description}
+                    name="description"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      maxLength: {
+                        value: 4000,
+                        message: "The text length cannot exceed the limit 4000",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <RichTextEditor
+                        {...field}
+                        onChange={(editor: LexicalEditor) =>
+                          onDescriptionChanged(editor)
                         }
                       />
-                    );
-                  })}
-              </FormRow>
-              <div className="editor-shell">
-                <RichTextEditor
-                  value={htmlContent}
-                  onChange={onDescriptionChanged}
-                />
-              </div>
-              <Footer className="row mb-3">
-                <div className="col-auto"></div>
-                <div className="col-auto ms-auto">
-                  <ButtonIconSecondary
-                    disabled={isSubmitted}
-                    size="xs"
-                    icon={["far", "paper-plane"]}
-                  >
-                    Post
-                  </ButtonIconSecondary>
+                    )}
+                  />
+                  {errors.description && (
+                    <ValidationDangerMessage>
+                      {errors.description.message?.toString()}
+                    </ValidationDangerMessage>
+                  )}
                 </div>
-              </Footer>
-            </AsyncSubmitFormPlugin>
-          </SharedAutocompleteContext>
-        </TableContext>
-      </SharedHistoryContext>
-    </LexicalComposer>
+                <Footer className="row mb-3">
+                  <div className="col-auto"></div>
+                  <div className="col-auto ms-auto">
+                    <ButtonIconSecondary
+                      disabled={isSubmitted}
+                      size="xs"
+                      icon={["far", "paper-plane"]}
+                    >
+                      Post
+                    </ButtonIconSecondary>
+                  </div>
+                </Footer>
+              </AsyncSubmitFormPlugin>
+            </SharedAutocompleteContext>
+          </TableContext>
+        </SharedHistoryContext>
+      </LexicalComposer>
+    </FormProvider>
   );
 };
 

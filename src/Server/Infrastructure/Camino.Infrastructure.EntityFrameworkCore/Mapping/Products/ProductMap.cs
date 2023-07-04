@@ -14,7 +14,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Products
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).HasMaxLength(255);
-            builder.Property(x => x.Description).HasMaxLength(1000);
+            builder.Property(x => x.Description).HasMaxLength(4000);
 
             builder.HasMany(x => x.ProductPictureRelations)
                 .WithOne(x => x.Product)

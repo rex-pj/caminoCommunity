@@ -24,6 +24,8 @@ import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocom
 import { defaultEditorConfigs } from "../CommonEditor/configs";
 import { RichTextEditor } from "../CommonEditor/RichTextEditor";
 import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
+import { Controller, useForm } from "react-hook-form";
+import { ValidationDangerMessage } from "../../ErrorMessage";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -97,84 +99,50 @@ interface FarmEditorProps {
 
 const FarmEditor = (props: FarmEditorProps) => {
   const { filterCategories, currentFarm } = props;
-  const [formData, setFormData] = useState({ ...new FarmCreationModel() });
-  const selectRef = useRef<any>();
   const [isSubmitted, setSubmitted] = useState(false);
+  const [previews, setPreviews] = useState<
+    { pictureId?: number; url?: string; preview?: string; fileName?: string }[]
+  >([]);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    control,
+    getValues,
+    formState: { errors },
+  } = useForm();
 
-  function handleInputChange(evt: React.ChangeEvent<HTMLInputElement>) {
-    let data = formData || {};
-    const { name, value } = evt.target;
-
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    setFormData({
-      ...data,
-    });
-  }
-
-  function handleImageChange(e: ImageUploadOnChangeEvent) {
-    let data = { ...formData } || new FarmCreationModel();
-    const { preview, file } = e;
-    let pictures = Object.assign([], data.pictures.value);
-    pictures.push({
-      file: file,
-      preview: preview,
-    });
-
-    data.pictures.value = pictures;
-    setFormData({
-      ...data,
-    });
-  }
-
-  const onFarmPost: (
-    e: React.FormEvent<HTMLFormElement>
-  ) => Promise<any> = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onFarmPost = async (farmForm: any) => {
     setSubmitted(true);
 
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-      break;
-    }
-
-    if (!isFormValid) {
-      props.showValidationError(
-        "Something went wrong with your input",
-        "Something went wrong with your information, please check and input again"
-      );
-
-      setSubmitted(false);
-      return Promise.reject("validation: Something went wrong with your input");
-    }
-
-    let farmData: any = {};
-    for (const formIdentifier in formData) {
-      farmData[formIdentifier] = formData[formIdentifier].value;
-    }
-
-    if (!farmData.id) {
-      delete farmData["id"];
-    }
-
-    delete farmData["farmTypeName"];
+    const farmRequest: any = { ...farmForm };
     const requestFormData = new FormData();
-    for (const key of Object.keys(farmData)) {
-      if (key === "pictures" && farmData[key]) {
-        const pictures = farmData["pictures"];
-        for (const i in pictures.value) {
-          requestFormData.append(`pictures[${i}].file`, pictures.value[i].file);
-          if (pictures.value[i].pictureId) {
-            requestFormData.append(
-              `pictures[${i}].pictureId`,
-              pictures.value[i].pictureId
-            );
-          }
+    for (const key of Object.keys(farmRequest)) {
+      if (key === "farmType") {
+        const { value: farmTypeId } = farmRequest[key];
+        requestFormData.append("farmTypeId", farmTypeId);
+        continue;
+      }
+
+      if (key !== "pictures") {
+        requestFormData.append(key, farmRequest[key]);
+        continue;
+      }
+
+      const pictures = farmRequest[key];
+      if (!pictures) {
+        continue;
+      }
+
+      for (const i in pictures) {
+        requestFormData.append(`pictures[${i}].file`, pictures[i].file);
+        if (pictures[i].pictureId) {
+          requestFormData.append(
+            `pictures[${i}].pictureId`,
+            pictures[i].pictureId
+          );
         }
-      } else {
-        requestFormData.append(key, farmData[key]);
       }
     }
 
@@ -214,158 +182,223 @@ const FarmEditor = (props: FarmEditorProps) => {
     actionMeta: ActionMeta<any>
   ) {
     const { action } = actionMeta;
-    let data = formData || {};
     if (action === "clear" || action === "remove-value") {
-      data.farmTypeId.isValid = false;
-      data.farmTypeId.value = 0;
-      data.farmTypeName.value = "";
+      setValue("farmType", null);
     } else {
-      const { value, label } = newValue;
-      data.farmTypeId.isValid = checkValidity(data, value, "farmTypeId");
-      data.farmTypeId.value = parseFloat(value);
-      data.farmTypeName.value = label;
+      setValue("farmType", newValue);
     }
-
-    setFormData({
-      ...data,
-    });
   }
 
   function loadFarmTypeSelected() {
-    const { farmTypeId, farmTypeName } = formData;
-    if (!farmTypeId.value) {
-      return null;
-    }
+    return () => {
+      if (!currentFarm?.farmTypeId) {
+        return null;
+      }
 
-    return {
-      label: farmTypeName.value,
-      value: farmTypeId.value,
+      const { farmTypeName, farmTypeId } = currentFarm;
+      return {
+        label: farmTypeName,
+        value: farmTypeId,
+      };
     };
   }
 
   const clearFormData = () => {
-    selectRef.current.clearValue();
-    const farmFormData = { ...new FarmCreationModel() };
-    setFormData({ ...farmFormData });
+    reset((formValues) => ({
+      ...formValues,
+      name: null,
+      farmType: null,
+      description: null,
+      pictures: [],
+    }));
+    setPreviews([]);
   };
 
-  const onImageRemoved = (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    item: any
-  ) => {
-    let data = formData || {};
-    if (!data.pictures) {
+  const onImageRemoved = (item: {
+    pictureId?: number;
+    url?: string;
+    preview?: string;
+    fileName?: string;
+  }) => {
+    const formData = getValues();
+    const pictures = formData.pictures;
+    if (!pictures || pictures.length < 0) {
       return;
     }
 
-    if (item.pictureId && data.pictures.value) {
-      data.pictures.value = data.pictures.value.filter(
+    let updatedPictures = [...formData.pictures];
+    let previewPics = [...previews];
+    if (item.pictureId) {
+      updatedPictures = updatedPictures.filter(
         (x: any) => x.pictureId !== item.pictureId
       );
-    } else if (data.pictures.value) {
-      data.pictures.value = data.pictures.value.filter((x: any) => x !== item);
+      previewPics = previewPics.filter(
+        (x: any) => x.pictureId !== item.pictureId
+      );
+    } else {
+      previewPics = previewPics.filter((x: any) => x.preview !== item.preview);
+      updatedPictures = updatedPictures.filter((x: any) => x !== item);
     }
 
-    setFormData({
-      ...data,
-    });
+    setPreviews([...previewPics]);
+    setValue("pictures", updatedPictures);
   };
 
+  function handleImageChange(e: ImageUploadOnChangeEvent) {
+    const { pictures } = getValues();
+    const { preview, file } = e;
+    const pictureList = pictures ? [...pictures] : [];
+    pictureList.push({
+      file: file,
+      preview: preview,
+    });
+
+    let previewPics = [...previews];
+    previewPics.push({
+      preview: preview,
+    });
+
+    setPreviews([...previewPics]);
+    setValue("pictures", pictureList);
+  }
+
   useEffect(() => {
-    if (currentFarm && !formData?.id?.value) {
-      setFormData(currentFarm);
+    if (currentFarm?.pictures) {
+      const { pictures } = currentFarm;
+      const previewPics: { url?: string; preview?: string }[] = [];
+      if (!pictures) {
+        return;
+      }
+
+      const pictureList: any[] = [];
+      for (const picture of pictures) {
+        if (picture.pictureId) {
+          const { pictureId } = picture;
+          pictureList.push({ pictureId: pictureId });
+          previewPics.push({
+            url: `${apiConfig.paths.pictures.get.getPicture}/${pictureId}`,
+          });
+        }
+      }
+      setValue("pictures", pictureList);
+      setPreviews([...previewPics]);
     }
-  }, [currentFarm, formData]);
+  }, [currentFarm]);
 
   const onDescriptionChanged = (editor: LexicalEditor) => {
     const html = $generateHtmlFromNodes(editor, null);
-    let data = formData || {};
-
-    data.description.isValid = checkValidity(data, html, "description");
-    data.description.value = html;
-
-    setFormData({
-      ...data,
-    });
+    setValue("description", html);
   };
 
-  const { name, address, farmTypeId, pictures, description } = formData;
-  const htmlContent = description?.value;
   return (
     <LexicalComposer initialConfig={defaultEditorConfigs}>
       <SharedHistoryContext>
         <TableContext>
           <SharedAutocompleteContext>
             <AsyncSubmitFormPlugin
-              onSubmitAsync={(e) => onFarmPost(e)}
+              onSubmitAsync={handleSubmit(onFarmPost)}
               method="POST"
               clearAfterSubmit={true}
             >
               <FormRow className="row">
                 <div className="col-6 col-lg-6 pr-lg-1">
                   <SecondaryTextbox
-                    name="name"
-                    defaultValue={name.value}
+                    {...register("name", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      maxLength: {
+                        value: 255,
+                        message: "The text length cannot exceed the limit 255",
+                      },
+                    })}
+                    defaultValue={currentFarm?.name}
                     autoComplete="off"
-                    onChange={handleInputChange}
                     placeholder="Farm title"
                   />
+                  {errors.name && (
+                    <ValidationDangerMessage>
+                      {errors.name.message?.toString()}
+                    </ValidationDangerMessage>
+                  )}
                 </div>
                 <div className="col-6 col-lg-6 pl-lg-1">
-                  <AsyncSelect
-                    key={JSON.stringify(farmTypeId)}
-                    className="cate-selection"
-                    cacheOptions
-                    defaultOptions
-                    ref={selectRef}
+                  <Controller
+                    control={control}
                     defaultValue={loadFarmTypeSelected()}
-                    onChange={(e, action) => handleSelectChange(e, action)}
-                    // loadOptions={loadFarmTypeSelections}
-                    isClearable={true}
+                    name="farmType"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <AsyncSelect
+                        {...field}
+                        className="cate-selection"
+                        cacheOptions
+                        defaultOptions
+                        loadOptions={(e) => loadFarmTypeSelections(e)}
+                        isClearable={true}
+                        placeholder="Select farm type"
+                        onChange={handleSelectChange}
+                      />
+                    )}
                   />
+                  {errors.farmType && (
+                    <ValidationDangerMessage>
+                      {errors.farmType.message?.toString()}
+                    </ValidationDangerMessage>
+                  )}
                 </div>
               </FormRow>
               <FormRow className="row">
                 <div className="col-9 col-lg-10 pr-lg-1">
                   <SecondaryTextbox
-                    name="address"
-                    defaultValue={address.value ? address.value : ""}
                     autoComplete="off"
-                    onChange={handleInputChange}
+                    {...register("address")}
+                    defaultValue={currentFarm?.address}
                     placeholder="Address"
                   />
                 </div>
                 <div className="col-3 col-lg-2 pl-lg-1 pl-1">
-                  <ThumbnailUpload
-                    onChange={handleImageChange}
-                  ></ThumbnailUpload>
+                  <Controller
+                    control={control}
+                    name="pictures"
+                    render={({ field }) => (
+                      <ThumbnailUpload
+                        {...field}
+                        onChange={handleImageChange}
+                      />
+                    )}
+                  />
                 </div>
               </FormRow>
-              {pictures.value ? (
+              {previews ? (
                 <FormRow className="row">
-                  {pictures.value.map((item: any, index: number) => {
+                  {previews.map((item, index: number) => {
                     if (item.preview) {
                       return (
                         <div className="col-3" key={index}>
                           <ImageEditBox>
                             <Thumbnail src={item.preview}></Thumbnail>
                             <RemoveImageButton
-                              onClick={(e) => onImageRemoved(e, item)}
+                              onClick={(e) => onImageRemoved(item)}
                             >
                               <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                             </RemoveImageButton>
                           </ImageEditBox>
                         </div>
                       );
-                    } else if (item.pictureId) {
+                    } else if (item.url) {
                       return (
                         <div className="col-3" key={index}>
                           <ImageEditBox>
-                            <Thumbnail
-                              src={`${apiConfig.paths.pictures.get.getPicture}/${item.pictureId}`}
-                            ></Thumbnail>
+                            <Thumbnail src={item.url}></Thumbnail>
                             <RemoveImageButton
-                              onClick={(e) => onImageRemoved(e, item)}
+                              onClick={() => onImageRemoved(item)}
                             >
                               <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                             </RemoveImageButton>
@@ -379,10 +412,34 @@ const FarmEditor = (props: FarmEditorProps) => {
                 </FormRow>
               ) : null}
               <div className="editor-shell">
-                <RichTextEditor
-                  value={htmlContent}
-                  onChange={onDescriptionChanged}
+                <Controller
+                  control={control}
+                  defaultValue={currentFarm?.description}
+                  name="description"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                    maxLength: {
+                      value: 4000,
+                      message: "The text length cannot exceed the limit 4000",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      {...field}
+                      onChange={(editor: LexicalEditor) =>
+                        onDescriptionChanged(editor)
+                      }
+                    />
+                  )}
                 />
+                {errors.description && (
+                  <ValidationDangerMessage>
+                    {errors.description.message?.toString()}
+                  </ValidationDangerMessage>
+                )}
               </div>
               <Footer className="row mb-3">
                 <div className="col-auto"></div>

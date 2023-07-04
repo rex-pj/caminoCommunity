@@ -22,14 +22,8 @@ import { SharedAutocompleteContext } from "../CommonEditor/context/SharedAutocom
 import { RichTextEditor } from "../CommonEditor/RichTextEditor";
 import { defaultEditorConfigs } from "../CommonEditor/configs";
 import AsyncSubmitFormPlugin from "../CommonEditor/plugins/AsyncSubmitFormPlugin";
-import { Controller, useForm, useFormContext } from "react-hook-form";
-import { ValidationWarningMessage } from "../../ErrorMessage";
-
-export const ConnectForm = ({ children }) => {
-  const methods = useFormContext();
-
-  return children({ ...methods });
-};
+import { Controller, useForm } from "react-hook-form";
+import { ValidationDangerMessage } from "../../ErrorMessage";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -104,23 +98,15 @@ const ArticleEditor = (props: Props) => {
   const { filterCategories, currentArticle } = props;
   const [isSubmitted, setSubmitted] = useState(false);
   const [preview, setPreview] = useState<string>("");
-  const selectRef = useRef<any>();
-  const { control } = useForm();
   const {
     register,
     handleSubmit,
     setValue,
     reset,
     resetField,
+    control,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: currentArticle?.name,
-      content: currentArticle?.content,
-      articleCategoryId: currentArticle?.articleCategoryId,
-      picture: currentArticle?.picture,
-    },
-  });
+  } = useForm();
 
   const handleImageChange = (e: ImageUploadOnChangeEvent) => {
     const { preview: srcPreview, file } = e;
@@ -133,6 +119,12 @@ const ArticleEditor = (props: Props) => {
     setSubmitted(true);
     const requestData = new FormData();
     for (const key of Object.keys(articleForm)) {
+      if (key === "articleCategory") {
+        const { value: articleCategoryId } = articleForm[key];
+        requestData.append("articleCategoryId", articleCategoryId);
+        continue;
+      }
+
       if (key !== "picture") {
         requestData.append(key, articleForm[key]);
         continue;
@@ -166,13 +158,21 @@ const ArticleEditor = (props: Props) => {
   };
 
   const clearFormData = () => {
-    reset();
-    selectRef.current.clearValue();
+    reset((formValues) => ({
+      ...formValues,
+      name: null,
+      articleCategory: null,
+      content: null,
+      picture: null,
+    }));
     setPreview("");
   };
 
   const onImageRemoved = () => {
-    resetField("picture");
+    reset((formValues) => ({
+      ...formValues,
+      picture: null,
+    }));
     setPreview("");
   };
 
@@ -195,21 +195,17 @@ const ArticleEditor = (props: Props) => {
     };
   }, [filterCategories]);
 
-  const loadCategorySelected = useMemo(() => {
-    return () => {
-      if (!currentArticle) {
-        return null;
-      }
-      const { articleCategoryName, articleCategoryId } = currentArticle;
-      if (!articleCategoryId) {
-        return null;
-      }
-      return {
-        label: articleCategoryName,
-        value: articleCategoryId,
-      };
+  const loadCategorySelected = () => {
+    if (!currentArticle?.articleCategoryId) {
+      return null;
+    }
+
+    const { articleCategoryName, articleCategoryId } = currentArticle;
+    return {
+      label: articleCategoryName,
+      value: articleCategoryId,
     };
-  }, [currentArticle]);
+  };
 
   const onContentChanged = (editor: LexicalEditor) => {
     const html = $generateHtmlFromNodes(editor, null);
@@ -221,21 +217,19 @@ const ArticleEditor = (props: Props) => {
     actionMeta: ActionMeta<any>
   ) => {
     const { action } = actionMeta;
-    let articleCategoryId: number;
     if (action === "clear" || action === "remove-value") {
-      articleCategoryId = 0;
+      setValue("articleCategory", null);
     } else {
-      const { value } = newValue;
-      articleCategoryId = parseFloat(value);
+      setValue("articleCategory", newValue);
     }
-
-    setValue("articleCategoryId", articleCategoryId);
   };
 
   useEffect(() => {
     if (currentArticle?.picture) {
       const { picture } = currentArticle;
       if (picture?.pictureId) {
+        const { pictureId } = picture;
+        setValue("picture", { pictureId });
         setPreview(
           `${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`
         );
@@ -271,16 +265,16 @@ const ArticleEditor = (props: Props) => {
                     placeholder="Post title"
                   />
                   {errors.name && (
-                    <ValidationWarningMessage>
+                    <ValidationDangerMessage>
                       {errors.name.message?.toString()}
-                    </ValidationWarningMessage>
+                    </ValidationDangerMessage>
                   )}
                 </div>
                 <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
                   <Controller
                     control={control}
-                    defaultValue={() => loadCategorySelected()}
-                    name="articleCategoryId"
+                    defaultValue={loadCategorySelected()}
+                    name="articleCategory"
                     rules={{
                       required: {
                         value: true,
@@ -290,8 +284,6 @@ const ArticleEditor = (props: Props) => {
                     render={({ field }) => (
                       <AsyncSelect
                         {...field}
-                        ref={selectRef}
-                        key={JSON.stringify(currentArticle?.articleCategoryId)}
                         className="cate-selection"
                         cacheOptions
                         defaultOptions
@@ -302,10 +294,10 @@ const ArticleEditor = (props: Props) => {
                       />
                     )}
                   />
-                  {errors.articleCategoryId && (
-                    <ValidationWarningMessage>
-                      {errors.articleCategoryId.message?.toString()}
-                    </ValidationWarningMessage>
+                  {errors.articleCategory && (
+                    <ValidationDangerMessage>
+                      {errors.articleCategory.message?.toString()}
+                    </ValidationDangerMessage>
                   )}
                 </div>
                 <div className="col">
@@ -345,8 +337,8 @@ const ArticleEditor = (props: Props) => {
                       message: "This field is required",
                     },
                     maxLength: {
-                      value: 4000,
-                      message: "The text length cannot exceed the limit 4000",
+                      value: 8000,
+                      message: "The text length cannot exceed the limit 8000",
                     },
                   }}
                   render={({ field }) => (
@@ -359,9 +351,9 @@ const ArticleEditor = (props: Props) => {
                   )}
                 />
                 {errors.content && (
-                  <ValidationWarningMessage>
+                  <ValidationDangerMessage>
                     {errors.content.message?.toString()}
-                  </ValidationWarningMessage>
+                  </ValidationDangerMessage>
                 )}
               </div>
 

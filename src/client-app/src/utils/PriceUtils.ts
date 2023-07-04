@@ -5,14 +5,14 @@ export function formatPrice(number: number) {
 export const adjustPrice = (attributeValue: any, price?: number) => {
   let { priceAdjustment, pricePercentageAdjustment } = attributeValue;
 
-  if (!price) {
+  if (!price || Number.isNaN(price)) {
     return 0;
   }
 
-  let priceParsed = price.valueOf();
+  let priceParsed = Number.parseFloat(price.toString());
   const countPrice = () => {
     if (priceAdjustment) {
-      price += priceAdjustment;
+      priceParsed += priceAdjustment;
     } else if (pricePercentageAdjustment) {
       const percentageOfPrice = (priceParsed * pricePercentageAdjustment) / 100;
       priceParsed += percentageOfPrice;

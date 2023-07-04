@@ -13,7 +13,7 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Farms
                 .HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).HasMaxLength(255);
-            builder.Property(x => x.Description).HasMaxLength(1000);
+            builder.Property(x => x.Description).HasMaxLength(4000);
 
             builder.HasOne(x => x.FarmType)
                 .WithMany(x => x.Farms)
