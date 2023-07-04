@@ -7,7 +7,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
-import { FarmCreationModel } from "../../models/farmCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import FarmService from "../../services/farmService";
 
@@ -55,21 +54,26 @@ const UpdatePage = (props: Props) => {
   });
 
   const onFarmPost = async (data: any) => {
-    return await farmService.update(data).then((response) => {
-      return new Promise((resolve) => {
-        if (location.state && location.state.from) {
-          const referrefUri = location.state.from;
-          const farmUpdateUrl = `/farms/update/${data.id}`;
-          if (referrefUri !== farmUpdateUrl) {
-            navigate(referrefUri);
-            resolve({});
-            return;
+    if (!id) {
+      return;
+    }
+    return await farmService
+      .update(data, Number.parseInt(id))
+      .then((response) => {
+        return new Promise((resolve) => {
+          if (location.state?.from) {
+            const referrefUri = location.state.from;
+            const farmUpdateUrl = `/farms/update/${id}`;
+            if (referrefUri !== farmUpdateUrl) {
+              navigate(referrefUri);
+              resolve({});
+              return;
+            }
           }
-        }
-        navigate(`/farms/${farm.id}`);
-        resolve({});
+          navigate(`/farms/${id}`);
+          resolve({});
+        });
       });
-    });
   };
 
   const showValidationError = (title: string, message: string) => {
@@ -88,14 +92,7 @@ const UpdatePage = (props: Props) => {
   }, [refetch, called, loading]);
 
   const farm = data ? { ...data.farm } : {};
-
-  const currentFarm = { ...new FarmCreationModel() };
-  for (const formIdentifier in currentFarm) {
-    currentFarm[formIdentifier].value = farm[formIdentifier];
-    if (farm[formIdentifier]) {
-      currentFarm[formIdentifier].isValid = true;
-    }
-  }
+  const currentFarm = { ...farm };
 
   const breadcrumbs = [
     {

@@ -7,13 +7,11 @@ import {
   ErrorBar,
   LoadingBar,
 } from "../../components/molecules/NotificationBars";
-import { useStore } from "../../store/hook-store";
 import { SessionContext } from "../../store/context/session-context";
 
 const UserUpdate = (props) => {
   const { userId } = props;
   const [isFormEnabled] = useState(true);
-  const dispatch = useStore(false)[1];
   const userService = new UserService();
   const { relogin } = useContext(SessionContext);
   const { loading, error, data, refetch } = useQuery(
@@ -40,37 +38,15 @@ const UserUpdate = (props) => {
       return;
     }
 
-    await userService
-      .updateIdentifiers(data)
-      .then((response) => {
-        showNotification(
-          "The information is changed successfully",
-          "The information is changed successfully",
-          "info"
-        );
-        refetch();
+    await userService.updateIdentifiers(data).then(async (response) => {
+      await refetch();
 
-        timeoutId = setTimeout(() => {
-          if (!relogin) {
-            return;
-          }
-          relogin();
-        }, 300);
-      })
-      .catch(() => {
-        showNotification(
-          "An error occured when updating your information",
-          "Please check your input and try again",
-          "error"
-        );
-      });
-  };
-
-  const showNotification = (title: string, message: string, type?: string) => {
-    dispatch("NOTIFY", {
-      title,
-      message,
-      type: type,
+      timeoutId = setTimeout(() => {
+        if (!relogin) {
+          return;
+        }
+        relogin();
+      }, 300);
     });
   };
 
@@ -88,7 +64,6 @@ const UserUpdate = (props) => {
       onUpdate={(e) => onUpdate(e)}
       isFormEnabled={isFormEnabled}
       userInfo={userIdentityInfo}
-      showValidationError={showNotification}
     />
   );
 };

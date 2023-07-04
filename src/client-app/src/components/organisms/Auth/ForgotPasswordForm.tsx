@@ -7,13 +7,14 @@ import { LabelNormal } from "../../atoms/Labels";
 import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import ForgotPasswordNavigation from "./ForgotPasswordNavigation";
 import AuthBanner from "./AuthBanner";
-import { ForgotPasswordModel } from "../../../models/forgotPasswordModel";
-import { checkValidity } from "../../../utils/Validity";
+import { validateEmail } from "../../../utils/Validity";
 import {
   ErrorBox,
   SuccessBox,
 } from "../../molecules/NotificationBars/NotificationBoxes";
 import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { ValidationWarningMessage } from "../../ErrorMessage";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -67,94 +68,42 @@ const SubmitButton = styled(ButtonSecondary)`
   }
 `;
 
-interface ForgotPasswordFormProps {
+interface Props {
   onForgotPassword: (e: any) => Promise<any>;
 }
 
-const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
+const ForgotPasswordForm = (props: Props) => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState(new ForgotPasswordModel());
-  const [isFormEnabled, setFormEnabled] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string>();
   const [successMessage, setSuccessMessage] = useState<string>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleInputBlur = (
-    evt: React.FocusEvent<HTMLInputElement, Element>
-  ) => {
-    const { name } = evt.target;
-    if (!formData[name].isValid) {
-      evt.target.classList.add("invalid");
-    } else {
-      evt.target.classList.remove("invalid");
-    }
-  };
-
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    if (isSubmitted) {
-      setSubmitted(false);
-    }
-
-    const data = formData || new ForgotPasswordModel();
-    const { name, value } = evt.target;
-
-    const prevValid = data[name].isValid;
-    // Validate when input
-    data[name].isValid = checkValidity(data, value, name);
-    data[name].value = value;
-
-    if (prevValid !== data[name].isValid) {
-      setFormData({ ...data });
-    }
-
-    if (formData[name].isValid && !isFormEnabled) {
-      setFormEnabled(true);
-    }
-  };
-
-  const onUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onUpdate = async (data: any) => {
     setError("");
     setSuccessMessage("");
-    if (isFormEnabled) {
-      setFormEnabled(false);
-    }
 
     if (!isSubmitted) {
       setSubmitted(true);
     }
 
-    let isFormValid = true;
-    for (let formIdentifier in formData) {
-      isFormValid = formData[formIdentifier].isValid && isFormValid;
-
-      if (!isFormValid) {
-        showError(`Dữ liệu của ${formIdentifier} không hợp lệ`);
-      }
-    }
-
-    if (isFormValid) {
-      const requestData: any = {};
-      for (const formIdentifier in formData) {
-        requestData[formIdentifier] = formData[formIdentifier].value;
-      }
-
-      await props
-        .onForgotPassword(requestData)
-        .then(() => {
-          showError("");
-          setSuccessMessage(
-            "Thông báo quên mật khẩu thành công, vui lòng kiểm tra email và làm theo hướng dẫn!"
-          );
-          setFormEnabled(true);
-        })
-        .catch(() => {
-          setSuccessMessage("");
-          showError("Có lỗi xảy ra trong quá trình thông báo quên mật khẩu");
-          setFormEnabled(true);
-        });
-    }
+    const requestData: any = { ...data };
+    await props
+      .onForgotPassword(requestData)
+      .then(() => {
+        showError("");
+        setSuccessMessage(
+          "Thông báo quên mật khẩu thành công, vui lòng kiểm tra email và làm theo hướng dẫn!"
+        );
+      })
+      .catch(() => {
+        setSuccessMessage("");
+        showError("Có lỗi xảy ra trong quá trình thông báo quên mật khẩu");
+      });
   };
 
   const showError = (message: string) => {
@@ -162,7 +111,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
   };
 
   return (
-    <form onSubmit={(e) => onUpdate(e)} method="POST">
+    <form onSubmit={handleSubmit(onUpdate)} method="POST">
       <div className="row g-0">
         <div className="col col-12 col-sm-7">
           <AuthBanner icon="unlock-alt" title={t("recover_your_password")} />
@@ -179,18 +128,30 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             <FormRow>
               <Label>E-mail</Label>
               <Textbox
+                {...register("email", {
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                  validate: (val) => {
+                    const isEmailValid = validateEmail(val);
+                    if (!isEmailValid) {
+                      return "Invalid email address";
+                    }
+                  },
+                })}
                 placeholder={t("please_input_your_email").toString()}
                 type="email"
-                name="email"
                 autoComplete="off"
-                onChange={(e) => handleInputChange(e)}
-                onBlur={(e) => handleInputBlur(e)}
               />
+              {errors.email && (
+                <ValidationWarningMessage>
+                  {errors.email.message?.toString()}
+                </ValidationWarningMessage>
+              )}
             </FormRow>
             <FormFooter>
-              <SubmitButton disabled={!isFormEnabled} type="submit">
-                {t("change_password")}
-              </SubmitButton>
+              <SubmitButton type="submit">{t("change_password")}</SubmitButton>
             </FormFooter>
           </PanelBody>
         </div>

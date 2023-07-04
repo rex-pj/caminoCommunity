@@ -23,12 +23,12 @@ namespace Camino.Infrastructure.Modularity.Extensions
                     moduleInitializer.Configure(app, env);
                 }
 
-                var wwwrootDir = new DirectoryInfo(Path.Combine(module.Path, "wwwroot"));
-                if (wwwrootDir.Exists)
+                var wwwrootDir = Path.Combine(module.Path, "wwwroot");
+                if (Directory.Exists(wwwrootDir))
                 {
                     app.UseStaticFiles(new StaticFileOptions()
                     {
-                        FileProvider = new PhysicalFileProvider(wwwrootDir.FullName),
+                        FileProvider = new PhysicalFileProvider(wwwrootDir),
                         RequestPath = new PathString("/" + module.ShortName)
                     });
                 }

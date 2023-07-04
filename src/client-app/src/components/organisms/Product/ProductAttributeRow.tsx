@@ -12,6 +12,8 @@ import {
   IProductAttribute,
   IProductAttributeValue,
 } from "../../../models/productAttributesModel";
+import { useStore } from "../../../store/hook-store";
+import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
 
 const FormRow = styled.div`
   margin-bottom: ${(p) => p.theme.size.tiny};
@@ -35,36 +37,85 @@ const AttributeValuePanel = styled.div`
 
 type Props = {
   attribute: IProductAttribute;
-  onAttributeChange: (attribute: IProductAttribute) => void;
-  onAddAttributeValue: () => void;
+  onChange: (
+    attribute: IProductAttribute,
+    event: "added" | "updated" | "removed"
+  ) => void;
   onEditAttribute: (attribute: IProductAttribute) => void;
   onRemoveAttribute: (attribute: IProductAttribute) => void;
-  onEditAttributeValue: (
-    attributeValue: IProductAttributeValue,
-    attributeValueIndex: number
-  ) => void;
   price: number;
 };
 
 const ProductAttributeRow = (props: Props) => {
-  const { attribute, onEditAttributeValue, price } = props;
+  const dispatch = useStore(true)[1];
+  const { attribute, price } = props;
   const { attributeRelationValues } = attribute;
+
+  /// Attribute value features
+  function onOpenAddAttributeValueModal() {
+    dispatch("OPEN_MODAL", {
+      data: {
+        attributeValue: {
+          name: "",
+          priceAdjustment: 0,
+          pricePercentageAdjustment: 0,
+          quantity: 0,
+          displayOrder: 0,
+        },
+        title: "Thêm giá trị của thuộc tính sản phẩm",
+      },
+      execution: {
+        onEditAttributeValue: onAddAttributeValue,
+      },
+      options: {
+        isOpen: true,
+        innerModal: ProductAttributeValueEditModal,
+      },
+    });
+  }
 
   const onRemoveAttributeValue = (
     currentAttributeValue: IProductAttributeValue
   ) => {
-    let { attribute } = { ...props };
-    if (!attribute || !attribute.attributeRelationValues) {
+    const { attribute } = props;
+    if (!attribute?.attributeRelationValues) {
       return;
     }
-    let {
-      attributeRelationValues: [...attributeRelationValues],
-    } = attribute;
-    const index = attributeRelationValues.indexOf(currentAttributeValue);
-    attributeRelationValues.splice(index, 1);
 
-    props.onAttributeChange({ ...attribute, attributeRelationValues });
+    const attributeRelationValues = attribute.attributeRelationValues.filter(
+      (attributeValue) => attributeValue != currentAttributeValue
+    );
+
+    props.onChange({ ...attribute, attributeRelationValues }, "removed");
   };
+
+  function onAddAttributeValue(attributeValue: IProductAttributeValue) {
+    const { attribute } = props;
+
+    let attributeRelationValues: IProductAttributeValue[] = [];
+    const currentAttribute = { ...attribute };
+    if (!currentAttribute.attributeRelationValues) {
+      attributeRelationValues = [attributeValue];
+    } else {
+      attributeRelationValues = [...currentAttribute.attributeRelationValues];
+      attributeRelationValues.push(attributeValue);
+    }
+
+    props.onChange({ ...attribute, attributeRelationValues }, "added");
+  }
+
+  function onUpdateAttributeValue(
+    attributeValue: IProductAttributeValue,
+    attributeValueIndex: number
+  ) {
+    let { attributeRelationValues } = attribute;
+    if (!attributeRelationValues?.length) {
+      return;
+    }
+
+    attributeRelationValues[attributeValueIndex] = { ...attributeValue };
+    props.onChange({ ...attribute, attributeRelationValues }, "updated");
+  }
 
   return (
     <FormRow className="mb-2">
@@ -74,7 +125,7 @@ const ProductAttributeRow = (props: Props) => {
             type="button"
             size="xs"
             title="Thêm giá trị cho thuộc tính"
-            onClick={() => props.onAddAttributeValue()}
+            onClick={onOpenAddAttributeValueModal}
           >
             <FontAwesomeIcon icon="plus" />
           </ButtonOutlinePrimary>
@@ -114,14 +165,15 @@ const ProductAttributeRow = (props: Props) => {
       <AttributeValuePanel>
         {attributeRelationValues
           ? attributeRelationValues.map((attrVal, index) => {
+              const key = `${attrVal.id}${index}`;
               return (
                 <ProductAttributeValueRow
                   className="py-2 row mb-2 attr-value-row mx-0"
-                  key={`${attrVal.id}${index}`}
+                  key={key}
                   price={price}
                   attributeValue={attrVal}
                   onRemoveAttributeValue={onRemoveAttributeValue}
-                  onEditAttributeValue={(e) => onEditAttributeValue(e, index)}
+                  onChange={(e) => onUpdateAttributeValue(e, index)}
                 ></ProductAttributeValueRow>
               );
             })

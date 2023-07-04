@@ -81,24 +81,29 @@ const UpdatePage = (props: Props) => {
   });
 
   async function onProductPost(data: any) {
-    return await productService.update(data).then((response) => {
-      refetch().then(() => {
-        return new Promise((resolve) => {
-          if (location.state && location.state.from) {
-            const referrefUri = location.state.from;
-            const productUpdateUrl = `/products/update/${data.id}`;
-            if (referrefUri !== productUpdateUrl) {
-              navigate(referrefUri);
-              resolve(response);
-              return;
+    if (!id) {
+      return;
+    }
+    return await productService
+      .update(data, Number.parseInt(id))
+      .then((response) => {
+        refetch().then(() => {
+          return new Promise((resolve) => {
+            if (location.state && location.state.from) {
+              const referrefUri = location.state.from;
+              const productUpdateUrl = `/products/update/${id}`;
+              if (referrefUri !== productUpdateUrl) {
+                navigate(referrefUri);
+                resolve(response);
+                return;
+              }
             }
-          }
 
-          navigate(`/products/${product.id}`);
-          resolve(response);
+            navigate(`/products/${id}`);
+            resolve(response);
+          });
         });
       });
-    });
   }
 
   const showValidationError = (title: string, message: string) => {
@@ -145,14 +150,7 @@ const UpdatePage = (props: Props) => {
   };
 
   const product = data ? { ...data.product } : {};
-
-  const currentProduct = { ...new ProductCreationModel() };
-  for (const formIdentifier in currentProduct) {
-    currentProduct[formIdentifier].value = product[formIdentifier];
-    if (product[formIdentifier]) {
-      currentProduct[formIdentifier].isValid = true;
-    }
-  }
+  const currentProduct = { ...product };
 
   const breadcrumbs = [
     {

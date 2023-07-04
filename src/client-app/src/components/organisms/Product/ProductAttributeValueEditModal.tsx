@@ -22,13 +22,11 @@ const FormRow = styled.div`
 type Props = {
   data: {
     attributeValue: IProductAttributeValue;
-    attributeIndex: number;
     attributeValueIndex: number;
   };
   execution: {
     onEditAttributeValue: (
       attributeValue: IProductAttributeValue,
-      attributeIndex: number,
       attributeValueIndex: number
     ) => void;
     loadAttributeSelections: () => void;
@@ -40,7 +38,7 @@ type Props = {
 export default function (props: Props) {
   const { data, execution } = props;
   const { onEditAttributeValue } = execution;
-  const { attributeValue, attributeIndex, attributeValueIndex } = data;
+  const { attributeValue, attributeValueIndex } = data;
   const [formData, setFormData] = useState(attributeValue);
 
   const parseValueToFloat = (value: string) => {
@@ -81,7 +79,7 @@ export default function (props: Props) {
   };
 
   const editAttributeValue = () => {
-    onEditAttributeValue(formData, attributeIndex, attributeValueIndex);
+    onEditAttributeValue(formData, attributeValueIndex);
     props.closeModal();
   };
 

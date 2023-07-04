@@ -69,7 +69,7 @@ const ResetPasswordNavigation = (props: ResetPasswordNavigationProps) => {
           </NavButton>
         </ListItem>
         <ListItem className="actived">
-          <span>{t("forgot_password_title")}</span>
+          <span>{t("reset_password_title")}</span>
         </ListItem>
       </HorizontalList>
     </Root>

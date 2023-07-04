@@ -12,8 +12,7 @@ const ProductService = class extends BaseService {
     });
   };
 
-  update = async (request: any) => {
-    const id = request.get("id");
+  update = async (request: any, id: number) => {
     return axios.put(
       `${apiConfig.paths.products.put.putProduct}/${id}`,
       request,

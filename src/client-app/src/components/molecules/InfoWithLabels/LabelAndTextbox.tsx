@@ -17,17 +17,19 @@ const ChildItem = styled.div`
   }
 `;
 
-interface LabelAndTextboxProps extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
 
-const LabelAndTextbox: React.FC<LabelAndTextboxProps> = (props) => {
-  const { className, value, label, name } = props;
+const LabelAndTextbox = React.forwardRef((props: Props, ref: any) => {
+  const { className, value, defaultValue, label, name } = props;
   return (
     <ChildItem className={className}>
       {label ? <label>{label}</label> : null}
       <PrimaryTextbox
+        ref={ref}
         value={value}
+        defaultValue={defaultValue}
         onChange={props.onChange}
         name={name}
         autoComplete={props.autoComplete}
@@ -36,6 +38,6 @@ const LabelAndTextbox: React.FC<LabelAndTextboxProps> = (props) => {
       />
     </ChildItem>
   );
-};
+});
 
 export default LabelAndTextbox;

@@ -182,7 +182,11 @@ const Index = (props: Props) => {
     }
 
     let image: ThumbnailPicture;
-    if (thumbnailPicture.index && thumbnailPicture.index < numberOfImages - 1) {
+    if (
+      thumbnailPicture.index !== undefined &&
+      thumbnailPicture.index >= 0 &&
+      thumbnailPicture.index < numberOfImages - 1
+    ) {
       image = images[thumbnailPicture.index + 1];
     } else {
       image = images[0];

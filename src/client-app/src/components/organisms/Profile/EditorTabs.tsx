@@ -6,7 +6,8 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 const Tabs = styled.div`
-  margin-bottom: ${(p) => p.theme.size.exTiny};
+  margin-bottom: ${(p) => p.theme.size.exSmall};
+  border-bottom: 1px solid ${(p) => p.theme.color.secondaryBg};
   .tabs-bar button {
     border-radius: 0;
     background-color: transparent;
@@ -20,8 +21,9 @@ const Tabs = styled.div`
   }
   .tabs-bar button.actived {
     color: ${(p) => p.theme.color.neutralText};
-    background-color: ${(p) => p.theme.color.secondaryText};
-    border-radius: ${(p) => p.theme.borderRadius.normal};
+    background-color: ${(p) => p.theme.color.secondaryBg};
+    border-top-left-radius: ${(p) => p.theme.borderRadius.normal};
+    border-top-right-radius: ${(p) => p.theme.borderRadius.normal};
   }
 `;
 

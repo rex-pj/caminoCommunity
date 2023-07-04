@@ -36,6 +36,7 @@ export const gradientColor = {
   primary:
     "linear-gradient(to right top, #2e420e, #2d410d, #2b3f0c, #2a3e0a, #293d09);",
   light: "linear-gradient(to bottom, #FFFBCE 0%, #B5C98D 100%);",
+  secondary: "linear-gradient(to bottom, #739e2e 0%, #82a745 100%);",
 };
 
 export const size = {

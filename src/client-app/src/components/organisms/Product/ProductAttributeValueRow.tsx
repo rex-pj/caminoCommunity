@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LabelSecondary, LabelDark } from "../../atoms/Labels";
 import { adjustPrice } from "../../../utils/PriceUtils";
 import { IProductAttributeValue } from "../../../models/productAttributesModel";
+import ProductAttributeValueEditModal from "./ProductAttributeValueEditModal";
+import { useStore } from "../../../store/hook-store";
 
 const SecondaryLabel = styled(LabelSecondary)`
   font-size: ${(p) => p.theme.fontSize.tiny};
@@ -16,19 +18,39 @@ const SecondaryLabel = styled(LabelSecondary)`
 type Props = {
   className?: string;
   attributeValue: IProductAttributeValue;
-  onEditAttributeValue: (attributeValue: IProductAttributeValue) => void;
+  onChange: (
+    attributeValue: IProductAttributeValue,
+    event: "added" | "updated" | "removed"
+  ) => void;
   onRemoveAttributeValue: (attributeValue: IProductAttributeValue) => void;
   price: number;
 };
 
 const ProductAttributeValueRow = (props: Props) => {
-  const {
-    attributeValue,
-    className,
-    price,
-    onEditAttributeValue,
-    onRemoveAttributeValue,
-  } = props;
+  const dispatch = useStore(true)[1];
+  const { attributeValue, className, price, onRemoveAttributeValue } = props;
+
+  function onOpenEditAttributeValueModal(
+    currentAttributeValue: IProductAttributeValue
+  ) {
+    dispatch("OPEN_MODAL", {
+      data: {
+        attributeValue: currentAttributeValue,
+        title: "Sửa giá trị của thuộc tính sản phẩm",
+      },
+      execution: {
+        onEditAttributeValue: onUpdateAttributeValue,
+      },
+      options: {
+        isOpen: true,
+        innerModal: ProductAttributeValueEditModal,
+      },
+    });
+  }
+
+  function onUpdateAttributeValue(attributeValue: IProductAttributeValue) {
+    props.onChange({ ...attributeValue }, "updated");
+  }
 
   return (
     <div className={className}>
@@ -77,7 +99,7 @@ const ProductAttributeValueRow = (props: Props) => {
           size="xs"
           className="me-1"
           title="Sửa giá trị thuộc tính"
-          onClick={() => onEditAttributeValue(attributeValue)}
+          onClick={() => onOpenEditAttributeValueModal(attributeValue)}
         >
           <FontAwesomeIcon icon="pencil-alt" />
         </ButtonOutlineLight>

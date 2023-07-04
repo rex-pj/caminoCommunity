@@ -1,24 +1,24 @@
-﻿using Camino.Core.Contracts.Repositories.Users;
-using Camino.Shared.Enums;
-using Camino.Application.Contracts;
-using Camino.Shared.Utils;
-using Camino.Core.Domains;
-using Camino.Core.Domains.Users;
-using Camino.Core.Domains.Articles;
-using Camino.Core.Domains.Products;
-using Camino.Core.Domains.Farms;
-using Camino.Core.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Camino.Core.Domains.Media;
-using Camino.Application.Contracts.AppServices.Feeds;
+﻿using Camino.Application.Contracts;
 using Camino.Application.Contracts.AppServices.Articles;
-using Camino.Application.Contracts.AppServices.Products;
 using Camino.Application.Contracts.AppServices.Farms;
+using Camino.Application.Contracts.AppServices.Feeds;
 using Camino.Application.Contracts.AppServices.Feeds.Dtos;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
+using Camino.Application.Contracts.AppServices.Products;
+using Camino.Core.Contracts.Repositories.Users;
+using Camino.Core.DependencyInjection;
+using Camino.Core.Domains;
+using Camino.Core.Domains.Articles;
+using Camino.Core.Domains.Farms;
+using Camino.Core.Domains.Media;
+using Camino.Core.Domains.Products;
+using Camino.Core.Domains.Users;
+using Camino.Shared.Enums;
+using Camino.Shared.Utils;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Camino.Application.AppServices.Feeds
 {
@@ -131,7 +131,7 @@ namespace Camino.Application.AppServices.Feeds
                 {
                     CreatedById = article.CreatedById,
                     CreatedDate = article.CreatedDate,
-                    Description = article.Description == null || article.Description == "" ? article.Content : article.Description,
+                    Description = article.Description != null ? article.Description : article.Content,
                     Id = article.Id.ToString(),
                     Name = article.Name,
                     FeedType = FeedTypes.Article,

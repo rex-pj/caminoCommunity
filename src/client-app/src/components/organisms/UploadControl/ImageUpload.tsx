@@ -22,7 +22,7 @@ const UploadButton = styled.span`
   }
 `;
 
-interface ImageUploadProps {
+interface Props {
   className?: string;
   onChange?: (e: ImageUploadOnChangeEvent) => void;
   children?: any;
@@ -36,14 +36,14 @@ export interface ImageUploadOnChangeEvent {
   blobUrl?: string;
 }
 
-export const ImageUpload: React.FC<ImageUploadProps> = (props) => {
-  const fileRef = useRef<any>();
+export const ImageUpload = React.forwardRef((props: Props, ref: any) => {
+  let fileRef = useRef<any>();
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const { target } = e;
-    if (target && target.files && target.files.length > 0) {
+    if (target?.files && target.files.length > 0) {
       const file = target.files[0];
 
       const reader = new FileReader();
@@ -69,14 +69,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props) => {
   };
 
   const openFileUpload = (e: React.MouseEvent<HTMLSpanElement>) => {
-    if (fileRef && fileRef.current) {
+    if (fileRef?.current) {
       fileRef.current.click();
     }
   };
 
   return (
     <div className={props.className}>
-      <UploadButton onClick={openFileUpload}>
+      <UploadButton onClick={openFileUpload} ref={ref}>
         <FontAwesomeIcon icon="camera" />
         {props.children ? <span>{props.children}</span> : null}
       </UploadButton>
@@ -89,4 +89,4 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props) => {
       />
     </div>
   );
-};
+});

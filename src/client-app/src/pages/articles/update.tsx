@@ -11,7 +11,6 @@ import {
   userQueries,
 } from "../../graphql/fetching/queries";
 import { useStore } from "../../store/hook-store";
-import { ArticleCreationModel } from "../../models/articleCreationModel";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import ArticleService from "../../services/articleService";
 
@@ -92,14 +91,17 @@ const UpdatePage = (props: Props) => {
     });
   }
 
-  async function onArticlePost(data: any) {
+  async function onArticlePost(data: FormData) {
+    if (!id) {
+      return;
+    }
     return await articleService
-      .update(data, data.get("id"))
+      .update(data, Number.parseInt(id))
       .then((response) => {
         return new Promise((resolve) => {
-          if (location.state && location.state.from) {
+          if (location.state?.from) {
             const referrefUri = location.state.from;
-            const articleUpdateUrl = `/articles/update/${data.id}`;
+            const articleUpdateUrl = `/articles/update/${id}`;
             if (referrefUri !== articleUpdateUrl) {
               navigate(referrefUri);
               resolve(response);
@@ -113,14 +115,7 @@ const UpdatePage = (props: Props) => {
       });
   }
 
-  const currentArticle = { ...new ArticleCreationModel() };
-  for (const formIdentifier in currentArticle) {
-    currentArticle[formIdentifier].value = article[formIdentifier];
-    if (article[formIdentifier]) {
-      currentArticle[formIdentifier].isValid = true;
-    }
-  }
-
+  const currentArticle = { ...article };
   const getAuthorInfo = () => {
     if (!authorData) {
       return {};

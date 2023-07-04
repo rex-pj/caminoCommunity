@@ -12,10 +12,13 @@ const ForgotPassword = (props: Props) => {
     return await authService
       .forgotPassword(data)
       .then((response) => {
-        Promise.resolve(response);
+        if (response.status === 202) {
+          return Promise.reject();
+        }
+        return Promise.resolve(response);
       })
       .catch((error) => {
-        Promise.reject(error);
+        return Promise.reject(error);
       });
   };
 
