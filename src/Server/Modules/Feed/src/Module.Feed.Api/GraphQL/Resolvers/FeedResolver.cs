@@ -72,9 +72,9 @@ namespace Module.Feed.Api.GraphQL.Resolvers
 
                 return feedPage;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

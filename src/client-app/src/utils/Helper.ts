@@ -117,7 +117,9 @@ export const getParameters = (
     }
   }
 
-  return obj;
+  return {} as {
+    [index: string]: any;
+  };
 };
 
 export const generateQueryParameters = (parameters: {

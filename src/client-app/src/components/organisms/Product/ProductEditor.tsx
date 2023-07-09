@@ -627,12 +627,6 @@ const ProductEditor = (props: Props) => {
                       control={control}
                       defaultValue={loadFarmsSelected()}
                       name="farms"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: "This field is required",
-                        },
-                      }}
                       render={({ field }) => (
                         <AsyncSelect
                           {...field}
@@ -649,11 +643,6 @@ const ProductEditor = (props: Props) => {
                         />
                       )}
                     />
-                    {errors.farms && (
-                      <ValidationDangerMessage>
-                        {errors.farms.message?.toString()}
-                      </ValidationDangerMessage>
-                    )}
                   </div>
                   <div className="col-12 col-sm-2 col-md-2 col-lg-2 ps-sm-1">
                     <Controller
@@ -749,9 +738,7 @@ const ProductEditor = (props: Props) => {
                     render={({ field }) => (
                       <RichTextEditor
                         {...field}
-                        onChange={(editor: LexicalEditor) =>
-                          onDescriptionChanged(editor)
-                        }
+                        onChange={onDescriptionChanged}
                       />
                     )}
                   />

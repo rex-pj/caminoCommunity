@@ -131,7 +131,7 @@ namespace Camino.Application.AppServices.Feeds
                 {
                     CreatedById = article.CreatedById,
                     CreatedDate = article.CreatedDate,
-                    Description = article.Description != null ? article.Description : article.Content,
+                    Description = Convert.ToString(article.Content),
                     Id = article.Id.ToString(),
                     Name = article.Name,
                     FeedType = FeedTypes.Article,
@@ -144,7 +144,7 @@ namespace Camino.Application.AppServices.Feeds
                 {
                     CreatedById = product.CreatedById,
                     CreatedDate = product.CreatedDate,
-                    Description = product.Description,
+                    Description = Convert.ToString(product.Description),
                     Id = product.Id.ToString(),
                     Name = product.Name,
                     FeedType = FeedTypes.Product,
@@ -157,7 +157,7 @@ namespace Camino.Application.AppServices.Feeds
                 {
                     CreatedById = farm.CreatedById,
                     CreatedDate = farm.CreatedDate,
-                    Description = farm.Description,
+                    Description = Convert.ToString(farm.Description),
                     Id = farm.Id.ToString(),
                     Name = farm.Name,
                     FeedType = FeedTypes.Farm,
@@ -169,13 +169,14 @@ namespace Camino.Application.AppServices.Feeds
             var farmFilteredCount = await farmFeeds.Select(x => x.Id).CountAsync();
             var filteredNumber = articleFilteredCount + productFilteredCount + farmFilteredCount;
 
-            var feeds = articleFeeds
+            var query = articleFeeds
                 .Union(productFeeds)
                 .Union(farmFeeds)
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip(filter.PageSize * (filter.Page - 1))
-                .Take(filter.PageSize)
-                .ToList();
+                .Take(filter.PageSize);
+
+            var feeds = await query.ToListAsync();
 
             await PopulateDetailsAsync(feeds);
 

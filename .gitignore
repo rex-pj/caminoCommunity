@@ -62,6 +62,8 @@ src/Server/Modules/Module.Api.Order/bin/
 src/Server/Modules/Module.Api.Order/obj/
 src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore/bin/
 src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore/obj/
+src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore.Migrations/bin/
+src/Server/Infrastructure/Camino.Infrastructure.EntityFrameworkCore.Migrations/obj/
 src/Server/Application/Camino.Application.Contracts/bin/
 src/Server/Application/Camino.Application.Contracts/obj/
 src/Server/Application/Camino.Application/bin/

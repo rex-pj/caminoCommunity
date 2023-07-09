@@ -9,17 +9,19 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Extensions.DependencyInjecti
     {
         public static void AddDataAccessServices<TContext>(this IServiceCollection services) where TContext : DbContext, IDbContext
         {
+            services.AddEntityFrameworkNpgsql();
             services.AddDbContextPool<IDbContext, TContext>(optionsBuilder =>
             {
-                optionsBuilder.UseSqlServerWithLazyLoading(services, "CaminoEntities");
+                optionsBuilder.UseNpgsqlWithLazyLoading(services, "CaminoEntities");
             });
         }
 
-        public static void UseSqlServerWithLazyLoading(this DbContextOptionsBuilder optionsBuilder, IServiceCollection services, string connectionKey)
+        public static void UseNpgsqlWithLazyLoading(this DbContextOptionsBuilder optionsBuilder, IServiceCollection services, string connectionKey)
         {
             var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
             optionsBuilder.UseLazyLoadingProxies();
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString(connectionKey));
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString(connectionKey),
+                x => x.MigrationsAssembly("Camino.Infrastructure.EntityFrameworkCore.Migrations"));
         }
     }
 }
