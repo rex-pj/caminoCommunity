@@ -16,11 +16,16 @@ using Camino.Core.Domains.Authorization;
 using Camino.Core.Domains.Users;
 using Camino.Core.Domains.Authentication;
 using Camino.Core.Domains;
+using System.Data.Common;
+using System.Data;
 
 namespace Camino.Infrastructure.EntityFrameworkCore
 {
-    public class CaminoDbContext : EfDbContext, IDbContext
+    public class CaminoDbContext : DbContext, IDbContext
     {
+        #region Ctor
+        public CaminoDbContext(DbContextOptions<CaminoDbContext> options) : base(options) { }
+        #endregion
         #region Dbset
         public DbSet<UserPhoto> UserPhotos { get; set; }
         public DbSet<UserPhotoType> UserPhotoTypes { get; set; }
@@ -57,11 +62,6 @@ namespace Camino.Infrastructure.EntityFrameworkCore
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserToken> UserTokens { get; set; }
         public DbSet<Shortcut> Shortcuts { get; set; }
-        #endregion
-
-        #region Ctor
-
-        public CaminoDbContext(DbContextOptions<CaminoDbContext> options) : base(options) { }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,6 +103,53 @@ namespace Camino.Infrastructure.EntityFrameworkCore
                 .ApplyConfiguration(new ShortcutMap());
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public string GenerateCreateScript()
+        {
+            return Database.GenerateCreateScript();
+        }
+
+        public IQueryable<TEntity> EntityFromSql<TEntity>(string sql, params object[] parameters) where TEntity : class
+        {
+            return Set<TEntity>().FromSqlRaw(CreateSqlWithParameters(sql, parameters), parameters);
+        }
+
+        public void Detach<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var entityEntry = Entry(entity);
+            if (entityEntry == null)
+                return;
+
+            //set the entity is not being tracked by the context
+            entityEntry.State = EntityState.Detached;
+        }
+
+        /// <summary>
+        /// Modify the input SQL query by adding passed parameters
+        /// </summary>
+        /// <param name="sql">The raw SQL query</param>
+        /// <param name="parameters">The values to be assigned to parameters</param>
+        /// <returns>Modified raw SQL query</returns>
+        protected virtual string CreateSqlWithParameters(string sql, params object[] parameters)
+        {
+            //add parameters to sql
+            for (var i = 0; i <= (parameters?.Length ?? 0) - 1; i++)
+            {
+                if (!(parameters[i] is DbParameter parameter))
+                    continue;
+
+                sql = $"{sql}{(i > 0 ? "," : string.Empty)} @{parameter.ParameterName}";
+
+                //whether parameter is output
+                if (parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Output)
+                    sql = $"{sql} output";
+            }
+
+            return sql;
         }
     }
 }

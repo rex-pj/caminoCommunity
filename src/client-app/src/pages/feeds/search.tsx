@@ -36,13 +36,15 @@ const Search = (props: Props) => {
     4: "Nông hội",
     5: "Thành viên",
   };
+
+  const params = getParameters(location.search);
   const {
     feedFilterType,
     userIdentityId,
     page,
     hoursCreatedFrom,
     hoursCreatedTo,
-  } = getParameters(location.search);
+  } = params;
   const { loading, data, error } = useQuery(feedqueries.ADVANCED_SEARCH, {
     variables: {
       criterias: {

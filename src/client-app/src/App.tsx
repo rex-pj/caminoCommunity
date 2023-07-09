@@ -193,8 +193,15 @@ const App: React.FC = () => {
                   path="/profile/:userId/*"
                   element={<ProfilePage />}
                 ></Route>
-                <Route path="/search" element={<SearchPage />}></Route>
-                <Route path="/search/:keyword" element={<SearchPage />}></Route>
+                {["/search", "/search/:keyword"].map((path) => {
+                  return (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={<SearchPage />}
+                    ></Route>
+                  );
+                })}
                 {[
                   "/user/active/:email/:key",
                   "/user/active/:email/:key+",

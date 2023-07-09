@@ -16,7 +16,7 @@ namespace Module.Product.Api.Models
         [MaxLength(255)]
         public string Name { get; set; }
         [Required]
-        [MaxLength(1000)]
+        [MaxLength(4000)]
         public string Description { get; set; }
 
         [Required]

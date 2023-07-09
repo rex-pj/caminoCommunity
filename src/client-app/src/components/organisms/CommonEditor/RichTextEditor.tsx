@@ -57,7 +57,7 @@ import Placeholder from "./ui/Placeholder";
 import ActionsPlugin from "./plugins/ActionPlugin";
 import EditorOnChangePlugin from "./plugins/EditorOnChangePlugin";
 import { $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot, $insertNodes, LexicalEditor } from "lexical";
+import { $insertNodes, LexicalEditor } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 interface Props {
@@ -142,13 +142,12 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
 
     editor.update(() => {
       const parser = new DOMParser();
-      const dom = parser.parseFromString(value ?? "", "text/html");
+      const dom = parser.parseFromString(value, "text/html");
       const nodes = $generateNodesFromDOM(editor, dom);
       $insertNodes(nodes);
-      props.onChange(editor);
       initialRef.current = false;
     });
-  });
+  }, [initialRef, editor]);
 
   return (
     <div ref={ref}>

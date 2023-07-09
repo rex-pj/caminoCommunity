@@ -8,13 +8,14 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.AspNetCore\Camino.Infrastructure.AspNetCore.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure\Camino.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Camino.Infrastructure.EntityFrameworkCore.Migrations\Camino.Infrastructure.EntityFrameworkCore.Migrations.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Content Update="appsettings.Production.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 		<Content Update="appsettings.Staging.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -38,7 +39,7 @@
 
 	<Target Name="CaminoTarget" AfterTargets="Build">
 		<RemoveDir Directories="$(MSBuildProjectDirectory)\Modules\" />
-		
+
 		<ItemGroup>
 			<!-- Because this ItemGroup is inside the target, this will enumerate
                  all files just before calling Copy. If the ItemGroup were outside
@@ -46,7 +47,7 @@
                  the build starts, which may miss files created during the build. -->
 			<ModulesSourceFiles Include="..\..\Modules\*\src\Module.*.WebAdmin\bin\Debug\net6.0\**\*.*" />
 		</ItemGroup>
-		
+
 		<Copy SourceFiles="@(ModulesSourceFiles)" DestinationFiles="$(MSBuildProjectDirectory)\Modules\%(RecursiveDir)%(Filename)%(Extension)"></Copy>
 	</Target>
 </Project>

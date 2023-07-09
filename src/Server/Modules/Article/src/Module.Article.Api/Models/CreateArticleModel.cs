@@ -8,7 +8,7 @@ namespace Module.Article.Api.Models
         [MaxLength(255)]
         public string Name { get; set; }
         [Required]
-        [MaxLength(4000)]
+        [MaxLength(8000)]
         public string Content { get; set; }
         [Required]
         public int ArticleCategoryId { get; set; }
