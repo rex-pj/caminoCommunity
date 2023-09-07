@@ -1,26 +1,21 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Product/Detail";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useQuery } from "@apollo/client";
 import styled from "styled-components";
-import {
-  productQueries,
-  userQueries,
-  farmQueries,
-} from "../../graphql/fetching/queries";
+import { productQueries, userQueries, farmQueries } from "../../graphql/fetching/queries";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { apiConfig } from "../../config/api-config";
 import ProductService from "../../services/productService";
+import { Helmet } from "react-helmet-async";
+import { removeHtmlTags } from "../../utils/Helper";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -31,20 +26,17 @@ interface Props {}
 const DetailPage = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const productService = new ProductService();
+  const productService = useMemo(() => new ProductService(), []);
   const { id } = useParams();
   const [state, dispatch] = useStore(false);
-  const { loading, data, error, refetch } = useQuery(
-    productQueries.GET_PRODUCT,
-    {
-      variables: {
-        criterias: {
-          id: Number(id),
-        },
+  const { loading, data, error, refetch } = useQuery(productQueries.GET_PRODUCT, {
+    variables: {
+      criterias: {
+        id: Number(id),
       },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const userIdentityId = data?.product?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
@@ -82,10 +74,7 @@ const DetailPage = (props: Props) => {
     },
   });
 
-  const onOpenDeleteConfirmation = (
-    e: any,
-    onDeleteData: (id: number) => Promise<any>
-  ) => {
+  const onOpenDeleteConfirmation = (e: any, onDeleteData: (id: number) => Promise<any>) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
       data: {
@@ -175,11 +164,7 @@ const DetailPage = (props: Props) => {
     });
   }
 
-  const renderRelevants = (
-    relevantLoading: boolean,
-    relevantData: any,
-    relevantError: any
-  ) => {
+  const renderRelevants = (relevantLoading: boolean, relevantData: any, relevantError: any) => {
     if (relevantLoading || !relevantData) {
       return <LoadingBar className="mt-3" />;
     } else if (relevantError) {
@@ -224,16 +209,8 @@ const DetailPage = (props: Props) => {
           {relevants
             ? relevants.map((item: any, index: number) => {
                 return (
-                  <div
-                    key={index}
-                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                  >
-                    <ProductItem
-                      product={item}
-                      onOpenDeleteConfirmationModal={
-                        onOpenDeleteRelevantConfirmation
-                      }
-                    />
+                  <div key={index} className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                    <ProductItem product={item} onOpenDeleteConfirmationModal={onOpenDeleteRelevantConfirmation} />
                   </div>
                 );
               })
@@ -251,9 +228,7 @@ const DetailPage = (props: Props) => {
     const authorInfo = { ...userInfo };
     if (authorData) {
       const { userPhotos } = authorData;
-      const avatar = userPhotos.find(
-        (item: any) => item.photoType === "AVATAR"
-      );
+      const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
       if (avatar) {
         authorInfo.userAvatar = avatar;
       }
@@ -271,21 +246,24 @@ const DetailPage = (props: Props) => {
     return authorInfo;
   };
 
+  const metaTitle = `${product?.name} ${"| Nông Trại LỒ Ồ"}`;
+  const metaDescription = removeHtmlTags(product.description);
   return (
-    <DetailLayout
-      author={getAuthorInfo()}
-      isLoading={!!loading}
-      hasData={true}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} />
-      <Detail
-        product={product}
-        breadcrumbs={breadcrumbs}
-        onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation}
-      />
-      {renderRelevants(relevantLoading, relevantData, relevantError)}
-    </DetailLayout>
+    <>
+      <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
+        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {product?.images?.length > 0 ? <meta property="og:image" content={product.images[0].pictureUrl} /> : null}
+        {/* Google SEO */}
+        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+      </Helmet>
+      <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} />
+        <Detail product={product} breadcrumbs={breadcrumbs} onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation} />
+        {renderRelevants(relevantLoading, relevantData, relevantError)}
+      </DetailLayout>
+    </>
   );
 };
 

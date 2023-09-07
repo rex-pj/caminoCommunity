@@ -11,16 +11,11 @@ import { ButtonIconPrimary } from "../../components/molecules/ButtonIcons";
 import styled from "styled-components";
 import { ProfileLayout } from "../../components/templates/Layout";
 import UserPhotoService from "../../services/userPhotoService";
+import { Helmet } from "react-helmet-async";
 
-const ProfileAvatar = React.lazy(
-    () => import("../../components/organisms/Profile/ProfileAvatar")
-  ),
-  ProfileCover = React.lazy(
-    () => import("../../components/organisms/Profile/ProfileCover")
-  ),
-  ProfileNavigation = React.lazy(
-    () => import("../../components/organisms/Profile/ProfileNavigation")
-  );
+const ProfileAvatar = React.lazy(() => import("../../components/organisms/Profile/ProfileAvatar")),
+  ProfileCover = React.lazy(() => import("../../components/organisms/Profile/ProfileCover")),
+  ProfileNavigation = React.lazy(() => import("../../components/organisms/Profile/ProfileNavigation"));
 
 const CoverPageBlock = styled.div`
   position: relative;
@@ -79,16 +74,13 @@ const ProfilePage = () => {
   const { relogin, isLogin, currentUser } = useContext(SessionContext);
   const { userId, pageNumber } = useParams();
   const _userPhotoService = new UserPhotoService();
-  const { loading, error, data, refetch } = useQuery(
-    userQueries.GET_USER_INFO,
-    {
-      variables: {
-        criterias: {
-          userId,
-        },
+  const { loading, error, data, refetch } = useQuery(userQueries.GET_USER_INFO, {
+    variables: {
+      criterias: {
+        userId,
       },
-    }
-  );
+    },
+  });
 
   const [state, dispatch] = useStore(false);
   useEffect(() => {
@@ -120,10 +112,7 @@ const ProfilePage = () => {
         return Promise.resolve({});
       })
       .catch(() => {
-        showValidationError(
-          "Có lỗi xảy ra",
-          "Có lỗi xảy ra khi cập nhật dữ liệu, bạn vui lòng thử lại"
-        );
+        showValidationError("Có lỗi xảy ra", "Có lỗi xảy ra khi cập nhật dữ liệu, bạn vui lòng thử lại");
         return Promise.reject({});
       });
   };
@@ -171,45 +160,34 @@ const ProfilePage = () => {
   }
 
   return (
-    <ProfileLayout isLoading={!!loading} hasData={true} hasError={!!error}>
-      <CoverPageBlock>
-        {!isEditCoverMode &&
-        isLogin &&
-        currentUser?.userIdentityId !== userIdentityId ? (
-          <ConnectButton icon="user-plus" size="sm">
-            Connect
-          </ConnectButton>
-        ) : null}
-        <ProfileCover
-          userInfo={userInfo}
-          canEdit={canEdit}
-          onDeleted={onUserCoverDeleted}
-          onUpdated={onUserCoverUpdated}
-          onToggleEditMode={onToggleEditCoverMode}
-          showValidationError={showValidationError}
-        />
-        <AvatarBlock
-          userInfo={userInfo}
-          canEdit={canEdit && !isEditCoverMode}
-          onUpload={onAvatarUpload}
-          onDelete={onAvatarDelete}
-        />
-        <h2>
-          <ProfileNameLink href={userInfo.url}>
-            {userInfo.displayName}
-          </ProfileNameLink>
-        </h2>
-      </CoverPageBlock>
-      <CoverNav>
-        <ProfileNavigation userId={userId} baseUrl={_baseUrl} />
-      </CoverNav>
-      <Profile
-        userId={userId}
-        pageNumber={currentPage}
-        baseUrl={_baseUrl}
-        userInfo={userInfo}
-      />
-    </ProfileLayout>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Hồ sơ cá nhân | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Hồ sơ cá nhân | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Hồ sơ cá nhân" />
+        {/* Google SEO */}
+        <meta name="description" content="Hồ sơ cá nhân" />
+      </Helmet>
+      <ProfileLayout isLoading={!!loading} hasData={true} hasError={!!error}>
+        <CoverPageBlock>
+          {!isEditCoverMode && isLogin && currentUser?.userIdentityId !== userIdentityId ? (
+            <ConnectButton icon="user-plus" size="sm">
+              Connect
+            </ConnectButton>
+          ) : null}
+          <ProfileCover userInfo={userInfo} canEdit={canEdit} onDeleted={onUserCoverDeleted} onUpdated={onUserCoverUpdated} onToggleEditMode={onToggleEditCoverMode} showValidationError={showValidationError} />
+          <AvatarBlock userInfo={userInfo} canEdit={canEdit && !isEditCoverMode} onUpload={onAvatarUpload} onDelete={onAvatarDelete} />
+          <h2>
+            <ProfileNameLink href={userInfo.url}>{userInfo.displayName}</ProfileNameLink>
+          </h2>
+        </CoverPageBlock>
+        <CoverNav>
+          <ProfileNavigation userId={userId} baseUrl={_baseUrl} />
+        </CoverNav>
+        <Profile userId={userId} pageNumber={currentPage} baseUrl={_baseUrl} userInfo={userInfo} />
+      </ProfileLayout>
+    </>
   );
 };
 

@@ -19,6 +19,7 @@ import * as theme from "./utils/Theme";
 import { LoadingBar } from "./components/molecules/NotificationBars";
 import "./i18n";
 import "./type-checkings/file-import";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 const FeedsPage = React.lazy(() => import("./pages/feeds"));
 const ArticlesPage = React.lazy(() => import("./pages/articles"));
 const ArticleDetailPage = React.lazy(() => import("./pages/articles/detail"));
@@ -31,21 +32,15 @@ const FarmDetailPage = React.lazy(() => import("./pages/farms/detail"));
 const FarmUpdatePage = React.lazy(() => import("./pages/farms/update"));
 const ShoppingCartPage = React.lazy(() => import("./pages/shopping-cart"));
 const CommunitiesPage = React.lazy(() => import("./pages/communities"));
-const CommunityDetailPage = React.lazy(
-  () => import("./pages/communities/detail")
-);
-const ForgotPasswordPage = React.lazy(
-  () => import("./pages/auth/forgot-password")
-);
+const CommunityDetailPage = React.lazy(() => import("./pages/communities/detail"));
+const ForgotPasswordPage = React.lazy(() => import("./pages/auth/forgot-password"));
 const LoginPage = React.lazy(() => import("./pages/auth/login"));
 const SignupPage = React.lazy(() => import("./pages/auth/signup"));
 const LogoutPage = React.lazy(() => import("./pages/auth/logout"));
 const ProfilePage = React.lazy(() => import("./pages/user/profile"));
 const SearchPage = React.lazy(() => import("./pages/feeds/search"));
 const UserActivePage = React.lazy(() => import("./pages/user/user-active"));
-const ResetPasswordPage = React.lazy(
-  () => import("./pages/user/reset-password")
-);
+const ResetPasswordPage = React.lazy(() => import("./pages/user/reset-password"));
 const ErrorPage = React.lazy(() => import("./pages/error/index"));
 const NotFoundPage = React.lazy(() => import("./pages/error/not-found"));
 
@@ -59,13 +54,10 @@ library.add(fas);
 library.add(fab);
 library.add(far);
 
-const App: React.FC = () => {
-  const { loading, data, refetch, error } = useQuery(
-    userQueries.GET_LOGGED_USER,
-    {
-      client: authClient,
-    }
-  );
+const App = () => {
+  const { loading, data, refetch, error } = useQuery(userQueries.GET_LOGGED_USER, {
+    client: authClient,
+  });
 
   const relogin = () => {
     return refetch();
@@ -98,144 +90,58 @@ const App: React.FC = () => {
   };
 
   return (
-    <ApolloProvider client={authClient}>
-      <SessionContext.Provider value={sessionContext()}>
-        <ThemeProvider theme={theme}>
-          <Suspense fallback={<LoadingBar />}>
-            <BrowserRouter>
-              <Routes>
-                {[
-                  "/",
-                  "/page/:pageNumber",
-                  "/feeds",
-                  "/feeds/page/:pageNumber",
-                ].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<FeedsPage />}
-                    ></Route>
-                  );
-                })}
-                {["/articles", "/articles/page/:pageNumber"].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<ArticlesPage />}
-                    ></Route>
-                  );
-                })}
-                <Route
-                  path="/articles/:id"
-                  element={<ArticleDetailPage />}
-                ></Route>
-                <Route
-                  path="/articles/update/:id"
-                  element={<ArticleUpdatePage />}
-                ></Route>
-                {["/products", "/products/page/:pageNumber"].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<ProductsPage />}
-                    ></Route>
-                  );
-                })}
-                <Route
-                  path="/products/:id"
-                  element={<ProductDetailPage />}
-                ></Route>
-                <Route
-                  path="/products/update/:id"
-                  element={<ProductUpdatePage />}
-                ></Route>
-                <Route
-                  path="/shopping-cart"
-                  element={<ShoppingCartPage />}
-                ></Route>
-                {["/farms", "/farms/page/:pageNumber"].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<FarmsPage />}
-                    ></Route>
-                  );
-                })}
-                <Route path="/farms/:id" element={<FarmDetailPage />}></Route>
-                <Route
-                  path="/farms/update/:id"
-                  element={<FarmUpdatePage />}
-                ></Route>
-                <Route
-                  path="/communities"
-                  element={<CommunitiesPage />}
-                ></Route>
-                <Route
-                  path="/communities/page/:pageNumber"
-                  element={<CommunitiesPage />}
-                ></Route>
-                <Route
-                  path="/communities/:id"
-                  element={<CommunityDetailPage />}
-                ></Route>
-                <Route
-                  path="/auth/forgot-password"
-                  element={<ForgotPasswordPage />}
-                ></Route>
-                <Route path="/auth/login" element={<LoginPage />}></Route>
-                <Route path="/auth/signup" element={<SignupPage />}></Route>
-                <Route path="/auth/logout" element={<LogoutPage />}></Route>
-                <Route
-                  path="/profile/:userId/*"
-                  element={<ProfilePage />}
-                ></Route>
-                {["/search", "/search/:keyword"].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<SearchPage />}
-                    ></Route>
-                  );
-                })}
-                {[
-                  "/user/active/:email/:key",
-                  "/user/active/:email/:key+",
-                  "/user/active/:email/*",
-                ].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<UserActivePage />}
-                    ></Route>
-                  );
-                })}
-                {[
-                  "/user/reset-password/:email/:key",
-                  "/user/reset-password/:email/:key+",
-                  "/user/reset-password/:email/*",
-                ].map((path) => {
-                  return (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={<ResetPasswordPage />}
-                    ></Route>
-                  );
-                })}
-                <Route path="/error" element={<ErrorPage />}></Route>
-                <Route path="*" element={<NotFoundPage />}></Route>
-              </Routes>
-            </BrowserRouter>
-          </Suspense>
-        </ThemeProvider>
-      </SessionContext.Provider>
-    </ApolloProvider>
+    <HelmetProvider>
+      <ApolloProvider client={authClient}>
+        <SessionContext.Provider value={sessionContext()}>
+          <ThemeProvider theme={theme}>
+            <Suspense fallback={<LoadingBar />}>
+              <BrowserRouter>
+                <Routes>
+                  {["/", "/page/:pageNumber", "/feeds", "/feeds/page/:pageNumber"].map((path) => {
+                    return <Route key={path} path={path} element={<FeedsPage />}></Route>;
+                  })}
+                  {["/articles", "/articles/page/:pageNumber"].map((path) => {
+                    return <Route key={path} path={path} element={<ArticlesPage />}></Route>;
+                  })}
+                  <Route path="/articles/:id" element={<ArticleDetailPage />}></Route>
+                  <Route path="/articles/update/:id" element={<ArticleUpdatePage />}></Route>
+                  {["/products", "/products/page/:pageNumber"].map((path) => {
+                    return <Route key={path} path={path} element={<ProductsPage />}></Route>;
+                  })}
+                  <Route path="/products/:id" element={<ProductDetailPage />}></Route>
+                  <Route path="/products/update/:id" element={<ProductUpdatePage />}></Route>
+                  <Route path="/shopping-cart" element={<ShoppingCartPage />}></Route>
+                  {["/farms", "/farms/page/:pageNumber"].map((path) => {
+                    return <Route key={path} path={path} element={<FarmsPage />}></Route>;
+                  })}
+                  <Route path="/farms/:id" element={<FarmDetailPage />}></Route>
+                  <Route path="/farms/update/:id" element={<FarmUpdatePage />}></Route>
+                  <Route path="/communities" element={<CommunitiesPage />}></Route>
+                  <Route path="/communities/page/:pageNumber" element={<CommunitiesPage />}></Route>
+                  <Route path="/communities/:id" element={<CommunityDetailPage />}></Route>
+                  <Route path="/auth/forgot-password" element={<ForgotPasswordPage />}></Route>
+                  <Route path="/auth/login" element={<LoginPage />}></Route>
+                  <Route path="/auth/signup" element={<SignupPage />}></Route>
+                  <Route path="/auth/logout" element={<LogoutPage />}></Route>
+                  <Route path="/profile/:userId/*" element={<ProfilePage />}></Route>
+                  {["/search", "/search/:keyword"].map((path) => {
+                    return <Route key={path} path={path} element={<SearchPage />}></Route>;
+                  })}
+                  {["/user/active/:email/:key", "/user/active/:email/:key+", "/user/active/:email/*"].map((path) => {
+                    return <Route key={path} path={path} element={<UserActivePage />}></Route>;
+                  })}
+                  {["/user/reset-password/:email/:key", "/user/reset-password/:email/:key+", "/user/reset-password/:email/*"].map((path) => {
+                    return <Route key={path} path={path} element={<ResetPasswordPage />}></Route>;
+                  })}
+                  <Route path="/error" element={<ErrorPage />}></Route>
+                  <Route path="*" element={<NotFoundPage />}></Route>
+                </Routes>
+              </BrowserRouter>
+            </Suspense>
+          </ThemeProvider>
+        </SessionContext.Provider>
+      </ApolloProvider>
+    </HelmetProvider>
   );
 };
 

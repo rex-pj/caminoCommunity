@@ -1,32 +1,19 @@
 import * as React from "react";
-import {
-  Fragment,
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-} from "react";
+import { Fragment, useContext, useState, useRef, useEffect, useMemo } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { UrlConstant } from "../../utils/Constants";
 import ProductItem from "../../components/organisms/Product/ProductItem";
-import {
-  productMutations,
-  farmMutations,
-} from "../../graphql/fetching/mutations";
+import { productMutations, farmMutations } from "../../graphql/fetching/mutations";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import { useStore } from "../../store/hook-store";
 import { farmQueries, productQueries } from "../../graphql/fetching/queries";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar, NoDataBar } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import ProductService from "../../services/productService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   pageNumber?: number;
@@ -44,32 +31,19 @@ const UserProducts = (props: Props) => {
   });
   const productService = new ProductService();
 
-  const [fetchProductCategories] = useLazyQuery(
-    productQueries.FILTER_PRODUCT_CATEGORIES,
-    {
-      variables: {},
-    }
-  );
-  const [productAttributes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTES
-  );
-  const [productAttributeControlTypes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
-  );
+  const [fetchProductCategories] = useLazyQuery(productQueries.FILTER_PRODUCT_CATEGORIES, {
+    variables: {},
+  });
+  const [productAttributes] = useMutation(productMutations.FILTER_PRODUCT_ATTRIBUTES);
+  const [productAttributeControlTypes] = useMutation(productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES);
 
   const [fetchUserFarms] = useLazyQuery(farmQueries.SELECT_USER_FARMS, {
     variables: {},
   });
   const getUserFarms = useMemo(() => fetchUserFarms, [fetchUserFarms]);
 
-  const getProductCategories = useMemo(
-    () => fetchProductCategories,
-    [fetchProductCategories]
-  );
-  const [
-    fetchProducts,
-    { loading, data, error, networkStatus, refetch: refetchProducts },
-  ] = useLazyQuery(productQueries.GET_USER_PRODUCTS, {
+  const getProductCategories = useMemo(() => fetchProductCategories, [fetchProductCategories]);
+  const [fetchProducts, { loading, data, error, networkStatus, refetch: refetchProducts }] = useLazyQuery(productQueries.GET_USER_PRODUCTS, {
     onCompleted: (data) => {
       setPageInfo(data);
       onFetchCompleted(data);
@@ -170,17 +144,7 @@ const UserProducts = (props: Props) => {
 
   const renderProductEditor = () => {
     if (currentUser && isLogin) {
-      return (
-        <ProductEditor
-          height={230}
-          filterCategories={getProductCategories}
-          onProductPost={onProductPost}
-          showValidationError={showValidationError}
-          filterFarms={getUserFarms}
-          filterAttributes={productAttributes}
-          filterProductAttributeControlTypes={productAttributeControlTypes}
-        />
-      );
+      return <ProductEditor height={230} filterCategories={getProductCategories} onProductPost={onProductPost} showValidationError={showValidationError} filterFarms={getUserFarms} filterAttributes={productAttributes} filterProductAttributeControlTypes={productAttributeControlTypes} />;
     }
     return null;
   };
@@ -260,25 +224,21 @@ const UserProducts = (props: Props) => {
 
   return (
     <Fragment>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Sản phẩm | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Sản phẩm | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Sản phẩm" />
+        {/* Google SEO */}
+        <meta name="description" content="Sản phẩm" />
+      </Helmet>
       {renderProductEditor()}
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
+      <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
         <div className="row">
           {products
             ? products.map((item: any) => (
-                <div
-                  key={item.id}
-                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                >
-                  <ProductItem
-                    product={item}
-                    onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-                  />
+                <div key={item.id} className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                  <ProductItem product={item} onOpenDeleteConfirmationModal={onOpenDeleteConfirmation} />
                 </div>
               ))
             : null}

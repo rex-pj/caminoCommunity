@@ -12,6 +12,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import { LoadingBar } from "../../components/molecules/NotificationBars";
 import ProductService from "../../services/productService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {}
 
@@ -21,16 +22,13 @@ const Products = (props: Props) => {
   const [state, dispatch] = useStore(false);
   const [products, setProducts] = useState<any[]>([]);
   const pageRef = useRef<any>({ pageNumber: pageNumber ? pageNumber : 1 });
-  const [fetchProducts, { loading, data, error, refetch }] = useLazyQuery(
-    productQueries.GET_PRODUCTS,
-    {
-      onCompleted: (data) => {
-        setPageInfo(data);
-        onFetchCompleted(data);
-      },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const [fetchProducts, { loading, data, error, refetch }] = useLazyQuery(productQueries.GET_PRODUCTS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const setPageInfo = (data: any) => {
     const {
@@ -152,26 +150,22 @@ const Products = (props: Props) => {
   };
 
   return (
-    <DefaultLayout
-      isLoading={!!loading}
-      hasData={checkHasData()}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} className="px-2" />
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
-        <Product
-          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-          products={products}
-          baseUrl="/products"
-        />
-      </InfiniteScroll>
-    </DefaultLayout>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Sản phẩm | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Sản phẩm | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Sản phẩm" />
+        {/* Google SEO */}
+        <meta name="description" content="Sản phẩm" />
+      </Helmet>
+      <DefaultLayout isLoading={!!loading} hasData={checkHasData()} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} className="px-2" />
+        <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
+          <Product onOpenDeleteConfirmation={onOpenDeleteConfirmation} products={products} baseUrl="/products" />
+        </InfiniteScroll>
+      </DefaultLayout>
+    </>
   );
 };
 

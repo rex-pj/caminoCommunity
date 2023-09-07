@@ -13,7 +13,7 @@ import bgUrl from "../../../assets/images/logo.png";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { ValidationWarningMessage } from "../../ErrorMessage";
-import { validateEmail } from "../../../utils/Validity";
+import { validateEmail, validatePhoneNumber } from "../../../utils/Validity";
 
 const Textbox = styled(SecondaryTextbox)`
   border-radius: ${(p) => p.theme.size.normal};
@@ -93,27 +93,21 @@ const LoginForm = (props: LoginFormProps) => {
     const { isRemember } = data;
     const loginRequest: any = { ...data };
 
-    props
-      .onlogin(loginRequest, isRemember)
-      .catch(() => setError("Có lỗi xảy ra trong quá trình đăng nhập"));
+    props.onlogin(loginRequest, isRemember).catch(() => setError("Có lỗi xảy ra trong quá trình đăng nhập"));
   };
 
   return (
     <form onSubmit={handleSubmit(onlogin)} method="POST">
       <div className="row g-0">
         <div className="col col-12 col-sm-7">
-          <AuthBanner
-            imageUrl={`${bgUrl}`}
-            title={t("login")}
-            instruction={t("join_us_instruction")}
-          />
+          <AuthBanner imageUrl={`${bgUrl}`} title={t("login")} instruction={t("join_us_instruction")} />
         </div>
         <div className="col col-12 col-sm-5">
           <AuthNavigation />
           <PanelBody>
             <FormRow>{error ? <ErrorBox>{error}</ErrorBox> : null}</FormRow>
             <FormRow>
-              <Label>{t("email_label")}</Label>
+              <Label>{t("email_or_phone_label")}</Label>
               <Textbox
                 {...register("username", {
                   required: {
@@ -122,19 +116,20 @@ const LoginForm = (props: LoginFormProps) => {
                   },
                   validate: (val) => {
                     const isEmailValid = validateEmail(val);
-                    if (!isEmailValid) {
-                      return "Invalid email address";
+                    if (isEmailValid) {
+                      return;
                     }
+                    const isPhoneNumberValid = validatePhoneNumber(val);
+                    if (isPhoneNumberValid) {
+                      return;
+                    }
+
+                    return "Please input a email address or phone number";
                   },
                 })}
-                placeholder={t("please_input_your_email").toString()}
-                type="email"
+                placeholder={t("please_input_your_email_or_phone").toString()}
               />
-              {errors.username && (
-                <ValidationWarningMessage>
-                  {errors.username.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.username && <ValidationWarningMessage>{errors.username.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow>
               <Label>{t("password_label")}</Label>
@@ -152,18 +147,10 @@ const LoginForm = (props: LoginFormProps) => {
                 placeholder={t("please_input_your_password").toString()}
                 type="password"
               />
-              {errors.password && (
-                <ValidationWarningMessage>
-                  {errors.password.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.password && <ValidationWarningMessage>{errors.password.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow className="mt-3">
-              <input
-                {...register("isRemember")}
-                type="checkbox"
-                id="isRemember"
-              ></input>
+              <input {...register("isRemember")} type="checkbox" id="isRemember"></input>
               <Label htmlFor="isRemember">{t("remember_label")}</Label>
             </FormRow>
             <FormFooter>
@@ -172,9 +159,7 @@ const LoginForm = (props: LoginFormProps) => {
               </SubmitButton>
             </FormFooter>
             <ForgotPasswordRow>
-              <Link to="/auth/forgot-password">
-                {t("forgot_password_title")}
-              </Link>
+              <Link to="/auth/forgot-password">{t("forgot_password_title")}</Link>
             </ForgotPasswordRow>
           </PanelBody>
         </div>

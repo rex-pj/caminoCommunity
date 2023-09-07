@@ -1,26 +1,21 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { UrlConstant } from "../../utils/Constants";
 import Detail from "../../components/templates/Farm/Detail";
-import {
-  farmQueries,
-  productQueries,
-  userQueries,
-} from "../../graphql/fetching/queries";
+import { farmQueries, productQueries, userQueries } from "../../graphql/fetching/queries";
 import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../../components/organisms/Product/ProductItem";
 import { TertiaryHeading } from "../../components/atoms/Heading";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { apiConfig } from "../../config/api-config";
 import FarmService from "../../services/farmService";
 import ProductService from "../../services/productService";
+import { Helmet } from "react-helmet-async";
+import { removeHtmlTags } from "../../utils/Helper";
 
 const FarmProductsBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -31,8 +26,8 @@ interface Props {}
 const DetailPage = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const farmService = new FarmService();
-  const productService = new ProductService();
+  const farmService = useMemo(() => new FarmService(), []);
+  const productService = useMemo(() => new ProductService(), []);
   const { id } = useParams();
   const [state, dispatch] = useStore(false);
   const { loading, data, error, refetch } = useQuery(farmQueries.GET_FARM, {
@@ -80,10 +75,7 @@ const DetailPage = (props: Props) => {
     },
   });
 
-  const onOpenDeleteConfirmation = (
-    e: any,
-    onDeleteData: (id: number) => Promise<any>
-  ) => {
+  const onOpenDeleteConfirmation = (e: any, onDeleteData: (id: number) => Promise<any>) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
       data: {
@@ -169,11 +161,7 @@ const DetailPage = (props: Props) => {
     });
   }
 
-  const renderProducts = (
-    productLoading: boolean,
-    productData: any,
-    productError: any
-  ) => {
+  const renderProducts = (productLoading: boolean, productData: any, productError: any) => {
     if (productLoading || !productData) {
       return (
         <div className="col-12">
@@ -227,16 +215,8 @@ const DetailPage = (props: Props) => {
         {products
           ? products.map((item: any, index: number) => {
               return (
-                <div
-                  key={index}
-                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                >
-                  <ProductItem
-                    product={item}
-                    onOpenDeleteConfirmationModal={
-                      onOpenDeleteProductConfirmation
-                    }
-                  />
+                <div key={index} className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                  <ProductItem product={item} onOpenDeleteConfirmationModal={onOpenDeleteProductConfirmation} />
                 </div>
               );
             })
@@ -253,9 +233,7 @@ const DetailPage = (props: Props) => {
     const authorInfo = { ...userInfo };
     if (authorData) {
       const { userPhotos } = authorData;
-      const avatar = userPhotos.find(
-        (item: any) => item.photoType === "AVATAR"
-      );
+      const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
       if (avatar) {
         authorInfo.userAvatar = avatar;
       }
@@ -273,23 +251,26 @@ const DetailPage = (props: Props) => {
     return authorInfo;
   };
 
+  const metaTitle = `${farm?.name} ${"| Nông Trại LỒ Ồ"}`;
+  const metaDescription = removeHtmlTags(farm.description);
   return (
-    <DetailLayout
-      author={getAuthorInfo()}
-      isLoading={!!loading}
-      hasData={true}
-      hasError={!!error}
-    >
-      <Detail
-        farm={farm}
-        breadcrumbs={breadcrumbs}
-        onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation}
-      />
-      <FarmProductsBox>
-        <TertiaryHeading>{farm.name}'s products</TertiaryHeading>
-        {renderProducts(productLoading, productData, productError)}
-      </FarmProductsBox>
-    </DetailLayout>
+    <>
+      <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
+        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {farm?.images?.length > 0 ? <meta property="og:image" content={farm.images[0].pictureUrl} /> : null}
+        {/* Google SEO */}
+        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+      </Helmet>
+      <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>
+        <Detail farm={farm} breadcrumbs={breadcrumbs} onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation} />
+        <FarmProductsBox>
+          <TertiaryHeading>{farm.name}'s products</TertiaryHeading>
+          {renderProducts(productLoading, productData, productError)}
+        </FarmProductsBox>
+      </DetailLayout>
+    </>
   );
 };
 

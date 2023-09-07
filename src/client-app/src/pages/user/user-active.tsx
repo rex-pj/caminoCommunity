@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import { unauthClient } from "../../graphql/client";
+import { Helmet } from "react-helmet-async";
 
 interface Props {}
 
@@ -27,15 +28,7 @@ const UserActivePage = (props: Props) => {
   });
 
   if (loading) {
-    return (
-      <UserActive
-        icon="check"
-        title="Waiting for activation"
-        instruction="After successful activation you will be redirected to the login page"
-        actionUrl="/"
-        actionText="Vào trang chủ"
-      />
-    );
+    return <UserActive icon="check" title="Waiting for activation" instruction="After successful activation you will be redirected to the login page" actionUrl="/" actionText="Vào trang chủ" />;
   }
 
   if (error) {
@@ -50,13 +43,12 @@ const UserActivePage = (props: Props) => {
   }
 
   return (
-    <UserActive
-      icon="check"
-      title="Successful activation"
-      instruction="You have successfully activated your account"
-      actionUrl="/"
-      actionText="Vào trang chủ"
-    />
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <UserActive icon="check" title="Successful activation" instruction="You have successfully activated your account" actionUrl="/" actionText="Vào trang chủ" />
+    </>
   );
 };
 

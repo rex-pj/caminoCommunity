@@ -5,11 +5,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { UrlConstant } from "../../utils/Constants";
 import { articleQueries } from "../../graphql/fetching/queries";
 import { articleMutations } from "../../graphql/fetching/mutations";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar, NoDataBar } from "../../components/molecules/NotificationBars";
 import { useStore } from "../../store/hook-store";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { SessionContext } from "../../store/context/session-context";
@@ -17,6 +13,7 @@ import ArticleListItem from "../../components/organisms/Article/ArticleListItem"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import ArticleService from "../../services/articleService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   pageNumber?: number;
@@ -27,21 +24,16 @@ const UserArticles = (props: Props) => {
   const { pageNumber } = props;
   const [state, dispatch] = useStore(false);
   const { currentUser, isLogin } = useContext(SessionContext);
-  const articleService = new ArticleService();
+  const articleService = React.useMemo(() => new ArticleService(), []);
 
-  const [articleCategories] = useMutation(
-    articleMutations.FILTER_ARTICLE_CATEGORIES
-  );
+  const [articleCategories] = useMutation(articleMutations.FILTER_ARTICLE_CATEGORIES);
 
   const [articles, setArticles] = useState<any[]>([]);
   const pageRef = useRef<any>({
-    pageNumber: pageNumber ? pageNumber : 1,
+    pageNumber: pageNumber || 1,
     userId: userId,
   });
-  const [
-    fetchArticles,
-    { loading, data, error, refetch: refetchArticles, networkStatus },
-  ] = useLazyQuery(articleQueries.GET_USER_ARTICLES, {
+  const [fetchArticles, { loading, data, error, refetch: refetchArticles, networkStatus }] = useLazyQuery(articleQueries.GET_USER_ARTICLES, {
     onCompleted: (data) => {
       setPageInfo(data);
       onFetchCompleted(data);
@@ -103,14 +95,7 @@ const UserArticles = (props: Props) => {
 
   const renderArticleEditor = () => {
     if (currentUser && isLogin) {
-      return (
-        <ArticleEditor
-          height={230}
-          filterCategories={articleCategories}
-          onArticlePost={onArticlePost}
-          showValidationError={showValidationError}
-        />
-      );
+      return <ArticleEditor height={230} filterCategories={articleCategories} onArticlePost={onArticlePost} showValidationError={showValidationError} />;
     }
     return null;
   };
@@ -218,23 +203,17 @@ const UserArticles = (props: Props) => {
 
   return (
     <Fragment>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Bài viết | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Bài viết | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Bài viết" />
+        {/* Google SEO */}
+        <meta name="description" content="Bài viết" />
+      </Helmet>
       {renderArticleEditor()}
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
-        {articles
-          ? articles.map((item) => (
-              <ArticleListItem
-                key={item.id}
-                article={item}
-                onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-              />
-            ))
-          : null}
+      <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
+        {articles ? articles.map((item) => <ArticleListItem key={item.id} article={item} onOpenDeleteConfirmationModal={onOpenDeleteConfirmation} />) : null}
       </InfiniteScroll>
     </Fragment>
   );

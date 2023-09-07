@@ -2,11 +2,9 @@ import * as React from "react";
 import { useQuery } from "@apollo/client";
 import { userQueries } from "../../graphql/fetching/queries";
 import About from "../../components/organisms/Profile/About";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar } from "../../components/molecules/NotificationBars";
 import UserService from "../../services/userService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   userId: string;
@@ -16,16 +14,13 @@ const UserAbout = (props: any) => {
   const { userId } = props;
   const userService = new UserService();
 
-  const { loading, error, data, refetch } = useQuery(
-    userQueries.GET_FULL_USER_INFO,
-    {
-      variables: {
-        criterias: {
-          userId,
-        },
+  const { loading, error, data, refetch } = useQuery(userQueries.GET_FULL_USER_INFO, {
+    variables: {
+      criterias: {
+        userId,
       },
-    }
-  );
+    },
+  });
 
   if (loading) {
     return <LoadingBar />;
@@ -54,13 +49,12 @@ const UserAbout = (props: any) => {
   };
 
   return (
-    <About
-      onEdited={(e) => onEdited(e)}
-      userInfo={fullUserInfo}
-      genderSelections={genderSelections}
-      countrySelections={countrySelections}
-      canEdit={canEdit}
-    />
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <About onEdited={(e) => onEdited(e)} userInfo={fullUserInfo} genderSelections={genderSelections} countrySelections={countrySelections} canEdit={canEdit} />
+    </>
   );
 };
 

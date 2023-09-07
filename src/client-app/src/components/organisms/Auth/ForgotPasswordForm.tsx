@@ -8,10 +8,7 @@ import { ButtonSecondary } from "../../atoms/Buttons/Buttons";
 import ForgotPasswordNavigation from "./ForgotPasswordNavigation";
 import AuthBanner from "./AuthBanner";
 import { validateEmail } from "../../../utils/Validity";
-import {
-  ErrorBox,
-  SuccessBox,
-} from "../../molecules/NotificationBars/NotificationBoxes";
+import { ErrorBox, SuccessBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { ValidationWarningMessage } from "../../ErrorMessage";
@@ -96,9 +93,7 @@ const ForgotPasswordForm = (props: Props) => {
       .onForgotPassword(requestData)
       .then(() => {
         showError("");
-        setSuccessMessage(
-          "Thông báo quên mật khẩu thành công, vui lòng kiểm tra email và làm theo hướng dẫn!"
-        );
+        setSuccessMessage("Thông báo quên mật khẩu thành công, vui lòng kiểm tra email và làm theo hướng dẫn!");
       })
       .catch(() => {
         setSuccessMessage("");
@@ -121,12 +116,10 @@ const ForgotPasswordForm = (props: Props) => {
           <PanelBody>
             <FormRow>
               {error ? <ErrorBox>{error}</ErrorBox> : null}
-              {successMessage ? (
-                <SuccessBox>{successMessage}</SuccessBox>
-              ) : null}
+              {successMessage ? <SuccessBox>{successMessage}</SuccessBox> : null}
             </FormRow>
             <FormRow>
-              <Label>E-mail</Label>
+              <Label>Email</Label>
               <Textbox
                 {...register("email", {
                   required: {
@@ -144,11 +137,7 @@ const ForgotPasswordForm = (props: Props) => {
                 type="email"
                 autoComplete="off"
               />
-              {errors.email && (
-                <ValidationWarningMessage>
-                  {errors.email.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.email && <ValidationWarningMessage>{errors.email.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormFooter>
               <SubmitButton type="submit">{t("change_password")}</SubmitButton>

@@ -1,20 +1,24 @@
 export function validateEmail(email: string) {
-  let isValid = !!email;
-
-  if (isValid) {
-    const expression =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    isValid = expression.test(email);
+  if (!email) {
+    return false;
   }
-  return isValid;
+  const expression = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return expression.test(email);
+}
+
+export function validatePhoneNumber(phoneNumber: string) {
+  if (!phoneNumber) {
+    return false;
+  }
+  const expression = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
+  return expression.test(phoneNumber);
 }
 
 export function validateLink(link: string) {
   let isValid = !!link;
 
   if (isValid) {
-    const expression =
-      /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+    const expression = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
     isValid = expression.test(link);
   }
   return isValid;

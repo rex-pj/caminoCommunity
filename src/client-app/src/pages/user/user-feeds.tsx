@@ -1,33 +1,14 @@
 import * as React from "react";
-import {
-  Fragment,
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-  useMemo,
-} from "react";
+import { Fragment, useState, useRef, useEffect, useContext, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import {
-  articleMutations,
-  farmMutations,
-  productMutations,
-} from "../../graphql/fetching/mutations";
-import {
-  farmQueries,
-  feedqueries,
-  productQueries,
-} from "../../graphql/fetching/queries";
+import { articleMutations, farmMutations, productMutations } from "../../graphql/fetching/mutations";
+import { farmQueries, feedqueries, productQueries } from "../../graphql/fetching/queries";
 import ProfileEditorTabs from "../../components/organisms/Profile/ProfileEditorTabs";
 import { useStore } from "../../store/hook-store";
 import { UrlConstant } from "../../utils/Constants";
 import { FeedType } from "../../utils/Enums";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar, NoDataBar } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
@@ -35,6 +16,7 @@ import ArticleService from "../../services/articleService";
 import FarmService from "../../services/farmService";
 import ProductService from "../../services/productService";
 import FeedItem from "../../components/organisms/Feeds/FeedItem";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   pageNumber?: number;
@@ -58,36 +40,21 @@ const UserFeeds = (props: Props) => {
   const productService = new ProductService();
 
   // Mutations
-  const [articleCategories] = useMutation(
-    articleMutations.FILTER_ARTICLE_CATEGORIES
-  );
-  const [fetchProductCategories] = useLazyQuery(
-    productQueries.FILTER_PRODUCT_CATEGORIES,
-    {
-      variables: {},
-    }
-  );
-  const [productAttributes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTES
-  );
-  const [productAttributeControlTypes] = useMutation(
-    productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES
-  );
+  const [articleCategories] = useMutation(articleMutations.FILTER_ARTICLE_CATEGORIES);
+  const [fetchProductCategories] = useLazyQuery(productQueries.FILTER_PRODUCT_CATEGORIES, {
+    variables: {},
+  });
+  const [productAttributes] = useMutation(productMutations.FILTER_PRODUCT_ATTRIBUTES);
+  const [productAttributeControlTypes] = useMutation(productMutations.FILTER_PRODUCT_ATTRIBUTE_CONTROL_TYPES);
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const [fetchUserFarms] = useLazyQuery(farmQueries.SELECT_USER_FARMS, {
     variables: {},
   });
   const getUserFarms = useMemo(() => fetchUserFarms, [fetchUserFarms]);
 
-  const getProductCategories = useMemo(
-    () => fetchProductCategories,
-    [fetchProductCategories]
-  );
+  const getProductCategories = useMemo(() => fetchProductCategories, [fetchProductCategories]);
   // Queries
-  const [
-    fetchFeeds,
-    { loading, data, error, refetch: feedsRefetch, networkStatus },
-  ] = useLazyQuery(feedqueries.GET_USER_FEEDS, {
+  const [fetchFeeds, { loading, data, error, refetch: feedsRefetch, networkStatus }] = useLazyQuery(feedqueries.GET_USER_FEEDS, {
     onCompleted: (data) => {
       setPageInfo(data);
       onFetchCompleted(data);
@@ -303,26 +270,20 @@ const UserFeeds = (props: Props) => {
 
   return (
     <Fragment>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Tổng hợp | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Tổng hợp | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Tổng hợp" />
+        {/* Google SEO */}
+        <meta name="description" content="Tổng hợp" />
+      </Helmet>
       {currentUser && isLogin ? renderProfileEditorTabs() : null}
-      <InfiniteScroll
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
+      <InfiniteScroll dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
         {feeds
           ? feeds.map((item: any) => {
               const key = `${item.feedType}_${item.id}`;
-              return (
-                <FeedItem
-                  key={key}
-                  feed={item}
-                  onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-                  onDeleteArticle={onDeleteArticle}
-                  onDeleteFarm={onDeleteFarm}
-                  onDeleteProduct={onDeleteProduct}
-                />
-              );
+              return <FeedItem key={key} feed={item} onOpenDeleteConfirmation={onOpenDeleteConfirmation} onDeleteArticle={onDeleteArticle} onDeleteFarm={onDeleteFarm} onDeleteProduct={onDeleteProduct} />;
             })
           : null}
       </InfiniteScroll>

@@ -12,6 +12,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import FarmService from "../../services/farmService";
 import { LoadingBar } from "../../components/molecules/NotificationBars";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -21,16 +22,13 @@ const Index = (props: Props) => {
   const [farms, setFarms] = useState<any[]>([]);
   const farmService = new FarmService();
   const pageRef = useRef<any>({ pageNumber: pageNumber ? pageNumber : 1 });
-  const [fetchFarms, { loading, data, error, refetch }] = useLazyQuery(
-    farmQueries.GET_FARMS,
-    {
-      onCompleted: (data) => {
-        setPageInfo(data);
-        onFetchCompleted(data);
-      },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const [fetchFarms, { loading, data, error, refetch }] = useLazyQuery(farmQueries.GET_FARMS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const setPageInfo = (data: any) => {
     const {
@@ -144,26 +142,22 @@ const Index = (props: Props) => {
   };
 
   return (
-    <DefaultLayout
-      isLoading={!!loading}
-      hasData={checkHasData()}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} className="px-2" />
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
-        <Farm
-          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-          farms={farms}
-          baseUrl="/farms"
-        />
-      </InfiniteScroll>
-    </DefaultLayout>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Nông trại | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Nông trại | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Nông trại" />
+        {/* Google SEO */}
+        <meta name="description" content="Nông trại" />
+      </Helmet>
+      <DefaultLayout isLoading={!!loading} hasData={checkHasData()} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} className="px-2" />
+        <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
+          <Farm onOpenDeleteConfirmation={onOpenDeleteConfirmation} farms={farms} baseUrl="/farms" />
+        </InfiniteScroll>
+      </DefaultLayout>
+    </>
   );
 };
 

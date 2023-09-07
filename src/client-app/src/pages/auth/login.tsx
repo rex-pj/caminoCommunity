@@ -6,6 +6,7 @@ import { SessionContext } from "../../store/context/session-context";
 import { setLogin } from "../../services/AuthLogic";
 import { AuthLayout } from "../../components/templates/Layout";
 import AuthService from "../../services/authService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -40,9 +41,14 @@ const Login = (props: Props) => {
   };
 
   return (
-    <AuthLayout>
-      <LoginForm onlogin={onLogin} isFormEnabled={isFormEnabled} />
-    </AuthLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <AuthLayout>
+        <LoginForm onlogin={onLogin} isFormEnabled={isFormEnabled} />
+      </AuthLayout>
+    </>
   );
 };
 

@@ -13,7 +13,8 @@
   "publish_product": "Đăng sản phẩm",
   "join_us_instruction": "Hãy tham gia cùng chúng tôi để kết nối với những nông dân, khách hàng và thương buôn khác",
   "signup_instruction": "Hãy ghi danh để kết nối với những nông dân, khách hàng và thương buôn khác",
-  "please_input_your_email": "Vui lòng nhập e-mail",
+  "please_input_your_email": "Vui lòng nhập email",
+  "please_input_your_email_or_phone": "Vui lòng nhập email hoặc số điện thoại",
   "remember_label": "Nhớ lần đăng nhập này?",
   "recover_your_password": "Phục hồi mật khẩu",
   "forgot_password_title": "Quên mật khẩu?",
@@ -54,5 +55,6 @@
   "select_your_country": "Chọn quốc gia của bạn",
   "joined_date_label": "Ngày tham gia",
   "status_label": "Trạng thái",
-  "email_label": "E-Mail"
+  "email_label": "Email",
+  "email_or_phone_label": "Email hoặc số điện thoại"
 }

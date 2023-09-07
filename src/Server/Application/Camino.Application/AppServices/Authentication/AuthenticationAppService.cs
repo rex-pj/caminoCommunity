@@ -86,6 +86,8 @@ namespace Camino.Application.AppServices.Authentication
         #region GET
         public IEnumerable<UserRoleResult> GetUserRoles(long userd)
         {
+            var userRole1 = _userRoleEntityRepository.Table.ToList();
+            var users = _userEntityRepository.Table.ToList();
             var userRoles = (from user in _userEntityRepository.Table
                              join userRole in _userRoleEntityRepository.Table
                              on user.Id equals userRole.UserId into roles
@@ -94,8 +96,8 @@ namespace Camino.Application.AppServices.Authentication
                              select new UserRoleResult()
                              {
                                  UserId = user.Id,
-                                 RoleId = userRole.RoleId,
-                                 RoleName = userRole.Role.Name
+                                 RoleId = userRole == null ? 0 : userRole.RoleId,
+                                 RoleName = userRole == null || userRole.Role == null ? "" : userRole.Role.Name
                              }).ToList();
 
             return userRoles;

@@ -7,13 +7,12 @@ import { useParams } from "react-router-dom";
 import { useLazyQuery } from "@apollo/client";
 import { articleQueries } from "../../graphql/fetching/queries";
 import { useStore } from "../../store/hook-store";
-import Breadcrumb, {
-  IBreadcrumbItem,
-} from "../../components/organisms/Navigation/Breadcrumb";
+import Breadcrumb, { IBreadcrumbItem } from "../../components/organisms/Navigation/Breadcrumb";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import { LoadingBar } from "../../components/molecules/NotificationBars";
 import ArticleService from "../../services/articleService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -23,16 +22,13 @@ const Index = (props: Props) => {
   const [state, dispatch] = useStore(false);
   const [articles, setArticles] = useState<any[]>([]);
   const pageRef = useRef<any>({ pageNumber: pageNumber ? pageNumber : 1 });
-  const [fetchArticles, { loading, data, error, refetch }] = useLazyQuery(
-    articleQueries.GET_ARTICLES,
-    {
-      onCompleted: (data) => {
-        setPageInfo(data);
-        onFetchCompleted(data);
-      },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const [fetchArticles, { loading, data, error, refetch }] = useLazyQuery(articleQueries.GET_ARTICLES, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const setPageInfo = (data: any) => {
     const {
@@ -143,27 +139,22 @@ const Index = (props: Props) => {
   };
 
   return (
-    <DefaultLayout
-      isLoading={!!loading}
-      hasData={checkHasData()}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} className="px-2" />
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
-        <Article
-          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-          articles={articles}
-          breadcrumbs={breadcrumbs}
-          baseUrl="/articles"
-        />
-      </InfiniteScroll>
-    </DefaultLayout>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Bài viết | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Bài viết | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Bài viết" />
+        {/* Google SEO */}
+        <meta name="description" content="Bài viết" />
+      </Helmet>
+      <DefaultLayout isLoading={!!loading} hasData={checkHasData()} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} className="px-2" />
+        <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
+          <Article onOpenDeleteConfirmation={onOpenDeleteConfirmation} articles={articles} breadcrumbs={breadcrumbs} baseUrl="/articles" />
+        </InfiniteScroll>
+      </DefaultLayout>
+    </>
   );
 };
 

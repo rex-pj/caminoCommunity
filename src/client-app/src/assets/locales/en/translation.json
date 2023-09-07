@@ -13,7 +13,8 @@
   "create_farm": "Create farm",
   "join_us_instruction": "Join us to connect with other farmers, customers and traders",
   "signup_instruction": "JSign up here to join with other farmers, customers and traders",
-  "please_input_your_email": "Please input your e-mail",
+  "please_input_your_email": "Please input your email",
+  "please_input_your_email_or_phone": "Please input your email or phone number",
   "remember_label": "Remember?",
   "recover_your_password": "Recover your password",
   "forgot_password_title": "Forgot your password?",
@@ -54,5 +55,6 @@
   "select_your_country": "Select your country",
   "joined_date_label": "Joined Date",
   "status_label": "Status",
-  "email_label": "E-Mail"
+  "email_label": "Email",
+  "email_or_phone_label": "Email address or Phone number"
 }

@@ -7,7 +7,7 @@ import { LabelNormal } from "../../../components/atoms/Labels";
 import { ButtonSecondary } from "../../../components/atoms/Buttons/Buttons";
 import AuthNavigation from "./AuthNavigation";
 import AuthBanner from "./AuthBanner";
-import { validateEmail } from "../../../utils/Validity";
+import { validateEmail, validatePhoneNumber } from "../../../utils/Validity";
 import { ErrorBox } from "../../molecules/NotificationBars/NotificationBoxes";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
@@ -81,7 +81,13 @@ const SignUpForm = (props: SignUpFormProps) => {
 
   const onSignUp = async (data: any) => {
     const fromData = { ...data };
-    return props.signUp(fromData).catch(() => {
+    return props.signUp(fromData).catch((error) => {
+      const errorResponse = error.response;
+      const { data: errorData } = errorResponse;
+      if (errorData && errorData.EmailOrPhone) {
+        setError(error.response.data.EmailOrPhone[0]);
+        return;
+      }
       setError("Có lỗi xảy ra trong quá trình đăng ký");
     });
   };
@@ -90,11 +96,7 @@ const SignUpForm = (props: SignUpFormProps) => {
     <form onSubmit={handleSubmit(onSignUp)} method="POST">
       <div className="row g-0">
         <div className="col col-12 col-sm-7">
-          <AuthBanner
-            icon="signature"
-            title={t("sign_up")}
-            instruction={t("signup_instruction")}
-          />
+          <AuthBanner icon="signature" title={t("sign_up")} instruction={t("signup_instruction")} />
         </div>
         <div className="col col-12 col-sm-5">
           <AuthNavigation />
@@ -112,11 +114,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                 autoComplete="off"
                 placeholder={t("please_input_your_lastname").toString()}
               />
-              {errors.lastname && (
-                <ValidationWarningMessage>
-                  {errors.lastname.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.lastname && <ValidationWarningMessage>{errors.lastname.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow>
               <Label>{t("firstname_label")}</Label>
@@ -130,36 +128,33 @@ const SignUpForm = (props: SignUpFormProps) => {
                 autoComplete="off"
                 placeholder={t("please_input_your_firstname").toString()}
               />
-              {errors.firstname && (
-                <ValidationWarningMessage>
-                  {errors.firstname.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.firstname && <ValidationWarningMessage>{errors.firstname.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow>
-              <Label>{t("email_label")}</Label>
+              <Label>{t("email_or_phone_label")}</Label>
               <Textbox
-                type="email"
-                {...register("email", {
+                {...register("emailOrPhone", {
                   required: {
                     value: true,
                     message: "This field is required",
                   },
                   validate: (val) => {
                     const isEmailValid = validateEmail(val);
-                    if (!isEmailValid) {
-                      return "Invalid email address";
+                    if (isEmailValid) {
+                      return;
                     }
+                    const isPhoneNumberValid = validatePhoneNumber(val);
+                    if (isPhoneNumberValid) {
+                      return;
+                    }
+
+                    return "Please input a email address or phone number";
                   },
                 })}
                 autoComplete="off"
-                placeholder={t("please_input_your_email").toString()}
+                placeholder={t("please_input_your_email_or_phone").toString()}
               />
-              {errors.email && (
-                <ValidationWarningMessage>
-                  {errors.email.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.emailOrPhone && <ValidationWarningMessage>{errors.emailOrPhone.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow>
               <Label>{t("password_label")}</Label>
@@ -178,11 +173,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                   },
                 })}
               />
-              {errors.password && (
-                <ValidationWarningMessage>
-                  {errors.password.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.password && <ValidationWarningMessage>{errors.password.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormRow>
               <Label>{t("confirm_password_label")}</Label>
@@ -206,11 +197,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                   },
                 })}
               />
-              {errors.confirmPassword && (
-                <ValidationWarningMessage>
-                  {errors.confirmPassword.message?.toString()}
-                </ValidationWarningMessage>
-              )}
+              {errors.confirmPassword && <ValidationWarningMessage>{errors.confirmPassword.message?.toString()}</ValidationWarningMessage>}
             </FormRow>
             <FormFooter>
               <SubmitButton type="submit" disabled={!props.isFormEnabled}>

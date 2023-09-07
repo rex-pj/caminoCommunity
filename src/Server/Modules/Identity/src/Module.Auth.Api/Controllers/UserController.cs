@@ -16,6 +16,7 @@ using Camino.Core.Validators;
 using Module.Auth.Api.Validators;
 using Camino.Application.Contracts.AppServices.Users;
 using System.Linq;
+using Camino.Application.Validators;
 
 namespace Module.Auth.Api.Controllers
 {
@@ -49,15 +50,28 @@ namespace Module.Auth.Api.Controllers
                 return BadRequest();
             }
 
+            _validatorContext.SetValidator(new PhoneValidator());
+            bool isPhoneNumberValid = !string.IsNullOrEmpty(criterias.EmailOrPhone) && _validatorContext.Validate<object, bool>(criterias.EmailOrPhone);
+
+            _validatorContext.SetValidator(new EmailValidator());
+            bool isEmailValid = !string.IsNullOrEmpty(criterias.EmailOrPhone) && _validatorContext.Validate<object, bool>(criterias.EmailOrPhone);
+            if (!isPhoneNumberValid && !isEmailValid)
+            {
+                ModelState.AddModelError("EmailOrPhone", $"The {nameof(criterias.EmailOrPhone)} must be a email address or phone number");
+                return BadRequest(ModelState);
+            }
+
             var user = new ApplicationUser()
             {
                 DisplayName = $"{criterias.Lastname} {criterias.Firstname}",
-                Email = criterias.Email,
                 Firstname = criterias.Firstname,
                 Lastname = criterias.Lastname,
                 StatusId = (int)UserStatuses.Pending,
-                UserName = criterias.Email,
+                UserName = criterias.EmailOrPhone,
+                PhoneNumber = isPhoneNumberValid ? criterias.EmailOrPhone : null,
+                Email = isEmailValid ? criterias.EmailOrPhone : null
             };
+
             try
             {
                 var existing = await _userManager.FindByNameAsync(user.UserName);
@@ -73,8 +87,12 @@ namespace Module.Auth.Api.Controllers
                 }
 
                 user = await _userManager.FindByNameAsync(user.UserName);
-                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                await _userModelService.SendActiveEmailAsync(user, confirmationToken);
+                if (isEmailValid)
+                {
+                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _userModelService.SendActiveEmailAsync(user, confirmationToken);
+                }
+
                 return Ok(user.Id);
             }
             catch (Exception)

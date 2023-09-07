@@ -5,14 +5,11 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ArticleEditor from "../../components/organisms/Article/ArticleEditor";
 import { articleMutations } from "../../graphql/fetching/mutations";
-import {
-  articleQueries,
-  farmQueries,
-  userQueries,
-} from "../../graphql/fetching/queries";
+import { articleQueries, farmQueries, userQueries } from "../../graphql/fetching/queries";
 import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import ArticleService from "../../services/articleService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -21,22 +18,17 @@ const UpdatePage = (props: Props) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useStore(false)[1];
-  const [articleCategories] = useMutation(
-    articleMutations.FILTER_ARTICLE_CATEGORIES
-  );
+  const [articleCategories] = useMutation(articleMutations.FILTER_ARTICLE_CATEGORIES);
   const articleService = new ArticleService();
 
-  const { loading, data, error, refetch, called } = useQuery(
-    articleQueries.GET_ARTICLE_FOR_UPDATE,
-    {
-      variables: {
-        criterias: {
-          id: Number(id),
-        },
+  const { loading, data, error, refetch, called } = useQuery(articleQueries.GET_ARTICLE_FOR_UPDATE, {
+    variables: {
+      criterias: {
+        id: Number(id),
       },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const userIdentityId = data?.article?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
@@ -95,24 +87,22 @@ const UpdatePage = (props: Props) => {
     if (!id) {
       return;
     }
-    return await articleService
-      .update(data, Number.parseInt(id))
-      .then((response) => {
-        return new Promise((resolve) => {
-          if (location.state?.from) {
-            const referrefUri = location.state.from;
-            const articleUpdateUrl = `/articles/update/${id}`;
-            if (referrefUri !== articleUpdateUrl) {
-              navigate(referrefUri);
-              resolve(response);
-              return;
-            }
+    return await articleService.update(data, Number.parseInt(id)).then((response) => {
+      return new Promise((resolve) => {
+        if (location.state?.from) {
+          const referrefUri = location.state.from;
+          const articleUpdateUrl = `/articles/update/${id}`;
+          if (referrefUri !== articleUpdateUrl) {
+            navigate(referrefUri);
+            resolve(response);
+            return;
           }
+        }
 
-          navigate(`/articles/${article.id}`);
-          resolve(response);
-        });
+        navigate(`/articles/${article.id}`);
+        resolve(response);
       });
+    });
   }
 
   const currentArticle = { ...article };
@@ -124,9 +114,7 @@ const UpdatePage = (props: Props) => {
     const authorInfo = { ...userInfo };
     if (authorData) {
       const { userPhotos } = authorData;
-      const avatar = userPhotos.find(
-        (item: any) => item.photoType === "AVATAR"
-      );
+      const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
       if (avatar) {
         authorInfo.userAvatar = avatar;
       }
@@ -145,21 +133,15 @@ const UpdatePage = (props: Props) => {
   };
 
   return (
-    <DetailLayout
-      author={getAuthorInfo()}
-      isLoading={!!loading}
-      hasData={true}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} />
-      <ArticleEditor
-        height={350}
-        currentArticle={currentArticle}
-        filterCategories={articleCategories}
-        onArticlePost={onArticlePost}
-        showValidationError={showValidationError}
-      ></ArticleEditor>
-    </DetailLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} />
+        <ArticleEditor height={350} currentArticle={currentArticle} filterCategories={articleCategories} onArticlePost={onArticlePost} showValidationError={showValidationError}></ArticleEditor>
+      </DetailLayout>
+    </>
   );
 };
 

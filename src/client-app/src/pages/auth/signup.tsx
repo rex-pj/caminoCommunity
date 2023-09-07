@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SignUpForm from "../../components/organisms/Auth/SignUpForm";
 import { AuthLayout } from "../../components/templates/Layout";
 import UserSerVice from "../../services/userService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -28,12 +29,14 @@ const SignupPage = (props: Props) => {
   };
 
   return (
-    <AuthLayout>
-      <SignUpForm
-        signUp={(data) => signUp(data)}
-        isFormEnabled={isFormEnabled}
-      />
-    </AuthLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <AuthLayout>
+        <SignUpForm signUp={(data) => signUp(data)} isFormEnabled={isFormEnabled} />
+      </AuthLayout>
+    </>
   );
 };
 

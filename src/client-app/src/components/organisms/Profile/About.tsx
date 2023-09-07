@@ -8,10 +8,7 @@ import SelectEditable from "../Editable/SelectEditable";
 import DateTimeEditable from "../Editable/DateTimeEditable";
 import TextAreaEditable from "../Editable/TextAreaEditable";
 import LabelAndInfo from "../../molecules/InfoWithLabels/LabelAndInfo";
-import {
-  SelectOption,
-  mapSelectOptions,
-} from "../../../utils/SelectOptionUtils";
+import { SelectOption, mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { SessionContext } from "../../../store/context/session-context";
 import { useTranslation } from "react-i18next";
 
@@ -48,10 +45,7 @@ const About = (props: Props) => {
 
   const { userInfo, canEdit, countrySelections, genderSelections } = props;
 
-  const isLoggedUserId =
-    userInfo &&
-    currentUser &&
-    userInfo?.userIdentityId === currentUser?.userIdentityId;
+  const isLoggedUserId = userInfo && currentUser && userInfo?.userIdentityId === currentUser?.userIdentityId;
   return (
     <MainPanel>
       <Root>
@@ -64,83 +58,33 @@ const About = (props: Props) => {
                 <div className="col-auto">{userInfo.firstname}</div>
               </div>
             </LabelAndInfo>
-            <LabelAndInfo label={t("display_name_label")}>
-              {userInfo.displayName}
-            </LabelAndInfo>
+            <LabelAndInfo label={t("display_name_label")}>{userInfo.displayName}</LabelAndInfo>
             <LabelAndInfo label={t("bio_label")}>
-              <TextAreaEditable
-                rows={5}
-                cols={50}
-                value={userInfo.description}
-                primaryKey={userInfo.userIdentityId}
-                name="description"
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-              />
+              <TextAreaEditable rows={5} cols={50} value={userInfo.description} primaryKey={userInfo.userIdentityId} name="description" onUpdated={(e) => onEdited(e)} disabled={!canEdit} />
             </LabelAndInfo>
             <LabelAndInfo label={t("phone_number_label")}>
-              <TextEditable
-                value={userInfo.phoneNumber}
-                primaryKey={userInfo.userIdentityId}
-                name="phoneNumber"
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-              />
+              <TextEditable value={userInfo.phoneNumber} primaryKey={userInfo.userIdentityId} name="phoneNumber" onUpdated={(e) => onEdited(e)} disabled={!canEdit} />
             </LabelAndInfo>
             <LabelAndInfo label={t("sex_label")}>
-              <SelectEditable
-                value={userInfo.genderId}
-                label={userInfo.genderLabel}
-                primaryKey={userInfo.userIdentityId}
-                name="genderId"
-                emptyText={t("your_sex")}
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-                selections={mapSelectOptions(genderSelections)}
-              />
+              <SelectEditable value={userInfo.genderId} label={userInfo.genderLabel} primaryKey={userInfo.userIdentityId} name="genderId" emptyText={t("your_sex")} onUpdated={(e) => onEdited(e)} disabled={!canEdit} selections={mapSelectOptions(genderSelections)} />
             </LabelAndInfo>
             <LabelAndInfo label={t("address_label")}>
-              <TextEditable
-                value={userInfo.address}
-                primaryKey={userInfo.userIdentityId}
-                name="address"
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-              />
+              <TextEditable value={userInfo.address} primaryKey={userInfo.userIdentityId} name="address" onUpdated={(e) => onEdited(e)} disabled={!canEdit} />
             </LabelAndInfo>
             <LabelAndInfo label={t("country_label")}>
-              <SelectEditable
-                value={userInfo.countryId}
-                label={userInfo.countryName}
-                primaryKey={userInfo.userIdentityId}
-                name="countryId"
-                emptyText={t("select_your_country")}
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-                selections={mapSelectOptions(countrySelections)}
-              />
+              <SelectEditable value={userInfo.countryId} label={userInfo.countryName} primaryKey={userInfo.userIdentityId} name="countryId" emptyText={t("select_your_country")} onUpdated={(e) => onEdited(e)} disabled={!canEdit} selections={mapSelectOptions(countrySelections)} />
               {userInfo.country}
             </LabelAndInfo>
             <LabelAndInfo label={t("date_of_birth_label")}>
-              <DateTimeEditable
-                value={userInfo.birthDate}
-                primaryKey={userInfo.userIdentityId}
-                name="birthDate"
-                onUpdated={(e) => onEdited(e)}
-                disabled={!canEdit}
-              />
+              <DateTimeEditable value={userInfo.birthDate} primaryKey={userInfo.userIdentityId} name="birthDate" onUpdated={(e) => onEdited(e)} disabled={!canEdit} />
             </LabelAndInfo>
             {isLoggedUserId ? (
-              <LabelAndInfo label={t("email_label")} isEmail={true}>
+              <LabelAndInfo label={t("email_or_phone_label")} isEmail={true}>
                 {userInfo.email}
               </LabelAndInfo>
             ) : null}
-            <LabelAndInfo label={t("joined_date_label")}>
-              {format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}
-            </LabelAndInfo>
-            <LabelAndInfo label={t("status_label")}>
-              {userInfo.statusLabel}
-            </LabelAndInfo>
+            <LabelAndInfo label={t("joined_date_label")}>{format(new Date(userInfo.createdDate), "MMMM, dd yyyy")}</LabelAndInfo>
+            <LabelAndInfo label={t("status_label")}>{userInfo.statusLabel}</LabelAndInfo>
           </InfoList>
         ) : null}
       </Root>

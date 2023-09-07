@@ -7,6 +7,7 @@ import { useStore } from "../../store/hook-store";
 import { ConfirmToRedirectModal } from "../../components/organisms/Modals/ConfirmToRedirectModal";
 import AuthService from "../../services/authService";
 import { setLogin, checkRemember } from "../../services/AuthLogic";
+import { Helmet } from "react-helmet-async";
 
 const UserSecurity = (props) => {
   const authService = new AuthService();
@@ -20,8 +21,7 @@ const UserSecurity = (props) => {
     dispatch("OPEN_MODAL", {
       data: {
         title: "You will need to log out and log in again",
-        children:
-          "To make sure all functions are working properly you need to log out and log in again",
+        children: "To make sure all functions are working properly you need to log out and log in again",
         executeButtonName: "Ok",
       },
       execution: {
@@ -71,10 +71,12 @@ const UserSecurity = (props) => {
   };
 
   return (
-    <PasswordUpdateForm
-      onUpdate={(e) => onUpdatePassword(e)}
-      isFormEnabled={isFormEnabled}
-    />
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <PasswordUpdateForm onUpdate={(e) => onUpdatePassword(e)} isFormEnabled={isFormEnabled} />
+    </>
   );
 };
 

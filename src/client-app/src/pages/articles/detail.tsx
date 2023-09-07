@@ -1,18 +1,11 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Detail from "../../components/templates/Article/Detail";
 import { UrlConstant } from "../../utils/Constants";
-import {
-  articleQueries,
-  userQueries,
-  farmQueries,
-} from "../../graphql/fetching/queries";
+import { articleQueries, userQueries, farmQueries } from "../../graphql/fetching/queries";
 
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar } from "../../components/molecules/NotificationBars";
 import { useQuery } from "@apollo/client";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { TertiaryDarkHeading } from "../../components/atoms/Heading";
@@ -22,6 +15,8 @@ import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import { apiConfig } from "../../config/api-config";
 import ArticleService from "../../services/articleService";
+import { removeHtmlTags } from "../../utils/Helper";
+import { Helmet } from "react-helmet-async";
 
 const RelationBox = styled.div`
   margin-top: ${(p) => p.theme.size.distance};
@@ -30,21 +25,18 @@ const RelationBox = styled.div`
 interface Props {}
 
 const ArticleDetail = (props: Props) => {
-  const articleService = new ArticleService();
+  const articleService = useMemo(() => new ArticleService(), []);
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [state, dispatch] = useStore(true);
-  const { loading, data, error, refetch } = useQuery(
-    articleQueries.GET_ARTICLE,
-    {
-      variables: {
-        criterias: {
-          id: parseFloat(id ?? ""),
-        },
+  const { loading, data, error, refetch } = useQuery(articleQueries.GET_ARTICLE, {
+    variables: {
+      criterias: {
+        id: parseFloat(id ?? ""),
       },
-    }
-  );
+    },
+  });
 
   const userIdentityId = data?.article?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
@@ -82,10 +74,7 @@ const ArticleDetail = (props: Props) => {
     },
   });
 
-  const onOpenDeleteConfirmation = (
-    e: any,
-    onDeleteData: (id: number) => Promise<any>
-  ) => {
+  const onOpenDeleteConfirmation = (e: any, onDeleteData: (id: number) => Promise<any>) => {
     const { title, innerModal, message, id } = e;
     dispatch("OPEN_MODAL", {
       data: {
@@ -142,11 +131,7 @@ const ArticleDetail = (props: Props) => {
     }
   }, [state, refetch]);
 
-  const renderRelevants = (
-    relevantLoading: boolean,
-    relevantData: any,
-    relevantError: any
-  ) => {
+  const renderRelevants = (relevantLoading: boolean, relevantData: any, relevantError: any) => {
     if (relevantLoading || !relevantData) {
       return <LoadingBar />;
     } else if (relevantError) {
@@ -180,16 +165,8 @@ const ArticleDetail = (props: Props) => {
           {relevants
             ? relevants.map((item: any, index: number) => {
                 return (
-                  <div
-                    key={index}
-                    className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                  >
-                    <ArticleItem
-                      article={item}
-                      onOpenDeleteConfirmationModal={
-                        onOpenDeleteRelevantConfirmation
-                      }
-                    />
+                  <div key={index} className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                    <ArticleItem article={item} onOpenDeleteConfirmationModal={onOpenDeleteRelevantConfirmation} />
                   </div>
                 );
               })
@@ -207,9 +184,7 @@ const ArticleDetail = (props: Props) => {
     const authorInfo = { ...userInfo };
     if (authorData) {
       const { userPhotos } = authorData;
-      const avatar = userPhotos.find(
-        (item: any) => item.photoType === "AVATAR"
-      );
+      const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
       if (avatar) {
         authorInfo.userAvatar = avatar;
       }
@@ -244,20 +219,24 @@ const ArticleDetail = (props: Props) => {
     article.pictureUrl = `${apiConfig.paths.pictures.get.getPicture}/${article.picture.pictureId}`;
   }
 
+  const metaTitle = `${article?.name} ${"| Nông Trại LỒ Ồ"}`;
+  const metaDescription = removeHtmlTags(article.content);
   return (
-    <DetailLayout
-      author={getAuthorInfo()}
-      isLoading={!!loading}
-      hasData={true}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} />
-      <Detail
-        article={article}
-        onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation}
-      />
-      {renderRelevants(relevantLoading, relevantData, relevantError)}
-    </DetailLayout>
+    <>
+      <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
+        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {article?.pictureUrl ? <meta property="og:image" content={article.pictureUrl} /> : null}
+        {/* Google SEO */}
+        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+      </Helmet>
+      <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} />
+        <Detail article={article} onOpenDeleteConfirmationModal={onOpenDeleteMainConfirmation} />
+        {renderRelevants(relevantLoading, relevantData, relevantError)}
+      </DetailLayout>
+    </>
   );
 };
 

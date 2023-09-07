@@ -68,7 +68,8 @@ namespace Camino.Application.AppServices.Users
                 IsEmailConfirmed = true,
                 BirthDate = request.BirthDate,
                 Description = request.Description,
-                GenderId = request.GenderId
+                GenderId = request.GenderId,
+                PhoneNumber = request.PhoneNumber,
             };
 
             var id = await _userRepository.CreateAsync(newUser);

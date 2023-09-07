@@ -48,14 +48,27 @@ namespace Camino.Infrastructure.Identity
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Encoding.ASCII.GetBytes(_jwtConfigOptions.SecretKey);
+            var name = string.IsNullOrEmpty(user.Email) ? user.PhoneNumber : user.Email;
+            Claim emailOrPhoneClaim;
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                emailOrPhoneClaim = new Claim(JwtRegisteredClaimNames.Email, user.Email);
+            }
+            else
+            {
+                emailOrPhoneClaim = new Claim(JwtRegisteredClaimNames.Prn, user.PhoneNumber);
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(HttpHeaders.UserIdentityClaimKey, user.UserIdentityId.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Name, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim(HttpHeaders.UserIdentityClaimKey, user.UserIdentityId),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserIdentityId),
+                    new Claim(JwtRegisteredClaimNames.Name, name),
+                    emailOrPhoneClaim,
+                    new Claim(JwtRegisteredClaimNames.Iss, _jwtConfigOptions.Issuer),
+                    new Claim(JwtRegisteredClaimNames.Aud, _jwtConfigOptions.Audience),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(_jwtConfigOptions.HourExpires),

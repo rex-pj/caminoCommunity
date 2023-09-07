@@ -7,10 +7,10 @@ namespace Camino.Application.Validators
 {
     public class PhoneValidator : BaseValidator<object, bool>
     {
-        private const string AdditionalPhoneNumberCharacters = "-.()";
-        private const string ExtensionAbbreviationExtDot = "ext.";
-        private const string ExtensionAbbreviationExt = "ext";
-        private const string ExtensionAbbreviationX = "x";
+        private const string _additionalPhoneNumberCharacters = "-.()";
+        private const string _extensionAbbreviationExtDot = "ext.";
+        private const string _extensionAbbreviationExt = "ext";
+        private const string _extensionAbbreviationX = "x";
 
         public override bool IsValid(object value)
         {
@@ -48,7 +48,7 @@ namespace Camino.Application.Validators
             {
                 if (!(char.IsDigit(c)
                     || char.IsWhiteSpace(c)
-                    || AdditionalPhoneNumberCharacters.IndexOf(c) != -1))
+                    || _additionalPhoneNumberCharacters.IndexOf(c) != -1))
                 {
                     Errors = GetErrors(new ArgumentException($"Non numberic of {nameof(valueAsString)}")).ToList();
                     return false;
@@ -61,11 +61,11 @@ namespace Camino.Application.Validators
         private string RemoveExtension(string potentialPhoneNumber)
         {
             var lastIndexOfExtension = potentialPhoneNumber
-                .LastIndexOf(ExtensionAbbreviationExtDot, StringComparison.OrdinalIgnoreCase);
+                .LastIndexOf(_extensionAbbreviationExtDot, StringComparison.OrdinalIgnoreCase);
             if (lastIndexOfExtension >= 0)
             {
                 var extension = potentialPhoneNumber.Substring(
-                    lastIndexOfExtension + ExtensionAbbreviationExtDot.Length);
+                    lastIndexOfExtension + _extensionAbbreviationExtDot.Length);
                 if (MatchesExtension(extension))
                 {
                     return potentialPhoneNumber.Substring(0, lastIndexOfExtension);
@@ -73,11 +73,11 @@ namespace Camino.Application.Validators
             }
 
             lastIndexOfExtension = potentialPhoneNumber
-                .LastIndexOf(ExtensionAbbreviationExt, StringComparison.OrdinalIgnoreCase);
+                .LastIndexOf(_extensionAbbreviationExt, StringComparison.OrdinalIgnoreCase);
             if (lastIndexOfExtension >= 0)
             {
                 var extension = potentialPhoneNumber.Substring(
-                    lastIndexOfExtension + ExtensionAbbreviationExt.Length);
+                    lastIndexOfExtension + _extensionAbbreviationExt.Length);
                 if (MatchesExtension(extension))
                 {
                     return potentialPhoneNumber.Substring(0, lastIndexOfExtension);
@@ -85,11 +85,11 @@ namespace Camino.Application.Validators
             }
 
             lastIndexOfExtension = potentialPhoneNumber
-                .LastIndexOf(ExtensionAbbreviationX, StringComparison.OrdinalIgnoreCase);
+                .LastIndexOf(_extensionAbbreviationX, StringComparison.OrdinalIgnoreCase);
             if (lastIndexOfExtension >= 0)
             {
                 var extension = potentialPhoneNumber.Substring(
-                    lastIndexOfExtension + ExtensionAbbreviationX.Length);
+                    lastIndexOfExtension + _extensionAbbreviationX.Length);
                 if (MatchesExtension(extension))
                 {
                     return potentialPhoneNumber.Substring(0, lastIndexOfExtension);

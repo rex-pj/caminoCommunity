@@ -8,15 +8,12 @@ import { farmQueries } from "../../graphql/fetching/queries";
 import { farmMutations } from "../../graphql/fetching/mutations";
 import { useStore } from "../../store/hook-store";
 import FarmEditor from "../../components/organisms/Farm/FarmEditor";
-import {
-  ErrorBar,
-  LoadingBar,
-  NoDataBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar, NoDataBar } from "../../components/molecules/NotificationBars";
 import { SessionContext } from "../../store/context/session-context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { apiConfig } from "../../config/api-config";
 import FarmService from "../../services/farmService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   pageNumber?: number;
@@ -34,10 +31,7 @@ const UserFarms = (props: Props) => {
   });
   const farmService = new FarmService();
 
-  const [
-    fetchFarms,
-    { loading, data, error, refetch: refetchFarms, networkStatus },
-  ] = useLazyQuery(farmQueries.GET_USER_FARMS, {
+  const [fetchFarms, { loading, data, error, refetch: refetchFarms, networkStatus }] = useLazyQuery(farmQueries.GET_USER_FARMS, {
     onCompleted: (data) => {
       setPageInfo(data);
       onFetchCompleted(data);
@@ -101,14 +95,7 @@ const UserFarms = (props: Props) => {
 
   const renderFarmEditor = () => {
     if (currentUser && isLogin) {
-      return (
-        <FarmEditor
-          height={230}
-          filterCategories={farmTypes}
-          onFarmPost={onFarmPost}
-          showValidationError={showValidationError}
-        />
-      );
+      return <FarmEditor height={230} filterCategories={farmTypes} onFarmPost={onFarmPost} showValidationError={showValidationError} />;
     }
 
     return null;
@@ -220,26 +207,21 @@ const UserFarms = (props: Props) => {
 
   return (
     <Fragment>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Nông trại | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Nông trại | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Nông trại" />
+        {/* Google SEO */}
+        <meta name="description" content="Nông trại" />
+      </Helmet>
       {renderFarmEditor()}
-      <InfiniteScroll
-        style={{ overflowX: "hidden" }}
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
+      <InfiniteScroll style={{ overflowX: "hidden" }} dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
         <div className="row">
           {farms
             ? farms.map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
-                >
-                  <FarmItem
-                    key={item.id}
-                    farm={item}
-                    onOpenDeleteConfirmationModal={onOpenDeleteConfirmation}
-                  />
+                <div key={index} className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                  <FarmItem key={item.id} farm={item} onOpenDeleteConfirmationModal={onOpenDeleteConfirmation} />
                 </div>
               ))
             : null}

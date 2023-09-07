@@ -1,16 +1,11 @@
 import Alerts from "./LangData/Alerts";
 
 export function langExtract(langData: any, key: string, lang: string) {
-  return langData && langData[key] && langData[key][lang]
-    ? langData[key][lang]
-    : null;
+  return langData && langData[key] && langData[key][lang] ? langData[key][lang] : null;
 }
 
 export function getError(key: string, lang: string) {
-  return (
-    langExtract(Alerts, key, lang) &&
-    langExtract(Alerts, "ErrorOccurredTryRefeshInputAgain", lang)
-  );
+  return langExtract(Alerts, key, lang) && langExtract(Alerts, "ErrorOccurredTryRefeshInputAgain", lang);
 }
 
 export const createArray = (from: number, to: number, isInvert?: boolean) => {
@@ -29,11 +24,7 @@ export const createArray = (from: number, to: number, isInvert?: boolean) => {
   return arr;
 };
 
-export const generateDate = (data: {
-  date: string;
-  month: string;
-  year: string;
-}) => {
+export const generateDate = (data: { date: string; month: string; year: string }) => {
   const { date, month, year } = data;
 
   if (date && month && year) {
@@ -101,9 +92,7 @@ export const base64toBlob = (dataURI: string, mineType: string) => {
   return new Blob([buffers], { type: mineType });
 };
 
-export const getParameters = (
-  urlParams: string | string[][] | Record<string, string> | URLSearchParams
-) => {
+export const getParameters = (urlParams: string | string[][] | Record<string, string> | URLSearchParams) => {
   const parameters = new URLSearchParams(urlParams);
   let obj!: {
     [index: string]: any;
@@ -122,9 +111,7 @@ export const getParameters = (
   };
 };
 
-export const generateQueryParameters = (parameters: {
-  [index: string]: any;
-}) => {
+export const generateQueryParameters = (parameters: { [index: string]: any }) => {
   const urlParams: string[] = [];
   for (const parameter in parameters) {
     const paramValue = parameters[parameter];
@@ -135,4 +122,11 @@ export const generateQueryParameters = (parameters: {
   }
 
   return urlParams.join("&");
+};
+
+export const removeHtmlTags = (str: string) => {
+  if (!str) {
+    return "";
+  }
+  return str.replace(/(<([^>]+)>)/gi, "");
 };

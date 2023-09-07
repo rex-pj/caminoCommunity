@@ -2,6 +2,7 @@ import * as React from "react";
 import ForgotPasswordForm from "../../components/organisms/Auth/ForgotPasswordForm";
 import { AuthLayout } from "../../components/templates/Layout";
 import AuthService from "../../services/authService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -23,9 +24,14 @@ const ForgotPassword = (props: Props) => {
   };
 
   return (
-    <AuthLayout>
-      <ForgotPasswordForm onForgotPassword={(data) => onForgotPassword(data)} />
-    </AuthLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <AuthLayout>
+        <ForgotPasswordForm onForgotPassword={(data) => onForgotPassword(data)} />
+      </AuthLayout>
+    </>
   );
 };
 

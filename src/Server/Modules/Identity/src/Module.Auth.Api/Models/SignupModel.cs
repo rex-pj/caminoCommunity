@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace  Module.Auth.Api.Models
+namespace Module.Auth.Api.Models
 {
     public class SignupModel
     {
@@ -10,7 +9,7 @@ namespace  Module.Auth.Api.Models
         [Required]
         public string Firstname { get; set; }
         [Required]
-        public string Email { get; set; }
+        public string EmailOrPhone { get; set; }
 
         [Required]
         public string Password { get; set; }

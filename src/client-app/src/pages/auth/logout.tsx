@@ -5,6 +5,7 @@ import { logOut } from "../../services/AuthLogic";
 import LogoutPanel from "../../components/organisms/Auth/LogoutPanel";
 import { SessionContext } from "../../store/context/session-context";
 import { PromptLayout } from "../../components/templates/Layout";
+import { Helmet } from "react-helmet-async";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -25,9 +26,14 @@ const Logout = () => {
   });
 
   return (
-    <PromptLayout>
-      <LogoutPanel />
-    </PromptLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <PromptLayout>
+        <LogoutPanel />
+      </PromptLayout>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import ResetPasswordForm from "../../components/organisms/Auth/ResetPasswordForm
 import { useParams, useNavigate } from "react-router-dom";
 import { PromptLayout } from "../../components/templates/Layout";
 import AuthService from "../../services/authService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {}
 
@@ -29,12 +30,14 @@ const ResetPassword = (props: Props) => {
   };
 
   return (
-    <PromptLayout>
-      <ResetPasswordForm
-        resetPassword={onResetPassword}
-        args={{ email, key }}
-      />
-    </PromptLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <PromptLayout>
+        <ResetPasswordForm resetPassword={onResetPassword} args={{ email, key }} />
+      </PromptLayout>
+    </>
   );
 };
 

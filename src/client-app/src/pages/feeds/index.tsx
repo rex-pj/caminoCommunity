@@ -14,6 +14,7 @@ import { LoadingBar } from "../../components/molecules/NotificationBars";
 import ArticleService from "../../services/articleService";
 import ProductService from "../../services/productService";
 import FarmService from "../../services/farmService";
+import { Helmet } from "react-helmet-async";
 
 interface Props {}
 
@@ -28,16 +29,13 @@ const FeedPage = (props: Props) => {
   });
   const [feeds, setFeeds] = useState<any[]>([]);
 
-  const [fetchFeeds, { loading, data, error, refetch }] = useLazyQuery(
-    feedqueries.GET_FEEDS,
-    {
-      onCompleted: (data) => {
-        setPageInfo(data);
-        onFetchCompleted(data);
-      },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const [fetchFeeds, { loading, data, error, refetch }] = useLazyQuery(feedqueries.GET_FEEDS, {
+    onCompleted: (data) => {
+      setPageInfo(data);
+      onFetchCompleted(data);
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   useEffect(() => {
     const page = pageRef.current.pageNumber;
@@ -166,27 +164,21 @@ const FeedPage = (props: Props) => {
   };
 
   return (
-    <DefaultLayout
-      isLoading={!!loading}
-      hasData={checkHasData()}
-      hasError={!!error}
-    >
-      <InfiniteScroll
-        dataLength={pageRef.current.totalResult ?? 0}
-        next={fetchMoreData}
-        hasMore={pageRef.current.currentPage < pageRef.current.totalPage}
-        loader={<LoadingBar />}
-      >
-        <Feeds
-          onOpenDeleteConfirmation={onOpenDeleteConfirmation}
-          onDeleteArticle={onDeleteArticle}
-          onDeleteFarm={onDeleteFarm}
-          onDeleteProduct={onDeleteProduct}
-          feeds={feeds}
-          baseUrl="/feeds"
-        />
-      </InfiniteScroll>
-    </DefaultLayout>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Tổng hợp | Nông Trại LỒ Ồ</title>
+        <meta property="og:title" content="Tổng hợp | Nông Trại LỒ Ồ" />
+        <meta property="og:description" content="Tổng hợp" />
+        {/* Google SEO */}
+        <meta name="description" content="Tổng hợp" />
+      </Helmet>
+      <DefaultLayout isLoading={!!loading} hasData={checkHasData()} hasError={!!error}>
+        <InfiniteScroll dataLength={pageRef.current.totalResult ?? 0} next={fetchMoreData} hasMore={pageRef.current.currentPage < pageRef.current.totalPage} loader={<LoadingBar />}>
+          <Feeds onOpenDeleteConfirmation={onOpenDeleteConfirmation} onDeleteArticle={onDeleteArticle} onDeleteFarm={onDeleteFarm} onDeleteProduct={onDeleteProduct} feeds={feeds} baseUrl="/feeds" />
+        </InfiniteScroll>
+      </DefaultLayout>
+    </>
   );
 };
 

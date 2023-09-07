@@ -9,6 +9,7 @@ import FarmEditor from "../../components/organisms/Farm/FarmEditor";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import FarmService from "../../services/farmService";
+import { Helmet } from "react-helmet-async";
 
 type Props = {};
 
@@ -20,17 +21,14 @@ const UpdatePage = (props: Props) => {
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const farmService = new FarmService();
 
-  const { loading, data, error, refetch, called } = useQuery(
-    farmQueries.GET_FARM_FOR_UPDATE,
-    {
-      variables: {
-        criterias: {
-          id: Number(id),
-        },
+  const { loading, data, error, refetch, called } = useQuery(farmQueries.GET_FARM_FOR_UPDATE, {
+    variables: {
+      criterias: {
+        id: Number(id),
       },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
   const userIdentityId = data?.farm?.createdByIdentityId;
   const { data: authorData } = useQuery(userQueries.GET_USER_INFO, {
@@ -57,23 +55,21 @@ const UpdatePage = (props: Props) => {
     if (!id) {
       return;
     }
-    return await farmService
-      .update(data, Number.parseInt(id))
-      .then((response) => {
-        return new Promise((resolve) => {
-          if (location.state?.from) {
-            const referrefUri = location.state.from;
-            const farmUpdateUrl = `/farms/update/${id}`;
-            if (referrefUri !== farmUpdateUrl) {
-              navigate(referrefUri);
-              resolve({});
-              return;
-            }
+    return await farmService.update(data, Number.parseInt(id)).then((response) => {
+      return new Promise((resolve) => {
+        if (location.state?.from) {
+          const referrefUri = location.state.from;
+          const farmUpdateUrl = `/farms/update/${id}`;
+          if (referrefUri !== farmUpdateUrl) {
+            navigate(referrefUri);
+            resolve({});
+            return;
           }
-          navigate(`/farms/${id}`);
-          resolve({});
-        });
+        }
+        navigate(`/farms/${id}`);
+        resolve({});
       });
+    });
   };
 
   const showValidationError = (title: string, message: string) => {
@@ -117,9 +113,7 @@ const UpdatePage = (props: Props) => {
     const authorInfo = { ...userInfo };
     if (authorData) {
       const { userPhotos } = authorData;
-      const avatar = userPhotos.find(
-        (item: any) => item.photoType === "AVATAR"
-      );
+      const avatar = userPhotos.find((item: any) => item.photoType === "AVATAR");
       if (avatar) {
         authorInfo.userAvatar = avatar;
       }
@@ -138,21 +132,15 @@ const UpdatePage = (props: Props) => {
   };
 
   return (
-    <DetailLayout
-      author={getAuthorInfo()}
-      isLoading={!!loading}
-      hasData={true}
-      hasError={!!error}
-    >
-      <Breadcrumb list={breadcrumbs} />
-      <FarmEditor
-        height={350}
-        filterCategories={farmTypes}
-        onFarmPost={onFarmPost}
-        showValidationError={showValidationError}
-        currentFarm={currentFarm}
-      />
-    </DetailLayout>
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>
+        <Breadcrumb list={breadcrumbs} />
+        <FarmEditor height={350} filterCategories={farmTypes} onFarmPost={onFarmPost} showValidationError={showValidationError} currentFarm={currentFarm} />
+      </DetailLayout>
+    </>
   );
 };
 

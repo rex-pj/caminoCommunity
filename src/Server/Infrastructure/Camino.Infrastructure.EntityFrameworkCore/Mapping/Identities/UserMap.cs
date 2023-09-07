@@ -22,8 +22,8 @@ namespace Camino.Infrastructure.EntityFrameworkCore.Mapping.Identities
             builder.Property(x => x.PhoneNumber).IsRequired(false);
             builder.Property(x => x.CreatedById).IsRequired(false);
             builder.Property(x => x.UpdatedById).IsRequired(false);
+            builder.Property(x => x.Email).IsRequired(false);
 
-            builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.UserName).IsRequired();
             builder.Property(x => x.Lastname).IsRequired();
             builder.Property(x => x.Firstname).IsRequired();

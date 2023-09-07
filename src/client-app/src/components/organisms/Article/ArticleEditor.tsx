@@ -4,10 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
 import styled from "styled-components";
-import {
-  ImageUpload,
-  ImageUploadOnChangeEvent,
-} from "../UploadControl/ImageUpload";
+import { ImageUpload, ImageUploadOnChangeEvent } from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
@@ -212,10 +209,7 @@ const ArticleEditor = (props: Props) => {
     setValue("content", html);
   };
 
-  const handleSelectChange = (
-    newValue: OnChangeValue<any, any>,
-    actionMeta: ActionMeta<any>
-  ) => {
+  const handleSelectChange = (newValue: OnChangeValue<any, any>, actionMeta: ActionMeta<any>) => {
     const { action } = actionMeta;
     if (action === "clear" || action === "remove-value") {
       setValue("articleCategory", null);
@@ -230,9 +224,7 @@ const ArticleEditor = (props: Props) => {
       if (picture?.pictureId) {
         const { pictureId } = picture;
         setValue("picture", { pictureId });
-        setPreview(
-          `${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`
-        );
+        setPreview(`${apiConfig.paths.pictures.get.getPicture}/${picture.pictureId}`);
       }
     }
   }, [currentArticle]);
@@ -242,11 +234,7 @@ const ArticleEditor = (props: Props) => {
       <SharedHistoryContext>
         <TableContext>
           <SharedAutocompleteContext>
-            <AsyncSubmitFormPlugin
-              onSubmitAsync={handleSubmit(onArticlePost)}
-              method="POST"
-              clearAfterSubmit={true}
-            >
+            <AsyncSubmitFormPlugin onSubmitAsync={handleSubmit(onArticlePost)} method="POST" clearAfterSubmit={true}>
               <FormRow className="row">
                 <div className="col-12 col-lg-6 pr-lg-1 mb-2 mb-lg-0">
                   <SecondaryTextbox
@@ -264,11 +252,7 @@ const ArticleEditor = (props: Props) => {
                     autoComplete="off"
                     placeholder="Post title"
                   />
-                  {errors.name && (
-                    <ValidationDangerMessage>
-                      {errors.name.message?.toString()}
-                    </ValidationDangerMessage>
-                  )}
+                  {errors.name && <ValidationDangerMessage>{errors.name.message?.toString()}</ValidationDangerMessage>}
                 </div>
                 <div className="col-10 col-lg-4 px-lg-1 pr-1 me-auto">
                   <Controller
@@ -281,36 +265,12 @@ const ArticleEditor = (props: Props) => {
                         message: "This field is required",
                       },
                     }}
-                    render={({ field }) => (
-                      <AsyncSelect
-                        {...field}
-                        className="cate-selection"
-                        cacheOptions
-                        defaultOptions
-                        loadOptions={(e) => loadCategorySelections(e)}
-                        isClearable={true}
-                        placeholder="Select category"
-                        onChange={handleSelectChange}
-                      />
-                    )}
+                    render={({ field }) => <AsyncSelect {...field} className="cate-selection" cacheOptions defaultOptions loadOptions={(e) => loadCategorySelections(e)} isClearable={true} placeholder="Select category" onChange={handleSelectChange} />}
                   />
-                  {errors.articleCategory && (
-                    <ValidationDangerMessage>
-                      {errors.articleCategory.message?.toString()}
-                    </ValidationDangerMessage>
-                  )}
+                  {errors.articleCategory && <ValidationDangerMessage>{errors.articleCategory.message?.toString()}</ValidationDangerMessage>}
                 </div>
                 <div className="col">
-                  <Controller
-                    control={control}
-                    name="picture"
-                    render={({ field }) => (
-                      <ThumbnailUpload
-                        {...field}
-                        onChange={handleImageChange}
-                      />
-                    )}
-                  />
+                  <Controller control={control} name="picture" render={({ field }) => <ThumbnailUpload {...field} onChange={handleImageChange} />} />
                 </div>
               </FormRow>
               {preview ? (
@@ -336,35 +296,16 @@ const ArticleEditor = (props: Props) => {
                       value: true,
                       message: "This field is required",
                     },
-                    maxLength: {
-                      value: 8000,
-                      message: "The text length cannot exceed the limit 8000",
-                    },
                   }}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      {...field}
-                      onChange={(editor: LexicalEditor) =>
-                        onContentChanged(editor)
-                      }
-                    />
-                  )}
+                  render={({ field }) => <RichTextEditor {...field} onChange={(editor: LexicalEditor) => onContentChanged(editor)} />}
                 />
-                {errors.content && (
-                  <ValidationDangerMessage>
-                    {errors.content.message?.toString()}
-                  </ValidationDangerMessage>
-                )}
+                {errors.content && <ValidationDangerMessage>{errors.content.message?.toString()}</ValidationDangerMessage>}
               </div>
 
               <Footer className="row mb-3">
                 <div className="col-auto"></div>
                 <div className="col-auto ms-auto">
-                  <ButtonIconSecondary
-                    disabled={isSubmitted}
-                    size="xs"
-                    icon={["far", "paper-plane"]}
-                  >
+                  <ButtonIconSecondary disabled={isSubmitted} size="xs" icon={["far", "paper-plane"]}>
                     Post
                   </ButtonIconSecondary>
                 </div>

@@ -3,17 +3,13 @@ import { useQuery, useMutation } from "@apollo/client";
 import { feedqueries } from "../../graphql/fetching/queries";
 import { userMutations } from "../../graphql/fetching/mutations";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  ErrorBar,
-  LoadingBar,
-} from "../../components/molecules/NotificationBars";
+import { ErrorBar, LoadingBar } from "../../components/molecules/NotificationBars";
 import { getParameters, generateQueryParameters } from "../../utils/Helper";
 import SearchFeed from "../../components/templates/Feeds/search-feed";
-import SearchForm, {
-  ISearchFormParams,
-} from "../../components/templates/Feeds/search-form";
+import SearchForm, { ISearchFormParams } from "../../components/templates/Feeds/search-form";
 import { authClient } from "../../graphql/client";
 import { MiddleRightLayout } from "../../components/templates/Layout";
+import { Helmet } from "react-helmet-async";
 
 interface Props {}
 
@@ -38,13 +34,7 @@ const Search = (props: Props) => {
   };
 
   const params = getParameters(location.search);
-  const {
-    feedFilterType,
-    userIdentityId,
-    page,
-    hoursCreatedFrom,
-    hoursCreatedTo,
-  } = params;
+  const { feedFilterType, userIdentityId, page, hoursCreatedFrom, hoursCreatedTo } = params;
   const { loading, data, error } = useQuery(feedqueries.ADVANCED_SEARCH, {
     variables: {
       criterias: {
@@ -68,8 +58,7 @@ const Search = (props: Props) => {
   }
 
   const onSearch = (searchParams: ISearchFormParams) => {
-    const { userIdentityId, hoursCreatedFrom, hoursCreatedTo, keyword } =
-      searchParams;
+    const { userIdentityId, hoursCreatedFrom, hoursCreatedTo, keyword } = searchParams;
     let pathName = `${baseUrl}${keyword}`;
     const query = generateQueryParameters({
       userIdentityId,
@@ -86,47 +75,45 @@ const Search = (props: Props) => {
 
   const { advancedSearch } = data;
   const checkHasData = () => {
-    return !!(
-      advancedSearch &&
-      (advancedSearch.farms ||
-        advancedSearch.products ||
-        advancedSearch.articles)
-    );
+    return !!(advancedSearch && (advancedSearch.farms || advancedSearch.products || advancedSearch.articles));
   };
 
   const baseUrl = `/search/`;
+  const metaTitle = `Kết quả tìm kiếm cho ${keyword} ${"| Nông Trại LỒ Ồ"}`;
   return (
-    <MiddleRightLayout
-      isLoading={!!loading}
-      hasData={checkHasData()}
-      hasError={!!error}
-    >
-      <div className="row px-lg-3">
-        <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
-          <SearchForm
-            timeOptions={timeOptions}
-            feedTypeDictonaries={feedTypeDictonaries}
-            advancedSearchResult={advancedSearch}
-            selectUsers={selectUsers}
-            baseUrl={baseUrl}
-            searchParams={{
-              hoursCreatedFrom,
-              hoursCreatedTo,
-              userIdentityId,
-              feedFilterType,
-            }}
-            onSearch={onSearch}
-          ></SearchForm>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{metaTitle}</title>
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaTitle} />
+        {/* Google SEO */}
+        <meta name="description" content={metaTitle} />
+      </Helmet>
+      <MiddleRightLayout isLoading={!!loading} hasData={checkHasData()} hasError={!!error}>
+        <div className="row px-lg-3">
+          <div className="col col-12 col-sm-12 col-md-3 col-lg-3">
+            <SearchForm
+              timeOptions={timeOptions}
+              feedTypeDictonaries={feedTypeDictonaries}
+              advancedSearchResult={advancedSearch}
+              selectUsers={selectUsers}
+              baseUrl={baseUrl}
+              searchParams={{
+                hoursCreatedFrom,
+                hoursCreatedTo,
+                userIdentityId,
+                feedFilterType,
+              }}
+              onSearch={onSearch}
+            ></SearchForm>
+          </div>
+          <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
+            <SearchFeed keyword={keyword} advancedSearchResult={advancedSearch} baseUrl={baseUrl}></SearchFeed>
+          </div>
         </div>
-        <div className="col col-12 col-sm-12 col-md-9 col-lg-9">
-          <SearchFeed
-            keyword={keyword}
-            advancedSearchResult={advancedSearch}
-            baseUrl={baseUrl}
-          ></SearchFeed>
-        </div>
-      </div>
-    </MiddleRightLayout>
+      </MiddleRightLayout>
+    </>
   );
 };
 
