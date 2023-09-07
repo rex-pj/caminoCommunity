@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 type Props = {};
 
 const NotFoundPage = (props: Props) => {
+  const metaTitle = `Not found! ${"| Nông Trại LỒ Ồ"}`;
   return (
     <>
       <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <PromptLayout>

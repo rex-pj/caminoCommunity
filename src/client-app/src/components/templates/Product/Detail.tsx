@@ -152,8 +152,7 @@ const Detail = (props: Props) => {
   const { product, onOpenDeleteConfirmationModal } = props;
   const { currentUser, isLogin } = useContext(SessionContext);
   const { createdByIdentityId } = product;
-  const isAuthor =
-    currentUser && createdByIdentityId === currentUser.userIdentityId;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef<any>();
   const onActionDropdownHide = (e: MouseEvent) => {
@@ -195,13 +194,7 @@ const Detail = (props: Props) => {
   return (
     <Fragment>
       <PanelDefault>
-        {product.images ? (
-          <ThumbnailSlider
-            currentImage={product.images[0]}
-            images={product.images}
-            displayNumber={5}
-          />
-        ) : null}
+        {product.images ? <ThumbnailSlider currentImage={product.images[0]} images={product.images} displayNumber={5} /> : null}
 
         <PanelBody>
           <div className="clearfix">
@@ -213,10 +206,7 @@ const Detail = (props: Props) => {
                 <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
                   {isLogin ? (
                     <PostActions ref={currentRef}>
-                      <ActionButton
-                        className="dropdown-action"
-                        onClick={onActionDropdownShow}
-                      >
+                      <ActionButton className="dropdown-action" onClick={onActionDropdownShow}>
                         <FontAwesomeIcon icon="angle-down" />
                       </ActionButton>
                     </PostActions>
@@ -226,16 +216,12 @@ const Detail = (props: Props) => {
                     <DropdownList>
                       <ModuleMenuListItem>
                         <span onClick={onEditMode}>
-                          <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
-                          Edit
+                          <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
                         </span>
                       </ModuleMenuListItem>
                       <ModuleMenuListItem>
                         <span onClick={onOpenDeleteConfirmation}>
-                          <FontAwesomeIcon
-                            icon="trash-alt"
-                            className="me-2"
-                          ></FontAwesomeIcon>
+                          <FontAwesomeIcon icon="trash-alt" className="me-2"></FontAwesomeIcon>
                           Delete
                         </span>
                       </ModuleMenuListItem>
@@ -263,14 +249,9 @@ const Detail = (props: Props) => {
                 })
               : null}
 
-            <AttributesDetail
-              price={product.price}
-              productAttributes={productAttributes}
-            ></AttributesDetail>
+            <AttributesDetail price={product.price} productAttributes={productAttributes}></AttributesDetail>
             <ContentBody>
-              <span
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              ></span>
+              <span dangerouslySetInnerHTML={{ __html: product.description }}></span>
             </ContentBody>
 
             {/* <div className="interactive-toolbar">

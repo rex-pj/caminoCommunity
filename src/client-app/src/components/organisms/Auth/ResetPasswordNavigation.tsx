@@ -27,7 +27,11 @@ const NavButton = styled(RouterLinkButtonPrimary)`
   }
 `;
 
-const ListItem = styled.li`
+interface ListItemProps extends React.LiHTMLAttributes<HTMLLIElement> {
+  readonly size?: string;
+}
+
+const ListItem = styled.li<ListItemProps>`
   display: inline-block;
 
   &.actived ${NavButton} {

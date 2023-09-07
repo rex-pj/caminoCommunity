@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { farmQueries, userQueries } from "../../graphql/fetching/queries";
 import { farmMutations } from "../../graphql/fetching/mutations";
 import { useQuery, useMutation } from "@apollo/client";
@@ -10,6 +10,7 @@ import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import FarmService from "../../services/farmService";
 import { Helmet } from "react-helmet-async";
+import { SessionContext } from "../../store/context/session-context";
 
 type Props = {};
 
@@ -17,6 +18,7 @@ const UpdatePage = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { currentUser, isLogin } = useContext(SessionContext);
   const dispatch = useStore(false)[1];
   const [farmTypes] = useMutation(farmMutations.FILTER_FARM_TYPES);
   const farmService = new FarmService();
@@ -89,6 +91,13 @@ const UpdatePage = (props: Props) => {
 
   const farm = data ? { ...data.farm } : {};
   const currentFarm = { ...farm };
+  const { createdByIdentityId } = currentFarm;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
+  if (!isLogin || (createdByIdentityId && !isAuthor)) {
+    navigate({
+      pathname: `/not-found`,
+    });
+  }
 
   const breadcrumbs = [
     {
@@ -131,9 +140,11 @@ const UpdatePage = (props: Props) => {
     return authorInfo;
   };
 
+  const metaTitle = `Cập nhật thông tin nông trại ${currentFarm?.name} ${"| Nông Trại LỒ Ồ"}`;
   return (
     <>
       <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>

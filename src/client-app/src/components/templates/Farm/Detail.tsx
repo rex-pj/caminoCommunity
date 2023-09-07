@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Fragment, useRef, useEffect, useState } from "react";
+import { Fragment, useRef, useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PrimaryTitle } from "../../atoms/Titles";
@@ -9,14 +9,13 @@ import { HorizontalReactBar } from "../../molecules/Reaction";
 import { PanelBody, PanelDefault } from "../../molecules/Panels";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Breadcrumb, {
-  IBreadcrumbItem,
-} from "../../organisms/Navigation/Breadcrumb";
+import Breadcrumb, { IBreadcrumbItem } from "../../organisms/Navigation/Breadcrumb";
 import { ButtonIconPrimary } from "../../molecules/ButtonIcons";
 import ThumbnailSlider from "../../organisms/ThumbnailSlider";
 import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Title = styled(PrimaryTitle)`
   margin-bottom: ${(p) => p.theme.size.exTiny};
@@ -143,6 +142,9 @@ const Detail = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { farm, breadcrumbs, onOpenDeleteConfirmationModal } = props;
+  const { currentUser, isLogin } = useContext(SessionContext);
+  const { createdByIdentityId } = farm;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef<any>();
   const onActionDropdownHide = (e: MouseEvent) => {
@@ -182,13 +184,7 @@ const Detail = (props: Props) => {
   return (
     <Fragment>
       <PanelDefault>
-        {farm.images ? (
-          <ThumbnailSlider
-            currentImage={farm.images[0]}
-            images={farm.images}
-            displayNumber={5}
-          />
-        ) : null}
+        {farm.images ? <ThumbnailSlider currentImage={farm.images[0]} images={farm.images} displayNumber={5} /> : null}
 
         <BreadCrumbNav list={breadcrumbs} />
         <PanelBody>
@@ -202,28 +198,23 @@ const Detail = (props: Props) => {
                 </div>
               </div>
               <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-                <PostActions ref={currentRef}>
-                  <ActionButton
-                    className="dropdown-action"
-                    onClick={onActionDropdownShow}
-                  >
-                    <FontAwesomeIcon icon="angle-down" />
-                  </ActionButton>
-                </PostActions>
-                {isActionDropdownShown ? (
+                {isLogin ? (
+                  <PostActions ref={currentRef}>
+                    <ActionButton className="dropdown-action" onClick={onActionDropdownShow}>
+                      <FontAwesomeIcon icon="angle-down" />
+                    </ActionButton>
+                  </PostActions>
+                ) : null}
+                {isActionDropdownShown && isAuthor ? (
                   <DropdownList>
                     <ModuleMenuListItem>
                       <span onClick={onEditMode}>
-                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
-                        Edit
+                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
                       </span>
                     </ModuleMenuListItem>
                     <ModuleMenuListItem>
                       <span onClick={onOpenDeleteConfirmation}>
-                        <FontAwesomeIcon
-                          icon="trash-alt"
-                          className="me-2"
-                        ></FontAwesomeIcon>
+                        <FontAwesomeIcon icon="trash-alt" className="me-2"></FontAwesomeIcon>
                         Delete
                       </span>
                     </ModuleMenuListItem>
@@ -234,9 +225,7 @@ const Detail = (props: Props) => {
           </TopBarInfo>
           <div className="clearfix">
             <ContentBody>
-              <span
-                dangerouslySetInnerHTML={{ __html: farm.description }}
-              ></span>
+              <span dangerouslySetInnerHTML={{ __html: farm.description }}></span>
             </ContentBody>
 
             {/* <div className="interactive-toolbar">

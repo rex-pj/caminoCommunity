@@ -2,11 +2,7 @@ import * as React from "react";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { PageColumnPanel } from "../../molecules/Panels";
-import {
-  farmQueries,
-  userQueries,
-  navigationQueries,
-} from "../../../graphql/fetching/queries";
+import { farmQueries, userQueries, navigationQueries } from "../../../graphql/fetching/queries";
 import { useLazyQuery } from "@apollo/client";
 import {
   FarmSuggestions,
@@ -21,9 +17,7 @@ import Modal from "../../organisms/Modals/Modal";
 
 const Shortcut = React.lazy(() => import("../../organisms/Shortcut"));
 // const Interesting = React.lazy(() => import("../../organisms/Interesting"));
-const LoggedInCard = React.lazy(
-  () => import("../../organisms/ProfileCard/LoggedInCard")
-);
+const LoggedInCard = React.lazy(() => import("../../organisms/ProfileCard/LoggedInCard"));
 // const AdsList = React.lazy(() => import("../../organisms/Ads/AdsList"));
 
 const Wrapper = styled.div`
@@ -44,16 +38,11 @@ interface Props {
 const DefaultLayout = (props: Props) => {
   const { children, isLoading, hasData, hasError } = props;
   const { currentUser } = useContext(SessionContext);
-  const [fetchFarms, { loading: suggestFarmloading, data: suggestFarmData }] =
-    useLazyQuery(farmQueries.GET_FARMS);
+  const [fetchFarms, { loading: suggestFarmloading, data: suggestFarmData }] = useLazyQuery(farmQueries.GET_FARMS);
 
-  const [
-    fetchSuggestions,
-    { loading: suggestUserloading, data: suggestUserData },
-  ] = useLazyQuery(userQueries.GET_SUGGESSTION_USERS);
+  const [fetchSuggestions, { loading: suggestUserloading, data: suggestUserData }] = useLazyQuery(userQueries.GET_SUGGESSTION_USERS);
 
-  const [fetchShortcuts, { loading: shortcutLoading, data: shortcutData }] =
-    useLazyQuery(navigationQueries.GET_SHORTCUTS);
+  const [fetchShortcuts, { loading: shortcutLoading, data: shortcutData }] = useLazyQuery(navigationQueries.GET_SHORTCUTS);
 
   useEffect(() => {
     const currentUserId = currentUser?.userIdentityId;
@@ -78,12 +67,7 @@ const DefaultLayout = (props: Props) => {
     });
 
     fetchShortcuts();
-  }, [
-    fetchFarms,
-    fetchSuggestions,
-    fetchShortcuts,
-    currentUser?.userIdentityId,
-  ]);
+  }, [fetchFarms, fetchSuggestions, fetchShortcuts, currentUser?.userIdentityId]);
 
   return (
     <>
@@ -103,21 +87,14 @@ const DefaultLayout = (props: Props) => {
           </div>
 
           <div className="col col-12 col-sm-12 col-md-12 col-lg-7">
-            <BodyLayout
-              isLoading={isLoading}
-              hasData={hasData}
-              hasError={hasError}
-            >
+            <BodyLayout isLoading={isLoading} hasData={hasData} hasError={hasError}>
               {children}
             </BodyLayout>
           </div>
 
           <div className="col col-12 col-sm-12 col-md-12 col-lg-3">
             <PageColumnPanel>
-              <FarmSuggestions
-                loading={suggestFarmloading}
-                data={suggestFarmData}
-              />
+              <FarmSuggestions loading={suggestFarmloading} data={suggestFarmData} />
             </PageColumnPanel>
             {/* <PageColumnPanel>
               <AdsList />
@@ -129,10 +106,7 @@ const DefaultLayout = (props: Props) => {
               <AdsList />
             </PageColumnPanel> */}
             <PageColumnPanel>
-              <ConnectionSuggestions
-                loading={suggestUserloading}
-                data={suggestUserData}
-              />
+              <ConnectionSuggestions loading={suggestUserloading} data={suggestUserData} />
             </PageColumnPanel>
             {/* <PageColumnPanel>
               <AdsList />

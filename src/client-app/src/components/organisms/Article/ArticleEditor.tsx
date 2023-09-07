@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
@@ -100,7 +100,6 @@ const ArticleEditor = (props: Props) => {
     handleSubmit,
     setValue,
     reset,
-    resetField,
     control,
     formState: { errors },
   } = useForm();

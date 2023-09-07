@@ -46,23 +46,20 @@ const AuthButton = styled(RouterLinkButtonPrimary)`
   font-size: ${(p) => p.theme.fontSize.tiny};
 `;
 
-const TopMenuContainer: React.FC<React.HTMLAttributes<HTMLDivElement>> = (
-  props
-) => {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+
+const TopMenuContainer = (props: Props) => {
   const { currentUser, isLogin, isLoading } = useContext(SessionContext);
   const { t } = useTranslation();
 
   if (isLoading) {
-    return null;
+    return <></>;
   }
 
   if (currentUser && isLogin) {
     return (
       <Root>
-        <TopProfileContainer
-          className="top-profile-container"
-          userInfo={currentUser}
-        />
+        <TopProfileContainer className="top-profile-container" userInfo={currentUser} />
       </Root>
     );
   }

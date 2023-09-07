@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import { useStore } from "../../store/hook-store";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import ArticleService from "../../services/articleService";
 import { Helmet } from "react-helmet-async";
+import { SessionContext } from "../../store/context/session-context";
 
 type Props = {};
 
@@ -17,6 +18,7 @@ const UpdatePage = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { currentUser, isLogin } = useContext(SessionContext);
   const dispatch = useStore(false)[1];
   const [articleCategories] = useMutation(articleMutations.FILTER_ARTICLE_CATEGORIES);
   const articleService = new ArticleService();
@@ -59,6 +61,14 @@ const UpdatePage = (props: Props) => {
   }, [refetch, called, loading]);
 
   const article = data ? { ...data.article } : {};
+
+  const { createdByIdentityId } = article;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
+  if (!isLogin || (createdByIdentityId && !isAuthor)) {
+    navigate({
+      pathname: `/not-found`,
+    });
+  }
 
   const breadcrumbs = [
     {
@@ -132,9 +142,11 @@ const UpdatePage = (props: Props) => {
     return authorInfo;
   };
 
+  const metaTitle = `Sửa đổi bài viết ${article?.name} ${"| Nông Trại LỒ Ồ"}`;
   return (
     <>
       <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>

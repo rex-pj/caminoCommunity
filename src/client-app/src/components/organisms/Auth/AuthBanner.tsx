@@ -8,7 +8,6 @@ import { AnchorLink } from "../../atoms/Links";
 import logoUrl from "../../../assets/images/logo.png";
 import bgUrl from "../../../assets/images/auth-bg.jpg";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { DefaultTFuncReturn } from "i18next";
 
 const Root = styled.div`
   background: url(${bgUrl}) no-repeat center;
@@ -81,7 +80,7 @@ interface AuthBannerProps {
   imageUrl?: string;
   icon?: IconProp;
   title: string;
-  instruction?: string | DefaultTFuncReturn;
+  instruction?: string;
   actionUrl?: string;
   actionText?: string;
 }
@@ -91,18 +90,11 @@ const AuthBanner: React.FC<AuthBannerProps> = (props) => {
   return (
     <Root>
       <Instruction>
-        {imageUrl ? (
-          <Image
-            src={logoUrl}
-            alt={`${PageInfo.BrandName} ${PageInfo.BrandDescription}`}
-          />
-        ) : null}
+        {imageUrl ? <Image src={logoUrl} alt={`${PageInfo.BrandName} ${PageInfo.BrandDescription}`} /> : null}
         {icon ? <FontAwesomeIcon icon={icon} /> : null}
         <SecondaryHeading>{title}</SecondaryHeading>
         <p>{instruction}</p>
-        {actionUrl && actionText ? (
-          <AnchorLink to={actionUrl}>{actionText}</AnchorLink>
-        ) : null}
+        {actionUrl && actionText ? <AnchorLink to={actionUrl}>{actionText}</AnchorLink> : null}
       </Instruction>
     </Root>
   );

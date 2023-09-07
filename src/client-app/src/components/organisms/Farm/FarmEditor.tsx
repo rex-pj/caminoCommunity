@@ -1,16 +1,11 @@
 import * as React from "react";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SecondaryTextbox } from "../../atoms/Textboxes";
 import { ButtonIconSecondary } from "../../molecules/ButtonIcons";
-import { checkValidity } from "../../../utils/Validity";
 import styled from "styled-components";
-import {
-  ImageUpload,
-  ImageUploadOnChangeEvent,
-} from "../UploadControl/ImageUpload";
+import { ImageUpload, ImageUploadOnChangeEvent } from "../UploadControl/ImageUpload";
 import AsyncSelect from "react-select/async";
-import { FarmCreationModel } from "../../../models/farmCreationModel";
 import { Thumbnail } from "../../molecules/Thumbnails";
 import { mapSelectOptions } from "../../../utils/SelectOptionUtils";
 import { apiConfig } from "../../../config/api-config";
@@ -100,9 +95,7 @@ interface FarmEditorProps {
 const FarmEditor = (props: FarmEditorProps) => {
   const { filterCategories, currentFarm } = props;
   const [isSubmitted, setSubmitted] = useState(false);
-  const [previews, setPreviews] = useState<
-    { pictureId?: number; url?: string; preview?: string; fileName?: string }[]
-  >([]);
+  const [previews, setPreviews] = useState<{ pictureId?: number; url?: string; preview?: string; fileName?: string }[]>([]);
   const {
     register,
     handleSubmit,
@@ -138,10 +131,7 @@ const FarmEditor = (props: FarmEditorProps) => {
       for (const i in pictures) {
         requestFormData.append(`pictures[${i}].file`, pictures[i].file);
         if (pictures[i].pictureId) {
-          requestFormData.append(
-            `pictures[${i}].pictureId`,
-            pictures[i].pictureId
-          );
+          requestFormData.append(`pictures[${i}].pictureId`, pictures[i].pictureId);
         }
       }
     }
@@ -177,10 +167,7 @@ const FarmEditor = (props: FarmEditorProps) => {
     };
   }, [filterCategories]);
 
-  function handleSelectChange(
-    newValue: OnChangeValue<any, any>,
-    actionMeta: ActionMeta<any>
-  ) {
+  function handleSelectChange(newValue: OnChangeValue<any, any>, actionMeta: ActionMeta<any>) {
     const { action } = actionMeta;
     if (action === "clear" || action === "remove-value") {
       setValue("farmType", null);
@@ -214,12 +201,7 @@ const FarmEditor = (props: FarmEditorProps) => {
     setPreviews([]);
   };
 
-  const onImageRemoved = (item: {
-    pictureId?: number;
-    url?: string;
-    preview?: string;
-    fileName?: string;
-  }) => {
+  const onImageRemoved = (item: { pictureId?: number; url?: string; preview?: string; fileName?: string }) => {
     const formData = getValues();
     const pictures = formData.pictures;
     if (!pictures || pictures.length < 0) {
@@ -229,12 +211,8 @@ const FarmEditor = (props: FarmEditorProps) => {
     let updatedPictures = [...formData.pictures];
     let previewPics = [...previews];
     if (item.pictureId) {
-      updatedPictures = updatedPictures.filter(
-        (x: any) => x.pictureId !== item.pictureId
-      );
-      previewPics = previewPics.filter(
-        (x: any) => x.pictureId !== item.pictureId
-      );
+      updatedPictures = updatedPictures.filter((x: any) => x.pictureId !== item.pictureId);
+      previewPics = previewPics.filter((x: any) => x.pictureId !== item.pictureId);
     } else {
       previewPics = previewPics.filter((x: any) => x.preview !== item.preview);
       updatedPictures = updatedPictures.filter((x: any) => x !== item);
@@ -295,11 +273,7 @@ const FarmEditor = (props: FarmEditorProps) => {
       <SharedHistoryContext>
         <TableContext>
           <SharedAutocompleteContext>
-            <AsyncSubmitFormPlugin
-              onSubmitAsync={handleSubmit(onFarmPost)}
-              method="POST"
-              clearAfterSubmit={true}
-            >
+            <AsyncSubmitFormPlugin onSubmitAsync={handleSubmit(onFarmPost)} method="POST" clearAfterSubmit={true}>
               <FormRow className="row">
                 <div className="col-6 col-lg-6 pr-lg-1">
                   <SecondaryTextbox
@@ -317,11 +291,7 @@ const FarmEditor = (props: FarmEditorProps) => {
                     autoComplete="off"
                     placeholder="Farm title"
                   />
-                  {errors.name && (
-                    <ValidationDangerMessage>
-                      {errors.name.message?.toString()}
-                    </ValidationDangerMessage>
-                  )}
+                  {errors.name && <ValidationDangerMessage>{errors.name.message?.toString()}</ValidationDangerMessage>}
                 </div>
                 <div className="col-6 col-lg-6 pl-lg-1">
                   <Controller
@@ -334,46 +304,17 @@ const FarmEditor = (props: FarmEditorProps) => {
                         message: "This field is required",
                       },
                     }}
-                    render={({ field }) => (
-                      <AsyncSelect
-                        {...field}
-                        className="cate-selection"
-                        cacheOptions
-                        defaultOptions
-                        loadOptions={(e) => loadFarmTypeSelections(e)}
-                        isClearable={true}
-                        placeholder="Select farm type"
-                        onChange={handleSelectChange}
-                      />
-                    )}
+                    render={({ field }) => <AsyncSelect {...field} className="cate-selection" cacheOptions defaultOptions loadOptions={(e) => loadFarmTypeSelections(e)} isClearable={true} placeholder="Select farm type" onChange={handleSelectChange} />}
                   />
-                  {errors.farmType && (
-                    <ValidationDangerMessage>
-                      {errors.farmType.message?.toString()}
-                    </ValidationDangerMessage>
-                  )}
+                  {errors.farmType && <ValidationDangerMessage>{errors.farmType.message?.toString()}</ValidationDangerMessage>}
                 </div>
               </FormRow>
               <FormRow className="row">
                 <div className="col-9 col-lg-10 pr-lg-1">
-                  <SecondaryTextbox
-                    autoComplete="off"
-                    {...register("address")}
-                    defaultValue={currentFarm?.address}
-                    placeholder="Address"
-                  />
+                  <SecondaryTextbox autoComplete="off" {...register("address")} defaultValue={currentFarm?.address} placeholder="Address" />
                 </div>
                 <div className="col-3 col-lg-2 pl-lg-1 pl-1">
-                  <Controller
-                    control={control}
-                    name="pictures"
-                    render={({ field }) => (
-                      <ThumbnailUpload
-                        {...field}
-                        onChange={handleImageChange}
-                      />
-                    )}
-                  />
+                  <Controller control={control} name="pictures" render={({ field }) => <ThumbnailUpload {...field} onChange={handleImageChange} />} />
                 </div>
               </FormRow>
               {previews ? (
@@ -384,9 +325,7 @@ const FarmEditor = (props: FarmEditorProps) => {
                         <div className="col-3" key={index}>
                           <ImageEditBox>
                             <Thumbnail src={item.preview}></Thumbnail>
-                            <RemoveImageButton
-                              onClick={(e) => onImageRemoved(item)}
-                            >
+                            <RemoveImageButton onClick={(e) => onImageRemoved(item)}>
                               <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                             </RemoveImageButton>
                           </ImageEditBox>
@@ -397,9 +336,7 @@ const FarmEditor = (props: FarmEditorProps) => {
                         <div className="col-3" key={index}>
                           <ImageEditBox>
                             <Thumbnail src={item.url}></Thumbnail>
-                            <RemoveImageButton
-                              onClick={() => onImageRemoved(item)}
-                            >
+                            <RemoveImageButton onClick={() => onImageRemoved(item)}>
                               <FontAwesomeIcon icon="times"></FontAwesomeIcon>
                             </RemoveImageButton>
                           </ImageEditBox>
@@ -426,30 +363,14 @@ const FarmEditor = (props: FarmEditorProps) => {
                       message: "The text length cannot exceed the limit 4000",
                     },
                   }}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      {...field}
-                      onChange={(editor: LexicalEditor) =>
-                        onDescriptionChanged(editor)
-                      }
-                    />
-                  )}
+                  render={({ field }) => <RichTextEditor {...field} onChange={(editor: LexicalEditor) => onDescriptionChanged(editor)} />}
                 />
-                {errors.description && (
-                  <ValidationDangerMessage>
-                    {errors.description.message?.toString()}
-                  </ValidationDangerMessage>
-                )}
+                {errors.description && <ValidationDangerMessage>{errors.description.message?.toString()}</ValidationDangerMessage>}
               </div>
               <Footer className="row mb-3">
                 <div className="col-auto"></div>
                 <div className="col-auto ms-auto">
-                  <ButtonIconSecondary
-                    type="submit"
-                    disabled={isSubmitted}
-                    size="xs"
-                    icon={["far", "paper-plane"]}
-                  >
+                  <ButtonIconSecondary type="submit" disabled={isSubmitted} size="xs" icon={["far", "paper-plane"]}>
                     Post
                   </ButtonIconSecondary>
                 </div>

@@ -7,22 +7,13 @@
  */
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  LexicalTypeaheadMenuPlugin,
-  TypeaheadOption,
-  useBasicTypeaheadTriggerMatch,
-} from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import {
-  $createTextNode,
-  $getSelection,
-  $isRangeSelection,
-  TextNode,
-} from "lexical";
+import { LexicalTypeaheadMenuPlugin, MenuOption, useBasicTypeaheadTriggerMatch } from "@lexical/react/LexicalTypeaheadMenuPlugin";
+import { $createTextNode, $getSelection, $isRangeSelection, TextNode } from "lexical";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 
-class EmojiOption extends TypeaheadOption {
+class EmojiOption extends MenuOption {
   title: string;
   emoji: string;
   keywords: Array<string>;
@@ -40,35 +31,13 @@ class EmojiOption extends TypeaheadOption {
     this.keywords = options.keywords || [];
   }
 }
-function EmojiMenuItem({
-  index,
-  isSelected,
-  onClick,
-  onMouseEnter,
-  option,
-}: {
-  index: number;
-  isSelected: boolean;
-  onClick: () => void;
-  onMouseEnter: () => void;
-  option: EmojiOption;
-}) {
+function EmojiMenuItem({ index, isSelected, onClick, onMouseEnter, option }: { index: number; isSelected: boolean; onClick: () => void; onMouseEnter: () => void; option: EmojiOption }) {
   let className = "item";
   if (isSelected) {
     className += " selected";
   }
   return (
-    <li
-      key={option.key}
-      tabIndex={-1}
-      className={className}
-      ref={option.setRefElement}
-      role="option"
-      aria-selected={isSelected}
-      id={"typeahead-item-" + index}
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
-    >
+    <li key={option.key} tabIndex={-1} className={className} ref={option.setRefElement} role="option" aria-selected={isSelected} id={"typeahead-item-" + index} onMouseEnter={onMouseEnter} onClick={onClick}>
       <span className="text">
         {option.emoji} {option.title}
       </span>
@@ -119,24 +88,13 @@ export default function EmojiPickerPlugin() {
   const options: Array<EmojiOption> = useMemo(() => {
     return emojiOptions
       .filter((option: EmojiOption) => {
-        return queryString != null
-          ? new RegExp(queryString, "gi").exec(option.title) ||
-            option.keywords != null
-            ? option.keywords.some((keyword: string) =>
-                new RegExp(queryString, "gi").exec(keyword)
-              )
-            : false
-          : emojiOptions;
+        return queryString != null ? (new RegExp(queryString, "gi").exec(option.title) || option.keywords != null ? option.keywords.some((keyword: string) => new RegExp(queryString, "gi").exec(keyword)) : false) : emojiOptions;
       })
       .slice(0, MAX_EMOJI_SUGGESTION_COUNT);
   }, [emojiOptions, queryString]);
 
   const onSelectOption = useCallback(
-    (
-      selectedOption: EmojiOption,
-      nodeToRemove: TextNode | null,
-      closeMenu: () => void
-    ) => {
+    (selectedOption: EmojiOption, nodeToRemove: TextNode | null, closeMenu: () => void) => {
       editor.update(() => {
         const selection = $getSelection();
 
@@ -162,10 +120,7 @@ export default function EmojiPickerPlugin() {
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}
       options={options}
-      menuRenderFn={(
-        anchorElementRef,
-        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
-      ) => {
+      menuRenderFn={(anchorElementRef, { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }) => {
         if (anchorElementRef.current == null || options.length === 0) {
           return null;
         }

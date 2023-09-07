@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Fragment, useRef, useState, useEffect } from "react";
+import { Fragment, useRef, useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PanelDefault } from "../../molecules/Panels";
 import styled from "styled-components";
@@ -15,6 +15,7 @@ import Dropdown from "../../molecules/DropdownButton/Dropdown";
 import ModuleMenuListItem from "../../molecules/MenuList/ModuleMenuListItem";
 import { ActionButton } from "../../molecules/ButtonGroups";
 import DeleteConfirmationModal from "../../organisms/Modals/DeleteConfirmationModal";
+import { SessionContext } from "../../../store/context/session-context";
 
 const Title = styled(PrimaryTitle)`
   color: ${(p) => p.theme.color.darkText};
@@ -112,6 +113,9 @@ const Detail = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { article, onOpenDeleteConfirmationModal } = props;
+  const { currentUser, isLogin } = useContext(SessionContext);
+  const { createdByIdentityId } = article;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
   const [isActionDropdownShown, setActionDropdownShown] = useState(false);
   const currentRef = useRef<any>();
   const onActionDropdownHide = (e: MouseEvent) => {
@@ -162,26 +166,22 @@ const Detail = (props: Props) => {
                 </ContentTopBar>
               </div>
               <div className="col col-4 col-sm-3 col-md-2 col-lg-1">
-                <ActionButton
-                  className="dropdown-action"
-                  onClick={onActionDropdownShow}
-                >
-                  <FontAwesomeIcon icon="angle-down" />
-                </ActionButton>
-                {isActionDropdownShown ? (
+                {isLogin ? (
+                  <ActionButton className="dropdown-action" onClick={onActionDropdownShow}>
+                    <FontAwesomeIcon icon="angle-down" />
+                  </ActionButton>
+                ) : null}
+
+                {isActionDropdownShown && isAuthor ? (
                   <DropdownList>
                     <ModuleMenuListItem>
                       <span onClick={onEditMode}>
-                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon>{" "}
-                        Edit
+                        <FontAwesomeIcon icon="pencil-alt"></FontAwesomeIcon> Edit
                       </span>
                     </ModuleMenuListItem>
                     <ModuleMenuListItem>
                       <span onClick={onOpenDeleteConfirmation}>
-                        <FontAwesomeIcon
-                          icon="trash-alt"
-                          className="me-2"
-                        ></FontAwesomeIcon>
+                        <FontAwesomeIcon icon="trash-alt" className="me-2"></FontAwesomeIcon>
                         Delete
                       </span>
                     </ModuleMenuListItem>
@@ -201,9 +201,7 @@ const Detail = (props: Props) => {
           <div className="clearfix">
             <div>
               <ContentBody>
-                <span
-                  dangerouslySetInnerHTML={{ __html: article.content }}
-                ></span>
+                <span dangerouslySetInnerHTML={{ __html: article.content }}></span>
               </ContentBody>
 
               {/* <div className="interactive-toolbar">

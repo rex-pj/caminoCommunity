@@ -134,7 +134,9 @@ const App = () => {
                     return <Route key={path} path={path} element={<ResetPasswordPage />}></Route>;
                   })}
                   <Route path="/error" element={<ErrorPage />}></Route>
-                  <Route path="*" element={<NotFoundPage />}></Route>
+                  {["/not-found", "*"].map((path) => {
+                    return <Route key={path} path={path} element={<NotFoundPage />}></Route>;
+                  })}
                 </Routes>
               </BrowserRouter>
             </Suspense>

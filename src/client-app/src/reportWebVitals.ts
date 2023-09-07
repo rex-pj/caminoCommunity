@@ -1,13 +1,11 @@
-import { CLSReportCallback } from "web-vitals";
-
-const reportWebVitals = (onPerfEntry?: CLSReportCallback) => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
-    import("web-vitals").then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
+const reportWebVitals = (onLogEntry?: Function) => {
+  if (onLogEntry && onLogEntry instanceof Function) {
+    import("web-vitals").then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+      onCLS(console.log);
+      onFID(console.log);
+      onFCP(console.log);
+      onLCP(console.log);
+      onTTFB(console.log);
     });
   }
 };

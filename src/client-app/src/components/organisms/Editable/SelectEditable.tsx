@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-import { DefaultTFuncReturn } from "i18next";
+import { TFunctionReturn } from "i18next";
 
 const TextLabel = styled.span`
   display: inline-block;
@@ -58,12 +58,8 @@ interface SelectEditableProps {
   disabled?: boolean;
   label?: string;
   selections: any[];
-  emptyText?: string | DefaultTFuncReturn;
-  onUpdated?: (e: {
-    primaryKey: string;
-    value: any;
-    propertyName: string;
-  }) => Promise<any>;
+  emptyText?: string;
+  onUpdated?: (e: { primaryKey: string; value: any; propertyName: string }) => Promise<any>;
 }
 
 const SelectEditable = (props: SelectEditableProps) => {
@@ -82,9 +78,7 @@ const SelectEditable = (props: SelectEditableProps) => {
 
   let current: any = null;
   if (value && selections && selections.length > 0) {
-    current = selections.find(
-      (item) => item.value.toString() === value.toString()
-    );
+    current = selections.find((item) => item.value.toString() === value.toString());
   } else if (value && label) {
     current = { value, label };
   } else {
@@ -190,23 +184,10 @@ const SelectEditable = (props: SelectEditableProps) => {
   }
 
   if (!props.disabled) {
-    return (
-      <SelectBox
-        className={`${status}`}
-        name={name}
-        isDisabled={disabled}
-        placeholder={emptyText}
-        onChange={onChanged}
-        options={selections}
-      />
-    );
+    return <SelectBox className={`${status}`} name={name} isDisabled={disabled} placeholder={emptyText} onChange={onChanged} options={selections} />;
   }
 
-  return (
-    <TextLabel className={`disabled ${status}`}>
-      {selectedValue ? selectedValue.text : emptyText}
-    </TextLabel>
-  );
+  return <TextLabel className={`disabled ${status}`}>{selectedValue ? selectedValue.text : emptyText}</TextLabel>;
 };
 
 export default SelectEditable;

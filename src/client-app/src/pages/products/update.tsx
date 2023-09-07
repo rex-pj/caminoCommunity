@@ -1,16 +1,16 @@
 import * as React from "react";
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import { productQueries, userQueries, farmQueries } from "../../graphql/fetching/queries";
 import { productMutations } from "../../graphql/fetching/mutations";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hook-store";
-import { ProductCreationModel } from "../../models/productCreationModel";
 import ProductEditor from "../../components/organisms/Product/ProductEditor";
 import DetailLayout from "../../components/templates/Layout/DetailLayout";
 import ProductService from "../../services/productService";
 import { Helmet } from "react-helmet-async";
+import { SessionContext } from "../../store/context/session-context";
 
 interface Props {}
 
@@ -18,6 +18,7 @@ const UpdatePage = (props: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { currentUser, isLogin } = useContext(SessionContext);
   const dispatch = useStore(false)[1];
   const { loading, data, error, refetch, called } = useQuery(productQueries.GET_PRODUCT_FOR_UPDATE, {
     variables: {
@@ -131,6 +132,13 @@ const UpdatePage = (props: Props) => {
 
   const product = data ? { ...data.product } : {};
   const currentProduct = { ...product };
+  const { createdByIdentityId } = currentProduct;
+  const isAuthor = currentUser && createdByIdentityId === currentUser.userIdentityId;
+  if (!isLogin || (createdByIdentityId && !isAuthor)) {
+    navigate({
+      pathname: `/not-found`,
+    });
+  }
 
   const breadcrumbs = [
     {
@@ -147,9 +155,11 @@ const UpdatePage = (props: Props) => {
     },
   ];
 
+  const metaTitle = `Cập nhật thông tin sản phẩm ${currentProduct?.name} ${"| Nông Trại LỒ Ồ"}`;
   return (
     <>
       <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <DetailLayout author={getAuthorInfo()} isLoading={!!loading} hasData={true} hasError={!!error}>

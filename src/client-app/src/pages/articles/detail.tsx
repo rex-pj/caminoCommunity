@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import Breadcrumb from "../../components/organisms/Navigation/Breadcrumb";
 import Detail from "../../components/templates/Article/Detail";
 import { UrlConstant } from "../../utils/Constants";

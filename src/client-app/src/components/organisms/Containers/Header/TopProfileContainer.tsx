@@ -66,14 +66,13 @@ const UserName = styled.span`
   font-size: inherit;
 `;
 
-interface TopProfileContainerProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface TopProfileContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   userInfo: any;
 }
 
-const TopProfileContainer: React.FC<TopProfileContainerProps> = (props) => {
+const TopProfileContainer = (props: TopProfileContainerProps) => {
   const { userInfo } = props;
-  const userIdentityId = userInfo ? userInfo.userIdentityId : null;
+  const userIdentityId = userInfo?.userIdentityId;
   const profileDropdowns = [
     {
       name: "My Profile",
@@ -89,23 +88,11 @@ const TopProfileContainer: React.FC<TopProfileContainerProps> = (props) => {
     <Root className={props.className}>
       <PorfileButtonGroup>
         <ProfileButton to={`/profile/${userIdentityId}`}>
-          {userInfo && userInfo.userAvatar && userInfo.userAvatar.id ? (
-            <ImageRound
-              src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.id}`}
-              alt=""
-            />
-          ) : (
-            <EmptyAvatar />
-          )}
+          {userInfo?.userAvatar?.id ? <ImageRound src={`${apiConfig.paths.userPhotos.get.getAvatar}/${userInfo.userAvatar.id}`} alt="" /> : <EmptyAvatar />}
 
-          <UserName className="d-none d-sm-inline">
-            {userInfo ? userInfo.displayName : ""}
-          </UserName>
+          <UserName className="d-none d-sm-inline">{userInfo ? userInfo.displayName : ""}</UserName>
         </ProfileButton>
-        <DropdownButton
-          className="profile-dropdown"
-          dropdown={profileDropdowns}
-        />
+        <DropdownButton className="profile-dropdown" dropdown={profileDropdowns} />
       </PorfileButtonGroup>
     </Root>
   );

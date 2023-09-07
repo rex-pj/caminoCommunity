@@ -68,17 +68,7 @@ interface Props {
 const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
   const { historyState } = useSharedHistoryContext();
   const {
-    settings: {
-      isCollab,
-      isAutocomplete,
-      isMaxLength,
-      isCharLimit,
-      isCharLimitUtf8,
-      isRichText,
-      showTableOfContents,
-      tableCellMerge,
-      tableCellBackgroundColor,
-    },
+    settings: { isCollab, isAutocomplete, isMaxLength, isCharLimit, isCharLimitUtf8, isRichText, showTableOfContents, tableCellMerge, tableCellBackgroundColor },
   } = useSettings();
 
   const getPlaceholder = () => {
@@ -94,10 +84,8 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
   };
 
   const placeholder = <Placeholder>{getPlaceholder()}</Placeholder>;
-  const [floatingAnchorElem, setFloatingAnchorElem] =
-    useState<HTMLDivElement | null>(null);
-  const [isSmallWidthViewport, setIsSmallWidthViewport] =
-    useState<boolean>(false);
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] = useState<boolean>(false);
   const initialRef = useRef<boolean>(true);
 
   const [editor] = useLexicalComposerContext();
@@ -119,8 +107,7 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
 
   useEffect(() => {
     const updateViewPortWidth = () => {
-      const isNextSmallWidthViewport =
-        CAN_USE_DOM && window.matchMedia("(max-width: 1025px)").matches;
+      const isNextSmallWidthViewport = CAN_USE_DOM && window.matchMedia("(max-width: 1025px)").matches;
 
       if (isNextSmallWidthViewport !== isSmallWidthViewport) {
         setIsSmallWidthViewport(isNextSmallWidthViewport);
@@ -142,7 +129,8 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
 
     editor.update(() => {
       const parser = new DOMParser();
-      const dom = parser.parseFromString(value, "text/html");
+      var aaa = `<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span>Phasellus purus quam, laoreet eu tristique a, fermentum vel lacus. In id felis nisi. Phasellus metus elit, vulputate eu egestas vel, sollicitudin vitae mauris. Aliquam mattis tortor eu ligula pulvinar, blandit rutrum turpis mattis. Vivamus scelerisque ante eu turpis facilisis bibendum. Fusce scelerisque, nulla et commodo pharetra, metus nunc lobortis sapien, ac iaculis orci quam vitae lectus. Nullam aliquam fringilla laoreet. Sed sit amet arcu at dolor ultrices lobortis. In porta viverra neque ac convallis. Nunc eu feugiat turpis. Nulla vel ullamcorper magna, vel semper lectus. Fusce condimentum sit amet elit id consectetur.</span></p><p class="PlaygroundEditorTheme__paragraph" dir="ltr"><br/></p><p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span>Phasellus purus quam, laoreet eu tristique a, fermentum vel lacus. In id felis nisi. Phasellus metus elit, vulputate eu egestas vel, sollicitudin vitae mauris. Aliquam mattis tortor eu ligula pulvinar, blandit rutrum turpis mattis. Vivamus scelerisque ante eu turpis facilisis bibendum. Fusce scelerisque, nulla et commodo pharetra, metus nunc lobortis sapien, ac iaculis orci quam vitae lectus. Nullam aliquam fringilla laoreet. Sed sit amet arcu at dolor ultrices lobortis. In porta viverra neque ac convallis. Nunc eu feugiat turpis. Nulla vel ullamcorper magna, vel semper lectus. Fusce condimentum sit amet elit id consectetur.</span></p>`;
+      const dom = parser.parseFromString(aaa, "text/html");
       const nodes = $generateNodesFromDOM(editor, dom);
       $insertNodes(nodes);
       initialRef.current = false;
@@ -184,20 +172,11 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
             <ListPlugin />
             <CheckListPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
-            <TablePlugin
-              hasCellMerge={tableCellMerge}
-              hasCellBackgroundColor={tableCellBackgroundColor}
-            />
+            <TablePlugin hasCellMerge={tableCellMerge} hasCellBackgroundColor={tableCellBackgroundColor} />
             <TableCellResizer />
             <NewTablePlugin cellEditorConfig={cellEditorConfig}>
               <AutoFocusPlugin />
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="TableNode__contentEditable" />
-                }
-                placeholder={null}
-                ErrorBoundary={LexicalErrorBoundary}
-              />
+              <RichTextPlugin contentEditable={<ContentEditable className="TableNode__contentEditable" />} placeholder={null} ErrorBoundary={LexicalErrorBoundary} />
               <MentionsPlugin />
               <HistoryPlugin />
               <ImagesPlugin captionsEnabled={false} />
@@ -215,32 +194,18 @@ const RichTextEditor = React.forwardRef((props: Props, ref: any) => {
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
-                <TableCellActionMenuPlugin
-                  anchorElem={floatingAnchorElem}
-                  cellMerge={true}
-                />
-                <FloatingTextFormatToolbarPlugin
-                  anchorElem={floatingAnchorElem}
-                />
+                <TableCellActionMenuPlugin anchorElem={floatingAnchorElem} cellMerge={true} />
+                <FloatingTextFormatToolbarPlugin anchorElem={floatingAnchorElem} />
               </>
             )}
           </>
         ) : (
           <>
-            <PlainTextPlugin
-              contentEditable={<ContentEditable />}
-              placeholder={placeholder}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
+            <PlainTextPlugin contentEditable={<ContentEditable />} placeholder={placeholder} ErrorBoundary={LexicalErrorBoundary} />
             <HistoryPlugin externalHistoryState={historyState} />
           </>
         )}
-        {(isCharLimit || isCharLimitUtf8) && (
-          <CharacterLimitPlugin
-            charset={isCharLimit ? "UTF-16" : "UTF-8"}
-            maxLength={5}
-          />
-        )}
+        {(isCharLimit || isCharLimitUtf8) && <CharacterLimitPlugin charset={isCharLimit ? "UTF-16" : "UTF-8"} maxLength={5} />}
         {isAutocomplete && <AutocompletePlugin />}
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         <ActionsPlugin />

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
-import ReactDOMServer from "react-dom/server";
 import "./index.css";
 import App from "./App";
 import "core-js/stable";

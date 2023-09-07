@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 type Props = {};
 
 const Index = (props: Props) => {
+  const metaTitle = `Oops! ${"| Nông Trại LỒ Ồ"}`;
   return (
     <>
       <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <PromptLayout>
